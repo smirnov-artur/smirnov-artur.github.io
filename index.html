@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Artur Smirnov — Senior Go Backend Engineer</title>
+<meta name="description" content="Senior Go engineer specializing in payment-core, high-load distributed systems. Belgrade, remote worldwide.">
+<style>
+  :root{
+    --bg:#0a0d12;
+    --bg-elev:#11151c;
+    --bg-elev-2:#161c25;
+    --ink:#f2efe8;
+    --body:#c7cdd6;
+    --muted:#828d9c;
+    --accent:#dba64f;
+    --accent-soft:rgba(219,166,79,.14);
+    --teal:#5fb3a3;
+    --teal-soft:rgba(95,179,163,.14);
+    --hair:rgba(255,255,255,.09);
+    --hair-strong:rgba(255,255,255,.16);
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1100px 600px at 12% -10%, rgba(219,166,79,.10), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(95,179,163,.08), transparent 55%),
+      var(--bg);
+    color:var(--body);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  a{color:inherit;}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px;}
+
+  /* ---------- top nav ---------- */
+  header.top{
+    position:sticky;top:0;z-index:20;
+    background:rgba(10,13,18,.72);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--hair);
+  }
+  header.top .wrap{
+    display:flex;align-items:center;justify-content:space-between;
+    height:60px;
+  }
+  .brand{
+    font-family:var(--mono);
+    font-size:14px;font-weight:600;color:var(--ink);
+    letter-spacing:.02em;
+    text-decoration:none;
+    display:flex;align-items:center;gap:8px;
+  }
+  .brand .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);}
+  nav.links{display:flex;gap:22px;font-size:13.5px;}
+  nav.links a{color:var(--muted);text-decoration:none;transition:color .15s ease;}
+  nav.links a:hover{color:var(--ink);}
+  @media (max-width:640px){ nav.links{display:none;} }
+
+  /* ---------- hero ---------- */
+  .hero{padding:88px 0 56px;}
+  .kicker{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--teal);
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    margin:0 0 18px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .kicker .bar{width:26px;height:1px;background:var(--teal);opacity:.6;}
+  h1{
+    font-size:clamp(34px,5.4vw,52px);
+    line-height:1.08;
+    letter-spacing:-.01em;
+    color:var(--ink);
+    margin:0 0 18px;
+    font-weight:650;
+  }
+  h1 .accent-text{color:var(--accent);}
+  .lede{
+    font-size:17px;
+    color:var(--body);
+    max-width:640px;
+    margin:0 0 30px;
+  }
+  .lede b{color:var(--ink);font-weight:600;}
+  .locrow{
+    display:flex;flex-wrap:wrap;gap:10px;
+    margin-bottom:34px;
+  }
+  .pill{
+    display:inline-flex;align-items:center;gap:7px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--muted);
+    border:1px solid var(--hair-strong);
+    background:var(--bg-elev);
+    padding:7px 12px;
+    border-radius:100px;
+  }
+  .pill .pip{width:6px;height:6px;border-radius:50%;background:var(--teal);}
+
+  .cta-row{display:flex;flex-wrap:wrap;gap:12px;}
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    padding:12px 20px;
+    border-radius:10px;
+    font-size:14.5px;
+    font-weight:600;
+    text-decoration:none;
+    border:1px solid transparent;
+    transition:transform .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{
+    background:linear-gradient(180deg,#e6b563,var(--accent));
+    color:#1a1206;
+    box-shadow:0 8px 24px -8px rgba(219,166,79,.55);
+  }
+  .btn-primary:hover{box-shadow:0 10px 28px -6px rgba(219,166,79,.65);}
+  .btn-ghost{
+    background:var(--bg-elev);
+    border-color:var(--hair-strong);
+    color:var(--ink);
+  }
+  .btn-ghost:hover{border-color:var(--teal);color:var(--ink);}
+  .btn svg{width:16px;height:16px;flex:none;}
+
+  /* ---------- stats ---------- */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--hair);
+    border:1px solid var(--hair);
+    border-radius:14px;
+    overflow:hidden;
+    margin:8px 0 64px;
+  }
+  .stat{
+    background:var(--bg-elev);
+    padding:22px 20px;
+  }
+  .stat .num{
+    font-family:var(--mono);
+    font-size:clamp(20px,3vw,28px);
+    color:var(--ink);
+    font-weight:600;
+    display:flex;align-items:baseline;gap:6px;
+  }
+  .stat .num .arrow{color:var(--accent);font-size:.75em;}
+  .stat .label{font-size:12.5px;color:var(--muted);margin-top:6px;}
+  @media (max-width:640px){ .stats{grid-template-columns:1fr;} }
+
+  /* ---------- section shell ---------- */
+  section{padding:10px 0 64px;}
+  .section-head{margin-bottom:30px;}
+  .section-head .kicker{margin-bottom:10px;}
+  .section-head h2{
+    font-size:26px;color:var(--ink);margin:0;font-weight:650;letter-spacing:-.01em;
+  }
+
+  /* ---------- cases ---------- */
+  .case{
+    border:1px solid var(--hair);
+    background:linear-gradient(180deg, var(--bg-elev), var(--bg-elev-2));
+    border-radius:16px;
+    padding:28px 28px 30px;
+    margin-bottom:20px;
+  }
+  .case-head{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    gap:16px;flex-wrap:wrap;
+    margin-bottom:14px;
+  }
+  .case-head h3{
+    font-size:19px;color:var(--ink);margin:0 0 4px;font-weight:650;
+  }
+  .case-head .role{font-size:13px;color:var(--muted);}
+  .case-tag{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--accent);
+    background:var(--accent-soft);
+    border:1px solid rgba(219,166,79,.3);
+    padding:5px 10px;
+    border-radius:100px;
+    white-space:nowrap;
+  }
+  .case ul{margin:0;padding-left:18px;}
+  .case li{font-size:14.5px;color:var(--body);margin-bottom:9px;}
+  .case li:last-child{margin-bottom:0;}
+  .case li b{color:var(--ink);font-weight:600;}
+  .case li::marker{color:var(--teal);}
+
+  /* ---------- stack ---------- */
+  .stack-groups{display:flex;flex-direction:column;gap:16px;}
+  .stack-row{display:flex;gap:14px;flex-wrap:wrap;align-items:baseline;}
+  .stack-row .glabel{
+    font-family:var(--mono);font-size:12px;color:var(--muted);
+    min-width:150px;letter-spacing:.03em;
+    text-transform:uppercase;
+  }
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--body);
+    border:1px solid var(--hair-strong);
+    background:var(--bg-elev);
+    padding:6px 11px;
+    border-radius:8px;
+  }
+
+  /* ---------- footer / contact ---------- */
+  footer{
+    border-top:1px solid var(--hair);
+    padding:44px 0 60px;
+  }
+  footer .foot-head h2{
+    font-size:24px;color:var(--ink);margin:0 0 8px;font-weight:650;
+  }
+  footer .foot-lede{color:var(--muted);font-size:14.5px;margin:0 0 26px;max-width:480px;}
+  footer .cta-row{margin-bottom:36px;}
+  .foot-bottom{
+    display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:10px;
+    font-size:12.5px;color:var(--muted);
+    font-family:var(--mono);
+    border-top:1px solid var(--hair);
+    padding-top:22px;
+  }
+  .foot-bottom a{color:var(--muted);text-decoration:none;}
+  .foot-bottom a:hover{color:var(--teal);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="dot"></span>Artur Smirnov</a>
+    <nav class="links">
+      <a href="#work">Work</a>
+      <a href="#stack">Stack</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<div id="top"></div>
+<main class="wrap">
+
+  <section class="hero">
+    <p class="kicker"><span class="bar"></span>Senior Go Backend Engineer</p>
+    <h1>Payment systems that stay<br>correct when everything<br class="hide-mobile"> else <span class="accent-text">fails.</span></h1>
+    <p class="lede">
+      4.5 years building <b>payment-core, high-load distributed systems</b> — exactly-once
+      payouts, saga orchestration without 2PC, transactional outbox pipelines.
+      Based in <b>Belgrade</b>, working with teams anywhere.
+    </p>
+    <div class="locrow">
+      <span class="pill"><span class="pip"></span>Belgrade, Serbia</span>
+      <span class="pill"><span class="pip"></span>Remote worldwide</span>
+      <span class="pill"><span class="pip"></span>Open to relocation</span>
+      <span class="pill"><span class="pip"></span>English B2</span>
+    </div>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="mailto:paladei702@gmail.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+        Email
+      </a>
+      <a class="btn btn-ghost" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>
+        Telegram
+      </a>
+      <a class="btn btn-ghost" href="https://cal.com/paladei-rxmf8b/30min" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Book a call
+      </a>
+      <a class="btn btn-ghost" href="./CV-Smirnov-EN.pdf" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        CV (PDF)
+      </a>
+    </div>
+  </section>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="num">3h <span class="arrow">&rarr;</span> 45min</div>
+      <div class="label">incident MTTR, after rebuilding observability</div>
+    </div>
+    <div class="stat">
+      <div class="num">2% <span class="arrow">&rarr;</span> 0.5%</div>
+      <div class="label">payment error rate on the payout path</div>
+    </div>
+    <div class="stat">
+      <div class="num">&minus;30%</div>
+      <div class="label">PostgreSQL load moved to Kafka &rarr; ClickHouse</div>
+    </div>
+  </div>
+
+  <section id="work">
+    <div class="section-head">
+      <p class="kicker"><span class="bar"></span>Selected work</p>
+      <h2>Three systems, one problem: money that moves exactly once</h2>
+    </div>
+
+    <div class="case">
+      <div class="case-head">
+        <div>
+          <h3>YooMoney</h3>
+          <div class="role">Senior Go Engineer &middot; fintech, payment platform &middot; Jan 2024 &ndash; Present</div>
+        </div>
+        <span class="case-tag">payment core</span>
+      </div>
+      <ul>
+        <li>Designed a <b>saga-based payout flow without 2PC</b>, backed by strict idempotency keys — eliminated double-spend risk from retries and partial failures, delivering <b>exactly-once settlement</b> on money movement.</li>
+        <li>Built a <b>transactional outbox &rarr; Kafka &rarr; ClickHouse</b> pipeline that moved analytical and event traffic off the production ledger database, cutting <b>PostgreSQL load by ~30%</b>.</li>
+        <li>Hardened integrations with unstable external PSPs — circuit breakers, retry with exponential backoff and jitter, dead-letter queues.</li>
+        <li>Rebuilt observability end-to-end with OpenTelemetry, Prometheus, Grafana and Jaeger — cut incident <b>MTTR from 3h to 45min</b> and payment <b>error rate from 2% to 0.5%</b>.</li>
+      </ul>
+    </div>
+
+    <div class="case">
+      <div class="case-head">
+        <div>
+          <h3>Domclick</h3>
+          <div class="role">Go Engineer &middot; fintech / proptech, payment events &middot; 2023</div>
+        </div>
+        <span class="case-tag">idempotency</span>
+      </div>
+      <ul>
+        <li>Owned <b>idempotent processing</b> of payment-event webhooks end-to-end, with deduplication so repeated deliveries always reconcile to a single consistent state.</li>
+        <li>Modeled contracts and payments as an auditable <b>state machine with full audit trail</b>, publishing state changes through a transactional outbox to Kafka.</li>
+        <li>Defined <b>HMAC-signed webhook contracts</b> adopted across the payments integration surface, closing a class of replay and tampering risk.</li>
+        <li>Instrumented webhook success rate, outbox lag, and retry/DLQ health so integration issues surfaced before they reached customers.</li>
+      </ul>
+    </div>
+
+    <div class="case">
+      <div class="case-head">
+        <div>
+          <h3>Cian</h3>
+          <div class="role">Go Engineer &middot; large-scale real estate marketplace &middot; Feb 2022 &ndash; Dec 2022</div>
+        </div>
+        <span class="case-tag">high load</span>
+      </div>
+      <ul>
+        <li>Built the listing-management backend and <b>partner-synchronization</b> services (REST, OpenAPI 3) powering marketplace-scale traffic.</li>
+        <li>Designed <b>PostgreSQL schemas for audit trail and idempotency</b> on partner callbacks, using unique constraints and optimistic locking to keep data consistent under concurrent updates.</li>
+        <li>Implemented resilient <b>RabbitMQ worker</b> pipelines with exponential backoff and dead-letter queues for asynchronous processing at scale.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="stack">
+    <div class="section-head">
+      <p class="kicker"><span class="bar"></span>Toolbox</p>
+      <h2>Stack</h2>
+    </div>
+    <div class="stack-groups">
+      <div class="stack-row">
+        <span class="glabel">Languages &amp; APIs</span>
+        <div class="chips">
+          <span class="chip">Go</span><span class="chip">SQL</span><span class="chip">gRPC</span><span class="chip">REST</span><span class="chip">Protobuf</span><span class="chip">OpenAPI 3</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <span class="glabel">Distributed systems</span>
+        <div class="chips">
+          <span class="chip">Saga pattern</span><span class="chip">Idempotency</span><span class="chip">Exactly-once</span><span class="chip">Transactional outbox</span><span class="chip">Eventual consistency</span><span class="chip">Circuit breaker</span><span class="chip">DLQ</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <span class="glabel">Data &amp; messaging</span>
+        <div class="chips">
+          <span class="chip">PostgreSQL</span><span class="chip">Kafka</span><span class="chip">ClickHouse</span><span class="chip">Redis</span><span class="chip">RabbitMQ</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <span class="glabel">Infra</span>
+        <div class="chips">
+          <span class="chip">Kubernetes</span><span class="chip">Docker</span><span class="chip">CI/CD</span><span class="chip">Linux</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <span class="glabel">Observability</span>
+        <div class="chips">
+          <span class="chip">OpenTelemetry</span><span class="chip">Prometheus</span><span class="chip">Grafana</span><span class="chip">Jaeger</span><span class="chip">SLO / MTTR</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-head">
+      <p class="kicker"><span class="bar"></span>Get in touch</p>
+      <h2>Open to remote Go roles</h2>
+      <p class="foot-lede">Payments, fintech, or high-load distributed systems. Full-time or contract, remote-first, relocation-friendly.</p>
+    </div>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="mailto:paladei702@gmail.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+        paladei702@gmail.com
+      </a>
+      <a class="btn btn-ghost" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>
+        @smirnovarturr
+      </a>
+      <a class="btn btn-ghost" href="https://cal.com/paladei-rxmf8b/30min" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Book a 30-min call
+      </a>
+      <a class="btn btn-ghost" href="./CV-Smirnov-EN.pdf" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        Download CV
+      </a>
+    </div>
+    <div class="foot-bottom">
+      <span>Artur Smirnov &middot; Senior Go Backend Engineer &middot; Belgrade, Serbia</span>
+      <a href="#top">Back to top &uarr;</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
