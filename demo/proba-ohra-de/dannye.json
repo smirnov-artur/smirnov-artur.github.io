@@ -1,0 +1,40 @@
+{
+ "слаг": "proba-ohra-de",
+ "сайт": "https://www.ohra.de",
+ "имя": "OHRA GmbH",
+ "лого": "logo.svg",
+ "цвета": [
+  "#ee6501",
+  "#ee8005",
+  "#c37758",
+  "#c93c53",
+  "#cb404e",
+  "#bb4f01"
+ ],
+ "товары": [
+  {
+   "файл": "tovar1.jpg",
+   "px": "1861x1339",
+   "кб": 151,
+   "откуда": "https://www.ohra.de/fileadmin/media/products/palettenregale/pal_mit_dach/Pelletenregale-Dach3.png"
+  },
+  {
+   "файл": "tovar2.jpg",
+   "px": "2818x1556",
+   "кб": 143,
+   "откуда": "https://www.ohra.de/fileadmin/media/branches/Ohra-KAR2.png"
+  },
+  {
+   "файл": "tovar3.jpg",
+   "px": "2167x1396",
+   "кб": 145,
+   "откуда": "https://www.ohra.de/fileadmin/media/branches/Ohra_KAR3.png"
+  },
+  {
+   "файл": "tovar4.jpg",
+   "px": "1728x558",
+   "кб": 81,
+   "откуда": "https://www.ohra.de/fileadmin/media/home/Headerbild-Startseite.jpg"
+  }
+ ]
+}
