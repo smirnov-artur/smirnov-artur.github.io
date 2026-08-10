@@ -1,0 +1,38 @@
+{
+ "слаг": "oesterheld",
+ "сайт": "https://oesterheld-gmbh.de",
+ "имя": "Torbau Oesterheld",
+ "лого": "logo.png",
+ "цвета": [
+  "#e40421",
+  "#b2031a"
+ ],
+ "товары": [
+  {
+   "файл": "tovar1.jpg",
+   "px": "1600x1200",
+   "кб": 81,
+   "откуда": "https://oesterheld-gmbh.de/files/theme_files/img/diverse/schleusentor-4x3.jpg"
+  },
+  {
+   "файл": "tovar2.jpg",
+   "px": "1920x1080",
+   "кб": 65,
+   "откуда": "https://oesterheld-gmbh.de/files/theme_files/img/novoferm/6065_Novoferm_Milieubilder_2016_10_300dpi-16x9.jpg"
+  },
+  {
+   "файл": "tovar3.jpg",
+   "px": "575x431",
+   "кб": 48,
+   "откуда": "https://oesterheld-gmbh.de/files/theme_files/img/berlemann/inova-schiebetor-silverline-4x3_575.jpg"
+  },
+  {
+   "файл": "tovar4.jpg",
+   "px": "575x431",
+   "кб": 44,
+   "откуда": "https://oesterheld-gmbh.de/files/theme_files/img/novoferm/6065_Novoferm_Milieubilder_2016_5_300dpi-4x3_575.jpg"
+  }
+ ],
+ "тип": "ворота",
+ "фото": 1
+}
