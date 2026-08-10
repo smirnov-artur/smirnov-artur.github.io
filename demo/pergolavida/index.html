@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Configurator preview</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%230e1013'/><rect x='3' y='4' width='10' height='1.6' fill='%23fff'/><rect x='3' y='7.2' width='10' height='1.6' fill='%23fff'/><rect x='3' y='10.4' width='10' height='1.6' fill='%23fff'/></svg>">
+<style>
+  :root{
+    --акцент:#2f6df6; --акцент2:#111; --фон:#0e1013; --панель:#16191e;
+    --рамка:#262b33; --текст:#e8eaee; --тускло:#8b93a1;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--фон);color:var(--текст);
+    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  #сцена{position:fixed;inset:0}
+  canvas{display:block}
+
+  .шапка{position:fixed;top:0;left:0;right:0;padding:18px 22px;display:flex;
+    align-items:center;gap:14px;pointer-events:none;z-index:3}
+  .шапка img{height:30px;width:auto;filter:drop-shadow(0 1px 6px rgba(0,0,0,.6))}
+  .шапка b{font-weight:650;letter-spacing:.2px}
+  .шапка span{color:var(--тускло);font-size:13px}
+
+  .панель{position:fixed;top:74px;right:22px;width:296px;max-height:calc(100vh - 150px);
+    overflow:auto;background:rgba(22,25,30,.92);backdrop-filter:blur(14px);
+    border:1px solid var(--рамка);border-radius:14px;padding:18px;z-index:4;
+    box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .панель h2{margin:0 0 14px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--тускло);font-weight:600}
+  .поле{margin-bottom:15px}
+  .поле label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+  .поле label i{font-style:normal;color:var(--акцент);font-variant-numeric:tabular-nums;font-weight:600}
+  input[type=range]{width:100%;accent-color:var(--акцент);height:20px}
+  .цвета{display:flex;gap:8px;flex-wrap:wrap}
+  .цвета button{width:30px;height:30px;border-radius:8px;border:2px solid transparent;
+    cursor:pointer;padding:0;transition:transform .12s}
+  .цвета button:hover{transform:scale(1.1)}
+  .цвета button[aria-pressed=true]{border-color:#fff;box-shadow:0 0 0 2px rgba(0,0,0,.5)}
+
+  .итог{margin-top:16px;border-top:1px solid var(--рамка);padding-top:14px}
+  .итог div{display:flex;justify-content:space-between;font-size:13px;padding:4px 0}
+  .итог div span:first-child{color:var(--тускло)}
+  .итог div span:last-child{font-variant-numeric:tabular-nums;font-weight:600}
+
+  .образец{margin-top:16px;border-top:1px solid var(--рамка);padding-top:14px}
+  .образец p{margin:0 0 8px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--тускло);font-weight:600}
+  .образец img{width:100%;height:116px;object-fit:cover;border-radius:8px;display:block;
+    background:#fff}
+
+  .низ{position:fixed;left:22px;bottom:18px;z-index:3;font-size:12.5px;color:var(--тускло);
+    max-width:min(52vw,560px);line-height:1.6}
+  .низ a{color:var(--текст);text-decoration:none;border-bottom:1px solid var(--рамка)}
+  .низ a:hover{border-color:var(--акцент)}
+  .низ b{color:var(--текст);font-weight:600}
+
+  @media (max-width:820px){
+    .панель{position:fixed;top:auto;bottom:0;left:0;right:0;width:auto;border-radius:14px 14px 0 0;
+      max-height:52vh}
+    .низ{display:none}
+  }
+</style>
+</head>
+<body>
+<div id="сцена"></div>
+
+<div class="шапка">
+  <img id="лого" alt="" hidden>
+  <div><b id="имя">—</b> <span>· configurator preview</span></div>
+</div>
+
+<div class="панель">
+  <h2>Dimensions</h2>
+  <div class="поле"><label>Width <i><b id="в-ш">1800</b> mm</i></label>
+    <input type="range" id="ш" min="600" max="3600" step="50" value="1800"></div>
+  <div class="поле"><label>Height <i><b id="в-в">2200</b> mm</i></label>
+    <input type="range" id="в" min="800" max="4000" step="50" value="2200"></div>
+  <div class="поле"><label>Depth <i><b id="в-г">600</b> mm</i></label>
+    <input type="range" id="г" min="300" max="1200" step="50" value="600"></div>
+    <div class="поле"><label id="метка-п">Shelves <i><b id="в-п">4</b></i></label>
+    <input type="range" id="п" min="2" max="8" step="1" value="4"></div>
+
+  <h2 style="margin-top:18px">Finish</h2>
+  <div class="цвета" id="цвета"></div>
+
+  <div class="итог">
+    <div><span>Footprint</span><span id="р-площадь">—</span></div>
+    <div><span>Shelf area, total</span><span id="р-полки">—</span></div>
+    <div><span>Steel mass</span><span id="р-масса">—</span></div>
+    <div><span>Profile</span><span id="р-профиль">—</span></div>
+  </div>
+
+  <div class="образец" id="образец" hidden>
+    <p>Your reference</p><img id="фото" alt="">
+  </div>
+</div>
+
+<div class="низ" id="низ"></div>
+
+<script type="importmap">
+{"imports":{
+  "three":"https://unpkg.com/three@0.166.1/build/three.module.js",
+  "three/addons/":"https://unpkg.com/three@0.166.1/examples/jsm/"
+}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+
+const данные = await fetch('dannye.json').then(r => r.json()).catch(() => ({}));
+
+/* ---------- фирменный вид заказчика ---------- */
+const цвета = (данные.цвета && данные.цвета.length ? данные.цвета
+              : ['#2f6df6', '#e8434f', '#f0a02a', '#2fa96b']).slice(0, 6);
+document.documentElement.style.setProperty('--акцент', цвета[0]);
+document.getElementById('имя').textContent = данные.имя || 'Configurator';
+if (данные.лого) { const l = document.getElementById('лого'); l.src = данные.лого; l.hidden = false; }
+// Какой снимок показывать — решает человек флагом --фото N у sdelat.py.
+// Отбор по весу файла берёт не товар, а рекламный баннер: проверено на живом сайте.
+const н = Number.isInteger(данные.фото) ? данные.фото : 0;
+if (данные.товары && данные.товары[н]) {
+  document.getElementById('фото').src = данные.товары[н].файл;
+  document.getElementById('образец').hidden = false;
+}
+document.getElementById('низ').innerHTML = данные.низ ||
+  'Rough working preview built for ' + (данные.имя || 'you') +
+  '. Drag to orbit, scroll to zoom — the geometry and the numbers are computed live, not a video. ' +
+  '<b>Artur Smirnov</b> · <a href="https://smirnov-artur.github.io/webgl/">work</a>' +
+  ' · <a href="https://t.me/smirnovarturr">t.me/smirnovarturr</a>';
+
+/* ---------- сцена ---------- */
+const рендер = new THREE.WebGLRenderer({antialias: true});
+рендер.setPixelRatio(Math.min(devicePixelRatio, 2));
+рендер.setSize(innerWidth, innerHeight);
+рендер.shadowMap.enabled = true;
+рендер.shadowMap.type = THREE.PCFSoftShadowMap;
+рендер.toneMapping = THREE.ACESFilmicToneMapping;
+рендер.toneMappingExposure = 1.05;
+document.getElementById('сцена').appendChild(рендер.domElement);
+
+const сцена = new THREE.Scene();
+сцена.background = new THREE.Color(0x0e1013);
+сцена.fog = new THREE.Fog(0x0e1013, 9, 26);
+
+const пми = new THREE.PMREMGenerator(рендер);
+сцена.environment = пми.fromScene(new RoomEnvironment(), 0.04).texture;
+
+const камера = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 120);
+камера.position.set(4.4, 2.6, 5.2);
+
+const орбита = new OrbitControls(камера, рендер.domElement);
+орбита.enableDamping = true; орбита.dampingFactor = 0.06;
+орбита.minDistance = 2.2; орбита.maxDistance = 16;
+орбита.maxPolarAngle = Math.PI / 2 - 0.03;
+орбита.target.set(0, 1.05, 0);
+
+const солнце = new THREE.DirectionalLight(0xffffff, 2.6);
+солнце.position.set(4.5, 7.5, 4);
+солнце.castShadow = true;
+солнце.shadow.mapSize.set(2048, 2048);
+солнце.shadow.camera.top = 6; солнце.shadow.camera.bottom = -3;
+солнце.shadow.camera.left = -6; солнце.shadow.camera.right = 6;
+солнце.shadow.bias = -0.0008;
+сцена.add(солнце);
+сцена.add(new THREE.HemisphereLight(0x9fb6ff, 0x1a1d22, 0.55));
+
+const пол = new THREE.Mesh(
+  new THREE.PlaneGeometry(60, 60),
+  new THREE.ShadowMaterial({opacity: 0.42}));
+пол.rotation.x = -Math.PI / 2; пол.receiveShadow = true;
+сцена.add(пол);
+const сетка = new THREE.GridHelper(60, 60, 0x2a3038, 0x1b1f25);
+сетка.material.transparent = true; сетка.material.opacity = 0.5;
+сцена.add(сетка);
+
+/* ---------- параметрическая стойка ---------- */
+const СТАЛЬ = 7850;                 // кг/м³
+const СТОЙКА = 0.05, БАЛКА = 0.04;  // наружное сечение профиля, м
+const СТЕНКА = 0.002;               // толщина стенки трубы, м
+const ЛИСТ = 0.0012;                // толщина полки, м
+
+// Профиль полый: сплошной брус даёт впятеро завышенную массу. Считаем только
+// металл стенок — иначе число выглядит выдуманным для того, кто в этом работает.
+const труба = (a, L) => (a * a - (a - 2 * СТЕНКА) ** 2) * L;
+
+const узел = new THREE.Group();
+сцена.add(узел);
+
+const мКаркас = new THREE.MeshStandardMaterial({color: цвета[0], metalness: 0.65, roughness: 0.34});
+const мПолка = new THREE.MeshStandardMaterial({color: 0xb9bec6, metalness: 0.5, roughness: 0.55});
+
+const куб = new THREE.BoxGeometry(1, 1, 1);
+function брус(мат, sx, sy, sz, x, y, z) {
+  const m = new THREE.Mesh(куб, мат);
+  m.scale.set(sx, sy, sz); m.position.set(x, y, z);
+  m.castShadow = true; m.receiveShadow = true;
+  узел.add(m);
+}
+
+// Второй тип изделия. Секционные ворота — это те же горизонтальные панели в раме,
+// поэтому геометрия строится тем же кодом, а не отдельным. Тип задаётся в dannye.json
+// полем «тип»: без него собирается стеллаж.
+const ВОРОТА = (данные.тип || '') === 'ворота';
+
+function собратьВорота() {
+  const Ш = +ш.value / 1000, В = +в.value / 1000, П = +п.value;
+  узел.clear();
+  let объём = 0;
+  const РАМА = 0.06, ПАНЕЛЬ = 0.042;          // стойка рамы и толщина панели, м
+
+  for (const zx of [-1, 1]) {                  // боковые направляющие
+    брус(мКаркас, РАМА, В, РАМА, zx * (Ш + РАМА) / 2, В / 2, 0);
+    объём += труба(РАМА, В);
+  }
+  брус(мКаркас, Ш + 2 * РАМА, РАМА, РАМА, 0, В + RAMA_ВЕРХ(), 0);   // притолока
+  объём += труба(РАМА, Ш + 2 * РАМА);
+
+  const h = (В - 0.004 * (П - 1)) / П;         // высота секции с зазором 4 мм
+  for (let i = 0; i < П; i++) {
+    const y = h / 2 + i * (h + 0.004);
+    брус(мПолка, Ш, h - 0.006, ПАНЕЛЬ, 0, y, 0);
+    объём += Ш * (h - 0.006) * 0.0009;         // сэндвич: два листа 0,45 мм
+  }
+
+  орбита.target.set(0, В / 2, 0);
+  const площадь = Ш * В;
+  р_площадь.textContent = площадь.toFixed(2) + ' m²';
+  р_полки.textContent   = П + ' × ' + Math.round(h * 1000) + ' mm';
+  р_масса.textContent   = (объём * СТАЛЬ).toFixed(1) + ' kg';
+  р_профиль.textContent = Math.round(ПАНЕЛЬ * 1000) + ' mm sandwich';
+  в_ш.textContent = ш.value; в_в.textContent = в.value;
+  в_г.textContent = г.value; в_п.textContent = п.value;
+}
+function RAMA_ВЕРХ() { return 0.03; }
+
+const ПЕРГОЛА = (данные.тип || '') === 'пергола';
+
+function собратьПерголу() {
+  const Ш = +ш.value / 1000, В = +в.value / 1000, Г = +г.value / 1000, П = +п.value;
+  узел.clear();
+  let объём = 0;
+  const СТОЛБ = 0.12, БАЛКА2 = 0.10, ЛАМЕЛЬ = 0.16;   // алюминиевый профиль, м
+
+  for (const zx of [-1, 1]) for (const zz of [-1, 1]) {
+    брус(мКаркас, СТОЛБ, В, СТОЛБ, zx * (Ш - СТОЛБ) / 2, В / 2, zz * (Г - СТОЛБ) / 2);
+    объём += труба(СТОЛБ, В);
+  }
+  for (const zz of [-1, 1]) {                    // продольные балки
+    брус(мКаркас, Ш, БАЛКА2, БАЛКА2, 0, В - BАЛКА_ВЕРХ(), zz * (Г - БАЛКА2) / 2);
+    объём += труба(БАЛКА2, Ш);
+  }
+  // поворотные ламели крыши — то, что у перголы и продаётся
+  const шаг = (Г - БАЛКА2) / П;
+  for (let i = 0; i < П; i++) {
+    const z = -(Г - БАЛКА2) / 2 + шаг * (i + 0.5);
+    const л = new THREE.Mesh(куб, мПолка);
+    л.scale.set(Ш - СТОЛБ, 0.018, ЛАМЕЛЬ);
+    л.position.set(0, В - BАЛКА_ВЕРХ() + 0.02, z);
+    л.rotation.x = -0.42;                        // приоткрыты, как в каталоге
+    л.castShadow = true; л.receiveShadow = true;
+    узел.add(л);
+    объём += (Ш - СТОЛБ) * 0.0016 * ЛАМЕЛЬ;      // алюминий, стенка 0,8 мм ×2
+  }
+
+  орбита.target.set(0, В / 2, 0);
+  р_площадь.textContent = (Ш * Г).toFixed(2) + ' m²';
+  р_полки.textContent   = П + ' × ' + Math.round(ЛАМЕЛЬ * 1000) + ' mm';
+  р_масса.textContent   = (объём * 2700).toFixed(1) + ' kg';   // алюминий, не сталь
+  р_профиль.textContent = Math.round(СТОЛБ * 1000) + '×' + Math.round(СТОЛБ * 1000) + ' mm';
+  в_ш.textContent = ш.value; в_в.textContent = в.value;
+  в_г.textContent = г.value; в_п.textContent = п.value;
+}
+function BАЛКА_ВЕРХ() { return 0.05; }
+
+function собрать() {
+  if (ПЕРГОЛА) return собратьПерголу();
+  if (ВОРОТА) return собратьВорота();
+  const Ш = +ш.value / 1000, В = +в.value / 1000, Г = +г.value / 1000, П = +п.value;
+  узел.clear();
+  let объём = 0;
+
+  // четыре стойки по углам
+  for (const zx of [-1, 1]) for (const zz of [-1, 1]) {
+    брус(мКаркас, СТОЙКА, В, СТОЙКА,
+         zx * (Ш - СТОЙКА) / 2, В / 2, zz * (Г - СТОЙКА) / 2);
+    объём += труба(СТОЙКА, В);
+  }
+
+  // уровни: пара продольных балок + лист полки
+  for (let i = 0; i < П; i++) {
+    const y = (В - 0.06) * (i / (П - 1)) + 0.03;
+    for (const zz of [-1, 1]) {
+      брус(мКаркас, Ш - СТОЙКА, БАЛКА, БАЛКА, 0, y, zz * (Г - БАЛКА) / 2);
+      объём += труба(БАЛКА, Ш - СТОЙКА);
+    }
+    брус(мПолка, Ш - СТОЙКА, ЛИСТ, Г - БАЛКА, 0, y + БАЛКА / 2, 0);
+    объём += (Ш - СТОЙКА) * ЛИСТ * (Г - БАЛКА);        // лист сплошной
+  }
+
+  // диагональ жёсткости на задней стенке
+  const д = Math.hypot(Ш, В) * 0.98;
+  const кос = new THREE.Mesh(куб, мКаркас);
+  кос.scale.set(д, 0.03, 0.03);
+  кос.position.set(0, В / 2, -(Г - БАЛКА) / 2);
+  кос.rotation.z = Math.atan2(В, Ш);
+  кос.castShadow = true; узел.add(кос);
+  объём += труба(0.03, д);
+
+  орбита.target.set(0, В / 2, 0);
+
+  // Числа только из геометрии и плотности стали. Ни одного подобранного
+  // коэффициента: допустимая нагрузка считается по нормам и испытаниям,
+  // из размеров её не вывести — поэтому её здесь нет.
+  const площадь = Ш * Г;
+  const полки = П * (Ш - СТОЙКА) * (Г - БАЛКА);
+  const масса = объём * СТАЛЬ;
+
+  р_площадь.textContent = площадь.toFixed(2) + ' m²';
+  р_полки.textContent   = полки.toFixed(2) + ' m²';
+  р_масса.textContent   = масса.toFixed(1) + ' kg';
+  р_профиль.textContent = (СТОЙКА * 1000) + '×' + (СТОЙКА * 1000) + '×' +
+                          (СТЕНКА * 1000) + ' mm';
+  в_ш.textContent = ш.value; в_в.textContent = в.value;
+  в_г.textContent = г.value; в_п.textContent = п.value;
+}
+
+const [ш, в, г, п] = ['ш', 'в', 'г', 'п'].map(i => document.getElementById(i));
+
+// Диапазоны ползунков — ПО ТИПУ изделия. Пергола в пропорциях стеллажа (глубина
+// 600 мм) выглядит как чужой товар: ламели сжимаются в полоску. Это ровно то,
+// из-за чего заказчик закрывает вкладку.
+const ДИАПАЗОН = {
+  'пергола': {ш: [2500, 8000, 100, 4000], в: [2200, 3400, 50, 2600],
+              г: [2000, 6000, 100, 3500], п: [4, 16, 1, 9]},
+  'ворота':  {ш: [2000, 6000, 100, 3000], в: [2000, 5000, 50, 3000],
+              г: [300, 1200, 50, 600],    п: [3, 8, 1, 5]},
+};
+const д = ДИАПАЗОН[данные.тип || ''];
+if (д) {
+  for (const [эл, к] of [[ш, 'ш'], [в, 'в'], [г, 'г'], [п, 'п']]) {
+    const [мин, макс, шаг, знач] = д[к];
+    эл.min = мин; эл.max = макс; эл.step = шаг; эл.value = знач;
+  }
+}
+const [в_ш, в_в, в_г, в_п] = ['в-ш', 'в-в', 'в-г', 'в-п'].map(i => document.getElementById(i));
+const [р_площадь, р_полки, р_масса, р_профиль] =
+  ['р-площадь', 'р-полки', 'р-масса', 'р-профиль'].map(i => document.getElementById(i));
+[ш, в, г, п].forEach(el => el.addEventListener('input', собрать));
+
+const кнопки = document.getElementById('цвета');
+цвета.forEach((c, i) => {
+  const b = document.createElement('button');
+  b.style.background = c; b.setAttribute('aria-pressed', i === 0);
+  b.title = c;
+  b.onclick = () => {
+    мКаркас.color.set(c);
+    document.documentElement.style.setProperty('--акцент', c);
+    [...кнопки.children].forEach((x, j) => x.setAttribute('aria-pressed', i === j));
+  };
+  кнопки.appendChild(b);
+});
+
+if (ПЕРГОЛА) {
+  // у перголы полки — это ламели крыши, а масса алюминиевая
+  document.getElementById('метка-п').firstChild.nodeValue = 'Roof louvres ';
+  document.querySelector('.итог div:nth-child(1) span').textContent = 'Covered area';
+  document.querySelector('.итог div:nth-child(2) span').textContent = 'Louvres';
+  document.querySelector('.итог div:nth-child(3) span').textContent = 'Aluminium mass';
+  document.querySelector('.итог div:nth-child(4) span').textContent = 'Post';
+  document.querySelector('.панель h2').textContent = 'Structure';
+}
+if (ВОРОТА) {
+  // у ворот нет глубины и полок — прячем чужие поля и переименовываем оставшиеся
+  document.getElementById('г').closest('.поле').style.display = 'none';
+  document.getElementById('метка-п').firstChild.nodeValue = 'Sections ';
+  document.querySelector('.итог div:nth-child(1) span').textContent = 'Opening area';
+  document.querySelector('.итог div:nth-child(2) span').textContent = 'Section height';
+  document.querySelector('.итог div:nth-child(4) span').textContent = 'Panel';
+  document.querySelector('.панель h2').textContent = 'Opening';
+}
+
+
+// Камера по габаритам СОБРАННОГО объекта, а не по числу из шаблона: пергола
+// 3,5 м в глубину не помещалась в кадр, настроенный под стеллаж 0,6 м.
+function вкадр() {
+  const б = new THREE.Box3().setFromObject(узел);
+  if (б.isEmpty()) return;
+  const р = б.getSize(new THREE.Vector3()), ц = б.getCenter(new THREE.Vector3());
+  const d = Math.max(р.x, р.y, р.z);
+  камера.position.set(ц.x + d * 1.05, ц.y + d * 0.55, ц.z + d * 1.25);
+  камера.near = d / 100; камера.far = d * 30; камера.updateProjectionMatrix();
+  орбита.target.copy(ц);
+  орбита.minDistance = d * 0.5; орбита.maxDistance = d * 6;
+  орбита.update();
+}
+
+собрать();
+вкадр();
+
+addEventListener('resize', () => {
+  камера.aspect = innerWidth / innerHeight;
+  камера.updateProjectionMatrix();
+  рендер.setSize(innerWidth, innerHeight);
+});
+
+рендер.setAnimationLoop(() => { орбита.update(); рендер.render(сцена, камера); });
+</script>
+</body>
+</html>

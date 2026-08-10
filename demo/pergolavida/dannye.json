@@ -1,0 +1,41 @@
+{
+ "слаг": "pergolavida",
+ "сайт": "https://pergolavida.de",
+ "имя": "Pergolavida",
+ "лого": "logo.png",
+ "цвета": [
+  "#65bc7b",
+  "#ceaa47",
+  "#569ff7",
+  "#f7ab3d",
+  "#212934",
+  "#c594c5"
+ ],
+ "товары": [
+  {
+   "файл": "tovar1.jpg",
+   "px": "1155x1154",
+   "кб": 189,
+   "откуда": "https://pergolavida.de/wp-content/uploads/2024/08/wintergarten.jpg"
+  },
+  {
+   "файл": "tovar2.jpg",
+   "px": "1102x889",
+   "кб": 131,
+   "откуда": "https://pergolavida.de/wp-content/uploads/2024/08/Zertifizierte-Qualitaet-nach-DIN-EN-1090.687744e7-2.jpg"
+  },
+  {
+   "файл": "tovar3.jpg",
+   "px": "1156x961",
+   "кб": 115,
+   "откуда": "https://pergolavida.de/wp-content/uploads/2024/08/terassendach_pergola.jpg"
+  },
+  {
+   "файл": "tovar4.jpg",
+   "px": "1155x577",
+   "кб": 78,
+   "откуда": "https://pergolavida.de/wp-content/uploads/2024/08/terassenueberdachung.jpg"
+  }
+ ],
+ "тип": "пергола"
+}
