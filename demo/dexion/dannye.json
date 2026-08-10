@@ -1,0 +1,41 @@
+{
+ "слаг": "dexion",
+ "сайт": "https://www.dexion.com",
+ "имя": "Dexion",
+ "лого": "logo.png",
+ "цвета": [
+  "#d81921",
+  "#be1921",
+  "#253b48",
+  "#95232a",
+  "#667481",
+  "#2d4156"
+ ],
+ "товары": [
+  {
+   "файл": "tovar1.jpg",
+   "px": "552x367",
+   "кб": 56,
+   "откуда": "https://www.dexion.com/globalassets/images/company/menu/sustainability.png?width=552&amp;height=324&amp;quality=80&amp;mode=crop"
+  },
+  {
+   "файл": "tovar2.jpg",
+   "px": "552x367",
+   "кб": 38,
+   "откуда": "https://www.dexion.com/contentassets/fea6aafdcbec44d984547511342ff656/downloads.png?width=552&amp;height=324&amp;quality=80&amp;mode=crop"
+  },
+  {
+   "файл": "tovar3.jpg",
+   "px": "1200x800",
+   "кб": 126,
+   "откуда": "https://www.dexion.com/contentassets/2761aedccf4e41fcb328f152b3b098d3/movo-hero-06-1.jpg?width=1200&amp;height=600&amp;quality=80&amp;mode=crop"
+  },
+  {
+   "файл": "tovar4.jpg",
+   "px": "552x367",
+   "кб": 23,
+   "откуда": "https://www.dexion.com/globalassets/images/company/menu/news-and-media.png?width=552&amp;height=324&amp;quality=80&amp;mode=crop"
+  }
+ ],
+ "фото": 2
+}
