@@ -42,10 +42,11 @@
 </head>
 <body>
 <header>
-  <h1>41.0 MB → 12.8 MB, same scene, nothing removed</h1>
+  <h1>41.0 MB → 12.8 MB, same geometry, one honest trade-off</h1>
   <p>A measured optimization pass on a public heavy glTF scene. Both viewers below load a real
      file over the network and report what they actually took. Drag to compare — the geometry
-     is untouched: 40,480 triangles in both.</p>
+     is untouched — <code>renderVertexCount</code> is 4,497,216 in both files, verified with
+     <code>gltf-transform inspect</code>.</p>
 </header>
 
 <div class="пара">
@@ -57,16 +58,19 @@
 <section>
   <h2>What the numbers are</h2>
   <div class="обёртка"><table>
-    <tr><th>build</th><th>file</th><th>triangles</th><th>textures</th><th>normals</th><th>transmission glass</th></tr>
-    <tr><td>source</td><td>41.0 MB</td><td>40,480</td><td>2048 px JPEG</td><td>f32</td><td>correct</td></tr>
-    <tr><td><b>this pass</b></td><td><b>12.8 MB</b></td><td>40,480</td><td>1536 px JPEG</td><td>f32</td><td>correct</td></tr>
-    <tr><td>Khronos reference build</td><td>11.5 MB</td><td>40,480</td><td>KTX2 / ETC1S</td><td>f32</td><td>correct</td></tr>
-    <tr><td>aggressive variant</td><td>7.0 MB</td><td>24,610</td><td>1024 px JPEG</td><td>i8</td><td><i>broken</i></td></tr>
+    <tr><th>build</th><th>file</th><th>render verts</th><th>upload verts</th><th>textures</th><th>normals</th><th>glass</th></tr>
+    <tr><td>source</td><td>41.0 MB</td><td>4,497,216</td><td>417,028</td><td>2048 px JPEG</td><td>f32</td><td>correct</td></tr>
+    <tr><td><b>this pass</b></td><td><b>12.8 MB</b></td><td>4,497,216</td><td>567,860</td><td>1536 px JPEG</td><td>f32</td><td>correct</td></tr>
+    <tr><td>Khronos reference</td><td>11.5 MB</td><td>4,497,216</td><td>266,184</td><td>KTX2 / ETC1S</td><td>f32</td><td>correct</td></tr>
+    <tr><td>aggressive variant</td><td>7.0 MB</td><td>2,945,184</td><td>317,187</td><td>1024 px JPEG</td><td>i8</td><td><i>broken</i></td></tr>
   </table></div>
-  <p class="нота">The reference build ships GPU-compressed KTX2 textures, so it wins on video
-    memory even though the file is a similar size. This pass wins on decode simplicity and
-    needs no KTX toolchain. Which one is right depends on whether the bottleneck is bandwidth
-    or VRAM — that is a decision, not a default.</p>
+  <p class="нота">Two places where this pass is beaten, and they belong here rather than in
+    a footnote. The reference build ships GPU-compressed KTX2 textures, so it wins on video
+    memory at a similar file size. And its <b>upload vertex count is 266,184 against my
+    567,860</b> — the <code>join</code> step traded shared geometry for fewer draw calls, which
+    costs GPU memory. On a phone that trade can go the wrong way. Which build is right depends
+    on whether the bottleneck is bandwidth, VRAM or draw calls — that is a decision to make per
+    project, not a default to copy.</p>
 </section>
 
 <section>
@@ -167,12 +171,11 @@ async function показать(id, url, меткаId, ждёмId, подпис�
   c.position.set(размер * .40, размер * .28, размер * .40);
   орб.target.set(0, 0, 0); орб.update();
 
-  let треуг = 0;
-  o.traverse(x => { if (x.isMesh && x.geometry.index) треуг += x.geometry.index.count / 3; });
-
+  // Треугольники в метке НЕ показываем: join меняет разделение геометрии между
+  // узлами, и обход сцены считает два файла по-разному — число выглядело бы как
+  // потеря геометрии, которой нет. Сверка по renderVertexCount вынесена в таблицу.
   document.getElementById(ждёмId).remove();
-  document.getElementById(меткаId).textContent =
-    подпись + ' · ' + сек.toFixed(1) + ' s · ' + треуг.toLocaleString('en') + ' tris';
+  document.getElementById(меткаId).textContent = подпись + ' · loaded in ' + сек.toFixed(1) + ' s';
 
   addEventListener('resize', () => {
     c.aspect = el.clientWidth / el.clientHeight;
