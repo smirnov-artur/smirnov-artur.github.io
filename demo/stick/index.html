@@ -1,0 +1,89 @@
+<!doctype html>
+<!-- vau-stranitsa · силуэт: продукт-конфигуратор · предмет: хоккейная клюшка · система: расчёт цены по зонам материала -->
+<!-- stil · палитра: #0a0d10+#eef3f6 нейтрали, акцент #21e0ff · набор: Geist / Geist Mono · фактура: CSS-зерно+виньетка (не шейдер — бюджет мобильного кадра) -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parametric Stick Configurator — one geometry, infinite finish</title>
+<meta name="description" content="A hockey stick built from one parametric mesh and a live shader — not thousands of pre-rendered images. Rotate, recolor, engrave.">
+<link rel="icon" href="data:,">
+<link rel="preload" href="assets/geist.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/three-stick.js" as="script" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<canvas id="scene" aria-label="3D preview of a customizable hockey stick"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="loader" id="loader">
+  <div class="loader__bar"><span id="loaderFill"></span></div>
+  <div class="loader__label">building geometry<span id="loaderPct">&nbsp;0%</span></div>
+</div>
+
+<header class="top">
+  <div class="mark">STICK<span>·</span>CONFIGURATOR</div>
+  <div class="stat-strip" id="statStrip">
+    <span class="stat"><b id="statTris">—</b> triangles</span>
+    <span class="stat"><b id="statKb">—</b> geometry</span>
+    <span class="stat"><b id="statZones">4</b> zones, one mesh</span>
+  </div>
+</header>
+
+<div class="hint" id="hint">drag to rotate · pinch or scroll to zoom</div>
+
+<main class="panel" id="panel">
+  <button class="panel__tab" id="panelToggle" aria-expanded="true">Configure <span class="chev">▾</span></button>
+
+  <div class="panel__body" id="panelBody">
+
+    <section class="zone" data-zone="pero">
+      <h2>Blade</h2>
+      <div class="row swatches" id="sw-pero"></div>
+      <div class="row finishes" id="fn-pero"></div>
+    </section>
+
+    <section class="zone" data-zone="shaft">
+      <h2>Shaft</h2>
+      <div class="row swatches" id="sw-shaft"></div>
+      <div class="row finishes" id="fn-shaft"></div>
+    </section>
+
+    <section class="zone" data-zone="wrap">
+      <h2>Grip wrap</h2>
+      <div class="row swatches" id="sw-wrap"></div>
+      <label class="slider-row">
+        <span>coverage</span>
+        <input type="range" id="wrapLen" min="0" max="380" value="220" step="5">
+        <b id="wrapLenVal">220 mm</b>
+      </label>
+    </section>
+
+    <section class="zone" data-zone="vstavka">
+      <h2>Collar insert</h2>
+      <div class="row swatches" id="sw-vstavka"></div>
+    </section>
+
+    <section class="zone">
+      <h2>Engraving</h2>
+      <input class="text-input" id="engrave" maxlength="14" placeholder="name on shaft, ≤14 chars" autocomplete="off">
+    </section>
+
+    <section class="quote" id="quote">
+      <h2>Live spec &amp; price <em>— formula demo, not a real catalog</em></h2>
+      <div class="quote__lines" id="quoteLines"></div>
+      <div class="quote__total"><span>Total</span><b id="quoteTotal">$0</b></div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="bottom-meta">
+  <span id="perfLine">measuring…</span>
+</footer>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
