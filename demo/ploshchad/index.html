@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Калькулятор стоимости работ по площади</title>
+<meta name="description" content="Расчёт стоимости ремонта, уборки или отделки по площади с опциями, срочностью и скидкой за объём. Встраивается на сайт одной строкой.">
+<style>
+:root{
+  --fon:#f6f4f0; --karta:#fff; --tekst:#16161a; --tusklo:#6b6b76;
+  --liniya:#e2ddd4; --aktsent:#1f5f4b; --aktsent-svet:#e8f2ee; --vtoroy:#c8763a;
+  --ten:0 1px 2px rgba(20,20,26,.06),0 8px 24px rgba(20,20,26,.05);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --fon:#131317; --karta:#1c1c22; --tekst:#f0eee9; --tusklo:#9a9aa6;
+    --liniya:#2e2e38; --aktsent:#5fbfa0; --aktsent-svet:#1d2c28; --vtoroy:#e09a5f;
+    --ten:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --fon:#131317; --karta:#1c1c22; --tekst:#f0eee9; --tusklo:#9a9aa6;
+  --liniya:#2e2e38; --aktsent:#5fbfa0; --aktsent-svet:#1d2c28; --vtoroy:#e09a5f;
+  --ten:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fon);color:var(--tekst);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+.obolochka{max-width:1080px;margin:0 auto;padding:24px 16px 72px}
+header{margin:8px 0 26px}
+h1{font-size:clamp(22px,4.4vw,32px);line-height:1.2;margin:0 0 10px;letter-spacing:-.02em}
+.podzag{color:var(--tusklo);max-width:64ch;margin:0}
+.podzag b{color:var(--tekst);font-weight:600}
+.setka{display:grid;gap:18px;grid-template-columns:minmax(0,400px) minmax(0,1fr);align-items:start}
+@media (max-width:880px){.setka{grid-template-columns:1fr}}
+.karta{background:var(--karta);border:1px solid var(--liniya);border-radius:14px;padding:18px;box-shadow:var(--ten)}
+.karta h2{font-size:13px;text-transform:uppercase;letter-spacing:.09em;color:var(--tusklo);margin:0 0 14px;font-weight:600}
+label{display:block;font-size:13px;color:var(--tusklo);margin:0 0 5px}
+input,select{width:100%;padding:10px 12px;font:inherit;font-size:15px;color:var(--tekst);background:var(--fon);border:1px solid var(--liniya);border-radius:9px;outline:none}
+input:focus,select:focus{border-color:var(--aktsent);box-shadow:0 0 0 3px var(--aktsent-svet)}
+input[type=range]{padding:0;height:34px;accent-color:var(--aktsent)}
+.pole{margin-bottom:14px}
+.para{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.galka{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--liniya);font-size:14px}
+.galka input{width:18px;height:18px;margin:0}
+.galka span{flex:1}
+.galka em{font-style:normal;color:var(--tusklo);font-size:13px}
+.itog{font-size:clamp(30px,6vw,44px);font-weight:700;letter-spacing:-.03em;line-height:1;margin:4px 0 4px}
+.itog small{font-size:16px;font-weight:500;color:var(--tusklo);letter-spacing:0}
+.srok{color:var(--tusklo);margin:0 0 16px}
+.shkala{display:flex;justify-content:space-between;font-size:12px;color:var(--tusklo);margin-top:-4px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td{padding:8px 0;border-top:1px solid var(--liniya);vertical-align:top}
+td:last-child{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+td.gruppa{color:var(--tusklo);font-size:12px;text-transform:uppercase;letter-spacing:.08em;padding-top:14px;border-top:0}
+.knopki{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+button{font:inherit;cursor:pointer;border-radius:9px;border:1px solid var(--liniya);background:var(--karta);color:var(--tekst);padding:11px 15px;font-size:15px}
+button:hover{border-color:var(--aktsent)}
+.glavnaya{background:var(--aktsent);color:#fff;border-color:var(--aktsent);font-weight:600}
+.polosa{height:10px;border-radius:6px;background:var(--fon);border:1px solid var(--liniya);overflow:hidden;display:flex;margin:6px 0 14px}
+.polosa i{display:block;height:100%}
+.legenda{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--tusklo);margin-bottom:6px}
+.legenda b{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle}
+.vstroit{margin-top:22px;font-size:13px;color:var(--tusklo)}
+.vstroit code{display:block;background:var(--fon);border:1px solid var(--liniya);border-radius:8px;padding:9px 11px;margin-top:6px;font-size:12px;overflow-x:auto;white-space:pre}
+.podval{margin-top:34px;font-size:13px;color:var(--tusklo);border-top:1px solid var(--liniya);padding-top:14px}
+.podval a{color:var(--aktsent)}
+</style>
+</head>
+<body>
+<div class="obolochka">
+<header>
+  <h1>Стоимость работ по площади</h1>
+  <p class="podzag">Ремонт, отделка, уборка, покраска: клиент вводит площадь и выбирает опции, а цена, срок и состав работ
+  считаются <b>сразу по вашему прайсу</b>. Скидка за объём и наценка за срочность применяются автоматически.</p>
+</header>
+
+<div class="setka">
+<section class="karta">
+  <h2>Параметры</h2>
+  <div class="pole"><label>Вид работ</label><select id="vid"></select></div>
+  <div class="pole"><label>Площадь, м² — <b id="m2-txt">60</b></label>
+    <input id="m2" type="range" min="5" max="500" step="1" value="60">
+    <div class="shkala"><span>5</span><span>100</span><span>250</span><span>500</span></div></div>
+  <div class="pole para">
+    <div><label>Состояние объекта</label>
+      <select id="sostoyanie"><option value="1">обычное</option><option value="1.15">запущенное, +15 %</option><option value="1.35">после стройки, +35 %</option></select></div>
+    <div><label>Срочность</label>
+      <select id="srochno"><option value="1">в порядке очереди</option><option value="1.3">в ближайшие 2 дня, +30 %</option></select></div>
+  </div>
+  <div class="pole"><label>Дополнительно</label><div id="optsii"></div></div>
+</section>
+
+<section class="karta">
+  <h2>Расчёт</h2>
+  <div class="itog"><span id="tsena">0</span> <small>₽</small></div>
+  <p class="srok"><b id="brigada"></b>, <b id="srok"></b>. Предоплата 30 %.</p>
+  <div class="legenda" id="legenda"></div>
+  <div class="polosa" id="polosa"></div>
+  <table id="tablitsa"></table>
+  <div class="knopki">
+    <button class="glavnaya" id="zayavka">Отправить расчёт как заявку</button>
+    <button id="kopiya">Скопировать расчёт</button>
+  </div>
+  <div class="vstroit">Встраивается на любой сайт одной строкой (Tilda, WordPress, Битрикс):
+    <code>&lt;iframe src="https://smirnov-artur.github.io/demo/ploshchad/" style="width:100%;height:860px;border:0"&gt;&lt;/iframe&gt;</code>
+  </div>
+</section>
+</div>
+
+<footer class="podval">
+  Демонстрация. Прайс условный и лежит одним блоком в начале скрипта: под вашу компанию меняются числа, а не код.
+  Калькулятор под ваш прайс — 3 дня и 15 000 ₽. <a href="../kalkulyatory/">Все калькуляторы и цены</a> ·
+  Telegram <a href="https://t.me/smirnovarturr">@smirnovarturr</a>
+</footer>
+</div>
+
+<script>
+// ПРАЙС. Числа условные — демонстрация механики. Под клиента меняется только этот блок.
+const PRAIS = {
+  vidy: {
+    uborka:     { imya: "Уборка после ремонта",     zaM2: 180,  m2vChas: 12,  minimum: 3500, sostav: ["Обеспыливание всех поверхностей", "Мытьё окон изнутри", "Вынос строительного мусора до 0,5 м³"] },
+    pokraska:   { imya: "Покраска стен и потолка",  zaM2: 420,  m2vChas: 4,   minimum: 8000, sostav: ["Грунтовка", "Два слоя краски", "Малярная лента, укрытие пола"] },
+    laminat:    { imya: "Укладка ламината",         zaM2: 650,  m2vChas: 3,   minimum: 9000, sostav: ["Подложка", "Укладка с подрезкой", "Плинтус по периметру"] },
+    shtukaturka:{ imya: "Штукатурка стен",          zaM2: 780,  m2vChas: 2,   minimum: 12000, sostav: ["Маяки", "Штукатурка гипсовая", "Затирка под покраску"] },
+  },
+  optsii: [
+    { id: "materialy", imya: "Материалы наши",              edinitsa: "m2",  tsena: 260, dlya: ["pokraska","laminat","shtukaturka"] },
+    { id: "mebel",     imya: "Передвинуть и укрыть мебель", edinitsa: "sht", tsena: 2500, dlya: ["pokraska","laminat","uborka"] },
+    { id: "okna",      imya: "Окна снаружи",                edinitsa: "sht", tsena: 1800, dlya: ["uborka"] },
+    { id: "vyvoz",     imya: "Вывоз мусора машиной",        edinitsa: "sht", tsena: 4500, dlya: ["uborka","laminat","shtukaturka"] },
+    { id: "vecher",    imya: "Работа вечером / в выходные", edinitsa: "pct", tsena: 15,  dlya: ["uborka","pokraska","laminat","shtukaturka"] },
+  ],
+  skidki: [ { ot: 100, pct: 7 }, { ot: 250, pct: 12 } ],   // от площади
+  chelovekVBrigade: 2, chasovVDen: 8,
+};
+
+const $ = id => document.getElementById(id);
+const fmt = n => Math.round(n).toLocaleString("ru-RU");
+const tsveta = ["var(--aktsent)", "var(--vtoroy)", "#7a4fbf", "#9a9aa6"];
+
+$("vid").innerHTML = Object.entries(PRAIS.vidy).map(([k,v]) => `<option value="${k}">${v.imya} — ${fmt(v.zaM2)} ₽/м²</option>`).join("");
+function zapolnitOptsii(){
+  $("optsii").innerHTML = PRAIS.optsii.filter(o => o.dlya.includes($("vid").value)).map(o => {
+    const ed = {m2:"₽/м²", sht:"₽", pct:"%"}[o.edinitsa];
+    return `<label class="galka"><input type="checkbox" data-opt="${o.id}"><span>${o.imya}</span><em>+${fmt(o.tsena)} ${ed}</em></label>`;
+  }).join("");
+  $("optsii").querySelectorAll("input").forEach(i => i.addEventListener("change", schitat));
+}
+
+function schitat(){
+  const v = PRAIS.vidy[$("vid").value];
+  const m2 = +$("m2").value; $("m2-txt").textContent = m2;
+  const sost = +$("sostoyanie").value, sroch = +$("srochno").value;
+  const stroki = [], doli = [];
+  let rabota = m2 * v.zaM2 * sost;
+  stroki.push({ gruppa: "Работы" });
+  stroki.push({ imya: `${v.imya}: ${m2} м² × ${fmt(v.zaM2)} ₽${sost > 1 ? ` × ${sost} (состояние)` : ""}`, summa: rabota });
+  v.sostav.forEach(s => stroki.push({ imya: "— " + s, summa: null }));
+  const skidka = [...PRAIS.skidki].reverse().find(s => m2 >= s.ot);
+  if (skidka) { const sk = rabota * skidka.pct / 100; rabota -= sk; stroki.push({ imya: `Скидка за объём от ${skidka.ot} м²: ${skidka.pct} %`, summa: -sk }); }
+  doli.push(["Работы", rabota]);
+
+  let dop = 0, pct = 0;
+  const vybrano = [...$("optsii").querySelectorAll("input:checked")].map(i => PRAIS.optsii.find(o => o.id === i.dataset.opt));
+  if (vybrano.length) stroki.push({ gruppa: "Дополнительно" });
+  for (const o of vybrano) {
+    if (o.edinitsa === "m2") { const s = m2 * o.tsena; dop += s; stroki.push({ imya: `${o.imya}: ${m2} м² × ${fmt(o.tsena)} ₽`, summa: s }); }
+    if (o.edinitsa === "sht") { dop += o.tsena; stroki.push({ imya: o.imya, summa: o.tsena }); }
+    if (o.edinitsa === "pct") { pct += o.tsena; stroki.push({ imya: `${o.imya}: +${o.tsena} %`, summa: null }); }
+  }
+  if (dop) doli.push(["Дополнительно", dop]);
+  let baza = rabota + dop;
+  let nadbavka = baza * ((sroch - 1) + pct / 100);
+  if (nadbavka) { stroki.push({ gruppa: "Наценки" }); stroki.push({ imya: `Срочность и время работ: +${Math.round(((sroch - 1) + pct/100) * 100)} %`, summa: nadbavka }); doli.push(["Наценки", nadbavka]); }
+  let itogo = Math.max(v.minimum, baza + nadbavka);
+  if (itogo === v.minimum) stroki.push({ imya: `Минимальный заказ ${fmt(v.minimum)} ₽`, summa: null });
+
+  const chasov = m2 / v.m2vChas, dney = Math.max(1, Math.ceil(chasov / (PRAIS.chelovekVBrigade * PRAIS.chasovVDen)));
+  const brigada = chasov > 40 ? 4 : PRAIS.chelovekVBrigade;
+  $("tsena").textContent = fmt(itogo);
+  $("brigada").textContent = `Бригада ${brigada} чел.`;
+  $("srok").textContent = `${Math.max(1, Math.ceil(chasov / (brigada * PRAIS.chasovVDen)))} раб. дн.`;
+  $("tablitsa").innerHTML = stroki.map(s => s.gruppa ? `<tr><td class="gruppa" colspan="2">${s.gruppa}</td></tr>`
+    : `<tr><td>${s.imya}</td><td>${s.summa == null ? "" : (s.summa < 0 ? "−" : "") + fmt(Math.abs(s.summa)) + " ₽"}</td></tr>`).join("");
+  const vsego = doli.reduce((a, d) => a + d[1], 0) || 1;
+  $("polosa").innerHTML = doli.map((d, i) => `<i style="width:${d[1] / vsego * 100}%;background:${tsveta[i]}"></i>`).join("");
+  $("legenda").innerHTML = doli.map((d, i) => `<span><b style="background:${tsveta[i]}"></b>${d[0]} ${Math.round(d[1] / vsego * 100)} %</span>`).join("");
+
+  const tekst = [`${v.imya}, ${m2} м²`, ...vybrano.map(o => "+ " + o.imya), sroch > 1 ? "Срочно" : "", `Итого ${fmt(itogo)} ₽`].filter(Boolean).join("\n");
+  $("kopiya").onclick = () => { navigator.clipboard && navigator.clipboard.writeText(tekst); $("kopiya").textContent = "Скопировано"; setTimeout(() => $("kopiya").textContent = "Скопировать расчёт", 1500); };
+  $("zayavka").onclick = () => { location.href = "mailto:paladei702@gmail.com?subject=" + encodeURIComponent("Заявка: " + v.imya) + "&body=" + encodeURIComponent(tekst + "\n\nАдрес объекта и контакт: "); };
+}
+zapolnitOptsii(); schitat();
+$("vid").addEventListener("change", () => { zapolnitOptsii(); schitat(); });
+["m2","sostoyanie","srochno"].forEach(id => $(id).addEventListener("input", schitat));
+</script>
+</body>
+</html>

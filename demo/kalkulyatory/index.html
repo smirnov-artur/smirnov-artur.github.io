@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Калькулятор на сайт за 3 дня</title>
+<meta name="description" content="Живой калькулятор стоимости для вашего сайта: по размерам, по площади, кредитный. Считает по вашему прайсу, встраивается одной строкой. 3 дня, от 15 000 ₽.">
+<style>
+:root{
+  --fon:#f6f4f0; --karta:#fff; --tekst:#16161a; --tusklo:#6b6b76;
+  --liniya:#e2ddd4; --aktsent:#1f5f4b; --aktsent-svet:#e8f2ee; --vtoroy:#c8763a;
+  --ten:0 1px 2px rgba(20,20,26,.06),0 8px 24px rgba(20,20,26,.05);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --fon:#131317; --karta:#1c1c22; --tekst:#f0eee9; --tusklo:#9a9aa6;
+    --liniya:#2e2e38; --aktsent:#5fbfa0; --aktsent-svet:#1d2c28; --vtoroy:#e09a5f;
+    --ten:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --fon:#131317; --karta:#1c1c22; --tekst:#f0eee9; --tusklo:#9a9aa6;
+  --liniya:#2e2e38; --aktsent:#5fbfa0; --aktsent-svet:#1d2c28; --vtoroy:#e09a5f;
+  --ten:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fon);color:var(--tekst);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+.obolochka{max-width:1080px;margin:0 auto;padding:28px 16px 72px}
+h1{font-size:clamp(28px,5.6vw,44px);line-height:1.1;margin:0 0 14px;letter-spacing:-.025em;max-width:22ch}
+.podzag{color:var(--tusklo);max-width:60ch;margin:0 0 26px;font-size:17px}
+.podzag b{color:var(--tekst);font-weight:600}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.09em;color:var(--tusklo);margin:38px 0 14px;font-weight:600}
+.karty{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.karta{background:var(--karta);border:1px solid var(--liniya);border-radius:14px;padding:18px;box-shadow:var(--ten);display:flex;flex-direction:column;gap:10px}
+.karta h3{margin:0;font-size:18px;letter-spacing:-.01em}
+.karta p{margin:0;color:var(--tusklo);font-size:14px;flex:1}
+.karta .demo{aspect-ratio:16/9;border:1px solid var(--liniya);border-radius:10px;overflow:hidden;background:var(--fon)}
+.karta .demo iframe{width:200%;height:200%;border:0;transform:scale(.5);transform-origin:0 0;pointer-events:none}
+.karta a.knopka{align-self:flex-start}
+a.knopka,button{font:inherit;cursor:pointer;border-radius:9px;border:1px solid var(--liniya);background:var(--karta);color:var(--tekst);padding:10px 14px;font-size:15px;text-decoration:none;display:inline-block}
+a.knopka:hover,button:hover{border-color:var(--aktsent)}
+.glavnaya{background:var(--aktsent);color:#fff;border-color:var(--aktsent);font-weight:600}
+.tseny{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.tsena{background:var(--karta);border:1px solid var(--liniya);border-radius:14px;padding:18px;box-shadow:var(--ten)}
+.tsena .chislo{font-size:30px;font-weight:700;letter-spacing:-.03em;margin:4px 0}
+.tsena .chislo small{font-size:14px;font-weight:500;color:var(--tusklo);letter-spacing:0}
+.tsena ul{margin:8px 0 0;padding-left:18px;color:var(--tusklo);font-size:14px}
+.tsena li{margin:3px 0}
+.shagi{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));counter-reset:s}
+.shag{background:var(--karta);border:1px solid var(--liniya);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--tusklo)}
+.shag b{display:block;color:var(--tekst);margin-bottom:4px;font-size:15px}
+.shag::before{counter-increment:s;content:counter(s);display:inline-block;width:22px;height:22px;border-radius:50%;background:var(--aktsent-svet);color:var(--aktsent);text-align:center;line-height:22px;font-size:12px;font-weight:700;margin-bottom:8px}
+code{display:block;background:var(--karta);border:1px solid var(--liniya);border-radius:10px;padding:12px 14px;font-size:13px;overflow-x:auto;white-space:pre}
+.kontakt{margin-top:38px;background:var(--karta);border:1px solid var(--liniya);border-radius:14px;padding:22px;box-shadow:var(--ten);display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.kontakt p{margin:0;max-width:56ch}
+.kontakt .knopki{display:flex;gap:10px;flex-wrap:wrap}
+.podval{margin-top:30px;font-size:13px;color:var(--tusklo)}
+.podval a{color:var(--aktsent)}
+</style>
+</head>
+<body>
+<div class="obolochka">
+<h1>Калькулятор стоимости на ваш сайт за 3 дня</h1>
+<p class="podzag">Клиент вводит размеры, площадь или сумму и <b>сразу видит цену, срок и состав заказа</b>, без звонка менеджеру.
+Заявка уходит вам уже с расчётом. Считает по вашему прайсу, встраивается на Tilda, WordPress, Битрикс или любой сайт одной строкой.</p>
+
+<h2>Три живых примера — откройте и посчитайте</h2>
+<div class="karty">
+  <div class="karta">
+    <div class="demo"><iframe src="../razmer/" loading="lazy" title="Калькулятор по размерам"></iframe></div>
+    <h3>По размерам</h3>
+    <p>Мебель на заказ, стекло, металл, окна: ширина, высота, толщина, материал, обработка. Считает площадь, массу, цену и срок, рисует чертёж.</p>
+    <a class="knopka" href="../razmer/">Открыть калькулятор</a>
+  </div>
+  <div class="karta">
+    <div class="demo"><iframe src="../ploshchad/" loading="lazy" title="Калькулятор по площади"></iframe></div>
+    <h3>По площади</h3>
+    <p>Ремонт, отделка, клининг, покраска: площадь, состояние объекта, опции, срочность. Скидка за объём и наценки применяются сами.</p>
+    <a class="knopka" href="../ploshchad/">Открыть калькулятор</a>
+  </div>
+  <div class="karta">
+    <div class="demo"><iframe src="../kredit/" loading="lazy" title="Кредитный калькулятор"></iframe></div>
+    <h3>Кредитный, с нестандартными правилами</h3>
+    <p>Досрочное погашение, льготные месяцы, своя ставка на отрезках срока. Собран по словам реального заказчика за один день.</p>
+    <a class="knopka" href="../kredit/">Открыть калькулятор</a>
+  </div>
+</div>
+
+<h2>Что входит и сколько стоит</h2>
+<div class="tseny">
+  <div class="tsena"><div>Простой</div><div class="chislo">15 000 <small>₽ · 3 дня</small></div>
+    <ul><li>до 6 параметров и 5 опций</li><li>цена, срок, состав заказа</li><li>заявка с расчётом на почту или в Telegram</li><li>встраивание на ваш сайт</li></ul></div>
+  <div class="tsena"><div>С прайсом и правилами</div><div class="chislo">25 000 <small>₽ · 5 дней</small></div>
+    <ul><li>ваш прайс целиком: материалы, услуги, скидки, наценки</li><li>несколько видов изделий или работ</li><li>чертёж или схема по размерам</li><li>сохранение расчёта, PDF по кнопке</li></ul></div>
+  <div class="tsena"><div>С 3D или конфигуратором</div><div class="chislo">от 45 000 <small>₽ · от 10 дней</small></div>
+    <ul><li>изделие видно в 3D и меняется вместе с размерами</li><li>спецификация и цена из той же геометрии</li><li>примеры: <a href="https://smirnov-artur.github.io/webgl/case/standes">стеллажи</a>, <a href="https://smirnov-artur.github.io/webgl/case/ventprom">воздуховоды</a></li></ul></div>
+</div>
+
+<h2>Как это происходит</h2>
+<div class="shagi">
+  <div class="shag"><b>Прайс и правила</b>Вы присылаете прайс в любом виде: таблица, файл, фото прайса на стене. Я записываю правила расчёта словами и согласовываю с вами.</div>
+  <div class="shag"><b>Рабочая версия</b>Через 1–2 дня ссылка на рабочий калькулятор. Вы проверяете числа на своих реальных заказах, я правлю.</div>
+  <div class="shag"><b>Встраивание</b>Одна строка на вашем сайте или страница на вашем домене. Дизайн подгоняю под сайт. Работает на телефоне.</div>
+  <div class="shag"><b>Оплата</b>50 % до начала, 50 % после проверки на ваших заказах. Правки прайса в первый месяц бесплатно.</div>
+</div>
+
+<h2>Как встроить любой из примеров прямо сейчас</h2>
+<code>&lt;iframe src="https://smirnov-artur.github.io/demo/razmer/" style="width:100%;height:900px;border:0"&gt;&lt;/iframe&gt;</code>
+
+<div class="kontakt">
+  <p><b>Напишите, что считать</b>: что за изделие или услуга, есть ли прайс, куда встроить. Отвечу с ценой и сроком в тот же день, обычно в течение часа.</p>
+  <div class="knopki">
+    <a class="knopka glavnaya" href="https://t.me/smirnovarturr">Telegram @smirnovarturr</a>
+    <a class="knopka" href="mailto:paladei702@gmail.com?subject=Калькулятор%20на%20сайт">Почта</a>
+  </div>
+</div>
+
+<p class="podval">Артур Смирнов, разработка и дизайн одним человеком. Другие работы: <a href="https://smirnov-artur.github.io/portfolio/">каталог</a>.</p>
+</div>
+</body>
+</html>
