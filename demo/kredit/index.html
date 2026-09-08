@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Калькулятор досрочного погашения — нестандартные условия</title>
+<style>
+:root{
+  --fon:#f6f4f0; --karta:#fff; --tekst:#16161a; --tusklo:#6b6b76;
+  --liniya:#e2ddd4; --aktsent:#1f5f4b; --aktsent-svet:#e8f2ee;
+  --telo:#1f5f4b; --protsent:#c8763a; --dosrochno:#7a4fbf;
+  --ten:0 1px 2px rgba(20,20,26,.06),0 8px 24px rgba(20,20,26,.05);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --fon:#131317; --karta:#1c1c22; --tekst:#f0eee9; --tusklo:#9a9aa6;
+    --liniya:#2e2e38; --aktsent:#5fbfa0; --aktsent-svet:#1d2c28;
+    --telo:#5fbfa0; --protsent:#e09a5f; --dosrochno:#a684e0;
+    --ten:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --fon:#131317; --karta:#1c1c22; --tekst:#f0eee9; --tusklo:#9a9aa6;
+  --liniya:#2e2e38; --aktsent:#5fbfa0; --aktsent-svet:#1d2c28;
+  --telo:#5fbfa0; --protsent:#e09a5f; --dosrochno:#a684e0;
+  --ten:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fon);color:var(--tekst);
+  font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  -webkit-text-size-adjust:100%}
+.obolochka{max-width:1120px;margin:0 auto;padding:24px 16px 80px}
+header{margin:8px 0 28px}
+h1{font-size:clamp(22px,4.4vw,32px);line-height:1.2;margin:0 0 10px;letter-spacing:-.02em}
+.podzag{color:var(--tusklo);max-width:62ch;margin:0}
+.podzag b{color:var(--tekst);font-weight:600}
+.setka{display:grid;gap:18px;grid-template-columns:minmax(0,380px) minmax(0,1fr);align-items:start}
+@media (max-width:880px){.setka{grid-template-columns:1fr}}
+.karta{background:var(--karta);border:1px solid var(--liniya);border-radius:14px;
+  padding:18px;box-shadow:var(--ten)}
+.karta h2{font-size:13px;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--tusklo);margin:0 0 14px;font-weight:600}
+label{display:block;font-size:13px;color:var(--tusklo);margin:0 0 5px}
+input,select{width:100%;padding:10px 12px;font:inherit;font-size:15px;color:var(--tekst);
+  background:var(--fon);border:1px solid var(--liniya);border-radius:9px;outline:none}
+input:focus,select:focus{border-color:var(--aktsent);box-shadow:0 0 0 3px var(--aktsent-svet)}
+.pole{margin-bottom:14px}
+.para{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pravilo{border:1px dashed var(--liniya);border-radius:11px;padding:13px;margin-bottom:12px;
+  background:var(--fon)}
+.pravilo .shapka{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.pravilo .imya{font-size:13px;font-weight:600}
+.stroka{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:7px;margin-bottom:7px;align-items:end}
+.stroka.tri{grid-template-columns:1fr 1fr auto}
+.stroka label{margin:0 0 3px;font-size:11px}
+button{font:inherit;cursor:pointer;border-radius:9px;border:1px solid var(--liniya);
+  background:var(--karta);color:var(--tekst);padding:8px 13px;font-size:14px}
+button:hover{border-color:var(--aktsent)}
+button.glavnaya{background:var(--aktsent);color:#fff;border-color:var(--aktsent);
+  width:100%;padding:13px;font-size:16px;font-weight:600;margin-top:4px}
+button.ubrat{padding:8px 11px;color:var(--tusklo);line-height:1}
+.itogi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.plitka{background:var(--karta);border:1px solid var(--liniya);border-radius:14px;padding:15px;
+  box-shadow:var(--ten)}
+.plitka .podpis{font-size:12px;color:var(--tusklo);margin-bottom:6px}
+.plitka .chislo{font-size:clamp(19px,3vw,25px);font-weight:650;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;line-height:1.15}
+.plitka.vygoda{background:var(--aktsent-svet);border-color:var(--aktsent)}
+.plitka.vygoda .chislo{color:var(--aktsent)}
+.legenda{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--tusklo);margin:0 0 10px}
+.legenda i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;
+  vertical-align:-1px}
+.grafik{width:100%;height:210px;display:block}
+.tablitsa-obolochka{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:6px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--liniya);white-space:nowrap}
+th{color:var(--tusklo);font-weight:600;font-size:11px;text-transform:uppercase;
+  letter-spacing:.06em;text-align:right;position:sticky;top:0;background:var(--karta)}
+th:first-child,td:first-child{text-align:left}
+tr.osobyy td{background:var(--aktsent-svet)}
+td .metka{font-size:11px;color:var(--tusklo);display:block}
+.svorachivanie{margin-top:18px}
+summary{cursor:pointer;font-size:14px;color:var(--aktsent);padding:6px 0;font-weight:600}
+.snoska{color:var(--tusklo);font-size:13px;margin-top:26px;line-height:1.6;max-width:70ch}
+.snoska code{background:var(--karta);padding:1px 5px;border-radius:4px;border:1px solid var(--liniya);
+  font-size:12px}
+.proverka{margin-top:14px;padding:11px 13px;border-radius:9px;font-size:13px;
+  border:1px solid var(--liniya);background:var(--karta)}
+.proverka.ok{border-color:var(--aktsent);color:var(--aktsent)}
+.proverka.plohо{border-color:var(--protsent);color:var(--protsent)}
+</style>
+</head>
+<body>
+<div class="obolochka">
+
+<header>
+  <h1>Калькулятор досрочного погашения</h1>
+  <p class="podzag">Считает график там, где обычные калькуляторы ломаются:
+  <b>первые месяцы платятся только проценты</b>, <b>ставка меняется на выбранных отрезках срока</b>,
+  досрочные взносы идут либо в срок, либо в платёж. Всё пересчитывается на каждом месяце заново,
+  а не по одной формуле аннуитета на весь кредит.</p>
+</header>
+
+<div class="setka">
+
+  <div class="karta">
+    <h2>Кредит</h2>
+    <div class="pole"><label for="summa">Сумма, ₽</label>
+      <input id="summa" type="number" value="3000000" min="1000" step="1000"></div>
+    <div class="para">
+      <div class="pole"><label for="srok">Срок, месяцев</label>
+        <input id="srok" type="number" value="120" min="1" max="600"></div>
+      <div class="pole"><label for="stavka">Базовая ставка, % годовых</label>
+        <input id="stavka" type="number" value="18.5" min="0" step="0.1"></div>
+    </div>
+    <div class="pole"><label for="tip">Тип платежа</label>
+      <select id="tip">
+        <option value="annuitet">Аннуитетный (равными платежами)</option>
+        <option value="diff">Дифференцированный (тело поровну)</option>
+      </select></div>
+
+    <div class="pravilo">
+      <div class="shapka"><span class="imya">Только проценты в начале</span></div>
+      <div class="pole" style="margin:0">
+        <label for="lgota">Сколько первых месяцев тело долга не гасится</label>
+        <input id="lgota" type="number" value="3" min="0" max="120">
+      </div>
+    </div>
+
+    <div class="pravilo">
+      <div class="shapka"><span class="imya">Своя ставка на отрезке срока</span>
+        <button type="button" id="dobavitStavku">+ отрезок</button></div>
+      <div id="stavki"></div>
+    </div>
+
+    <div class="pravilo">
+      <div class="shapka"><span class="imya">Досрочные погашения</span>
+        <button type="button" id="dobavitDosrochno">+ взнос</button></div>
+      <div id="dosrochno"></div>
+    </div>
+
+    <button class="glavnaya" id="schitat">Пересчитать</button>
+    <div id="proverka" class="proverka" hidden></div>
+  </div>
+
+  <div>
+    <div class="itogi" id="itogi"></div>
+
+    <div class="karta">
+      <h2>Куда уходят деньги по месяцам</h2>
+      <p class="legenda">
+        <span><i style="background:var(--telo)"></i>тело долга</span>
+        <span><i style="background:var(--protsent)"></i>проценты</span>
+        <span><i style="background:var(--dosrochno)"></i>досрочный взнос</span>
+      </p>
+      <svg class="grafik" id="grafik" preserveAspectRatio="none" aria-label="График платежей по месяцам"></svg>
+    </div>
+
+    <details class="svorachivanie karta" open>
+      <summary>Помесячный график — полностью</summary>
+      <div class="tablitsa-obolochka">
+        <table id="tablitsa"><thead><tr>
+          <th>Месяц</th><th>Платёж</th><th>Тело</th><th>Проценты</th>
+          <th>Досрочно</th><th>Ставка</th><th>Остаток долга</th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+    </details>
+  </div>
+</div>
+
+<p class="snoska">
+  Проценты начисляются на остаток долга по формуле <code>остаток × ставка ÷ 12</code>.
+  При смене ставки и после каждого досрочного взноса в режиме «уменьшить платёж» аннуитет
+  пересчитывается заново — на текущий остаток и оставшийся срок. В режиме «сократить срок»
+  платёж остаётся прежним, и кредит просто заканчивается раньше.
+  Календарь платежей условно принят равномерным (12 месяцев в году); банк считает по фактическим
+  дням периода, и итог отличается на доли процента — если нужен день в день, это правится
+  за час, механика графика та же.
+</p>
+
+</div>
+
+<script>
+const ЧИСЛО = new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0});
+const рубли = n => ЧИСЛО.format(Math.round(n)) + ' ₽';
+const $ = id => document.getElementById(id);
+
+/* ---------- строки правил ---------- */
+function строкаСтавки(с=13, по=24, ставка=12){
+  const d = document.createElement('div');
+  d.className = 'stroka';
+  d.innerHTML = `
+    <div><label>с месяца</label><input type="number" class="s-ot" value="${с}" min="1"></div>
+    <div><label>по месяц</label><input type="number" class="s-do" value="${по}" min="1"></div>
+    <div><label>ставка, %</label><input type="number" class="s-st" value="${ставка}" min="0" step="0.1"></div>
+    <button type="button" class="ubrat" title="убрать">×</button>`;
+  d.querySelector('.ubrat').onclick = () => { d.remove(); считать(); };
+  d.oninput = считать;
+  return d;
+}
+function строкаДосрочно(месяц=13, сумма=200000, режим='srok'){
+  const d = document.createElement('div');
+  d.className = 'stroka tri';
+  d.innerHTML = `
+    <div><label>месяц</label><input type="number" class="d-m" value="${месяц}" min="1"></div>
+    <div><label>сумма, ₽</label><input type="number" class="d-s" value="${сумма}" min="0" step="1000"></div>
+    <button type="button" class="ubrat" title="убрать">×</button>`;
+  const sel = document.createElement('select');
+  sel.className = 'd-r';
+  sel.innerHTML = `<option value="srok">сократить срок</option>
+                   <option value="platyozh">уменьшить платёж</option>`;
+  sel.value = режим;
+  const обёртка = document.createElement('div');
+  обёртка.innerHTML = '<label>режим</label>';
+  обёртка.appendChild(sel);
+  d.insertBefore(обёртка, d.lastElementChild);
+  d.style.gridTemplateColumns = '1fr 1fr 1.2fr auto';
+  d.querySelector('.ubrat').onclick = () => { d.remove(); считать(); };
+  d.oninput = считать;
+  return d;
+}
+
+/* ---------- движок ---------- */
+function аннуитет(остаток, месячная, месяцев){
+  if (месяцев <= 0) return остаток;
+  if (месячная === 0) return остаток / месяцев;
+  const k = Math.pow(1 + месячная, -месяцев);
+  return остаток * месячная / (1 - k);
+}
+
+function посчитать(вход){
+  const {сумма, срок, базовая, тип, льгота, ставки, взносы} = вход;
+  const ставкаМесяца = м => {
+    for (const п of ставки) if (м >= п.от && м <= п.до) return п.ставка;
+    return базовая;
+  };
+  let остаток = сумма, платёж = null, прошлаяСтавка = null;
+  const строки = [];
+  let всегоПроцентов = 0, всегоДосрочно = 0;
+
+  for (let м = 1; м <= срок * 2 + 24; м++){
+    if (остаток <= 0.005) break;
+    const год = ставкаМесяца(м);
+    const мес = год / 100 / 12;
+    const осталосьМесяцев = Math.max(1, срок - м + 1);
+    const льготный = м <= льгота;
+
+    // Пересчёт аннуитета: на первом рабочем месяце, при смене ставки, после «уменьшить платёж».
+    if (тип === 'annuitet' && !льготный && (платёж === null || год !== прошлаяСтавка)){
+      платёж = аннуитет(остаток, мес, осталосьМесяцев);
+    }
+    прошлаяСтавка = год;
+
+    const проценты = остаток * мес;
+    let тело;
+    if (льготный)                тело = 0;
+    else if (тип === 'diff')     тело = сумма / (срок - льгота);
+    else                         тело = платёж - проценты;
+
+    if (тело < 0) тело = 0;                      // ставка выросла так, что платёж не кроет проценты
+    if (тело > остаток) тело = остаток;
+
+    const взнос = взносы.filter(v => v.месяц === м).reduce((s,v) => s + v.сумма, 0);
+    const режим = (взносы.find(v => v.месяц === м) || {}).режим || 'srok';
+    let фактВзнос = Math.min(взнос, Math.max(0, остаток - тело));
+
+    остаток = остаток - тело - фактВзнос;
+    всегоПроцентов += проценты;
+    всегоДосрочно += фактВзнос;
+
+    строки.push({месяц: м, платёж: (льготный ? проценты : тело + проценты), тело, проценты,
+                 досрочно: фактВзнос, ставка: год, остаток: Math.max(0, остаток), льготный});
+
+    if (фактВзнос > 0 && режим === 'platyozh' && тип === 'annuitet' && остаток > 0){
+      платёж = аннуитет(остаток, мес, Math.max(1, срок - м));
+    }
+  }
+  return {строки, всегоПроцентов, всегоДосрочно,
+          месяцев: строки.length, переплата: всегоПроцентов};
+}
+
+function собратьВход(){
+  const ставки = [...document.querySelectorAll('#stavki .stroka')].map(s => ({
+    от: +s.querySelector('.s-ot').value,
+    до: +s.querySelector('.s-do').value,
+    ставка: +s.querySelector('.s-st').value,
+  })).filter(п => п.от > 0 && п.до >= п.от);
+  const взносы = [...document.querySelectorAll('#dosrochno .stroka')].map(s => ({
+    месяц: +s.querySelector('.d-m').value,
+    сумма: +s.querySelector('.d-s').value,
+    режим: s.querySelector('.d-r').value,
+  })).filter(в => в.месяц > 0 && в.сумма > 0);
+  return {
+    сумма: +$('summa').value, срок: +$('srok').value, базовая: +$('stavka').value,
+    тип: $('tip').value, льгота: +$('lgota').value, ставки, взносы,
+  };
+}
+
+/* ---------- отрисовка ---------- */
+function рисоватьГрафик(строки){
+  const svg = $('grafik');
+  const Ш = svg.clientWidth || 700, В = 210, отступ = 4;
+  const макс = Math.max(...строки.map(с => с.платёж + с.досрочно), 1);
+  const шаг = (Ш - отступ*2) / строки.length;
+  const цвет = {тело:'var(--telo)', проценты:'var(--protsent)', досрочно:'var(--dosrochno)'};
+  let html = '';
+  строки.forEach((с,i) => {
+    const x = отступ + i*шаг, ш = Math.max(0.7, шаг - (шаг > 4 ? 1 : 0.2));
+    let y = В;
+    for (const [ключ,знач] of [['проценты',с.проценты],['тело',с.тело],['досрочно',с.досрочно]]){
+      const h = (знач / макс) * (В - 10);
+      if (h <= 0) continue;
+      y -= h;
+      html += `<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${ш.toFixed(2)}"
+               height="${h.toFixed(2)}" fill="${цвет[ключ]}"></rect>`;
+    }
+  });
+  svg.setAttribute('viewBox', `0 0 ${Ш} ${В}`);
+  svg.innerHTML = html;
+}
+
+function рисоватьТаблицу(строки){
+  const tbody = document.querySelector('#tablitsa tbody');
+  tbody.innerHTML = строки.map(с => `
+    <tr class="${с.льготный || с.досрочно ? 'osobyy' : ''}">
+      <td>${с.месяц}${с.льготный ? '<span class="metka">только проценты</span>' : ''}</td>
+      <td>${рубли(с.платёж + с.досрочно)}</td>
+      <td>${рубли(с.тело)}</td>
+      <td>${рубли(с.проценты)}</td>
+      <td>${с.досрочно ? рубли(с.досрочно) : '—'}</td>
+      <td>${с.ставка.toFixed(2).replace('.',',')} %</td>
+      <td>${рубли(с.остаток)}</td>
+    </tr>`).join('');
+}
+
+function считать(){
+  const вход = собратьВход();
+  const итог = посчитать(вход);
+  const безВзносов = посчитать({...вход, взносы: []});
+  const экономия = безВзносов.переплата - итог.переплата;
+  const месяцевМеньше = безВзносов.месяцев - итог.месяцев;
+
+  $('itogi').innerHTML = `
+    <div class="plitka"><div class="podpis">Переплата процентами</div>
+      <div class="chislo">${рубли(итог.переплата)}</div></div>
+    <div class="plitka"><div class="podpis">Кредит закроется через</div>
+      <div class="chislo">${итог.месяцев} мес<span style="font-size:14px;color:var(--tusklo)">
+        &nbsp;≈ ${(итог.месяцев/12).toFixed(1).replace('.',',')} г.</span></div></div>
+    <div class="plitka"><div class="podpis">Всего внесёте</div>
+      <div class="chislo">${рубли(вход.сумма + итог.переплата)}</div></div>
+    <div class="plitka vygoda"><div class="podpis">Экономия от досрочных</div>
+      <div class="chislo">${экономия > 0.5 ? рубли(экономия) : '—'}</div>
+      ${месяцевМеньше > 0 ? `<div class="podpis" style="margin:6px 0 0">
+        короче на ${месяцевМеньше} мес</div>` : ''}</div>`;
+
+  рисоватьГрафик(итог.строки);
+  рисоватьТаблицу(итог.строки);
+  return итог;
+}
+
+/* ---------- самопроверка: движок против школьной формулы ---------- */
+function самопроверка(){
+  // Чистый аннуитет без льготы, без смены ставки, без досрочных:
+  // сумма платежей должна совпасть с n × формула, а остаток — сойтись в ноль.
+  const S = 1000000, n = 60, год = 12;
+  const i = год/100/12;
+  const формула = S * i / (1 - Math.pow(1+i, -n));
+  const r = посчитать({сумма:S, срок:n, базовая:год, тип:'annuitet', льгота:0, ставки:[], взносы:[]});
+  const платёжДвижка = r.строки[0].платёж;
+  const остатокВКонце = r.строки[r.строки.length-1].остаток;
+  const срокСошёлся = r.строки.length === n;
+  const платёжСошёлся = Math.abs(платёжДвижка - формула) < 0.5;
+  const нольВКонце = остатокВКонце < 1;
+
+  // Льгота: первые 3 месяца тело не гасится, остаток обязан не измениться.
+  const l = посчитать({сумма:S, срок:n, базовая:год, тип:'annuitet', льгота:3, ставки:[], взносы:[]});
+  const льготаРаботает = Math.abs(l.строки[2].остаток - S) < 1 && l.строки[2].тело === 0;
+
+  // Досрочный взнос обязан уменьшить переплату.
+  const d = посчитать({сумма:S, срок:n, базовая:год, тип:'annuitet', льгота:0, ставки:[],
+                       взносы:[{месяц:6, сумма:200000, режим:'srok'}]});
+  const досрочноРаботает = d.переплата < r.переплата - 1000;
+
+  const всё = платёжСошёлся && срокСошёлся && нольВКонце && льготаРаботает && досрочноРаботает;
+  return {всё, строки:[
+    `аннуитет: движок ${платёжДвижка.toFixed(2)} ₽ / формула ${формула.toFixed(2)} ₽ — ${платёжСошёлся?'сходится':'РАСХОЖДЕНИЕ'}`,
+    `срок: ${r.строки.length} из ${n} — ${срокСошёлся?'сходится':'РАСХОЖДЕНИЕ'}`,
+    `остаток в конце: ${остатокВКонце.toFixed(2)} ₽ — ${нольВКонце?'ноль':'РАСХОЖДЕНИЕ'}`,
+    `льготные месяцы: тело не гасится — ${льготаРаботает?'да':'РАСХОЖДЕНИЕ'}`,
+    `досрочный взнос уменьшает переплату — ${досрочноРаботает?'да':'РАСХОЖДЕНИЕ'}`,
+  ]};
+}
+
+/* ---------- запуск ---------- */
+$('dobavitStavku').onclick = () => { $('stavki').appendChild(строкаСтавки()); считать(); };
+$('dobavitDosrochno').onclick = () => { $('dosrochno').appendChild(строкаДосрочно()); считать(); };
+$('schitat').onclick = считать;
+document.querySelectorAll('#summa,#srok,#stavka,#tip,#lgota').forEach(э => э.oninput = считать);
+window.addEventListener('resize', () => считать());
+
+// Предзаполнено ровно тем, что описано в задаче: три первых месяца — только проценты,
+// на отрезке 13–24 своя ставка, один досрочный взнос.
+$('stavki').appendChild(строкаСтавки(13, 24, 9.9));
+$('dosrochno').appendChild(строкаДосрочно(13, 300000, 'srok'));
+считать();
+
+if (new URLSearchParams(location.search).has('proverka')){
+  const п = самопроверка();
+  const блок = $('proverka');
+  блок.hidden = false;
+  блок.className = 'proverka ' + (п.всё ? 'ok' : 'plohо');
+  блок.innerHTML = '<b>' + (п.всё ? 'Самопроверка пройдена' : 'Самопроверка НЕ пройдена') +
+                   '</b><br>' + п.строки.join('<br>');
+}
+</script>
+</body>
+</html>
