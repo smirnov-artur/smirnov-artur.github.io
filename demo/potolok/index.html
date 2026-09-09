@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Калькулятор натяжного потолка</title>
+<style>
+:root{--acc:#1f6feb}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:#111;font:16px/1.4 system-ui,sans-serif;padding:16px}
+main{max-width:560px;margin:0 auto}
+h1{font-size:20px;margin:0 0 4px}
+.sub{color:#666;font-size:14px;margin:0 0 16px}
+label{display:block;font-size:14px;margin:16px 0 6px;font-weight:600}
+input,select{width:100%;padding:10px;font-size:16px;border:1px solid #ccc;border-radius:10px;background:#fff}
+input:focus,select:focus{outline:2px solid var(--acc);border-color:var(--acc)}
+.row{display:flex;gap:8px}
+.row>div{flex:1}
+.result{margin-top:24px;padding:16px;background:#f2f6ff;border-radius:10px}
+.total{font-size:40px;font-weight:700;color:var(--acc);margin:0}
+.lines{font-size:14px;color:#333;margin-top:8px}
+.lines div{display:flex;justify-content:space-between;padding:2px 0}
+a.cta{display:block;text-align:center;margin-top:16px;padding:14px;background:var(--acc);color:#fff;
+text-decoration:none;border-radius:10px;font-size:16px;font-weight:600}
+</style>
+</head>
+<body>
+<main>
+<h1>Калькулятор натяжного потолка</h1>
+<p class="sub">Цены примерные, точную назовёт замерщик</p>
+
+<div class="row">
+<div><label for="l">Длина, м</label><input id="l" type="number" inputmode="decimal" min="1" max="15" step="0.1" value="4"></div>
+<div><label for="w">Ширина, м</label><input id="w" type="number" inputmode="decimal" min="1" max="15" step="0.1" value="3"></div>
+</div>
+
+<label for="fabric">Полотно</label>
+<select id="fabric">
+<option value="350">Матовое — 350 ₽/м²</option>
+<option value="450">Сатиновое — 450 ₽/м²</option>
+<option value="550">Глянцевое — 550 ₽/м²</option>
+</select>
+
+<div class="row">
+<div><label for="corners">Углов</label><input id="corners" type="number" inputmode="decimal" min="3" max="20" step="1" value="4"></div>
+<div><label for="lamps">Светильников, шт</label><input id="lamps" type="number" inputmode="decimal" min="0" max="20" step="1" value="0"></div>
+</div>
+<label for="pipes">Обход труб, шт</label>
+<input id="pipes" type="number" inputmode="decimal" min="0" max="10" step="1" value="0">
+
+<div class="result">
+<p class="total" id="total" aria-live="polite">0 ₽</p>
+<div class="lines" id="lines"></div>
+</div>
+
+<a class="cta" id="cta" href="https://t.me/smirnovarturr?text=" target="_blank" rel="noopener">Получить точный расчёт</a>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+function fmt(n){return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ')+' ₽'}
+function calc(){
+ const l=+$('l').value||0, w=+$('w').value||0;
+ const area=l*w, perim=2*(l+w);
+ const price=+$('fabric').value;
+ const corners=Math.max(4,+$('corners').value||4);
+ const lamps=+$('lamps').value||0;
+ const pipes=+$('pipes').value||0;
+ const fabricCost=area*price;
+ const cornersCost=(corners-4)*150;
+ const lampsCost=lamps*450;
+ const pipesCost=pipes*300;
+ const total=fabricCost+cornersCost+lampsCost+pipesCost;
+ $('total').textContent=fmt(total);
+ $('lines').innerHTML=`
+  <div><span>Площадь</span><span>${area.toFixed(1)} м²</span></div>
+  <div><span>Периметр</span><span>${perim.toFixed(1)} м</span></div>
+  <div><span>Полотно</span><span>${fmt(fabricCost)}</span></div>
+  <div><span>Углы сверх 4</span><span>${fmt(cornersCost)}</span></div>
+  <div><span>Светильники</span><span>${fmt(lampsCost)}</span></div>
+  <div><span>Обход труб</span><span>${fmt(pipesCost)}</span></div>
+  <div><span>Багет по периметру</span><span>включено</span></div>
+  <div><span>Выезд замерщика</span><span>0 ₽</span></div>`;
+ const text=`Натяжной потолок ${l}×${w} м, площадь ${area.toFixed(1)} м², полотно, углов ${corners}, светильников ${lamps}, труб ${pipes}. Расчёт: ${fmt(total)}`;
+ $('cta').href='https://t.me/smirnovarturr?text='+encodeURIComponent(text);
+}
+document.querySelectorAll('input,select').forEach(e=>e.addEventListener('input',calc));
+calc();
+</script>
+<!--
+Таблица цен (правьте цифры без программиста):
+Полотно: матовое 350 ₽/м², сатиновое 450, глянцевое 550
+Углы: первые 4 включены, каждый следующий +150 ₽
+Светильник с вырезом: 450 ₽/шт
+Обход трубы: 300 ₽/шт
+Багет по периметру: включён
+Выезд замерщика: 0 ₽
+-->
+</body>
+</html>
