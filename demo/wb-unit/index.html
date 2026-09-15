@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Калькулятор юнит-экономики Wildberries и Ozon</title>
+<meta name="description" content="Прибыль с одной единицы товара на Wildberries и Ozon: комиссия, логистика и хранение маркетплейса, невыкуп, реклама (ДРР), налог. Точка безубыточности и цена под целевую маржу.">
+<style>
+:root{
+  --fon:#f6f4f0; --karta:#fff; --tekst:#16161a; --tusklo:#6b6b76;
+  --liniya:#e2ddd4; --aktsent:#1f5f4b; --aktsent-svet:#e8f2ee;
+  --minus:#b23b3b; --minus-svet:#fbeceb;
+  --ten:0 1px 2px rgba(20,20,26,.06),0 8px 24px rgba(20,20,26,.05);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --fon:#131317; --karta:#1c1c22; --tekst:#f0eee9; --tusklo:#9a9aa6;
+    --liniya:#2e2e38; --aktsent:#5fbfa0; --aktsent-svet:#1d2c28;
+    --minus:#e0665a; --minus-svet:#2c1a1a;
+    --ten:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --fon:#131317; --karta:#1c1c22; --tekst:#f0eee9; --tusklo:#9a9aa6;
+  --liniya:#2e2e38; --aktsent:#5fbfa0; --aktsent-svet:#1d2c28;
+  --minus:#e0665a; --minus-svet:#2c1a1a;
+  --ten:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fon);color:var(--tekst);
+  font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  -webkit-text-size-adjust:100%}
+.obolochka{max-width:1040px;margin:0 auto;padding:24px 16px 64px}
+header{margin:8px 0 24px}
+h1{font-size:clamp(22px,4.4vw,32px);line-height:1.2;margin:0 0 10px;letter-spacing:-.02em}
+.podzag{color:var(--tusklo);max-width:64ch;margin:0}
+.setka{display:grid;gap:18px;grid-template-columns:minmax(0,380px) minmax(0,1fr);align-items:start}
+@media (max-width:860px){.setka{grid-template-columns:1fr}}
+.karta{background:var(--karta);border:1px solid var(--liniya);border-radius:14px;
+  padding:18px;box-shadow:var(--ten)}
+.karta+.karta{margin-top:18px}
+.karta h2{font-size:13px;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--tusklo);margin:0 0 14px;font-weight:600}
+label{display:block;font-size:13px;color:var(--tusklo);margin:0 0 5px}
+input,select{width:100%;padding:11px 12px;font:inherit;font-size:16px;color:var(--tekst);
+  background:var(--fon);border:1px solid var(--liniya);border-radius:9px;outline:none}
+input:focus,select:focus{border-color:var(--aktsent);box-shadow:0 0 0 3px var(--aktsent-svet)}
+.pole{margin-bottom:14px}
+.para{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lines{font-size:14px;margin-top:2px}
+.lines .l{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--liniya)}
+.lines .l:last-child{border-bottom:none}
+.lines .l span:first-child{color:var(--tusklo)}
+.lines .l span:last-child{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+.itogi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.plitka{background:var(--fon);border:1px solid var(--liniya);border-radius:12px;padding:14px}
+.plitka .podpis{font-size:12px;color:var(--tusklo);margin-bottom:6px}
+.plitka .chislo{font-size:clamp(19px,3vw,24px);font-weight:650;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;line-height:1.15}
+.plitka.glav{background:var(--aktsent-svet);border-color:var(--aktsent)}
+.plitka.glav .chislo{color:var(--aktsent)}
+.plitka.minus{background:var(--minus-svet);border-color:var(--minus)}
+.plitka.minus .chislo{color:var(--minus)}
+.bar{display:flex;height:30px;border-radius:8px;overflow:hidden;border:1px solid var(--liniya);margin-top:6px}
+.bseg{display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;
+  font-weight:700;min-width:0;overflow:hidden;transition:flex-grow .15s}
+.b-cost{background:#8a8a96}
+.b-comm{background:#c8763a}
+.b-log{background:#3f7fd1}
+.b-ads{background:#7a4fbf}
+.b-tax{background:#b23b3b}
+.b-profit{background:#1f5f4b}
+.bar-legenda{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12px;color:var(--tusklo)}
+.bar-legenda .lgi{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:1px}
+button{font:inherit;cursor:pointer;border-radius:9px;border:1px solid var(--liniya);
+  background:var(--karta);color:var(--tekst);padding:12px 16px;font-size:15px}
+button:hover{border-color:var(--aktsent)}
+button.kopirovat{width:100%;margin-top:16px;font-weight:600}
+button.kopirovat.ok{border-color:var(--aktsent);color:var(--aktsent)}
+.snoska{color:var(--tusklo);font-size:13px;margin-top:22px;line-height:1.6;max-width:74ch}
+.snoska code{background:var(--karta);padding:1px 5px;border-radius:4px;border:1px solid var(--liniya);font-size:12px}
+.kontakt{margin-top:26px;background:var(--karta);border:1px solid var(--liniya);border-radius:14px;
+  padding:18px;box-shadow:var(--ten)}
+.kontakt p{margin:0}
+.kontakt a{color:var(--aktsent);font-weight:600;text-decoration:none}
+.kontakt a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="obolochka">
+
+<header>
+  <h1>Юнит-экономика товара на Wildberries и Ozon</h1>
+  <p class="podzag">Сколько реально остаётся с одной проданной единицы товара — после комиссии
+  маркетплейса, логистики, хранения, невыкупа, рекламы и налога. Пересчитывается сразу при вводе.</p>
+</header>
+
+<div class="setka">
+  <div id="vhod">
+    <div class="karta">
+      <h2>Цена и себестоимость</h2>
+      <div class="para">
+        <div class="pole"><label for="price">Цена продажи, ₽</label>
+          <input id="price" type="number" inputmode="decimal" min="0" step="1" value="1500"></div>
+        <div class="pole"><label for="cost">Себестоимость единицы, ₽</label>
+          <input id="cost" type="number" inputmode="decimal" min="0" step="1" value="500"></div>
+      </div>
+      <p class="podzag" style="font-size:12px;margin:-8px 0 14px">Себестоимость — закупка + упаковка + доставка до склада маркетплейса.</p>
+
+      <div class="para">
+        <div class="pole"><label for="commission">Комиссия маркетплейса, %</label>
+          <input id="commission" type="number" inputmode="decimal" min="0" max="100" step="0.1" value="25"></div>
+        <div class="pole"><label for="logistics">Логистика до покупателя, ₽</label>
+          <input id="logistics" type="number" inputmode="decimal" min="0" step="1" value="80"></div>
+      </div>
+      <div class="para">
+        <div class="pole"><label for="storage">Хранение за единицу, ₽</label>
+          <input id="storage" type="number" inputmode="decimal" min="0" step="1" value="10"></div>
+        <div class="pole"><label for="buyout">Процент выкупа, %</label>
+          <input id="buyout" type="number" inputmode="decimal" min="1" max="100" step="1" value="90"></div>
+      </div>
+      <div class="para">
+        <div class="pole"><label for="returnLog">Обратная логистика при невыкупе, ₽</label>
+          <input id="returnLog" type="number" inputmode="decimal" min="0" step="1" value="50"></div>
+        <div class="pole"><label for="ad">Реклама, ДРР % от выручки</label>
+          <input id="ad" type="number" inputmode="decimal" min="0" max="100" step="0.1" value="10"></div>
+      </div>
+      <div class="para">
+        <div class="pole"><label for="acquiring">Эквайринг и прочие удержания, %</label>
+          <input id="acquiring" type="number" inputmode="decimal" min="0" max="100" step="0.1" value="0"></div>
+        <div class="pole"><label for="targetMargin">Целевая маржинальность, %</label>
+          <input id="targetMargin" type="number" inputmode="decimal" min="0" max="95" step="1" value="20"></div>
+      </div>
+      <div class="pole" style="margin-bottom:0">
+        <label for="tax">Налог</label>
+        <select id="tax">
+          <option value="usn6">УСН 6% от выручки</option>
+          <option value="usn15">УСН 15% доходы минус расходы</option>
+          <option value="npd6">НПД 6% (самозанятый)</option>
+          <option value="none">Без налога</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="karta">
+      <h2>Результат с одной единицы</h2>
+      <div class="lines" id="lines"></div>
+
+      <div class="itogi" id="itogi"></div>
+
+      <div class="bar" id="bar" aria-hidden="true"></div>
+      <div class="bar-legenda" id="barLegend"></div>
+
+      <button type="button" class="kopirovat" id="copyBtn">Скопировать расчёт</button>
+    </div>
+  </div>
+</div>
+
+<p class="snoska">
+  Расходы на логистику пересчитаны на проданную единицу с учётом невыкупа: часть заказов
+  едет обратно на склад, и эта поездка тоже стоит денег. Формула — <code>логистика ÷ выкуп +
+  обратная_логистика × (1 − выкуп) ÷ выкуп</code>, где выкуп — доля от 0 до 1. Комиссия, реклама
+  (ДРР), эквайринг и налог УСН 6% / НПД 6% считаются от цены продажи; налог УСН 15% — от разницы
+  между выручкой и всеми расходами, не ниже нуля. Точка безубыточности и цена под целевую маржу
+  найдены подбором по той же формуле прибыли — метод одинаково корректно работает для любого
+  налогового режима.
+</p>
+
+<div class="kontakt">
+  <p>Нужен такой калькулятор под ваш бизнес — на сайт или в Telegram-бота?
+  Напишите в Telegram: <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">@smirnovarturr</a></p>
+</div>
+
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const numRu = new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0});
+const pctRu = new Intl.NumberFormat('ru-RU',{maximumFractionDigits:1,minimumFractionDigits:1});
+const rub = n => Number.isFinite(n) ? numRu.format(Math.round(n)) + ' ₽' : '—';
+const pct = n => Number.isFinite(n) ? pctRu.format(n) + ' %' : '—';
+
+/* ---------- формулы ----------
+Логистика на единицу ПРОДАННОГО товара с учётом невыкупа (buyout — доля 0..1):
+  логистика_эфф = логистика_до_покупателя / buyout + обратная_логистика × (1 − buyout) / buyout
+  Смысл: на каждую проданную (выкупленную) единицу приходится (1-buyout)/buyout возвратных
+  поездок невыкупленных заказов — их стоимость размазана по проданным штукам.
+
+Налог с единицы:
+  УСН 6% / НПД 6%  — 0.06 × цена_продажи
+  УСН 15%          — 0.15 × max(0, цена_продажи − все_расходы_без_налога)
+  без налога       — 0
+
+Прибыль = цена − себестоимость − комиссия − логистика_эфф − хранение − реклама − эквайринг − налог
+Маржинальность   = прибыль / цена × 100
+ROI на себестоимость = прибыль / себестоимость × 100
+
+Точка безубыточности (цена, при которой прибыль=0) и цена под целевую маржу решаются подбором
+(бисекцией) по функции прибыли выше, а не отдельной алгебраической формулой на каждый налоговый
+режим: прибыль растёт вместе с ценой монотонно (в т.ч. кусочно для УСН 15%, где налог обнуляется
+при нулевой или отрицательной базе), поэтому один и тот же решатель корректен для всех режимов.
+---------------------------------- */
+function logisticsEff(logistics, returnLog, buyoutPct){
+  const b = Math.max(0.0001, Math.min(100, buyoutPct) / 100);
+  return logistics / b + returnLog * (1 - b) / b;
+}
+
+function profitFor(price, x){
+  const revenue = price;
+  const logEff = logisticsEff(x.logistics, x.returnLog, x.buyoutPct);
+  const commission = revenue * x.commissionPct / 100;
+  const ads = revenue * x.adPct / 100;
+  const acquiring = revenue * x.acquiringPct / 100;
+  const preTax = x.cost + commission + logEff + x.storage + ads + acquiring;
+  let tax = 0;
+  if (x.taxMode === 'usn6' || x.taxMode === 'npd6') tax = revenue * 0.06;
+  else if (x.taxMode === 'usn15') tax = Math.max(0, revenue - preTax) * 0.15;
+  return { revenue, logEff, commission, ads, acquiring, tax, preTax,
+           profit: revenue - preTax - tax };
+}
+
+// Бисекция корня монотонно растущей функции f(price). Возвращает null, если корень
+// недостижим даже при очень высокой цене (проценты съедают выручку целиком).
+function solvePrice(f, hi=10000000){
+  let lo = 0;
+  if (f(hi) < 0) return null;
+  for (let i = 0; i < 60; i++){
+    const mid = (lo + hi) / 2;
+    if (f(mid) < 0) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+function readInputs(){
+  return {
+    price: +$('price').value || 0,
+    cost: +$('cost').value || 0,
+    commissionPct: +$('commission').value || 0,
+    logistics: +$('logistics').value || 0,
+    storage: +$('storage').value || 0,
+    buyoutPct: +$('buyout').value || 0,
+    returnLog: +$('returnLog').value || 0,
+    adPct: +$('ad').value || 0,
+    acquiringPct: +$('acquiring').value || 0,
+    taxMode: $('tax').value,
+    targetMarginPct: +$('targetMargin').value || 0,
+  };
+}
+
+const taxLabel = { usn6:'УСН 6% от выручки', usn15:'УСН 15% доходы минус расходы',
+                   npd6:'НПД 6%', none:'без налога' };
+
+function renderBar(x, r){
+  const items = [
+    ['cost','Себестоимость', x.cost],
+    ['comm','Комиссия+эквайринг', r.commission + r.acquiring],
+    ['log','Логистика+хранение', r.logEff + x.storage],
+    ['ads','Реклама', r.ads],
+    ['tax','Налог', r.tax],
+    ['profit','Прибыль', Math.max(r.profit, 0)],
+  ];
+  const rawSum = items.slice(0,5).reduce((s,[,,v])=>s+v,0);
+  const scale = (r.revenue > 0 && rawSum > r.revenue) ? r.revenue / rawSum : 1;
+  const total = r.revenue > 0 ? r.revenue : (rawSum || 1);
+  const scaled = items.map(([cls,label,v],i) => [cls, label, i < 5 ? v*scale : v]);
+
+  $('bar').innerHTML = scaled.filter(([,,v]) => v > 0.005).map(([cls,label,v]) => {
+    const p = v / total * 100;
+    return `<div class="bseg b-${cls}" style="flex:${Math.max(p,0.001)} 0 0" title="${label}: ${rub(v)} (${p.toFixed(1)} %)">${p>=8 ? p.toFixed(0)+'%' : ''}</div>`;
+  }).join('');
+  $('barLegend').innerHTML = scaled.map(([cls,label,v]) => {
+    const p = v / total * 100;
+    return `<span><i class="lgi b-${cls}"></i>${label} ${p.toFixed(1)} %</span>`;
+  }).join('');
+}
+
+function calc(){
+  const x = readInputs();
+  const r = profitFor(x.price, x);
+  const margin = r.revenue > 0 ? r.profit / r.revenue * 100 : NaN;
+  const roi = x.cost > 0 ? r.profit / x.cost * 100 : NaN;
+  const breakeven = solvePrice(p => profitFor(p, x).profit);
+  const targetPrice = solvePrice(p => profitFor(p, x).profit - x.targetMarginPct/100*p);
+
+  $('lines').innerHTML = `
+    <div class="l"><span>Выручка с единицы (цена продажи)</span><span>${rub(r.revenue)}</span></div>
+    <div class="l"><span>Себестоимость</span><span>−${rub(x.cost)}</span></div>
+    <div class="l"><span>Комиссия маркетплейса (${x.commissionPct.toLocaleString('ru-RU')} %)</span><span>−${rub(r.commission)}</span></div>
+    <div class="l"><span>Логистика с учётом выкупа ${x.buyoutPct.toLocaleString('ru-RU')} %</span><span>−${rub(r.logEff)}</span></div>
+    <div class="l"><span>Хранение</span><span>−${rub(x.storage)}</span></div>
+    <div class="l"><span>Реклама, ДРР ${x.adPct.toLocaleString('ru-RU')} %</span><span>−${rub(r.ads)}</span></div>
+    <div class="l"><span>Эквайринг и прочее (${x.acquiringPct.toLocaleString('ru-RU')} %)</span><span>−${rub(r.acquiring)}</span></div>
+    <div class="l"><span>Налог, ${taxLabel[x.taxMode]}</span><span>−${rub(r.tax)}</span></div>`;
+
+  $('itogi').innerHTML = `
+    <div class="plitka ${r.profit<0?'minus':'glav'}"><div class="podpis">Прибыль с единицы</div>
+      <div class="chislo">${rub(r.profit)}</div></div>
+    <div class="plitka"><div class="podpis">Маржинальность</div><div class="chislo">${pct(margin)}</div></div>
+    <div class="plitka"><div class="podpis">ROI на себестоимость</div><div class="chislo">${pct(roi)}</div></div>
+    <div class="plitka"><div class="podpis">Точка безубыточности</div><div class="chislo">${rub(breakeven)}</div></div>
+    <div class="plitka"><div class="podpis">Цена для маржи ${x.targetMarginPct.toLocaleString('ru-RU')} %</div><div class="chislo">${rub(targetPrice)}</div></div>`;
+
+  renderBar(x, r);
+  return {x, r, margin, roi, breakeven, targetPrice};
+}
+
+function summaryText(){
+  const {x, r, margin, roi, breakeven, targetPrice} = calc();
+  return [
+    'Юнит-экономика товара (Wildberries / Ozon)',
+    `Цена продажи: ${rub(r.revenue)}`,
+    `Себестоимость: ${rub(x.cost)}`,
+    `Комиссия маркетплейса (${x.commissionPct} %): ${rub(r.commission)}`,
+    `Логистика с учётом выкупа ${x.buyoutPct} %: ${rub(r.logEff)}`,
+    `Хранение: ${rub(x.storage)}`,
+    `Реклама (ДРР ${x.adPct} %): ${rub(r.ads)}`,
+    `Эквайринг и прочее (${x.acquiringPct} %): ${rub(r.acquiring)}`,
+    `Налог (${taxLabel[x.taxMode]}): ${rub(r.tax)}`,
+    `Прибыль с единицы: ${rub(r.profit)}`,
+    `Маржинальность: ${pct(margin)}`,
+    `ROI на себестоимость: ${pct(roi)}`,
+    `Точка безубыточности: ${rub(breakeven)}`,
+    `Цена для маржи ${x.targetMarginPct} %: ${rub(targetPrice)}`,
+  ].join('\n');
+}
+
+function copyText(text, btn){
+  const old = btn.textContent;
+  const done = ok => { btn.textContent = ok ? 'Скопировано' : 'Не вышло — выделите текст вручную';
+    btn.classList.toggle('ok', ok); setTimeout(()=>{btn.textContent=old; btn.classList.remove('ok');}, 1800); };
+  function fallback(){
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      done(ok);
+    }catch(e){ done(false); }
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>done(true)).catch(fallback);
+  } else fallback();
+}
+
+$('vhod').addEventListener('input', calc);
+$('vhod').addEventListener('change', calc);
+$('copyBtn').addEventListener('click', () => copyText(summaryText(), $('copyBtn')));
+calc();
+
+/* Самопроверка: ?proverka в адресной строке. Проверяет пример из ТЗ и то, что подбор
+   цены (бисекция) действительно находит корень своего же уравнения. */
+if (new URLSearchParams(location.search).has('proverka')){
+  const x = { price:1500, cost:500, commissionPct:25, logistics:80, storage:10, buyoutPct:90,
+              returnLog:50, adPct:10, acquiringPct:0, taxMode:'usn6', targetMarginPct:20 };
+  const r = profitFor(x.price, x);
+  const breakeven = solvePrice(p => profitFor(p, x).profit);
+  const targetPrice = solvePrice(p => profitFor(p, x).profit - x.targetMarginPct/100*p);
+  const ok1 = Math.abs(r.profit - 280.5556) < 0.1;
+  const ok2 = Math.abs(profitFor(breakeven, x).profit) < 0.1;
+  const ok3 = Math.abs(profitFor(targetPrice, x).profit - x.targetMarginPct/100*targetPrice) < 0.1;
+  const div = document.createElement('div');
+  div.className = 'snoska';
+  div.style.cssText = 'border:1px solid var(--liniya);border-radius:10px;padding:12px;margin-top:14px';
+  div.innerHTML = `<b>${ok1&&ok2&&ok3 ? 'Самопроверка пройдена' : 'Самопроверка НЕ пройдена'}</b><br>
+    пример из ТЗ: прибыль ${r.profit.toFixed(4)} ₽ (ожидание 280.5556) — ${ok1?'сходится':'РАСХОЖДЕНИЕ'}<br>
+    точка безубыточности: прибыль в ней ${profitFor(breakeven,x).profit.toFixed(4)} — ${ok2?'≈0':'РАСХОЖДЕНИЕ'}<br>
+    цена под целевую маржу: маржа в ней ${(profitFor(targetPrice,x).profit/targetPrice*100).toFixed(4)} % (ожидание 20) — ${ok3?'сходится':'РАСХОЖДЕНИЕ'}`;
+  document.querySelector('.obolochka').appendChild(div);
+}
+</script>
+</body>
+</html>

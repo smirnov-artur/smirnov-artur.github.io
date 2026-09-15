@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Калькулятор фудкоста и цены блюда</title>
+<meta name="description" content="Посчитайте себестоимость блюда по ингредиентам с учётом отхода при обработке, фудкост % и наценку, рекомендуемую цену в меню под целевой фудкост.">
+<style>
+:root{
+  --fon:#f6f4f0; --karta:#fff; --tekst:#16161a; --tusklo:#6b6b76;
+  --liniya:#e2ddd4; --aktsent:#1f5f4b; --aktsent-svet:#e8f2ee;
+  --minus:#b23b3b; --minus-svet:#fbeceb;
+  --ten:0 1px 2px rgba(20,20,26,.06),0 8px 24px rgba(20,20,26,.05);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --fon:#131317; --karta:#1c1c22; --tekst:#f0eee9; --tusklo:#9a9aa6;
+    --liniya:#2e2e38; --aktsent:#5fbfa0; --aktsent-svet:#1d2c28;
+    --minus:#e0665a; --minus-svet:#2c1a1a;
+    --ten:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --fon:#131317; --karta:#1c1c22; --tekst:#f0eee9; --tusklo:#9a9aa6;
+  --liniya:#2e2e38; --aktsent:#5fbfa0; --aktsent-svet:#1d2c28;
+  --minus:#e0665a; --minus-svet:#2c1a1a;
+  --ten:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fon);color:var(--tekst);
+  font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  -webkit-text-size-adjust:100%}
+.obolochka{max-width:900px;margin:0 auto;padding:24px 16px 64px}
+header{margin:8px 0 24px}
+h1{font-size:clamp(22px,4.4vw,32px);line-height:1.2;margin:0 0 10px;letter-spacing:-.02em}
+.podzag{color:var(--tusklo);max-width:64ch;margin:0}
+.karta{background:var(--karta);border:1px solid var(--liniya);border-radius:14px;
+  padding:18px;box-shadow:var(--ten)}
+.karta+.karta{margin-top:18px}
+.karta h2{font-size:13px;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--tusklo);margin:0 0 14px;font-weight:600}
+label{display:block;font-size:13px;color:var(--tusklo);margin:0 0 5px}
+input{width:100%;padding:11px 12px;font:inherit;font-size:16px;color:var(--tekst);
+  background:var(--fon);border:1px solid var(--liniya);border-radius:9px;outline:none}
+input:focus{border-color:var(--aktsent);box-shadow:0 0 0 3px var(--aktsent-svet)}
+.pole{margin-bottom:14px}
+.para{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.ing-row{border:1px dashed var(--liniya);border-radius:11px;padding:12px;margin-bottom:10px;background:var(--fon)}
+.ing-row.nevalid{border-style:solid;border-color:var(--minus);background:var(--minus-svet)}
+.ing-top{display:flex;gap:8px;margin-bottom:9px}
+.ing-top input{flex:1;font-weight:600}
+.ing-nums{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.ing-nums label{font-size:11px;margin:0 0 3px}
+.ing-cost{margin-top:8px;font-size:13px;color:var(--tusklo);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.ing-cost b{color:var(--tekst);font-variant-numeric:tabular-nums}
+.ing-row.nevalid .ing-cost{color:var(--minus);font-weight:600}
+button.udalit{flex:0 0 auto;width:38px;padding:0;font-size:18px;line-height:1;color:var(--tusklo);
+  border:1px solid var(--liniya);border-radius:9px;background:var(--karta);cursor:pointer}
+button.udalit:hover{border-color:var(--minus);color:var(--minus)}
+button.dobavit{width:100%;border:1px dashed var(--liniya);background:var(--karta);color:var(--aktsent);
+  font-weight:600;padding:11px;border-radius:10px;cursor:pointer;font:inherit}
+button.dobavit:hover{border-color:var(--aktsent)}
+
+.itogi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:16px}
+.plitka{background:var(--fon);border:1px solid var(--liniya);border-radius:12px;padding:14px}
+.plitka .podpis{font-size:12px;color:var(--tusklo);margin-bottom:6px}
+.plitka .chislo{font-size:clamp(19px,3vw,24px);font-weight:650;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;line-height:1.15}
+.plitka.glav{background:var(--aktsent-svet);border-color:var(--aktsent)}
+.plitka.glav .chislo{color:var(--aktsent)}
+.plitka.over{background:var(--minus-svet);border-color:var(--minus)}
+.plitka.over .chislo{color:var(--minus)}
+
+button{font:inherit;cursor:pointer}
+button.kopirovat{width:100%;margin-top:16px;font-weight:600;border-radius:9px;border:1px solid var(--liniya);
+  background:var(--karta);color:var(--tekst);padding:12px 16px;font-size:15px}
+button.kopirovat:hover{border-color:var(--aktsent)}
+button.kopirovat.ok{border-color:var(--aktsent);color:var(--aktsent)}
+
+.snoska{color:var(--tusklo);font-size:13px;margin-top:22px;line-height:1.6;max-width:74ch}
+.snoska code{background:var(--karta);padding:1px 5px;border-radius:4px;border:1px solid var(--liniya);font-size:12px}
+.kontakt{margin-top:26px;background:var(--karta);border:1px solid var(--liniya);border-radius:14px;
+  padding:18px;box-shadow:var(--ten)}
+.kontakt p{margin:0}
+.kontakt a{color:var(--aktsent);font-weight:600;text-decoration:none}
+.kontakt a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="obolochka">
+
+<header>
+  <h1>Фудкост и цена блюда</h1>
+  <p class="podzag">Себестоимость блюда по ингредиентам с учётом отхода при обработке —
+  и сколько на самом деле стоит поставить в меню, чтобы попасть в целевой фудкост.</p>
+</header>
+
+<div class="karta">
+  <h2>Ингредиенты на порцию</h2>
+  <div id="ingredients"></div>
+  <button type="button" class="dobavit" id="addRow">+ добавить ингредиент</button>
+</div>
+
+<div class="karta">
+  <h2>Цена в меню и фудкост</h2>
+  <div class="para">
+    <div class="pole"><label for="menuPrice">Цена в меню, ₽</label>
+      <input id="menuPrice" type="number" inputmode="decimal" min="0" step="10" value="490"></div>
+    <div class="pole"><label for="targetFC">Целевой фудкост, %</label>
+      <input id="targetFC" type="number" inputmode="decimal" min="1" max="95" step="1" value="30"></div>
+  </div>
+  <div class="itogi" id="itogi"></div>
+  <button type="button" class="kopirovat" id="copyBtn">Скопировать расчёт</button>
+</div>
+
+<p class="snoska">
+  В таблицу вводится <b>нетто</b> — сколько продукта фактически идёт в порцию после очистки,
+  обрезки и обработки. <b>Брутто</b> — сколько сырья нужно закупить, чтобы после отхода получить
+  это нетто, — считается автоматически и показывается под строкой только для чтения:
+  <code>брутто = нетто ÷ (1 − отход% ÷ 100)</code>, округлено до 1 г. Себестоимость строки —
+  уже по брутто, как и положено технологу: <code>себестоимость = брутто ÷ 1000 × цена_за_кг</code>.
+  Например, 100 г нетто с отходом 20 % требуют закупки 125 г. Отход 100 % и больше означает
+  «после обработки не остаётся ничего» — такая строка помечается и не входит в сумму.
+  Фудкост % = себестоимость порции ÷ цена в меню × 100; наценка % = (цена − себестоимость) ÷
+  себестоимость × 100; рекомендуемая цена — себестоимость ÷ целевой фудкост × 100, округлено
+  вверх до 10 ₽. Таблица сохраняется в этом браузере, можно вернуться и продолжить.
+</p>
+
+<div class="kontakt">
+  <p>Нужен такой калькулятор под ваш бизнес — на сайт или в Telegram-бота?
+  Напишите в Telegram: <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">@smirnovarturr</a></p>
+</div>
+
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const numRu = new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0});
+const num2Ru = new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2});
+const pctRu = new Intl.NumberFormat('ru-RU',{maximumFractionDigits:1,minimumFractionDigits:1});
+const rub = n => Number.isFinite(n) ? numRu.format(Math.round(n)) + ' ₽' : '—';
+const rub2 = n => Number.isFinite(n) ? num2Ru.format(n) + ' ₽' : '—';
+const pct = n => Number.isFinite(n) ? pctRu.format(n) + ' %' : '—';
+
+const STORAGE_KEY = 'fudkost-tablitsa-v2'; // v2: поле "брутто" заменено на "нетто" — старый формат просто игнорируем
+
+// В строке вводится нетто — сколько продукта фактически идёт в порцию после очистки и
+// обработки (то, что технолог пишет в ТТК). Брутто — сколько сырья нужно закупить, чтобы
+// после отхода (чистка, кости, уварка) получить это нетто, — считается из отхода, а не
+// вводится руками:
+//   брутто = нетто / (1 − отход% / 100)
+//   себестоимость_строки = брутто / 1000 × цена_за_кг
+// Отход 100% и больше — деление на ноль (или в минус), закупить нужно было бы бесконечно
+// много: строка считается некорректной, не пересчитывается и не входит в сумму.
+function rowCalc(netto, p, w){
+  const n = Math.max(0, netto);
+  const waste = Math.max(0, w);
+  if (waste >= 100) return { brutto: null, cost: null, invalid: true };
+  const brutto = n / (1 - waste / 100);
+  return { brutto, cost: brutto / 1000 * p, invalid: false };
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function makeRow(data){
+  const d = document.createElement('div');
+  d.className = 'ing-row';
+  d.innerHTML = `
+    <div class="ing-top">
+      <input type="text" class="ing-name" value="${escapeHtml(data.name || '')}" placeholder="Ингредиент">
+      <button type="button" class="udalit" title="Удалить ингредиент" aria-label="Удалить ингредиент">×</button>
+    </div>
+    <div class="ing-nums">
+      <div><label>Нетто в порции, г</label><input type="number" inputmode="decimal" class="ing-netto" min="0" step="1" value="${data.netto}" title="Сколько продукта идёт в блюдо после очистки и обработки"></div>
+      <div><label>Цена, ₽/кг</label><input type="number" inputmode="decimal" class="ing-p" min="0" step="1" value="${data.p}"></div>
+      <div><label>Отход, %</label><input type="number" inputmode="decimal" class="ing-w" min="0" max="99" step="1" value="${data.w}"></div>
+    </div>
+    <div class="ing-cost"></div>`;
+  d.querySelector('.udalit').addEventListener('click', () => { d.remove(); recalc(); });
+  d.addEventListener('input', recalc);
+  return d;
+}
+
+function addRow(data){
+  $('ingredients').appendChild(makeRow(data));
+}
+
+function readRows(){
+  return [...document.querySelectorAll('#ingredients .ing-row')].map(row => ({
+    name: row.querySelector('.ing-name').value.trim(),
+    netto: +row.querySelector('.ing-netto').value || 0,
+    p: +row.querySelector('.ing-p').value || 0,
+    w: +row.querySelector('.ing-w').value || 0,
+  }));
+}
+
+function save(state){
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){ /* приватный режим и т.п. — молча пропускаем */ }
+}
+
+function load(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || !Array.isArray(parsed.rows) || !parsed.rows.length) return null;
+    // Старый формат (v1) хранил вес в поле g и не знал про нетто — если форма не сходится,
+    // просто игнорируем сохранённое и берём пример по умолчанию.
+    if (parsed.rows.some(r => typeof r.netto !== 'number')) return null;
+    return parsed;
+  } catch(e){ return null; }
+}
+
+function recalc(){
+  let totalCost = 0;
+  document.querySelectorAll('#ingredients .ing-row').forEach(row => {
+    const netto = +row.querySelector('.ing-netto').value || 0;
+    const p = +row.querySelector('.ing-p').value || 0;
+    const w = +row.querySelector('.ing-w').value || 0;
+    const r = rowCalc(netto, p, w);
+    row.classList.toggle('nevalid', r.invalid);
+    row.querySelector('.ing-cost').innerHTML = r.invalid
+      ? `<span>Отход ≥ 100% — закупка бесконечна, строка не учтена в сумме</span>`
+      : `<span>Брутто ≈ ${Math.round(r.brutto)} г</span><span>Себестоимость строки: <b>${rub2(r.cost)}</b></span>`;
+    if (!r.invalid) totalCost += r.cost;
+  });
+
+  const menuPrice = +$('menuPrice').value || 0;
+  const targetFC = +$('targetFC').value || 0;
+  const foodCostPct = menuPrice > 0 ? totalCost / menuPrice * 100 : NaN;
+  const markupPct = totalCost > 0 ? (menuPrice - totalCost) / totalCost * 100 : NaN;
+  const recommendedPrice = targetFC > 0 ? Math.ceil((totalCost / (targetFC / 100)) / 10) * 10 : NaN;
+  const over = Number.isFinite(foodCostPct) && foodCostPct > targetFC;
+
+  $('itogi').innerHTML = `
+    <div class="plitka glav"><div class="podpis">Себестоимость порции</div><div class="chislo">${rub2(totalCost)}</div></div>
+    <div class="plitka ${over ? 'over' : ''}"><div class="podpis">Фудкост</div><div class="chislo">${pct(foodCostPct)}</div></div>
+    <div class="plitka"><div class="podpis">Наценка</div><div class="chislo">${pct(markupPct)}</div></div>
+    <div class="plitka"><div class="podpis">Рекомендуемая цена (при ${targetFC || 0} % фудкоста)</div><div class="chislo">${rub(recommendedPrice)}</div></div>`;
+
+  save({ rows: readRows(), menuPrice, targetFC });
+  return { totalCost, menuPrice, targetFC, foodCostPct, markupPct, recommendedPrice };
+}
+
+function summaryText(){
+  const s = recalc();
+  const rows = readRows();
+  const lines = ['Фудкост и цена блюда', ''];
+  rows.forEach(row => {
+    const label = row.name || 'Ингредиент';
+    const r = rowCalc(row.netto, row.p, row.w);
+    if (r.invalid) lines.push(`${label}: нетто ${row.netto} г, отход ${row.w} % → отход ≥ 100%, строка не учтена`);
+    else lines.push(`${label}: нетто ${row.netto} г, брутто ${Math.round(r.brutto)} г, отход ${row.w} %, цена ${row.p} ₽/кг → ${rub2(r.cost)}`);
+  });
+  lines.push('');
+  lines.push(`Себестоимость порции: ${rub2(s.totalCost)}`);
+  lines.push(`Цена в меню: ${rub(s.menuPrice)}`);
+  lines.push(`Фудкост: ${pct(s.foodCostPct)}`);
+  lines.push(`Наценка: ${pct(s.markupPct)}`);
+  lines.push(`Целевой фудкост: ${s.targetFC} %`);
+  lines.push(`Рекомендуемая цена: ${rub(s.recommendedPrice)}`);
+  return lines.join('\n');
+}
+
+function copyText(text, btn){
+  const old = btn.textContent;
+  const done = ok => { btn.textContent = ok ? 'Скопировано' : 'Не вышло — выделите текст вручную';
+    btn.classList.toggle('ok', ok); setTimeout(()=>{btn.textContent=old; btn.classList.remove('ok');}, 1800); };
+  function fallback(){
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      done(ok);
+    }catch(e){ done(false); }
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>done(true)).catch(fallback);
+  } else fallback();
+}
+
+const PRIMER = [
+  { name:'Спагетти', netto:100, p:130, w:0 },
+  { name:'Гуанчиале (или бекон)', netto:60, p:750, w:5 },
+  { name:'Желтки (или яйца)', netto:40, p:300, w:0 },
+  { name:'Пармезан или пекорино тёртый', netto:30, p:1800, w:5 },
+  { name:'Чеснок', netto:5, p:300, w:10 },
+  { name:'Перец чёрный и соль', netto:2, p:1200, w:0 },
+];
+
+const saved = load();
+if (saved){
+  saved.rows.forEach(addRow);
+  if (saved.menuPrice != null) $('menuPrice').value = saved.menuPrice;
+  if (saved.targetFC != null) $('targetFC').value = saved.targetFC;
+} else {
+  PRIMER.forEach(addRow);
+}
+
+$('addRow').addEventListener('click', () => { addRow({name:'', netto:100, p:200, w:0}); recalc(); });
+$('menuPrice').addEventListener('input', recalc);
+$('targetFC').addEventListener('input', recalc);
+$('copyBtn').addEventListener('click', () => copyText(summaryText(), $('copyBtn')));
+recalc();
+
+/* Самопроверка: ?proverka в адресной строке. Проверяет формулу строки, отход ≥100% и пример по умолчанию. */
+if (new URLSearchParams(location.search).has('proverka')){
+  const c1 = rowCalc(100, 100, 20); // нетто 100г, 100₽/кг, отход 20% -> брутто 125г -> 12.5₽
+  const ok1 = !c1.invalid && Math.abs(c1.brutto - 125) < 0.001 && Math.abs(c1.cost - 12.5) < 0.001;
+  const c2 = rowCalc(50, 100, 100); // отход 100% -> невозможно закупить конечное количество
+  const ok2 = c2.invalid === true;
+  const primerCost = PRIMER.reduce((s,r) => s + rowCalc(r.netto, r.p, r.w).cost, 0);
+  const ok3 = Math.abs(primerCost - 133.2772) < 0.05;
+  const rec = Math.ceil((primerCost/0.30)/10)*10;
+  const ok4 = rec >= primerCost/0.30 && rec < primerCost/0.30 + 10;
+  const div = document.createElement('div');
+  div.className = 'snoska';
+  div.style.cssText = 'border:1px solid var(--liniya);border-radius:10px;padding:12px;margin-top:14px';
+  div.innerHTML = `<b>${ok1&&ok2&&ok3&&ok4 ? 'Самопроверка пройдена' : 'Самопроверка НЕ пройдена'}</b><br>
+    формула строки (нетто 100г, 100₽/кг, отход 20%): брутто ${c1.brutto.toFixed(4)} г (ожидание 125), ${c1.cost.toFixed(4)} ₽ (ожидание 12.5) — ${ok1?'сходится':'РАСХОЖДЕНИЕ'}<br>
+    отход 100% помечается как некорректный — ${ok2?'да':'РАСХОЖДЕНИЕ'}<br>
+    себестоимость примера карбонары: ${primerCost.toFixed(4)} ₽ (ожидание ≈133.28) — ${ok3?'сходится':'РАСХОЖДЕНИЕ'}<br>
+    рекомендуемая цена — кратна 10 и покрывает целевой фудкост — ${ok4?'да':'РАСХОЖДЕНИЕ'}`;
+  document.querySelector('.obolochka').appendChild(div);
+}
+</script>
+</body>
+</html>
