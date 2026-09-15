@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Survival Proto</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:'Consolas','Courier New',monospace;}
+  #c{width:100%;height:100%;display:block;}
+  #hud{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;color:#dff;text-shadow:0 0 4px #000;}
+  .panel{background:rgba(10,20,25,0.55);border:1px solid rgba(120,255,230,0.4);border-radius:4px;backdrop-filter:blur(1px);}
+  #zone{position:absolute;top:14px;left:50%;transform:translateX(-50%);font-size:20px;font-weight:bold;letter-spacing:2px;padding:4px 18px;}
+  #zone.hub{color:#7fffd4;border-color:#7fffd4;}
+  #zone.hostile{color:#ff5555;border-color:#ff5555;}
+  #hpwrap{position:absolute;bottom:20px;left:20px;width:220px;height:20px;padding:3px;}
+  #hpbarbg{width:100%;height:100%;background:#0006;}
+  #hpbar{height:100%;background:linear-gradient(90deg,#5cf,#2fa);width:100%;}
+  #res{position:absolute;bottom:50px;right:20px;font-size:16px;padding:5px 14px;letter-spacing:1px;}
+  #rare{position:absolute;bottom:20px;right:20px;font-size:16px;padding:5px 14px;letter-spacing:1px;color:#ffcc66;}
+  #vignette{position:absolute;top:0;left:0;width:100%;height:100%;box-shadow:inset 0 0 60px 10px red;opacity:0;transition:opacity .3s;}
+  #hint{position:absolute;bottom:78px;left:20px;font-size:11px;opacity:.75;padding:3px 10px;}
+  #minimap{position:absolute;top:14px;right:14px;border-radius:4px;}
+  #crosshair{position:fixed;top:50%;left:50%;width:16px;height:16px;transform:translate(-50%,-50%);pointer-events:none;z-index:15;}
+  #crosshair::before,#crosshair::after{content:'';position:absolute;background:#dff;box-shadow:0 0 2px #000;}
+  #crosshair::before{left:7px;top:0;width:2px;height:16px;}
+  #crosshair::after{top:7px;left:0;width:16px;height:2px;}
+  #crosshair.hit::before,#crosshair.hit::after{background:#ff3333;}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <div id="zone" class="hub panel">ХАБ — безопасная зона</div>
+  <div id="hpwrap" class="panel"><div id="hpbarbg"><div id="hpbar"></div></div></div>
+  <div id="res" class="panel">РЕСУРСЫ: 0</div>
+  <div id="rare" class="panel">РЕДКИЙ ЛУТ: 0/1</div>
+  <div id="hint" class="panel">WASD — движение, Shift — бег, клик — камера, E — собрать</div>
+  <canvas id="minimap" width="140" height="140" class="panel"></canvas>
+  <div id="vignette"></div>
+  <div id="crosshair"></div>
+</div>
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

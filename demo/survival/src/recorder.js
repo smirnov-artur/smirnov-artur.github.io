@@ -1,0 +1,1 @@
+import{collectItem}from"./loot.js";const KIT=[["scrap",60],["crystal",30],["chip",10],["core",3],["battery",5],["medkit",6],["grenade",6],["ammo_clip",10]];function init(game){addEventListener("keydown",e=>{if(e.code!=="F7"||e.repeat)return;e.preventDefault();for(const[id,n]of KIT)collectItem(game,id,n)})}function update(){}export{init,update};
