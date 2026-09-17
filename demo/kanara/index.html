@@ -56,14 +56,17 @@ p{margin:0}
 .hero__lead{margin-top:18px;max-width:50ch;font-size:clamp(15.5px,1.3vw,19px);color:var(--muted)}
 .split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.4vw,20px);margin-top:clamp(24px,3vw,40px)}
 .tile{position:relative;display:block;overflow:hidden;border-radius:24px;aspect-ratio:5/4;background:#d9d4cc;color:#fff;isolation:isolate}
-.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 64%;transform:scale(1.015);transition:transform 1.2s cubic-bezier(.16,.84,.28,1)}
+.tile__zoom{position:absolute;inset:0;transition:transform 1.1s cubic-bezier(.16,.84,.28,1)}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 56%;animation:naezd 26s ease-in-out infinite alternate}
+@keyframes naezd{from{transform:scale(1.01)}to{transform:scale(1.09)}}
+@media (prefers-reduced-motion:reduce){.tile img{animation:none}}
 .tile::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(12,11,8,0) 34%,rgba(12,11,8,.74) 100%)}
 .tile__body{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(20px,2.4vw,38px)}
 .tile__title{font-weight:700;font-size:clamp(21px,2.4vw,34px)}
 .tile__sub{margin-top:9px;max-width:32ch;font-size:clamp(13.5px,1.05vw,16px);color:rgba(255,255,255,.8)}
 .tile__cta{margin-top:20px;display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:15px}
 .arr{display:inline-block;transition:transform .5s cubic-bezier(.16,.84,.28,1)}
-.tile:hover img{transform:scale(1.07)}
+.tile:hover .tile__zoom{transform:scale(1.04)}
 .tile:hover .arr{transform:translateX(7px)}
 
 /* шоурум */
@@ -86,6 +89,15 @@ p{margin:0}
 .card__title{font-family:Manrope;font-weight:700;font-size:18px}
 .card__meta{font-size:13.5px;color:var(--muted)}
 .card__link{margin-top:auto;padding-top:12px;font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+
+/* ткани */
+.tkani{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(18px,2.4vw,44px);align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:28px;overflow:hidden}
+.tkani__img{aspect-ratio:16/10;overflow:hidden}
+.tkani__img img{width:100%;height:100%;object-fit:cover;object-position:50% 74%}
+.tkani__body{padding:clamp(22px,3vw,48px) clamp(22px,3vw,48px) clamp(22px,3vw,48px) 0}
+.tkani__body h2{margin-top:14px;font-size:clamp(22px,2.8vw,38px);font-weight:700;line-height:1.1;max-width:16ch}
+.tkani__body p{margin-top:12px;color:var(--muted);font-size:15.5px;max-width:42ch}
+.tkani__list{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
 
 /* почему мы */
 .feat{display:flex;gap:16px;align-items:flex-start;padding:22px;background:var(--surface);border:1px solid var(--line);border-radius:18px}
@@ -176,7 +188,7 @@ p{margin:0}
 
     <div class="split">
       <a class="tile" href="#dom" data-reveal style="--i:3">
-        <img src="assets/px-8251914.jpg" alt="Спальня с кроватью Kanara">
+        <span class="tile__zoom"><img src="assets/dom.jpg" alt="Спальня с кроватью Kanara"></span>
         <span class="tile__body">
           <span class="tile__title">Для дома</span>
           <span class="tile__sub">Премиальные кровати и мягкая мебель для вашего интерьера</span>
@@ -184,7 +196,7 @@ p{margin:0}
         </span>
       </a>
       <a class="tile" href="#biznes" data-reveal style="--i:4">
-        <img src="assets/px-67468.jpg" alt="Мебель для ресторана">
+        <span class="tile__zoom"><img src="assets/biznes.jpg" alt="Мебель для ресторана"></span>
         <span class="tile__body">
           <span class="tile__title">Для бизнеса</span>
           <span class="tile__sub">Мебель на заказ для отелей, ресторанов, кафе и офисов</span>
@@ -212,7 +224,7 @@ p{margin:0}
     </div>
     <div class="grid3">
       <a class="card" href="#kontakty" data-reveal>
-        <span class="card__img"><img src="assets/px-16435061.jpg" alt="Кровать с мягким изголовьем" loading="lazy"></span>
+        <span class="card__img"><img src="assets/krovat-izgolovie.jpg" alt="Кровать с мягким изголовьем" loading="lazy"></span>
         <span class="card__body">
           <span class="card__title">Кровать с мягким изголовьем</span>
           <span class="card__meta">4 размера · механизм по выбору · 3 категории ткани</span>
@@ -220,7 +232,7 @@ p{margin:0}
         </span>
       </a>
       <a class="card" href="#kontakty" data-reveal style="--i:1">
-        <span class="card__img"><img src="assets/px-3754595.jpg" alt="Кровать с высоким изголовьем" loading="lazy"></span>
+        <span class="card__img"><img src="assets/krovat-vysokoe.jpg" alt="Кровать с высоким изголовьем" loading="lazy"></span>
         <span class="card__body">
           <span class="card__title">Кровать с высоким изголовьем</span>
           <span class="card__meta">4 размера · механизм по выбору · 3 категории ткани</span>
@@ -228,7 +240,7 @@ p{margin:0}
         </span>
       </a>
       <a class="card" href="#kontakty" data-reveal style="--i:2">
-        <span class="card__img"><img src="assets/px-4792349.jpg" alt="Кровать в ткани букле" loading="lazy"></span>
+        <span class="card__img"><img src="assets/krovat-bukle.jpg" alt="Кровать в ткани букле" loading="lazy"></span>
         <span class="card__body">
           <span class="card__title">Кровать в ткани букле</span>
           <span class="card__meta">4 размера · механизм по выбору · 3 категории ткани</span>
@@ -236,7 +248,7 @@ p{margin:0}
         </span>
       </a>
       <a class="card" href="#kontakty" data-reveal>
-        <span class="card__img"><img src="assets/px-15477636.jpg" alt="Кровать с ящиками" loading="lazy"></span>
+        <span class="card__img"><img src="assets/krovat-yashchiki.jpg" alt="Кровать с ящиками" loading="lazy"></span>
         <span class="card__body">
           <span class="card__title">Кровать с ящиками</span>
           <span class="card__meta">4 размера · механизм по выбору · 3 категории ткани</span>
@@ -244,7 +256,7 @@ p{margin:0}
         </span>
       </a>
       <a class="card" href="#kontakty" data-reveal style="--i:1">
-        <span class="card__img"><img src="assets/px-8251591.jpg" alt="Кровать на ножках" loading="lazy"></span>
+        <span class="card__img"><img src="assets/krovat-nozhki.jpg" alt="Кровать на ножках" loading="lazy"></span>
         <span class="card__body">
           <span class="card__title">Кровать на ножках</span>
           <span class="card__meta">4 размера · механизм по выбору · 3 категории ткани</span>
@@ -252,13 +264,27 @@ p{margin:0}
         </span>
       </a>
       <a class="card" href="#kontakty" data-reveal style="--i:2">
-        <span class="card__img"><img src="assets/px-12277126.jpg" alt="Кровать с подъёмным механизмом" loading="lazy" style="object-position:32% 62%"></span>
+        <span class="card__img"><img src="assets/krovat-mehanizm.jpg" alt="Кровать с подъёмным механизмом" loading="lazy"></span>
         <span class="card__body">
           <span class="card__title">Кровать с подъёмным механизмом</span>
           <span class="card__meta">4 размера · механизм по выбору · 3 категории ткани</span>
           <span class="card__link">Выбрать конфигурацию <span class="arr">→</span></span>
         </span>
       </a>
+    </div>
+  </section>
+
+  <section class="section wrap" id="tkani">
+    <div class="tkani" data-reveal>
+      <div class="tkani__img"><img src="assets/tkani.jpg" alt="Образцы тканей: лён, букле и велюр" loading="lazy"></div>
+      <div class="tkani__body">
+        <span class="eyebrow">Материалы</span>
+        <h2>Три категории ткани и механизм на выбор</h2>
+        <p>Лён, букле и велюр, подъёмный механизм или ящики в основании. Всё это выбирается прямо в карточке кровати, и цена пересчитывается сразу.</p>
+        <div class="tkani__list">
+          <span class="chip">Лён</span><span class="chip">Букле</span><span class="chip">Велюр</span><span class="chip">Подъёмный механизм</span><span class="chip">Ящики</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -279,7 +305,7 @@ p{margin:0}
 
   <section class="section wrap" id="biznes">
     <div class="b2b" data-reveal>
-      <div class="b2b__img"><img src="assets/px-2079438.jpg" alt="Мебель в кафе" loading="lazy"></div>
+      <div class="b2b__img"><img src="assets/horeca.jpg" alt="Мебель в кафе" loading="lazy"></div>
       <div class="b2b__body">
         <span class="eyebrow">HoReCa</span>
         <h2>Мебель для кафе, ресторанов, баров и офисов</h2>
@@ -327,7 +353,7 @@ p{margin:0}
 </main>
 
 <div class="demo-note">
-  <div class="wrap"><span class="dots"><i></i><i></i><i></i></span> Демонстрационный концепт главной страницы для Kanara. Фотографии временные, заменяются на ваши. Дизайн и сборка — Артур Смирнов.</div>
+  <div class="wrap"><span class="dots"><i></i><i></i><i></i></span> Демонстрационный концепт главной страницы для Kanara. Кадры на странице — визуализации, а не съёмка ваших изделий: заменим на ваши фото. Дизайн и сборка — Артур Смирнов.</div>
 </div>
 
 <script>
