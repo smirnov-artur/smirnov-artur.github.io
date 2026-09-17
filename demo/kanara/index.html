@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kanara — мебель для интерьеров</title>
+<meta name="description" content="Дизайнерские кровати и мягкая мебель для дома, мебель на заказ для кафе, ресторанов, баров и офисов. Собственное производство в Могилёве, доставка по Беларуси.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='8' r='6' fill='%23FF4438'/%3E%3Ccircle cx='8' cy='22' r='6' fill='%23FFC814'/%3E%3Ccircle cx='24' cy='22' r='6' fill='%235FF0B4'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F2ED; --surface:#FFFFFF; --ink:#14130F; --muted:#6E6A60; --line:#E3DDD2;
+  --red:#FF4438; --yellow:#FFC814; --mint:#5FF0B4;
+  --pad:clamp(16px,4vw,56px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:Manrope,Inter,sans-serif;margin:0;letter-spacing:-.025em}
+p{margin:0}
+.wrap{max-width:1280px;margin:0 auto;padding:0 var(--pad)}
+.dots{display:inline-flex;gap:4px;vertical-align:middle}
+.dots i{width:7px;height:7px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;display:block}
+.dots i:nth-child(1){background:var(--red)}
+.dots i:nth-child(2){background:var(--yellow)}
+.dots i:nth-child(3){background:var(--mint)}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:500}
+
+/* шапка */
+.hdr{position:sticky;top:0;z-index:50;background:rgba(245,242,237,.78);backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:border-color .3s,background .3s}
+.hdr.is-stuck{border-bottom-color:var(--line);background:rgba(245,242,237,.94)}
+.hdr__in{display:flex;align-items:center;gap:clamp(16px,3vw,44px);height:74px}
+.hdr__logo img{height:24px;width:auto;mix-blend-mode:multiply}
+.nav{display:flex;gap:clamp(14px,2vw,30px);margin-left:auto;font-size:14.5px;color:var(--muted)}
+.nav a{position:relative;padding:4px 0;transition:color .25s}
+.nav a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--ink);transition:right .35s cubic-bezier(.16,.84,.28,1)}
+.nav a:hover{color:var(--ink)}
+.nav a:hover::after{right:0}
+.hdr__tel{font-size:14.5px;color:var(--muted);white-space:nowrap}
+.btn{display:inline-flex;align-items:center;gap:10px;border:0;cursor:pointer;font:600 14.5px/1 Inter,sans-serif;padding:14px 24px;border-radius:999px;background:var(--ink);color:#fff;transition:background .3s,color .3s,transform .3s}
+.btn:hover{background:var(--red)}
+.btn--ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn--ghost:hover{background:var(--ink);color:#fff}
+.btn--light{background:#fff;color:var(--ink)}
+.btn--light:hover{background:var(--mint);color:var(--ink)}
+.burger{display:none;margin-left:auto;width:42px;height:42px;border:0;background:transparent;cursor:pointer;flex-direction:column;justify-content:center;gap:5px;align-items:center}
+.burger span{width:20px;height:1.5px;background:var(--ink);display:block;transition:transform .3s}
+
+/* первый экран */
+.hero{padding:clamp(30px,4.2vw,58px) 0 0}
+.hero h1{font-weight:800;font-size:clamp(34px,5.1vw,72px);line-height:1;max-width:21ch;margin:16px 0 0}
+.hero__lead{margin-top:18px;max-width:50ch;font-size:clamp(15.5px,1.3vw,19px);color:var(--muted)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.4vw,20px);margin-top:clamp(24px,3vw,40px)}
+.tile{position:relative;display:block;overflow:hidden;border-radius:24px;aspect-ratio:5/4;background:#d9d4cc;color:#fff;isolation:isolate}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 64%;transform:scale(1.015);transition:transform 1.2s cubic-bezier(.16,.84,.28,1)}
+.tile::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(12,11,8,0) 34%,rgba(12,11,8,.74) 100%)}
+.tile__body{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(20px,2.4vw,38px)}
+.tile__title{font-weight:700;font-size:clamp(21px,2.4vw,34px)}
+.tile__sub{margin-top:9px;max-width:32ch;font-size:clamp(13.5px,1.05vw,16px);color:rgba(255,255,255,.8)}
+.tile__cta{margin-top:20px;display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:15px}
+.arr{display:inline-block;transition:transform .5s cubic-bezier(.16,.84,.28,1)}
+.tile:hover img{transform:scale(1.07)}
+.tile:hover .arr{transform:translateX(7px)}
+
+/* шоурум */
+.showroom{margin-top:clamp(56px,7vw,112px);background:var(--ink);color:#F5F2ED;border-radius:28px;padding:clamp(28px,4.2vw,66px);display:grid;grid-template-columns:1.25fr .75fr;gap:clamp(20px,3vw,44px);align-items:end}
+.showroom .eyebrow{color:var(--mint)}
+.showroom h2{margin-top:16px;font-size:clamp(24px,3.2vw,44px);font-weight:700;line-height:1.08;max-width:18ch}
+.showroom p{margin-top:14px;color:rgba(245,242,237,.68);max-width:40ch;font-size:15.5px}
+
+/* секции */
+.section{margin-top:clamp(64px,8vw,128px)}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:28px;margin-bottom:clamp(22px,2.8vw,40px)}
+.section-head h2{font-size:clamp(26px,3.5vw,46px);font-weight:700;line-height:1.06;max-width:16ch}
+.section-head p{color:var(--muted);max-width:44ch;font-size:15.5px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.5vw,22px)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
+.card__img{aspect-ratio:4/5;overflow:hidden;background:#e7e2da}
+.card__img img{width:100%;height:100%;object-fit:cover;object-position:50% 60%;transition:transform 1s cubic-bezier(.16,.84,.28,1)}
+.card:hover .card__img img{transform:scale(1.06)}
+.card__body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:7px;flex:1}
+.card__title{font-family:Manrope;font-weight:700;font-size:18px}
+.card__meta{font-size:13.5px;color:var(--muted)}
+.card__link{margin-top:auto;padding-top:12px;font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+
+/* почему мы */
+.feat{display:flex;gap:16px;align-items:flex-start;padding:22px;background:var(--surface);border:1px solid var(--line);border-radius:18px}
+.feat img{width:38px;height:38px;flex:none}
+.feat h3{font-size:16.5px;font-weight:700}
+.feat p{margin-top:5px;font-size:14px;color:var(--muted)}
+
+/* бизнес */
+.b2b{display:grid;grid-template-columns:1fr 1fr;background:var(--surface);border:1px solid var(--line);border-radius:28px;overflow:hidden}
+.b2b__img{min-height:100%;aspect-ratio:4/3;overflow:hidden}
+.b2b__img img{width:100%;height:100%;object-fit:cover}
+.b2b__body{padding:clamp(26px,3.4vw,56px);display:flex;flex-direction:column;justify-content:center}
+.b2b__body h2{font-size:clamp(24px,3.1vw,42px);font-weight:700;line-height:1.08;max-width:16ch;margin-top:16px}
+.b2b__body p{margin-top:14px;color:var(--muted);max-width:42ch;font-size:15.5px}
+.b2b__list{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
+.chip{font-size:13.5px;padding:8px 14px;border-radius:999px;background:var(--bg);color:var(--muted)}
+.b2b__btns{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px}
+
+/* контакты */
+.contacts{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,3.4vw,56px);align-items:start}
+.contacts h2{font-size:clamp(26px,3.5vw,46px);font-weight:700;line-height:1.06;max-width:14ch}
+.cinfo{margin-top:26px;display:flex;flex-direction:column;gap:18px}
+.cinfo div span{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.cinfo a:hover{color:var(--red)}
+.form{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:clamp(22px,2.6vw,36px);display:flex;flex-direction:column;gap:14px}
+.form label{font-size:13px;color:var(--muted)}
+.form input,.form textarea{width:100%;margin-top:6px;font:400 15.5px Inter,sans-serif;color:var(--ink);background:var(--bg);border:1px solid transparent;border-radius:12px;padding:13px 15px;transition:border-color .25s,background .25s}
+.form input:focus,.form textarea:focus{outline:none;border-color:var(--ink);background:#fff}
+.form textarea{min-height:104px;resize:vertical}
+.form__note{font-size:13px;color:var(--muted)}
+.form__ok{display:none;font-size:14.5px;color:var(--ink);background:var(--mint);border-radius:12px;padding:12px 15px}
+.form.is-sent .form__ok{display:block}
+
+/* подвал */
+.foot{margin-top:clamp(64px,8vw,120px);border-top:1px solid var(--line);padding:32px 0 40px;display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:center;font-size:13.5px;color:var(--muted)}
+.foot img{height:20px;mix-blend-mode:multiply}
+.demo-note{background:var(--ink);color:rgba(245,242,237,.72);font-size:13px;padding:14px 0}
+.demo-note .wrap{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+/* появление */
+[data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .85s cubic-bezier(.16,.84,.28,1),transform .85s cubic-bezier(.16,.84,.28,1);transition-delay:calc(var(--i,0)*90ms)}
+[data-reveal].is-in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){[data-reveal]{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+
+@media (max-width:1000px){
+  .showroom{grid-template-columns:1fr;align-items:start}
+  .grid3{grid-template-columns:repeat(2,1fr)}
+  .b2b{grid-template-columns:1fr}
+  .b2b__img{aspect-ratio:16/9}
+  .contacts{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .nav,.hdr__tel,.hdr .btn{display:none}
+  .burger{display:flex}
+  .hdr.is-open .nav{display:flex;position:fixed;inset:74px 0 auto;flex-direction:column;gap:0;background:var(--bg);padding:8px var(--pad) 24px;border-bottom:1px solid var(--line)}
+  .hdr.is-open .nav a{padding:14px 0;font-size:17px;color:var(--ink);border-bottom:1px solid var(--line)}
+  .split{grid-template-columns:1fr}
+  .tile{aspect-ratio:4/5}
+  .grid3{grid-template-columns:1fr}
+  .section-head{flex-direction:column;align-items:flex-start;gap:12px}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr" id="hdr">
+  <div class="wrap hdr__in">
+    <a class="hdr__logo" href="#top"><img src="assets/logo.jpg" alt="Kanara"></a>
+    <nav class="nav">
+      <a href="#dom">Для дома</a>
+      <a href="#biznes">Для бизнеса</a>
+      <a href="#proizvodstvo">Производство</a>
+      <a href="#dostavka">Доставка</a>
+      <a href="#kontakty">Контакты</a>
+    </nav>
+    <span class="hdr__tel"><a href="tel:+375336589619">+375 33 658-96-19</a></span>
+    <a class="btn" href="#kontakty">Обратный звонок</a>
+    <button class="burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero wrap">
+    <span class="eyebrow" data-reveal><span class="dots"><i></i><i></i><i></i></span> Могилёв · собственное производство</span>
+    <h1 data-reveal style="--i:1">Мебель для интерьеров, созданная под ваш проект</h1>
+    <p class="hero__lead" data-reveal style="--i:2">Дизайнерские решения для дома и индивидуальное производство для кафе, ресторанов, баров и офисов. Возим по всей Беларуси.</p>
+
+    <div class="split">
+      <a class="tile" href="#dom" data-reveal style="--i:3">
+        <img src="assets/px-8251914.jpg" alt="Спальня с кроватью Kanara">
+        <span class="tile__body">
+          <span class="tile__title">Для дома</span>
+          <span class="tile__sub">Премиальные кровати и мягкая мебель для вашего интерьера</span>
+          <span class="tile__cta">Смотреть коллекцию <span class="arr">→</span></span>
+        </span>
+      </a>
+      <a class="tile" href="#biznes" data-reveal style="--i:4">
+        <img src="assets/px-67468.jpg" alt="Мебель для ресторана">
+        <span class="tile__body">
+          <span class="tile__title">Для бизнеса</span>
+          <span class="tile__sub">Мебель на заказ для отелей, ресторанов, кафе и офисов</span>
+          <span class="tile__cta">Обсудить проект <span class="arr">→</span></span>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="showroom" data-reveal>
+      <div>
+        <span class="eyebrow">Скоро</span>
+        <h2>Летом 2027 открываем шоурум в МЦ «Трюм», Минск</h2>
+        <p>Можно будет потрогать ткани, проверить механизмы и увидеть размеры вживую, а не по фотографиям.</p>
+      </div>
+      <div><a class="btn btn--light" href="#kontakty">Напомнить об открытии</a></div>
+    </div>
+  </section>
+
+  <section class="section wrap" id="dom">
+    <div class="section-head">
+      <h2 data-reveal>Шесть флагманских моделей</h2>
+      <p data-reveal style="--i:1">Размер, подъёмный механизм и категория ткани выбираются прямо в карточке, цена пересчитывается сразу.</p>
+    </div>
+    <div class="grid3">
+      <a class="card" href="#kontakty" data-reveal>
+        <span class="card__img"><img src="assets/px-16435061.jpg" alt="Кровать с мягким изголовьем" loading="lazy"></span>
+        <span class="card__body">
+          <span class="card__title">Кровать с мягким изголовьем</span>
+          <span class="card__meta">4 размера · механизм по выбору · 3 категории ткани</span>
+          <span class="card__link">Выбрать конфигурацию <span class="arr">→</span></span>
+        </span>
+      </a>
+      <a class="card" href="#kontakty" data-reveal style="--i:1">
+        <span class="card__img"><img src="assets/px-3754595.jpg" alt="Кровать с высоким изголовьем" loading="lazy"></span>
+        <span class="card__body">
+          <span class="card__title">Кровать с высоким изголовьем</span>
+          <span class="card__meta">4 размера · механизм по выбору · 3 категории ткани</span>
+          <span class="card__link">Выбрать конфигурацию <span class="arr">→</span></span>
+        </span>
+      </a>
+      <a class="card" href="#kontakty" data-reveal style="--i:2">
+        <span class="card__img"><img src="assets/px-4792349.jpg" alt="Кровать в ткани букле" loading="lazy"></span>
+        <span class="card__body">
+          <span class="card__title">Кровать в ткани букле</span>
+          <span class="card__meta">4 размера · механизм по выбору · 3 категории ткани</span>
+          <span class="card__link">Выбрать конфигурацию <span class="arr">→</span></span>
+        </span>
+      </a>
+      <a class="card" href="#kontakty" data-reveal>
+        <span class="card__img"><img src="assets/px-15477636.jpg" alt="Кровать с ящиками" loading="lazy"></span>
+        <span class="card__body">
+          <span class="card__title">Кровать с ящиками</span>
+          <span class="card__meta">4 размера · механизм по выбору · 3 категории ткани</span>
+          <span class="card__link">Выбрать конфигурацию <span class="arr">→</span></span>
+        </span>
+      </a>
+      <a class="card" href="#kontakty" data-reveal style="--i:1">
+        <span class="card__img"><img src="assets/px-8251591.jpg" alt="Кровать на ножках" loading="lazy"></span>
+        <span class="card__body">
+          <span class="card__title">Кровать на ножках</span>
+          <span class="card__meta">4 размера · механизм по выбору · 3 категории ткани</span>
+          <span class="card__link">Выбрать конфигурацию <span class="arr">→</span></span>
+        </span>
+      </a>
+      <a class="card" href="#kontakty" data-reveal style="--i:2">
+        <span class="card__img"><img src="assets/px-12277126.jpg" alt="Кровать с подъёмным механизмом" loading="lazy" style="object-position:32% 62%"></span>
+        <span class="card__body">
+          <span class="card__title">Кровать с подъёмным механизмом</span>
+          <span class="card__meta">4 размера · механизм по выбору · 3 категории ткани</span>
+          <span class="card__link">Выбрать конфигурацию <span class="arr">→</span></span>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section wrap" id="proizvodstvo">
+    <div class="section-head">
+      <h2 data-reveal>Почему Kanara</h2>
+      <p data-reveal style="--i:1">Свой цех в Могилёве: от эскиза и раскроя до готовой мебели, без посредников между вами и производством.</p>
+    </div>
+    <div class="grid3">
+      <div class="feat" data-reveal><img src="assets/production.svg" alt=""><div><h3>Собственное производство</h3><p>Свой цех в Могилёве, а не перепродажа чужой мебели.</p></div></div>
+      <div class="feat" data-reveal style="--i:1"><img src="assets/design.svg" alt=""><div><h3>Дизайнерская мебель</h3><p>Форма, размер и ткань — под ваш интерьер.</p></div></div>
+      <div class="feat" data-reveal style="--i:2"><img src="assets/price.svg" alt=""><div><h3>Оптовые цены</h3><p>Цена от производителя, отдельные условия на партии.</p></div></div>
+      <div class="feat" data-reveal id="dostavka"><img src="assets/delivery.svg" alt=""><div><h3>Доставка по РБ</h3><p>Привозим в любой город Беларуси.</p></div></div>
+      <div class="feat" data-reveal style="--i:1"><img src="assets/garantee.svg" alt=""><div><h3>Гарантия качества</h3><p>Гарантия на каркас и механизмы.</p></div></div>
+      <div class="feat" data-reveal style="--i:2"><img src="assets/for-all.svg" alt=""><div><h3>Для любых заведений</h3><p>Кафе, бары, рестораны, офисы и отели.</p></div></div>
+    </div>
+  </section>
+
+  <section class="section wrap" id="biznes">
+    <div class="b2b" data-reveal>
+      <div class="b2b__img"><img src="assets/px-2079438.jpg" alt="Мебель в кафе" loading="lazy"></div>
+      <div class="b2b__body">
+        <span class="eyebrow">HoReCa</span>
+        <h2>Мебель для кафе, ресторанов, баров и офисов</h2>
+        <p>Работаем по вашим размерам и эскизам: посадочные места, столы, барные зоны, мягкие диваны в зал. Считаем проект целиком и везём готовое.</p>
+        <div class="b2b__list">
+          <span class="chip">Отели</span><span class="chip">Рестораны и кафе</span><span class="chip">Бары</span><span class="chip">Офисы</span>
+        </div>
+        <div class="b2b__btns">
+          <a class="btn" href="#kontakty">Получить коммерческое предложение</a>
+          <a class="btn btn--ghost" href="#kontakty">Скачать прайс для HoReCa</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section wrap" id="kontakty">
+    <div class="contacts">
+      <div>
+        <h2 data-reveal>Расскажите, что нужно сделать</h2>
+        <div class="cinfo">
+          <div data-reveal style="--i:1"><span>Адрес</span>РБ, 212030, г. Могилёв, ул. Бялыницкого-Бирули, 11, пом. 43</div>
+          <div data-reveal style="--i:2"><span>Телефоны</span><a href="tel:+375336589619">+375 33 658-96-19</a> · <a href="tel:+375336331548">+375 33 633-15-48</a></div>
+          <div data-reveal style="--i:3"><span>Почта</span><a href="mailto:thekanapa@gmail.com">thekanapa@gmail.com</a></div>
+          <div data-reveal style="--i:4"><span>Мессенджеры</span>Telegram · Viber · Instagram @kanara.by</div>
+        </div>
+      </div>
+      <form class="form" id="form" data-reveal style="--i:2">
+        <label>Как вас зовут<input type="text" name="name" placeholder="Имя" required></label>
+        <label>Телефон или почта<input type="text" name="contact" placeholder="+375 __ ___-__-__" required></label>
+        <label>Что нужно<textarea name="task" placeholder="Например: кровать 160×200 с подъёмным механизмом, ткань букле"></textarea></label>
+        <button class="btn" type="submit">Заказать</button>
+        <p class="form__note">Заявка приходит в Telegram и на почту, отвечаем в рабочее время.</p>
+        <p class="form__ok">Спасибо! Это демонстрационная страница, поэтому заявка никуда не ушла.</p>
+      </form>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="foot">
+      <img src="assets/logo.jpg" alt="Kanara">
+      <span>© 2026 Kanara, Могилёв</span>
+      <span>Мебель для дома и для бизнеса</span>
+    </div>
+  </div>
+</main>
+
+<div class="demo-note">
+  <div class="wrap"><span class="dots"><i></i><i></i><i></i></span> Демонстрационный концепт главной страницы для Kanara. Фотографии временные, заменяются на ваши. Дизайн и сборка — Артур Смирнов.</div>
+</div>
+
+<script>
+(function(){
+  var hdr = document.getElementById('hdr');
+  var onScroll = function(){ hdr.classList.toggle('is-stuck', window.scrollY > 8); };
+  onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+
+  document.getElementById('burger').addEventListener('click', function(){ hdr.classList.toggle('is-open'); });
+  document.querySelectorAll('.nav a').forEach(function(a){ a.addEventListener('click', function(){ hdr.classList.remove('is-open'); }); });
+
+  var els = document.querySelectorAll('[data-reveal]');
+  if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    els.forEach(function(el){ el.classList.add('is-in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+    }, {threshold:.12, rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  }
+
+  document.getElementById('form').addEventListener('submit', function(e){ e.preventDefault(); this.classList.add('is-sent'); });
+})();
+</script>
+</body>
+</html>
