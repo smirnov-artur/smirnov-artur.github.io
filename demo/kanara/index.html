@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kanara — мебель для интерьеров</title>
 <meta name="description" content="Дизайнерские кровати и мягкая мебель для дома, мебель на заказ для кафе, ресторанов, баров и офисов. Собственное производство в Могилёве, доставка по Беларуси.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://smirnov-artur.github.io/demo/kanara/">
+<meta property="og:title" content="Kanara — мебель для интерьеров">
+<meta property="og:description" content="Кровати и мягкая мебель для дома, мебель на заказ для кафе, ресторанов, баров и офисов. Своё производство в Могилёве.">
+<meta property="og:image" content="https://smirnov-artur.github.io/demo/kanara/assets/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='8' r='6' fill='%23FF4438'/%3E%3Ccircle cx='8' cy='22' r='6' fill='%23FFC814'/%3E%3Ccircle cx='24' cy='22' r='6' fill='%235FF0B4'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -92,12 +98,27 @@ p{margin:0}
 
 /* ткани */
 .tkani{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(18px,2.4vw,44px);align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:28px;overflow:hidden}
-.tkani__img{aspect-ratio:16/10;overflow:hidden}
-.tkani__img img{width:100%;height:100%;object-fit:cover;object-position:50% 74%}
+.tkani__img{position:relative;overflow:hidden;min-height:300px}
+.tkani__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 74%}
 .tkani__body{padding:clamp(22px,3vw,48px) clamp(22px,3vw,48px) clamp(22px,3vw,48px) 0}
 .tkani__body h2{margin-top:14px;font-size:clamp(22px,2.8vw,38px);font-weight:700;line-height:1.1;max-width:16ch}
 .tkani__body p{margin-top:12px;color:var(--muted);font-size:15.5px;max-width:42ch}
 .tkani__list{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
+
+/* конфигуратор */
+.konf{display:grid;grid-template-columns:.92fr 1.08fr;background:var(--surface);border:1px solid var(--line);border-radius:28px;overflow:hidden}
+.konf__img{position:relative;overflow:hidden;min-height:380px}
+.konf__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 58%}
+.konf__body{padding:clamp(24px,3vw,46px);display:flex;flex-direction:column;gap:clamp(18px,2vw,26px)}
+.konf__label{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.konf__opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{font:500 14.5px Inter,sans-serif;color:var(--ink);background:var(--bg);border:1px solid transparent;border-radius:999px;padding:11px 18px;cursor:pointer;transition:background .25s,color .25s,border-color .25s}
+.opt:hover{border-color:var(--line)}
+.opt.is-on{background:var(--ink);color:#fff}
+.konf__itog{margin-top:auto;padding-top:clamp(14px,1.6vw,20px);border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.konf__cena{font-family:Manrope;font-weight:800;font-size:clamp(28px,3vw,40px);letter-spacing:-.02em;transition:opacity .25s,transform .25s}
+.konf__cena.is-upd{opacity:.35;transform:translateY(-4px)}
+.konf__note{font-size:13px;color:var(--muted)}
 
 /* почему мы */
 .feat{display:flex;gap:16px;align-items:flex-start;padding:22px;background:var(--surface);border:1px solid var(--line);border-radius:18px}
@@ -107,8 +128,8 @@ p{margin:0}
 
 /* бизнес */
 .b2b{display:grid;grid-template-columns:1fr 1fr;background:var(--surface);border:1px solid var(--line);border-radius:28px;overflow:hidden}
-.b2b__img{min-height:100%;aspect-ratio:4/3;overflow:hidden}
-.b2b__img img{width:100%;height:100%;object-fit:cover}
+.b2b__img{position:relative;overflow:hidden;min-height:320px}
+.b2b__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .b2b__body{padding:clamp(26px,3.4vw,56px);display:flex;flex-direction:column;justify-content:center}
 .b2b__body h2{font-size:clamp(24px,3.1vw,42px);font-weight:700;line-height:1.08;max-width:16ch;margin-top:16px}
 .b2b__body p{margin-top:14px;color:var(--muted);max-width:42ch;font-size:15.5px}
@@ -146,7 +167,12 @@ p{margin:0}
   .showroom{grid-template-columns:1fr;align-items:start}
   .grid3{grid-template-columns:repeat(2,1fr)}
   .b2b{grid-template-columns:1fr}
-  .b2b__img{aspect-ratio:16/9}
+  .b2b__img{aspect-ratio:16/9;min-height:0}
+  .tkani{grid-template-columns:1fr}
+  .tkani__img{aspect-ratio:16/10;min-height:0}
+  .tkani__body{padding:0 clamp(20px,4vw,34px) clamp(24px,4vw,36px)}
+  .konf{grid-template-columns:1fr}
+  .konf__img{aspect-ratio:4/3;min-height:0}
   .contacts{grid-template-columns:1fr}
 }
 @media (max-width:760px){
@@ -288,6 +314,51 @@ p{margin:0}
     </div>
   </section>
 
+  <section class="section wrap" id="konfigurator">
+    <div class="section-head">
+      <h2 data-reveal>Соберите свою кровать</h2>
+      <p data-reveal style="--i:1">Так это работает в каталоге: выбираете размер, основание и ткань, цена считается сразу и уходит вместе с заявкой.</p>
+    </div>
+    <div class="konf" data-reveal>
+      <div class="konf__img"><img src="assets/krovat-bukle.jpg" alt="Кровать Kanara" loading="lazy"></div>
+      <div class="konf__body">
+        <div>
+          <span class="konf__label">Размер спального места</span>
+          <div class="konf__opts" data-group="размер">
+            <button type="button" class="opt" data-add="-120">140 × 200</button>
+            <button type="button" class="opt is-on" data-add="0">160 × 200</button>
+            <button type="button" class="opt" data-add="140">180 × 200</button>
+            <button type="button" class="opt" data-add="260">200 × 200</button>
+          </div>
+        </div>
+        <div>
+          <span class="konf__label">Основание</span>
+          <div class="konf__opts" data-group="основание">
+            <button type="button" class="opt is-on" data-add="0">Без механизма</button>
+            <button type="button" class="opt" data-add="220">Подъёмный механизм</button>
+            <button type="button" class="opt" data-add="160">Ящики</button>
+          </div>
+        </div>
+        <div>
+          <span class="konf__label">Ткань</span>
+          <div class="konf__opts" data-group="ткань">
+            <button type="button" class="opt is-on" data-add="0">Лён</button>
+            <button type="button" class="opt" data-add="90">Букле</button>
+            <button type="button" class="opt" data-add="140">Велюр</button>
+          </div>
+        </div>
+        <div class="konf__itog">
+          <div>
+            <span class="konf__label">Цена</span>
+            <span class="konf__cena" id="cena">1 190 BYN</span>
+          </div>
+          <button type="button" class="btn" id="konf-cta">Оставить заявку <span class="arr">→</span></button>
+        </div>
+        <p class="konf__note">Цены условные, встанут ваши из прайса.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="section wrap" id="proizvodstvo">
     <div class="section-head">
       <h2 data-reveal>Почему Kanara</h2>
@@ -376,6 +447,33 @@ p{margin:0}
   }
 
   document.getElementById('form').addEventListener('submit', function(e){ e.preventDefault(); this.classList.add('is-sent'); });
+
+  var база = 1190, цена = document.getElementById('cena');
+  function пересчёт(){
+    var сумма = база;
+    document.querySelectorAll('.konf__opts .opt.is-on').forEach(function(b){ сумма += parseInt(b.getAttribute('data-add'), 10); });
+    цена.classList.add('is-upd');
+    setTimeout(function(){
+      цена.textContent = String(сумма).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' BYN';
+      цена.classList.remove('is-upd');
+    }, 150);
+  }
+  document.querySelectorAll('.konf__opts').forEach(function(g){
+    g.addEventListener('click', function(e){
+      var b = e.target.closest('.opt');
+      if (!b) return;
+      g.querySelectorAll('.opt').forEach(function(x){ x.classList.remove('is-on'); });
+      b.classList.add('is-on');
+      пересчёт();
+    });
+  });
+  document.getElementById('konf-cta').addEventListener('click', function(){
+    var части = [];
+    document.querySelectorAll('.konf__opts').forEach(function(g){ части.push(g.querySelector('.opt.is-on').textContent.trim()); });
+    document.querySelector('.form textarea').value = 'Кровать: ' + части.join(', ') + '. По конфигуратору ' + цена.textContent;
+    document.getElementById('kontakty').scrollIntoView({behavior: 'smooth', block: 'start'});
+    setTimeout(function(){ document.querySelector('.form input').focus(); }, 800);
+  });
 })();
 </script>
 </body>
