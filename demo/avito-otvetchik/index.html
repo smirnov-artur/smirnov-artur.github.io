@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ответчик для чатов Авито, который знает ваш склад</title>
+<meta name="description" content="Отвечает покупателям в чатах Авито по таблице остатков магазина: размер, наличие, цена, комплект, доставка. Заявку передаёт владельцу в Telegram. Демо можно попробовать.">
+<meta property="og:title" content="Ответчик для чатов Авито, который знает ваш склад">
+<meta property="og:description" content="Наличие и цены берёт из таблицы магазина, а не из головы. Попробуйте демо в Telegram.">
+<meta property="og:type" content="website">
+<style>
+:root{--fon:#f6f4ef;--list:#fff;--tekst:#1b1a17;--seryy:#6b675e;--liniya:#e2ded4;--acc:#0b6b4f;--acc2:#e8f3ee;--pok:#eef0f3;--warn:#fff6dd}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fon);color:var(--tekst);font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:0 18px}
+header{padding:44px 0 8px}
+.metka{display:inline-block;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--acc);border:1px solid var(--acc);border-radius:99px;padding:3px 10px;margin-bottom:18px}
+h1{font-size:clamp(30px,6.4vw,46px);line-height:1.08;margin:0 0 16px;letter-spacing:-.02em}
+h2{font-size:24px;line-height:1.2;margin:56px 0 14px;letter-spacing:-.01em}
+p{margin:0 0 14px}
+.lid{font-size:19px;color:#34322c;max-width:640px}
+.knopki{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 6px}
+a.kn{display:inline-block;padding:14px 20px;border-radius:12px;text-decoration:none;font-weight:600;font-size:16px}
+a.kn.gl{background:var(--acc);color:#fff}
+a.kn.vt{background:var(--list);color:var(--tekst);border:1px solid var(--liniya)}
+a.kn:focus-visible,a:focus-visible{outline:3px solid #f2b705;outline-offset:2px}
+.pod{font-size:14px;color:var(--seryy)}
+.chat{background:var(--list);border:1px solid var(--liniya);border-radius:16px;padding:16px 14px;margin:26px 0 8px}
+.rep{max-width:86%;padding:10px 13px;border-radius:14px;margin:8px 0;font-size:15.5px;line-height:1.45}
+.pok{background:var(--pok);margin-right:auto;border-bottom-left-radius:4px}
+.bot{background:var(--acc2);margin-left:auto;border-bottom-right-radius:4px}
+.vlad{background:var(--warn);border:1px dashed #d9b64a;margin:8px auto;max-width:100%;font-size:14.5px;border-radius:10px}
+.kto{display:block;font-size:12px;color:var(--seryy);margin-bottom:2px}
+.tri{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:720px){.tri{grid-template-columns:repeat(3,1fr)}}
+.kart{background:var(--list);border:1px solid var(--liniya);border-radius:14px;padding:16px}
+.kart h3{margin:0 0 6px;font-size:17px}
+.kart p{font-size:15px;color:#3c3a34;margin:0}
+.kart.nash{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc) inset}
+ol,ul{padding-left:22px;margin:0 0 14px}
+li{margin:0 0 8px}
+.dva{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:720px){.dva{grid-template-columns:1fr 1fr}}
+.cena{background:var(--list);border:1px solid var(--liniya);border-radius:16px;padding:20px}
+.cena b.big{font-size:30px;letter-spacing:-.01em}
+.snoska{font-size:14px;color:var(--seryy)}
+footer{margin:60px 0 40px;padding-top:20px;border-top:1px solid var(--liniya);font-size:14px;color:var(--seryy)}
+a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="w">
+
+<header>
+<span class="metka">демо работает, можно потрогать</span>
+<h1>Ответчик для чатов Авито, который знает ваш склад</h1>
+<p class="lid">Покупатель пишет «205/55 r16 зима есть?». Ассистент Авито на такое ответит только тем, что написано в объявлении. Этот ответчик находит размер в сообщении, смотрит в вашу таблицу остатков и отвечает ценой и наличием. Скидки и возвраты отдаёт вам.</p>
+<div class="knopki">
+<a class="kn gl" href="https://t.me/koleso62_demo_bot?start=site">Попробовать демо в Telegram</a>
+<a class="kn vt" href="https://t.me/smirnovarturr">Написать мне</a>
+</div>
+<p class="pod">В демо вы покупатель, магазин шин выдуманный, таблица на 26 позиций. Попробуйте сломать: спросите размер, которого нет, диски, скидку, телефон.</p>
+</header>
+
+<section>
+<h2>Как он разговаривает</h2>
+<p>Это реплики демо-бота без правок. Жёлтым показано, что в этот момент получил бы владелец магазина.</p>
+<div class="chat">
+<div class="rep pok"><span class="kto">покупатель</span>добрый день, на солярис зимние есть? 185/65 r15</div>
+<div class="rep bot"><span class="kto">ответчик</span>Добрый день! Да, есть на этот размер: Kama Alga шипованная за 4300₽, Viatti Brina Nordico за 4700₽ и Cordiant Snow Cross 2 за 5200₽, все шипы. Комплект какой смотрите или что-то одно взять?</div>
+<div class="rep pok"><span class="kto">покупатель</span>тогда кордиант с шипами, 4 штуки. доставка в михайлов есть?</div>
+<div class="rep bot"><span class="kto">ответчик</span>Комплект Cordiant Snow Cross 2 выйдет 20800₽, по Рязани доставка бесплатная, но в Михайлов мы сами не возим, только через Авито Доставку или ТК по их тарифу, отправка на следующий день после оплаты. Как вам удобнее, через Авито Доставку оформим?</div>
+<div class="rep pok"><span class="kto">покупатель</span>а скидку на комплект сделаете?</div>
+<div class="rep bot"><span class="kto">ответчик</span>Сейчас уточню у коллег и отвечу вам здесь же.</div>
+<div class="rep vlad"><span class="kto">владельцу в Telegram</span>Нужен человек: покупатель пишет про скидку. «а скидку на комплект сделаете?»</div>
+<div class="rep pok"><span class="kto">покупатель</span>вы бот?</div>
+<div class="rep bot"><span class="kto">ответчик</span>Я онлайн-помощник магазина, отвечаю сразу по наличию и ценам, а если что сложнее, подключится менеджер.</div>
+</div>
+</section>
+
+<section>
+<h2>Чем это отличается от того, что уже есть</h2>
+<div class="tri">
+<div class="kart"><h3>Ассистент Авито</h3><p>Бесплатный, встроен в чаты. Отвечает на частые вопросы по тексту объявления и молчит, когда вы онлайн. Про остатки, комплект и доставку в другой город не знает, если этого нет в объявлении.</p></div>
+<div class="kart"><h3>Конструкторы ботов</h3><p>От 500 до 2 500 ₽ в месяц. Сценарии и базу знаний вы собираете сами, ответы нейросети у многих считаются отдельно, за каждый. Без связи с вашей таблицей бот не знает, что сегодня в наличии.</p></div>
+<div class="kart nash"><h3>Этот ответчик</h3><p>Размер, сезон и бренд из сообщения достаёт код, он же находит строки в вашей таблице. Нейросеть только складывает ответ из найденного, поэтому цену и остаток выдумать не может. Настраиваю я, вы правите таблицу.</p></div>
+</div>
+<p class="snoska" style="margin-top:12px">Про ассистента: <a href="https://support.avito.ru/articles/3148">справка Авито</a>. Цены конструкторов: открытые прайсы avChat, AvBot, aChatBot на сентябрь 2026.</p>
+</section>
+
+<section>
+<h2>Что он делает и чего не делает</h2>
+<div class="dva">
+<div class="kart"><h3>Делает</h3>
+<ul>
+<li>Понимает «205/55 r16», «205 55 16» и «а без шипов?» после прошлой реплики.</li>
+<li>Называет цену за штуку и за комплект, остаток, варианты подешевле и получше.</li>
+<li>Отвечает про адрес, часы, доставку, оплату и возврат по вашей справке.</li>
+<li>Скидку, опт, возврат, жалобу передаёт вам в Telegram, покупателю пишет, что уточнит.</li>
+<li>Когда покупатель готов брать, присылает вам заявку.</li>
+</ul></div>
+<div class="kart"><h3>Не делает</h3>
+<ul>
+<li>Не называет то, чего нет в таблице, и не обещает «под заказ», если вы так не работаете.</li>
+<li>Не даёт телефон и не зовёт в мессенджеры: переводить общение из Авито в другие каналы запрещено правилами площадки. Ссылок тоже не шлёт.</li>
+<li>Не торгуется за вас.</li>
+<li>Не врёт, что он человек, если спросили прямо.</li>
+<li>Не отвечает в чате, где уже пишете вы сами.</li>
+</ul></div>
+</div>
+</section>
+
+<section>
+<h2>Кому подойдёт</h2>
+<div class="dva">
+<div class="kart"><h3>Да</h3><p>За одним объявлением стоят десятки и сотни позиций: шины, запчасти, стройматериалы, мебель. Чатов от десяти в день, часть приходит вечером и ночью. Остатки ведёте в таблице или выгружаете из 1С.</p></div>
+<div class="kart"><h3>Пока нет</h3><p>Один-два чата в день: хватит автоответов Авито, они бесплатные. Нет подписки с доступом к API чатов: сначала посмотрите <a href="../avito-api/">шпаргалку, какая подписка нужна</a>.</p></div>
+</div>
+</section>
+
+<section>
+<h2>Как запускаем</h2>
+<ol>
+<li>Вы даёте таблицу остатков и отвечаете на мои вопросы про доставку, оплату, возврат. Я собираю справку магазина обычным текстом, вы её читаете и правите.</li>
+<li>Вы создаёте ключи API в кабинете Авито Pro. Пароль от аккаунта мне не нужен.</li>
+<li>Неделю ответчик работает в тени: пишет черновики по вашим живым чатам и ничего не отправляет. Вы читаете, я правлю то, что режет глаз.</li>
+<li>Включаем отправку. Сложное и деньги по-прежнему приходят вам.</li>
+</ol>
+<p>Работает через официальный API Авито. Доступность API зависит от Авито, поэтому честно: обещать бесперебойность на годы вперёд не может никто, кто через него работает.</p>
+</section>
+
+<section>
+<h2>Сколько стоит</h2>
+<div class="cena">
+<p><b class="big">25 000 ₽</b> установка и <b class="big">от 3 000 ₽</b> в месяц ведение.</p>
+<p>В установку входит разбор вашей таблицы, справка магазина, неделя в тени и правки по её итогам. В ведение входят ответы нейросети и доработка правил, когда меняется ассортимент или условия. Счёт за «каждый ответ бота» не выставляю.</p>
+<p class="snoska">Продукт новый, у клиентов он пока не стоит, поэтому показываю демо и не рассказываю про кейсы. Первым магазинам уделю больше времени, чем буду уделять потом.</p>
+</div>
+<div class="knopki">
+<a class="kn gl" href="https://t.me/koleso62_demo_bot?start=site2">Попробовать демо</a>
+<a class="kn vt" href="https://t.me/smirnovarturr">Обсудить свой магазин</a>
+</div>
+</section>
+
+<footer>
+Артур Смирнов, разработчик. Telegram <a href="https://t.me/smirnovarturr">@smirnovarturr</a>. Другие работы: <a href="https://smirnov-artur.github.io/portfolio/">портфолио</a>.
+</footer>
+
+</div>
+</body>
+</html>
