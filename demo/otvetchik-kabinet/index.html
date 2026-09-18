@@ -173,15 +173,29 @@ a{color:var(--acc)}
 const TG = window.Telegram && window.Telegram.WebApp;
 if (TG) { TG.ready(); TG.expand(); if (TG.colorScheme) document.documentElement.dataset.theme = TG.colorScheme; }
 
-function dannye() {
+function razobrat() {
   try {
     const h = location.hash.slice(1);
-    if (!h) return null;
-    const s = decodeURIComponent(escape(atob(h.replace(/-/g, '+').replace(/_/g, '/'))));
-    return JSON.parse(s);
-  } catch (e) { return null; }
+    if (!h) return {};
+    const chast = h.startsWith('api=') ? h.slice(4) : h;
+    const [adres, hvost] = h.startsWith('api=') ? chast.split('&d=') : [null, chast];
+    const dan = hvost ? JSON.parse(decodeURIComponent(escape(atob(hvost.replace(/-/g, '+').replace(/_/g, '/'))))) : {};
+    return { api: adres ? decodeURIComponent(adres) : null, dan };
+  } catch (e) { return {}; }
 }
-const D = dannye() || {};
+const NACHALO = razobrat();
+const API = NACHALO.api;
+let D = NACHALO.dan || {};
+
+async function sServera(put, telo) {
+  const otvet = await fetch(API + put, {
+    method: telo ? 'POST' : 'GET',
+    headers: { 'Content-Type': 'application/json', 'X-Init-Data': (TG && TG.initData) || '', 'bypass-tunnel-reminder': 'true' },
+    body: telo ? JSON.stringify(telo) : undefined,
+  });
+  if (!otvet.ok) throw new Error('сервер ответил ' + otvet.status);
+  return otvet.json();
+}
 
 const el = (id) => document.getElementById(id);
 const txt = (id, v) => { const n = el(id); if (n) n.textContent = v; };
@@ -198,7 +212,7 @@ function kogdaTekst(iso) {
 
 function narisovat() {
   txt('zag', D.imya ? 'Кабинет: ' + D.imya : 'Кабинет ответчика');
-  txt('podzag', D.obnovleno ? 'на ' + D.obnovleno : 'откройте заново, чтобы обновить');
+  txt('podzag', D.obnovleno ? (API ? 'обновлено в ' + D.obnovleno : 'на ' + D.obnovleno + ', /kabinet обновит') : 'загружаю…');
   txt('p-otvety', D.otvetov ?? '—');
   txt('p-zayavki', D.zayavok ?? '—');
   txt('r-avito', D.avito || 'не подключён');
@@ -240,7 +254,19 @@ document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
   window.scrollTo(0, 0);
 });
 
-function poslat(o) {
+async function poslat(o) {
+  if (API) {   // живой кабинет: действие уходит на сервер и экран сразу обновляется
+    try {
+      if (TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred('light');
+      const svezhee = await sServera('/api/deystvie', o);
+      const skazat = svezhee.skazat;
+      D = svezhee; narisovat();
+      if (skazat) pokazat(skazat);
+    } catch (e) {
+      pokazat('Не получилось: ' + e.message + '. Компьютер с ответчиком может быть выключен.');
+    }
+    return;
+  }
   try {
     if (!TG || !TG.sendData) throw new Error('нет Telegram');
     TG.sendData(JSON.stringify(o));
@@ -248,7 +274,24 @@ function poslat(o) {
     alert('Отсюда кнопки не работают: это просмотр. Откройте кабинет кнопкой «Кабинет» под полем ввода в приложении Telegram — там всё нажимается.');
   }
 }
+
+function pokazat(tekst) {
+  const p = document.getElementById('podzag');
+  if (p) { p.textContent = tekst; setTimeout(() => { p.textContent = D.obnovleno ? 'на ' + D.obnovleno : ''; }, 4000); }
+}
+
+async function obnovit() {
+  if (!API) return;
+  try {
+    D = await sServera('/api/kabinet');
+    narisovat();
+  } catch (e) {
+    pokazat('Данные не обновились: ' + e.message);
+  }
+}
 document.querySelectorAll('[data-cmd]').forEach(b => b.onclick = () => poslat({ cmd: b.dataset.cmd }));
+obnovit();
+document.addEventListener('visibilitychange', () => { if (!document.hidden) obnovit(); });
 if (el('kn-vstrecha')) el('kn-vstrecha').onclick = () => {
   const chto = el('v-chto').value.trim(), kogda = el('v-den').value;
   if (!chto || !kogda) { alert('Напишите, что и когда'); return; }
