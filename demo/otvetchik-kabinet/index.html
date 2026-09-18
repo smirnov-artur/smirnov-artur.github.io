@@ -241,8 +241,12 @@ document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
 });
 
 function poslat(o) {
-  if (!TG || !TG.sendData) { alert('Откройте кабинет из бота'); return; }
-  TG.sendData(JSON.stringify(o));
+  try {
+    if (!TG || !TG.sendData) throw new Error('нет Telegram');
+    TG.sendData(JSON.stringify(o));
+  } catch (e) {
+    alert('Отсюда кнопки не работают: это просмотр. Откройте кабинет кнопкой «Кабинет» под полем ввода в приложении Telegram — там всё нажимается.');
+  }
 }
 document.querySelectorAll('[data-cmd]').forEach(b => b.onclick = () => poslat({ cmd: b.dataset.cmd }));
 if (el('kn-vstrecha')) el('kn-vstrecha').onclick = () => {
