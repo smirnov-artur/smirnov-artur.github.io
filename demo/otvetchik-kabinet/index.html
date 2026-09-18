@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Кабинет ответчика</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --fon:#f6f4ef;--list:#fff;--tekst:#17160f;--seryy:#6b675e;--liniya:#e3ded2;--acc:#0b6b4f;--acc2:#e8f3ee;
+  --plohо:#b3261e;--zhelt:#fff6dd;--radius:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--fon:#14151a;--list:#1c1e25;--tekst:#eceae3;--seryy:#9a968c;--liniya:#2a2d36;--acc:#48c39a;--acc2:#14312a;--zhelt:#2c2716}
+}
+:root[data-theme="dark"]{--fon:#14151a;--list:#1c1e25;--tekst:#eceae3;--seryy:#9a968c;--liniya:#2a2d36;--acc:#48c39a;--acc2:#14312a;--zhelt:#2c2716}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fon);color:var(--tekst);font:16px/1.5 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif;padding-bottom:84px}
+.w{max-width:620px;margin:0 auto;padding:0 16px}
+header{padding:18px 0 8px}
+h1{font-size:21px;margin:0 0 2px;letter-spacing:-.01em}
+.pod{color:var(--seryy);font-size:13.5px;margin:0}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--list);border-top:1px solid var(--liniya);display:flex;z-index:5;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;color:var(--seryy);font:600 11.5px/1.25 inherit;padding:9px 2px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+nav button .z{font-size:18px;line-height:1}
+nav button[aria-current="true"]{color:var(--acc)}
+section{display:none;padding:6px 0 10px}
+section[data-on]{display:block}
+.k{background:var(--list);border:1px solid var(--liniya);border-radius:var(--radius);padding:14px;margin:0 0 10px}
+.k h2{font-size:15px;margin:0 0 8px;letter-spacing:.01em}
+.ryad{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--liniya);font-size:14.5px}
+.ryad:last-child{border-bottom:0}
+.ryad b{font-weight:650}
+.seryy{color:var(--seryy)}
+.plit{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.plit .k{margin:0;text-align:center}
+.bol{font-size:26px;font-weight:700;letter-spacing:-.02em;display:block}
+button.d{display:block;width:100%;border:1px solid var(--liniya);background:var(--list);color:var(--tekst);border-radius:12px;padding:12px 14px;font:600 15px inherit;margin:0 0 8px;text-align:left;cursor:pointer}
+button.d.gl{background:var(--acc);color:#fff;border-color:var(--acc);text-align:center}
+button.d.opas{color:var(--plohо)}
+.pust{color:var(--seryy);font-size:14px;padding:6px 0}
+ol.shagi{margin:0;padding-left:20px}
+ol.shagi li{margin:0 0 10px}
+.zam{background:var(--zhelt);border-radius:12px;padding:10px 12px;font-size:13.5px;margin:8px 0 0}
+input,textarea,select{width:100%;font:15px inherit;color:var(--tekst);background:var(--fon);border:1px solid var(--liniya);border-radius:11px;padding:11px 12px;margin:0 0 8px}
+textarea{min-height:74px;resize:vertical}
+label{display:block;font-size:13px;color:var(--seryy);margin:0 0 4px}
+.vstr{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--liniya)}
+.vstr:last-child{border-bottom:0}
+.vstr .kogda{min-width:78px;font-weight:650;font-size:13.5px;color:var(--acc)}
+.vstr .chto{flex:1;font-size:14.5px}
+.vstr.proshlo .kogda{color:var(--seryy)}
+.metka{display:inline-block;font-size:11.5px;color:var(--seryy);border:1px solid var(--liniya);border-radius:99px;padding:1px 8px;margin-left:6px}
+a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="w">
+<header><h1 id="zag">Кабинет</h1><p class="pod" id="podzag">загружаю…</p></header>
+
+<section id="s-segodnya" data-on>
+  <div class="plit">
+    <div class="k"><span class="bol" id="p-otvety">—</span><span class="seryy">ответов</span></div>
+    <div class="k"><span class="bol" id="p-zayavki">—</span><span class="seryy">заявок</span></div>
+  </div>
+  <div class="k">
+    <h2>Как работает сейчас</h2>
+    <div class="ryad"><span>Авито</span><b id="r-avito">—</b></div>
+    <div class="ryad"><span>Личный Telegram</span><b id="r-tg">—</b></div>
+    <div class="ryad"><span>Часы</span><b id="r-chasy">—</b></div>
+    <div class="ryad"><span>Цель разговора</span><b id="r-cel">—</b></div>
+    <div class="ryad"><span>Прайс</span><b id="r-prays">—</b></div>
+  </div>
+  <div class="k">
+    <h2>Ближайшее</h2>
+    <div id="blizhayshee"><p class="pust">Встреч и напоминаний нет.</p></div>
+  </div>
+  <button class="d" data-cmd="sam_pereklyuchit" id="kn-sam">Переключить ответы в Авито</button>
+  <button class="d" data-cmd="zayavki">Прислать заявки файлом Excel</button>
+</section>
+
+<section id="s-zayavki">
+  <div class="k"><h2>Заявки</h2><div id="spisok-zayavok"><p class="pust">Пока пусто. Заявка появляется, когда клиент оставил телефон или бот пообещал бронь.</p></div></div>
+  <button class="d" data-cmd="zayavki">Выгрузить все в Excel</button>
+  <button class="d" data-cmd="kuda">Куда присылать заявки</button>
+</section>
+
+<section id="s-kalendar">
+  <div class="k">
+    <h2>Встречи и напоминания</h2>
+    <div id="spisok-vstrech"><p class="pust">Записей нет.</p></div>
+  </div>
+  <div class="k">
+    <h2>Добавить</h2>
+    <label for="v-chto">Что</label>
+    <input id="v-chto" placeholder="Замер у Ирины, Есенина 12" maxlength="120">
+    <label for="v-den">Когда</label>
+    <input id="v-den" type="datetime-local">
+    <button class="d gl" id="kn-vstrecha">Записать</button>
+    <p class="zam">То же самое можно сказать голосом: «напомни завтра в три позвонить Ирине».</p>
+  </div>
+</section>
+
+<section id="s-nastroyki">
+  <div class="k">
+    <h2>Ответы</h2>
+    <div class="ryad"><span>В Авито отвечает сам</span><b id="n-sam">—</b></div>
+    <div class="ryad"><span>В Telegram отвечает сам</span><b id="n-tg">—</b></div>
+    <button class="d" data-cmd="sam_pereklyuchit" style="margin-top:10px">Переключить Авито</button>
+    <button class="d" data-cmd="tg_pereklyuchit">Переключить Telegram</button>
+  </div>
+  <div class="k">
+    <h2>Правила и цель</h2>
+    <p class="seryy" id="n-pravila" style="font-size:14px;white-space:pre-wrap">—</p>
+    <label for="n-novoe">Добавить правило</label>
+    <textarea id="n-novoe" placeholder="про опт сразу зови меня"></textarea>
+    <button class="d gl" id="kn-pravilo">Добавить</button>
+    <label for="n-cel" style="margin-top:8px">К чему вести разговор</label>
+    <input id="n-cel" placeholder="записать на замер">
+    <button class="d" id="kn-cel">Сохранить цель</button>
+  </div>
+  <div class="k">
+    <h2>Опасное</h2>
+    <button class="d opas" data-cmd="stop_avito">Отключить кабинет Авито</button>
+    <button class="d opas" data-cmd="udalit">Стереть все мои данные</button>
+  </div>
+</section>
+
+<section id="s-api">
+  <div class="k">
+    <h2>Ключи Авито: по шагам</h2>
+    <ol class="shagi">
+      <li>Откройте <a href="https://pro.avito.ru" target="_blank" rel="noopener">Авито Pro</a> на компьютере.</li>
+      <li>Слева внизу: <b>Профиль и настройки</b> → <b>Интеграции и API</b>.</li>
+      <li>Нажмите <b>Создать ключ</b> (или «Получить доступ к API»). Название любое, например «Ответчик».</li>
+      <li>Скопируйте <b>client_id</b> и <b>client_secret</b> целиком.</li>
+      <li>Пришлите их одним сообщением боту после команды <b>/avito</b>. Сообщение с ключами бот сразу удалит.</li>
+    </ol>
+    <p class="zam">Ключи дают доступ только к API: пароль от кабинета не нужен, и отозвать их можно там же в любой момент.</p>
+  </div>
+  <div class="k">
+    <h2>Раздела «Интеграции и API» нет?</h2>
+    <p style="font-size:14.5px;margin:0 0 8px">Значит подписка кабинета его не открывает. По справке Авито: в Товарах и Работе нужен «Максимальный», в Услугах — «Расширенный» или «Максимальный».</p>
+    <p style="font-size:14.5px;margin:0">Это не тупик: подключите личный Telegram — там ответчик работает бесплатно и по тому же прайсу.</p>
+    <button class="d" data-cmd="telegram" style="margin-top:10px">Как подключить Telegram</button>
+  </div>
+</section>
+
+<section id="s-dengi">
+  <div class="k">
+    <h2>Проба и оплата</h2>
+    <div class="ryad"><span>Осталось дней пробы</span><b id="d-dney">—</b></div>
+    <div class="ryad"><span>Ответов в этом месяце</span><b id="d-mesyac">—</b></div>
+    <div class="ryad"><span>Тариф</span><b id="d-tarif">проба</b></div>
+  </div>
+  <button class="d gl" data-cmd="kupit">Хочу продолжить после пробы</button>
+  <button class="d" data-cmd="tarify">Показать цены</button>
+  <button class="d" data-cmd="partner">Партнёрская ссылка (30 %)</button>
+</section>
+</div>
+
+<nav>
+  <button data-idet="s-segodnya" aria-current="true"><span class="z">📊</span>Сегодня</button>
+  <button data-idet="s-zayavki"><span class="z">📥</span>Заявки</button>
+  <button data-idet="s-kalendar"><span class="z">🗓</span>Календарь</button>
+  <button data-idet="s-nastroyki"><span class="z">⚙️</span>Настройки</button>
+  <button data-idet="s-api"><span class="z">🔑</span>Ключи</button>
+  <button data-idet="s-dengi"><span class="z">💳</span>Оплата</button>
+</nav>
+
+<script>
+const TG = window.Telegram && window.Telegram.WebApp;
+if (TG) { TG.ready(); TG.expand(); if (TG.colorScheme) document.documentElement.dataset.theme = TG.colorScheme; }
+
+function dannye() {
+  try {
+    const h = location.hash.slice(1);
+    if (!h) return null;
+    const s = decodeURIComponent(escape(atob(h.replace(/-/g, '+').replace(/_/g, '/'))));
+    return JSON.parse(s);
+  } catch (e) { return null; }
+}
+const D = dannye() || {};
+
+const el = (id) => document.getElementById(id);
+const txt = (id, v) => { const n = el(id); if (n) n.textContent = v; };
+
+function kogdaTekst(iso) {
+  const d = new Date(iso.replace(' ', 'T'));
+  if (isNaN(d)) return iso;
+  const sut = Math.round((d.setHours(0,0,0,0) - new Date().setHours(0,0,0,0)) / 86400000);
+  const den = sut === 0 ? 'сегодня' : sut === 1 ? 'завтра' : sut === -1 ? 'вчера'
+    : d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+  const t = new Date(iso.replace(' ', 'T'));
+  return den + ', ' + t.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+}
+
+function narisovat() {
+  txt('zag', D.imya ? 'Кабинет: ' + D.imya : 'Кабинет ответчика');
+  txt('podzag', D.obnovleno ? 'на ' + D.obnovleno : 'откройте заново, чтобы обновить');
+  txt('p-otvety', D.otvetov ?? '—');
+  txt('p-zayavki', D.zayavok ?? '—');
+  txt('r-avito', D.avito || 'не подключён');
+  txt('r-tg', D.tg || 'не подключён');
+  txt('r-chasy', D.chasy || 'круглые сутки');
+  txt('r-cel', D.cel || 'не задана');
+  txt('r-prays', D.prays || 'нет');
+  txt('n-sam', D.sam ? 'да' : 'нет, черновики');
+  txt('n-tg', D.tg_sam ? 'да' : 'нет, черновики');
+  txt('n-pravila', D.pravila || 'правил нет');
+  txt('d-dney', D.dney ?? '—');
+  txt('d-mesyac', D.mesyac ?? '—');
+  txt('d-tarif', D.tarif || 'проба');
+  if (el('n-cel')) el('n-cel').value = D.cel || '';
+
+  const z = el('spisok-zayavok');
+  if (D.zayavki && D.zayavki.length) {
+    z.innerHTML = D.zayavki.map(v =>
+      '<div class="ryad"><span>' + (v.kto || 'клиент') + (v.tel ? '<span class="metka">' + v.tel + '</span>' : '') +
+      '<br><span class="seryy" style="font-size:13px">' + (v.chto || '') + '</span></span><b class="seryy">' + (v.kogda || '') + '</b></div>').join('');
+  }
+  const risuyVstrechi = (uzel, spisok, pustoy) => {
+    if (!uzel) return;
+    if (!spisok || !spisok.length) { uzel.innerHTML = '<p class="pust">' + pustoy + '</p>'; return; }
+    uzel.innerHTML = spisok.map(v =>
+      '<div class="vstr' + (new Date(v.kogda.replace(' ', 'T')) < new Date() ? ' proshlo' : '') + '">' +
+      '<span class="kogda">' + kogdaTekst(v.kogda) + '</span><span class="chto">' + v.chto + '</span></div>').join('');
+  };
+  risuyVstrechi(el('spisok-vstrech'), D.vstrechi, 'Записей нет. Добавьте ниже или скажите голосом.');
+  risuyVstrechi(el('blizhayshee'), (D.vstrechi || []).slice(0, 3), 'Встреч и напоминаний нет.');
+}
+narisovat();
+
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('section').forEach(s => s.removeAttribute('data-on'));
+  document.querySelectorAll('nav button').forEach(x => x.setAttribute('aria-current', 'false'));
+  el(b.dataset.idet).setAttribute('data-on', '');
+  b.setAttribute('aria-current', 'true');
+  window.scrollTo(0, 0);
+});
+
+function poslat(o) {
+  if (!TG || !TG.sendData) { alert('Откройте кабинет из бота'); return; }
+  TG.sendData(JSON.stringify(o));
+}
+document.querySelectorAll('[data-cmd]').forEach(b => b.onclick = () => poslat({ cmd: b.dataset.cmd }));
+if (el('kn-vstrecha')) el('kn-vstrecha').onclick = () => {
+  const chto = el('v-chto').value.trim(), kogda = el('v-den').value;
+  if (!chto || !kogda) { alert('Напишите, что и когда'); return; }
+  poslat({ cmd: 'vstrecha', chto, kogda });
+};
+if (el('kn-pravilo')) el('kn-pravilo').onclick = () => {
+  const t = el('n-novoe').value.trim();
+  if (t) poslat({ cmd: 'pravilo', tekst: t });
+};
+if (el('kn-cel')) el('kn-cel').onclick = () => poslat({ cmd: 'cel', tekst: el('n-cel').value.trim() });
+</script>
+</body>
+</html>
