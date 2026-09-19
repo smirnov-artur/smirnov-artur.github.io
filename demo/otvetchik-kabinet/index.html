@@ -197,6 +197,9 @@ async function sServera(put, telo) {
   return otvet.json();
 }
 
+// имя покупателя и текст его сообщения приходят с Авито: без экранирования чужой текст становится разметкой,
+// а страница держит подписанный initData — это ключ к кабинету на сутки
+const ek = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const el = (id) => document.getElementById(id);
 const txt = (id, v) => { const n = el(id); if (n) n.textContent = v; };
 
@@ -231,15 +234,15 @@ function narisovat() {
   const z = el('spisok-zayavok');
   if (D.zayavki && D.zayavki.length) {
     z.innerHTML = D.zayavki.map(v =>
-      '<div class="ryad"><span>' + (v.kto || 'клиент') + (v.tel ? '<span class="metka">' + v.tel + '</span>' : '') +
-      '<br><span class="seryy" style="font-size:13px">' + (v.chto || '') + '</span></span><b class="seryy">' + (v.kogda || '') + '</b></div>').join('');
+      '<div class="ryad"><span>' + ek(v.kto || 'клиент') + (v.tel ? '<span class="metka">' + ek(v.tel) + '</span>' : '') +
+      '<br><span class="seryy" style="font-size:13px">' + ek(v.chto) + '</span></span><b class="seryy">' + ek(v.kogda) + '</b></div>').join('');
   }
   const risuyVstrechi = (uzel, spisok, pustoy) => {
     if (!uzel) return;
     if (!spisok || !spisok.length) { uzel.innerHTML = '<p class="pust">' + pustoy + '</p>'; return; }
     uzel.innerHTML = spisok.map(v =>
       '<div class="vstr' + (new Date(v.kogda.replace(' ', 'T')) < new Date() ? ' proshlo' : '') + '">' +
-      '<span class="kogda">' + kogdaTekst(v.kogda) + '</span><span class="chto">' + v.chto + '</span></div>').join('');
+      '<span class="kogda">' + ek(kogdaTekst(v.kogda)) + '</span><span class="chto">' + ek(v.chto) + '</span></div>').join('');
   };
   risuyVstrechi(el('spisok-vstrech'), D.vstrechi, 'Записей нет. Добавьте ниже или скажите голосом.');
   risuyVstrechi(el('blizhayshee'), (D.vstrechi || []).slice(0, 3), 'Встреч и напоминаний нет.');
