@@ -2,762 +2,349 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Кабинет ИИ‑продавца</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Кабинет g.a.d.</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@600&display=swap" rel="stylesheet">
 <style>
-/* Цвета: первым делом тема Telegram (--tg-theme-*), свои значения — только запасные, для просмотра вне Telegram.
-   Поэтому тёмная тема переопределяет запасные (--*-z), а не сами переменные: иначе она затёрла бы тему клиента. */
-:root{
-  --fon-z:#f0f1f5;--list-z:#fff;--tekst-z:#0f1115;--seryy-z:#7f838b;--acc-z:#2481cc;--na-acc-z:#fff;
-  --plohoy-z:#e0342f;--zhelt-z:#fff5d6;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --fon-z:#0e0f12;--list-z:#1c1d22;--tekst-z:#f2f3f5;--seryy-z:#8d9199;--acc-z:#4ea4f0;--na-acc-z:#fff;
-    --plohoy-z:#ff6961;--zhelt-z:#2d2816;
-  }
-}
-:root[data-theme="dark"]{
-  --fon-z:#0e0f12;--list-z:#1c1d22;--tekst-z:#f2f3f5;--seryy-z:#8d9199;--acc-z:#4ea4f0;--na-acc-z:#fff;
-  --plohoy-z:#ff6961;--zhelt-z:#2d2816;
-}
-:root{
-  --fon:var(--tg-theme-secondary-bg-color,var(--fon-z));
-  --list:var(--tg-theme-section-bg-color,var(--tg-theme-bg-color,var(--list-z)));
-  --tekst:var(--tg-theme-text-color,var(--tekst-z));
-  --seryy:var(--tg-theme-hint-color,var(--seryy-z));
-  --acc:var(--tg-theme-button-color,var(--acc-z));
-  --na-acc:var(--tg-theme-button-text-color,var(--na-acc-z));
-  --ssylka:var(--tg-theme-link-color,var(--acc));
-  --zag:var(--tg-theme-section-header-text-color,var(--acc));
-  --plohoy:var(--tg-theme-destructive-text-color,var(--plohoy-z));
-  --zel:#31b545;
-  --liniya:rgba(128,128,128,.22);--acc2:rgba(36,129,204,.13);--zhelt:var(--zhelt-z);
-  --r:16px;--r2:12px;--plavno:.24s cubic-bezier(.2,.75,.3,1);
-}
-/* кнопка Telegram бывает любого цвета — мягкая плашка и линии берутся из неё и из текста, а не из нашего синего */
-@supports (color:color-mix(in srgb,red,blue)){
-  :root{--acc2:color-mix(in srgb,var(--acc) 13%,var(--list));--liniya:color-mix(in srgb,var(--tekst) 10%,transparent);
-    --zhelt:color-mix(in srgb,#f2b705 16%,var(--list))}
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{-webkit-text-size-adjust:100%}
-body{
-  margin:0;background:var(--fon);color:var(--tekst);
-  font:16px/1.45 -apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
-  -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;
-  padding:0 0 calc(76px + env(safe-area-inset-bottom));
-}
-.w{max-width:600px;margin:0 auto;padding:0 16px}
-[hidden]{display:none!important}
-a{color:var(--ssylka);text-underline-offset:2px}
-p{margin:0}
-
-/* ── шапка ─────────────────────────────────────────────── */
-header{padding:calc(14px + env(safe-area-inset-top)) 0 14px;display:flex;align-items:center;gap:12px}
-.znak{flex:none;width:44px;height:44px;border-radius:50%;background:var(--acc);color:var(--na-acc);
-  display:grid;place-items:center;font-weight:700;font-size:15px;letter-spacing:-.02em}
-header .tekst{min-width:0;flex:1}
-/* название магазина бывает длинным: две строки, потом многоточие — на узком экране «Кабинет ИИ-прод…» не читается */
-h1{font-size:18px;line-height:1.25;margin:0;letter-spacing:-.01em;font-weight:650;overflow-wrap:anywhere;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.pod{color:var(--seryy);font-size:13.5px;margin:1px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.zhiv{flex:none;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--seryy);
-  background:var(--list);border-radius:99px;padding:6px 11px 6px 9px;white-space:nowrap}
-.zhiv::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--seryy)}
-.zhiv[data-on="1"]::before{background:var(--zel);animation:pulse 2.4s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-
-/* ── карточки ──────────────────────────────────────────── */
-.k{background:var(--list);border-radius:var(--r);padding:16px;margin:0 0 12px}
-/* счётчик справа от заголовка флексом, а не float: на 360 px длинный тариф сталкивал «213 из 1 500» на полосу */
-.k h2{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
-  font-size:15px;line-height:1.3;margin:0 0 10px;color:var(--zag);font-weight:650}
-.k h2 .schet{flex:none;max-width:60%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  color:var(--seryy);font-weight:500;font-size:13.5px}
-.ryad{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:11px 0;
-  border-top:1px solid var(--liniya);font-size:15.5px}
-.ryad:first-of-type{border-top:0;padding-top:2px}
-.ryad b{font-weight:500;text-align:right;color:var(--seryy)}
-/* Текст людей приходит одной длинной строкой: артикул «ШИНА-ЗИМН-CORDIANT-SNOW-CROSS-2-205-55R16-91T-XL», ссылка от покупателя,
-   цель в триста букв. Ячейке флекса без этого нельзя сжаться, и страница едет вбок. Только на значениях: подпись слева наша и короткая */
-.ryad>b,#spisok-praysa .ryad>span,.zay .chto,.zay .tel,#n-pravila,#avito-est,#avito-rezhim{min-width:0;overflow-wrap:anywhere}
-.seryy{color:var(--seryy)}
-.malo{font-size:13.5px;color:var(--seryy);margin:10px 0 0;line-height:1.45}
-
-/* ── статус Авито и первые шаги ───────────────────────── */
-.shapka{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 14px}
-.shapka h2{margin:0!important}
-.status{flex:none;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--seryy);
-  background:var(--fon);border-radius:99px;padding:4px 10px 4px 8px;white-space:nowrap}
-.status::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.75}
-.glavnoe{display:flex;align-items:baseline;gap:10px;font-size:17px;line-height:1.35;font-weight:650;margin:0}
-.tochka{flex:none;width:10px;height:10px;border-radius:50%;background:var(--zel);
-  box-shadow:0 0 0 4px color-mix(in srgb,var(--zel) 18%,transparent);transform:translateY(-1px)}
-#avito-rezhim{margin:6px 0 14px 20px;white-space:pre-line}
-#k-avito .malo:last-child{margin:6px 0 0;text-align:center}
-
-/* ── плитки со счётчиками ─────────────────────────────── */
-.plit{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 12px}
-.plit .k{margin:0;padding:14px 16px}
-.bol{font-size:28px;font-weight:700;letter-spacing:-.03em;display:block;line-height:1.1}
-.plit .podpis{display:block;color:var(--seryy);font-size:13.5px;margin-top:2px}
-.plit .hvost{display:block;color:var(--seryy);font-size:12.5px;margin-top:9px;padding-top:9px;border-top:1px solid var(--liniya)}
-
-/* ── кнопки ────────────────────────────────────────────── */
-/* d — строка со стрелкой, как пункт настроек Telegram; gl — главная, цвета кнопки Telegram; vt — вторая, мягкая плашка;
-   ssyl — текстовая; opas — опасная */
-button.d{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:48px;
-  border:0;background:var(--list);color:var(--tekst);border-radius:var(--r2);
-  padding:12px 16px;font:inherit;font-size:16px;font-weight:500;margin:0 0 8px;text-align:left;cursor:pointer;
-  transition:transform .12s ease,filter var(--plavno),opacity var(--plavno)}
-button.d::after{content:"";flex:none;width:7px;height:7px;border-right:2px solid var(--seryy);
-  border-bottom:2px solid var(--seryy);transform:rotate(-45deg);opacity:.6}
-button.d:active{transform:scale(.985);filter:brightness(.96)}
-.k button.d{background:var(--fon)}
-button.d.gl,button.d.vt,button.d.ssyl{text-align:center}
-button.d.gl{background:var(--acc);color:var(--na-acc);justify-content:center;font-weight:600}
-button.d.vt{background:var(--acc2);color:var(--acc);justify-content:center;font-weight:600}
-button.d.ssyl{background:transparent;color:var(--ssylka);justify-content:center;font-weight:600;margin:4px 0 0}
-button.d.opas{color:var(--plohoy)}
-button.d.opas::after{border-color:var(--plohoy)}
-/* стрелка обещает переход: на «сохранить» и на главных кнопках её быть не должно */
-button.d:not([data-cmd]):not([data-idet])::after,button.d.gl::after,button.d.vt::after,button.d.ssyl::after{display:none}
-button.d:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-/* цену рвать посередине числа нельзя и сжимать её тоже нельзя: «640…» вместо «6400 ₽» — худшее, что тут можно показать.
-   Место уступает наименование, оно переносится. Половина строки — потолок на случай, если в колонке цены окажется проза */
-#spisok-praysa .ryad b{white-space:nowrap;flex:none;max-width:50%;overflow:hidden;text-overflow:ellipsis;color:var(--tekst)}
-
-/* ── поля ──────────────────────────────────────────────── */
-label{display:block;font-size:13px;color:var(--seryy);margin:0 0 6px;font-weight:500}
-input,textarea{width:100%;font:inherit;font-size:16px;color:var(--tekst);background:var(--fon);
-  border:1.5px solid transparent;border-radius:var(--r2);padding:12px 14px;margin:0 0 12px;
-  transition:border-color var(--plavno),background var(--plavno)}
-input:focus,textarea:focus{outline:0;border-color:var(--acc);background:var(--list)}
-input::placeholder,textarea::placeholder{color:var(--seryy);opacity:.8}
-textarea{min-height:80px;resize:vertical}
-.dva{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-
-/* ── пусто / загрузка / ошибка ─────────────────────────── */
-.pust{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;
-  color:var(--seryy);font-size:14px;line-height:1.45;padding:16px 6px 8px;margin:0}
-.pust svg{width:26px;height:26px;opacity:.45}
-.zn{transition:opacity var(--plavno)}
-body[data-sost="gruzhu"] .zn{color:transparent;border-radius:7px;min-width:52px;display:inline-block;
-  background:linear-gradient(90deg,var(--liniya) 25%,transparent 50%,var(--liniya) 75%);background-size:280% 100%;
-  animation:blesk 1.4s linear infinite}
-@keyframes blesk{from{background-position:140% 0}to{background-position:-140% 0}}
-body[data-sost="gruzhu"] #k-start{display:none}
-#sboy{display:none;align-items:flex-start;gap:11px;background:var(--list);border-radius:var(--r2);
-  padding:13px 14px;margin:0 0 12px;font-size:14px;line-height:1.45;
-  box-shadow:inset 0 0 0 1.5px var(--plohoy)}
-body[data-sost="oshibka"] #sboy{display:flex;animation:vhod .3s}
-#sboy svg{flex:none;width:20px;height:20px;color:var(--plohoy);margin-top:1px}
-#sboy button{border:0;background:none;color:var(--ssylka);font:inherit;font-weight:600;font-size:14px;
-  padding:6px 0 0;min-height:40px;cursor:pointer}
-
-/* ── вкладки ───────────────────────────────────────────── */
-section{display:none;padding:0 0 8px}
-section[data-on]{display:block}
-section[data-on]>*{animation:vhod .32s cubic-bezier(.2,.75,.3,1) both}
-section[data-on]>*:nth-child(2){animation-delay:.03s}
-section[data-on]>*:nth-child(3){animation-delay:.06s}
-section[data-on]>*:nth-child(n+4){animation-delay:.09s}
-@keyframes vhod{from{opacity:0;transform:translateY(8px)}}
-nav{position:fixed;left:0;right:0;bottom:0;z-index:9;display:flex;justify-content:center;
-  background:var(--list);border-top:1px solid var(--liniya);padding-bottom:env(safe-area-inset-bottom)}
-@supports (backdrop-filter:blur(1px)){
-  nav{background:color-mix(in srgb,var(--list) 86%,transparent);backdrop-filter:saturate(1.6) blur(16px)}
-}
-nav button{flex:1;max-width:120px;min-width:0;border:0;background:none;color:var(--seryy);font:inherit;font-weight:500;
-  font-size:11px;line-height:1.2;padding:8px 1px 9px;cursor:pointer;overflow:hidden;
-  display:flex;flex-direction:column;align-items:center;gap:3px;transition:color var(--plavno)}
-nav button svg{width:25px;height:25px;transition:transform var(--plavno)}
-nav button[aria-current="true"]{color:var(--acc);font-weight:600}
-nav button:active svg{transform:scale(.9)}
-
-/* ── шаги, раскрывашки, полоса, заметки ────────────────── */
-ol.shagi{margin:0;padding:0;list-style:none;counter-reset:sh}
-ol.shagi li{position:relative;padding:0 0 18px 38px;counter-increment:sh;font-size:14.5px;color:var(--seryy);line-height:1.45}
-ol.shagi li:last-child{padding-bottom:0}
-ol.shagi li::before{content:counter(sh);position:absolute;left:0;top:-1px;width:26px;height:26px;border-radius:50%;
-  background:var(--acc2);color:var(--acc);font-size:13px;font-weight:700;display:grid;place-items:center}
-ol.shagi li::after{content:"";position:absolute;left:12.5px;top:30px;bottom:6px;width:1.5px;background:var(--liniya)}
-ol.shagi li:last-child::after{display:none}
-ol.shagi b{display:block;font-size:16px;color:var(--tekst);margin:0 0 3px;font-weight:600}
-ol.shagi li.gotovo::before{content:"✓";background:var(--acc);color:var(--na-acc)}
-ol.shagi button.d{margin:12px 0 0}
-details{margin:6px 0 0}
-details+details{margin-top:0}
-summary{list-style:none;display:flex;align-items:center;gap:8px;min-height:44px;color:var(--ssylka);
-  font-weight:600;font-size:15px;cursor:pointer}
-summary::-webkit-details-marker{display:none}
-summary::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;
-  transform:rotate(45deg) translateY(-2px);transition:transform var(--plavno)}
-details[open]>summary::after{transform:rotate(225deg) translate(-1px,-1px)}
-details>ol.shagi,details>p{margin:6px 0 12px}
-details>p{color:var(--tekst);font-size:14.5px}
-details ol.shagi b{font-size:15px}
-/* шаги ключей лежат внутри шага 2: свои номера — контуром, чтобы «3» внутри не путалась с внешней «3» */
-ol.shagi ol.shagi li{padding-left:34px}
-ol.shagi ol.shagi li::before{width:22px;height:22px;top:0;font-size:12px;background:none;box-shadow:inset 0 0 0 1.5px var(--liniya);color:var(--seryy)}
-ol.shagi ol.shagi li::after{left:10.5px;top:26px}
-.polosa{height:6px;border-radius:99px;background:var(--fon);overflow:hidden;margin:2px 0 8px}
-.polosa+.malo{margin-top:0}
-.polosa i{display:block;height:100%;border-radius:99px;background:var(--acc);
-  transition:width .7s cubic-bezier(.2,.75,.3,1)}
-.zam{background:var(--zhelt);color:var(--tekst);border-radius:var(--r2);padding:11px 13px;font-size:13.5px;
-  line-height:1.45;margin:12px 0 0}
-
-/* ── заявки ────────────────────────────────────────────── */
-.zay{display:block;padding:13px 0;border-top:1px solid var(--liniya)}
-.zay:first-child{border-top:0;padding-top:2px}
-.zay .verh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-.zay .kto{font-weight:600;font-size:15.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.zay .kogda{flex:none;font-size:12.5px;color:var(--seryy)}
-.zay .chto{font-size:14px;color:var(--seryy);margin:4px 0 0;line-height:1.45}
-.zay .tel{display:inline-block;margin:8px 0 0;font-size:14px;font-weight:600;color:var(--acc);
-  background:var(--acc2);border-radius:9px;padding:4px 10px}
-
-/* ── встречи ───────────────────────────────────────────── */
-.vstr{display:flex;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--liniya)}
-.vstr:first-child{border-top:0;padding-top:2px}
-.vstr .kogda{flex:none;width:76px;font-weight:600;font-size:13px;color:var(--acc);line-height:1.3}
-.vstr .chto{flex:1;font-size:15px;line-height:1.4;min-width:0;overflow-wrap:anywhere}
-.vstr.proshlo .kogda{color:var(--plohoy)}
-.vstr .ok{flex:none;width:40px;height:40px;border-radius:50%;border:0;
-  background:var(--acc2);color:var(--acc);display:grid;place-items:center;cursor:pointer;
-  transition:background var(--plavno),transform .12s ease}
-.vstr .ok:active{transform:scale(.9)}
-.vstr .ok svg{width:17px;height:17px}
-
-/* ── переключатель «сам / черновики» ───────────────────── */
-.kanal{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;
-  border-top:1px solid var(--liniya)}
-.kanal:first-child{border-top:0;padding-top:0}
-.kanal .imya{min-width:0;font-size:15.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.kanal .imya small{display:block;color:var(--seryy);font-size:12.5px;font-weight:500}
-.kanal b.seryy{font-weight:500}
-.tumbler{flex:none;display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:0 2px 0 0;
-  border:0;background:none;color:var(--seryy);font:inherit;font-weight:500;font-size:13px;cursor:pointer;
-  white-space:nowrap;transition:color var(--plavno)}
-.tumbler .knopa{position:relative;width:48px;height:29px;flex:none;border-radius:99px;background:var(--liniya);
-  transition:background var(--plavno)}
-.tumbler .knopa::before{content:"";position:absolute;top:2.5px;left:2.5px;width:24px;height:24px;border-radius:50%;
-  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform var(--plavno)}
-.tumbler[aria-checked="true"]{color:var(--acc)}
-.tumbler[aria-checked="true"] .knopa{background:var(--acc)}
-.tumbler[aria-checked="true"] .knopa::before{transform:translateX(19px)}
-
-/* ── всплывашка ────────────────────────────────────────── */
-#toast{position:fixed;left:16px;right:16px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:20;
-  max-width:568px;margin:0 auto;background:var(--tekst);color:var(--list);border-radius:var(--r2);
-  padding:12px 15px;font-size:14.5px;line-height:1.4;box-shadow:0 10px 30px -10px rgba(0,0,0,.45);
-  opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity var(--plavno),transform var(--plavno)}
-#toast[data-on]{opacity:1;transform:none}
-
-@media (max-width:359px){
-  nav button{font-size:10px}
-  .bol{font-size:24px}
-}
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-}
+:root{--bg:#000;--s1:#111113;--s2:#1c1c1e;--s3:#2c2c2e;--s4:#3a3a3c;--line:rgba(255,255,255,.12);
+  --t1:#fff;--t2:rgba(235,235,245,.62);--t3:rgba(235,235,245,.32);--lime:#d6ff3f;--lime-dim:rgba(214,255,63,.13);
+  --ui:-apple-system,"SF Pro Text",Manrope,"Helvetica Neue",Arial,sans-serif;--brand:Unbounded,Manrope,sans-serif;
+  --ios:cubic-bezier(.32,.72,0,1);--pruzh:cubic-bezier(.34,1.36,.64,1)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;scrollbar-width:none}
+*::-webkit-scrollbar{display:none}
+html,body{background:var(--bg);color:var(--t1)}
+body{font:15px/1.4 var(--ui);-webkit-font-smoothing:antialiased;min-height:100vh;overscroll-behavior-y:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;touch-action:manipulation}
+input{font:inherit;color:var(--t1);background:var(--s2);border:0;border-radius:12px;height:44px;padding:0 14px;outline:0;width:100%}
+.ik{width:22px;height:22px;fill:currentColor;flex:none;display:block}
+.ekran{padding:calc(env(safe-area-inset-top) + 18px) 0 calc(env(safe-area-inset-bottom) + 110px);max-width:560px;margin:0 auto;animation:vkl .3s var(--ios)}
+.ekran[hidden]{display:none}
+@keyframes vkl{from{opacity:.4}to{opacity:1}}
+@keyframes poyav{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h1{font-size:34px;font-weight:700;letter-spacing:-.022em;padding:0 20px 2px}
+.pod{padding:0 20px 20px;color:var(--t2);font-size:15px;display:flex;align-items:center;gap:7px}
+.tochka{width:7px;height:7px;border-radius:50%;background:var(--lime);flex:none;animation:pul 2.4s infinite}
+.tochka.net{background:var(--t3);animation:none}
+@keyframes pul{0%{box-shadow:0 0 0 0 rgba(214,255,63,.45)}70%{box-shadow:0 0 0 8px rgba(214,255,63,0)}100%{box-shadow:0 0 0 0 rgba(214,255,63,0)}}
+.gruppa{margin:0 16px 24px;animation:poyav .4s var(--ios) both}
+.gruppa>h4{font-size:13px;font-weight:500;color:var(--t2);text-transform:uppercase;letter-spacing:.02em;padding:0 16px 8px;display:flex;justify-content:space-between}
+.gruppa>h4 .lm{color:var(--lime)}
+.gruppa>.niz{font-size:13px;color:var(--t3);padding:8px 16px 0;line-height:1.35}
+.spisok{background:var(--s1);border-radius:14px;overflow:hidden}
+.stroka{display:flex;align-items:center;gap:12px;padding:0 16px;min-height:48px;width:100%;text-align:left;background:var(--s1);transition:background .12s}
+button.stroka:active{background:var(--s3)}
+.stroka .telo{flex:1;min-width:0;padding:11px 0;display:flex;align-items:center;gap:10px;align-self:stretch}
+.stroka+.stroka .telo{box-shadow:inset 0 .5px 0 var(--line)}
+.stroka .tx{flex:1;min-width:0}
+.stroka .tx b{display:block;font-size:17px;font-weight:500;letter-spacing:-.012em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stroka .tx small{display:block;font-size:14.5px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.verh{display:flex;align-items:baseline;gap:8px}.verh b{flex:1;min-width:0}
+.zn{color:var(--t2);font-size:14.5px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.shev{width:14px;height:14px;color:var(--t3)}
+.ava{width:40px;height:40px;border-radius:50%;background:linear-gradient(180deg,#76767c,#4a4a4f);display:grid;place-items:center;font-size:16px;font-weight:600;flex:none}
+.ava.vy{background:linear-gradient(180deg,#e4ff72,#c9f124);color:#0a0a0c}
+.plitka{width:30px;height:30px;border-radius:8px;background:linear-gradient(180deg,#414145,#2a2a2d);display:grid;place-items:center;flex:none}
+.plitka .ik{width:19px;height:19px}
+.plitka.lime{background:linear-gradient(180deg,#e4ff72,#c9f124);color:#0a0a0c}
+.krasn{color:#ff453a}
+.molchit{font-size:12px;font-weight:600;color:var(--t2);background:var(--s3);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:2px}
+.pusto{margin:10px 16px 24px;text-align:center;padding:30px 20px;background:var(--s1);border-radius:20px;animation:poyav .4s var(--ios)}
+.pusto .ik{width:36px;height:36px;color:var(--lime);margin:0 auto 12px}
+.pusto b{display:block;font-size:19px;letter-spacing:-.01em;margin-bottom:6px}
+.pusto p{color:var(--t2);font-size:15px;margin-bottom:18px}
+.knopka{height:50px;border-radius:25px;font-size:17px;font-weight:600;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .2s var(--pruzh)}
+.knopka:active{transform:scale(.97)}
+.knopka.gl{background:var(--lime);color:#0a0a0c}
+.knopka.vt{background:var(--s2)}
+.knopka .ik{width:19px;height:19px}
+.knopki{margin:0 16px 24px;display:grid;gap:10px}
+.vse-resheno{display:flex;align-items:center;gap:10px;padding:14px 16px;color:var(--t2)}
+.vse-resheno .ik{color:var(--lime);width:24px;height:24px}
+.karta{margin:0 16px 20px;border-radius:22px;padding:22px 20px;background:radial-gradient(120% 110% at 100% 0%,rgba(214,255,63,.2),rgba(214,255,63,0) 60%),var(--s1);border:.5px solid rgba(214,255,63,.22);animation:poyav .4s var(--ios)}
+.karta small{color:var(--t2);font-size:13px;text-transform:uppercase;letter-spacing:.03em}
+.karta b{display:block;font-size:26px;font-weight:700;letter-spacing:-.02em;margin:4px 0 2px}
+.karta p{color:var(--t2);font-size:15px}
+.polosa{height:6px;border-radius:3px;background:var(--s3);overflow:hidden;margin-top:14px}
+.polosa i{display:block;height:100%;background:var(--lime);border-radius:3px;transition:width .8s var(--ios)}
+.sw{width:51px;height:31px;border-radius:16px;background:var(--lime);position:relative;flex:none;transition:background .25s}
+.sw::after{content:"";position:absolute;top:2px;left:22px;width:27px;height:27px;border-radius:14px;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.25);transition:left .35s var(--pruzh)}
+.sw.vykl{background:var(--s4)}.sw.vykl::after{left:2px}
+/* плавающая панель вкладок, стекло */
+.tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 14px);width:min(360px,calc(100% - 32px));height:62px;border-radius:31px;
+  display:grid;grid-template-columns:repeat(3,1fr);padding:4px;z-index:50;background:rgba(44,44,48,.55);-webkit-backdrop-filter:blur(20px) saturate(190%);backdrop-filter:blur(20px) saturate(190%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 0 .5px rgba(255,255,255,.1),0 10px 30px rgba(0,0,0,.45)}
+.tab-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/3);border-radius:27px;background:rgba(255,255,255,.11);transition:transform .55s var(--pruzh)}
+.tabbar button{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10.5px;font-weight:600;color:rgba(235,235,245,.72)}
+.tabbar .ik{width:25px;height:25px}.tabbar .ik.f{display:none}
+.tabbar .akt{color:var(--lime)}.tabbar .akt .ik.r{display:none}.tabbar .akt .ik.f{display:block}
+.tabbar .akt .ik{animation:skok .5s var(--pruzh)}
+@keyframes skok{35%{transform:scale(.8)}70%{transform:scale(1.14)}}
+.bej{position:absolute;top:3px;left:calc(50% + 6px);min-width:18px;height:18px;border-radius:9px;background:var(--lime);color:#0a0a0c;font-size:11.5px;font-weight:700;display:grid;place-items:center;padding:0 5px}
+.bej[hidden]{display:none}
+/* шторка */
+.zatemn{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .4s var(--ios);z-index:70}
+.zatemn.vid{opacity:1;pointer-events:auto}
+.shtorka{position:fixed;left:8px;right:8px;bottom:8px;max-width:560px;margin:0 auto;max-height:86vh;overflow:auto;background:rgba(30,30,33,.94);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);
+  border-radius:34px;padding:8px 20px calc(env(safe-area-inset-bottom) + 24px);transform:translateY(calc(100% + 24px));transition:transform .5s var(--ios);z-index:80}
+.shtorka.vid{transform:none}
+.ruchka{width:36px;height:5px;border-radius:3px;background:var(--s4);margin:0 auto 16px}
+.shtorka h3{font-size:22px;font-weight:700;letter-spacing:-.02em}
+.shtorka .m{color:var(--t2);font-size:14px;margin:2px 0 16px}
+.pz{max-width:86%;padding:9px 13px;border-radius:18px;font-size:16px;line-height:1.35;margin-bottom:8px;width:fit-content}
+.pz.pok{background:var(--s3);border-bottom-left-radius:6px}
+.pz.nash{background:#262629;margin-left:auto;border-bottom-right-radius:6px}
+.pz .kto{display:block;font-size:11.5px;font-weight:600;color:var(--t2);margin-bottom:2px}
+.pochemu{background:var(--lime-dim);color:var(--t1);border-radius:14px;padding:11px 14px;font-size:14.5px;margin:6px 0 14px}
+.pochemu b{color:var(--lime);display:block;font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;margin-bottom:2px}
+.p-sw{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.06);border-radius:14px;padding:12px 14px;margin:12px 0}
+.p-sw b{display:block;font-size:16px;font-weight:500}.p-sw small{color:var(--t2);font-size:13px}
+.podskaz{color:var(--t3);font-size:13px;text-align:center;margin-top:10px}
+.shtorka .knopka{margin-top:10px}
+.dva{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 4px}
+.dva label{display:flex;align-items:center;gap:10px;color:var(--t2);font-size:15px}
+.dva input{background:rgba(255,255,255,.1);font-size:20px;font-weight:600;text-align:center}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 92px);transform:translate(-50%,14px);background:rgba(44,44,48,.9);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+  border-radius:20px;padding:11px 18px;font-size:14px;font-weight:500;opacity:0;transition:all .4s var(--pruzh);z-index:90;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
+#toast[data-on]{opacity:1;transform:translate(-50%,0)}
+#sboy{display:none;margin:0 16px 16px;background:rgba(255,105,97,.12);color:#ff9b95;border-radius:14px;padding:12px 14px;font-size:14.5px}
+body[data-sost="oshibka"] #sboy{display:block}
+.skelet{height:64px;border-radius:14px;background:linear-gradient(90deg,var(--s1),var(--s2),var(--s1));background-size:200% 100%;animation:sk 1.2s infinite;margin:0 16px 10px}
+@keyframes sk{to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
-<body data-sost="gotovo">
+<body data-sost="gruzhu">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="b-caret-right" viewBox="0 0 256 256"><path d="M184.49,136.49l-80,80a12,12,0,0,1-17-17L159,128,87.51,56.49a12,12,0,1,1,17-17l80,80A12,12,0,0,1,184.49,136.49Z"/></symbol><symbol id="b-check" viewBox="0 0 256 256"><path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z"/></symbol><symbol id="b-plus" viewBox="0 0 256 256"><path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z"/></symbol><symbol id="f-chats-circle" viewBox="0 0 256 256"><path d="M232.07,186.76a80,80,0,0,0-62.5-114.17A80,80,0,1,0,23.93,138.76l-7.27,24.71a16,16,0,0,0,19.87,19.87l24.71-7.27a80.39,80.39,0,0,0,25.18,7.35,80,80,0,0,0,108.34,40.65l24.71,7.27a16,16,0,0,0,19.87-19.86Zm-16.25,1.47L224,216l-27.76-8.17a8,8,0,0,0-6,.63,64.05,64.05,0,0,1-85.87-24.88A79.93,79.93,0,0,0,174.7,89.71a64,64,0,0,1,41.75,92.48A8,8,0,0,0,215.82,188.23Z"/></symbol><symbol id="f-check-circle" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></symbol><symbol id="f-credit-card" viewBox="0 0 256 256"><path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48ZM136,176H120a8,8,0,0,1,0-16h16a8,8,0,0,1,0,16Zm64,0H168a8,8,0,0,1,0-16h32a8,8,0,0,1,0,16ZM32,88V64H224V88Z"/></symbol><symbol id="f-file-text" viewBox="0 0 256 256"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,176H96a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm0-32H96a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm-8-56V44l44,44Z"/></symbol><symbol id="r-arrow-square-out" viewBox="0 0 256 256"><path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"/></symbol><symbol id="r-bell-slash" viewBox="0 0 256 256"><path d="M53.92,34.62A8,8,0,1,0,42.08,45.38L58.82,63.8A79.59,79.59,0,0,0,48,104c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.8a40,40,0,0,0,78.4,0h15.44l19.44,21.38a8,8,0,1,0,11.84-10.76ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a63.65,63.65,0,0,1,6.26-27.62L168.09,184Zm166-4.73a8.13,8.13,0,0,1-2.93.55,8,8,0,0,1-7.44-5.08C196.35,156.19,192,129.75,192,104A64,64,0,0,0,96.43,48.31a8,8,0,0,1-7.9-13.91A80,80,0,0,1,208,104c0,35.35,8.05,58.59,10.52,64.88A8,8,0,0,1,214,179.25Z"/></symbol><symbol id="r-chats-circle" viewBox="0 0 256 256"><path d="M232.07,186.76a80,80,0,0,0-62.5-114.17A80,80,0,1,0,23.93,138.76l-7.27,24.71a16,16,0,0,0,19.87,19.87l24.71-7.27a80.39,80.39,0,0,0,25.18,7.35,80,80,0,0,0,108.34,40.65l24.71,7.27a16,16,0,0,0,19.87-19.86ZM62,159.5a8.28,8.28,0,0,0-2.26.32L32,168l8.17-27.76a8,8,0,0,0-.63-6,64,64,0,1,1,26.26,26.26A8,8,0,0,0,62,159.5Zm153.79,28.73L224,216l-27.76-8.17a8,8,0,0,0-6,.63,64.05,64.05,0,0,1-85.87-24.88A79.93,79.93,0,0,0,174.7,89.71a64,64,0,0,1,41.75,92.48A8,8,0,0,0,215.82,188.23Z"/></symbol><symbol id="r-credit-card" viewBox="0 0 256 256"><path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Zm0,16V88H32V64Zm0,128H32V104H224v88Zm-16-24a8,8,0,0,1-8,8H168a8,8,0,0,1,0-16h32A8,8,0,0,1,208,168Zm-64,0a8,8,0,0,1-8,8H120a8,8,0,0,1,0-16h16A8,8,0,0,1,144,168Z"/></symbol><symbol id="r-download-simple" viewBox="0 0 256 256"><path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z"/></symbol><symbol id="r-file-text" viewBox="0 0 256 256"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Zm-32-80a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,136Zm0,32a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,168Z"/></symbol><symbol id="r-storefront" viewBox="0 0 256 256"><path d="M232,96a7.89,7.89,0,0,0-.3-2.2L217.35,43.6A16.07,16.07,0,0,0,202,32H54A16.07,16.07,0,0,0,38.65,43.6L24.31,93.8A7.89,7.89,0,0,0,24,96h0v16a40,40,0,0,0,16,32v72a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V144a40,40,0,0,0,16-32V96ZM54,48H202l11.42,40H42.61Zm50,56h48v8a24,24,0,0,1-48,0Zm-16,0v8a24,24,0,0,1-35.12,21.26,7.88,7.88,0,0,0-1.82-1.06A24,24,0,0,1,40,112v-8ZM200,208H56V151.2a40.57,40.57,0,0,0,8,.8,40,40,0,0,0,32-16,40,40,0,0,0,64,0,40,40,0,0,0,32,16,40.57,40.57,0,0,0,8-.8Zm4.93-75.8a8.08,8.08,0,0,0-1.8,1.05A24,24,0,0,1,168,112v-8h48v8A24,24,0,0,1,204.93,132.2Z"/></symbol></svg>
+<div id="sboy"></div>
 
-<svg style="display:none" aria-hidden="true">
-  <symbol id="i-segodnya" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5h16M7.5 16V9.5M12 16V5M16.5 16v-4"/></symbol>
-  <symbol id="i-zayavki" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13.5h4l1.6 2.5h4.8L16 13.5h4"/><path d="M4.4 13.2 6.5 5.5h11l2.1 7.7v4.3a2 2 0 0 1-2 2h-11a2 2 0 0 1-2-2z"/></symbol>
-  <symbol id="i-kalendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3.5v4M16 3.5v4"/></symbol>
-  <symbol id="i-nastroyki" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h7M15 7.5h5M4 16.5h5M13 16.5h7M13 4.5v6M9 13.5v6"/></symbol>
-  <symbol id="i-dengi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="3"/><path d="M3 10h18M7 14.5h3.5"/></symbol>
-  <symbol id="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7"/></symbol>
-  <symbol id="i-pusto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5h7"/></symbol>
-  <symbol id="i-beda" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.4h.01"/></symbol>
-</svg>
-
-<div class="w">
-<header>
-  <div class="znak" aria-hidden="true">ИИ</div>
-  <div class="tekst"><h1 id="zag">Кабинет</h1><p class="pod" id="podzag">загружаю…</p></div>
-  <span class="zhiv" id="zhiv" hidden></span>
-</header>
-
-<div id="sboy" role="status">
-  <svg aria-hidden="true"><use href="#i-beda"/></svg>
-  <div><span id="sboy-tekst"></span><br><button data-akt="povtor">Попробовать ещё раз</button></div>
-</div>
-
-<section id="s-segodnya" data-on>
-  <!-- Авито не подключён: три шага, главная кнопка — согласие на Авито по ссылке, свои ключи — запасной вход -->
-  <div class="k" id="k-start" hidden>
-    <div class="shapka"><h2>С чего начать</h2><span class="status">Авито не подключён</span></div>
-    <ol class="shagi">
-      <li id="shag-prays"><b id="shag-prays-t">Пришлите прайс</b>Файл Excel или csv, можно ссылку на Google Sheets. По нему ИИ‑продавец отвечает покупателям: что есть, почём, чем заменить.
-        <button class="d vt" data-cmd="moy" id="shag-prays-kn">Прислать прайс</button></li>
-      <li><b>Подключите Авито</b><span id="avito-po-ssylke">Откроется Авито: войдите под своим аккаунтом и нажмите «Разрешить». Ключи не нужны, пароль нам не передаётся. Когда кабинет подключится, в чат Telegram придёт сообщение.</span><span id="avito-klyuchami" hidden>Нужны ключи API из Авито Pro. Это минут пять, шаги ниже.</span>
-        <button class="d gl" data-akt="avito" id="kn-avito">Подключить Авито</button>
-        <details id="klyuchi">
-          <summary id="klyuchi-t">У меня уже есть свои ключи API</summary>
-          <ol class="shagi">
-            <li><b>Откройте Авито Pro</b>На компьютере: <a href="https://pro.avito.ru" target="_blank" rel="noopener">pro.avito.ru</a>.</li>
-            <li><b>Профиль и настройки → Интеграции и API</b>Слева внизу.</li>
-            <li><b>Создать ключ</b>Или «Получить доступ к API». Название любое, например «ИИ‑продавец».</li>
-            <li><b>Скопируйте client_id и client_secret</b>Целиком, обе строки.</li>
-            <li><b>Пришлите их в чат Telegram</b>Одним сообщением после команды <b style="display:inline">/avito</b>. Сообщение с ключами ИИ‑продавец сразу удалит.</li>
-          </ol>
-          <p class="zam">Ключи дают доступ только к API: пароль от кабинета не нужен, отозвать их можно там же в любой момент.</p>
-        </details>
-        <details id="bez-api">
-          <summary>Нет подписки с API?</summary>
-          <p>API чатов открыт не на всех подписках Авито: в Товарах и Работе нужен «Максимальный», в Услугах — «Расширенный» или «Максимальный». Без такой подписки Авито не пустит ни по кнопке, ни по ключам.</p>
-          <p>Это не тупик: подключите личный Telegram. Там подписка Авито не нужна, прайс тот же. Нужен Telegram Premium.</p>
-          <button class="d vt" data-cmd="telegram">Как подключить Telegram</button>
-        </details>
-      </li>
-      <li><b>ИИ‑продавец отвечает</b>Покупателям в Авито, по вашему прайсу. Копию каждого ответа присылает в чат Telegram. Скидки, опт, возвраты и жалобы оставляет вам.</li>
-    </ol>
-    <button class="d ssyl" data-cmd="video">Видео: как всё настроить</button>
-  </div>
-
-  <!-- Авито подключён: кто и как отвечает, и где это выключить -->
-  <div class="k" id="k-avito" hidden>
-    <p class="glavnoe"><i class="tochka" aria-hidden="true"></i><span id="avito-est">Авито подключён</span></p>
-    <p class="malo" id="avito-rezhim"></p>
-    <button class="d vt" data-cmd="sam_pereklyuchit" id="kn-sam">Переключить ответы в Авито</button>
-    <button class="d ssyl" data-akt="avito" id="kn-avito-esche">Подключить ещё один кабинет</button>
-    <p class="malo">Отключить — в Настройках, внизу.</p>
-  </div>
-
-  <div class="plit" id="plit">
-    <div class="k"><span class="bol zn" id="p-otvety">—</span><span class="podpis">ответов покупателям</span><span class="hvost zn" id="p-mesyac">за месяц —</span></div>
-    <div class="k"><span class="bol zn" id="p-zayavki">—</span><span class="podpis">заявок с телефоном</span><span class="hvost zn" id="p-prays">прайс —</span></div>
-  </div>
-
-  <div class="k" id="paket-segodnya" hidden></div>
-
-  <div class="k">
-    <h2>Как работает сейчас</h2>
-    <div class="ryad"><span>Личный Telegram</span><b class="zn" id="r-tg">—</b></div>
-    <div class="ryad"><span>Часы</span><b class="zn" id="r-chasy">—</b></div>
-    <div class="ryad"><span>Цель разговора</span><b class="zn" id="r-cel">—</b></div>
-    <button class="d ssyl" data-cmd="telegram" id="kn-tg" hidden>Как подключить личный Telegram</button>
-  </div>
-
-  <div class="k">
-    <h2>Ближайшее</h2>
-    <div id="blizhayshee"></div>
-  </div>
-
-  <button class="d" data-cmd="zayavki">Прислать заявки файлом Excel</button>
+<section class="ekran" id="e-dialogi">
+  <h1>Диалоги</h1>
+  <p class="pod"><span class="tochka" id="tochka"></span><span id="d-pod">Загружаю…</span></p>
+  <div id="d-telo"><div class="skelet"></div><div class="skelet"></div><div class="skelet"></div></div>
 </section>
 
-<section id="s-zayavki">
-  <div class="k">
-    <h2>Заявки<span class="schet zn" id="z-schet"></span></h2>
-    <div id="spisok-zayavok"></div>
-  </div>
-  <button class="d" data-cmd="zayavki">Выгрузить все в Excel</button>
-  <button class="d" data-cmd="kuda">Куда присылать заявки</button>
+<section class="ekran" id="e-prays" hidden>
+  <h1>Прайс</h1>
+  <p class="pod" id="p-pod"></p>
+  <div id="p-telo"></div>
 </section>
 
-<section id="s-kalendar">
-  <div class="k">
-    <h2>Встречи и напоминания</h2>
-    <div id="spisok-vstrech"></div>
-  </div>
-  <div class="k">
-    <h2>Добавить</h2>
-    <label for="v-chto">Что</label>
-    <input id="v-chto" placeholder="Замер у Ирины, Есенина 12" maxlength="120">
-    <label for="v-den">Когда</label>
-    <input id="v-den" type="datetime-local">
-    <button class="d gl" id="kn-vstrecha">Записать</button>
-    <p class="zam">Все встречи можно забрать в календарь телефона: команда /kalendar в чате с ИИ‑продавцом пришлёт файл, календарь сам напомнит за час.</p>
-  </div>
+<section class="ekran" id="e-tarif" hidden>
+  <h1>Тариф</h1>
+  <div style="height:14px"></div>
+  <div id="t-telo"></div>
 </section>
 
-<section id="s-nastroyki">
-  <div class="k">
-    <h2>Кто отвечает покупателям</h2>
-    <div id="spisok-kanalov"></div>
-    <p class="malo">«Черновики» — ИИ‑продавец присылает вам готовый ответ с кнопкой, а покупателю не пишет, пока вы не нажмёте.</p>
-  </div>
-
-  <div class="k">
-    <h2>Часы, когда отвечаете вы</h2>
-    <div class="ryad"><span>Сейчас</span><b class="zn" id="n-chasy">—</b></div>
-    <p class="malo" style="margin:8px 0 14px">В эти часы ИИ‑продавец покупателям не пишет, отвечаете вы. В остальное время отвечает он. Время московское.</p>
-    <div class="dva">
-      <div><label for="ch-s">С</label><input id="ch-s" type="number" min="0" max="23" step="1" inputmode="numeric" placeholder="9"></div>
-      <div><label for="ch-do">До</label><input id="ch-do" type="number" min="1" max="24" step="1" inputmode="numeric" placeholder="20"></div>
-    </div>
-    <button class="d gl" id="kn-chasy">Сохранить часы</button>
-    <button class="d vt" data-cmd="chasy_vsegda" style="margin:0">Отвечать круглые сутки</button>
-  </div>
-
-  <div class="k">
-    <h2>Прайс<span class="schet" id="prays-schet"></span></h2>
-    <div id="spisok-praysa"></div>
-    <button class="d vt" data-cmd="moy" id="kn-prays" style="margin:12px 0 0">Прислать прайс</button>
-  </div>
-
-  <div class="k">
-    <h2>Правила и цель</h2>
-    <p class="malo" id="n-pravila" style="margin:0 0 14px;white-space:pre-wrap">—</p>
-    <label for="n-novoe">Добавить правило</label>
-    <textarea id="n-novoe" placeholder="про опт от десяти штук сразу зови меня" maxlength="400"></textarea>
-    <button class="d gl" id="kn-pravilo">Добавить</button>
-    <label for="n-cel" style="margin-top:16px">К чему вести разговор</label>
-    <input id="n-cel" placeholder="записать на замер" maxlength="300">
-    <button class="d vt" id="kn-cel" style="margin:0">Сохранить цель</button>
-  </div>
-
-  <div class="k">
-    <h2>Опасное</h2>
-    <button class="d opas" data-cmd="stop_avito">Отключить кабинет Авито</button>
-    <button class="d opas" data-cmd="udalit" style="margin:0">Стереть все мои данные</button>
-  </div>
-</section>
-
-<section id="s-dengi">
-  <div class="k" id="paket-oplata"></div>
-  <button class="d gl" data-cmd="kupit" id="kn-kupit">Хочу продолжить после пробы</button>
-  <button class="d" data-cmd="tarify">Показать цены</button>
-  <button class="d" data-cmd="partner" style="margin:0">Партнёрская ссылка (30 %)</button>
-</section>
-</div>
-
-<nav>
-  <button data-idet="s-segodnya" aria-current="true"><svg aria-hidden="true"><use href="#i-segodnya"/></svg>Сегодня</button>
-  <button data-idet="s-zayavki"><svg aria-hidden="true"><use href="#i-zayavki"/></svg>Заявки</button>
-  <button data-idet="s-kalendar"><svg aria-hidden="true"><use href="#i-kalendar"/></svg>Календарь</button>
-  <button data-idet="s-nastroyki"><svg aria-hidden="true"><use href="#i-nastroyki"/></svg>Настройки</button>
-  <button data-idet="s-dengi"><svg aria-hidden="true"><use href="#i-dengi"/></svg>Оплата</button>
+<nav class="tabbar" id="tabbar">
+  <span class="tab-ind" id="tab-ind"></span>
+  <button data-tab="dialogi" class="akt"><svg class="ik r"><use href="#r-chats-circle"/></svg><svg class="ik f"><use href="#f-chats-circle"/></svg>Диалоги<span class="bej" id="bej" hidden></span></button>
+  <button data-tab="prays"><svg class="ik r"><use href="#r-file-text"/></svg><svg class="ik f"><use href="#f-file-text"/></svg>Прайс</button>
+  <button data-tab="tarif"><svg class="ik r"><use href="#r-credit-card"/></svg><svg class="ik f"><use href="#f-credit-card"/></svg>Тариф</button>
 </nav>
-
+<div class="zatemn" id="zatemn"></div>
+<div class="shtorka" id="shtorka"></div>
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 const TG = window.Telegram && window.Telegram.WebApp;
-// Скрипт Telegram грузится на любой странице и вне мини-приложения отвечает неправдой: платформа «unknown»,
-// тема «light», initData пустой. Поэтому «мы внутри Telegram» — это непустой initData, а не наличие объекта:
-// иначе страница, открытая в браузере, гасит тёмную тему телефона и молча глотает нажатия — sendData там пустышка.
-const V_TG = !!(TG && TG.initData);
-// вибрация: до Telegram 6.1 её нет и вызов бросает. Без обёртки один такой бросок съедал бы само нажатие
+const V_TG = !!(TG && TG.initData);   // вне мини-приложения скрипт Telegram есть, а подписи нет
 const trk = (m, a) => { try { if (V_TG && TG.HapticFeedback) TG.HapticFeedback[m](a); } catch (e) {} };
-// ready и expand — первые строки страницы: бросок здесь оставил бы владельца с пустым экраном.
-// Шапку и фон Telegram красим в цвет страницы, чтобы кабинет не выглядел вставленным в чужое окно
 if (TG) { try { TG.ready(); TG.expand(); } catch (e) {} }
-if (V_TG) { try { TG.setHeaderColor('secondary_bg_color'); TG.setBackgroundColor('secondary_bg_color'); } catch (e) {} }
-if (V_TG && TG.colorScheme) document.documentElement.dataset.theme = TG.colorScheme;
+if (V_TG) { try { TG.setHeaderColor('#000000'); TG.setBackgroundColor('#000000'); TG.disableVerticalSwipes && TG.disableVerticalSwipes(); } catch (e) {} }
+const ik = (id, kl) => '<svg class="ik' + (kl ? ' ' + kl : '') + '"><use href="#' + id + '"/></svg>';
+const SHEV = ik("b-caret-right", "shev");
+const V_CHATE = ['kupit', 'zayavki', 'stop_avito', 'udalit'];
+// тексты покупателей приходят с Авито: без экранирования чужое сообщение стало бы разметкой страницы с подписанным входом
+const ek = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $ = (s) => document.querySelector(s);
+// «3990» из таблицы → «3 990 ₽»; вилки и текст как есть
+const cena = (c) => { c = String(c || '').trim(); if (!c) return ''; if (/^\d{4,}$/.test(c)) c = c.replace(/\B(?=(\d{3})+$)/g, ' '); return /₽|руб/i.test(c) ? c : c + ' ₽'; };
+const plural = (n, a, b, c) => { const m = n % 10, s = n % 100; return m === 1 && s !== 11 ? a : m >= 2 && m <= 4 && (s < 12 || s > 14) ? b : c; };
 
-function razobrat() {
+function razobrat() {   // адрес живого сервера и снимок данных едут в хеше ссылки кнопки
   try {
     const h = location.hash.slice(1);
     if (!h) return {};
-    const chast = h.startsWith('api=') ? h.slice(4) : h;
-    const [adres, hvost] = h.startsWith('api=') ? chast.split('&d=') : [null, chast];
+    const [adres, hvost] = h.startsWith('api=') ? h.slice(4).split('&d=') : [null, h];
     const dan = hvost ? JSON.parse(decodeURIComponent(escape(atob(hvost.replace(/-/g, '+').replace(/_/g, '/'))))) : {};
-    // адрес берём только https и только как домен: initData и тела нажатий уходят туда, куда показывает хеш
     const a = adres ? decodeURIComponent(adres) : null;
     return { api: a && /^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(a) ? a : null, dan };
   } catch (e) { return {}; }
 }
-const NACHALO = razobrat();
-const API = NACHALO.api;
-let D = NACHALO.dan || {};
+const NACHALO = razobrat(), API = NACHALO.api;
+let D = NACHALO.dan || {}, tab = 'dialogi', otkryt = null;
 
 async function sServera(put, telo) {
-  const otvet = await fetch(API + put, {
-    method: telo ? 'POST' : 'GET',
-    headers: { 'Content-Type': 'application/json', 'X-Init-Data': (TG && TG.initData) || '', 'bypass-tunnel-reminder': 'true' },
-    body: telo ? JSON.stringify(telo) : undefined,
-  });
-  if (!otvet.ok) throw new Error('сервер ответил ' + otvet.status);
-  return otvet.json();
+  const r = await fetch(API + put, { method: telo ? 'POST' : 'GET', body: telo ? JSON.stringify(telo) : undefined,
+    headers: { 'Content-Type': 'application/json', 'X-Init-Data': (TG && TG.initData) || '' } });
+  if (!r.ok) throw new Error('сервер ответил ' + r.status);
+  return r.json();
 }
+const beda = (e) => /\b403\b/.test(e.message || '') ? 'Вход из Telegram действует сутки и уже истёк. Закройте кабинет и откройте заново из чата с ботом.'
+  : 'Нет связи с сервером. Проверьте интернет — данные обновятся сами.';
 
-// имя покупателя и текст его сообщения приходят с Авито: без экранирования чужой текст становится разметкой,
-// а страница держит подписанный initData — это ключ к кабинету на сутки
-const ek = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const el = (id) => document.getElementById(id);
-const txt = (id, v) => { const n = el(id); if (n) n.textContent = v; };
-const sost = (v) => { document.body.dataset.sost = v; };
-// fetch на обрыве связи бросает англоязычное «Failed to fetch»: владельцу это не объяснение.
-// 403 значит ровно одно: подпись Telegram сервер не принял, а она живёт сутки — «сервер ответил 403» тут не помощь
-const beda = (e) => /\b403\b/.test(e.message || '')
-  ? 'Вход из Telegram действует сутки, этот уже истёк. Закройте кабинет и откройте заново кнопкой «Кабинет» в чате с ИИ‑продавцом.'
-  : /^сервер /.test(e.message || '') ? e.message + '.'
-  : 'связи с сервером нет. Проверьте интернет и попробуйте ещё раз.';
-// t сюда приходит только нашими словами, но это вставка разметки: пусть щит стоит на самом месте вставки
-const pusto = (t) => '<p class="pust"><svg aria-hidden="true"><use href="#i-pusto"/></svg><span>' + ek(t) + '</span></p>';
-
-// Кнопка «Подключить Авито»: адрес согласия строим из адреса кабинета и метки, которую сервер дал именно этому владельцу.
-// Метка — «chat.срок.подпись», живёт полчаса. Без адреса кабинета или без метки (приложение Авито не настроено) — вход по ключам
-const avitoSsylka = () => API && D.avito_metka ? API + '/api/avito/start?s=' + encodeURIComponent(D.avito_metka) : '';
-const metkaZhiva = () => +(String(D.avito_metka || '').split('.')[1] || 0) * 1000 > Date.now() + 60000;
-let bezSsylki = null, zhduAvito = 0, zhduKab = 0, poslPopytka = Date.now();
-
-function podklyuchitAvito() {
-  const u = avitoSsylka();
-  if (!u) return;
-  if (!metkaZhiva()) {   // кабинет открыт давно или из старой кнопки: такую ссылку сервер уже не примет
-    pokazat('Ссылка на Авито устарела, обновляю. Нажмите ещё раз через пару секунд.');
-    obnovit();
-    return;
-  }
-  trk('impactOccurred', 'light');
-  zhduAvito = Date.now();
-  zhduKab = (D.kabinety || []).length;   // ждём, пока кабинетов станет больше: так же и для второго кабинета
-  // согласие даётся в браузере, где человек вошёл в Авито: внутри Telegram ссылку открывает сам Telegram
-  try {
-    if (TG && TG.openLink && (V_TG || (TG.platform && TG.platform !== 'unknown'))) { TG.openLink(u); return; }
-  } catch (e) { /* старый клиент: откроем как обычную ссылку */ }
-  window.open(u, '_blank', 'noopener');
+/* ---------- экраны ---------- */
+function stroka(o) {
+  return '<button class="stroka"' + (o.a || '') + '>' + (o.lev || '') + '<span class="telo"><span class="tx"><span class="verh"><b>' + o.zag + '</b>' +
+    (o.zn ? '<span class="zn">' + o.zn + '</span>' : '') + '</span>' + (o.pod ? '<small>' + o.pod + '</small>' : '') + '</span>' + (o.prav || SHEV) + '</span></button>';
 }
-
-function kogdaTekst(iso) {
-  const d = new Date(iso.replace(' ', 'T'));
-  if (isNaN(d)) return iso;
-  const sut = Math.round((d.setHours(0,0,0,0) - new Date().setHours(0,0,0,0)) / 86400000);
-  const den = sut === 0 ? 'сегодня' : sut === 1 ? 'завтра' : sut === -1 ? 'вчера'
-    : d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
-  const t = new Date(iso.replace(' ', 'T'));
-  return den + ', ' + t.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+function podklyuchitKarta() {
+  return D.avito_metka && API ? '<div class="pusto">' + ik('r-storefront') + '<b>Подключите Авито</b><p>Одна кнопка: откроется Авито, нажмёте «Разрешить». Ключи не нужны.</p>' +
+    '<button class="knopka gl" data-avito>Подключить Авито</button></div>'
+    : '<div class="pusto">' + ik('r-storefront') + '<b>Авито пока не подключён</b><p>Подключение — в чате с ботом: команда /avito.</p></div>';
 }
-
-function narisovat() {
-  txt('zag', D.imya || 'Кабинет ИИ‑продавца');
-  txt('podzag', D.obnovleno ? (API ? 'обновлено в ' + D.obnovleno : 'снимок на ' + D.obnovleno) : 'подключаюсь…');
-  const zh = el('zhiv');
-  if (zh) {
-    zh.hidden = !D.obnovleno;
-    zh.dataset.on = API ? '1' : '0';
-    zh.textContent = API ? 'на связи' : 'снимок';
-    zh.title = API ? 'кабинет открыт вживую, данные свежие' : 'данные из ссылки; /kabinet в чате с ИИ‑продавцом пришлёт свежие';
-  }
-  txt('p-otvety', D.otvetov ?? '—');
-  txt('p-zayavki', D.zayavok ?? '—');
-  txt('p-mesyac', 'за месяц ' + (D.mesyac ?? '—'));
-  txt('p-prays', 'прайс: ' + (D.prays || 'нет'));
-  txt('r-tg', D.tg || 'не подключён');
-  txt('r-chasy', D.chasy || 'круглые сутки');
-  txt('r-cel', D.cel || 'не задана');
-  txt('n-pravila', D.pravila || 'Правил пока нет. Правило — это ваша фраза ИИ‑продавцу: чего не обещать, что предлагать к товару, когда звать вас.');
-  if (el('n-cel')) el('n-cel').value = D.cel || '';
-
-  // «avito» — старая склеенная строка: по ней понимаем, что кабинет есть, если ссылку собрал бот без списка kabinety
-  const kab = D.kabinety || [];
-  const estAvito = kab.length > 0 || (!D.kabinety && !!D.avito && D.avito !== 'не подключён');
-  const estTg = !!D.tg && D.tg !== 'не подключён';
-  el('k-start').hidden = estAvito;
-  el('k-avito').hidden = !estAvito;
-  // нули на первом экране до подключения — шум рядом с единственным нужным действием
-  el('plit').hidden = !estAvito && !estTg && !D.otvetov && !D.zayavok;
-  el('kn-tg').hidden = estTg || !estAvito;   // до Авито путь к Telegram уже есть в «Нет подписки с API?»
-  // имена магазинов уже в шапке: здесь по строке на кабинет, кто в нём отвечает
-  txt('avito-rezhim', !estAvito ? '' : kab.length ? kab.map(k => (k.imya || k.uid) + ' — ' + (k.auto ? 'отвечает сам' : 'черновики')).join('\n') : D.avito || '');
-  // по ссылке — главная кнопка; без неё сразу раскрыт вход по своим ключам. Раскрывашку трогаем только при смене пути,
-  // иначе каждое обновление экрана захлопывало бы то, что человек открыл сам
-  const ssylka = avitoSsylka();
-  el('kn-avito').hidden = el('kn-avito-esche').hidden = el('avito-po-ssylke').hidden = !ssylka;
-  el('avito-klyuchami').hidden = !!ssylka;
-  txt('klyuchi-t', ssylka ? 'У меня уже есть свои ключи API' : 'Как получить ключи API — пять шагов');
-  if (bezSsylki !== !ssylka) { bezSsylki = !ssylka; el('klyuchi').open = bezSsylki; }
-  // кнопка должна называть, что будет после нажатия: одно нажатие переводит все кабинеты Авито разом
-  // (хоть один отвечает сам — все на черновики). В старой ссылке поля sam нет — тогда обещать нечего, оставляем нейтральное
-  const smes = kab.some(k => k.auto) && kab.some(k => !k.auto);
-  txt('kn-sam', D.sam === undefined ? 'Переключить ответы в Авито' : smes ? 'Все кабинеты — на черновики'
-    : D.sam ? 'Перевести Авито на черновики' : 'Пусть ИИ‑продавец отвечает сам');
-  el('shag-prays').classList.toggle('gotovo', !!D.prays_n);
-  txt('shag-prays-t', D.prays_n ? 'Прайс загружен: ' + D.prays : 'Пришлите прайс');
-  txt('shag-prays-kn', D.prays_n ? 'Прислать новый прайс' : 'Прислать прайс');
-
-  risuyPaket(el('paket-segodnya'));
-  risuyPaket(el('paket-oplata'));
-  txt('kn-kupit', (D.paket || '').startsWith('Тариф') ? 'Продлить или сменить тариф' : 'Хочу продолжить после пробы');
-
-  // имя магазина в aria-label — тот же текст из профиля Авито, что и на экране: щит ставим здесь, а не в каждом вызове
-  const tumbler = (sam, attr, kto) => '<button class="tumbler" role="switch" aria-checked="' + !!sam + '" aria-label="Отвечает сам: ' + ek(kto) + '" ' + attr + '>' +
-    (sam ? 'отвечает сам' : 'черновики') + '<span class="knopa"></span></button>';
-  el('spisok-kanalov').innerHTML =
-    (kab.length ? kab.map(k => '<div class="kanal"><span class="imya">' + ek(k.imya || k.uid) + '<small>Авито</small></span>' +
-        tumbler(k.auto, 'data-uid="' + ek(k.uid) + '"', 'Авито «' + (k.imya || k.uid) + '»') + '</div>').join('')
-      : '<div class="kanal"><span class="imya">Авито<small>кабинет</small></span><b class="seryy">' + ek(estAvito ? D.avito : 'не подключён') + '</b></div>') +
-    '<div class="kanal"><span class="imya">Личный Telegram<small>переписка в личке</small></span>' +
-    (estTg ? tumbler(D.tg_sam, 'data-cmd="tg_pereklyuchit"', 'личный Telegram') : '<b class="seryy">не подключён</b>') + '</div>';
-
-  txt('n-chasy', D.chasy || 'круглые сутки');
-  if (D.chasy_sd) { el('ch-s').value = D.chasy_sd[0]; el('ch-do').value = D.chasy_sd[1]; }
-
-  const ps = D.prays_spisok || [];
-  const sRub = c => /^\d[\d\s]*([.,]\d+)?$/.test(c) ? c + ' ₽' : c;
-  el('spisok-praysa').innerHTML = ps.length
-    ? ps.map(([imya, cena]) => '<div class="ryad"><span>' + ek(imya) + '</span><b>' + ek(sRub(cena || '')) + '</b></div>').join('')
-    : pusto(D.prays_n ? 'Прайс загружен, строки в эту ссылку не влезли. Посмотреть их: /tablica в чате с ИИ‑продавцом.'
-      : 'Прайса пока нет. Без него ИИ‑продавцу не по чему отвечать: он не знает ни наличия, ни цен.');
-  txt('prays-schet', !D.prays_n ? '' : (ps.length && D.prays_n > ps.length ? 'первые ' + ps.length + ' из ' + D.prays_n : 'всего ' + D.prays_n) +
-    (D.prays_kogda ? ' · ' + D.prays_kogda : ''));
-  txt('kn-prays', D.prays_n ? 'Прислать новый прайс' : 'Прислать прайс');
-
-  const z = el('spisok-zayavok');
-  txt('z-schet', D.zayavok ? String(D.zayavok) : '');
-  // список режется под длину ссылки и может опустеть совсем: молчать про это нельзя, владелец так пропустит замер
-  if (z) z.innerHTML = (D.zayavki && D.zayavki.length)
-    ? D.zayavki.map(v =>
-      '<div class="zay"><div class="verh"><span class="kto">' + ek(v.kto || 'клиент') + '</span>' +
-      '<span class="kogda">' + ek(v.kogda) + '</span></div>' +
-      '<p class="chto">' + ek(v.chto) + '</p>' +
-      (v.tel ? '<span class="tel">' + ek(v.tel) + '</span>' : '') + '</div>').join('')
-    : pusto(D.zayavok ? 'Заявок ' + (+D.zayavok || 0) + ', в эту ссылку они не влезли. Все: /zayavki в чате с ИИ‑продавцом.'
-      : 'Пока пусто. Заявка появляется, когда клиент оставил телефон или ИИ‑продавец пообещал бронь.');
-
-  const risuyVstrechi = (uzel, spisok, pustoy) => {
-    if (!uzel) return;
-    if (!spisok || !spisok.length) { uzel.innerHTML = pusto(pustoy); return; }
-    uzel.innerHTML = spisok.map(v =>
-      '<div class="vstr' + (new Date(v.kogda.replace(' ', 'T')) < new Date() ? ' proshlo' : '') + '">' +
-      '<span class="kogda">' + ek(kogdaTekst(v.kogda)) + '</span><span class="chto">' + ek(v.chto) + '</span>' +
-      '<button class="ok" data-sdelano="' + ek(v.id) + '" aria-label="Сделано: ' + ek(v.chto) + '" title="Сделано">' +
-      '<svg aria-hidden="true"><use href="#i-ok"/></svg></button></div>').join('');
-  };
-  const nevlezli = D.vstrech && !(D.vstrechi || []).length
-    ? 'Встреч ' + (+D.vstrech || 0) + ', в эту ссылку они не влезли. Все: /kalendar в чате с ИИ‑продавцом.' : '';
-  risuyVstrechi(el('spisok-vstrech'), D.vstrechi, nevlezli || 'Записей нет. Добавьте встречу ниже.');
-  risuyVstrechi(el('blizhayshee'), (D.vstrechi || []).slice(0, 3), nevlezli || 'Встреч и напоминаний нет.');
+function risDialogi() {
+  const dl = D.dialogi || [], zh = dl.filter(x => x.status === 'vy'), n = D.otvetov_segodnya || 0;
+  $('#d-pod').textContent = !(D.kabinety || []).length ? 'Авито не подключён' : n ? 'Сегодня ИИ ответил на ' + n + ' ' + plural(n, 'сообщение', 'сообщения', 'сообщений') : 'Сегодня пока тихо';
+  $('#tochka').className = 'tochka' + ((D.kabinety || []).length ? '' : ' net');
+  const bej = $('#bej'); bej.hidden = !zh.length; bej.textContent = zh.length;
+  if (!(D.kabinety || []).length) { $('#d-telo').innerHTML = podklyuchitKarta(); return; }
+  if (!dl.length) { $('#d-telo').innerHTML = '<div class="pusto">' + ik('f-chats-circle') + '<b>Пока тихо</b><p>Как только покупатель напишет в Авито, здесь появится его вопрос и ответ ИИ.</p></div>'; return; }
+  const row = (x) => stroka({ a: ' data-dlg="' + dl.indexOf(x) + '"', lev: '<span class="ava' + (x.status === 'vy' ? ' vy' : '') + '">' + ek((x.kto || '?')[0]) + '</span>',
+    zag: ek(x.kto) + (x.tiho ? '<span class="molchit">ИИ молчит</span>' : ''), zn: ek(String(x.kogda || '').split(', ').pop()), pod: ek(x.vopros) });
+  const ost = dl.filter(x => x.status !== 'vy');
+  $('#d-telo').innerHTML = (zh.length ? '<div class="gruppa"><h4><span>Ждут вас</span><span class="lm">' + zh.length + '</span></h4><div class="spisok">' + zh.map(row).join('') +
+      '</div><div class="niz">Ответить можно прямо в Telegram — ответом на сообщение «Нужно ваше решение».</div></div>'
+    : '<div class="gruppa"><div class="spisok"><div class="vse-resheno">' + ik('f-check-circle') + 'Всё решено, покупатели ждут только ИИ.</div></div></div>') +
+    (ost.length ? '<div class="gruppa"><h4><span>Недавние</span></h4><div class="spisok">' + ost.map(row).join('') + '</div></div>' : '');
 }
-
-const dney = n => n + ' ' + (n % 10 === 1 && n % 100 !== 11 ? 'день' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 'дня' : 'дней');
-
-// пакет платящего или проба: одна карточка на «Сегодня» и в «Оплате». Долларов тут нет и не будет: это наша кухня
-function risuyPaket(uzel) {
-  if (!uzel) return;
-  const r = D.rashod;
-  uzel.hidden = !r && !D.tarif;
-  if (!r) {   // ссылку собрал бот до пакетов: показываем, что было
-    uzel.innerHTML = '<h2>' + ek(D.tarif || 'Проба') + '</h2><div class="ryad"><span>Осталось дней пробы</span><b>' + ek(D.dney ?? '—') + '</b></div>';
-    return;
-  }
-  const n = +r.n || 0, iz = +r.iz || 0;
-  // dney() склеивает значение из данных в разметку: без ek() чужая строка вместо числа стала бы тегом
-  const dni = (D.proba || []).map(([k, d]) => ek(k) + ' — ' + (+d > 0 ? 'ещё ' + ek(dney(+d)) : 'проба закончилась')).join(' · ');
-  uzel.innerHTML = '<h2>' + ek(D.paket || 'Проба') + '<span class="schet">' + n.toLocaleString('ru-RU') + ' из ' + iz.toLocaleString('ru-RU') + '</span></h2>' +
-    '<div class="polosa" role="progressbar" aria-valuemin="0" aria-valuemax="' + (iz || 1) + '" aria-valuenow="' + Math.min(n, iz) +
-    '" aria-label="' + ek(r.t) + '"><i style="width:' + Math.round(100 * Math.min(n, iz) / (iz || 1)) + '%"></i></div>' +
-    '<p class="malo">' + ek(r.t) + '</p>' +
-    (dni ? '<p class="malo">' + dni + '</p>'
-      : D.paket === 'Проба' ? '<p class="malo">Неделя пробы начнётся, когда подключите Авито или личный Telegram. У каждого канала своя.</p>' : '');
+function risPrays() {
+  const n = D.prays_n || 0;
+  $('#p-pod').textContent = n ? n + ' ' + plural(n, 'позиция', 'позиции', 'позиций') + (D.prays_kogda ? ' · обновлён ' + D.prays_kogda : '') : '';
+  $('#p-telo').innerHTML = n
+    ? '<div class="gruppa"><div class="spisok">' + (D.prays_spisok || []).map(([i, c]) => stroka({ zag: ek(i), prav: '<span class="zn">' + ek(cena(c)) + '</span>' })).join('') +
+      '</div><div class="niz">' + (n > 10 ? 'Здесь первые 10 строк. ' : '') + 'Цены и наличие ИИ берёт только из прайса и ваших объявлений.</div></div>' +
+      '<div class="knopki"><button class="knopka vt" data-cmd="moy">' + ik('r-download-simple') + 'Загрузить новый прайс</button></div>'
+    : '<div class="pusto">' + ik('r-file-text') + '<b>Прайса пока нет</b><p>ИИ отвечает по вашим объявлениям. С прайсом он точнее называет цены и наличие.</p>' +
+      '<button class="knopka gl" data-cmd="moy">Загрузить прайс</button></div>';
 }
-
-sost(D.obnovleno ? 'gotovo' : (API ? 'gruzhu' : 'gotovo'));
-narisovat();
-
-function idti(id) {
-  document.querySelectorAll('section').forEach(s => s.toggleAttribute('data-on', s.id === id));
-  document.querySelectorAll('nav button').forEach(x => x.setAttribute('aria-current', String(x.dataset.idet === id)));
-  window.scrollTo(0, 0);
-  trk('selectionChanged');
+function risTarif() {
+  const oplachen = D.paket && D.paket !== 'Проба', r = D.rashod || {}, dn = (D.proba || []).find(p => p[0] === 'Авито');
+  const karta = oplachen
+    ? '<div class="karta"><small>Ваш тариф</small><b>' + ek(String(D.paket).replace(/^Тариф /, '')) + '</b><p>' + ek(r.n) + ' из ' + ek(r.iz) + ' ответов в этом месяце</p>' +
+      '<div class="polosa"><i style="width:' + Math.min(100, Math.round(100 * (r.n || 0) / (r.iz || 1))) + '%"></i></div></div>'
+    : '<div class="karta"><small>Сейчас</small><b>Пробная неделя</b><p>' + (dn ? 'Осталось ' + dn[1] + ' ' + plural(dn[1], 'день', 'дня', 'дней') : 'Начнётся, когда подключите Авито') + ' · без оплаты</p></div>';
+  const kab = (D.kabinety || []).map(k => stroka({ lev: '<span class="plitka lime">' + ik('r-storefront') + '</span>', zag: ek(k.imya || 'Кабинет Авито'),
+    prav: '<span class="zn">' + (k.auto ? 'отвечает сам' : 'черновики') + '</span>', a: ' data-nichego' })).join('');
+  $('#t-telo').innerHTML = karta +
+    '<div class="knopki"><button class="knopka gl" data-cmd="kupit">' + (oplachen ? 'Продлить' : 'Оплатить') + '</button></div>' +
+    '<div class="gruppa"><h4><span>Как отвечает ИИ</span></h4><div class="spisok">' +
+      '<div class="stroka"><span class="telo"><span class="tx"><b>Отвечает сам</b><small>Выключите — будет присылать черновики</small></span><button class="sw' + (D.sam ? '' : ' vykl') + '" data-cmd="sam_pereklyuchit" aria-label="ИИ отвечает сам"></button></span></div>' +
+      '<div class="stroka"><span class="telo"><span class="tx"><b>Копия каждого ответа</b><small>Обычно в чат — только ваши решения</small></span><button class="sw' + (D.kopii ? '' : ' vykl') + '" data-kopii aria-label="Копии в чат"></button></span></div>' +
+      stroka({ zag: 'Часы', a: ' data-chasy', prav: '<span class="zn">' + ek(D.chasy || 'круглые сутки') + '</span>' + SHEV }) +
+    '</div></div>' +
+    '<div class="gruppa"><h4><span>Авито</span></h4><div class="spisok">' + kab +
+      (D.avito_metka && API ? stroka({ lev: '<span class="plitka">' + ik('b-plus') + '</span>', zag: kab ? 'Подключить ещё кабинет' : 'Подключить Авито', a: ' data-avito' }) : '') +
+    '</div></div>' +
+    '<div class="gruppa"><h4><span>Ещё</span></h4><div class="spisok">' +
+      stroka({ lev: '<span class="plitka">' + ik('r-download-simple') + '</span>', zag: 'Заявки файлом Excel', a: ' data-cmd="zayavki"' }) +
+      (kab ? stroka({ lev: '<span class="plitka">' + ik('r-bell-slash') + '</span>', zag: 'Отключить Авито', a: ' data-cmd="stop_avito"' }) : '') +
+      stroka({ zag: '<span class="krasn">Удалить мои данные</span>', a: ' data-cmd="udalit"' }) +
+    '</div><div class="niz">Откроется чат с ботом. Перед отключением и удалением он переспросит.</div></div>';
 }
+function narisovat() { risDialogi(); risPrays(); risTarif(); if (otkryt !== null) otkrytDialog(otkryt, true); }
 
-// один обработчик на все кнопки: строки встреч и кабинетов перерисовываются, навешивать на каждую заново незачем
-document.addEventListener('click', e => {
-  const b = e.target.closest('button');
-  if (!b) return;
-  const s = b.dataset;
-  if (s.idet) idti(s.idet);
-  else if (s.akt === 'povtor') obnovit();
-  else if (s.akt === 'avito') podklyuchitAvito();
-  else if (s.cmd) poslat({ cmd: s.cmd });
-  else if (s.sdelano) poslat({ cmd: 'vstrecha_sdelano', id: Number(s.sdelano) });
-  else if (s.uid) poslat({ cmd: 'sam_pereklyuchit', uid: s.uid });
-});
+/* ---------- шторка диалога ---------- */
+function otkrytDialog(i, tiho_) {
+  const x = (D.dialogi || [])[i];
+  if (!x) { zakryt(); return; }
+  otkryt = i;
+  const kto_otv = x.status === 'sam' ? 'Ответили вы' : x.status === 'chernovik' ? 'Черновик — ждёт кнопки в чате' : 'Ответил ИИ';
+  $('#shtorka').innerHTML = '<div class="ruchka"></div><h3>' + ek(x.kto) + '</h3><p class="m">' + (x.kanal === 'tg' ? 'Telegram' : x.kanal === 'max' ? 'MAX' : 'Авито') +
+    (x.ob ? ' · «' + ek(x.ob) + '»' : '') + ' · ' + ek(x.kogda) + '</p>' +
+    '<div class="pz pok">' + ek(x.vopros) + '</div>' + (x.otvet ? '<div class="pz nash"><span class="kto">' + ek(kto_otv) + '</span>' + ek(x.otvet) + '</div>' : '') +
+    (x.status === 'vy' ? '<div class="pochemu"><b>Почему нужны вы</b>' + ek(x.pochemu || 'ИИ передал вопрос вам') + '</div>' : '') +
+    '<div class="p-sw"><div><b>ИИ отвечает в этом чате</b><small>' + (x.tiho ? 'Молчит, отвечаете вы' : 'Выключите — и чат ваш') + '</small></div>' +
+    '<button class="sw' + (x.tiho ? ' vykl' : '') + '" data-tiho aria-label="ИИ отвечает в этом чате"></button></div>' +
+    (x.url ? '<button class="knopka gl" data-url="' + ek(x.url) + '">' + ik('r-arrow-square-out') + 'Открыть чат в Авито</button>' : '') +
+    (x.status === 'vy' ? '<button class="knopka vt" data-resheno>' + ik('b-check') + 'Решено</button><p class="podskaz">Или ответьте в Telegram на «Нужно ваше решение» — отправлю покупателю.</p>' : '');
+  if (!tiho_) { $('#zatemn').classList.add('vid'); $('#shtorka').classList.add('vid'); trk('impactOccurred', 'medium'); }
+  if (V_TG && TG.BackButton) { try { TG.BackButton.show(); } catch (e) {} }
+}
+function zakryt() {
+  otkryt = null; $('#zatemn').classList.remove('vid'); $('#shtorka').classList.remove('vid');
+  if (V_TG && TG.BackButton) { try { TG.BackButton.hide(); } catch (e) {} }
+}
+function chasyShtorka() {
+  const sd = D.chasy_sd || [9, 20];
+  $('#shtorka').innerHTML = '<div class="ruchka"></div><h3>Часы</h3><p class="m">В эти часы покупателям отвечаете вы, ИИ молчит. В остальное время отвечает он.</p>' +
+    '<div class="dva"><label>с<input id="ch-s" inputmode="numeric" value="' + ek(sd[0]) + '"></label><label>до<input id="ch-do" inputmode="numeric" value="' + ek(sd[1]) + '"></label></div>' +
+    '<button class="knopka gl" data-chasy-ok>Сохранить</button><button class="knopka vt" data-cmd="chasy_vsegda">ИИ отвечает круглые сутки</button>';
+  otkryt = null; $('#zatemn').classList.add('vid'); $('#shtorka').classList.add('vid');
+  if (V_TG && TG.BackButton) { try { TG.BackButton.show(); } catch (e) {} }
+}
+if (V_TG && TG.BackButton) { try { TG.BackButton.onClick(zakryt); } catch (e) {} }
 
+/* ---------- действия ---------- */
 async function poslat(o) {
   trk('impactOccurred', 'light');
-  if (API) {   // живой кабинет: действие уходит на сервер и экран сразу обновляется
-    try {
-      const svezhee = await sServera('/api/deystvie', o);
-      const skazat = svezhee.skazat;
-      D = svezhee; sost('gotovo'); narisovat();
-      if (skazat) pokazat(skazat);
-    } catch (e) {
-      sboy('Не получилось: ' + beda(e));
-    }
+  if (API) {
+    try { const s = await sServera('/api/deystvie', o); D = s; document.body.dataset.sost = 'gotovo'; narisovat(); if (s.skazat) pokazat(s.skazat); }
+    catch (e) { pokazat(beda(e)); }
     return;
   }
-  try {
-    if (!V_TG || !TG.sendData) throw new Error('нет Telegram');
-    TG.sendData(JSON.stringify(o));
-  } catch (e) {
-    pokazat('Отсюда кнопки не работают: это просмотр. Откройте кабинет кнопкой «Кабинет» под полем ввода в Telegram.');
-  }
+  try { if (!V_TG) throw 0; TG.sendData(JSON.stringify(o)); } catch (e) { pokazat('Это просмотр: откройте кабинет кнопкой в чате с ботом.'); }
 }
-
 let taymer;
-function pokazat(tekst) {
-  tekst = String(tekst).replace(/ИИ-/g, 'ИИ‑');   // тексты сервера: «ИИ-» / «продавцом» на переносе не читается
-  // длинное во всплывашке за 4 секунды не прочитать. Вне Telegram окно не бросает, а молча не открывается — тогда только своя плашка
-  if (tekst.length > 90 && V_TG && TG.showAlert) {
-    try { TG.showAlert(tekst); return; } catch (e) { /* старый клиент Telegram: покажем как обычно */ }
+function pokazat(t) { const n = $('#toast'); n.textContent = t; n.dataset.on = '1'; clearTimeout(taymer); taymer = setTimeout(() => n.removeAttribute('data-on'), 3600); }
+function otkrytSsylku(u) {
+  try { if (V_TG && TG.openLink) { TG.openLink(u); return; } } catch (e) {}
+  window.open(u, '_blank', 'noopener');
+}
+function pokazTab(t) {
+  if (t !== tab) trk('selectionChanged');
+  tab = t;
+  ['dialogi', 'prays', 'tarif'].forEach((x, i) => {
+    $('#e-' + x).hidden = x !== t;
+    const b = document.querySelector('[data-tab="' + x + '"]'); b.classList.toggle('akt', x === t);
+    if (x === t) $('#tab-ind').style.transform = 'translateX(' + i * 100 + '%)';
+  });
+  window.scrollTo({ top: 0 });
+}
+document.addEventListener('click', (ev) => {
+  const c = (s) => ev.target.closest(s);
+  let e;
+  if ((e = c('[data-tab]'))) return pokazTab(e.dataset.tab);
+  if ((e = c('[data-dlg]'))) return otkrytDialog(+e.dataset.dlg);
+  if (c('#zatemn')) return zakryt();
+  if ((e = c('[data-url]'))) return otkrytSsylku(e.dataset.url);
+  if (c('[data-tiho]')) { const x = D.dialogi[otkryt]; return poslat({ cmd: 'tiho', id: x.id, kanal: x.kanal, vkl: !x.tiho }); }
+  if (c('[data-resheno]')) { const x = D.dialogi[otkryt]; zakryt(); return poslat({ cmd: 'resheno', id: x.id, kanal: x.kanal }); }
+  if (c('[data-kopii]')) return poslat({ cmd: 'kopii', vkl: !D.kopii });
+  if (c('[data-chasy]')) return chasyShtorka();
+  if (c('[data-chasy-ok]')) {
+    const s = $('#ch-s').value.trim(), d = $('#ch-do').value.trim();
+    if (!/^\d+$/.test(s) || !/^\d+$/.test(d) || +s >= +d || +d > 24) return pokazat('Часы — от 0 до 24, «с» раньше «до». Например, с 9 до 20.');
+    zakryt(); return poslat({ cmd: 'chasy', s: +s, 'do': +d });
   }
-  const t = el('toast');
-  if (!t) return;
-  t.textContent = tekst;
-  t.dataset.on = '1';
-  clearTimeout(taymer);
-  taymer = setTimeout(() => t.removeAttribute('data-on'), 4200);
-}
-
-function sboy(tekst) {
-  txt('sboy-tekst', tekst);
-  sost('oshibka');
-  const zh = el('zhiv');   // пока связи нет, «на связи» врёт: на экране прошлые числа
-  if (zh) { zh.hidden = false; zh.dataset.on = '0'; zh.textContent = 'нет связи'; }
-}
+  if (c('[data-avito]')) {
+    const u = API && D.avito_metka ? API + '/api/avito/start?s=' + encodeURIComponent(D.avito_metka) : '';
+    if (!u) return pokazat('Подключение — в чате с ботом: команда /avito.');
+    return otkrytSsylku(u);
+  }
+  if ((e = c('[data-cmd]'))) {
+    const cmd = e.dataset.cmd;
+    if (cmd === 'chasy_vsegda') zakryt();
+    if (V_CHATE.includes(cmd)) {   // оплата, файл заявок и опасное живут в чате: открываем бота сразу на нужном (/start kupit и т.п.)
+      try { if (V_TG && TG.openTelegramLink) { TG.openTelegramLink('https://t.me/koleso62_demo_bot?start=' + cmd); return; } } catch (x) {}
+      return pokazat('Это в чате с ботом: команда /' + cmd + '.');
+    }
+    return poslat({ cmd });
+  }
+});
 
 async function obnovit() {
-  if (!API) return;
-  poslPopytka = Date.now();
-  if (!D.obnovleno) sost('gruzhu');
-  try {
-    D = await sServera('/api/kabinet');
-    sost('gotovo');
-    narisovat();
-  } catch (e) {
-    sboy('Данные не обновились: ' + beda(e));
-  }
+  if (!API) { narisovat(); document.body.dataset.sost = 'gotovo'; return; }
+  try { D = await sServera('/api/kabinet'); document.body.dataset.sost = 'gotovo'; narisovat(); }
+  catch (e) { $('#sboy').textContent = beda(e); document.body.dataset.sost = 'oshibka'; if (!D.imya && !D.dialogi) narisovat(); }
 }
 obnovit();
 document.addEventListener('visibilitychange', () => { if (!document.hidden) obnovit(); });
-// После «Разрешить» кабинет подключается за секунды: три минуты спрашиваем сервер каждые 5 секунд, чтобы экран сам
-// показал «Авито подключён». И раз в 10 минут просто так: метка в кнопке живёт полчаса, открытый надолго кабинет не должен вести на «ссылка устарела»
-setInterval(() => {
-  if (!API || document.hidden) return;
-  if ((zhduAvito && (D.kabinety || []).length <= zhduKab && Date.now() - zhduAvito < 180000) || Date.now() - poslPopytka > 600000) obnovit();
-}, 5000);
-
-if (el('kn-vstrecha')) el('kn-vstrecha').onclick = () => {
-  const chto = el('v-chto').value.trim(), kogda = el('v-den').value;
-  if (!chto || !kogda) { pokazat('Напишите, что и когда.'); return; }
-  poslat({ cmd: 'vstrecha', chto, kogda });
-  el('v-chto').value = '';
-};
-if (el('kn-chasy')) el('kn-chasy').onclick = () => {
-  const s = el('ch-s').value.trim(), d = el('ch-do').value.trim();
-  if (!/^\d+$/.test(s) || !/^\d+$/.test(d) || +s >= +d || +d > 24) { pokazat('Часы — целые от 0 до 24, и «с» раньше «до». Например, с 9 до 20.'); return; }
-  poslat({ cmd: 'chasy', s: +s, 'do': +d });
-};
-if (el('kn-pravilo')) el('kn-pravilo').onclick = () => {
-  const t = el('n-novoe').value.trim();
-  if (!t) { pokazat('Напишите правило словами — как сказали бы продавцу.'); return; }
-  poslat({ cmd: 'pravilo', tekst: t });
-  el('n-novoe').value = '';
-};
-if (el('kn-cel')) el('kn-cel').onclick = () => poslat({ cmd: 'cel', tekst: el('n-cel').value.trim() });
+setInterval(() => { if (!document.hidden && otkryt === null) obnovit(); }, 30000);   // новые диалоги появляются сами
 </script>
 </body>
 </html>
