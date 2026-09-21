@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>g.a.d. — чат и кабинет</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --page:#050506;
+  --bg:#000; --s1:#111113; --s2:#1c1c1e; --s3:#2c2c2e; --s4:#3a3a3c;
+  --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.12);
+  --t1:#fff; --t2:rgba(235,235,245,.62); --t3:rgba(235,235,245,.34);
+  --lime:#d6ff3f; --lime-dim:rgba(214,255,63,.14); --red:#ff6961;
+  --ui:-apple-system,"SF Pro Text","SF Pro Display",Manrope,"Helvetica Neue",Arial,sans-serif;
+  --brand:Unbounded,Manrope,sans-serif;
+  --ios:cubic-bezier(.32,.72,0,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--page)}
+body{background:var(--page);color:var(--t1);font:15px/1.4 var(--ui);-webkit-font-smoothing:antialiased;min-height:100vh}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.stena{max-width:1100px;margin:0 auto;padding:40px 16px 56px}
+.titul{display:flex;align-items:baseline;gap:14px;margin:0 0 6px}
+.titul b{font:600 22px/1 var(--brand);color:var(--lime);letter-spacing:-.01em}
+.titul span{font-size:22px;font-weight:600;letter-spacing:-.02em}
+.podz{color:var(--t2);max-width:760px;margin:0 0 30px}
+.dva{display:grid;grid-template-columns:repeat(2,390px);gap:48px;justify-content:center}
+@media (max-width:880px){.dva{grid-template-columns:minmax(0,390px)}}
+.metka-ekrana{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin:0 0 12px 4px;font-weight:600}
+
+/* iPhone */
+.iphone{position:relative;isolation:isolate;width:100%;max-width:390px;height:844px;border-radius:54px;background:#000;overflow:hidden;
+  box-shadow:0 0 0 1.5px #2a2a2c, 0 0 0 11px #0c0c0d, 0 0 0 12.5px #232325, 0 40px 90px rgba(0,0,0,.7)}
+.ostrov{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:124px;height:36px;border-radius:20px;background:#000;z-index:50}
+.statusbar{position:absolute;top:0;left:0;right:0;height:54px;display:flex;justify-content:space-between;align-items:center;padding:6px 30px 0 44px;z-index:40;font-weight:600;font-size:16px;pointer-events:none}
+.statusbar .pravo{display:flex;gap:6px;align-items:center}
+.home{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.85);z-index:60}
+
+/* ===== Telegram ===== */
+.tg{position:absolute;inset:0;display:flex;flex-direction:column;background:#0e1621}
+.tg-shapka{padding:54px 10px 8px;display:flex;align-items:center;gap:8px;background:rgba(23,33,43,.92);backdrop-filter:blur(20px);border-bottom:.5px solid rgba(0,0,0,.4);position:relative;z-index:5}
+.tg-nazad{display:flex;align-items:center;gap:2px;color:#62b1f5;font-size:17px;min-width:70px}
+.tg-imya{flex:1;text-align:center;line-height:1.15}
+.tg-imya b{font-size:16px;font-weight:600}
+.tg-imya small{display:block;font-size:12.5px;color:#7d8e9d}
+.logo{width:37px;height:37px;border-radius:50%;background:#0a0a0c;border:1.6px solid var(--lime);display:grid;place-items:center;flex:none}
+.logo i{font:600 8.5px/1 var(--brand);color:var(--lime);font-style:normal;letter-spacing:-.02em}
+.tg-lenta{flex:1;overflow:auto;padding:10px 8px 14px;
+  background-color:#0e1621;
+  background-image:radial-gradient(rgba(255,255,255,.028) 1px,transparent 1.2px);background-size:18px 18px}
+.tg-den{margin:4px auto 10px;width:max-content;background:rgba(0,0,0,.34);color:#fff;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:12px}
+.tg-msg{background:#182533;border-radius:16px 16px 16px 5px;max-width:318px;padding:7px 10px 6px 11px;font-size:15.5px;line-height:1.36;margin:0 0 3px}
+.tg-msg .vr{float:right;font-size:11.5px;color:#6d7f8f;margin:7px 0 -3px 10px}
+.tg-msg b{font-weight:600}
+.tg-msg .q{border-left:2.5px solid #62b1f5;background:rgba(98,177,245,.1);border-radius:3px 6px 6px 3px;padding:3px 8px;margin:5px 0;font-size:14.5px}
+.tg-msg .q.ii{border-color:#7d8e9d;background:rgba(125,142,157,.1)}
+.tg-msg .q small{display:block;color:#62b1f5;font-weight:600;font-size:12.5px}
+.tg-msg .q.ii small{color:#9aa9b6}
+.tg-foto{max-width:318px;border-radius:16px 16px 16px 5px;overflow:hidden;margin:0 0 3px;position:relative;background:#182533;padding:2px}
+.tg-foto .vr{position:absolute;right:10px;bottom:8px;font-size:11.5px;color:#fff;background:rgba(0,0,0,.45);padding:1px 6px;border-radius:9px}
+.tg-kn{max-width:318px;display:grid;gap:3px;margin:0 0 12px}
+.tg-kn .r{display:grid;gap:3px;grid-template-columns:1fr 1fr}
+.tg-kn button{background:rgba(24,37,51,.72);backdrop-filter:blur(10px);border-radius:8px;padding:9px 6px;font-size:14.5px;font-weight:500;color:#fff;text-align:center}
+.tg-kn button:active{background:rgba(40,58,78,.9)}
+.tg-niz{display:flex;align-items:center;gap:8px;padding:7px 10px 30px;background:rgba(23,33,43,.95);border-top:.5px solid rgba(0,0,0,.4)}
+.tg-menu{background:#62b1f5;color:#fff;border-radius:9px;padding:6px 11px;font-size:15px;font-weight:600;flex:none}
+.tg-pole{flex:1;background:#0e1621;border:.5px solid #2b3a48;border-radius:18px;padding:7px 13px;color:#6d7f8f;font-size:15.5px}
+
+/* карточка-картинка сводки: её рисует бот, это наш стиль */
+.svodka{background:#0a0a0c;border-radius:14px;padding:16px 16px 14px;position:relative;overflow:hidden}
+.svodka .verh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.svodka .verh b{font:600 13px/1 var(--brand);color:var(--lime);letter-spacing:-.01em}
+.svodka .verh span{font-size:12px;color:var(--t2);font-variant-numeric:tabular-nums}
+.svodka .glav{display:flex;align-items:flex-end;gap:10px;margin-bottom:4px}
+.svodka .glav strong{font:600 52px/0.9 var(--brand);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.svodka .glav small{color:var(--t2);font-size:13px;line-height:1.25;padding-bottom:4px}
+.svodka .stolb{display:flex;align-items:flex-end;gap:4px;height:38px;margin:14px 0 12px}
+.svodka .stolb i{flex:1;background:#26262a;border-radius:2px;min-height:3px;transition:height .6s var(--ios)}
+.svodka .stolb i.est{background:var(--lime)}
+.svodka .tri{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);padding-top:10px}
+.svodka .tri div{font-size:11.5px;color:var(--t2)}
+.svodka .tri b{display:block;font-size:17px;color:#fff;font-weight:600;font-variant-numeric:tabular-nums;margin-bottom:1px}
+.svodka .tri .krasn b{color:var(--lime)}
+.svodka .obn{position:absolute;right:12px;top:40px;font-size:10.5px;color:var(--t3);transition:color .4s}
+.svodka .obn.svezh{color:var(--lime)}
+
+/* ===== Mini App ===== */
+.app{position:absolute;inset:0;background:var(--bg);overflow:hidden}
+.pilyuli{position:absolute;top:58px;left:14px;right:14px;display:flex;justify-content:space-between;z-index:30;pointer-events:none}
+.pilyulya{pointer-events:auto;height:30px;border-radius:15px;background:rgba(44,44,46,.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;gap:6px;padding:0 12px;font-size:14px;font-weight:500}
+.pilyulya.pr{padding:0 10px;gap:14px}
+.ekran{position:absolute;inset:0;overflow-y:auto;padding:100px 0 110px;background:var(--bg);transition:transform .42s var(--ios),opacity .42s var(--ios);will-change:transform}
+.ekran.skryt{display:none}
+.ekran.sleva{transform:translateX(-28%);opacity:.6}
+.ekran.sprava{transform:translateX(100%)}
+.bol-zag{font-size:34px;font-weight:700;letter-spacing:-.02em;padding:6px 20px 2px}
+.pod-zag{padding:0 20px 18px;color:var(--t2);font-size:15px;display:flex;align-items:center;gap:7px}
+.tochka{width:7px;height:7px;border-radius:50%;background:var(--lime)}
+.gruppa{margin:0 16px 22px}
+.gruppa>h4{font-size:13px;font-weight:400;color:var(--t2);text-transform:uppercase;letter-spacing:.02em;padding:0 16px 7px}
+.gruppa>.niz{font-size:13px;color:var(--t3);padding:7px 16px 0}
+.spisok{background:var(--s1);border-radius:12px;overflow:hidden}
+.stroka{display:flex;align-items:center;gap:12px;padding:0 16px;min-height:44px;position:relative;width:100%;text-align:left;transition:background .15s}
+.stroka:active,.stroka.nazhata{background:var(--s3)}
+.stroka .telo{flex:1;min-width:0;padding:11px 0;display:flex;align-items:center;gap:10px}
+.stroka+.stroka .telo{box-shadow:inset 0 .5px 0 var(--line2)}
+.stroka.s-ava+.stroka.s-ava .telo{box-shadow:inset 0 .5px 0 var(--line2)}
+.stroka .tx{flex:1;min-width:0}
+.stroka .tx b{display:block;font-size:17px;font-weight:400;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stroka .tx small{display:block;font-size:14px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.stroka .zn{color:var(--t2);font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.verh-s{display:flex;align-items:baseline;gap:8px}.verh-s b{flex:1;min-width:0}.verh-s .zn{font-size:14px}
+.shev{width:8px;height:13px;flex:none;color:var(--t3)}
+.ava{width:40px;height:40px;border-radius:50%;background:var(--s3);color:#e5e5ea;display:grid;place-items:center;font-size:16px;font-weight:600;flex:none;letter-spacing:-.01em}
+.plitka{width:29px;height:29px;border-radius:7px;background:var(--s3);display:grid;place-items:center;flex:none}
+.plitka svg{width:17px;height:17px;color:#fff}
+.plitka.lime{background:var(--lime)} .plitka.lime svg{color:#0a0a0c}
+.kr-tochka{width:8px;height:8px;border-radius:50%;background:var(--red);flex:none}
+.l-tochka{width:8px;height:8px;border-radius:50%;background:var(--lime);flex:none}
+.s-tochka{width:8px;height:8px;border-radius:50%;background:var(--t3);flex:none}
+
+/* главная карточка «Сегодня» */
+.geroy{margin:0 16px 22px;background:var(--s1);border-radius:16px;padding:18px 18px 16px}
+.geroy .ryad{display:flex;justify-content:space-between;align-items:flex-start}
+.geroy .ch{font:600 56px/0.95 var(--brand);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.geroy .pod{color:var(--t2);font-size:15px;margin-top:8px}
+.geroy .znachok{font-size:13px;color:var(--lime);background:var(--lime-dim);padding:4px 9px;border-radius:8px;font-weight:600;white-space:nowrap}
+.geroy .stolb{display:flex;align-items:flex-end;gap:5px;height:56px;margin:20px 0 8px}
+.geroy .stolb i{flex:1;background:var(--s3);border-radius:3px;min-height:4px;transition:height .6s var(--ios)}
+.geroy .stolb i.est{background:var(--lime)}
+.geroy .osi{display:flex;justify-content:space-between;color:var(--t3);font-size:11px;font-variant-numeric:tabular-nums}
+.geroy .tri{display:grid;grid-template-columns:repeat(3,1fr);margin-top:16px;border-top:.5px solid var(--line2);padding-top:14px}
+.geroy .tri b{display:block;font-size:22px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.geroy .tri span{font-size:13px;color:var(--t2)}
+.geroy .tri .v b{color:var(--red)}
+
+/* поиск и сегменты */
+.poisk{margin:0 16px 12px;height:36px;border-radius:10px;background:var(--s2);display:flex;align-items:center;gap:6px;padding:0 10px;color:var(--t2);font-size:17px}
+.poisk svg{width:16px;height:16px}
+.segment{margin:0 16px 18px;background:var(--s2);border-radius:9px;padding:2px;display:grid;grid-template-columns:repeat(4,1fr);position:relative}
+.segment button{position:relative;z-index:2;height:28px;font-size:13px;font-weight:500;border-radius:7px;color:var(--t1)}
+.segment .polz{position:absolute;z-index:1;top:2px;bottom:2px;left:2px;width:calc((100% - 4px)/4);background:var(--s4);border-radius:7px;box-shadow:0 3px 8px rgba(0,0,0,.25);transition:transform .3s var(--ios)}
+
+/* таб-бар */
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:88px;background:rgba(18,18,20,.82);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-top:.5px solid var(--line2);display:grid;grid-template-columns:repeat(4,1fr);padding-top:7px;z-index:20;transition:transform .42s var(--ios)}
+.tabbar.proch{transform:translateY(100%)}
+.tabbar button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:500;color:#8e8e93;position:relative}
+.tabbar button svg{width:26px;height:26px}
+.tabbar button.akt{color:var(--lime)}
+.tabbar .bej{position:absolute;top:-2px;left:calc(50% + 7px);min-width:17px;height:17px;border-radius:9px;background:var(--red);color:#fff;font-size:11px;font-weight:600;display:grid;place-items:center;padding:0 4px}
+
+/* экран диалога */
+.navbar{position:absolute;top:0;left:0;right:0;z-index:25;padding:96px 8px 8px;background:rgba(0,0,0,.78);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:.5px solid var(--line2);display:grid;grid-template-columns:96px 1fr 96px;align-items:center}
+.navbar .nz{display:flex;align-items:center;gap:3px;color:var(--lime);font-size:17px;padding:4px}
+.navbar .nz svg{width:12px;height:20px}
+.navbar .ct{text-align:center;line-height:1.2;min-width:0}
+.navbar .ct b{font-size:17px;font-weight:600;display:block}
+.navbar .ct small{font-size:12px;color:var(--t2);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ekran.dialog{padding:170px 0 96px}
+.tumbler-ryad{margin:0 16px 16px;background:var(--s1);border-radius:12px;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;gap:12px}
+.tumbler-ryad b{font-size:16px;font-weight:400;display:block}
+.tumbler-ryad small{font-size:13px;color:var(--t2)}
+.sw{width:51px;height:31px;border-radius:16px;background:var(--lime);position:relative;flex:none;transition:background .25s}
+.sw::after{content:"";position:absolute;top:2px;left:22px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.2);transition:left .25s var(--ios)}
+.sw.vykl{background:var(--s4)} .sw.vykl::after{left:2px}
+.puzyri{padding:0 12px}
+.den-m{text-align:center;color:var(--t3);font-size:12px;margin:8px 0 10px;font-weight:500}
+.pz{max-width:78%;padding:8px 12px;border-radius:18px;font-size:16px;line-height:1.35;margin:0 0 3px;width:fit-content}
+.pz.pok{background:var(--s2);border-bottom-left-radius:6px}
+.pz.nash{background:#26262a;margin-left:auto;border-bottom-right-radius:6px}
+.pz .ktoii{display:block;font-size:11px;font-weight:600;color:var(--t2);margin-bottom:1px;letter-spacing:.02em}
+.pz-vr{font-size:11px;color:var(--t3);margin:0 4px 8px;font-variant-numeric:tabular-nums}
+.pz-vr.pr{text-align:right}
+.nuzhno{margin:14px 4px 6px;background:var(--s1);border:.5px solid var(--line2);border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:center}
+.nuzhno .tx{flex:1;font-size:14px;color:var(--t2)}
+.nuzhno .tx b{color:#fff;display:block;font-size:15px;font-weight:600}
+.knopka{height:50px;border-radius:14px;font-size:17px;font-weight:600;width:100%}
+.knopka.gl{background:var(--lime);color:#0a0a0c}
+.knopka.vt{background:var(--s2);color:#fff}
+.knopka.mal{height:34px;border-radius:17px;font-size:15px;padding:0 14px;width:auto;background:var(--lime);color:#0a0a0c}
+.vvod{position:absolute;left:0;right:0;bottom:0;padding:8px 12px 34px;background:rgba(0,0,0,.8);backdrop-filter:blur(24px);border-top:.5px solid var(--line2);display:flex;gap:8px;align-items:center;z-index:20}
+.vvod .pole{flex:1;height:36px;border-radius:18px;border:.5px solid var(--line2);display:flex;align-items:center;padding:0 14px;color:var(--t3);font-size:16px}
+.vvod .mik{width:36px;height:36px;border-radius:50%;background:var(--s2);display:grid;place-items:center}
+.vvod .mik svg{width:18px;height:18px}
+
+/* шторка */
+.zatemn{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .4s var(--ios);z-index:70}
+.zatemn.vid{opacity:1;pointer-events:auto}
+.shtorka{position:absolute;left:0;right:0;bottom:0;background:var(--s1);border-radius:14px 14px 0 0;padding:8px 20px 40px;transform:translateY(105%);transition:transform .5s var(--ios);z-index:80}
+.shtorka.vid{transform:none}
+.ruchka{width:36px;height:5px;border-radius:3px;background:var(--s4);margin:0 auto 18px}
+.shtorka h3{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
+.shtorka p{color:var(--t2);font-size:15px;margin-bottom:14px}
+.shtorka .citata{background:var(--s2);border-radius:12px;padding:10px 14px;font-size:15px;margin-bottom:8px}
+.shtorka .citata small{display:block;color:var(--t2);font-size:12px;margin-bottom:2px}
+.shtorka .knopki{display:grid;gap:10px;margin-top:18px}
+.shtorka .ssyl{color:var(--lime);font-size:16px;text-align:center;padding:8px}
+.tost{position:absolute;left:50%;bottom:112px;transform:translate(-50%,20px);background:rgba(44,44,46,.95);backdrop-filter:blur(20px);border-radius:14px;padding:10px 16px;font-size:14px;opacity:0;transition:all .35s var(--ios);z-index:90;white-space:nowrap;pointer-events:none}
+.tost.vid{opacity:1;transform:translate(-50%,0)}
+
+.legenda{max-width:840px;margin:44px auto 0;color:var(--t2);font-size:14.5px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.legenda b{display:block;color:var(--t1);font-weight:600;margin-bottom:4px;font-size:15px}
+@media (max-width:880px){.legenda{grid-template-columns:1fr}}
+.tabbar,.vvod,.shtorka{border-bottom-left-radius:54px;border-bottom-right-radius:54px}
+/* на самом телефоне рамка айфона не нужна: кабинет на весь экран, чат следом */
+@media (max-width:500px){
+  .stena{padding:0}
+  .titul,.podz,.legenda,.metka-ekrana,.ostrov,.statusbar,.home{display:none}
+  .dva{display:flex;flex-direction:column-reverse;gap:0}
+  .iphone{max-width:none;height:100vh;height:100svh;border-radius:0;box-shadow:none}
+  .tabbar,.vvod,.shtorka{border-bottom-left-radius:0;border-bottom-right-radius:0}
+  .pilyuli{top:calc(env(safe-area-inset-top) + 10px)}
+  .ekran{padding-top:calc(env(safe-area-inset-top) + 52px)}
+  .ekran.dialog{padding-top:calc(env(safe-area-inset-top) + 122px)}
+  .navbar{padding-top:calc(env(safe-area-inset-top) + 48px)}
+  .tg-shapka{padding-top:calc(env(safe-area-inset-top) + 8px)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="stena">
+  <div class="titul"><b>g.a.d.</b><span>чат и кабинет</span></div>
+  <p class="podz">Слева — ваш чат с ботом в Telegram: он приходит только когда вы нужны. Справа — кабинет, открывается кнопкой «Кабинет». Всё нажимается.</p>
+
+  <div class="dva">
+    <!-- ================= TELEGRAM ================= -->
+    <div>
+      <div class="metka-ekrana">Telegram · чат с ботом</div>
+      <div class="iphone">
+        <div class="ostrov"></div>
+        <div class="statusbar"><span>9:41</span><span class="pravo">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="#fff"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="#fff"><path d="M8 2.3c2.3 0 4.4.9 6 2.4l1.1-1.2A10 10 0 0 0 8 .6 10 10 0 0 0 .9 3.5L2 4.7a8.4 8.4 0 0 1 6-2.4zm0 3.4c1.4 0 2.6.5 3.6 1.4l1.1-1.2A6.8 6.8 0 0 0 8 4a6.8 6.8 0 0 0-4.7 1.9l1.1 1.2c1-.9 2.2-1.4 3.6-1.4zM8 9.2 6.2 7.9a2.9 2.9 0 0 1 3.6 0z"/></svg>
+          <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="rgba(255,255,255,.4)"/><rect x="2" y="2" width="18" height="9" rx="2" fill="#fff"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="rgba(255,255,255,.4)"/></svg>
+        </span></div>
+        <div class="tg">
+          <div class="tg-shapka">
+            <div class="tg-nazad"><svg width="12" height="20" viewBox="0 0 12 20"><path d="M10 2 2 10l8 8" fill="none" stroke="#62b1f5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Чаты</div>
+            <div class="tg-imya"><b>g.a.d.</b><small>бот</small></div>
+            <div style="min-width:70px;display:flex;justify-content:flex-end"><div class="logo"><i>g.a.d.</i></div></div>
+          </div>
+          <div class="tg-lenta" id="tg-lenta">
+            <div class="tg-den">Сегодня</div>
+
+            <div class="tg-foto">
+              <div class="svodka">
+                <div class="verh"><b>g.a.d.</b><span>21 сентября</span></div>
+                <span class="obn" id="obn">обновлено 17:58</span>
+                <div class="glav"><strong id="sv-otv">12</strong><small>ответов покупателям<br>из <span id="sv-pok">14</span> обращений</small></div>
+                <div class="stolb" id="sv-stolb"></div>
+                <div class="tri">
+                  <div class="krasn"><b>2</b>ждут вас</div>
+                  <div><b>1</b>заявка</div>
+                  <div><b>25&nbsp;с</b>до ответа</div>
+                </div>
+              </div>
+              <span class="vr">08:00</span>
+            </div>
+            <div class="tg-kn"><div class="r"><button data-idi="dialogi">Диалоги</button><button data-idi="segodnya">Кабинет</button></div></div>
+
+            <div class="tg-msg">
+              <b>Нужно ваше решение: скидка</b><br>
+              Олег, объявление «Ии-бот отвечает клиентам по базе компании»
+              <div class="q"><small>Покупатель</small>Сделаете скидку, если закажу два бота?</div>
+              <div class="q ii"><small>Ответ ИИ</small>Про скидку уточню у руководителя и напишу здесь же.</div>
+              <span class="vr">16:12</span><div style="clear:both"></div>
+            </div>
+            <div class="tg-kn">
+              <div class="r"><button data-tost="ИИ ответит Олегу: скидка 5%">Скидка 5%</button><button data-tost="ИИ ответит Олегу: без скидки">Без скидки</button></div>
+              <div class="r"><button data-tost="Напишите ответ текстом или голосом">Ответить самому</button><button data-idi="sheet-oleg">Открыть диалог</button></div>
+            </div>
+
+            <div class="tg-msg">
+              <b>Нужно ваше решение: вопрос</b><br>
+              Сергей, то же объявление
+              <div class="q"><small>Покупатель</small>А с YCLIENTS интегрируется?</div>
+              <div class="q ii"><small>Ответ ИИ</small>Уточню у руководителя и напишу здесь же.</div>
+              <span class="vr">17:05</span><div style="clear:both"></div>
+            </div>
+            <div class="tg-kn">
+              <div class="r"><button data-tost="ИИ ответит Сергею: да, интегрируется">Да</button><button data-tost="ИИ ответит Сергею: пока нет">Нет</button></div>
+              <div class="r"><button data-tost="Напишите ответ текстом или голосом">Ответить самому</button><button data-idi="dialog-sergey">Открыть диалог</button></div>
+            </div>
+
+            <div class="tg-msg">
+              <b>Новая заявка</b><br>
+              Анастасия — бот записи для салона красоты, 3 мастера. Вилка из прайса 10&#8239;000–30&#8239;000&nbsp;₽, срок 3–7 дней. Созвониться удобно завтра после 12.
+              <span class="vr">17:53</span><div style="clear:both"></div>
+            </div>
+            <div class="tg-kn"><div class="r"><button data-idi="dialog-anastasiya">Открыть диалог</button><button data-idi="zayavki">Все заявки</button></div></div>
+          </div>
+          <div class="tg-niz">
+            <button class="tg-menu" data-idi="segodnya">Кабинет</button>
+            <div class="tg-pole">Сообщение</div>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7d8e9d" stroke-width="1.7" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg>
+          </div>
+        </div>
+        <div class="home"></div>
+      </div>
+    </div>
+
+    <!-- ================= КАБИНЕТ ================= -->
+    <div>
+      <div class="metka-ekrana">Кабинет · открыт на весь экран</div>
+      <div class="iphone">
+        <div class="ostrov"></div>
+        <div class="statusbar"><span>9:41</span><span class="pravo">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="#fff"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="rgba(255,255,255,.4)"/><rect x="2" y="2" width="18" height="9" rx="2" fill="#fff"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="rgba(255,255,255,.4)"/></svg>
+        </span></div>
+        <div class="app" id="app">
+          <div class="pilyuli">
+            <div class="pilyulya"><svg width="12" height="12" viewBox="0 0 12 12" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg>Закрыть</div>
+            <div class="pilyulya pr"><svg width="14" height="8" viewBox="0 0 14 8" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 1.5 7 6.5l5.5-5"/></svg><svg width="16" height="4" viewBox="0 0 16 4" fill="#fff"><circle cx="2" cy="2" r="1.8"/><circle cx="8" cy="2" r="1.8"/><circle cx="14" cy="2" r="1.8"/></svg></div>
+          </div>
+
+          <!-- Сегодня -->
+          <section class="ekran" id="e-segodnya">
+            <div class="bol-zag">Сегодня</div>
+            <div class="pod-zag"><span class="tochka"></span>Отвечает в Авито · аккаунт «Артур»</div>
+            <div class="geroy">
+              <div class="ryad">
+                <div><div class="ch" id="ap-otv">12</div><div class="pod">ответов из <span id="ap-pok">14</span> обращений</div></div>
+                <span class="znachok">0 пропущено</span>
+              </div>
+              <div class="stolb" id="ap-stolb"></div>
+              <div class="osi"><span>8:00</span><span>12:00</span><span>16:00</span><span>20:00</span></div>
+              <div class="tri">
+                <div class="v"><b>2</b><span>ждут вас</span></div>
+                <div><b>1</b><span>заявка</span></div>
+                <div><b>25&nbsp;с</b><span>до ответа</span></div>
+              </div>
+            </div>
+            <div class="gruppa">
+              <h4>Ждут вашего решения</h4>
+              <div class="spisok">
+                <button class="stroka s-ava" data-idi="sheet-oleg"><span class="ava">О</span><span class="telo"><span class="tx"><b>Олег</b><small>Скидка, если закажет два бота</small></span><span class="zn">16:12</span><svg class="shev" viewBox="0 0 8 13"><path d="M1.5 1.5 6.5 6.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+                <button class="stroka s-ava" data-idi="dialog-sergey"><span class="ava">С</span><span class="telo"><span class="tx"><b>Сергей</b><small>Интеграция с YCLIENTS</small></span><span class="zn">17:05</span><svg class="shev" viewBox="0 0 8 13"><path d="M1.5 1.5 6.5 6.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+              </div>
+            </div>
+            <div class="gruppa">
+              <h4>Ближайшее</h4>
+              <div class="spisok">
+                <button class="stroka" data-idi="dialog-anastasiya"><span class="plitka lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></span><span class="telo"><span class="tx"><b>Созвон с Анастасией</b><small>Завтра после 12 · бот записи, 3 мастера</small></span><svg class="shev" viewBox="0 0 8 13"><path d="M1.5 1.5 6.5 6.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+              </div>
+            </div>
+            <div class="gruppa">
+              <div class="spisok">
+                <button class="stroka" data-idi="nastroyki"><span class="plitka"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/></svg></span><span class="telo"><span class="tx"><b>Пробный период</b><small>Осталось 5 дней, ответов без лимита</small></span><svg class="shev" viewBox="0 0 8 13"><path d="M1.5 1.5 6.5 6.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Диалоги -->
+          <section class="ekran skryt" id="e-dialogi">
+            <div class="bol-zag">Диалоги</div>
+            <div style="height:12px"></div>
+            <div class="poisk"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="7" cy="7" r="5.2"/><path d="m11 11 3.5 3.5"/></svg>Поиск</div>
+            <div class="segment" id="segment"><span class="polz" id="polz"></span>
+              <button data-f="vse">Все</button><button data-f="zhdut">Ждут</button><button data-f="ii">Ведёт ИИ</button><button data-f="zayavka">Заявки</button>
+            </div>
+            <div class="gruppa">
+              <div class="spisok" id="spisok-d"></div>
+              <div class="niz">Переписки хранятся 90 дней. ИИ не пишет туда, где вы отвечали сами за последние сутки.</div>
+            </div>
+          </section>
+
+          <!-- Заявки -->
+          <section class="ekran skryt" id="e-zayavki">
+            <div class="bol-zag">Заявки</div>
+            <div class="pod-zag">1 новая · за неделю 3</div>
+            <div class="gruppa">
+              <h4>Новые</h4>
+              <div class="spisok">
+                <button class="stroka s-ava" data-idi="dialog-anastasiya"><span class="ava">А</span><span class="telo"><span class="tx"><b>Анастасия</b><small>Бот записи для салона · созвон завтра после 12</small></span><span class="l-tochka"></span><svg class="shev" viewBox="0 0 8 13"><path d="M1.5 1.5 6.5 6.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+              </div>
+            </div>
+            <div class="gruppa">
+              <h4>В работе</h4>
+              <div class="spisok">
+                <div class="stroka s-ava"><span class="ava">Н</span><span class="telo"><span class="tx"><b>Никита</b><small>Бот-анкета для найма · 3&#8239;990&nbsp;₽</small></span><span class="zn">вчера</span></span></div>
+                <div class="stroka s-ava"><span class="ava">Т</span><span class="telo"><span class="tx"><b>Татьяна</b><small>ИИ-продавец для магазина одежды</small></span><span class="zn">19.09</span></span></div>
+              </div>
+            </div>
+            <div class="gruppa"><div class="spisok"><button class="stroka" data-tost="Файл придёт в чат с ботом"><span class="telo"><span class="tx"><b style="color:var(--lime)">Выгрузить в Excel</b></span></span></button></div></div>
+          </section>
+
+          <!-- Настройки -->
+          <section class="ekran skryt" id="e-nastroyki">
+            <div class="bol-zag">Настройки</div>
+            <div style="height:14px"></div>
+            <div class="gruppa">
+              <div class="spisok">
+                <div class="stroka"><span class="plitka lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.6 0l3-3a4 4 0 0 0-5.6-5.6l-1 1M14 10a4 4 0 0 0-5.6 0l-3 3a4 4 0 0 0 5.6 5.6l1-1"/></svg></span><span class="telo"><span class="tx"><b>Авито</b><small>«Артур» · 1 объявление</small></span><span class="zn">Подключено</span><svg class="shev" viewBox="0 0 8 13"><path d="M1.5 1.5 6.5 6.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+              </div>
+            </div>
+            <div class="gruppa">
+              <h4>Что продаю</h4>
+              <div class="spisok">
+                <div class="stroka"><span class="plitka"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="telo"><span class="tx"><b>Прайс</b></span><span class="zn">11 позиций</span><svg class="shev" viewBox="0 0 8 13"><path d="M1.5 1.5 6.5 6.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+                <div class="stroka"><span class="plitka"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 11h16M4 16h10"/></svg></span><span class="telo"><span class="tx"><b>Правила и цель</b><small>Сначала задача, потом цена</small></span><svg class="shev" viewBox="0 0 8 13"><path d="M1.5 1.5 6.5 6.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+              </div>
+            </div>
+            <div class="gruppa">
+              <h4>Кто отвечает</h4>
+              <div class="spisok">
+                <div class="stroka"><span class="telo"><span class="tx"><b>ИИ отвечает сам</b></span><span class="sw"></span></span></div>
+                <div class="stroka"><span class="telo"><span class="tx"><b>Часы</b></span><span class="zn">Круглосуточно</span><svg class="shev" viewBox="0 0 8 13"><path d="M1.5 1.5 6.5 6.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+              </div>
+              <div class="niz">Скидки, опт, возвраты и жалобы ИИ всегда оставляет вам.</div>
+            </div>
+            <div class="gruppa">
+              <h4>Сообщения в чат</h4>
+              <div class="spisok">
+                <div class="stroka"><span class="telo"><span class="tx"><b>Нужно ваше решение</b></span><span class="sw"></span></span></div>
+                <div class="stroka"><span class="telo"><span class="tx"><b>Новые заявки</b></span><span class="sw"></span></span></div>
+                <div class="stroka"><span class="telo"><span class="tx"><b>Сводка дня</b><small>Одно сообщение, обновляется само</small></span><span class="sw"></span></span></div>
+                <div class="stroka"><span class="telo"><span class="tx"><b>Копия каждого ответа</b></span><span class="sw vykl"></span></span></div>
+              </div>
+            </div>
+            <div class="gruppa">
+              <div class="spisok">
+                <div class="stroka"><span class="plitka"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/></svg></span><span class="telo"><span class="tx"><b>Тариф и оплата</b></span><span class="zn">Проба</span><svg class="shev" viewBox="0 0 8 13"><path d="M1.5 1.5 6.5 6.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Диалог -->
+          <section class="ekran dialog skryt" id="e-dialog">
+            <div class="tumbler-ryad"><div><b>ИИ отвечает в этом чате</b><small id="d-podp">Выключите — и чат ваш</small></div><button class="sw" id="d-sw" aria-label="ИИ отвечает в этом чате"></button></div>
+            <div class="puzyri" id="d-lenta"></div>
+          </section>
+          <div class="navbar" id="navbar" style="display:none">
+            <button class="nz" id="nazad"><svg viewBox="0 0 12 20"><path d="M10 2 2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="nazad-t">Диалоги</span></button>
+            <div class="ct"><b id="d-imya">Анастасия</b><small>Авито · «Ии-бот отвечает клиентам…»</small></div>
+            <div></div>
+          </div>
+          <div class="vvod" id="vvod" style="display:none"><div class="pole">Написать самому</div><div class="mik"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></div></div>
+
+          <nav class="tabbar" id="tabbar">
+            <button data-tab="segodnya"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="6" width="19" height="17" rx="4"/><path d="M4.5 11.5h19M10 3.8v4M18 3.8v4"/><circle cx="14" cy="17" r="1.6" fill="currentColor" stroke="none"/></svg>Сегодня</button>
+            <button data-tab="dialogi"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4.5 7.5a3 3 0 0 1 3-3h13a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-7l-5 4v-4h-1a3 3 0 0 1-3-3z"/></svg>Диалоги<span class="bej">2</span></button>
+            <button data-tab="zayavki"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 15.5 7 6.5a2 2 0 0 1 2-1.5h10a2 2 0 0 1 2 1.5l2.5 9v5a2 2 0 0 1-2 2h-15a2 2 0 0 1-2-2z"/><path d="M4.5 15.5h5.5a4 4 0 0 0 8 0h5.5"/></svg>Заявки</button>
+            <button data-tab="nastroyki"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 8.5h11M20 8.5h3M5 14h3M12 14h11M5 19.5h9M18 19.5h5"/><circle cx="18" cy="8.5" r="2.2"/><circle cx="10" cy="14" r="2.2"/><circle cx="16" cy="19.5" r="2.2"/></svg>Настройки</button>
+          </nav>
+
+          <div class="zatemn" id="zatemn"></div>
+          <div class="shtorka" id="shtorka">
+            <div class="ruchka"></div>
+            <h3>Скидка для Олега?</h3>
+            <p>Хочет заказать два бота и спрашивает скидку. ИИ ответил, что уточнит у руководителя.</p>
+            <div class="citata"><small>Олег, 16:12</small>Сделаете скидку, если закажу два бота?</div>
+            <div class="knopki">
+              <button class="knopka gl" data-tost="ИИ ответит Олегу: скидка 5% на второй бот">Скидка 5% на второй</button>
+              <button class="knopka vt" data-tost="ИИ ответит Олегу: цена без скидки">Без скидки</button>
+              <button class="ssyl" data-idi="dialog-oleg">Открыть переписку</button>
+            </div>
+          </div>
+          <div class="tost" id="tost"></div>
+        </div>
+        <div class="home"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legenda">
+    <div><b>В чат — только когда вы нужны</b>Решение по скидке или вопросу, новая заявка и одна сводка за день, которая обновляется на месте. Копий каждого ответа больше нет.</div>
+    <div><b>Решаете одной кнопкой</b>«Скидка 5%» или «Без скидки» — и ИИ сам отвечает покупателю живыми словами. Можно ответить и самому, голосом.</div>
+    <div><b>Всё остальное — в кабинете</b>Четыре вкладки. Переписки, заявки, настройки. В каждом диалоге свой переключатель «ИИ отвечает в этом чате».</div>
+  </div>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const SHEV = '<svg class="shev" viewBox="0 0 8 13"><path d="M1.5 1.5 6.5 6.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const LYUDI = [
+  {k: "oleg", imya: "Олег", s: "zhdut", tx: "Про скидку уточню у руководителя и напишу здесь же.", vr: "16:12"},
+  {k: "sergey", imya: "Сергей", s: "zhdut", tx: "Уточню у руководителя и напишу здесь же.", vr: "17:05"},
+  {k: "anastasiya", imya: "Анастасия", s: "zayavka", tx: "Договорились, завтра после 12. Как к вам обращаться?", vr: "17:53"},
+  {k: "", imya: "Марина", s: "ii", tx: "Сценарий будет готов за 2–3 дня. Где планируете запускать?", vr: "17:40"},
+  {k: "", imya: "Дмитрий", s: "ii", tx: "Есть. Сколько чатов в день примерно?", vr: "15:22"},
+  {k: "", imya: "Ксения", s: "ii", tx: "Да, отвечает и ночью. Для какого бизнеса?", vr: "13:05"},
+  {k: "", imya: "Игорь", s: "tiho", tx: "Вы отвечаете сами — ИИ здесь молчит", vr: "вчера"},
+];
+const TOCHKA = {zhdut: '<span class="kr-tochka"></span>', zayavka: '<span class="l-tochka"></span>', tiho: '<span class="s-tochka"></span>', ii: ""};
+const DIALOGI = {
+  anastasiya: {imya: "Анастасия", lenta: [
+    ["pok", "нужен бот", "14:51"],
+    ["ii", "Здравствуйте! А для чего бот: записывать клиентов или отвечать на вопросы?", "14:51"],
+    ["pok", "для записи в салон красоты, у нас 3 мастера. сколько по времени займёт?", "16:50"],
+    ["ii", "Сценарий будет готов за 2–3 дня. Где планируете запускать бот — в Telegram или на сайте?", "16:50"],
+    ["pok", "понятно. а по цене сколько выйдет?", "17:52"],
+    ["ii", "От 10 000 до 30 000 ₽, зависит от того, что бот должен уметь. Когда удобно созвониться?", "17:53"],
+    ["pok", "завтра после 12", "17:53"],
+    ["ii", "Договорились, завтра после 12. Как к вам обращаться?", "17:53"]]},
+  oleg: {imya: "Олег", reshenie: ["Скидка для Олега?", "sheet-oleg"], lenta: [
+    ["pok", "здравствуйте, нужно два бота: запись и ответы на вопросы", "16:08"],
+    ["ii", "Здравствуйте! Можно оба. Для какого бизнеса?", "16:08"],
+    ["pok", "сделаете скидку, если закажу два бота?", "16:12"],
+    ["ii", "Про скидку уточню у руководителя и напишу здесь же.", "16:12"]]},
+  sergey: {imya: "Сергей", reshenie: ["Интеграция с YCLIENTS?", ""], lenta: [
+    ["pok", "а с YCLIENTS интегрируется?", "17:05"],
+    ["ii", "Уточню у руководителя и напишу здесь же.", "17:05"]]},
+};
+
+function stroitSpisok(f) {
+  $("#spisok-d").innerHTML = LYUDI.filter(l => f === "vse" || l.s === f).map(l =>
+    '<button class="stroka s-ava"' + (l.k ? ' data-idi="dialog-' + l.k + '"' : "") + '><span class="ava">' + l.imya[0] + '</span><span class="telo"><span class="tx"><span class="verh-s"><b>' + l.imya +
+    '</b><span class="zn">' + l.vr + '</span></span><small>' + l.tx + '</small></span>' + TOCHKA[l.s] + SHEV + '</span></button>').join("");
+  const i = ["vse", "zhdut", "ii", "zayavka"].indexOf(f);
+  $("#polz").style.transform = "translateX(" + (i * 100) + "%)";
+}
+function stolbiki(el, n) {
+  const h = [0, 1, 3, 2, 4, 2, 5, 3, 6, 2, 4, 3, 0];
+  el.innerHTML = h.map((v, i) => '<i class="' + (i < n ? "est" : "") + '" style="height:' + (8 + v * 13) + '%"></i>').join("");
+}
+
+const TABY = ["segodnya", "dialogi", "zayavki", "nastroyki"];
+let tekTab = "segodnya", vDialoge = false, otkudaDialog = "dialogi";
+function pokazTab(t, anim) {
+  zakrytShtorku();
+  if (vDialoge) zakrytDialog(false);
+  TABY.forEach(x => { const e = $("#e-" + x); e.classList.toggle("skryt", x !== t); e.classList.remove("sleva", "sprava"); });
+  document.querySelectorAll("#tabbar button").forEach(b => b.classList.toggle("akt", b.dataset.tab === t));
+  $("#e-" + t).scrollTop = 0;
+  tekTab = t;
+}
+function otkrytDialog(kto, anim) {
+  zakrytShtorku();
+  const d = DIALOGI[kto]; if (!d) return;
+  otkudaDialog = tekTab;
+  $("#d-imya").textContent = d.imya;
+  $("#nazad-t").textContent = {segodnya: "Сегодня", dialogi: "Диалоги", zayavki: "Заявки", nastroyki: "Настройки"}[tekTab];
+  let h = '<div class="den-m">Сегодня</div>', pred = "";
+  d.lenta.forEach(([kto_, tx, vr], i) => {
+    const sled = d.lenta[i + 1];
+    h += '<div class="pz ' + (kto_ === "pok" ? "pok" : "nash") + '">' + (kto_ === "ii" && pred !== "ii" ? '<span class="ktoii">ИИ</span>' : "") + tx + '</div>';
+    if (!sled || sled[0] !== kto_) h += '<div class="pz-vr' + (kto_ === "pok" ? "" : " pr") + '">' + vr + '</div>';
+    pred = kto_;
+  });
+  if (d.reshenie) h += '<div class="nuzhno"><div class="tx"><b>' + d.reshenie[0] + '</b>Покупатель ждёт вашего решения</div>' +
+    (d.reshenie[1] ? '<button class="knopka mal" data-idi="' + d.reshenie[1] + '">Решить</button>' : '<button class="knopka mal" data-tost="ИИ ответит Сергею">Решить</button>') + '</div>';
+  $("#d-lenta").innerHTML = h;
+  const e = $("#e-dialog"), iz = $("#e-" + tekTab);
+  e.classList.remove("skryt");
+  $("#navbar").style.display = ""; $("#vvod").style.display = "";
+  $("#tabbar").classList.add("proch");
+  if (anim) {
+    e.classList.add("sprava"); e.offsetWidth;
+    e.classList.remove("sprava"); iz.classList.add("sleva");
+  } else iz.classList.add("skryt");
+  vDialoge = true;
+  e.scrollTop = e.scrollHeight;
+}
+function zakrytDialog(anim) {
+  const e = $("#e-dialog"), iz = $("#e-" + tekTab);
+  iz.classList.remove("skryt");
+  $("#navbar").style.display = "none"; $("#vvod").style.display = "none";
+  $("#tabbar").classList.remove("proch");
+  if (anim) { e.classList.add("sprava"); iz.classList.remove("sleva"); setTimeout(() => { e.classList.add("skryt"); e.classList.remove("sprava"); }, 420); }
+  else { e.classList.add("skryt"); iz.classList.remove("sleva"); }
+  vDialoge = false;
+}
+function otkrytShtorku() { $("#zatemn").classList.add("vid"); $("#shtorka").classList.add("vid"); }
+function zakrytShtorku() { $("#zatemn").classList.remove("vid"); $("#shtorka").classList.remove("vid"); }
+let tostTaimer;
+function tost(t) { const e = $("#tost"); e.textContent = t; e.classList.add("vid"); clearTimeout(tostTaimer); tostTaimer = setTimeout(() => e.classList.remove("vid"), 2200); }
+
+function idi(kuda, anim) {
+  if (TABY.includes(kuda)) return pokazTab(kuda, anim);
+  if (kuda.startsWith("dialog-")) { if (vDialoge) zakrytDialog(false); return otkrytDialog(kuda.slice(7), anim); }
+  if (kuda === "sheet-oleg") { if (!vDialoge && tekTab !== "segodnya") pokazTab("segodnya"); return otkrytShtorku(); }
+}
+document.addEventListener("click", (ev) => {
+  const t = ev.target.closest("[data-tost]"); if (t) { zakrytShtorku(); tost(t.dataset.tost); return; }
+  const i = ev.target.closest("[data-idi]"); if (i) { idi(i.dataset.idi, true); return; }
+  const tb = ev.target.closest("[data-tab]"); if (tb) { pokazTab(tb.dataset.tab, true); return; }
+  const f = ev.target.closest("#segment [data-f]"); if (f) stroitSpisok(f.dataset.f);
+});
+$("#nazad").onclick = () => zakrytDialog(true);
+$("#zatemn").onclick = zakrytShtorku;
+$("#d-sw").onclick = function () { this.classList.toggle("vykl"); $("#d-podp").textContent = this.classList.contains("vykl") ? "ИИ молчит, отвечаете вы" : "Выключите — и чат ваш"; };
+
+// сводка — одно сообщение, меняется на месте
+let otv = 12, pok = 14, chas = 17, min = 58, stolbN = 9;
+function risovatSvodku() {
+  $("#sv-otv").textContent = otv; $("#ap-otv").textContent = otv;
+  $("#sv-pok").textContent = pok; $("#ap-pok").textContent = pok;
+  stolbiki($("#sv-stolb"), stolbN); stolbiki($("#ap-stolb"), stolbN);
+}
+risovatSvodku();
+setInterval(() => {
+  otv++; pok++; min++; if (min === 60) { min = 0; chas++; }
+  const o = $("#obn"); o.textContent = "обновлено " + chas + ":" + String(min).padStart(2, "0"); o.classList.add("svezh");
+  setTimeout(() => o.classList.remove("svezh"), 1200);
+  risovatSvodku();
+}, 7000);
+
+stroitSpisok("vse");
+const h0 = (location.hash || "#segodnya").slice(1);
+pokazTab("segodnya");
+if (h0 !== "segodnya") idi(h0, false);
+</script>
+</body>
+</html>
