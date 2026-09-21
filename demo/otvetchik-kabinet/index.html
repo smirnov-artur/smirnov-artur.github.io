@@ -154,7 +154,7 @@ const TG = window.Telegram && window.Telegram.WebApp;
 const V_TG = !!(TG && TG.initData);   // вне мини-приложения скрипт Telegram есть, а подписи нет
 const trk = (m, a) => { try { if (V_TG && TG.HapticFeedback) TG.HapticFeedback[m](a); } catch (e) {} };
 if (TG) { try { TG.ready(); TG.expand(); } catch (e) {} }
-if (V_TG) { try { TG.setHeaderColor('#000000'); TG.setBackgroundColor('#000000'); TG.disableVerticalSwipes && TG.disableVerticalSwipes(); } catch (e) {} }
+if (V_TG) { try { TG.setHeaderColor('#000000'); TG.setBackgroundColor('#000000'); TG.setBottomBarColor && TG.setBottomBarColor('#000000'); TG.disableVerticalSwipes && TG.disableVerticalSwipes(); } catch (e) {} }
 const ik = (id, kl) => '<svg class="ik' + (kl ? ' ' + kl : '') + '"><use href="#' + id + '"/></svg>';
 const SHEV = ik("b-caret-right", "shev");
 const V_CHATE = ['kupit', 'zayavki', 'stop_avito', 'udalit'];
