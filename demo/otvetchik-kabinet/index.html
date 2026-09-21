@@ -165,15 +165,14 @@ const $ = (s) => document.querySelector(s);
 const cena = (c) => { c = String(c || '').trim(); if (!c) return ''; if (/^\d{4,}$/.test(c)) c = c.replace(/\B(?=(\d{3})+$)/g, ' '); return /₽|руб/i.test(c) ? c : c + ' ₽'; };
 const plural = (n, a, b, c) => { const m = n % 10, s = n % 100; return m === 1 && s !== 11 ? a : m >= 2 && m <= 4 && (s < 12 || s > 14) ? b : c; };
 
-function razobrat() {   // адрес живого сервера и снимок данных едут в хеше ссылки кнопки
-  try {
-    const h = location.hash.slice(1);
-    if (!h) return {};
-    const [adres, hvost] = h.startsWith('api=') ? h.slice(4).split('&d=') : [null, h];
-    const dan = hvost ? JSON.parse(decodeURIComponent(escape(atob(hvost.replace(/-/g, '+').replace(/_/g, '/'))))) : {};
-    const a = adres ? decodeURIComponent(adres) : null;
-    return { api: a && /^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(a) ? a : null, dan };
-  } catch (e) { return {}; }
+function razobrat() {   // адрес живого сервера и снимок данных едут в хеше ссылки; Telegram дописывает туда свои tgWebApp* — их пропускаем
+  const h = location.hash.slice(1);
+  const p = new URLSearchParams(/^(api|d)=/.test(h) ? h : 'd=' + h.split('&')[0]);
+  const a = p.get('api') || '';
+  let dan = {};
+  try { const x = p.get('d'); if (x) dan = JSON.parse(decodeURIComponent(escape(atob(x.replace(/-/g, '+').replace(/_/g, '/'))))); } catch (e) {}
+  // адрес только https и только домен: initData и нажатия уходят туда, куда показывает хеш
+  return { api: /^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(a) ? a : null, dan };
 }
 const NACHALO = razobrat(), API = NACHALO.api;
 let D = NACHALO.dan || {}, tab = 'dialogi', otkryt = null;
