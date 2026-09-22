@@ -70,6 +70,27 @@ button.stroka:active{background:var(--s3)}
 .karta p{color:var(--t2);font-size:15px}
 .polosa{height:6px;border-radius:3px;background:var(--s3);overflow:hidden;margin-top:14px}
 .polosa i{display:block;height:100%;background:var(--lime);border-radius:3px;transition:width .8s var(--ios)}
+/* разбор чатов: потери — тёплый отсвет, всё хорошо — лаймовый; точка — один покупатель */
+.rz{margin:0 16px 24px;border-radius:22px;padding:18px 20px 14px;background:var(--s1);animation:poyav .4s var(--ios) both}
+.rz.poteri{background:radial-gradient(120% 80% at 0% 0%,rgba(255,105,97,.17),rgba(255,105,97,0) 62%),var(--s1)}
+.rz.ok{background:radial-gradient(120% 80% at 0% 0%,rgba(214,255,63,.13),rgba(214,255,63,0) 62%),var(--s1)}
+.rz>small{display:block;color:var(--t2);font-size:13px;text-transform:uppercase;letter-spacing:.03em}
+.rz-n{display:block;font:600 56px/1 var(--brand);letter-spacing:-.02em;margin:12px 0 6px;font-variant-numeric:tabular-nums}
+.rz-f{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:600;letter-spacing:-.015em;line-height:1.25;text-wrap:balance}
+.rz>small+.rz-f{margin-top:12px}
+.rz-f .ik{width:26px;height:26px;color:var(--lime)}
+.rz-p{color:var(--t2);font-size:15px;margin-top:3px}
+.rz-t{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+.rz-t i{width:9px;height:9px;border-radius:50%;background:var(--s4)}
+.rz-t i.p{background:#ff6961}
+.rz.ok .rz-t i{background:var(--lime)}
+.rz-st{margin-top:10px}
+.rz-st div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 0;box-shadow:inset 0 .5px 0 var(--line);font-size:15px;color:var(--t2)}
+.rz-st b{color:var(--t1);font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.rz-niz{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px;color:var(--t2);font-size:13px}
+.rz-obn{display:flex;align-items:center;gap:6px;height:32px;padding:0 13px 0 10px;border-radius:16px;background:var(--s3);font-size:13.5px;font-weight:600;flex:none}
+.rz-obn .ik{width:16px;height:16px}
+.gruppa>.knopka+.spisok{margin-top:12px}
 .sw{width:51px;height:31px;border-radius:16px;background:var(--lime);position:relative;flex:none;transition:background .25s}
 .sw::after{content:"";position:absolute;top:2px;left:22px;width:27px;height:27px;border-radius:14px;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.25);transition:left .35s var(--pruzh)}
 .sw.vykl{background:var(--s4)}.sw.vykl::after{left:2px}
@@ -118,7 +139,7 @@ body[data-sost="oshibka"] #sboy{display:block}
 </style>
 </head>
 <body data-sost="gruzhu">
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="b-caret-right" viewBox="0 0 256 256"><path d="M184.49,136.49l-80,80a12,12,0,0,1-17-17L159,128,87.51,56.49a12,12,0,1,1,17-17l80,80A12,12,0,0,1,184.49,136.49Z"/></symbol><symbol id="b-check" viewBox="0 0 256 256"><path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z"/></symbol><symbol id="b-plus" viewBox="0 0 256 256"><path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z"/></symbol><symbol id="f-chats-circle" viewBox="0 0 256 256"><path d="M232.07,186.76a80,80,0,0,0-62.5-114.17A80,80,0,1,0,23.93,138.76l-7.27,24.71a16,16,0,0,0,19.87,19.87l24.71-7.27a80.39,80.39,0,0,0,25.18,7.35,80,80,0,0,0,108.34,40.65l24.71,7.27a16,16,0,0,0,19.87-19.86Zm-16.25,1.47L224,216l-27.76-8.17a8,8,0,0,0-6,.63,64.05,64.05,0,0,1-85.87-24.88A79.93,79.93,0,0,0,174.7,89.71a64,64,0,0,1,41.75,92.48A8,8,0,0,0,215.82,188.23Z"/></symbol><symbol id="f-check-circle" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></symbol><symbol id="f-credit-card" viewBox="0 0 256 256"><path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48ZM136,176H120a8,8,0,0,1,0-16h16a8,8,0,0,1,0,16Zm64,0H168a8,8,0,0,1,0-16h32a8,8,0,0,1,0,16ZM32,88V64H224V88Z"/></symbol><symbol id="f-file-text" viewBox="0 0 256 256"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,176H96a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm0-32H96a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm-8-56V44l44,44Z"/></symbol><symbol id="r-arrow-square-out" viewBox="0 0 256 256"><path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"/></symbol><symbol id="r-bell-slash" viewBox="0 0 256 256"><path d="M53.92,34.62A8,8,0,1,0,42.08,45.38L58.82,63.8A79.59,79.59,0,0,0,48,104c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.8a40,40,0,0,0,78.4,0h15.44l19.44,21.38a8,8,0,1,0,11.84-10.76ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a63.65,63.65,0,0,1,6.26-27.62L168.09,184Zm166-4.73a8.13,8.13,0,0,1-2.93.55,8,8,0,0,1-7.44-5.08C196.35,156.19,192,129.75,192,104A64,64,0,0,0,96.43,48.31a8,8,0,0,1-7.9-13.91A80,80,0,0,1,208,104c0,35.35,8.05,58.59,10.52,64.88A8,8,0,0,1,214,179.25Z"/></symbol><symbol id="r-chats-circle" viewBox="0 0 256 256"><path d="M232.07,186.76a80,80,0,0,0-62.5-114.17A80,80,0,1,0,23.93,138.76l-7.27,24.71a16,16,0,0,0,19.87,19.87l24.71-7.27a80.39,80.39,0,0,0,25.18,7.35,80,80,0,0,0,108.34,40.65l24.71,7.27a16,16,0,0,0,19.87-19.86ZM62,159.5a8.28,8.28,0,0,0-2.26.32L32,168l8.17-27.76a8,8,0,0,0-.63-6,64,64,0,1,1,26.26,26.26A8,8,0,0,0,62,159.5Zm153.79,28.73L224,216l-27.76-8.17a8,8,0,0,0-6,.63,64.05,64.05,0,0,1-85.87-24.88A79.93,79.93,0,0,0,174.7,89.71a64,64,0,0,1,41.75,92.48A8,8,0,0,0,215.82,188.23Z"/></symbol><symbol id="r-credit-card" viewBox="0 0 256 256"><path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Zm0,16V88H32V64Zm0,128H32V104H224v88Zm-16-24a8,8,0,0,1-8,8H168a8,8,0,0,1,0-16h32A8,8,0,0,1,208,168Zm-64,0a8,8,0,0,1-8,8H120a8,8,0,0,1,0-16h16A8,8,0,0,1,144,168Z"/></symbol><symbol id="r-download-simple" viewBox="0 0 256 256"><path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z"/></symbol><symbol id="r-file-text" viewBox="0 0 256 256"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Zm-32-80a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,136Zm0,32a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,168Z"/></symbol><symbol id="r-storefront" viewBox="0 0 256 256"><path d="M232,96a7.89,7.89,0,0,0-.3-2.2L217.35,43.6A16.07,16.07,0,0,0,202,32H54A16.07,16.07,0,0,0,38.65,43.6L24.31,93.8A7.89,7.89,0,0,0,24,96h0v16a40,40,0,0,0,16,32v72a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V144a40,40,0,0,0,16-32V96ZM54,48H202l11.42,40H42.61Zm50,56h48v8a24,24,0,0,1-48,0Zm-16,0v8a24,24,0,0,1-35.12,21.26,7.88,7.88,0,0,0-1.82-1.06A24,24,0,0,1,40,112v-8ZM200,208H56V151.2a40.57,40.57,0,0,0,8,.8,40,40,0,0,0,32-16,40,40,0,0,0,64,0,40,40,0,0,0,32,16,40.57,40.57,0,0,0,8-.8Zm4.93-75.8a8.08,8.08,0,0,0-1.8,1.05A24,24,0,0,1,168,112v-8h48v8A24,24,0,0,1,204.93,132.2Z"/></symbol></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="b-caret-down" viewBox="0 0 256 256"><path d="M216.49,104.49l-80,80a12,12,0,0,1-17,0l-80-80a12,12,0,0,1,17-17L128,159l71.51-71.52a12,12,0,0,1,17,17Z"/></symbol><symbol id="b-caret-right" viewBox="0 0 256 256"><path d="M184.49,136.49l-80,80a12,12,0,0,1-17-17L159,128,87.51,56.49a12,12,0,1,1,17-17l80,80A12,12,0,0,1,184.49,136.49Z"/></symbol><symbol id="b-check" viewBox="0 0 256 256"><path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z"/></symbol><symbol id="b-plus" viewBox="0 0 256 256"><path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z"/></symbol><symbol id="f-chats-circle" viewBox="0 0 256 256"><path d="M232.07,186.76a80,80,0,0,0-62.5-114.17A80,80,0,1,0,23.93,138.76l-7.27,24.71a16,16,0,0,0,19.87,19.87l24.71-7.27a80.39,80.39,0,0,0,25.18,7.35,80,80,0,0,0,108.34,40.65l24.71,7.27a16,16,0,0,0,19.87-19.86Zm-16.25,1.47L224,216l-27.76-8.17a8,8,0,0,0-6,.63,64.05,64.05,0,0,1-85.87-24.88A79.93,79.93,0,0,0,174.7,89.71a64,64,0,0,1,41.75,92.48A8,8,0,0,0,215.82,188.23Z"/></symbol><symbol id="f-check-circle" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></symbol><symbol id="f-credit-card" viewBox="0 0 256 256"><path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48ZM136,176H120a8,8,0,0,1,0-16h16a8,8,0,0,1,0,16Zm64,0H168a8,8,0,0,1,0-16h32a8,8,0,0,1,0,16ZM32,88V64H224V88Z"/></symbol><symbol id="f-file-text" viewBox="0 0 256 256"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,176H96a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm0-32H96a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm-8-56V44l44,44Z"/></symbol><symbol id="r-arrow-clockwise" viewBox="0 0 256 256"><path d="M240,56v48a8,8,0,0,1-8,8H184a8,8,0,0,1,0-16H211.4L184.81,71.64l-.25-.24a80,80,0,1,0-1.67,114.78,8,8,0,0,1,11,11.63A95.44,95.44,0,0,1,128,224h-1.32A96,96,0,1,1,195.75,60L224,85.8V56a8,8,0,1,1,16,0Z"/></symbol><symbol id="r-arrow-square-out" viewBox="0 0 256 256"><path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"/></symbol><symbol id="r-bell-slash" viewBox="0 0 256 256"><path d="M53.92,34.62A8,8,0,1,0,42.08,45.38L58.82,63.8A79.59,79.59,0,0,0,48,104c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.8a40,40,0,0,0,78.4,0h15.44l19.44,21.38a8,8,0,1,0,11.84-10.76ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a63.65,63.65,0,0,1,6.26-27.62L168.09,184Zm166-4.73a8.13,8.13,0,0,1-2.93.55,8,8,0,0,1-7.44-5.08C196.35,156.19,192,129.75,192,104A64,64,0,0,0,96.43,48.31a8,8,0,0,1-7.9-13.91A80,80,0,0,1,208,104c0,35.35,8.05,58.59,10.52,64.88A8,8,0,0,1,214,179.25Z"/></symbol><symbol id="r-chats-circle" viewBox="0 0 256 256"><path d="M232.07,186.76a80,80,0,0,0-62.5-114.17A80,80,0,1,0,23.93,138.76l-7.27,24.71a16,16,0,0,0,19.87,19.87l24.71-7.27a80.39,80.39,0,0,0,25.18,7.35,80,80,0,0,0,108.34,40.65l24.71,7.27a16,16,0,0,0,19.87-19.86ZM62,159.5a8.28,8.28,0,0,0-2.26.32L32,168l8.17-27.76a8,8,0,0,0-.63-6,64,64,0,1,1,26.26,26.26A8,8,0,0,0,62,159.5Zm153.79,28.73L224,216l-27.76-8.17a8,8,0,0,0-6,.63,64.05,64.05,0,0,1-85.87-24.88A79.93,79.93,0,0,0,174.7,89.71a64,64,0,0,1,41.75,92.48A8,8,0,0,0,215.82,188.23Z"/></symbol><symbol id="r-credit-card" viewBox="0 0 256 256"><path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Zm0,16V88H32V64Zm0,128H32V104H224v88Zm-16-24a8,8,0,0,1-8,8H168a8,8,0,0,1,0-16h32A8,8,0,0,1,208,168Zm-64,0a8,8,0,0,1-8,8H120a8,8,0,0,1,0-16h16A8,8,0,0,1,144,168Z"/></symbol><symbol id="r-download-simple" viewBox="0 0 256 256"><path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z"/></symbol><symbol id="r-file-text" viewBox="0 0 256 256"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Zm-32-80a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,136Zm0,32a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,168Z"/></symbol><symbol id="r-magnifying-glass" viewBox="0 0 256 256"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></symbol><symbol id="r-paper-plane-tilt" viewBox="0 0 256 256"><path d="M227.32,28.68a16,16,0,0,0-15.66-4.08l-.15,0L19.57,82.84a16,16,0,0,0-2.49,29.8L102,154l41.3,84.87A15.86,15.86,0,0,0,157.74,248q.69,0,1.38-.06a15.88,15.88,0,0,0,14-11.51l58.2-191.94c0-.05,0-.1,0-.15A16,16,0,0,0,227.32,28.68ZM157.83,231.85l-.05.14,0-.07-40.06-82.3,48-48a8,8,0,0,0-11.31-11.31l-48,48L24.08,98.25l-.07,0,.14,0L216,40Z"/></symbol><symbol id="r-storefront" viewBox="0 0 256 256"><path d="M232,96a7.89,7.89,0,0,0-.3-2.2L217.35,43.6A16.07,16.07,0,0,0,202,32H54A16.07,16.07,0,0,0,38.65,43.6L24.31,93.8A7.89,7.89,0,0,0,24,96h0v16a40,40,0,0,0,16,32v72a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V144a40,40,0,0,0,16-32V96ZM54,48H202l11.42,40H42.61Zm50,56h48v8a24,24,0,0,1-48,0Zm-16,0v8a24,24,0,0,1-35.12,21.26,7.88,7.88,0,0,0-1.82-1.06A24,24,0,0,1,40,112v-8ZM200,208H56V151.2a40.57,40.57,0,0,0,8,.8,40,40,0,0,0,32-16,40,40,0,0,0,64,0,40,40,0,0,0,32,16,40.57,40.57,0,0,0,8-.8Zm4.93-75.8a8.08,8.08,0,0,0-1.8,1.05A24,24,0,0,1,168,112v-8h48v8A24,24,0,0,1,204.93,132.2Z"/></symbol></svg>
 <div id="sboy"></div>
 
 <section class="ekran" id="e-dialogi">
@@ -157,7 +178,7 @@ if (TG) { try { TG.ready(); TG.expand(); } catch (e) {} }
 if (V_TG) { try { TG.setHeaderColor('#000000'); TG.setBackgroundColor('#000000'); TG.setBottomBarColor && TG.setBottomBarColor('#000000'); TG.disableVerticalSwipes && TG.disableVerticalSwipes(); } catch (e) {} }
 const ik = (id, kl) => '<svg class="ik' + (kl ? ' ' + kl : '') + '"><use href="#' + id + '"/></svg>';
 const SHEV = ik("b-caret-right", "shev");
-const V_CHATE = ['kupit', 'zayavki', 'stop_avito', 'udalit'];
+const V_CHATE = ['kupit', 'zayavki', 'stop_avito', 'udalit', 'razbor', 'vernut'];
 // тексты покупателей приходят с Авито: без экранирования чужое сообщение стало бы разметкой страницы с подписанным входом
 const ek = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const $ = (s) => document.querySelector(s);
@@ -175,7 +196,7 @@ function razobrat() {   // адрес живого сервера и снимо�
   return { api: /^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(a) ? a : null, dan };
 }
 const NACHALO = razobrat(), API = NACHALO.api;
-let D = NACHALO.dan || {}, tab = 'dialogi', otkryt = null;
+let D = NACHALO.dan || {}, tab = 'dialogi', otkryt = null, vseNP = false;
 
 async function sServera(put, telo) {
   const r = await fetch(API + put, { method: telo ? 'POST' : 'GET', body: telo ? JSON.stringify(telo) : undefined,
@@ -196,17 +217,54 @@ function podklyuchitKarta() {
     '<button class="knopka gl" data-avito>Подключить Авито</button></div>'
     : '<div class="pusto">' + ik('r-storefront') + '<b>Авито пока не подключён</b><p>Подключение — в чате с ботом: команда /avito.</p></div>';
 }
+// разбор чатов за 30 дней (22.09): первым делом продавец видит, сколько покупателей теряет и кому ещё не поздно ответить.
+// Сделать разбор и ответить этим людям может только ИИ в чате: кнопки открывают его диплинком (V_CHATE)
+function risRazbor() {
+  const rz = D.razbor;
+  if (!rz) return '<div class="pusto">' + ik('r-magnifying-glass') + '<b>Посчитаю, сколько покупателей вы теряете</b>' +
+    '<p>Разберу ваши чаты Авито за 30 дней: кто не дождался ответа и кому ещё не поздно ответить. Покупателям ничего не пишу.</p>' +
+    '<button class="knopka gl" data-cmd="razbor">Сделать разбор</button></div>';
+  const it = rz.itog, pk = it ? it.pokupateley : 0, dn = (it && it.dney) || 30, np = rz.ne_pozdno || [], n = rz.ne_pozdno_n || 0;
+  // главная цифра — самая тяжёлая потеря: не дождались совсем, иначе получили только автоответ Авито
+  const g = it ? it.bez_otveta || it.tolko_avto : 0;
+  const gt = it && it.bez_otveta ? plural(g, 'не дождался ответа', 'не дождались ответа', 'не дождались ответа')
+    : plural(g, 'получил только автоответ Авито', 'получили только автоответ Авито', 'получили только автоответ Авито');
+  const verh = !it ? '<div class="rz-f">Цифр в этом разборе нет</div><p class="rz-p">Обновите разбор — посчитаю, сколько покупателей не дождались ответа.</p>'
+    : !pk ? '<div class="rz-f">Покупатели не писали</div>'
+    : (g ? '<b class="rz-n">' + ek(g) + '</b><div class="rz-f">' + plural(g, 'покупатель', 'покупателя', 'покупателей') + ' ' + gt + '</div>'
+      : '<div class="rz-f">' + ik('f-check-circle') + 'Все дождались ответа</div>') +
+      '<p class="rz-p">Всего ' + plural(pk, 'писал', 'писали', 'писали') + ' ' + ek(pk) + ' ' + plural(pk, 'покупатель', 'покупателя', 'покупателей') + '</p>' +
+      (pk <= 30 ? '<div class="rz-t" aria-hidden="true">' + Array.from({ length: pk }, (_, j) => j < g ? '<i class="p"></i>' : '<i></i>').join('') + '</div>' : '');
+  const st = (it ? [[it.bez_otveta && it.tolko_avto, 'Получили только автоответ Авито'], [it.dolgo, 'Ждали ответа дольше часа'],
+    [it.noch, 'Писали вечером и ночью'], [it.mediana, 'Первый ответ обычно через']] : [])
+    .concat([[rz.smotryat && rz.smotryat + ' ' + plural(rz.smotryat, 'объявление', 'объявления', 'объявлений'), 'Смотрят, но не пишут']]).filter(x => x[0]);
+  const kartochka = '<div class="rz' + (g ? ' poteri' : it && pk ? ' ok' : '') + '"><small>Разбор чатов за ' + ek(dn) + ' ' + plural(dn, 'день', 'дня', 'дней') + '</small>' + verh +
+    (st.length ? '<div class="rz-st">' + st.map(x => '<div><span>' + x[1] + '</span><b>' + ek(x[0]) + '</b></div>').join('') + '</div>' : '') +
+    '<div class="rz-niz"><span>Посчитано ' + ek(rz.kogda) + '</span><button class="rz-obn" data-cmd="razbor">' + ik('r-arrow-clockwise') + 'Обновить</button></div></div>';
+  if (!n) return kartochka;
+  const svernut = np.length > 3 && !vseNP;
+  const chelovek = (x) => stroka({ a: x.url ? ' data-url="' + ek(x.url) + '"' : ' data-nichego', lev: '<span class="ava">' + ek((x.kto || '?')[0]) + '</span>',
+    zag: ek(x.kto), zn: ek(x.davno) + ' назад', pod: '«' + ek(x.vopros) + '»', prav: x.url ? SHEV : ' ' });
+  // в ссылке кнопки списка нет (v_ssylku), только счётчик: имена с вопросами приходят с живого сервера
+  // кнопка над списком, как «Обновить всё» в App Store: главное действие видно на первом экране, список — кто именно
+  return kartochka + '<div class="gruppa"><h4><span>Ещё не поздно ответить</span><span class="lm">' + ek(n) + '</span></h4>' +
+    '<button class="knopka gl" data-cmd="vernut">' + ik('r-paper-plane-tilt') + 'Ответить им (' + ek(rz.vernut) + ')</button>' +
+    (np.length ? '<div class="spisok">' + (svernut ? np.slice(0, 3) : np).map(chelovek).join('') +
+      (svernut ? stroka({ a: ' data-np-vse', zag: 'Показать всех', zn: ek(np.length), prav: ik('b-caret-down', 'shev') }) : '') + '</div>' : '') +
+    '<div class="niz">' + (n > rz.vernut ? 'За день — не больше ' + ek(rz.vernut) + ', остальным завтра. ' : '') +
+    'ИИ ответит каждому на его вопрос, по вашему объявлению. Чего не знает — спросит вас.</div></div>';
+}
 function risDialogi() {
   const dl = D.dialogi || [], zh = dl.filter(x => x.status === 'vy'), n = D.otvetov_segodnya || 0;
   $('#d-pod').textContent = !(D.kabinety || []).length ? 'Авито не подключён' : n ? 'Сегодня ИИ ответил на ' + n + ' ' + plural(n, 'сообщение', 'сообщения', 'сообщений') : 'Сегодня пока тихо';
   $('#tochka').className = 'tochka' + ((D.kabinety || []).length ? '' : ' net');
   const bej = $('#bej'); bej.hidden = !zh.length; bej.textContent = zh.length;
   if (!(D.kabinety || []).length) { $('#d-telo').innerHTML = podklyuchitKarta(); return; }
-  if (!dl.length) { $('#d-telo').innerHTML = '<div class="pusto">' + ik('f-chats-circle') + '<b>Пока тихо</b><p>Как только покупатель напишет в Авито, здесь появится его вопрос и ответ ИИ.</p></div>'; return; }
+  if (!dl.length) { $('#d-telo').innerHTML = risRazbor() + '<div class="pusto">' + ik('f-chats-circle') + '<b>Пока тихо</b><p>Как только покупатель напишет в Авито, здесь появится его вопрос и ответ ИИ.</p></div>'; return; }
   const row = (x) => stroka({ a: ' data-dlg="' + dl.indexOf(x) + '"', lev: '<span class="ava' + (x.status === 'vy' ? ' vy' : '') + '">' + ek((x.kto || '?')[0]) + '</span>',
     zag: ek(x.kto) + (x.tiho ? '<span class="molchit">ИИ молчит</span>' : ''), zn: ek(String(x.kogda || '').split(', ').pop()), pod: ek(x.vopros) });
   const ost = dl.filter(x => x.status !== 'vy');
-  $('#d-telo').innerHTML = (zh.length ? '<div class="gruppa"><h4><span>Ждут вас</span><span class="lm">' + zh.length + '</span></h4><div class="spisok">' + zh.map(row).join('') +
+  $('#d-telo').innerHTML = risRazbor() + (zh.length ? '<div class="gruppa"><h4><span>Ждут вас</span><span class="lm">' + zh.length + '</span></h4><div class="spisok">' + zh.map(row).join('') +
       '</div><div class="niz">Ответить можно прямо в Telegram — ответом на сообщение «Нужно ваше решение».</div></div>'
     : '<div class="gruppa"><div class="spisok"><div class="vse-resheno">' + ik('f-check-circle') + 'Всё решено, покупатели ждут только ИИ.</div></div></div>') +
     (ost.length ? '<div class="gruppa"><h4><span>Недавние</span></h4><div class="spisok">' + ost.map(row).join('') + '</div></div>' : '');
@@ -312,6 +370,7 @@ document.addEventListener('click', (ev) => {
   let e;
   if ((e = c('[data-tab]'))) return pokazTab(e.dataset.tab);
   if ((e = c('[data-dlg]'))) return otkrytDialog(+e.dataset.dlg);
+  if (c('[data-np-vse]')) { vseNP = true; return risDialogi(); }
   if (c('#zatemn')) return zakryt();
   if ((e = c('[data-url]'))) return otkrytSsylku(e.dataset.url);
   if (c('[data-tiho]')) { const x = D.dialogi[otkryt]; return poslat({ cmd: 'tiho', id: x.id, kanal: x.kanal, vkl: !x.tiho }); }
