@@ -236,6 +236,7 @@ function risTarif() {
     '<div class="gruppa"><h4><span>Как отвечает ИИ</span></h4><div class="spisok">' +
       '<div class="stroka"><span class="telo"><span class="tx"><b>Отвечает сам</b><small>Выключите — будет присылать черновики</small></span><button class="sw' + (D.sam ? '' : ' vykl') + '" data-cmd="sam_pereklyuchit" aria-label="ИИ отвечает сам"></button></span></div>' +
       '<div class="stroka"><span class="telo"><span class="tx"><b>Копия каждого ответа</b><small>Обычно в чат — только ваши решения</small></span><button class="sw' + (D.kopii ? '' : ' vykl') + '" data-kopii aria-label="Копии в чат"></button></span></div>' +
+      '<div class="stroka"><span class="telo"><span class="tx"><b>Пишет «уточню и напишу вам»</b><small>Когда не знает ответа. Выключено — молчит и спрашивает вас</small></span><button class="sw' + (D.utochnyu ? '' : ' vykl') + '" data-utochnyu aria-label="Писать покупателю «уточню и напишу вам»"></button></span></div>' +
       stroka({ zag: 'Часы', a: ' data-chasy', prav: '<span class="zn">' + ek(D.chasy || 'круглые сутки') + '</span>' + SHEV }) +
     '</div></div>' +
     '<div class="gruppa"><h4><span>Авито</span></h4><div class="spisok">' + kab +
@@ -316,6 +317,7 @@ document.addEventListener('click', (ev) => {
   if (c('[data-tiho]')) { const x = D.dialogi[otkryt]; return poslat({ cmd: 'tiho', id: x.id, kanal: x.kanal, vkl: !x.tiho }); }
   if (c('[data-resheno]')) { const x = D.dialogi[otkryt]; zakryt(); return poslat({ cmd: 'resheno', id: x.id, kanal: x.kanal }); }
   if (c('[data-kopii]')) return poslat({ cmd: 'kopii', vkl: !D.kopii });
+  if (c('[data-utochnyu]')) return poslat({ cmd: 'ne_znayu', vkl: !D.utochnyu });
   if (c('[data-chasy]')) return chasyShtorka();
   if (c('[data-chasy-ok]')) {
     const s = $('#ch-s').value.trim(), d = $('#ch-do').value.trim();
