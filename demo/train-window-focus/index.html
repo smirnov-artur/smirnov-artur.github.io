@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. — Clarity in a noisy universe</title>
+<!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия (у Instrument Serif нет кириллицы, по-русски заголовок набран Cormorant).
+     Вместо «10 000 умов уже с нами», «12 000+ авторов» и «4.8 довольства пользователей» — то, что есть в самом продукте:
+     под логотипом g.a.d. чужие цифры про людей читались бы как наши. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#000;font-family:'Instrument Serif',serif;color:#fff;-webkit-font-smoothing:antialiased}
+.ru body{font-family:'Cormorant',serif}
+.sans{font-family:system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit;background:none;border:0;outline:none}
+.i{display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.liquid-glass{background:rgba(255,255,255,.01);background-blend-mode:luminosity;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border:none;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.1);position:relative;overflow:hidden}
+.liquid-glass::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1.4px;
+  background:linear-gradient(180deg,rgba(255,255,255,.45) 0%,rgba(255,255,255,.15) 20%,rgba(255,255,255,0) 40%,rgba(255,255,255,0) 60%,rgba(255,255,255,.15) 80%,rgba(255,255,255,.45) 100%);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+
+.hero{position:relative;width:100%;height:100vh;height:100dvh;overflow:hidden;background:#000}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1s ease-in-out}
+.hero video.on{opacity:1}
+.ovl{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover;pointer-events:none;animation:train-bob 3s ease-in-out infinite}
+@keyframes train-bob{0%,100%{transform:translateY(0) scale(1.03)}50%{transform:translateY(-6px) scale(1.03)}}
+
+.content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;padding:0 20px}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0}
+.gad{display:block;color:#fff}
+.gad svg{display:block;height:24px;width:auto;overflow:visible}
+.gad svg text{font-family:'Unbounded',sans-serif}
+.gad .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}
+.gad .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}
+@keyframes gad-draw{to{stroke-dashoffset:0}}
+@keyframes gad-pop{to{opacity:1}}
+@keyframes gad-orbit{to{transform:rotate(360deg)}}
+.pill{display:none;align-items:center;gap:4px;border-radius:9999px;padding:6px 6px 6px 20px}
+.pill a{font-size:14px;line-height:20px;color:rgba(255,255,255,.9);padding:0 12px;transition:color .2s}
+.pill a:hover{color:#fff}
+.pill .go{margin-left:8px;background:#fff;color:#000;border-radius:9999px;padding:8px 18px;font-weight:500}
+.burger{position:relative;z-index:60;width:44px;height:44px;border-radius:9999px;cursor:pointer}
+.burger .i{position:absolute;left:12px;top:12px;width:20px;height:20px;transition:transform .3s,opacity .3s}
+.burger .x{opacity:0;transform:rotate(-90deg) scale(.75)}
+.burger.open .m{opacity:0;transform:rotate(90deg) scale(.75)}
+.burger.open .x{opacity:1;transform:none}
+
+.menu{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.menu .bd{position:absolute;inset:0;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:0;transition:opacity .5s cubic-bezier(.4,0,.2,1)}
+.menu .panel{position:relative;display:flex;flex-direction:column;align-items:center;gap:20px}
+.menu .panel a{font-size:30px;line-height:36px;color:#fff;opacity:0;transform:translateY(16px);transition:opacity .5s cubic-bezier(.4,0,.2,1),transform .5s cubic-bezier(.4,0,.2,1)}
+.menu .panel .go{margin-top:12px;font-size:16px;line-height:24px;background:#fff;color:#000;border-radius:9999px;padding:12px 28px;transform:scale(.9)}
+.menu.open{pointer-events:auto}
+.menu.open .bd{opacity:1}
+.menu.open .panel a{opacity:1;transform:none}
+
+.hc{--c:#fff;--ci:#000;display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:28px;color:var(--c);transition:color .7s}
+.hc.dark{--c:#182C41;--ci:#fff}
+.badge{border-radius:9999px;padding:6px 16px;font-size:12px;line-height:16px;color:var(--c);transition:color .7s}
+h1{margin-top:20px;max-width:56rem;font-weight:400;font-size:36px;line-height:1.1;color:var(--c);transition:color .7s}
+.sub{margin-top:16px;max-width:36rem;font-size:14px;line-height:1.625;color:var(--c);opacity:.85;transition:color .7s}
+.mail{margin-top:24px;width:100%;max-width:320px;border-radius:9999px;display:flex;align-items:center;padding:5px}
+.mail input{flex:1;min-width:0;padding:8px 14px;font-size:14px;color:var(--c);transition:color .7s}
+.mail input::placeholder{color:var(--c);opacity:.6}
+.mail button{flex:none;background:var(--c);color:var(--ci);border-radius:9999px;padding:10px 16px;font-size:13px;font-weight:500;cursor:pointer;transition:background-color .7s,color .7s}
+.sw{margin-top:24px;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px}
+.sw button{font-size:12px;line-height:18px;padding-bottom:4px;border-bottom:2px solid transparent;color:var(--c);opacity:.5;cursor:pointer;transition:opacity .3s,color .7s,border-color .7s}
+.sw button:hover{opacity:.8}
+.sw button.on{opacity:1;border-bottom-color:var(--c)}
+
+.spacer{flex:1}
+.stats{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;padding:16px 0 24px;font-size:12px;line-height:18px;color:rgba(255,255,255,.7)}
+.stats .sep{display:none}
+
+@media (min-width:640px){
+  .content{padding:0 32px}
+  .gad svg{height:28px}
+  .badge{font-size:14px;line-height:20px}
+  h1{font-size:48px}
+  .sub{font-size:16px}
+  .mail{max-width:384px}
+  .mail button{font-size:14px;padding:10px 20px}
+  .sw button{font-size:14px;line-height:20px}
+  .stats{font-size:14px;line-height:20px}
+  .stats .sep{display:inline}
+}
+@media (min-width:768px){
+  .pill{display:flex}
+  .burger,.menu{display:none}
+  .content{padding:0 48px}
+  .nav{padding:28px 0}
+  .hc{margin-top:40px}
+  h1{font-size:72px}
+  .sub{font-size:18px}
+}
+@media (min-width:1024px){h1{font-size:5.5rem}.ru h1{max-width:68rem}}
+@media (prefers-reduced-motion:reduce){
+  .ovl{animation:none;transform:scale(1.03)}
+  .gad .ring{animation:none;stroke-dashoffset:0}.gad .orb{animation:none;opacity:1}
+}
+</style>
+</head>
+<body>
+<section class="hero">
+  <video class="on" autoplay loop muted playsinline src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260702_081127_0992a171-d3c6-4978-8213-0ec5df8b6d63.mp4"></video>
+  <video loop muted playsinline preload="none" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260702_092026_dd05b805-ea0f-40b2-8c52-332b88502592.mp4"></video>
+  <video loop muted playsinline preload="none" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260702_081042_df7202bf-bd80-4b2b-bbc6-1f09ba2870e9.mp4"></video>
+  <video loop muted playsinline preload="none" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260702_080959_4cac5234-3573-464e-a5b7-76b94b8a7d61.mp4"></video>
+  <img class="ovl" alt="" src="https://soft-zoom-63098134.figma.site/_assets/v11/0b4a435b2df2747593c43d7a1c9b4578f7d8d90c.png">
+
+  <div class="content">
+    <nav class="nav">
+      <a class="gad" href="#" aria-label="g.a.d.">
+        <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+          <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+          <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+          <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+        </svg>
+      </a>
+      <div class="pill liquid-glass sans">
+        <a href="#" data-t="l1">How It Works</a><a href="#" data-t="l2">Features</a><a href="#" data-t="l3">Pricing</a><a href="#" data-t="l4">Community</a>
+        <a class="go" href="#" data-t="go">Get Started</a>
+      </div>
+      <button class="burger liquid-glass" id="burger" type="button" aria-label="Menu">
+        <svg class="i m" viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M4 18h16"/><path d="M4 6h16"/></svg>
+        <svg class="i x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </nav>
+
+    <div class="hc" id="hc">
+      <div class="badge liquid-glass sans" data-t="badge">A calm place for minds that need clarity</div>
+      <h1><span data-t="h1a">Clarity in an Endlessly</span><br><span data-t="h1b">Noisy Universe</span></h1>
+      <p class="sub sans" data-t="sub">Rise above the chaos of pings, infinite scrolling, and relentless demands. Discover how to protect your presence and create with intention.</p>
+      <form class="mail liquid-glass sans" onsubmit="return false">
+        <input type="email" placeholder="Your Best Email" aria-label="Email" id="mail">
+        <button type="submit" data-t="early">Get Early Access</button>
+      </form>
+      <div class="sw sans" id="sw">
+        <button type="button" class="on" data-t="v0">Golden Hour</button>
+        <button type="button" data-t="v1">Still Water</button>
+        <button type="button" data-t="v2">Deep Woods</button>
+        <button type="button" data-t="v3">Quiet Dawn</button>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="stats sans">
+      <span data-t="s1">60+ Deep Sessions</span><span class="sep">|</span>
+      <span data-t="s2">4 Calm Scenes</span><span class="sep">|</span>
+      <span data-t="s3">24/7 Access</span><span class="sep">|</span>
+      <span data-t="s4">Intentional-First Design</span>
+    </div>
+    <div class="menu sans" id="menu">
+      <div class="bd" id="bd"></div>
+      <div class="panel">
+        <a href="#" style="transition-delay:100ms" data-t="l1">How It Works</a>
+        <a href="#" style="transition-delay:150ms" data-t="l2">Features</a>
+        <a href="#" style="transition-delay:200ms" data-t="l3">Pricing</a>
+        <a href="#" style="transition-delay:250ms" data-t="l4">Community</a>
+        <a class="go" href="#" style="transition-delay:300ms" data-t="go">Get Started</a>
+      </div>
+    </div>
+  </div>
+
+</section>
+<script>
+(() => {
+if (new URLSearchParams(location.search).get('lang') === 'ru') {
+  const TR = { l1: 'Как это работает', l2: 'Возможности', l3: 'Цены', l4: 'Сообщество', go: 'Начать',
+    badge: 'Тихое место для тех, кому нужна ясность', h1a: 'Ясность посреди бесконечно', h1b: 'шумной Вселенной',
+    sub: 'Поднимитесь над хаосом уведомлений, бесконечной ленты и вечных просьб. Научитесь беречь своё внимание и творить осознанно.',
+    early: 'Ранний доступ', v0: 'Золотой час', v1: 'Тихая вода', v2: 'Глубокий лес', v3: 'Тихий рассвет',
+    s1: '60+ глубоких сессий', s2: '4 спокойные сцены', s3: 'Доступ 24/7', s4: 'Дизайн ради осознанности' };
+  document.documentElement.lang = 'ru';
+  document.documentElement.classList.add('ru');
+  document.title = 'g.a.d. — ясность в шумной Вселенной';
+  document.head.insertAdjacentHTML('beforeend', '<link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@500&display=swap" rel="stylesheet">');
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.textContent = t; });
+  document.getElementById('mail').placeholder = 'Ваша почта';
+}
+// видео: переключение с паузой 1 с, пока идёт наплыв
+const vids = [...document.querySelectorAll('.hero video')], btns = [...document.querySelectorAll('#sw button')], hc = document.getElementById('hc');
+// остальные три ролика грузятся после того, как пошёл первый: так первый экран оживает быстрее
+const rest = () => vids.slice(1).forEach(v => { v.preload = 'auto'; v.play().catch(() => {}); });
+if (vids[0].readyState >= 3) rest(); else { vids[0].addEventListener('playing', rest, { once: true }); setTimeout(rest, 6000); }
+let active = 0, busy = false;
+btns.forEach((b, i) => b.addEventListener('click', () => {
+  if (i === active || busy) return;
+  busy = true; setTimeout(() => { busy = false; }, 1000);
+  vids[active].classList.remove('on'); btns[active].classList.remove('on');
+  active = i;
+  vids[i].classList.add('on'); btns[i].classList.add('on');
+  hc.classList.toggle('dark', i === 2);   // «Глубокий лес» светлый — текст тёмный
+}));
+// меню телефона
+const burger = document.getElementById('burger'), menu = document.getElementById('menu');
+const set = open => { burger.classList.toggle('open', open); menu.classList.toggle('open', open); };
+burger.addEventListener('click', () => set(!menu.classList.contains('open')));
+document.getElementById('bd').addEventListener('click', () => set(false));
+menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => set(false)));
+})();
+</script>
+</body>
+</html>

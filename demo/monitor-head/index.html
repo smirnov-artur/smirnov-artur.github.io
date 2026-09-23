@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. — Meet A.R.I.A.</title>
+<!-- Один файл вместо React + Vite + Tailwind. ?lang=ru — русская версия (у Helvetica Now нет кириллицы, по-русски текст набран Inter Tight).
+     Ролик перематывается за движением мыши по горизонтали; пока мыши нет (телефон, курсор ушёл) — перематывается сам туда и обратно.
+     v.mp4 — исходный ролик, пережатый с ключевым кадром каждые 4 кадра, чтобы перемотка не дёргалась. -->
+<link rel="stylesheet" href="https://db.onlinewebfonts.com/c/1aa3377e489837a26d019bba501e779d?family=HelveticaNowDisplayW01-Rg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+:root{--font-body:'HelveticaNowDisplayW01-Rg','Helvetica Neue',Arial,sans-serif}
+.ru{--font-body:'Inter Tight','Helvetica Neue',Arial,sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--font-body);background:#d4d4d2;color:#000;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+
+.bg{position:fixed;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;object-position:70% center}
+
+/* навбар */
+.nav{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px 20px}
+.gad{display:block;color:#000}
+.gad svg{display:block;height:24px;width:auto;overflow:visible}
+.gad svg text{font-family:'Unbounded',sans-serif}
+.gad .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}
+.gad .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}
+@keyframes gad-draw{to{stroke-dashoffset:0}}
+@keyframes gad-pop{to{opacity:1}}
+@keyframes gad-orbit{to{transform:rotate(360deg)}}
+.links{display:none;font-size:23px}
+.links .sep{white-space:pre}
+.links a,.cta{transition:opacity .15s}
+.links a:hover,.cta:hover{opacity:.6}
+.cta{display:none;font-size:23px;text-decoration:underline;text-underline-offset:2px}
+.burger{display:flex;flex-direction:column;gap:5px;padding:8px 0 8px 8px}
+.burger span{display:block;width:24px;height:2px;background:#000;transition:all .3s}
+.burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* меню телефона */
+.overlay{position:fixed;inset:0;z-index:9;background:rgba(255,255,255,.95);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:0 32px;gap:32px;opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.open{opacity:1;pointer-events:auto}
+.overlay a{font-size:32px;font-weight:500;line-height:1.2}
+.overlay .u{text-decoration:underline;text-underline-offset:2px}
+
+/* герой */
+.hero{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 20px 48px;overflow:hidden}
+.box{position:relative;z-index:10;max-width:36rem}
+.intro{margin:0 0 20px;pointer-events:none;user-select:none;-webkit-user-select:none;font-size:clamp(18px,4vw,26px);line-height:1.3;font-weight:400;color:#000;filter:blur(4px)}
+.type{margin:0 0 20px;color:#000;font-size:clamp(18px,4vw,26px);line-height:1.35;font-weight:400;min-height:54px}
+.caret{display:inline-block;width:2px;height:1.1em;background:#000;vertical-align:middle;margin-left:2px;animation:blink 1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.pills{display:flex;flex-wrap:wrap;row-gap:4px;opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease}
+.pills.on{opacity:1;transform:none}
+.pill{display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#000;border:1px solid rgba(0,0,0,.1);border-radius:9999px;
+  font-size:13px;line-height:1.5;padding:.3em 16px;margin:0 .2em .4em;white-space:nowrap;transition:color .2s,background-color .2s,border-color .2s}
+.pill:hover{background:#000;color:#fff}
+.pill.ghost{color:#fff;background:transparent;border-color:#fff;gap:8px}
+.pill.ghost:hover{background:#fff;color:#000}
+.pill.ghost u{text-underline-offset:1px}
+.pill.ghost svg{width:12px;height:12px;flex:none}
+
+@media (min-width:640px){
+  .nav{padding:20px 32px}
+  .gad svg{height:29px}
+  .hero{padding-left:32px;padding-right:32px}
+  .intro,.type{margin-bottom:24px}
+  .pill{font-size:15px;padding-left:20px;padding-right:20px}
+  .pill.ghost{gap:12px}
+}
+@media (min-width:768px){
+  .links,.cta{display:flex}
+  .burger,.overlay{display:none}
+  .hero{justify-content:center;padding:0 40px}
+}
+@media (prefers-reduced-motion:reduce){.gad .ring{animation:none;stroke-dashoffset:0}.gad .orb{animation:none;opacity:1}}
+</style>
+</head>
+<body>
+<video class="bg" id="bg" src="v.mp4" muted playsinline preload="auto"></video>
+
+<header class="nav">
+  <a class="gad" href="#" aria-label="g.a.d.">
+    <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+      <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+      <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+      <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+    </svg>
+  </a>
+  <nav class="links">
+    <a href="#" data-t="labs">Labs</a><span class="sep">, </span><a href="#" data-t="studio">Studio</a><span class="sep">, </span><a href="#" data-t="open">Openings</a><span class="sep">, </span><a href="#" data-t="shop">Shop</a>
+  </nav>
+  <a class="cta" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="touch">Get in touch</a>
+  <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+</header>
+
+<div class="overlay" id="overlay">
+  <a href="#" data-t="labs">Labs</a>
+  <a href="#" data-t="studio">Studio</a>
+  <a href="#" data-t="open">Openings</a>
+  <a href="#" data-t="shop">Shop</a>
+  <a class="u" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="touch">Get in touch</a>
+</div>
+
+<main class="hero">
+  <div class="box">
+    <p class="intro" data-t="intro">Hey there, meet A.R.I.A,<br>g.a.d.'s Adaptive Response Interface Agent</p>
+    <p class="type"><span id="typed"></span><span class="caret" id="caret"></span></p>
+    <div class="pills" id="pills">
+      <a class="pill" href="#" data-t="p1">Pitch us an idea</a>
+      <a class="pill" href="#" data-t="p2">Come work here</a>
+      <a class="pill" href="#" data-t="p3">Send a brief hello</a>
+      <a class="pill" href="#" data-t="p4">See how we operate</a>
+      <button class="pill ghost" id="copy" type="button">
+        <span><span data-t="reach">Reach us:</span> <u>paladei702@gmail.com</u></span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+    </div>
+  </div>
+</main>
+
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+let TEXT = 'Glad you stopped in. Good taste tends to find us. Now, what are we building?';
+if (new URLSearchParams(location.search).get('lang') === 'ru') {
+  const TR = { labs: 'Лаборатория', studio: 'Студия', open: 'Вакансии', shop: 'Магазин', touch: 'Написать нам',
+    intro: 'Привет, знакомьтесь — A.R.I.A.,<br>адаптивный агент-собеседник g.a.d.',
+    p1: 'Предложить идею', p2: 'Работать с нами', p3: 'Просто поздороваться', p4: 'Как мы работаем', reach: 'Пишите:' };
+  document.documentElement.lang = 'ru';
+  document.documentElement.classList.add('ru');
+  document.title = 'g.a.d. — знакомьтесь, A.R.I.A.';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.innerHTML = t; });
+  TEXT = 'Рады, что заглянули. Люди со вкусом обычно находят нас сами. Итак, что строим?';
+}
+
+// печатная машинка: 38 мс на букву, старт через 600 мс
+const typed = $('typed');
+setTimeout(() => {
+  let i = 0;
+  const id = setInterval(() => {
+    typed.textContent = TEXT.slice(0, ++i);
+    if (i >= TEXT.length) { clearInterval(id); $('caret').remove(); }
+  }, 38);
+}, 600);
+setTimeout(() => $('pills').classList.add('on'), 400);   // кнопки не ждут машинку
+
+$('copy').addEventListener('click', () => { navigator.clipboard && navigator.clipboard.writeText('paladei702@gmail.com').catch(() => {}); });
+
+// меню телефона
+const burger = $('burger'), overlay = $('overlay');
+const setMenu = open => {
+  burger.classList.toggle('open', open); overlay.classList.toggle('open', open);
+  burger.setAttribute('aria-expanded', open);
+};
+burger.addEventListener('click', () => setMenu(!overlay.classList.contains('open')));
+overlay.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+
+// ролик: перемотка за мышью по горизонтали, следующая перемотка — только после seeked
+const v = $('bg'), SENSITIVITY = 0.8;
+let prevX = null, target = 0, busy = false, lastMove = -1e9;
+const seek = () => {
+  if (busy || !v.duration || Math.abs(v.currentTime - target) < 0.01) return;
+  busy = true; v.currentTime = target;
+};
+v.addEventListener('seeked', () => { busy = false; seek(); });
+v.play().then(() => v.pause()).catch(() => {});   // iOS не грузит кадры ролика, который ни разу не играл
+addEventListener('mousemove', e => {
+  lastMove = performance.now();
+  if (prevX !== null && v.duration) {
+    const delta = e.clientX - prevX;
+    target = Math.min(v.duration, Math.max(0, target + (delta / innerWidth) * SENSITIVITY * v.duration));
+    seek();
+  }
+  prevX = e.clientX;
+}, { passive: true });
+
+// автопилот: пока мыши нет 2,5 с, ролик сам ходит туда и обратно — от первого кадра, весь ролик за 6 с
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let dir = 1, last = performance.now();
+const tick = now => {
+  const dt = Math.min(0.1, (now - last) / 1000); last = now;
+  if (!reduce && v.duration && now - lastMove > 2500) {
+    target += dir * dt * v.duration / 6;
+    if (target >= v.duration) { target = v.duration; dir = -1; }
+    else if (target <= 0) { target = 0; dir = 1; }
+    seek();
+  }
+  requestAnimationFrame(tick);
+};
+requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

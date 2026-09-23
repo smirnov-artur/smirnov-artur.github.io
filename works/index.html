@@ -105,6 +105,10 @@ h2{margin:12px 0 16px;font-size:clamp(40px,6vw,84px);line-height:1;font-weight:6
 .open{margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-weight:500;font-size:15px}
 .open svg,.btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
 .card:hover .open svg{transform:translate(3px,-3px)}
+.grid .card.more{display:none}
+.grid.all .card.more{display:block}
+.allbtn{display:block;margin:28px auto 0;padding:14px 28px;border-radius:9999px;border:1px solid var(--line);font-size:16px;font-weight:500;transition:border-color .3s}
+.allbtn:hover{border-color:var(--lime)}
 
 /* как работаю */
 .how{background:var(--ink);padding:60px 20px}
@@ -260,25 +264,13 @@ footer{background:var(--ink);border-top:1px solid var(--line);padding:24px 20px;
 <script>
 (() => {
 const EN = new URLSearchParams(location.search).get('lang') === 'en';
-const WORKS = [
-  { slug: 'planet-jumping', v: 'planet', ru: ['Прыжки по планетам', 'Портал к следующей планете: нажали — и перелёт Марс → Земля → Венера.'],
-    en: ['Planet Jumping', 'A portal to the next planet: click and fly Mars → Earth → Venus.'] },
-  { slug: 'archive', v: 'archive', ru: ['Архив одежды', 'Модель поворачивается за курсором, ниже архив вылетает карточками.'],
-    en: ['Fashion archive', 'The model turns with your cursor; below, the archive pops in card by card.'] },
-  { slug: 'figurines', v: 'figurines', ru: ['3D-фигурки', 'Карусель героев: цвет, размер и резкость меняются вместе.'],
-    en: ['3D figurines', 'A character carousel: color, scale and focus change together.'] },
-  { slug: 'visuals', v: 'visuals', ru: ['Визуал', 'Под курсором проявляется вторая картинка — герой загорается.'],
-    en: ['Visuals', 'A second image shows through under the cursor — the hero catches fire.'] },
-  { slug: 'dreams', v: 'dreams', ru: ['Ночное небо', 'Кино на фоне, крупный шрифт с засечками, стеклянные кнопки.'],
-    en: ['Night sky', 'A cinematic video background, big serif type, glass buttons.'] },
-  { slug: 'ai-workers', v: 'ai', ru: ['ИИ-работники', 'Лес во весь экран, стеклянное меню и карточки поверх видео.'],
-    en: ['AI workers', 'A full-screen forest video with a glass menu and cards on top.'] },
-];
+const WORKS = /*WORKS*/[{"slug": "planet-jumping", "v": "planet", "ru": ["Прыжки по планетам", "Портал к следующей планете: нажали — и перелёт Марс → Земля → Венера."], "en": ["Planet Jumping", "A portal to the next planet: click and fly Mars → Earth → Venus."]}, {"slug": "archive", "v": "archive", "ru": ["Архив одежды", "Модель поворачивается за курсором, ниже архив вылетает карточками."], "en": ["Fashion archive", "The model turns with your cursor; below, the archive pops in card by card."]}, {"slug": "figurines", "v": "figurines", "ru": ["3D-фигурки", "Карусель героев: цвет, размер и резкость меняются вместе."], "en": ["3D figurines", "A character carousel: color, scale and focus change together."]}, {"slug": "visuals", "v": "visuals", "ru": ["Визуал", "Под курсором проявляется вторая картинка — герой загорается."], "en": ["Visuals", "A second image shows through under the cursor — the hero catches fire."]}, {"slug": "dreams", "v": "dreams", "ru": ["Ночное небо", "Кино на фоне, крупный шрифт с засечками, стеклянные кнопки."], "en": ["Night sky", "A cinematic video background, big serif type, glass buttons."]}, {"slug": "ai-workers", "v": "ai", "ru": ["ИИ-работники", "Лес во весь экран, стеклянное меню и карточки поверх видео."], "en": ["AI workers", "A full-screen forest video with a glass menu and cards on top."]}]/*/WORKS*/;
 const box = document.getElementById('concepts');
-WORKS.forEach(w => {
+const FIRST = 12;   // остальные карточки по кнопке: иначе на телефоне стена в десятки экранов
+WORKS.forEach((w, i) => {
   const [h, p] = EN ? w.en : w.ru;
   const a = document.createElement('a');
-  a.className = 'card rv'; a.target = '_blank'; a.rel = 'noopener';
+  a.className = 'card rv' + (i >= FIRST ? ' more' : ''); a.target = '_blank'; a.rel = 'noopener';
   a.href = '/demo/' + w.slug + '/' + (EN ? '' : '?lang=ru');
   a.innerHTML = `<div class="media" style="background-image:url(v/${w.v}.jpg)"><video muted loop playsinline preload="none" poster="v/${w.v}.jpg" data-src="v/${w.v}.mp4"></video></div>
     <div class="body"><span class="tag">${EN ? 'Concept' : 'Концепт'}</span><h4></h4><p></p>
@@ -304,6 +296,16 @@ if (EN) {
   document.title = 'g.a.d. — websites with video and 3D';
   document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.textContent = t; });
   const l = document.getElementById('lang'); l.textContent = 'RU'; l.href = location.pathname;
+}
+
+const sh = document.querySelector('[data-t="shConcepts"]');
+sh.textContent += ' · ' + WORKS.length;
+if (WORKS.length > FIRST) {
+  const b = document.createElement('button');
+  b.className = 'allbtn'; b.type = 'button';
+  b.textContent = (EN ? 'Show all ' : 'Показать все ') + WORKS.length;
+  b.addEventListener('click', () => { box.classList.add('all'); b.remove(); });
+  box.after(b);
 }
 
 // превью играют, только пока видны

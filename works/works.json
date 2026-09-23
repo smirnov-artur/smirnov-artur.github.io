@@ -1,0 +1,74 @@
+[
+ {
+  "slug": "planet-jumping",
+  "v": "planet",
+  "ru": [
+   "Прыжки по планетам",
+   "Портал к следующей планете: нажали — и перелёт Марс → Земля → Венера."
+  ],
+  "en": [
+   "Planet Jumping",
+   "A portal to the next planet: click and fly Mars → Earth → Venus."
+  ]
+ },
+ {
+  "slug": "archive",
+  "v": "archive",
+  "ru": [
+   "Архив одежды",
+   "Модель поворачивается за курсором, ниже архив вылетает карточками."
+  ],
+  "en": [
+   "Fashion archive",
+   "The model turns with your cursor; below, the archive pops in card by card."
+  ]
+ },
+ {
+  "slug": "figurines",
+  "v": "figurines",
+  "ru": [
+   "3D-фигурки",
+   "Карусель героев: цвет, размер и резкость меняются вместе."
+  ],
+  "en": [
+   "3D figurines",
+   "A character carousel: color, scale and focus change together."
+  ]
+ },
+ {
+  "slug": "visuals",
+  "v": "visuals",
+  "ru": [
+   "Визуал",
+   "Под курсором проявляется вторая картинка — герой загорается."
+  ],
+  "en": [
+   "Visuals",
+   "A second image shows through under the cursor — the hero catches fire."
+  ]
+ },
+ {
+  "slug": "dreams",
+  "v": "dreams",
+  "ru": [
+   "Ночное небо",
+   "Кино на фоне, крупный шрифт с засечками, стеклянные кнопки."
+  ],
+  "en": [
+   "Night sky",
+   "A cinematic video background, big serif type, glass buttons."
+  ]
+ },
+ {
+  "slug": "ai-workers",
+  "v": "ai",
+  "ru": [
+   "ИИ-работники",
+   "Лес во весь экран, стеклянное меню и карточки поверх видео."
+  ],
+  "en": [
+   "AI workers",
+   "A full-screen forest video with a glass menu and cards on top."
+  ]
+ }
+]

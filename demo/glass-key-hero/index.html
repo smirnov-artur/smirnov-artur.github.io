@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. — Foundation of the new digital epoch</title>
+<!-- Один файл вместо React + Tailwind v4 + Motion + lucide-react: появление и наведение — CSS. ?lang=ru — русская версия (у Outfit нет кириллицы, по-русски заголовок набран Manrope).
+     Бегущая строка вместо логотипов чужих компаний несёт то, что делает g.a.d.:
+     под нашим логотипом чужие логотипы читались бы как наши клиенты. Карточки, градиенты и наведение — как в промпте. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--font-sans:'Inter',ui-sans-serif,system-ui,sans-serif;--font-display:'Outfit',ui-sans-serif,system-ui,sans-serif}
+.ru{--font-display:'Manrope',ui-sans-serif,system-ui,sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:#f9fafb;font-family:var(--font-sans);color:#0a1b33;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.page{padding:16px 16px 40px}
+
+/* карточка героя */
+.hero{position:relative;width:100%;max-width:1400px;margin:0 auto;border-radius:48px;background:#fff;border:1px solid rgba(226,232,240,.5);
+  box-shadow:0 40px 100px -20px rgba(0,0,0,.03);overflow:hidden;height:600px;display:flex;flex-direction:column}
+.media{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;user-select:none;-webkit-user-select:none}
+.media video{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.05);transition:transform 1s}
+.copy{position:relative;z-index:20;flex:1;padding:48px 32px 0;display:flex;flex-direction:column;align-items:flex-start;animation:rise .8s cubic-bezier(.22,1,.36,1) both}
+/* на телефоне 42px рвали «Foundation of the» на две строки — там кегль по ширине экрана, с 450px ровно 42px */
+h1{margin:0;font-family:var(--font-display);font-size:clamp(30px,9.3vw,42px);font-weight:500;letter-spacing:-.025em;line-height:1.1;color:#0a1b33}
+.sub{margin:20px 0 0;max-width:27rem;font-family:var(--font-sans);font-size:14px;line-height:1.6;color:#64748b}
+@media (max-width:767px){.sub{text-shadow:0 0 8px #fff,0 0 3px #fff}}   /* на узкой карточке текст ложится на синюю клавишу ролика */
+.contact{margin-top:28px;display:inline-flex;align-items:center;padding:12px 24px;border-radius:9999px;background:#0a152d;color:#fff;font-size:14px;font-weight:500;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.contact:hover{transform:scale(1.05)}
+.contact:active{transform:scale(.95)}
+
+/* плавающее меню внизу */
+.navwrap{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:30}
+.nav{display:flex;align-items:center;background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(40px);backdrop-filter:blur(40px);padding:6px;border-radius:9999px;
+  box-shadow:0 12px 40px rgba(0,0,0,.08);border:1px solid rgba(226,232,240,.4);white-space:nowrap;animation:rise .8s cubic-bezier(.22,1,.36,1) .35s both}
+.mark{width:36px;height:36px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:9999px;background:#fff;border:1px solid #f1f5f9;
+  box-shadow:0 1px 2px 0 rgba(0,0,0,.05);color:#0a1b33}
+.mark svg{width:20px;height:20px;overflow:visible}
+.mark .orb{transform-box:view-box;transform-origin:24px 24px;animation:orbit 7s linear infinite}
+.nav .lnk{padding:8px 14px;font-size:12px;font-weight:600;color:#64748b;transition:color .15s}
+.nav .lnk:hover{color:#0a1b33}
+.touch,.card{background:#fff;border:1px solid rgba(226,232,240,.6);box-shadow:0 1px 2px 0 rgba(0,0,0,.05);border-radius:9999px;transition:all .15s}
+.touch:hover,.card:hover{border-color:#cbd5e1}
+.touch{display:inline-flex;align-items:center;gap:4px;padding:8px 20px;font-size:12px;font-weight:600;color:#0a1b33}
+.touch svg{width:14px;height:14px}
+
+/* бегущая строка */
+.marquee{max-width:1400px;margin:40px auto 0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent)}
+.track{display:flex;width:max-content;animation:marquee 36s linear infinite}
+.marquee:hover .track{animation-play-state:paused}
+.card{position:relative;height:96px;width:160px;flex-shrink:0;margin-right:16px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card .g{position:absolute;inset:0;transform:scale(1.5);opacity:0;transition:transform .5s ease,opacity .5s ease}
+.card:hover .g{transform:scale(1);opacity:1}
+.card span{position:relative;padding:0 14px;text-align:center;font-family:var(--font-display);font-size:15px;font-weight:600;line-height:1.2;color:#0a1b33;transition:color .3s}
+.card:hover span{color:#fff}
+
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes orbit{to{transform:rotate(360deg)}}
+@media (min-width:768px){
+  .page{padding:24px 20px 40px}
+  .copy{padding:64px 64px 0}
+  h1{font-size:56px}
+  .sub{font-size:15px}
+}
+@media (prefers-reduced-motion:reduce){.track,.mark .orb,.copy,.nav{animation:none}}
+</style>
+</head>
+<body>
+<div class="page">
+  <section class="hero">
+    <div class="media">
+      <video autoplay loop muted playsinline src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260505_101331_74f9b798-3f00-4e86-8a01-377aa16ffeaa.mp4"></video>
+    </div>
+    <div class="copy">
+      <h1 data-t="h1">Foundation of the<br>new digital epoch</h1>
+      <p class="sub" data-t="sub">Designing products, powering ecosystems and laying the foundation of a decentralized web for enterprises, builders and communities alike.</p>
+      <a class="contact" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="contact">Contact Us</a>
+    </div>
+    <div class="navwrap">
+      <nav class="nav">
+        <a class="mark" href="#" aria-label="g.a.d.">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19" fill="none" stroke="currentColor" stroke-width="4"/><circle class="orb" cx="24" cy="5" r="4" fill="currentColor"/></svg>
+        </a>
+        <a class="lnk" href="#" data-t="products">Products</a>
+        <a class="lnk" href="#" data-t="docs">Docs</a>
+        <a class="touch" href="https://t.me/smirnovarturr" target="_blank" rel="noopener"><span data-t="touch">Get in touch</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
+      </nav>
+    </div>
+  </section>
+
+  <div class="marquee"><div class="track" id="track"></div></div>
+</div>
+
+<script>
+(() => {
+const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+const ITEMS = [
+  ['Websites', 'Сайты', '#3b82f6', '#1d4ed8'],
+  ['Web apps', 'Веб-сервисы', '#facc15', '#f59e0b'],
+  ['Telegram bots', 'Telegram-боты', '#60a5fa', '#2563eb'],
+  ['AI agents', 'ИИ-агенты', '#a855f7', '#7c3aed'],
+  ['Parsers', 'Парсеры', '#f472b6', '#ef4444'],
+  ['Automations', 'Автоматизации', '#facc15', '#84cc16'],
+  ['Dashboards', 'Дашборды', '#7dd3fc', '#38bdf8'],
+  ['3D & WebGL', '3D и WebGL', '#22d3ee', '#14b8a6']
+];
+if (RU) {
+  const TR = { h1: 'Основа новой<br>цифровой эпохи',
+    sub: 'Проектируем продукты, запускаем экосистемы и строим децентрализованный веб для компаний, разработчиков и сообществ.',
+    contact: 'Связаться', products: 'Продукты', docs: 'Справка', touch: 'Написать' };
+  document.documentElement.lang = 'ru';
+  document.documentElement.classList.add('ru');
+  document.title = 'g.a.d. — основа новой цифровой эпохи';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.innerHTML = t; });
+}
+// список дважды подряд: сдвиг на −50% возвращает строку в начало без шва
+const card = ([en, ru, a, b]) => `<div class="card"><div class="g" style="background:linear-gradient(135deg,${a},${b})"></div><span>${RU ? ru : en}</span></div>`;
+document.getElementById('track').innerHTML = ITEMS.concat(ITEMS).map(card).join('');
+})();
+</script>
+</body>
+</html>
