@@ -1,5 +1,41 @@
 [
  {
+  "slug": "living-grass",
+  "v": "living-grass",
+  "ru": [
+   "Живой луг",
+   "Огромная дуга в густой траве колышется от ветра, курсор приминает вмятину со следом, по небу плывут облака — всё рисует код в реальном времени."
+  ],
+  "en": [
+   "Living grass",
+   "A huge grass-covered arc sways in the wind, the cursor presses a trailing dent, clouds drift across the sky — all drawn live by code."
+  ]
+ },
+ {
+  "slug": "bubble-orb",
+  "v": "bubble-orb",
+  "ru": [
+   "Стеклянный пузырь",
+   "Стеклянный пузырь с радужной плёнкой плывёт над полом с кольцами, курсор тянет и продавливает его, прокрутка заливает экран радугой"
+  ],
+  "en": [
+   "Glass bubble",
+   "A glass bubble with an iridescent film floats over a rippled floor; the cursor pulls and dents it, scrolling floods the screen with rainbow light"
+  ]
+ },
+ {
+  "slug": "crystal-form",
+  "v": "crystal-form",
+  "ru": [
+   "Стеклянные формы",
+   "Стеклянная скульптура с радужной дисперсией рассыпается на осколки и собирается в следующую форму, вокруг медленно ходят орбиты"
+  ],
+  "en": [
+   "Glass forms",
+   "A glass sculpture with rainbow dispersion shatters and reassembles into the next form while orbit rings drift around it"
+  ]
+ },
+ {
   "slug": "planet-jumping",
   "v": "planet",
   "ru": [
