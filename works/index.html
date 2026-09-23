@@ -3,346 +3,448 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>g.a.d. — сайты с видео и 3D</title>
-<meta name="description" content="Сайты с видео, 3D и движением. Живые примеры: откройте любой. Соберу такой для вашего бизнеса.">
+<title>g.a.d. — сайты с видео и 3D, боты и ИИ-агенты</title>
+<meta name="description" content="Сайты с видео и 3D, Telegram-боты и ИИ-агенты. Живые примеры: откройте любой. Соберу такой для вашего бизнеса.">
 <meta property="og:title" content="g.a.d. — сайты с видео и 3D">
-<meta property="og:description" content="Живые примеры сайтов с движением. Соберу такой для вашего бизнеса.">
+<meta property="og:description" content="Живые примеры сайтов с движением, боты и ИИ-агенты. Соберу такой для вашего бизнеса.">
 <meta property="og:image" content="https://smirnov-artur.github.io/works/og.jpg">
 <meta property="og:type" content="website">
-<!-- Портфолио g.a.d.: первый экран по раскладке Galaxy Home (небо, заголовок за домом, стеклянная навигация), ниже стена работ.
-     Русская версия по умолчанию, ?lang=en — английская; ссылки на работы сами берут нужный язык.
-     Превью работ — записи живых страниц (video/zapis60.py), играют только на экране. -->
+<!-- Портфолио g.a.d. в оформлении 3D-портфолио (Артур выбрал 23.09): привет с портретом, ленты работ от прокрутки,
+     «Обо мне» по буквам, услуги, стопка проектов, ниже вся стена работ и контакты.
+     Русская версия по умолчанию (Montserrat), ?lang=en — английская (Kanit); ссылки на работы сами берут нужный язык.
+     Список работ между метками WORKS вписывает stena.py vylozhit. Превью — записи живых страниц, играют только на экране. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
 <style>
-:root{--muted:#B6B8C3;--lav:#BEC7FF;--lime:#D6FF3F;--line:rgba(255,255,255,.12);--ink:#0A0A0C}
-*,*::before,*::after{box-sizing:border-box}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0C0C0C}
 html{scroll-behavior:smooth}
-body{margin:0;background:#000;color:#fff;font-family:'Inter Tight',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-body.lock{overflow:hidden}
+body{font-family:'Montserrat',sans-serif;color:#D7E2EA;-webkit-font-smoothing:antialiased}
+.en body{font-family:'Kanit',sans-serif}
+main{background:#0C0C0C;overflow-x:clip}
 a{color:inherit;text-decoration:none}
-button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+img,video{display:block}
+.hero-heading{background:linear-gradient(180deg,#646973 0%,#BBCCD7 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 
-/* навигация */
-.hdr{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;justify-content:center;padding:16px 16px 0;pointer-events:none}
-.pill{pointer-events:auto;display:flex;align-items:center;gap:16px;border-radius:9999px;background:rgba(49,45,124,.4);
-  -webkit-backdrop-filter:blur(15px);backdrop-filter:blur(15px);padding:12px 16px}
-.brand{display:block;color:#fff}
-.brand svg{display:block;height:24px;width:auto;overflow:visible}
-.ring{animation:draw 1.1s cubic-bezier(.65,0,.35,1) .4s forwards}
-.orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:pop .3s ease 1.4s forwards,orbit 7s linear 1.4s infinite}
-@keyframes draw{to{stroke-dashoffset:0}}
-@keyframes pop{to{opacity:1}}
-@keyframes orbit{to{transform:rotate(360deg)}}
-.links{display:none;gap:24px;list-style:none;margin:0;padding:0}
-.links a{color:var(--muted);transition:color .3s;font-size:15px}
-.links a:hover{color:#fff}
-.lang{font-size:13px;color:var(--muted);border:1px solid rgba(255,255,255,.25);border-radius:9999px;padding:4px 10px;transition:color .3s,border-color .3s}
-.lang:hover{color:#fff;border-color:#fff}
-.cta{display:none;border-radius:9999px;border:1px solid rgba(255,255,255,.8);padding:8px 24px;font-size:15px;font-weight:500;white-space:nowrap;
-  color:rgba(39,28,64,.85);filter:drop-shadow(0 1px 1px rgba(0,0,0,.05));transition:transform .3s;
-  background:linear-gradient(180deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.1) 76%),radial-gradient(ellipse at 50% 100%,rgba(255,255,255,.7) 0%,transparent 100%),var(--lav)}
-.cta:hover{transform:scale(1.05)}
-.burger{position:relative;width:36px;height:36px;flex:none}
-.burger i{position:absolute;left:8px;width:20px;height:2px;border-radius:2px;background:#fff;transition:transform .3s,top .3s,opacity .3s}
-.burger i:nth-child(1){top:10px}.burger i:nth-child(2){top:17px}.burger i:nth-child(3){top:24px}
-.burger.open i:nth-child(1){top:17px;transform:rotate(45deg)}
-.burger.open i:nth-child(2){opacity:0;transform:scale(0)}
-.burger.open i:nth-child(3){top:17px;transform:rotate(-45deg)}
-.mm{position:fixed;inset:0;z-index:55;background:rgba(2,3,25,.95);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
-.mm.open{opacity:1;visibility:visible;transition:opacity .35s}
-.mm a{font-size:30px;font-weight:500;color:rgba(255,255,255,.9)}
-.mm .cta{display:inline-block;margin-top:12px;font-size:17px;color:rgba(39,28,64,.85)}
-.mm > *{opacity:0;transform:translateY(20px);filter:blur(4px);transition:opacity .35s,transform .35s,filter .35s}
-.mm.open > *{opacity:1;transform:none;filter:blur(0)}
+/* появление */
+.fade{opacity:0;transition-property:opacity,transform;transition-timing-function:cubic-bezier(.25,.1,.25,1)}
+.fade.in{opacity:1;transform:none!important}
 
-/* первый экран */
-.hero{position:relative;z-index:10;height:100vh;height:100svh;min-height:540px;width:100%;overflow:hidden;background:#6f73d8}
-.layer{position:absolute;inset:0;will-change:transform}
-.layer img{display:block;width:100%;height:120%;object-fit:cover;animation:drift 24s ease-in-out infinite alternate}
-@keyframes drift{from{transform:scale(1.07) translate3d(-1.2%,.6%,0)}to{transform:scale(1) translate3d(.8%,-.8%,0)}}
-.sky{z-index:0}.front{z-index:30;pointer-events:none}
-.mist{position:absolute;left:-20%;right:-20%;bottom:-8%;height:46%;z-index:5;pointer-events:none;opacity:.55;
-  background:radial-gradient(40% 60% at 30% 70%,rgba(255,214,245,.55),transparent 70%),radial-gradient(45% 55% at 75% 80%,rgba(200,205,255,.5),transparent 70%);
-  filter:blur(18px);animation:mist 26s ease-in-out infinite alternate}
-@keyframes mist{from{transform:translate3d(-6%,0,0)}to{transform:translate3d(6%,-3%,0)}}
-.title{position:absolute;inset:0;z-index:10;display:flex;align-items:flex-start;justify-content:center;padding-top:11vh;will-change:transform}
-.title h1{margin:0;white-space:nowrap;text-align:center;font-size:15.5vw;font-weight:600;line-height:1;letter-spacing:-.02em;
-  background-image:linear-gradient(to bottom,#A8B4FF,#FFFFFF);-webkit-background-clip:text;background-clip:text;color:transparent;mix-blend-mode:lighten;
-  animation:rise 1.4s cubic-bezier(.2,.8,.2,1) .2s both}
-@keyframes rise{from{opacity:0;transform:translateY(40px);filter:blur(12px)}to{opacity:1;transform:none;filter:blur(0)}}
-.sub{display:none;position:absolute;top:320px;z-index:20;mix-blend-mode:overlay;font-size:22px;line-height:24px;font-weight:500;animation:rise 1.2s cubic-bezier(.2,.8,.2,1) .7s both}
-.sub.l{left:48px;color:rgba(255,255,255,.7)}
-.sub.r{right:48px;color:#fff;text-align:right}
-/* на телефоне дом закрывает середину: заголовок выше крыши, подпись под ним */
-.msub{position:absolute;left:0;right:0;top:calc(11vh + 15.5vw + 12px);z-index:20;text-align:center;font-size:16px;font-weight:500;color:#fff;text-shadow:0 1px 14px rgba(40,30,120,.75);animation:rise 1.2s cubic-bezier(.2,.8,.2,1) .7s both}
-.hint{position:absolute;left:50%;bottom:28px;z-index:40;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;
-  font-size:14px;font-weight:500;color:#fff;text-shadow:0 1px 12px rgba(40,30,120,.6);animation:rise 1s ease 1.2s both}
-.hint svg{width:18px;height:18px;animation:bob 1.8s ease-in-out infinite}
-@keyframes bob{50%{transform:translateY(5px)}}
+/* логотип */
+.gad{display:block;color:#D7E2EA}
+.gad svg{display:block;height:20px;width:auto;overflow:visible}
+.gad svg text{font-family:'Unbounded',sans-serif}
+.gad .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}
+.gad .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}
+@keyframes gad-draw{to{stroke-dashoffset:0}}
+@keyframes gad-pop{to{opacity:1}}
+@keyframes gad-orbit{to{transform:rotate(360deg)}}
 
-/* работы */
-.works{position:relative;background:linear-gradient(#020319,#07071a 30%,var(--ink));padding:110px 20px 70px}
-.wrap{max-width:1240px;margin:0 auto}
-.kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);font-weight:500}
-h2{margin:12px 0 16px;font-size:clamp(40px,6vw,84px);line-height:1;font-weight:600;letter-spacing:-.03em}
-.lead{margin:0;max-width:660px;color:var(--muted);font-size:18px;line-height:1.5}
-.shelf{margin-top:56px}
-.shelf h3{margin:0 0 16px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500}
-.grid{display:grid;grid-template-columns:1fr;gap:20px}
-.card{display:block;border-radius:20px;overflow:hidden;background:#101018;border:1px solid var(--line);transition:transform .4s cubic-bezier(.2,.8,.2,1),border-color .3s}
-.card:hover{transform:translateY(-4px);border-color:rgba(214,255,63,.6)}
-.media{position:relative;aspect-ratio:16/9;background:#0b0b12 center/cover no-repeat}
+/* кнопки */
+.cbtn{display:inline-block;border-radius:9999px;background:linear-gradient(123deg,#18011F 7%,#B600A8 37%,#7621B0 72%,#BE4C00 100%);
+  box-shadow:0 4px 4px rgba(181,1,167,.25),4px 4px 12px #7721B1 inset;outline:2px solid #fff;outline-offset:-3px;
+  color:#fff;font-weight:500;text-transform:uppercase;letter-spacing:.1em;padding:12px 32px;font-size:12px;line-height:16px;white-space:nowrap}
+.live{display:inline-block;border-radius:9999px;border:2px solid #D7E2EA;color:#D7E2EA;font-weight:500;text-transform:uppercase;letter-spacing:.1em;
+  padding:12px 32px;font-size:14px;line-height:20px;white-space:nowrap;transition:background-color .2s}
+.live:hover{background:rgba(215,226,234,.1)}
+
+/* 1. первый экран */
+.hero{position:relative;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow-x:clip}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:24px 24px 0;position:relative;z-index:20}
+.nav>a:not(.gad){color:#D7E2EA;font-weight:500;text-transform:uppercase;letter-spacing:.05em;font-size:14px;line-height:20px;transition:opacity .2s;white-space:nowrap}
+@media (max-width:639px){.nav{gap:8px}.nav>a:not(.gad){font-size:11px;letter-spacing:.02em}.gad svg{height:17px}}
+.nav>a:not(.gad):hover{opacity:.7}
+.hwrap{overflow:hidden;width:100%;margin-top:24px}
+.hh{font-weight:900;text-transform:uppercase;letter-spacing:-.025em;line-height:1;white-space:nowrap;width:100%;text-align:center;font-size:14vw}
+.hh .b{text-transform:none}
+.bar{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;padding:0 24px 28px;position:relative;z-index:20}
+.lead{color:#D7E2EA;font-weight:300;text-transform:uppercase;letter-spacing:.025em;line-height:1.375;font-size:clamp(.75rem,1.4vw,1.5rem);max-width:170px}
+.lng{display:inline-block;margin-top:12px;font-size:12px;font-weight:500;letter-spacing:.1em;border:1px solid rgba(215,226,234,.45);border-radius:9999px;padding:4px 12px;transition:background-color .2s}
+.lng:hover{background:rgba(215,226,234,.1)}
+.portrait{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10;width:280px;pointer-events:none}
+.magnet{will-change:transform}
+.portrait img{width:100%;height:auto}
+
+/* 2. ленты работ */
+.marquee{background:#0C0C0C;padding:96px 0 40px;display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:12px;width:max-content;will-change:transform}
+.row a{position:relative;flex:none;width:260px;height:146px;border-radius:16px;overflow:hidden;background:#151515 center/cover no-repeat}
+.row video{width:100%;height:100%;object-fit:cover}
+.row span{position:absolute;left:12px;right:12px;bottom:10px;font-size:12px;font-weight:500;color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.9);opacity:0;transition:opacity .3s}
+.row a:hover span{opacity:1}
+@media (hover:none){.row span{opacity:1}}
+
+/* 3. обо мне */
+.about{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:64px}
+.deco{position:absolute;height:auto}
+.d1{top:4%;left:1%;width:120px}
+.d2{bottom:8%;left:3%;width:100px}
+.d3{top:4%;right:1%;width:120px}
+.d4{bottom:8%;right:3%;width:130px}
+.atxt{display:flex;flex-direction:column;align-items:center;gap:40px;position:relative;z-index:1}
+.big{font-weight:900;text-transform:uppercase;line-height:1;letter-spacing:-.025em;text-align:center;font-size:clamp(2.6rem,11vw,150px)}
+.anim{color:#D7E2EA;font-weight:500;text-align:center;line-height:1.625;max-width:620px;font-size:clamp(1rem,2vw,1.3rem)}
+.anim .w{display:inline-block;white-space:nowrap}
+.anim .c{opacity:.2}
+
+/* 4. услуги */
+.services{background:#fff;color:#0C0C0C;border-radius:40px 40px 0 0;padding:80px 20px 120px}
+.services .big{color:#0C0C0C;margin-bottom:64px}
+.slist{max-width:64rem;margin:0 auto}
+.sitem{display:flex;align-items:center;gap:clamp(1.25rem,4vw,4rem);padding:32px 0;border-top:1px solid rgba(12,12,12,.15)}
+.sitem:last-child{border-bottom:1px solid rgba(12,12,12,.15)}
+.snum{font-weight:900;line-height:1;font-size:clamp(3rem,10vw,140px);color:#0C0C0C;flex:none;letter-spacing:-.025em}
+.sname{font-weight:500;text-transform:uppercase;font-size:clamp(1rem,2.2vw,2.1rem);line-height:1.2}
+.sdesc{font-weight:300;line-height:1.625;max-width:42rem;font-size:clamp(.85rem,1.6vw,1.2rem);opacity:.65;margin-top:8px}
+.snote{max-width:64rem;margin:40px auto 0;font-weight:300;line-height:1.6;opacity:.6;font-size:clamp(.85rem,1.4vw,1.05rem)}
+
+/* 5. проекты: стопка */
+.projects{position:relative;z-index:10;background:#0C0C0C;border-radius:40px 40px 0 0;margin-top:-40px;padding:80px 20px 60px}
+.projects .big{margin-bottom:48px}
+.pwrap{height:85vh;position:sticky;top:96px}
+.pcard{position:relative;border-radius:40px;border:2px solid #D7E2EA;background:#0C0C0C;padding:16px;transform-origin:50% 0;will-change:transform}
+.ptop{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;margin-bottom:16px}
+.pnum{font-weight:900;line-height:1;font-size:clamp(3rem,10vw,140px);letter-spacing:-.025em}
+.pmeta{flex:1 1 170px;min-width:0}
+.pcat{display:block;text-transform:uppercase;letter-spacing:.1em;font-size:clamp(.7rem,1vw,.9rem);opacity:.6;font-weight:300}
+.pname{font-weight:500;text-transform:uppercase;font-size:clamp(1rem,2.2vw,2.1rem);line-height:1.2}
+.pimgs{display:flex;gap:12px}
+.pc1{width:40%;display:flex;flex-direction:column;gap:12px}
+.pc2{width:60%}
+.pimgs a{display:block;position:relative;overflow:hidden;border-radius:40px;background:#151515 center/cover no-repeat}
+.pimgs video{width:100%;height:100%;object-fit:cover}
+.pimgs .i1{height:clamp(130px,16vw,230px)}
+.pimgs .i2{height:clamp(160px,22vw,340px)}
+.pc2 a,.pimgs.one a{height:calc(clamp(130px,16vw,230px) + clamp(160px,22vw,340px) + 12px)}
+.pimgs.one a{width:100%}
+
+/* 6. вся стена */
+.wall{background:#0C0C0C;padding:60px 20px 40px}
+.wall .big{margin-bottom:20px}
+.cnt{font-size:.32em;vertical-align:super;letter-spacing:0;margin-left:.2em}
+.wlead{max-width:640px;margin:0 auto 44px;text-align:center;font-weight:300;line-height:1.6;opacity:.75;font-size:clamp(.95rem,1.4vw,1.15rem)}
+.grid{display:grid;grid-template-columns:1fr;gap:20px;max-width:1280px;margin:0 auto}
+.card{display:block;border-radius:28px;overflow:hidden;background:#121212;border:1px solid rgba(215,226,234,.14);transition:transform .4s cubic-bezier(.2,.8,.2,1),border-color .3s}
+.card:hover{transform:translateY(-4px);border-color:rgba(215,226,234,.6)}
+.media{position:relative;aspect-ratio:16/9;background:#151515 center/cover no-repeat}
 .media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.body{padding:18px 20px 22px}
-.tag{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:9999px;border:1px solid var(--line);color:var(--muted)}
-.tag.live{color:var(--ink);background:var(--lime);border-color:var(--lime);font-weight:600}
-.card h4{margin:12px 0 6px;font-size:24px;font-weight:600;letter-spacing:-.02em}
-.card p{margin:0;color:var(--muted);font-size:15px;line-height:1.5}
-.open{margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-weight:500;font-size:15px}
-.open svg,.btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
+.cbody{padding:18px 22px 22px}
+.tag{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:9999px;border:1px solid rgba(215,226,234,.25);opacity:.8}
+.card h4{margin:12px 0 6px;font-size:20px;font-weight:500;text-transform:uppercase;line-height:1.2}
+.card p{font-weight:300;line-height:1.5;opacity:.7;font-size:15px}
+.open{margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-weight:500;font-size:13px;text-transform:uppercase;letter-spacing:.08em}
+.open svg,.cbtn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
 .card:hover .open svg{transform:translate(3px,-3px)}
 .grid .card.more{display:none}
 .grid.all .card.more{display:block}
-.allbtn{display:block;margin:28px auto 0;padding:14px 28px;border-radius:9999px;border:1px solid var(--line);font-size:16px;font-weight:500;transition:border-color .3s}
-.allbtn:hover{border-color:var(--lime)}
+.allwrap{text-align:center;margin-top:36px}
 
-/* как работаю */
-.how{background:var(--ink);padding:60px 20px}
-.steps{display:grid;grid-template-columns:1fr;gap:16px;margin-top:32px}
-.step{border:1px solid var(--line);border-radius:20px;padding:28px}
-.step b{font-size:14px;color:var(--lime);font-weight:600}
-.step h4{margin:10px 0 8px;font-size:22px;font-weight:600;letter-spacing:-.02em}
-.step p{margin:0;color:var(--muted);line-height:1.5}
+/* 7. контакты */
+.contact{padding:100px 20px 120px;text-align:center}
+.clead{max-width:560px;margin:28px auto 0;font-weight:300;line-height:1.6;opacity:.8;font-size:clamp(1rem,1.6vw,1.2rem)}
+.btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:44px}
+.btns .live{font-size:13px;text-transform:none;letter-spacing:.04em}
+footer{border-top:1px solid rgba(215,226,234,.12);padding:24px 20px;font-size:13px;opacity:.6;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 
-/* контакты */
-.contact{background:var(--ink);padding:70px 20px 110px;text-align:center}
-.contact .lead{margin:0 auto}
-.btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:32px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:16px 28px;border-radius:9999px;font-weight:500;font-size:16px;border:1px solid var(--line);transition:transform .3s,border-color .3s}
-.btn:hover{transform:translateY(-2px);border-color:#fff}
-.btn.main{background:var(--lime);color:var(--ink);border-color:var(--lime)}
-footer{background:var(--ink);border-top:1px solid var(--line);padding:24px 20px;color:#6d6f7a;font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-
-.rv{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
-.rv.in{opacity:1;transform:none}
-
-@media (min-width:760px){
+@media (min-width:640px){
+  .hwrap{margin-top:16px}
+  .hh{font-size:15vw}
+  .bar{padding-bottom:32px}
+  .lead{max-width:230px}
+  .cbtn{padding:14px 40px;font-size:14px;line-height:20px}
+  .live{padding:14px 40px;font-size:16px;line-height:24px}
+  .portrait{top:auto;bottom:0;transform:translateX(-50%);width:360px}
+  .marquee{padding-top:128px}
+  .row a{width:420px;height:236px}
+  .row span{font-size:14px}
+  .about{padding:80px 32px;gap:80px}
+  .atxt{gap:56px}
+  .d1{width:160px;left:2%}.d2{width:140px;left:6%}.d3{width:160px;right:2%}.d4{width:170px;right:6%}
+  .services{border-radius:50px 50px 0 0;padding:96px 32px 140px}
+  .services .big{margin-bottom:80px}
+  .sitem{padding:40px 0}
+  .projects{border-radius:50px 50px 0 0;margin-top:-48px;padding:96px 32px 60px}
+  .pcard{border-radius:50px;padding:24px}
+  .pimgs{gap:16px}.pc1{gap:16px}
+  .pimgs a{border-radius:50px}
+  .pc2 a,.pimgs.one a{height:calc(clamp(130px,16vw,230px) + clamp(160px,22vw,340px) + 16px)}
+  .wall{padding:80px 32px 40px}
   .grid{grid-template-columns:1fr 1fr}
-  .steps{grid-template-columns:repeat(3,1fr)}
-  .works{padding:140px 32px 80px}
-  .how,.contact{padding-left:32px;padding-right:32px}
 }
 @media (min-width:768px){
-  .hdr{padding-top:24px}
-  .pill{gap:32px}
-  .brand svg{height:28px}
-  .links{display:flex}
-  .cta{display:inline-block}
-  .burger,.mm{display:none}
-  .title{padding-top:128px}
-  .title h1{font-size:clamp(3rem,14vw,14rem)}
-  .sub{display:block;top:calc(128px + 14vw + 16px)}
-  .msub{display:none}
-}
-@media (min-width:1000px){
-  .wide{grid-column:1/-1;display:grid;grid-template-columns:1.5fr 1fr}
-  .wide .body{display:flex;flex-direction:column;justify-content:center;padding:40px}
-  .wide h4{font-size:34px}
-  .wide p{font-size:17px}
+  .nav{padding:32px 40px 0}
+  .nav>a:not(.gad){font-size:18px;line-height:28px}
+  .gad svg{height:26px}
+  .hwrap{margin-top:-20px}
+  .hh{font-size:16vw}
+  .bar{padding:0 40px 40px}
+  .lead{max-width:270px}
+  .cbtn{padding:16px 48px;font-size:16px;line-height:24px}
+  .portrait{width:440px}
+  .marquee{padding-top:160px}
+  .about{padding:80px 40px;gap:96px}
+  .atxt{gap:64px}
+  .d1{width:210px;left:4%}.d2{width:180px;left:10%}.d3{width:210px;right:4%}.d4{width:220px;right:10%}
+  .services{border-radius:60px 60px 0 0;padding:128px 40px 160px}
+  .services .big{margin-bottom:112px}
+  .sitem{padding:48px 0}
+  .projects{border-radius:60px 60px 0 0;margin-top:-56px;padding:128px 40px 60px}
+  .projects .big{margin-bottom:64px}
+  .pwrap{top:128px}
+  .pcard{border-radius:60px;padding:32px}
+  .pimgs a{border-radius:60px}
+  .wall{padding:100px 40px 40px}
 }
 @media (min-width:1024px){
-  .pill{gap:56px}
-  .title{padding-top:144px}
-  .sub{top:calc(144px + min(14vw, 14rem) + 16px)}
-  .sub.l{left:96px}.sub.r{right:96px}
+  .nav>a:not(.gad){font-size:1.4rem;line-height:1.3}
+  .gad svg{height:30px}
+  .hh{font-size:17.5vw}
+  .portrait{width:520px}
 }
-@media (max-width:999px){.wide{grid-column:1/-1}}
+@media (min-width:1100px){.grid{grid-template-columns:1fr 1fr 1fr}}
 @media (prefers-reduced-motion:reduce){
-  .layer img,.mist,.hint svg{animation:none}
-  .title h1,.sub,.msub,.hint{animation:none}
-  .ring{animation:none;stroke-dashoffset:0}.orb{animation:none;opacity:1}
-  .rv{opacity:1;transform:none;transition:none}
+  html{scroll-behavior:auto}
+  .fade{transition:none}
+  .gad .ring{animation:none;stroke-dashoffset:0}.gad .orb{animation:none;opacity:1}
 }
 </style>
 </head>
 <body>
-<header class="hdr">
-  <nav class="pill" aria-label="Меню">
-    <a class="brand" href="#top" aria-label="g.a.d.">
-      <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
-        <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
-        <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
-        <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
-      </svg>
-    </a>
-    <ul class="links">
-      <li><a href="#works" data-t="nWorks">Работы</a></li>
-      <li><a href="#how" data-t="nHow">Как работаю</a></li>
-      <li><a href="#contact" data-t="nContact">Контакты</a></li>
-    </ul>
-    <a class="lang" id="lang" href="?lang=en">EN</a>
-    <a class="cta" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="write">Написать</a>
-    <button class="burger" id="burger" type="button" aria-label="Меню"><i></i><i></i><i></i></button>
-  </nav>
-</header>
-
-<div class="mm" id="mm">
-  <a href="#works" data-t="nWorks">Работы</a>
-  <a href="#how" data-t="nHow">Как работаю</a>
-  <a href="#contact" data-t="nContact">Контакты</a>
-  <a class="cta" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="write">Написать</a>
-</div>
-
-<section class="hero" id="top">
-  <div class="layer sky"><img src="sky.webp" alt=""></div>
-  <div class="mist"></div>
-  <div class="title" id="title"><h1>g.a.d.&nbsp;&nbsp;studio</h1></div>
-  <div class="sub l" data-t="subL">Сайты с видео и 3D</div>
-  <div class="sub r" data-t="subR">Соберу такой для вашего бизнеса</div>
-  <div class="msub" data-t="subL">Сайты с видео и 3D</div>
-  <div class="layer front"><img src="house.webp" alt=""></div>
-  <a class="hint" href="#works"><span data-t="hint">Работы</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></a>
-</section>
-
-<section class="works" id="works">
-  <div class="wrap">
-    <div class="kicker rv" data-t="kWorks">Работы</div>
-    <h2 class="rv" data-t="hWorks">Сайты, которые двигаются</h2>
-    <p class="lead rv" data-t="lWorks">Всё ниже — живые страницы: откройте любую, всё двигается и работает, есть русская и английская версии. Концепты показывают стиль — соберу такой под ваш бизнес, с вашими фото и видео.</p>
-
-    <div class="shelf">
-      <h3 class="rv" data-t="shProduct">Мой продукт</h3>
-      <div class="grid">
-        <a class="card wide rv" href="https://gad-production.ru/" target="_blank" rel="noopener">
-          <div class="media" style="background-image:url(v/seller.jpg)"><video muted loop playsinline preload="none" poster="v/seller.jpg" data-src="v/seller.mp4"></video></div>
-          <div class="body">
-            <span class="tag live" data-t="tLive">Работает</span>
-            <h4 data-t="sellerH">ИИ-продавец для Авито</h4>
-            <p data-t="sellerP">Отвечает покупателям в чатах Авито за вас. Спорное — торг, скидку, звонок — присылает в Telegram: решаете одной кнопкой.</p>
-            <span class="open"><span data-t="openSite">Открыть сайт</span><svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg></span>
-          </div>
-        </a>
-      </div>
+<main>
+  <section class="hero" id="top">
+    <nav class="nav fade" data-y="-20" data-d="0">
+      <a href="#projects" data-t="n1">Работы</a>
+      <a href="#services" data-t="n2">Услуги</a>
+      <a class="gad" href="#top" aria-label="g.a.d.">
+        <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+          <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+          <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+          <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+        </svg>
+      </a>
+      <a href="#about" data-t="n3">Обо мне</a>
+      <a href="#contact" data-t="n4">Контакты</a>
+    </nav>
+    <div class="hwrap"><h1 class="hero-heading hh fade" id="hh" data-y="40" data-d=".15"><span data-t="hi">Привет, я</span> <span class="b">g.a.d.</span></h1></div>
+    <div class="bar">
+      <div class="fade" data-y="20" data-d=".35"><p class="lead" data-t="lead">Сайты с видео и 3D, боты и ИИ-агенты для бизнеса</p><a class="lng" id="lng" href="?lang=en">EN</a></div>
+      <div class="fade" data-y="20" data-d=".5"><a class="cbtn" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="cta">Написать мне</a></div>
     </div>
+    <div class="portrait"><div class="fade" id="pfade" data-y="30" data-d=".6"><div class="magnet" id="magnet"><img src="portrait.webp" alt="" width="1450" height="1570"></div></div></div>
+  </section>
 
-    <div class="shelf">
-      <h3 class="rv" data-t="shConcepts">Концепты сайтов</h3>
-      <div class="grid" id="concepts"></div>
-    </div>
-  </div>
-</section>
+  <section class="marquee" id="marquee" aria-label="Работы">
+    <div class="row" id="r1"></div>
+    <div class="row" id="r2"></div>
+  </section>
 
-<section class="how" id="how">
-  <div class="wrap">
-    <div class="kicker rv" data-t="kHow">Как работаю</div>
-    <h2 class="rv" data-t="hHow">Три шага до сайта</h2>
-    <div class="steps">
-      <div class="step rv"><b>01</b><h4 data-t="s1h">Выбираете стиль</h4><p data-t="s1p">Со стены выше или присылаете сайт, который нравится.</p></div>
-      <div class="step rv"><b>02</b><h4 data-t="s2h">Собираю под вас</h4><p data-t="s2p">Ваши тексты, фото и видео, версии для телефона и компьютера, русский и английский.</p></div>
-      <div class="step rv"><b>03</b><h4 data-t="s3h">Запускаю</h4><p data-t="s3p">На вашем домене, заявки с сайта приходят вам в Telegram.</p></div>
+  <section class="about" id="about">
+    <img class="deco d1 fade" data-x="-80" data-y="0" data-d=".1" data-dur=".9" alt="" src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/moon_icon.11395d36.png">
+    <img class="deco d2 fade" data-x="-80" data-y="0" data-d=".25" data-dur=".9" alt="" src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/p59_1.4659672e.png">
+    <img class="deco d3 fade" data-x="80" data-y="0" data-d=".15" data-dur=".9" alt="" src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/lego_icon-1.703bb594.png">
+    <img class="deco d4 fade" data-x="80" data-y="0" data-d=".3" data-dur=".9" alt="" src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/Group_134-1.2e04f3ce.png">
+    <div class="atxt">
+      <h2 class="hero-heading big fade" data-y="40" data-t="about">Обо мне</h2>
+      <p class="anim" id="anim" data-t="atext">Меня зовут Артур. 4,5 года писал на Go платёжную инфраструктуру в Циан, Домклик и ЮMoney: там ошибка сразу стоит денег, поэтому я проверяю всё до запуска, а не после. Под знаком g.a.d. собираю сайты с видео и 3D, ботов и ИИ-агентов. Менеджеров нет: вы пишете мне — отвечаю я.</p>
     </div>
-  </div>
-</section>
+    <div class="fade"><a class="cbtn" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="cta">Написать мне</a></div>
+  </section>
 
-<section class="contact" id="contact">
-  <div class="wrap">
-    <h2 class="rv" data-t="hContact">Нужен такой сайт?</h2>
-    <p class="lead rv" data-t="lContact">Напишите, какой пример понравился и чем занимаетесь, — отвечу, как собрать его под вас.</p>
-    <div class="btns rv">
-      <a class="btn main" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Telegram <svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg></a>
-      <a class="btn" href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a>
-      <a class="btn" href="mailto:paladei702@gmail.com">paladei702@gmail.com</a>
+  <section class="services" id="services">
+    <h2 class="big fade" data-t="serv">Услуги</h2>
+    <div class="slist" id="slist"></div>
+    <p class="snote fade" data-t="snote">Цену называю после пары вопросов по задаче и показываю, из чего она сложилась. Предоплата 50 %, остаток после приёмки.</p>
+  </section>
+
+  <section class="projects" id="projects">
+    <h2 class="hero-heading big fade" data-t="proj">Проекты</h2>
+    <div class="plist" id="plist"></div>
+  </section>
+
+  <section class="wall" id="all">
+    <h2 class="hero-heading big fade" id="wallh" data-t="wall">Все работы</h2>
+    <p class="wlead fade" data-t="wlead">Всё ниже — живые страницы: откройте любую, всё двигается и работает, есть русская и английская версии. Концепты показывают стиль — соберу такой под ваш бизнес, с вашими фото и видео.</p>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="contact" id="contact">
+    <h2 class="hero-heading big fade" data-t="hc">Нужен такой сайт?</h2>
+    <p class="clead fade" data-t="lc">Напишите, какой пример понравился и чем занимаетесь, — отвечу, как собрать его под вас.</p>
+    <div class="btns fade">
+      <a class="cbtn" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Telegram</a>
+      <a class="live" href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a>
+      <a class="live" href="mailto:paladei702@gmail.com">paladei702@gmail.com</a>
     </div>
-  </div>
-</section>
-<footer><span>g.a.d. © 2026</span><span>t.me/smirnovarturr</span></footer>
+  </section>
+  <footer><span>g.a.d. © 2026</span><span>t.me/smirnovarturr</span></footer>
+</main>
 
 <script>
 (() => {
 const EN = new URLSearchParams(location.search).get('lang') === 'en';
-const WORKS = /*WORKS*/[{"slug": "planet-jumping", "v": "planet", "ru": ["Прыжки по планетам", "Портал к следующей планете: нажали — и перелёт Марс → Земля → Венера."], "en": ["Planet Jumping", "A portal to the next planet: click and fly Mars → Earth → Venus."]}, {"slug": "archive", "v": "archive", "ru": ["Архив одежды", "Модель поворачивается за курсором, ниже архив вылетает карточками."], "en": ["Fashion archive", "The model turns with your cursor; below, the archive pops in card by card."]}, {"slug": "figurines", "v": "figurines", "ru": ["3D-фигурки", "Карусель героев: цвет, размер и резкость меняются вместе."], "en": ["3D figurines", "A character carousel: color, scale and focus change together."]}, {"slug": "visuals", "v": "visuals", "ru": ["Визуал", "Под курсором проявляется вторая картинка — герой загорается."], "en": ["Visuals", "A second image shows through under the cursor — the hero catches fire."]}, {"slug": "dreams", "v": "dreams", "ru": ["Ночное небо", "Кино на фоне, крупный шрифт с засечками, стеклянные кнопки."], "en": ["Night sky", "A cinematic video background, big serif type, glass buttons."]}, {"slug": "ai-workers", "v": "ai", "ru": ["ИИ-работники", "Лес во весь экран, стеклянное меню и карточки поверх видео."], "en": ["AI workers", "A full-screen forest video with a glass menu and cards on top."]}, {"slug": "store-builder", "v": "store-builder", "ru": ["Конструктор магазинов", "3D-колесо из 37 витрин крутится за макетом магазина, заголовок проявляется снизу вверх"], "en": ["Store builder", "A 3D wheel of 37 store creatives spins behind a live shop mock while the headline wipes up"]}, {"slug": "fox-404", "v": "fox-404", "ru": ["Страница 404 с лисой", "Лиса в кепке листает телефон на фоне дышащих цифр 404"], "en": ["Fox 404 page", "A fox in a cap scrolls its phone over a breathing 404"]}, {"slug": "private-jets", "v": "private-jets", "ru": ["Частные самолёты", "Чёрный джет летит сквозь облака за крупным типографским заголовком"], "en": ["Private jets", "A black jet flies through clouds behind a bold typographic hero"]}, {"slug": "defi-node-grid", "v": "defi-node-grid", "ru": ["Живые активы", "Медузы в видео под сеткой, которая прорисовывается сама, а узлы и линии появляются по очереди"], "en": ["Liquid Assets", "Jellyfish video under a self-drawing grid, with nodes and connectors appearing one by one"]}, {"slug": "pixel-portfolio", "v": "pixel-portfolio", "ru": ["Пиксельное портфолио", "Видеопортрет крутится по кругу за заголовком из пиксельных слов"], "en": ["Pixel portfolio", "Looping video portrait behind a headline set in pixel type"]}, {"slug": "portrait-marquee", "v": "portrait-marquee", "ru": ["Портрет и бегущая строка", "Огромная надпись бежит строкой за вырезанным портретом"], "en": ["Portrait marquee", "A giant name scrolls behind a cut-out portrait"]}, {"slug": "fluted-glass-studio", "v": "fluted-glass-studio", "ru": ["Студия за рифлёным стеклом", "Оранжевая жидкость тянется за курсором сквозь рифлёное стекло"], "en": ["Fluted glass studio", "Orange liquid trails the cursor through fluted glass"]}, {"slug": "city-scroll-story", "v": "city-scroll-story", "ru": ["Мостар на прокрутке", "Старый мост расходится шторкой в кадр реки, панели истории всплывают сквозь голубую дымку, прилетает лента карточек — всё само, пока не листаешь."], "en": ["Mostar scroll story", "The old bridge parts like a curtain into a river close-up, story panels fade through blue haze and sight cards fly in, playing by itself until you scroll."]}, {"slug": "dot-matrix-ai", "v": "dot-matrix-ai", "ru": ["ИИ-лендинг с точечным шрифтом", "Точечный код мерцает над светящимися фиолетовыми дюнами, заголовок проявляется по строкам, четыре цифры отсчитываются вверх."], "en": ["Dot-matrix AI landing", "Dot-matrix code shimmers above glowing purple dunes while the headline fades in line by line and four metrics count up."]}, {"slug": "ai-trip-planner", "v": "ai-trip-planner", "ru": ["ИИ-планировщик поездок", "Нарисованные чудеса света оживают под стеклянной карточкой с готовым запросом на поездку."], "en": ["AI trip planner", "Hand-drawn world landmarks come alive under a frosted-glass card holding a ready trip request."]}, {"slug": "aquarium-studio", "v": "aquarium-studio", "ru": ["Студия визуальных историй", "Золотые рыбки плывут в столбе света в тёмном аквариуме, бейдж, заголовок, текст и кнопка поднимаются по очереди."], "en": ["Visual storytelling studio", "Goldfish swim through a shaft of light in a dark tank while the badge, headline, text and button rise in one after another."]}, {"slug": "data-platform", "v": "data-platform", "ru": ["Платформа данных", "Шторм на видео, а график выручки вырастает столбик за столбиком"], "en": ["Data platform", "A stormy sea video while the revenue chart grows bar by bar"]}, {"slug": "studio-portraits", "v": "studio-portraits", "ru": ["Портреты студии", "Портреты сменяют друг друга и медленно приближаются, лента аватаров их переключает"], "en": ["Studio portraits", "Portraits cross-fade and slowly zoom in, the avatar row switches between them"]}, {"slug": "pet-store", "v": "pet-store", "ru": ["Зоомагазин", "Слова заголовка выпрыгивают, питомцы выглядывают из-за плашек"], "en": ["Pet store", "Headline words pop in while pets peek over the panels"]}, {"slug": "wellness-glass", "v": "wellness-glass", "ru": ["Естественное здоровье", "Стеклянная голова со светящимся мозгом вращается за кнопками из жидкого стекла"], "en": ["Natural wellness", "A glass head with a glowing brain turns behind liquid-glass buttons"]}, {"slug": "3d-ball-store", "v": "3d-ball-store", "ru": ["3D-магазин мячей", "3D-мяч крутится и сам меняет расцветки, влетает в корзину, а на прокрутке проходит шесть сцен: метрики, кольца, подиум, обломки"], "en": ["3D ball store", "A textured 3D ball spins and cycles colourways, flies into the cart and travels through six scroll scenes: specs, rings, podium, debris"]}, {"slug": "space-voyages", "v": "space-voyages", "ru": ["Полёты в космос", "Космические ролики по кругу гаснут и загораются, заголовок проявляется по словам сквозь жидкое стекло"], "en": ["Space voyages", "Space videos fade in and out on a loop while the headline blurs in word by word over liquid glass"]}, {"slug": "terrarium-spotlight", "v": "terrarium-spotlight", "ru": ["Террариум под лучом", "Световое пятно бродит по террариуму и проявляет живое видео, сцена плывёт следом, за стеклом стоит огромное G.A.D."], "en": ["Terrarium spotlight", "A light spot wanders across the terrarium revealing live video, the scene drifts after it, a giant G.A.D. stands behind the glass"]}, {"slug": "train-window", "v": "train-window", "ru": ["Окно поезда", "За покачивающимся окном поезда сменяются четыре пейзажа, в «Глухом лесу» текст темнеет"], "en": ["Train window", "Four landscapes roll past a gently rocking train window; in Deep Woods the text turns dark"]}, {"slug": "scroll-bloom", "v": "scroll-bloom", "ru": ["Цветок на прокрутке", "Прокрутка листает ролик с цветком по кадрам, звёзды плывут, три карточки проявляются шторкой."], "en": ["Scroll Bloom", "Scrolling scrubs a glowing flower film frame by frame while stars drift and three cards wipe in."]}, {"slug": "dashboard-signal", "v": "dashboard-signal", "ru": ["Один ясный сигнал", "Заголовок выезжает по строкам, за ним крутится пиксельный цветок, стеклянная карточка демо всплывает последней."], "en": ["One Clear Signal", "The headline slides in line by line over a looping pixel-flower video, and a glass demo card rises last."]}, {"slug": "strata-spotlight", "v": "strata-spotlight", "ru": ["Слои под лупой", "Мягкое пятно само бродит по голой породе и проявляет под ней слой мха и цветов, за курсором и пальцем идёт следом."], "en": ["Strata Spotlight", "A soft spotlight roams bare rock and reveals the mossy, flowering layer beneath; it follows the cursor or finger."]}, {"slug": "data-shield", "v": "data-shield", "ru": ["Щит для данных", "Ночной сноубордист в петле видео за огромными словами «защити свои данные», стоящими лесенкой."], "en": ["Data Shield", "A night snowboarder loops behind the giant staggered words “protect your data”."]}, {"slug": "falcon-login", "v": "falcon-login", "ru": ["Экран входа с соколом", "Сокол пикирует на видео рядом с формой входа: элементы по очереди выезжают при загрузке, раскладка сама перестраивается под планшет и телефон."], "en": ["Falcon login screen", "A looping falcon dive beside a login card: elements rise in one by one on load, and the layout rebuilds itself for tablet and phone."]}, {"slug": "ai-portal", "v": "ai-portal", "ru": ["Лендинг ИИ-платформы", "Видео на весь экран: человек идёт к светящемуся порталу, заголовок выплывает при загрузке, на телефоне меню из матового стекла."], "en": ["AI infrastructure landing", "Full-bleed video of a figure walking into a glowing portal, the headline rises in on load, and phones get a frosted-glass menu."]}, {"slug": "wellness-rainbow", "v": "wellness-rainbow", "ru": ["Студия красоты и заботы", "Земля с орбиты на видео, ниже радуга и облака плавно едут за прокруткой."], "en": ["Wellness studio", "An Earth-from-orbit video hero, then a rainbow and clouds drifting with the scroll in smooth parallax."]}, {"slug": "cyber-flora", "v": "cyber-flora", "ru": ["Кибер-ботаника: история на прокрутке", "Пять экранов прокрутки: кибер-цветок раскрывается и вращается, по пути выплывают стеклянные карточки, манифест и форма подписки."], "en": ["Cyber-botany scroll story", "A five-screen scroll story: a cyber flower opens and turns while glass cards, manifesto lines and a sign-up form float in."]}, {"slug": "monitor-head", "v": "monitor-head", "ru": ["Агент с головой-монитором", "Голова-монитор поворачивается за курсором, ИИ-агент печатает приветствие."], "en": ["Monitor-head agent", "The retro-monitor head turns after the cursor while the AI agent types its greeting."]}, {"slug": "voice-id-signup", "v": "voice-id-signup", "ru": ["Вход по голосу", "За панелью входа переливается стеклянное кольцо, на телефоне меню раскрывается кругом из кнопки."], "en": ["Voice ID sign-up", "A glass ring shimmers behind the sign-up panel, and on phones the menu opens as a circle from the button."]}, {"slug": "llm-platform", "v": "llm-platform", "ru": ["Платформа LLM у озера", "Пейзаж с озером живёт в ролике, меню и заголовок выплывают по очереди."], "en": ["LLM platform by the lake", "A lakeside landscape moves in the video while the menu and headline rise in one by one."]}, {"slug": "glass-key-hero", "v": "glass-key-hero", "ru": ["Стеклянная клавиша", "Стеклянная клавиша сама нажимается и светится, внизу бесконечно бежит лента услуг."], "en": ["Glass key", "A glass key presses itself and glows, while a strip of services scrolls endlessly below."]}, {"slug": "ai-email-client", "v": "ai-email-client", "ru": ["Почтовый клиент с ИИ", "Видео на фоне, переливающийся заголовок и живой макет почты с ИИ-сводкой"], "en": ["AI email client", "Looping video, shimmering headline and a live inbox mockup with an AI summary"]}, {"slug": "ev-inside-out", "v": "ev-inside-out", "ru": ["Электрокар насквозь", "Сам открывает капот и просвечивает батарею; точки меняют цвет кузова, диски и разрезы"], "en": ["Electric car, inside out", "Opens the hood and X-rays the battery on its own; hotspots switch paint, wheels and cutaways"]}, {"slug": "plant-supplements", "v": "plant-supplements", "ru": ["Магазин растительных добавок", "Слова всплывают из размытия, банка покачивается, карточки меняются каждые 3,5 с"], "en": ["Plant supplements store", "Words rise out of blur, the jar floats, benefit cards rotate every 3.5 s"]}, {"slug": "design-studio-hero", "v": "design-studio-hero", "ru": ["Первый экран дизайн-студии", "Видео на весь экран под антиквенным заголовком и анимированное меню"], "en": ["Design studio hero", "Fullscreen video loop under a serif headline, with an animated burger menu"]}, {"slug": "contact-landing", "v": "contact-landing", "ru": ["Лендинг с формой заявки", "Горный луг на видео во весь экран, стеклянное меню и форма заявки с выбором услуг."], "en": ["Contact landing", "Full-screen mountain meadow video behind a glass nav and a project form with service tags."]}, {"slug": "scroll-flight", "v": "scroll-flight", "ru": ["Энергетика: полёт прокруткой", "Прокрутка ведёт камеру от горных вершин сквозь облака к кораблю в море, три надписи сменяют друг друга."], "en": ["Energy: scroll flight", "Scrolling flies the camera from mountain peaks through clouds to a ship at sea as three captions take turns."]}, {"slug": "jungle-train", "v": "jungle-train", "ru": ["Городские джунгли", "Прокрутка ведёт по вагону, заросшему цветами, буквы заголовка осыпаются, снизу выезжает стеклянная панель."], "en": ["Urban jungle", "Scrolling rolls through a flower-filled train car, the headline letters fall away and a glass panel slides up."]}, {"slug": "silver-wave", "v": "silver-wave", "ru": ["ИИ-агенты за минуты", "Серебристая волна из частиц растёт за заголовком, кнопки переливаются жидким металлом."], "en": ["AI agents in minutes", "A silver particle wave swells behind the headline while the buttons shimmer like liquid metal."]}, {"slug": "neural-llama", "v": "neural-llama", "ru": ["Мозг и тело", "Лама в VR-очках поворачивает голову за курсором, заголовок сам расшифровывается по буквам."], "en": ["Brain and Body", "A llama in VR goggles turns its head after the cursor while the headline decodes itself letter by letter."]}, {"slug": "fiber-eye", "v": "fiber-eye", "ru": ["Оптоволоконный глаз", "При прокрутке светящиеся оптические нити собираются в синюю радужку глаза."], "en": ["Fiber-Optic Eye", "Scrolling gathers glowing fiber-optic strands into a blue iris."]}, {"slug": "cube-wall-security", "v": "cube-wall-security", "ru": ["ИИ-безопасность", "Стена из 3D-кубов в Spline: по ней скользит свет и бегут зелёные сигналы."], "en": ["AI Security", "A 3D wall of cubes in Spline: light sweeps across it and green signals run between the blocks."]}, {"slug": "3d-creator-portfolio", "v": "3d-creator-portfolio", "ru": ["3D-портфолио", "Портрет плывёт за курсором, ленты работ едут от прокрутки, карточки проектов складываются стопкой"], "en": ["3D creator portfolio", "Portrait drifts after the cursor, work reels slide with scroll, project cards stack up"]}, {"slug": "cinematic-studio", "v": "cinematic-studio", "ru": ["Киностудия", "Видео в рамке, огромный логотип выезжает снизу, текст проявляется по буквам от прокрутки"], "en": ["Cinematic studio", "Framed hero video, giant logo pulls up, text reveals letter by letter on scroll"]}, {"slug": "cinematic-404", "v": "cinematic-404", "ru": ["Страница 404", "Живой пейзаж с акведуком, поверх огромная стеклянная 404"], "en": ["404 page", "Live aqueduct landscape behind a huge glassy 404"]}]/*/WORKS*/;
-const box = document.getElementById('concepts');
-const FIRST = 12;   // остальные карточки по кнопке: иначе на телефоне стена в десятки экранов
-WORKS.forEach((w, i) => {
-  const [h, p] = EN ? w.en : w.ru;
-  const a = document.createElement('a');
-  a.className = 'card rv' + (i >= FIRST ? ' more' : ''); a.target = '_blank'; a.rel = 'noopener';
-  a.href = '/demo/' + w.slug + '/' + (EN ? '' : '?lang=ru');
-  a.innerHTML = `<div class="media" style="background-image:url(v/${w.v}.jpg)"><video muted loop playsinline preload="none" poster="v/${w.v}.jpg" data-src="v/${w.v}.mp4"></video></div>
-    <div class="body"><span class="tag">${EN ? 'Concept' : 'Концепт'}</span><h4></h4><p></p>
-    <span class="open">${EN ? 'Open' : 'Открыть'}<svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg></span></div>`;
-  a.querySelector('h4').textContent = h; a.querySelector('p').textContent = p;
-  box.appendChild(a);
-});
+const WORKS = /*WORKS*/[{"slug": "planet-jumping", "v": "planet", "ru": ["Прыжки по планетам", "Портал к следующей планете: нажали — и перелёт Марс → Земля → Венера."], "en": ["Planet Jumping", "A portal to the next planet: click and fly Mars → Earth → Venus."]}, {"slug": "archive", "v": "archive", "ru": ["Архив одежды", "Модель поворачивается за курсором, ниже архив вылетает карточками."], "en": ["Fashion archive", "The model turns with your cursor; below, the archive pops in card by card."]}, {"slug": "figurines", "v": "figurines", "ru": ["3D-фигурки", "Карусель героев: цвет, размер и резкость меняются вместе."], "en": ["3D figurines", "A character carousel: color, scale and focus change together."]}, {"slug": "dreams", "v": "dreams", "ru": ["Ночное небо", "Кино на фоне, крупный шрифт с засечками, стеклянные кнопки."], "en": ["Night sky", "A cinematic video background, big serif type, glass buttons."]}, {"slug": "ai-workers", "v": "ai", "ru": ["ИИ-работники", "Лес во весь экран, стеклянное меню и карточки поверх видео."], "en": ["AI workers", "A full-screen forest video with a glass menu and cards on top."]}, {"slug": "store-builder", "v": "store-builder", "ru": ["Конструктор магазинов", "3D-колесо из 37 витрин крутится за макетом магазина, заголовок проявляется снизу вверх"], "en": ["Store builder", "A 3D wheel of 37 store creatives spins behind a live shop mock while the headline wipes up"]}, {"slug": "fox-404", "v": "fox-404", "ru": ["Страница 404 с лисой", "Лиса в кепке листает телефон на фоне дышащих цифр 404"], "en": ["Fox 404 page", "A fox in a cap scrolls its phone over a breathing 404"]}, {"slug": "private-jets", "v": "private-jets", "ru": ["Частные самолёты", "Чёрный джет летит сквозь облака за крупным типографским заголовком"], "en": ["Private jets", "A black jet flies through clouds behind a bold typographic hero"]}, {"slug": "defi-node-grid", "v": "defi-node-grid", "ru": ["Живые активы", "Медузы в видео под сеткой, которая прорисовывается сама, а узлы и линии появляются по очереди"], "en": ["Liquid Assets", "Jellyfish video under a self-drawing grid, with nodes and connectors appearing one by one"]}, {"slug": "city-scroll-story", "v": "city-scroll-story", "ru": ["Мостар на прокрутке", "Старый мост расходится шторкой в кадр реки, панели истории всплывают сквозь голубую дымку, прилетает лента карточек — всё само, пока не листаешь."], "en": ["Mostar scroll story", "The old bridge parts like a curtain into a river close-up, story panels fade through blue haze and sight cards fly in, playing by itself until you scroll."]}, {"slug": "dot-matrix-ai", "v": "dot-matrix-ai", "ru": ["ИИ-лендинг с точечным шрифтом", "Точечный код мерцает над светящимися фиолетовыми дюнами, заголовок проявляется по строкам, четыре цифры отсчитываются вверх."], "en": ["Dot-matrix AI landing", "Dot-matrix code shimmers above glowing purple dunes while the headline fades in line by line and four metrics count up."]}, {"slug": "ai-trip-planner", "v": "ai-trip-planner", "ru": ["ИИ-планировщик поездок", "Нарисованные чудеса света оживают под стеклянной карточкой с готовым запросом на поездку."], "en": ["AI trip planner", "Hand-drawn world landmarks come alive under a frosted-glass card holding a ready trip request."]}, {"slug": "data-platform", "v": "data-platform", "ru": ["Платформа данных", "Шторм на видео, а график выручки вырастает столбик за столбиком"], "en": ["Data platform", "A stormy sea video while the revenue chart grows bar by bar"]}, {"slug": "pet-store", "v": "pet-store", "ru": ["Зоомагазин", "Слова заголовка выпрыгивают, питомцы выглядывают из-за плашек"], "en": ["Pet store", "Headline words pop in while pets peek over the panels"]}, {"slug": "wellness-glass", "v": "wellness-glass", "ru": ["Естественное здоровье", "Стеклянная голова со светящимся мозгом вращается за кнопками из жидкого стекла"], "en": ["Natural wellness", "A glass head with a glowing brain turns behind liquid-glass buttons"]}, {"slug": "3d-ball-store", "v": "3d-ball-store", "ru": ["3D-магазин мячей", "3D-мяч крутится и сам меняет расцветки, влетает в корзину, а на прокрутке проходит шесть сцен: метрики, кольца, подиум, обломки"], "en": ["3D ball store", "A textured 3D ball spins and cycles colourways, flies into the cart and travels through six scroll scenes: specs, rings, podium, debris"]}, {"slug": "space-voyages", "v": "space-voyages", "ru": ["Полёты в космос", "Космические ролики по кругу гаснут и загораются, заголовок проявляется по словам сквозь жидкое стекло"], "en": ["Space voyages", "Space videos fade in and out on a loop while the headline blurs in word by word over liquid glass"]}, {"slug": "terrarium-spotlight", "v": "terrarium-spotlight", "ru": ["Террариум под лучом", "Световое пятно бродит по террариуму и проявляет живое видео, сцена плывёт следом, за стеклом стоит огромное G.A.D."], "en": ["Terrarium spotlight", "A light spot wanders across the terrarium revealing live video, the scene drifts after it, a giant G.A.D. stands behind the glass"]}, {"slug": "train-window", "v": "train-window", "ru": ["Окно поезда", "За покачивающимся окном поезда сменяются четыре пейзажа, в «Глухом лесу» текст темнеет"], "en": ["Train window", "Four landscapes roll past a gently rocking train window; in Deep Woods the text turns dark"]}, {"slug": "scroll-bloom", "v": "scroll-bloom", "ru": ["Цветок на прокрутке", "Прокрутка листает ролик с цветком по кадрам, звёзды плывут, три карточки проявляются шторкой."], "en": ["Scroll Bloom", "Scrolling scrubs a glowing flower film frame by frame while stars drift and three cards wipe in."]}, {"slug": "dashboard-signal", "v": "dashboard-signal", "ru": ["Один ясный сигнал", "Заголовок выезжает по строкам, за ним крутится пиксельный цветок, стеклянная карточка демо всплывает последней."], "en": ["One Clear Signal", "The headline slides in line by line over a looping pixel-flower video, and a glass demo card rises last."]}, {"slug": "strata-spotlight", "v": "strata-spotlight", "ru": ["Слои под лупой", "Мягкое пятно само бродит по голой породе и проявляет под ней слой мха и цветов, за курсором и пальцем идёт следом."], "en": ["Strata Spotlight", "A soft spotlight roams bare rock and reveals the mossy, flowering layer beneath; it follows the cursor or finger."]}, {"slug": "data-shield", "v": "data-shield", "ru": ["Щит для данных", "Ночной сноубордист в петле видео за огромными словами «защити свои данные», стоящими лесенкой."], "en": ["Data Shield", "A night snowboarder loops behind the giant staggered words “protect your data”."]}, {"slug": "falcon-login", "v": "falcon-login", "ru": ["Экран входа с соколом", "Сокол пикирует на видео рядом с формой входа: элементы по очереди выезжают при загрузке, раскладка сама перестраивается под планшет и телефон."], "en": ["Falcon login screen", "A looping falcon dive beside a login card: elements rise in one by one on load, and the layout rebuilds itself for tablet and phone."]}, {"slug": "ai-portal", "v": "ai-portal", "ru": ["Лендинг ИИ-платформы", "Видео на весь экран: человек идёт к светящемуся порталу, заголовок выплывает при загрузке, на телефоне меню из матового стекла."], "en": ["AI infrastructure landing", "Full-bleed video of a figure walking into a glowing portal, the headline rises in on load, and phones get a frosted-glass menu."]}, {"slug": "wellness-rainbow", "v": "wellness-rainbow", "ru": ["Студия красоты и заботы", "Земля с орбиты на видео, ниже радуга и облака плавно едут за прокруткой."], "en": ["Wellness studio", "An Earth-from-orbit video hero, then a rainbow and clouds drifting with the scroll in smooth parallax."]}, {"slug": "cyber-flora", "v": "cyber-flora", "ru": ["Кибер-ботаника: история на прокрутке", "Пять экранов прокрутки: кибер-цветок раскрывается и вращается, по пути выплывают стеклянные карточки, манифест и форма подписки."], "en": ["Cyber-botany scroll story", "A five-screen scroll story: a cyber flower opens and turns while glass cards, manifesto lines and a sign-up form float in."]}, {"slug": "monitor-head", "v": "monitor-head", "ru": ["Агент с головой-монитором", "Голова-монитор поворачивается за курсором, ИИ-агент печатает приветствие."], "en": ["Monitor-head agent", "The retro-monitor head turns after the cursor while the AI agent types its greeting."]}, {"slug": "voice-id-signup", "v": "voice-id-signup", "ru": ["Вход по голосу", "За панелью входа переливается стеклянное кольцо, на телефоне меню раскрывается кругом из кнопки."], "en": ["Voice ID sign-up", "A glass ring shimmers behind the sign-up panel, and on phones the menu opens as a circle from the button."]}, {"slug": "llm-platform", "v": "llm-platform", "ru": ["Платформа LLM у озера", "Пейзаж с озером живёт в ролике, меню и заголовок выплывают по очереди."], "en": ["LLM platform by the lake", "A lakeside landscape moves in the video while the menu and headline rise in one by one."]}, {"slug": "glass-key-hero", "v": "glass-key-hero", "ru": ["Стеклянная клавиша", "Стеклянная клавиша сама нажимается и светится, внизу бесконечно бежит лента услуг."], "en": ["Glass key", "A glass key presses itself and glows, while a strip of services scrolls endlessly below."]}, {"slug": "ai-email-client", "v": "ai-email-client", "ru": ["Почтовый клиент с ИИ", "Видео на фоне, переливающийся заголовок и живой макет почты с ИИ-сводкой"], "en": ["AI email client", "Looping video, shimmering headline and a live inbox mockup with an AI summary"]}, {"slug": "ev-inside-out", "v": "ev-inside-out", "ru": ["Электрокар насквозь", "Сам открывает капот и просвечивает батарею; точки меняют цвет кузова, диски и разрезы"], "en": ["Electric car, inside out", "Opens the hood and X-rays the battery on its own; hotspots switch paint, wheels and cutaways"]}, {"slug": "plant-supplements", "v": "plant-supplements", "ru": ["Магазин растительных добавок", "Слова всплывают из размытия, банка покачивается, карточки меняются каждые 3,5 с"], "en": ["Plant supplements store", "Words rise out of blur, the jar floats, benefit cards rotate every 3.5 s"]}, {"slug": "contact-landing", "v": "contact-landing", "ru": ["Лендинг с формой заявки", "Горный луг на видео во весь экран, стеклянное меню и форма заявки с выбором услуг."], "en": ["Contact landing", "Full-screen mountain meadow video behind a glass nav and a project form with service tags."]}, {"slug": "scroll-flight", "v": "scroll-flight", "ru": ["Энергетика: полёт прокруткой", "Прокрутка ведёт камеру от горных вершин сквозь облака к кораблю в море, три надписи сменяют друг друга."], "en": ["Energy: scroll flight", "Scrolling flies the camera from mountain peaks through clouds to a ship at sea as three captions take turns."]}, {"slug": "jungle-train", "v": "jungle-train", "ru": ["Городские джунгли", "Прокрутка ведёт по вагону, заросшему цветами, буквы заголовка осыпаются, снизу выезжает стеклянная панель."], "en": ["Urban jungle", "Scrolling rolls through a flower-filled train car, the headline letters fall away and a glass panel slides up."]}, {"slug": "silver-wave", "v": "silver-wave", "ru": ["ИИ-агенты за минуты", "Серебристая волна из частиц растёт за заголовком, кнопки переливаются жидким металлом."], "en": ["AI agents in minutes", "A silver particle wave swells behind the headline while the buttons shimmer like liquid metal."]}, {"slug": "neural-llama", "v": "neural-llama", "ru": ["Мозг и тело", "Лама в VR-очках поворачивает голову за курсором, заголовок сам расшифровывается по буквам."], "en": ["Brain and Body", "A llama in VR goggles turns its head after the cursor while the headline decodes itself letter by letter."]}, {"slug": "fiber-eye", "v": "fiber-eye", "ru": ["Оптоволоконный глаз", "При прокрутке светящиеся оптические нити собираются в синюю радужку глаза."], "en": ["Fiber-Optic Eye", "Scrolling gathers glowing fiber-optic strands into a blue iris."]}, {"slug": "cube-wall-security", "v": "cube-wall-security", "ru": ["ИИ-безопасность", "Стена из 3D-кубов в Spline: по ней скользит свет и бегут зелёные сигналы."], "en": ["AI Security", "A 3D wall of cubes in Spline: light sweeps across it and green signals run between the blocks."]}, {"slug": "cinematic-404", "v": "cinematic-404", "ru": ["Страница 404", "Живой пейзаж с акведуком, поверх огромная стеклянная 404"], "en": ["404 page", "Live aqueduct landscape behind a huge glassy 404"]}]/*/WORKS*/;
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const tx = w => EN ? w.en : w.ru;
+const href = slug => '/demo/' + slug + '/' + (EN ? '' : '?lang=ru');
+const vid = v => `<video muted loop playsinline preload="none" poster="v/${v}.jpg" data-src="v/${v}.mp4"></video>`;
+const OUT = '<svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>';
+const bySlug = Object.fromEntries(WORKS.map(w => [w.slug, w]));
 
 if (EN) {
-  const TR = {
-    nWorks: 'Work', nHow: 'How I work', nContact: 'Contact', write: 'Message me', subL: 'Websites with video and 3D', subR: "I'll build one for your business",
-    hint: 'Work', kWorks: 'Work', hWorks: 'Websites that move',
-    lWorks: 'Everything below is live: open any page — it moves and works, in English and Russian. Concepts show a style; I’ll build one for your business with your photos and video.',
-    shProduct: 'My product', tLive: 'Live', sellerH: 'AI seller for Avito chats',
-    sellerP: 'Answers buyers in Avito chats for you. Anything tricky — haggling, discounts, calls — lands in your Telegram: decide with one tap.',
-    openSite: 'Open the site', shConcepts: 'Website concepts', kHow: 'How I work', hHow: 'Three steps to a site',
-    s1h: 'Pick a style', s1p: 'From the wall above, or send me a site you like.',
-    s2h: 'I build it for you', s2p: 'Your texts, photos and video; phone and desktop; English and Russian.',
-    s3h: 'Launch', s3p: 'On your domain, with leads from the site arriving in your Telegram.',
-    hContact: 'Want a site like this?', lContact: 'Tell me which example you liked and what you do — I’ll reply with how to build it for you.'
-  };
+  const TR = { n1: 'Work', n2: 'Services', n3: 'About', n4: 'Contact', hi: 'Hi, i’m', lead: 'Websites with video and 3D, bots and AI agents for business',
+    cta: 'Message me', about: 'About me', serv: 'Services', proj: 'Projects', wall: 'All work', hc: 'Want a site like this?',
+    atext: 'I’m Artur. For 4.5 years I built payment infrastructure in Go at Cian, Domclick and YooMoney, where a bug costs money at once, so I test everything before launch, not after. Under the g.a.d. mark I build websites with video and 3D, bots and AI agents. No managers: you write to me, I answer.',
+    snote: 'I quote a price after a couple of questions about the task and show what it is made of. 50% upfront, the rest on acceptance.',
+    wlead: 'Everything below is live: open any page — it moves and works, in English and Russian. Concepts show a style; I’ll build one for your business with your photos and video.',
+    lc: 'Tell me which example you liked and what you do — I’ll reply with how to build it for you.' };
   document.documentElement.lang = 'en';
-  document.title = 'g.a.d. — websites with video and 3D';
+  document.documentElement.classList.add('en');
+  document.title = 'g.a.d. — websites with video and 3D, bots and AI agents';
+  document.head.insertAdjacentHTML('beforeend', '<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;900&display=swap" rel="stylesheet">');
   document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.textContent = t; });
-  const l = document.getElementById('lang'); l.textContent = 'RU'; l.href = location.pathname;
+  const l = $('lng'); l.textContent = 'RU'; l.href = location.pathname;
 }
 
-const sh = document.querySelector('[data-t="shConcepts"]');
-sh.textContent += ' · ' + WORKS.length;
+// услуги
+const SERV = EN ? [
+  ['Websites with video and 3D', 'Landing pages and sites whose first screen is alive: video, 3D, animation on scroll and cursor. Phone version, English and Russian, leads to your Telegram.'],
+  ['AI agents and chatbots', 'They answer customers from your price list and stock, take orders and hand the tricky cases to you. My own product is an AI seller for Avito chats.'],
+  ['Telegram bots', 'Bookings, orders, forms, broadcasts. Leads land in your Telegram or CRM.'],
+  ['Integrations and automation', 'I connect the site, the bot, amoCRM, Bitrix24, 1C, payments and spreadsheets. Parsers and scripts take the manual routine off your team.'],
+  ['3D and WebGL', 'A configurator where the buyer builds the product, a 3D showcase, 3D on the first screen.']
+] : [
+  ['Сайты с видео и 3D', 'Лендинги и сайты, где первый экран живёт: видео, 3D, анимация от прокрутки и курсора. Версия для телефона, русский и английский, заявки в Telegram.'],
+  ['ИИ-агенты и чат-боты', 'Отвечают клиентам по вашему прайсу и складу, принимают заявки, спорное отдают вам. Мой продукт — ИИ-продавец для чатов Авито.'],
+  ['Telegram-боты', 'Запись, заказы, анкеты, рассылки. Заявки падают вам в Telegram или в CRM.'],
+  ['Интеграции и автоматизация', 'Связываю сайт, бота, amoCRM, Битрикс24, 1С, платёжки и таблицы. Парсеры и скрипты снимают ручную рутину.'],
+  ['3D и WebGL', 'Конфигуратор, в котором покупатель собирает изделие сам, 3D-витрина, 3D на первом экране.']
+];
+$('slist').innerHTML = SERV.map((s, i) => `<div class="sitem fade" data-d="${i * 0.1}"><div class="snum">0${i + 1}</div><div><h3 class="sname">${s[0]}</h3><p class="sdesc">${s[1]}</p></div></div>`).join('');
+
+// проекты: первым мой продукт, дальше три полки концептов
+const PROJ = [
+  { cat: EN ? 'My product · live' : 'Мой продукт · работает', name: EN ? 'AI seller for Avito chats' : 'ИИ-продавец для Авито', one: 'seller', href: 'https://gad-production.ru/', btn: EN ? 'Open the site' : 'Открыть сайт' },
+  { cat: EN ? 'Concepts' : 'Концепты', name: EN ? '3D that moves on its own' : '3D, которое живёт само', works: ['3d-ball-store', 'ev-inside-out', 'planet-jumping'] },
+  { cat: EN ? 'Concepts' : 'Концепты', name: EN ? 'Cinema on the first screen' : 'Кино на первом экране', works: ['private-jets', 'dreams', 'scroll-flight'] },
+  { cat: EN ? 'Concepts' : 'Концепты', name: EN ? 'Follows the cursor' : 'Живёт за курсором', works: ['archive', 'monitor-head', 'strata-spotlight'] }
+].filter(p => p.one || p.works.every(s => bySlug[s]));
+const tile = (s, cls) => { const w = bySlug[s]; return `<a class="${cls}" href="${href(s)}" target="_blank" rel="noopener" aria-label="${esc(tx(w)[0])}" style="background-image:url(v/${w.v}.jpg)">${vid(w.v)}</a>`; };
+$('plist').innerHTML = PROJ.map((p, i) => `<div class="pwrap"><div class="pcard" style="top:${i * 28}px"><div class="ptop"><div class="pnum">0${i + 1}</div>` +
+  `<div class="pmeta"><span class="pcat">${p.cat}</span><h3 class="pname">${p.name}</h3></div>` +
+  (p.one ? `<a class="live" href="${p.href}" target="_blank" rel="noopener">${p.btn}</a></div>` +
+    `<div class="pimgs one"><a href="${p.href}" target="_blank" rel="noopener" aria-label="${p.name}" style="background-image:url(v/${p.one}.jpg)">${vid(p.one)}</a></div>`
+  : `<a class="live" href="#all">${EN ? 'All work' : 'Все работы'}</a></div>` +
+    `<div class="pimgs"><div class="pc1">${tile(p.works[0], 'i1')}${tile(p.works[1], 'i2')}</div><div class="pc2">${tile(p.works[2], '')}</div></div>`) +
+  `</div></div>`).join('');
+
+// ленты: работы пополам, каждая тройкой
+const half = Math.ceil(WORKS.length / 2);
+const rows = [[$('r1'), WORKS.slice(0, half), 1], [$('r2'), WORKS.slice(half), -1]];
+rows.forEach(([row, list]) => {
+  row.innerHTML = [...list, ...list, ...list].map(w => `<a href="${href(w.slug)}" target="_blank" rel="noopener" style="background-image:url(v/${w.v}.jpg)">${vid(w.v)}<span>${esc(tx(w)[0])}</span></a>`).join('');
+});
+
+// стена: первые 12, остальные по кнопке
+const FIRST = 12, grid = $('grid');
+grid.innerHTML = WORKS.map((w, i) => `<a class="card${i >= FIRST ? ' more' : ''}" href="${href(w.slug)}" target="_blank" rel="noopener">` +
+  `<div class="media" style="background-image:url(v/${w.v}.jpg)">${vid(w.v)}</div><div class="cbody"><span class="tag">${EN ? 'Concept' : 'Концепт'}</span>` +
+  `<h4>${esc(tx(w)[0])}</h4><p>${esc(tx(w)[1])}</p><span class="open">${EN ? 'Open' : 'Открыть'}${OUT}</span></div></a>`).join('');
+$('wallh').insertAdjacentHTML('beforeend', '<span class="cnt">' + WORKS.length + '</span>');
 if (WORKS.length > FIRST) {
-  const b = document.createElement('button');
-  b.className = 'allbtn'; b.type = 'button';
-  b.textContent = (EN ? 'Show all ' : 'Показать все ') + WORKS.length;
-  b.addEventListener('click', () => { box.classList.add('all'); b.remove(); });
-  box.after(b);
+  grid.insertAdjacentHTML('afterend', `<div class="allwrap"><button class="live" id="allbtn" type="button">${(EN ? 'Show all ' : 'Показать все ') + WORKS.length}</button></div>`);
+  $('allbtn').addEventListener('click', e => { grid.classList.add('all'); e.currentTarget.parentElement.remove(); });
 }
 
 // превью играют, только пока видны
-const io = new IntersectionObserver(es => es.forEach(e => {
+const vio = new IntersectionObserver(es => es.forEach(e => {
   const v = e.target;
   if (e.isIntersecting) { if (!v.src) v.src = v.dataset.src; v.play().catch(() => {}); } else if (v.src) v.pause();
-}), { rootMargin: '200px' });
-document.querySelectorAll('video[data-src]').forEach(v => io.observe(v));
+}), { rootMargin: '150px' });
+document.querySelectorAll('video[data-src]').forEach(v => vio.observe(v));
 
-// появление блоков при прокрутке
-const ro = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
-document.querySelectorAll('.rv').forEach(el => ro.observe(el));
+// появление
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '50px' });
+document.querySelectorAll('.fade').forEach(el => {
+  const d = el.dataset;
+  el.style.transform = `translate(${d.x || 0}px,${d.y !== undefined ? d.y : 30}px)`;
+  el.style.transitionDuration = (d.dur || 0.7) + 's';
+  el.style.transitionDelay = (d.d || 0) + 's';
+  io.observe(el);
+});
 
-// параллакс: прокрутка сдвигает картину на 8 % её высоты, мышь — картину и заголовок в разные стороны
-const hero = document.querySelector('.hero'), layers = document.querySelectorAll('.layer'), title = document.getElementById('title');
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-let mx = 0, my = 0, sx = 0, sy = 0;
-if (!reduce) addEventListener('pointermove', e => { if (e.pointerType === 'mouse') { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; } }, { passive: true });
-(function tick() {
-  sx += (mx - sx) * .06; sy += (my - sy) * .06;
-  const r = hero.getBoundingClientRect();
-  if (r.bottom > 0) {
-    const p = Math.min(1, Math.max(0, -r.top / hero.offsetHeight));
-    layers.forEach(l => l.style.transform = `translate3d(${(-sx * 18).toFixed(2)}px, calc(${(p * 8).toFixed(3)}% + ${(-sy * 12).toFixed(2)}px), 0)`);
-    title.style.transform = `translate3d(${(sx * 26).toFixed(2)}px, ${(sy * 10).toFixed(2)}px, 0)`;
+// заголовок в одну строку: ужать, если не влез
+const hh = $('hh'), pt = document.querySelector('.portrait');
+function fit() {
+  hh.style.fontSize = '';
+  const w = hh.parentElement.clientWidth, sw = hh.scrollWidth;
+  if (sw > w) hh.style.fontSize = parseFloat(getComputedStyle(hh).fontSize) * w / sw * 0.97 + 'px';
+  // на низком экране портрет не должен закрывать заголовок: не выше места под ним (ровно по месту, магнит и так покачивает его)
+  pt.style.width = '';
+  if (innerWidth >= 640) {
+    const free = innerHeight - (hh.offsetTop + hh.offsetHeight), maxW = free * 1450 / 1570;
+    if (parseFloat(getComputedStyle(pt).width) > maxW) pt.style.width = Math.max(220, maxW) + 'px';
   }
-  requestAnimationFrame(tick);
-})();
+}
+fit();
+document.fonts && document.fonts.ready.then(fit);
+addEventListener('resize', fit);
 
-// меню на телефоне
-const burger = document.getElementById('burger'), mm = document.getElementById('mm'), items = [...mm.children];
-const set = open => {
-  burger.classList.toggle('open', open); mm.classList.toggle('open', open); document.body.classList.toggle('lock', open);
-  items.forEach((el, i) => el.style.transitionDelay = (open ? .1 + i * .06 : (items.length - 1 - i) * .06) + 's');
-};
-burger.addEventListener('click', () => set(!mm.classList.contains('open')));
-items.forEach(el => el.addEventListener('click', () => set(false)));
+// «Обо мне» по буквам
+const anim = $('anim');
+anim.innerHTML = anim.textContent.split(' ').map(w => '<span class="w">' + [...w].map(c => '<span class="c">' + c + '</span>').join('') + '</span>').join(' ');
+const chars = [...anim.querySelectorAll('.c')];
+
+// портрет тянется к курсору; пока мышь стоит, его ведёт невидимый курсор
+const mg = $('magnet'), pf = $('pfade');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let lastMouse = -1e9;
+function magnet(x, y, ease) {
+  const r = pf.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  const near = Math.abs(x - cx) < r.width / 2 + 150 && Math.abs(y - cy) < r.height / 2 + 150;
+  mg.style.transition = ease ? (near ? 'transform .3s ease-out' : 'transform .6s ease-in-out') : 'none';
+  mg.style.transform = near ? `translate3d(${(x - cx) / 3}px,${(y - cy) / 3}px,0)` : 'translate3d(0,0,0)';
+}
+addEventListener('mousemove', e => { lastMouse = performance.now(); magnet(e.clientX, e.clientY, true); }, { passive: true });
+
+let rowW = [0, 0];
+const measure = () => { rowW = rows.map(([row]) => (row.scrollWidth + 12) / 3); };
+measure();
+addEventListener('resize', measure);
+
+let lastY = null;
+function frame(now) {
+  const y = scrollY, vh = innerHeight;
+  if (y !== lastY) {
+    lastY = y;
+    // ленты едут от прокрутки; база — минус одна тройка, чтобы слева не было пустоты
+    const top = $('marquee').getBoundingClientRect().top + y;
+    const off = (y - top + vh) * 0.3;
+    rows.forEach(([row, , dir], i) => { row.style.transform = `translateX(${dir * (off - 200) - rowW[i]}px)`; });
+    // буквы проявляются от прокрутки
+    const r = anim.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, (vh * 0.8 - r.top) / (r.height + vh * 0.6)));
+    const n = chars.length;
+    chars.forEach((c, i) => { const o = 0.2 + 0.8 * Math.min(1, Math.max(0, (p - i / n) * n)); if (c._o !== o) { c._o = o; c.style.opacity = o; } });
+    // карточки проектов складываются стопкой
+    const pl = $('plist'), pr = pl.getBoundingClientRect();
+    const pp = Math.min(1, Math.max(0, -pr.top / Math.max(1, pr.height - vh)));
+    pl.querySelectorAll('.pcard').forEach((c, i, all) => {
+      const target = 1 - (all.length - 1 - i) * 0.03, from = i / all.length;
+      const k = Math.min(1, Math.max(0, (pp - from) / (1 - from)));
+      c.style.transform = `scale(${1 - (1 - target) * k})`;
+    });
+  }
+  if (!reduce && now - lastMouse > 2500 && y < vh) {
+    const r = pf.getBoundingClientRect(), t = now / 1000;
+    magnet(r.left + r.width / 2 + Math.sin(t * 0.9) * r.width * 0.25, r.top + r.height / 2 + Math.sin(t * 1.3) * r.height * 0.12, false);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
 })();
 </script>
 </body>

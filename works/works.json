@@ -36,18 +36,6 @@
   ]
  },
  {
-  "slug": "visuals",
-  "v": "visuals",
-  "ru": [
-   "Визуал",
-   "Под курсором проявляется вторая картинка — герой загорается."
-  ],
-  "en": [
-   "Visuals",
-   "A second image shows through under the cursor — the hero catches fire."
-  ]
- },
- {
   "slug": "dreams",
   "v": "dreams",
   "ru": [
@@ -120,42 +108,6 @@
   ]
  },
  {
-  "slug": "pixel-portfolio",
-  "v": "pixel-portfolio",
-  "ru": [
-   "Пиксельное портфолио",
-   "Видеопортрет крутится по кругу за заголовком из пиксельных слов"
-  ],
-  "en": [
-   "Pixel portfolio",
-   "Looping video portrait behind a headline set in pixel type"
-  ]
- },
- {
-  "slug": "portrait-marquee",
-  "v": "portrait-marquee",
-  "ru": [
-   "Портрет и бегущая строка",
-   "Огромная надпись бежит строкой за вырезанным портретом"
-  ],
-  "en": [
-   "Portrait marquee",
-   "A giant name scrolls behind a cut-out portrait"
-  ]
- },
- {
-  "slug": "fluted-glass-studio",
-  "v": "fluted-glass-studio",
-  "ru": [
-   "Студия за рифлёным стеклом",
-   "Оранжевая жидкость тянется за курсором сквозь рифлёное стекло"
-  ],
-  "en": [
-   "Fluted glass studio",
-   "Orange liquid trails the cursor through fluted glass"
-  ]
- },
- {
   "slug": "city-scroll-story",
   "v": "city-scroll-story",
   "ru": [
@@ -192,18 +144,6 @@
   ]
  },
  {
-  "slug": "aquarium-studio",
-  "v": "aquarium-studio",
-  "ru": [
-   "Студия визуальных историй",
-   "Золотые рыбки плывут в столбе света в тёмном аквариуме, бейдж, заголовок, текст и кнопка поднимаются по очереди."
-  ],
-  "en": [
-   "Visual storytelling studio",
-   "Goldfish swim through a shaft of light in a dark tank while the badge, headline, text and button rise in one after another."
-  ]
- },
- {
   "slug": "data-platform",
   "v": "data-platform",
   "ru": [
@@ -213,18 +153,6 @@
   "en": [
    "Data platform",
    "A stormy sea video while the revenue chart grows bar by bar"
-  ]
- },
- {
-  "slug": "studio-portraits",
-  "v": "studio-portraits",
-  "ru": [
-   "Портреты студии",
-   "Портреты сменяют друг друга и медленно приближаются, лента аватаров их переключает"
-  ],
-  "en": [
-   "Studio portraits",
-   "Portraits cross-fade and slowly zoom in, the avatar row switches between them"
   ]
  },
  {
@@ -480,18 +408,6 @@
   ]
  },
  {
-  "slug": "design-studio-hero",
-  "v": "design-studio-hero",
-  "ru": [
-   "Первый экран дизайн-студии",
-   "Видео на весь экран под антиквенным заголовком и анимированное меню"
-  ],
-  "en": [
-   "Design studio hero",
-   "Fullscreen video loop under a serif headline, with an animated burger menu"
-  ]
- },
- {
   "slug": "contact-landing",
   "v": "contact-landing",
   "ru": [
@@ -573,30 +489,6 @@
   "en": [
    "AI Security",
    "A 3D wall of cubes in Spline: light sweeps across it and green signals run between the blocks."
-  ]
- },
- {
-  "slug": "3d-creator-portfolio",
-  "v": "3d-creator-portfolio",
-  "ru": [
-   "3D-портфолио",
-   "Портрет плывёт за курсором, ленты работ едут от прокрутки, карточки проектов складываются стопкой"
-  ],
-  "en": [
-   "3D creator portfolio",
-   "Portrait drifts after the cursor, work reels slide with scroll, project cards stack up"
-  ]
- },
- {
-  "slug": "cinematic-studio",
-  "v": "cinematic-studio",
-  "ru": [
-   "Киностудия",
-   "Видео в рамке, огромный логотип выезжает снизу, текст проявляется по буквам от прокрутки"
-  ],
-  "en": [
-   "Cinematic studio",
-   "Framed hero video, giant logo pulls up, text reveals letter by letter on scroll"
   ]
  },
  {
