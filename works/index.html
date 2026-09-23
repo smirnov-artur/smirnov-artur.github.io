@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. — сайты с видео и 3D</title>
+<meta name="description" content="Сайты с видео, 3D и движением. Живые примеры: откройте любой. Соберу такой для вашего бизнеса.">
+<meta property="og:title" content="g.a.d. — сайты с видео и 3D">
+<meta property="og:description" content="Живые примеры сайтов с движением. Соберу такой для вашего бизнеса.">
+<meta property="og:image" content="https://smirnov-artur.github.io/works/og.jpg">
+<meta property="og:type" content="website">
+<!-- Портфолио g.a.d.: первый экран по раскладке Galaxy Home (небо, заголовок за домом, стеклянная навигация), ниже стена работ.
+     Русская версия по умолчанию, ?lang=en — английская; ссылки на работы сами берут нужный язык.
+     Превью работ — записи живых страниц (video/zapis60.py), играют только на экране. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+:root{--muted:#B6B8C3;--lav:#BEC7FF;--lime:#D6FF3F;--line:rgba(255,255,255,.12);--ink:#0A0A0C}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#000;color:#fff;font-family:'Inter Tight',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.lock{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+
+/* навигация */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;justify-content:center;padding:16px 16px 0;pointer-events:none}
+.pill{pointer-events:auto;display:flex;align-items:center;gap:16px;border-radius:9999px;background:rgba(49,45,124,.4);
+  -webkit-backdrop-filter:blur(15px);backdrop-filter:blur(15px);padding:12px 16px}
+.brand{display:block;color:#fff}
+.brand svg{display:block;height:24px;width:auto;overflow:visible}
+.ring{animation:draw 1.1s cubic-bezier(.65,0,.35,1) .4s forwards}
+.orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:pop .3s ease 1.4s forwards,orbit 7s linear 1.4s infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{to{opacity:1}}
+@keyframes orbit{to{transform:rotate(360deg)}}
+.links{display:none;gap:24px;list-style:none;margin:0;padding:0}
+.links a{color:var(--muted);transition:color .3s;font-size:15px}
+.links a:hover{color:#fff}
+.lang{font-size:13px;color:var(--muted);border:1px solid rgba(255,255,255,.25);border-radius:9999px;padding:4px 10px;transition:color .3s,border-color .3s}
+.lang:hover{color:#fff;border-color:#fff}
+.cta{display:none;border-radius:9999px;border:1px solid rgba(255,255,255,.8);padding:8px 24px;font-size:15px;font-weight:500;white-space:nowrap;
+  color:rgba(39,28,64,.85);filter:drop-shadow(0 1px 1px rgba(0,0,0,.05));transition:transform .3s;
+  background:linear-gradient(180deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.1) 76%),radial-gradient(ellipse at 50% 100%,rgba(255,255,255,.7) 0%,transparent 100%),var(--lav)}
+.cta:hover{transform:scale(1.05)}
+.burger{position:relative;width:36px;height:36px;flex:none}
+.burger i{position:absolute;left:8px;width:20px;height:2px;border-radius:2px;background:#fff;transition:transform .3s,top .3s,opacity .3s}
+.burger i:nth-child(1){top:10px}.burger i:nth-child(2){top:17px}.burger i:nth-child(3){top:24px}
+.burger.open i:nth-child(1){top:17px;transform:rotate(45deg)}
+.burger.open i:nth-child(2){opacity:0;transform:scale(0)}
+.burger.open i:nth-child(3){top:17px;transform:rotate(-45deg)}
+.mm{position:fixed;inset:0;z-index:55;background:rgba(2,3,25,.95);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
+.mm.open{opacity:1;visibility:visible;transition:opacity .35s}
+.mm a{font-size:30px;font-weight:500;color:rgba(255,255,255,.9)}
+.mm .cta{display:inline-block;margin-top:12px;font-size:17px;color:rgba(39,28,64,.85)}
+.mm > *{opacity:0;transform:translateY(20px);filter:blur(4px);transition:opacity .35s,transform .35s,filter .35s}
+.mm.open > *{opacity:1;transform:none;filter:blur(0)}
+
+/* первый экран */
+.hero{position:relative;z-index:10;height:100vh;height:100svh;min-height:540px;width:100%;overflow:hidden;background:#6f73d8}
+.layer{position:absolute;inset:0;will-change:transform}
+.layer img{display:block;width:100%;height:120%;object-fit:cover;animation:drift 24s ease-in-out infinite alternate}
+@keyframes drift{from{transform:scale(1.07) translate3d(-1.2%,.6%,0)}to{transform:scale(1) translate3d(.8%,-.8%,0)}}
+.sky{z-index:0}.front{z-index:30;pointer-events:none}
+.mist{position:absolute;left:-20%;right:-20%;bottom:-8%;height:46%;z-index:5;pointer-events:none;opacity:.55;
+  background:radial-gradient(40% 60% at 30% 70%,rgba(255,214,245,.55),transparent 70%),radial-gradient(45% 55% at 75% 80%,rgba(200,205,255,.5),transparent 70%);
+  filter:blur(18px);animation:mist 26s ease-in-out infinite alternate}
+@keyframes mist{from{transform:translate3d(-6%,0,0)}to{transform:translate3d(6%,-3%,0)}}
+.title{position:absolute;inset:0;z-index:10;display:flex;align-items:flex-start;justify-content:center;padding-top:11vh;will-change:transform}
+.title h1{margin:0;white-space:nowrap;text-align:center;font-size:15.5vw;font-weight:600;line-height:1;letter-spacing:-.02em;
+  background-image:linear-gradient(to bottom,#A8B4FF,#FFFFFF);-webkit-background-clip:text;background-clip:text;color:transparent;mix-blend-mode:lighten;
+  animation:rise 1.4s cubic-bezier(.2,.8,.2,1) .2s both}
+@keyframes rise{from{opacity:0;transform:translateY(40px);filter:blur(12px)}to{opacity:1;transform:none;filter:blur(0)}}
+.sub{display:none;position:absolute;top:320px;z-index:20;mix-blend-mode:overlay;font-size:22px;line-height:24px;font-weight:500;animation:rise 1.2s cubic-bezier(.2,.8,.2,1) .7s both}
+.sub.l{left:48px;color:rgba(255,255,255,.7)}
+.sub.r{right:48px;color:#fff;text-align:right}
+/* на телефоне дом закрывает середину: заголовок выше крыши, подпись под ним */
+.msub{position:absolute;left:0;right:0;top:calc(11vh + 15.5vw + 12px);z-index:20;text-align:center;font-size:16px;font-weight:500;color:#fff;text-shadow:0 1px 14px rgba(40,30,120,.75);animation:rise 1.2s cubic-bezier(.2,.8,.2,1) .7s both}
+.hint{position:absolute;left:50%;bottom:28px;z-index:40;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-size:14px;font-weight:500;color:#fff;text-shadow:0 1px 12px rgba(40,30,120,.6);animation:rise 1s ease 1.2s both}
+.hint svg{width:18px;height:18px;animation:bob 1.8s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(5px)}}
+
+/* работы */
+.works{position:relative;background:linear-gradient(#020319,#07071a 30%,var(--ink));padding:110px 20px 70px}
+.wrap{max-width:1240px;margin:0 auto}
+.kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);font-weight:500}
+h2{margin:12px 0 16px;font-size:clamp(40px,6vw,84px);line-height:1;font-weight:600;letter-spacing:-.03em}
+.lead{margin:0;max-width:660px;color:var(--muted);font-size:18px;line-height:1.5}
+.shelf{margin-top:56px}
+.shelf h3{margin:0 0 16px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.grid{display:grid;grid-template-columns:1fr;gap:20px}
+.card{display:block;border-radius:20px;overflow:hidden;background:#101018;border:1px solid var(--line);transition:transform .4s cubic-bezier(.2,.8,.2,1),border-color .3s}
+.card:hover{transform:translateY(-4px);border-color:rgba(214,255,63,.6)}
+.media{position:relative;aspect-ratio:16/9;background:#0b0b12 center/cover no-repeat}
+.media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.body{padding:18px 20px 22px}
+.tag{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:9999px;border:1px solid var(--line);color:var(--muted)}
+.tag.live{color:var(--ink);background:var(--lime);border-color:var(--lime);font-weight:600}
+.card h4{margin:12px 0 6px;font-size:24px;font-weight:600;letter-spacing:-.02em}
+.card p{margin:0;color:var(--muted);font-size:15px;line-height:1.5}
+.open{margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-weight:500;font-size:15px}
+.open svg,.btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
+.card:hover .open svg{transform:translate(3px,-3px)}
+
+/* как работаю */
+.how{background:var(--ink);padding:60px 20px}
+.steps{display:grid;grid-template-columns:1fr;gap:16px;margin-top:32px}
+.step{border:1px solid var(--line);border-radius:20px;padding:28px}
+.step b{font-size:14px;color:var(--lime);font-weight:600}
+.step h4{margin:10px 0 8px;font-size:22px;font-weight:600;letter-spacing:-.02em}
+.step p{margin:0;color:var(--muted);line-height:1.5}
+
+/* контакты */
+.contact{background:var(--ink);padding:70px 20px 110px;text-align:center}
+.contact .lead{margin:0 auto}
+.btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:32px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:16px 28px;border-radius:9999px;font-weight:500;font-size:16px;border:1px solid var(--line);transition:transform .3s,border-color .3s}
+.btn:hover{transform:translateY(-2px);border-color:#fff}
+.btn.main{background:var(--lime);color:var(--ink);border-color:var(--lime)}
+footer{background:var(--ink);border-top:1px solid var(--line);padding:24px 20px;color:#6d6f7a;font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+.rv{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+@media (min-width:760px){
+  .grid{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:repeat(3,1fr)}
+  .works{padding:140px 32px 80px}
+  .how,.contact{padding-left:32px;padding-right:32px}
+}
+@media (min-width:768px){
+  .hdr{padding-top:24px}
+  .pill{gap:32px}
+  .brand svg{height:28px}
+  .links{display:flex}
+  .cta{display:inline-block}
+  .burger,.mm{display:none}
+  .title{padding-top:128px}
+  .title h1{font-size:clamp(3rem,14vw,14rem)}
+  .sub{display:block;top:calc(128px + 14vw + 16px)}
+  .msub{display:none}
+}
+@media (min-width:1000px){
+  .wide{grid-column:1/-1;display:grid;grid-template-columns:1.5fr 1fr}
+  .wide .body{display:flex;flex-direction:column;justify-content:center;padding:40px}
+  .wide h4{font-size:34px}
+  .wide p{font-size:17px}
+}
+@media (min-width:1024px){
+  .pill{gap:56px}
+  .title{padding-top:144px}
+  .sub{top:calc(144px + min(14vw, 14rem) + 16px)}
+  .sub.l{left:96px}.sub.r{right:96px}
+}
+@media (max-width:999px){.wide{grid-column:1/-1}}
+@media (prefers-reduced-motion:reduce){
+  .layer img,.mist,.hint svg{animation:none}
+  .title h1,.sub,.msub,.hint{animation:none}
+  .ring{animation:none;stroke-dashoffset:0}.orb{animation:none;opacity:1}
+  .rv{opacity:1;transform:none;transition:none}
+}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <nav class="pill" aria-label="Меню">
+    <a class="brand" href="#top" aria-label="g.a.d.">
+      <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+        <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+        <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+        <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+      </svg>
+    </a>
+    <ul class="links">
+      <li><a href="#works" data-t="nWorks">Работы</a></li>
+      <li><a href="#how" data-t="nHow">Как работаю</a></li>
+      <li><a href="#contact" data-t="nContact">Контакты</a></li>
+    </ul>
+    <a class="lang" id="lang" href="?lang=en">EN</a>
+    <a class="cta" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="write">Написать</a>
+    <button class="burger" id="burger" type="button" aria-label="Меню"><i></i><i></i><i></i></button>
+  </nav>
+</header>
+
+<div class="mm" id="mm">
+  <a href="#works" data-t="nWorks">Работы</a>
+  <a href="#how" data-t="nHow">Как работаю</a>
+  <a href="#contact" data-t="nContact">Контакты</a>
+  <a class="cta" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="write">Написать</a>
+</div>
+
+<section class="hero" id="top">
+  <div class="layer sky"><img src="sky.webp" alt=""></div>
+  <div class="mist"></div>
+  <div class="title" id="title"><h1>g.a.d.&nbsp;&nbsp;studio</h1></div>
+  <div class="sub l" data-t="subL">Сайты с видео и 3D</div>
+  <div class="sub r" data-t="subR">Соберу такой для вашего бизнеса</div>
+  <div class="msub" data-t="subL">Сайты с видео и 3D</div>
+  <div class="layer front"><img src="house.webp" alt=""></div>
+  <a class="hint" href="#works"><span data-t="hint">Работы</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></a>
+</section>
+
+<section class="works" id="works">
+  <div class="wrap">
+    <div class="kicker rv" data-t="kWorks">Работы</div>
+    <h2 class="rv" data-t="hWorks">Сайты, которые двигаются</h2>
+    <p class="lead rv" data-t="lWorks">Всё ниже — живые страницы: откройте любую, всё двигается и работает, есть русская и английская версии. Концепты показывают стиль — соберу такой под ваш бизнес, с вашими фото и видео.</p>
+
+    <div class="shelf">
+      <h3 class="rv" data-t="shProduct">Мой продукт</h3>
+      <div class="grid">
+        <a class="card wide rv" href="https://gad-production.ru/" target="_blank" rel="noopener">
+          <div class="media" style="background-image:url(v/seller.jpg)"><video muted loop playsinline preload="none" poster="v/seller.jpg" data-src="v/seller.mp4"></video></div>
+          <div class="body">
+            <span class="tag live" data-t="tLive">Работает</span>
+            <h4 data-t="sellerH">ИИ-продавец для Авито</h4>
+            <p data-t="sellerP">Отвечает покупателям в чатах Авито за вас. Спорное — торг, скидку, звонок — присылает в Telegram: решаете одной кнопкой.</p>
+            <span class="open"><span data-t="openSite">Открыть сайт</span><svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg></span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="shelf">
+      <h3 class="rv" data-t="shConcepts">Концепты сайтов</h3>
+      <div class="grid" id="concepts"></div>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="wrap">
+    <div class="kicker rv" data-t="kHow">Как работаю</div>
+    <h2 class="rv" data-t="hHow">Три шага до сайта</h2>
+    <div class="steps">
+      <div class="step rv"><b>01</b><h4 data-t="s1h">Выбираете стиль</h4><p data-t="s1p">Со стены выше или присылаете сайт, который нравится.</p></div>
+      <div class="step rv"><b>02</b><h4 data-t="s2h">Собираю под вас</h4><p data-t="s2p">Ваши тексты, фото и видео, версии для телефона и компьютера, русский и английский.</p></div>
+      <div class="step rv"><b>03</b><h4 data-t="s3h">Запускаю</h4><p data-t="s3p">На вашем домене, заявки с сайта приходят вам в Telegram.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <h2 class="rv" data-t="hContact">Нужен такой сайт?</h2>
+    <p class="lead rv" data-t="lContact">Напишите, какой пример понравился и чем занимаетесь, — отвечу, как собрать его под вас.</p>
+    <div class="btns rv">
+      <a class="btn main" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Telegram <svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg></a>
+      <a class="btn" href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a>
+      <a class="btn" href="mailto:paladei702@gmail.com">paladei702@gmail.com</a>
+    </div>
+  </div>
+</section>
+<footer><span>g.a.d. © 2026</span><span>t.me/smirnovarturr</span></footer>
+
+<script>
+(() => {
+const EN = new URLSearchParams(location.search).get('lang') === 'en';
+const WORKS = [
+  { slug: 'planet-jumping', v: 'planet', ru: ['Прыжки по планетам', 'Портал к следующей планете: нажали — и перелёт Марс → Земля → Венера.'],
+    en: ['Planet Jumping', 'A portal to the next planet: click and fly Mars → Earth → Venus.'] },
+  { slug: 'archive', v: 'archive', ru: ['Архив одежды', 'Модель поворачивается за курсором, ниже архив вылетает карточками.'],
+    en: ['Fashion archive', 'The model turns with your cursor; below, the archive pops in card by card.'] },
+  { slug: 'figurines', v: 'figurines', ru: ['3D-фигурки', 'Карусель героев: цвет, размер и резкость меняются вместе.'],
+    en: ['3D figurines', 'A character carousel: color, scale and focus change together.'] },
+  { slug: 'visuals', v: 'visuals', ru: ['Визуал', 'Под курсором проявляется вторая картинка — герой загорается.'],
+    en: ['Visuals', 'A second image shows through under the cursor — the hero catches fire.'] },
+  { slug: 'dreams', v: 'dreams', ru: ['Ночное небо', 'Кино на фоне, крупный шрифт с засечками, стеклянные кнопки.'],
+    en: ['Night sky', 'A cinematic video background, big serif type, glass buttons.'] },
+  { slug: 'ai-workers', v: 'ai', ru: ['ИИ-работники', 'Лес во весь экран, стеклянное меню и карточки поверх видео.'],
+    en: ['AI workers', 'A full-screen forest video with a glass menu and cards on top.'] },
+];
+const box = document.getElementById('concepts');
+WORKS.forEach(w => {
+  const [h, p] = EN ? w.en : w.ru;
+  const a = document.createElement('a');
+  a.className = 'card rv'; a.target = '_blank'; a.rel = 'noopener';
+  a.href = '/demo/' + w.slug + '/' + (EN ? '' : '?lang=ru');
+  a.innerHTML = `<div class="media" style="background-image:url(v/${w.v}.jpg)"><video muted loop playsinline preload="none" poster="v/${w.v}.jpg" data-src="v/${w.v}.mp4"></video></div>
+    <div class="body"><span class="tag">${EN ? 'Concept' : 'Концепт'}</span><h4></h4><p></p>
+    <span class="open">${EN ? 'Open' : 'Открыть'}<svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg></span></div>`;
+  a.querySelector('h4').textContent = h; a.querySelector('p').textContent = p;
+  box.appendChild(a);
+});
+
+if (EN) {
+  const TR = {
+    nWorks: 'Work', nHow: 'How I work', nContact: 'Contact', write: 'Message me', subL: 'Websites with video and 3D', subR: "I'll build one for your business",
+    hint: 'Work', kWorks: 'Work', hWorks: 'Websites that move',
+    lWorks: 'Everything below is live: open any page — it moves and works, in English and Russian. Concepts show a style; I’ll build one for your business with your photos and video.',
+    shProduct: 'My product', tLive: 'Live', sellerH: 'AI seller for Avito chats',
+    sellerP: 'Answers buyers in Avito chats for you. Anything tricky — haggling, discounts, calls — lands in your Telegram: decide with one tap.',
+    openSite: 'Open the site', shConcepts: 'Website concepts', kHow: 'How I work', hHow: 'Three steps to a site',
+    s1h: 'Pick a style', s1p: 'From the wall above, or send me a site you like.',
+    s2h: 'I build it for you', s2p: 'Your texts, photos and video; phone and desktop; English and Russian.',
+    s3h: 'Launch', s3p: 'On your domain, with leads from the site arriving in your Telegram.',
+    hContact: 'Want a site like this?', lContact: 'Tell me which example you liked and what you do — I’ll reply with how to build it for you.'
+  };
+  document.documentElement.lang = 'en';
+  document.title = 'g.a.d. — websites with video and 3D';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.textContent = t; });
+  const l = document.getElementById('lang'); l.textContent = 'RU'; l.href = location.pathname;
+}
+
+// превью играют, только пока видны
+const io = new IntersectionObserver(es => es.forEach(e => {
+  const v = e.target;
+  if (e.isIntersecting) { if (!v.src) v.src = v.dataset.src; v.play().catch(() => {}); } else if (v.src) v.pause();
+}), { rootMargin: '200px' });
+document.querySelectorAll('video[data-src]').forEach(v => io.observe(v));
+
+// появление блоков при прокрутке
+const ro = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+document.querySelectorAll('.rv').forEach(el => ro.observe(el));
+
+// параллакс: прокрутка сдвигает картину на 8 % её высоты, мышь — картину и заголовок в разные стороны
+const hero = document.querySelector('.hero'), layers = document.querySelectorAll('.layer'), title = document.getElementById('title');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let mx = 0, my = 0, sx = 0, sy = 0;
+if (!reduce) addEventListener('pointermove', e => { if (e.pointerType === 'mouse') { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; } }, { passive: true });
+(function tick() {
+  sx += (mx - sx) * .06; sy += (my - sy) * .06;
+  const r = hero.getBoundingClientRect();
+  if (r.bottom > 0) {
+    const p = Math.min(1, Math.max(0, -r.top / hero.offsetHeight));
+    layers.forEach(l => l.style.transform = `translate3d(${(-sx * 18).toFixed(2)}px, calc(${(p * 8).toFixed(3)}% + ${(-sy * 12).toFixed(2)}px), 0)`);
+    title.style.transform = `translate3d(${(sx * 26).toFixed(2)}px, ${(sy * 10).toFixed(2)}px, 0)`;
+  }
+  requestAnimationFrame(tick);
+})();
+
+// меню на телефоне
+const burger = document.getElementById('burger'), mm = document.getElementById('mm'), items = [...mm.children];
+const set = open => {
+  burger.classList.toggle('open', open); mm.classList.toggle('open', open); document.body.classList.toggle('lock', open);
+  items.forEach((el, i) => el.style.transitionDelay = (open ? .1 + i * .06 : (items.length - 1 - i) * .06) + 's');
+};
+burger.addEventListener('click', () => set(!mm.classList.contains('open')));
+items.forEach(el => el.addEventListener('click', () => set(false)));
+})();
+</script>
+</body>
+</html>
