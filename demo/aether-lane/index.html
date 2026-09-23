@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aether Lane — Galaxy Home</title>
+<!-- Один файл вместо React + Vite + Framer Motion: параллакс и меню — на чистом JS и CSS-переходах. ?lang=ru — русская версия.
+     Ниже героя пустой отрезок: без него странице некуда прокручиваться и параллакс не видно. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#000;color:#fff;font-family:'Inter Tight',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.lock{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;padding:0}
+
+/* navbar */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;justify-content:center;padding:16px 16px 0}
+.pill{display:flex;align-items:center;gap:16px;border-radius:9999px;background:rgba(49,45,124,.4);
+  -webkit-backdrop-filter:blur(15px);backdrop-filter:blur(15px);padding:12px 16px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand svg{width:24px;height:24px;display:block;fill:#fff}
+.brand span{font-size:16px;font-weight:500;color:#fff;white-space:nowrap}
+.links{display:none;gap:24px;list-style:none;margin:0;padding:0}
+.links a{color:#B6B8C3;transition:color .3s;font-size:15px}
+.links a:hover,.links li:first-child a{color:#fff}
+.cta{display:none;border-radius:9999px;border:1px solid rgba(255,255,255,.8);padding:8px 24px;font-size:15px;font-weight:500;
+  color:rgba(39,28,64,.8);filter:drop-shadow(0 1px 1px rgba(0,0,0,.05));transition:transform .3s;white-space:nowrap;
+  background:linear-gradient(180deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.1) 76%),radial-gradient(ellipse at 50% 100%,rgba(255,255,255,.7) 0%,transparent 100%),#BEC7FF}
+.cta:hover{transform:scale(1.05)}
+.burger{position:relative;width:36px;height:36px;flex:none}
+.burger i{position:absolute;left:8px;width:20px;height:2px;border-radius:2px;background:#fff;
+  transition:transform .3s cubic-bezier(.25,.1,.25,1),top .3s cubic-bezier(.25,.1,.25,1),opacity .3s cubic-bezier(.25,.1,.25,1)}
+.burger i:nth-child(1){top:10px}.burger i:nth-child(2){top:17px}.burger i:nth-child(3){top:24px}
+.burger.open i:nth-child(1){top:17px;transform:rotate(45deg)}
+.burger.open i:nth-child(2){opacity:0;transform:scale(0)}
+.burger.open i:nth-child(3){top:17px;transform:rotate(-45deg)}
+
+/* mobile menu */
+.mm{position:fixed;inset:0;z-index:55;background:rgba(2,3,25,.95);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
+.mm.open{opacity:1;visibility:visible;transition:opacity .35s}
+.mm a{font-size:30px;font-weight:500;color:rgba(255,255,255,.9)}
+.mm .cta{display:inline-block;margin-top:12px}
+.mm > *{opacity:0;transform:translateY(20px);filter:blur(4px);transition:opacity .35s,transform .35s,filter .35s}
+.mm.open > *{opacity:1;transform:none;filter:blur(0)}
+
+/* hero */
+.hero{position:relative;z-index:10;height:100vh;width:100%;overflow:hidden}
+.layer{position:absolute;inset:0;will-change:transform}
+.layer img{width:100%;height:120%;object-fit:cover;display:block}
+.sky{z-index:0}.front{z-index:30}
+.title{position:absolute;inset:0;z-index:10;display:flex;align-items:flex-start;justify-content:center;padding-top:22vh}
+.title h1{margin:0;white-space:nowrap;text-align:center;font-size:clamp(3rem,14vw,14rem);font-weight:600;line-height:1;
+  background-image:linear-gradient(to bottom,#A8B4FF,#FFFFFF);-webkit-background-clip:text;background-clip:text;color:transparent;mix-blend-mode:lighten}
+.sub{display:none;position:absolute;top:320px;z-index:20;mix-blend-mode:overlay;font-size:22px;line-height:24px;font-weight:500}
+.sub.l{left:48px;color:rgba(255,255,255,.7)}
+.sub.r{right:48px;color:#fff}
+.after{height:60vh;background:linear-gradient(#000,#020319)}
+
+@media(min-width:768px){
+  .hdr{padding-top:24px}
+  .pill{gap:32px}
+  .brand svg{width:28px;height:28px}
+  .brand span{font-size:20px}
+  .links{display:flex}
+  .cta{display:inline-block}
+  .burger,.mm{display:none}
+  .title{padding-top:128px}
+  .sub{display:block}
+}
+@media(min-width:1024px){
+  .pill{gap:80px}
+  .title{padding-top:144px}
+  .sub.l{left:96px}.sub.r{right:96px}
+}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <nav class="pill" aria-label="Main">
+    <a class="brand" href="#home">
+      <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M 228 0 C 172.772 0 128 44.772 128 100 L 128 0 L 0 0 L 0 28 C 0 83.228 44.772 128 100 128 L 0 128 L 0 256 L 28 256 C 83.228 256 128 211.228 128 156 L 128 256 L 256 256 L 256 228 C 256 172.772 211.228 128 156 128 L 256 128 L 256 0 Z"/></svg>
+      <span>Aether Lane</span>
+    </a>
+    <ul class="links">
+      <li><a href="#home" data-t="home">Home</a></li>
+      <li><a href="#about" data-t="about">About</a></li>
+      <li><a href="#estates" data-t="estates">Estates</a></li>
+      <li><a href="#projects" data-t="projects">Projects</a></li>
+      <li><a href="#inquire" data-t="inquire">Inquire</a></li>
+    </ul>
+    <button class="cta" type="button" data-t="touch">Get in touch</button>
+    <button class="burger" id="burger" type="button" aria-label="Menu"><i></i><i></i><i></i></button>
+  </nav>
+</header>
+
+<div class="mm" id="mm">
+  <a href="#home" data-t="home">Home</a>
+  <a href="#about" data-t="about">About</a>
+  <a href="#estates" data-t="estates">Estates</a>
+  <a href="#projects" data-t="projects">Projects</a>
+  <a href="#inquire" data-t="inquire">Inquire</a>
+  <button class="cta" type="button" data-t="touch">Get in touch</button>
+</div>
+
+<section class="hero" id="home">
+  <div class="layer sky"><img src="https://soft-zoom-63098134.figma.site/_assets/v11/7af55796a90a26e2d57c9fa2a48815874023cff0.png" alt=""></div>
+  <div class="title"><h1>Galaxy&nbsp;&nbsp;Home</h1></div>
+  <div class="sub l" data-t="left">Elegance Above the Skyline</div>
+  <div class="sub r" data-t="right">Your Dream Residence Starts Here</div>
+  <div class="layer front"><img src="https://soft-zoom-63098134.figma.site/_assets/v11/644aba5492aa8bd5756bc5c6d65255d577b1aaf3.png" alt=""></div>
+</section>
+<div class="after" aria-hidden="true"></div>
+
+<script>
+(() => {
+if (new URLSearchParams(location.search).get('lang') === 'ru') {
+  const TR = { home: 'Главная', about: 'О нас', estates: 'Резиденции', projects: 'Проекты', inquire: 'Заявка', touch: 'Связаться',
+    left: 'Элегантность над горизонтом', right: 'Дом вашей мечты начинается здесь' };
+  document.documentElement.lang = 'ru';
+  document.title = 'Aether Lane — Galaxy Home';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.textContent = t; });
+}
+// параллакс: прогресс прокрутки секции 0→1 (её верх у верха окна → её низ у верха окна) даёт сдвиг слоёв 0 → 8 % их высоты
+const hero = document.querySelector('.hero'), layers = document.querySelectorAll('.layer');
+let tick = false;
+const upd = () => {
+  const p = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / hero.offsetHeight));
+  layers.forEach(l => l.style.transform = `translateY(${p * 8}%)`);
+  tick = false;
+};
+addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(upd); } }, { passive: true });
+upd();
+// меню: по очереди с задержкой 0,1 с и шагом 0,06 с; на закрытие — в обратном порядке
+const burger = document.getElementById('burger'), mm = document.getElementById('mm'), items = [...mm.children];
+const set = open => {
+  burger.classList.toggle('open', open); mm.classList.toggle('open', open); document.body.classList.toggle('lock', open);
+  items.forEach((el, i) => el.style.transitionDelay = (open ? .1 + i * .06 : (items.length - 1 - i) * .06) + 's');
+};
+burger.addEventListener('click', () => set(!mm.classList.contains('open')));
+items.forEach(el => el.addEventListener('click', () => set(false)));
+})();
+</script>
+</body>
+</html>

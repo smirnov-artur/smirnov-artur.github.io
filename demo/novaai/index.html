@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOVA_AI — Today AI Aligns With Bold Dreams</title>
+<!-- Один файл вместо React + Vite: классы Tailwind переписаны в CSS один к одному. ?lang=ru — русская версия. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#0a0a0a;color:#fff;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+::selection{background:rgba(255,255,255,.2)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+h1,h2,p{margin:0}
+.mono{text-transform:uppercase;letter-spacing:.15em}
+.ds-md{filter:drop-shadow(0 4px 3px rgba(0,0,0,.07)) drop-shadow(0 2px 2px rgba(0,0,0,.06))}
+.ds-lg{filter:drop-shadow(0 10px 8px rgba(0,0,0,.04)) drop-shadow(0 4px 3px rgba(0,0,0,.1))}
+.glass{background:rgba(255,255,255,.15);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+svg.i{display:block;flex:none;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+
+/* reveal: IntersectionObserver 0.15, translate-y-8 → 0, 700ms ease-out, задержка на обёртке */
+.rv{opacity:0;transform:translateY(32px);transition:all .7s ease-out;will-change:transform}
+.rv.in{opacity:1;transform:translateY(0)}
+span.rv{display:inline-block}
+
+/* scroll video */
+.bgv{position:fixed;inset:0;z-index:0;background:#0a0a0a;overflow:hidden;pointer-events:none}
+.bgv img,.bgv video,.bgv canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .5s}
+.bgv .off{opacity:0}
+
+.wrap{position:relative;z-index:10}
+
+/* nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;border-bottom:1px solid rgba(255,255,255,.15)}
+.nav-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:16px 20px}
+.logo{display:flex;align-items:center;gap:8px;font-size:18px;line-height:28px;font-weight:500;letter-spacing:-.025em}
+.links{display:none;align-items:center;gap:32px}
+.links a{font-size:14px;line-height:20px;color:rgba(255,255,255,.85);transition:color .3s}
+.links a:hover{color:#fff}
+.links sup{font-size:10px;line-height:1;color:rgba(255,255,255,.6);margin-left:2px;vertical-align:super}
+.nav-cta{justify-self:end}
+.nav-cta button{border-radius:6px;border:1px solid rgba(255,255,255,.2);padding:8px 16px;font-size:12px;line-height:16px;transition:background-color .3s}
+.nav-cta button:hover{background:rgba(255,255,255,.25)}
+
+/* sections */
+.sec{min-height:100vh;display:flex;flex-direction:column;justify-content:space-between;padding:96px 20px 48px}
+@supports (height:100svh){.sec{min-height:100svh}}
+.spacer{height:80vh}
+.top{display:flex;flex-direction:column;gap:32px}
+.services{display:flex;flex-direction:column;gap:8px}
+.services span{font-size:12px;line-height:16px;color:rgba(255,255,255,.9)}
+.lead{font-size:18px;line-height:1.625}
+.intro{max-width:320px}
+.intro2{max-width:384px}
+.bottom{display:flex;flex-direction:column;gap:32px}
+.badge{display:inline-block;border-left:2px solid #fff;padding:6px 12px;font-size:11px;line-height:16px;margin-bottom:20px}
+.head{font-size:48px;line-height:1.05;font-weight:400;letter-spacing:-.025em}
+.card{display:flex;align-items:center;gap:16px;border-radius:12px;padding:12px;width:fit-content}
+.card img{height:96px;width:80px;border-radius:8px;object-fit:cover;display:block}
+.card .t{display:flex;flex-direction:column;gap:6px;padding-right:8px}
+.card .n{font-size:14px;line-height:20px;font-weight:500}
+.card .r{font-size:10px;line-height:15px;color:rgba(255,255,255,.6)}
+.pill{display:inline-flex;align-items:center;gap:4px;border-radius:9999px;background:#fff;color:#000;font-weight:500;transition:background-color .3s;width:fit-content}
+.pill:hover{background:rgba(255,255,255,.85)}
+.pill.s{padding:8px 16px;font-size:12px;line-height:16px;margin-top:6px}
+.pill.m{padding:10px 20px;font-size:12px;line-height:16px}
+.ghost{border-radius:9999px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  padding:10px 20px;font-size:12px;line-height:16px;transition:background-color .3s}
+.ghost:hover{background:rgba(255,255,255,.2)}
+.bot2{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:48px}
+.col{max-width:576px}
+.body2{margin-top:24px;max-width:448px;font-size:14px;line-height:20px;color:rgba(255,255,255,.8)}
+.ctas{margin-top:32px;display:flex;flex-wrap:wrap;gap:12px}
+.panel{width:100%;max-width:448px;border-radius:16px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.1);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);padding:0 20px}
+.item{display:flex;gap:20px;padding:20px 0;border-bottom:1px solid rgba(255,255,255,.15)}
+.panel > .rv:last-child .item{border-bottom:0}
+.idx{font-size:11px;line-height:24px;letter-spacing:.15em;color:rgba(255,255,255,.55)}
+.item-b{flex:1}
+.ttl{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:16px;line-height:24px;font-weight:500}
+.ttl svg{color:rgba(255,255,255,.4);transition:transform .3s,color .3s}
+.item:hover .ttl svg{transform:translateX(2px);color:#fff}
+.desc{margin-top:6px;font-size:14px;line-height:1.625;color:rgba(255,255,255,.7)}
+
+@media(min-width:640px){
+  .nav-row{padding:16px 32px}
+  .logo{font-size:20px}
+  .nav-cta button{padding:8px 20px;font-size:14px;line-height:20px}
+  .sec{padding:112px 32px 48px}
+  .top{flex-direction:row;justify-content:space-between}
+  .lead{font-size:20px;line-height:1.625}
+  .intro,.intro2{text-align:right}
+  .head{font-size:60px}
+  .body2{font-size:16px;line-height:24px}
+  .pill.m,.ghost{font-size:14px;line-height:20px}
+  .panel{padding:0 24px}
+  .ttl{font-size:18px;line-height:28px}
+}
+@media(min-width:768px){
+  .nav-row{padding:16px 48px}
+  .links{display:flex}
+  .sec{padding:112px 48px 64px}
+  .bottom{flex-direction:row;align-items:flex-end;justify-content:space-between}
+  .bot2{flex-direction:row;align-items:flex-end;justify-content:space-between;gap:64px}
+}
+@media(min-width:1024px){
+  .links{gap:40px}
+  .head{font-size:72px}
+}
+</style>
+</head>
+<body>
+<div class="bgv" aria-hidden="true">
+  <img id="poster" src="hero-poster.jpg" alt="">
+  <video id="vid" class="off" muted playsinline preload="auto"
+         src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260729_102822_0e6c87e8-c141-4744-bf32-ad30db296371.mp4"></video>
+  <canvas id="cv" class="off"></canvas>
+</div>
+
+<div class="wrap">
+  <header class="nav">
+    <div class="nav-row">
+      <div class="rv" style="transition-delay:0ms">
+        <a class="logo" href="#top">
+          <svg class="i" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          novaai
+        </a>
+      </div>
+      <nav class="links" aria-label="Main">
+        <span class="rv" style="transition-delay:100ms"><a href="#projects" data-t="projects">Projects</a><sup class="mono" style="letter-spacing:0">6</sup></span>
+        <span class="rv" style="transition-delay:200ms"><a href="#about" data-t="about">About</a></span>
+        <span class="rv" style="transition-delay:300ms"><a href="#blog" data-t="blog">Blog</a></span>
+        <span class="rv" style="transition-delay:400ms"><a href="#contact" data-t="contact">Contact</a></span>
+      </nav>
+      <div class="nav-cta rv" style="transition-delay:500ms"><button class="glass" type="button" data-t="consult">Get Free Consultation</button></div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="sec">
+      <div class="top">
+        <div class="services">
+          <span class="rv mono ds-md" style="transition-delay:150ms" data-t="s1">/ AI AUTOMATION</span>
+          <span class="rv mono ds-md" style="transition-delay:270ms" data-t="s2">/ AI INTEGRATION</span>
+          <span class="rv mono ds-md" style="transition-delay:390ms" data-t="s3">/ AI AGENT DEVELOPMENT</span>
+        </div>
+        <p class="rv lead intro ds-md" style="transition-delay:300ms" data-t="intro">We design automation that brings clarity, precision, and efficiency to the way your company operates.</p>
+      </div>
+      <div class="bottom">
+        <div>
+          <div class="rv" style="transition-delay:150ms"><span class="badge glass mono" data-t="badge1">We Automate 100+ Businesses</span></div>
+          <h1 class="rv head ds-lg" style="transition-delay:280ms" data-t="h1">Clear. Precise.<br>Automated.</h1>
+        </div>
+        <div class="rv" style="transition-delay:420ms">
+          <div class="card glass">
+            <img src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260728_050334_5b076e26-0ce7-4898-b432-d764190e448f.png&amp;w=1280&amp;q=85"
+                 alt="Mitha, co-founder of NovaAI" id="mitha">
+            <div class="t">
+              <span class="n" data-t="talk">Talk with Mitha</span>
+              <span class="r mono" data-t="cofounder">Co-founder of NovaAI</span>
+              <button class="pill s" type="button"><span data-t="book">Book 15-mins call</span>
+                <svg class="i" width="14" height="14" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="spacer" aria-hidden="true"></div>
+
+    <section class="sec">
+      <div class="top">
+        <div class="rv" style="transition-delay:120ms"><span class="badge glass mono" data-t="badge2">Insight On Demand</span></div>
+        <p class="rv lead intro2 ds-md" style="transition-delay:220ms" data-t="intro2">Our AI doesn't just respond — it interprets, sharpens, and delivers the signal you need.</p>
+      </div>
+      <div class="bot2">
+        <div class="col">
+          <h2 class="rv head ds-lg" style="transition-delay:180ms" data-t="h2">Learn to see<br>brilliantly.</h2>
+          <p class="rv body2 ds-md" style="transition-delay:320ms" data-t="body2">From the first sketch to the final render, Nova turns raw intent into decisions your team can act on — quietly, precisely, at speed.</p>
+          <div class="rv ctas" style="transition-delay:420ms">
+            <button class="pill m" type="button"><span data-t="demo">Run the demo</span>
+              <svg class="i" width="14" height="14" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>
+            <button class="ghost" type="button" data-t="free">Free consultation</button>
+          </div>
+        </div>
+        <div class="panel" id="panel"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(() => {
+const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+const EN = {
+  rows: [['01', 'Real-time vision', 'Reads context as it happens and surfaces what matters before you ask.'],
+         ['02', 'Layered insight', 'Moves from rough outline to sharp output without losing the thread.'],
+         ['03', 'Adaptive speed', 'Learns your cadence and tightens every pass as you work.']]
+};
+const TR = {
+  title: 'NOVA_AI — ИИ на стороне смелых идей',
+  projects: 'Проекты', about: 'О нас', blog: 'Блог', contact: 'Контакты', consult: 'Бесплатная консультация',
+  s1: '/ АВТОМАТИЗАЦИЯ НА ИИ', s2: '/ ВНЕДРЕНИЕ ИИ', s3: '/ РАЗРАБОТКА ИИ-АГЕНТОВ',
+  intro: 'Мы строим автоматизацию, которая приносит ясность, точность и скорость в работу вашей компании.',
+  badge1: 'Автоматизировали 100+ компаний', h1: 'Ясно. Точно.<br>Автоматически.',
+  talk: 'Поговорите с Митой', cofounder: 'Сооснователь NovaAI', book: 'Созвон на 15 минут',
+  badge2: 'Выводы по запросу', intro2: 'Наш ИИ не просто отвечает — он понимает, уточняет и выдаёт то, что вам нужно.',
+  h2: 'Видеть главное<br>с первого взгляда.',
+  body2: 'От первого наброска до готового результата Nova превращает замысел в решения, с которыми команда может работать — спокойно, точно и быстро.',
+  demo: 'Запустить демо', free: 'Бесплатная консультация',
+  rows: [['01', 'Зрение в реальном времени', 'Понимает контекст на ходу и показывает важное раньше, чем вы спросите.'],
+         ['02', 'Уточнение по слоям', 'Идёт от черновика к точному результату и не теряет нить.'],
+         ['03', 'Подстраивается под темп', 'Учится вашему ритму и с каждым проходом работает точнее.']]
+};
+if (RU) {
+  document.documentElement.lang = 'ru';
+  document.title = TR.title;
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.innerHTML = t; });
+  document.getElementById('mitha').alt = 'Мита, сооснователь NovaAI';
+}
+const chev16 = '<svg class="i" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>';
+document.getElementById('panel').innerHTML = (RU ? TR : EN).rows.map(([n, t, b], i) =>
+  `<div class="rv" style="transition-delay:${300 + i * 110}ms"><div class="item"><span class="idx mono">${n}</span>` +
+  `<div class="item-b"><div class="ttl"><span>${t}</span>${chev16}</div><p class="desc">${b}</p></div></div></div>`).join('');
+
+// --- reveal
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .15 });
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+// --- scroll-scrubbed video: poster → video → canvas с кэшем кадров
+const poster = document.getElementById('poster'), vid = document.getElementById('vid'), cv = document.getElementById('cv'), cx = cv.getContext('2d');
+let frames = [], ready = false, hasFrame = false, smoothed = 0, drawn = -1, seeking = false;
+function resize() {
+  const d = Math.min(devicePixelRatio || 1, 2);
+  cv.width = innerWidth * d; cv.height = innerHeight * d; drawn = -1;
+}
+function cover(src, sw, sh) {
+  const W = cv.width, H = cv.height, s = Math.max(W / sw, H / sh), w = sw * s, h = sh * s;
+  cx.drawImage(src, (W - w) / 2, (H - h) / 2, w, h);
+}
+vid.addEventListener('loadeddata', () => {
+  hasFrame = true;
+  if (!ready) { vid.classList.remove('off'); poster.classList.add('off'); }
+  setTimeout(buildCache, 300);
+}, { once: true });
+async function buildCache() {
+  const ov = document.createElement('video');
+  ov.muted = true; ov.playsInline = true; ov.preload = 'auto'; ov.src = vid.currentSrc || vid.src;
+  await new Promise((res, rej) => { ov.addEventListener('loadeddata', res, { once: true }); ov.addEventListener('error', rej, { once: true }); }).catch(() => null);
+  if (!ov.duration) return;
+  const n = Math.min(90, Math.max(24, Math.round(ov.duration * 12)));
+  const w = Math.min(960, ov.videoWidth), h = Math.round(ov.videoHeight * w / ov.videoWidth);
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    ov.currentTime = i / (n - 1) * (ov.duration - 0.05);
+    await new Promise(r => ov.addEventListener('seeked', r, { once: true }));
+    try { out.push(await createImageBitmap(ov, { resizeWidth: w, resizeHeight: h, resizeQuality: 'high' })); } catch (e) { return; }
+  }
+  frames = out; ready = true; drawn = -1;
+  cv.classList.remove('off'); vid.classList.add('off'); poster.classList.add('off');
+}
+function loop() {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  const target = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+  smoothed += (target - smoothed) * 0.12;
+  if (ready) {
+    const k = Math.round(smoothed * (frames.length - 1));
+    if (k !== drawn) { cover(frames[k], frames[k].width, frames[k].height); drawn = k; }
+  } else if (hasFrame && vid.duration && !seeking) {
+    const t = smoothed * (vid.duration - 0.05);
+    if (Math.abs(vid.currentTime - t) > 0.04) { seeking = true; vid.currentTime = t; }
+  }
+  requestAnimationFrame(loop);
+}
+vid.addEventListener('seeked', () => { seeking = false; });
+addEventListener('resize', resize);
+resize();
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
