@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>g.a.d. — Studio</title>
+<!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия (у Helvetica Neue ME нет кириллицы — там Arimo).
+     Имя выдуманного автора заменено на g.a.d., его соцсети — на наши контакты, «оммаж» чужому персонажу игры — на контакт. -->
+<link href="https://db.onlinewebfonts.com/c/95cecf452d3208890088a5b4c19c7ecf?family=Helvetica+Neue+ME" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;width:100%;overflow:hidden;background:#000;color:#efeee9;font-family:'Helvetica Neue ME',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.5}
+html[lang=ru],html[lang=ru] body{font-family:'Arimo',Helvetica,Arial,sans-serif}
+::selection{background:#efeee9;color:#000}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus{outline:none}
+svg{display:block}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes riseIn{from{opacity:0;transform:translateY(4vh) scale(1.03)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleLine{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes marqueeScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.anim-fade-in{opacity:0;animation:fadeIn 1.2s ease-out both}
+.anim-rise-in{opacity:0;animation:riseIn 1.4s cubic-bezier(.22,1,.36,1) 300ms both}
+.anim-fade-up{opacity:0;animation:fadeUp .9s cubic-bezier(.22,1,.36,1) both}
+.anim-line{transform-origin:left;transform:scaleX(0);animation:scaleLine 1.1s cubic-bezier(.76,0,.24,1) 1200ms both}
+
+.hero{position:relative;height:100vh;height:100dvh;width:100%;overflow:hidden;background:#000;-webkit-user-select:none;user-select:none}
+.img{position:absolute;inset:0;height:100%;width:100%;object-fit:cover;pointer-events:none}
+.front{z-index:20}
+
+/* бегущее имя */
+.mq{position:absolute;left:0;right:0;top:16vh;z-index:10;overflow:hidden;pointer-events:none}
+.track{display:flex;width:max-content;white-space:nowrap;font-size:16vh;line-height:1;letter-spacing:-.025em;font-weight:400;color:#efeee9;animation:marqueeScroll 30s linear infinite}
+.track span{display:inline-block;padding-right:6vw}
+
+/* линия и подвал */
+.rule{position:absolute;left:24px;right:24px;bottom:5.5rem;z-index:10;height:2px;background:#efeee9;pointer-events:none}
+footer{position:absolute;left:0;right:0;bottom:0;z-index:30;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 20px;font-size:12px;line-height:1.625;color:#efeee9}
+footer div{display:flex;flex-direction:column}
+footer .rt{text-align:right}
+footer a{transition:opacity .3s}
+footer a:hover{opacity:.6}
+
+/* шапка */
+header{position:absolute;left:0;right:0;top:0;z-index:30;display:flex;align-items:flex-start;justify-content:space-between;padding:24px 24px 0;color:#efeee9}
+.logo{display:block;color:#efeee9;transition:opacity .15s}
+.logo:hover{opacity:.8}
+.logo svg{height:24px;width:auto;overflow:visible;margin-top:2px}
+.ring{animation:draw 1.1s cubic-bezier(.65,0,.35,1) 1.1s forwards}
+.orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:pop .3s ease 2.1s forwards,orbit 7s linear 2.1s infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{to{opacity:1}}
+@keyframes orbit{to{transform:rotate(360deg)}}
+.cluster{display:none;align-items:flex-start;gap:64px}
+.year{font-size:14px;line-height:20px;color:rgba(239,238,233,.9)}
+.col{display:flex;flex-direction:column;gap:2px;font-size:14px;line-height:20px}
+.col a{transition:opacity .3s}
+.col a:hover{opacity:.6}
+.hb{position:relative;z-index:50;height:40px;width:40px;display:flex;align-items:center;justify-content:center}
+.bars{width:24px;height:16px;display:flex;flex-direction:column;justify-content:space-between;align-items:center}
+.bars i{width:24px;height:2px;background:#efeee9;transition:all .5s cubic-bezier(.76,0,.24,1)}
+.bars i:nth-child(2){transition:opacity .3s}
+.hb.open i:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hb.open i:nth-child(2){opacity:0}
+.hb.open i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* выезжающее меню телефона */
+.shade{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.4);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);transition:opacity .5s;opacity:0;pointer-events:none}
+.shade.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:40;width:80%;max-width:24rem;background:#141414;padding:40px 32px;display:flex;flex-direction:column;justify-content:space-between;color:#efeee9;
+  transform:translateX(100%);transition:transform .6s cubic-bezier(.76,0,.24,1)}
+.drawer.open{transform:none}
+.close{position:absolute;right:24px;top:24px;padding:8px;color:#efeee9;transition:all .3s;transform:rotate(90deg);opacity:0}
+.drawer.open .close{transform:none;opacity:1;transition-delay:.3s}
+.drawer.open .close:hover{opacity:.6}
+.close svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.dtop{margin-top:48px;display:flex;flex-direction:column;gap:24px}
+.dlab{font-size:12px;line-height:16px;text-transform:uppercase;letter-spacing:.2em;color:rgba(239,238,233,.5);transition:all .5s;opacity:0;transform:translateY(16px)}
+.dnav{display:flex;flex-direction:column;gap:16px}
+.dnav a{font-size:36px;line-height:40px;font-weight:400;transition:all .5s;opacity:0;transform:translateY(24px)}
+.dbot{display:flex;flex-direction:column;gap:16px;padding-bottom:24px}
+.dsoc{display:flex;flex-wrap:wrap;gap:16px;font-size:14px;line-height:20px}
+.dsoc a{transition:all .5s;opacity:0;transform:translateY(16px)}
+.drawer.open .dlab,.drawer.open .dnav a,.drawer.open .dsoc a{opacity:1;transform:none;transition-delay:var(--d)}
+.drawer.open .dnav a:hover,.drawer.open .dsoc a:hover{opacity:.6}
+
+@media (min-width:640px){
+  .mq{top:14vh}
+  .track{font-size:26vh}
+  .rule{left:40px;right:40px;bottom:7rem}
+  footer{z-index:10;padding:0 40px 32px;font-size:14px}
+  header{padding:32px 40px 0}
+  .cluster{display:flex}
+  .hb,.shade,.drawer{display:none}
+}
+@media (min-width:1024px){.cluster{gap:96px}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0ms!important;transition-duration:.01ms!important;transition-delay:0ms!important}
+  .anim-fade-in,.anim-rise-in,.anim-fade-up,.anim-line{opacity:1!important;transform:none!important}
+  .track{animation:none!important}
+  .ring{stroke-dashoffset:0}.orb{opacity:1}
+}
+</style>
+</head>
+<body>
+<section class="hero">
+  <img class="img anim-fade-in" alt="" src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260729_022513_486985a2-ac8c-4278-91a8-071dcd9fcaff.png&amp;w=1280&amp;q=85">
+
+  <div class="mq anim-fade-up" style="animation-delay:500ms" aria-hidden="true">
+    <div class="track"><span data-t="mq">g.a.d. &mdash; Studio&nbsp;</span><span data-t="mq">g.a.d. &mdash; Studio&nbsp;</span></div>
+  </div>
+
+  <img class="img front anim-rise-in" alt="Portrait" src="https://stone-expand-60400629.figma.site/_assets/v11/8da570354e86aa0d44ac3e4aa335a72c8e750d68.png">
+
+  <div class="rule anim-line" aria-hidden="true"></div>
+  <footer>
+    <div class="anim-fade-up" style="animation-delay:1400ms"><span data-t="f1">Visuals Composer</span><span data-t="f2">Digital Crafter</span><span data-t="f3">Obsessed by motion</span></div>
+    <div class="rt anim-fade-up" style="animation-delay:1550ms"><span data-t="f4">Open for projects</span><a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">@smirnovarturr</a></div>
+  </footer>
+
+  <header>
+    <a class="logo anim-fade-up" style="animation-delay:800ms" href="#" aria-label="g.a.d.">
+      <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+        <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+        <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+        <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+      </svg>
+    </a>
+    <div class="cluster">
+      <span class="year anim-fade-up" style="animation-delay:900ms">2026</span>
+      <nav class="col" aria-label="Site navigation">
+        <a class="anim-fade-up" style="animation-delay:1000ms" href="#" data-t="n1">Story</a>
+        <a class="anim-fade-up" style="animation-delay:1080ms" href="#" data-t="n2">Jobs</a>
+        <a class="anim-fade-up" style="animation-delay:1160ms" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="n3">Message</a>
+      </nav>
+      <div class="col" aria-label="Social channels">
+        <a class="anim-fade-up" style="animation-delay:1150ms" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Telegram</a>
+        <a class="anim-fade-up" style="animation-delay:1230ms" href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a>
+        <a class="anim-fade-up" style="animation-delay:1310ms" href="mailto:paladei702@gmail.com" data-t="s3">Email</a>
+      </div>
+    </div>
+    <button class="hb anim-fade-up" style="animation-delay:900ms" id="hb" type="button" aria-label="Open menu" aria-expanded="false">
+      <span class="bars"><i></i><i></i><i></i></span>
+    </button>
+  </header>
+
+  <div class="shade" id="shade" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" aria-label="Mobile Navigation">
+    <button class="close" id="close" type="button" aria-label="Close menu"><svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    <div class="dtop">
+      <span class="dlab" style="--d:250ms" data-t="si">Site Index</span>
+      <nav class="dnav">
+        <a href="#" style="--d:300ms" data-t="n1">Story</a>
+        <a href="#" style="--d:380ms" data-t="n2">Jobs</a>
+        <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener" style="--d:460ms" data-t="n3">Message</a>
+      </nav>
+    </div>
+    <div class="dbot">
+      <span class="dlab" style="--d:500ms" data-t="fm">Find Me</span>
+      <div class="dsoc">
+        <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener" style="--d:550ms">Telegram</a>
+        <a href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener" style="--d:610ms">MAX</a>
+        <a href="mailto:paladei702@gmail.com" style="--d:670ms" data-t="s3">Email</a>
+      </div>
+    </div>
+  </aside>
+</section>
+<script>
+(() => {
+if (new URLSearchParams(location.search).get('lang') === 'ru') {
+  const l = document.createElement('link');
+  l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Arimo:wght@400&display=swap';
+  document.head.appendChild(l);
+  const TR = { mq: 'g.a.d. — Студия ', f1: 'Собираю визуал', f2: 'Цифровой мастер', f3: 'Помешан на движении', f4: 'Открыт к проектам',
+    n1: 'История', n2: 'Работы', n3: 'Написать', s3: 'Почта', si: 'Навигация', fm: 'Где меня найти' };
+  document.documentElement.lang = 'ru';
+  document.title = 'g.a.d. — Студия';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.textContent = t; });
+}
+const hb = document.getElementById('hb'), shade = document.getElementById('shade'), drawer = document.getElementById('drawer');
+const set = open => {
+  [hb, shade, drawer].forEach(el => el.classList.toggle('open', open));
+  hb.setAttribute('aria-expanded', open);
+  hb.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  document.body.style.overflow = open ? 'hidden' : '';
+};
+hb.addEventListener('click', () => set(!drawer.classList.contains('open')));
+shade.addEventListener('click', () => set(false));
+document.getElementById('close').addEventListener('click', () => set(false));
+drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => set(false)));
+})();
+</script>
+</body>
+</html>
