@@ -7,7 +7,7 @@
 <!-- Один файл вместо React + Vite + Tailwind + lucide-react. ?lang=ru — русская версия (у Helvetica Neue Light нет кириллицы, по-русски — Inter 300).
      Вместо «$1MM in credits» и строки «Backed by» с выдуманными инвесторами — нейтральная плашка и то, что внутри системы, теми же пятью шрифтами:
      под логотипом g.a.d. чужие деньги и инвесторы читались бы как наши. -->
-<link rel="stylesheet" href="https://db.onlinewebfonts.com/c/0e6de1ec911a2e267ff136bbdd384a44?family=Helvetica+Neue+Light">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Oswald:wght@500&family=Montserrat:wght@700&family=Roboto+Slab:wght@600&family=Raleway:wght@700&family=Inter:wght@300&display=swap" rel="stylesheet">
@@ -113,6 +113,7 @@ h1 br{display:none}
 }
 @media (prefers-reduced-motion:reduce){.gad .ring{animation:none;stroke-dashoffset:0}.gad .orb{animation:none;opacity:1}}
 </style>
+<link rel="stylesheet" href="https://db.onlinewebfonts.com/c/0e6de1ec911a2e267ff136bbdd384a44?family=Helvetica+Neue+Light">
 </head>
 <body>
 <header class="nav" id="nav">
@@ -195,5 +196,6 @@ burger.addEventListener('click', () => setMenu(!overlay.classList.contains('open
 overlay.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
 })();
 </script>
+<a class="owf-credit" href="https://www.onlinewebfonts.com" target="_blank" rel="noopener" style="position:fixed;left:6px;bottom:4px;z-index:2147483000;font:9px/1.2 system-ui,sans-serif;color:#8a8a8a;opacity:.55;text-decoration:none">Fonts made from Web Fonts is licensed by CC BY 4.0</a>
 </body>
 </html>

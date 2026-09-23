@@ -7,7 +7,7 @@
 <!-- Один файл вместо React + Vite + Tailwind. ?lang=ru — русская версия (у Helvetica Now нет кириллицы, по-русски текст набран Inter Tight).
      Ролик перематывается за движением мыши по горизонтали; пока мыши нет (телефон, курсор ушёл) — перематывается сам туда и обратно.
      v.mp4 — исходный ролик, пережатый с ключевым кадром каждые 4 кадра, чтобы перемотка не дёргалась. -->
-<link rel="stylesheet" href="https://db.onlinewebfonts.com/c/1aa3377e489837a26d019bba501e779d?family=HelveticaNowDisplayW01-Rg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet">
@@ -83,6 +83,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 }
 @media (prefers-reduced-motion:reduce){.gad .ring{animation:none;stroke-dashoffset:0}.gad .orb{animation:none;opacity:1}}
 </style>
+<link rel="stylesheet" href="https://db.onlinewebfonts.com/c/1aa3377e489837a26d019bba501e779d?family=HelveticaNowDisplayW01-Rg">
 </head>
 <body>
 <video class="bg" id="bg" src="v.mp4" muted playsinline preload="auto"></video>
@@ -199,5 +200,6 @@ const tick = now => {
 requestAnimationFrame(tick);
 })();
 </script>
+<a class="owf-credit" href="https://www.onlinewebfonts.com" target="_blank" rel="noopener" style="position:fixed;left:6px;bottom:4px;z-index:2147483000;font:9px/1.2 system-ui,sans-serif;color:#8a8a8a;opacity:.55;text-decoration:none">Fonts made from Web Fonts is licensed by CC BY 4.0</a>
 </body>
 </html>

@@ -6,7 +6,7 @@
 <title>g.a.d. — Studio</title>
 <!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия (у Helvetica Neue ME нет кириллицы — там Arimo).
      Имя выдуманного автора заменено на g.a.d., его соцсети — на наши контакты, «оммаж» чужому персонажу игры — на контакт. -->
-<link href="https://db.onlinewebfonts.com/c/95cecf452d3208890088a5b4c19c7ecf?family=Helvetica+Neue+ME" rel="stylesheet" type="text/css">
+
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -105,6 +105,7 @@ header{position:absolute;left:0;right:0;top:0;z-index:30;display:flex;align-item
   .ring{stroke-dashoffset:0}.orb{opacity:1}
 }
 </style>
+<link rel="stylesheet" href="https://db.onlinewebfonts.com/c/95cecf452d3208890088a5b4c19c7ecf?family=Helvetica+Neue+ME">
 </head>
 <body>
 <section class="hero">
@@ -194,5 +195,6 @@ document.getElementById('close').addEventListener('click', () => set(false));
 drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => set(false)));
 })();
 </script>
+<a class="owf-credit" href="https://www.onlinewebfonts.com" target="_blank" rel="noopener" style="position:fixed;left:6px;bottom:4px;z-index:2147483000;font:9px/1.2 system-ui,sans-serif;color:#8a8a8a;opacity:.55;text-decoration:none">Fonts made from Web Fonts is licensed by CC BY 4.0</a>
 </body>
 </html>
