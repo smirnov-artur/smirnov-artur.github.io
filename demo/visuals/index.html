@@ -319,7 +319,7 @@ a { text-decoration: none; }
     <div class="menu-socials">
       <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Telegram</a>
       <a href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a>
-      <a href="https://smirnov-artur.github.io/portfolio/" target="_blank" rel="noopener" data-t="folio">Portfolio</a>
+      <a href="https://smirnov-artur.github.io/works/?lang=en" target="_blank" rel="noopener" data-t="folio" id="folio">Portfolio</a>
     </div>
   </div>
   <div style="margin-top:32px;">
@@ -379,6 +379,7 @@ a { text-decoration: none; }
     document.documentElement.lang = 'ru';
     document.title = 'g.a.d. — визуал';
     document.querySelectorAll('[data-t]').forEach(function(el) { var t = TR[el.dataset.t]; if (t) el.textContent = t; });
+    document.getElementById('folio').href = 'https://smirnov-artur.github.io/works/';
   }
 
   // Word reveal
