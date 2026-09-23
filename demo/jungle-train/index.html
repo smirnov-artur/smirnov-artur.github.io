@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. — Urban jungle</title>
+<!-- Один файл вместо React + Vite + Tailwind + hls.js. GSAP с ScrollTrigger и ScrollToPlugin — с jsdelivr. ?lang=ru — русская версия.
+     v.mp4 — тот же ролик из потока Mux (1080p), пережатый с ключевым кадром каждые 4 кадра: перематывается прокруткой без рывков и без hls.js.
+     Бегущая строка чужих брендов заменена направлениями студии. Пока страницу не трогают, ролик сам «дышит» у начала,
+     а кадр плавает, как от мыши. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Dirtyline36Daysoftype2022';src:url('Dirtyline-36daysoftype-2022.woff2') format('woff2');font-style:normal;font-weight:normal;font-display:swap}
+:root{--sans:"Manrope",ui-sans-serif,system-ui,sans-serif;--serif:"Instrument Serif",ui-serif,Georgia,Cambria,"Times New Roman",Times,serif;
+  --dirty:"Dirtyline36Daysoftype2022",sans-serif;--pill-bg:#f0f0f0;--pill-text:#000}
+.ru{--serif:"Cormorant",ui-serif,Georgia,serif}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:#000;color:#fff;font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+
+/* 1. ролик за прокруткой */
+.vwrap{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;transform-origin:center}
+.vwrap video{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.35)}
+.loading{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;font-family:var(--sans);font-size:24px;line-height:32px;transition:opacity .4s}
+.loading.off{opacity:0;pointer-events:none}
+
+/* 2. крупный текст */
+.float{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;pointer-events:none}
+.scroll-float-text{display:inline-block;margin:0;font-family:var(--dirty);font-weight:normal;font-size:clamp(4rem,15vw,317px);line-height:.85;letter-spacing:0;color:#fff}
+.char{display:inline-block}
+.ru .scroll-float-text{font-family:'Montserrat Alternates',sans-serif;font-weight:500;text-transform:uppercase;font-size:clamp(3.4rem,12vw,250px)}
+.ru .char.ini{font-family:'Ponomar',serif;font-weight:400;font-size:1.12em;line-height:.8}
+
+/* 3. стеклянная панель */
+.glass{position:absolute;bottom:0;left:0;width:100%;height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;pointer-events:none;overflow:hidden}  /* иначе сдвинутая вниз панель удлиняет страницу */
+.pwrap{width:100%;max-width:1250px;height:900px;max-height:85vh;pointer-events:auto;perspective:1000px}
+.panel{width:100%;height:100%;display:flex;flex-direction:column;justify-content:space-between;border-radius:24px;position:relative;overflow:hidden;
+  background-color:rgba(0,0,0,.16);-webkit-backdrop-filter:blur(160px);backdrop-filter:blur(160px);border:1px solid rgba(255,255,255,.1);transform-style:preserve-3d;will-change:transform}
+.pbody{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px;text-align:center;min-height:0}
+.pbody p{margin:0 0 16px;font-family:var(--serif);font-style:italic;color:rgba(255,255,255,.7);font-size:16px;line-height:24px}
+.pbody h2{margin:0 auto;width:100%;max-width:1000px;font-family:var(--serif);font-weight:400;color:#fff;font-size:36px;line-height:1.1;letter-spacing:-.025em}
+.ru .pbody p,.ru .pbody h2{font-weight:500}
+.it{font-style:italic}
+.marquee{border-top:1px solid rgba(255,255,255,.1);padding:24px 0;overflow:hidden;white-space:nowrap}
+.mtrack{display:inline-flex;animation:marquee 20s linear infinite}
+.mtrack span{padding-right:56px;font-family:var(--sans);font-weight:600;font-size:14px;line-height:20px;letter-spacing:.1em;text-transform:uppercase;color:#fff;opacity:.4;transition:opacity .3s}
+.mtrack span:hover{opacity:1}
+@keyframes marquee{100%{transform:translateX(-50%)}}
+
+/* 4. навигация-пилюли */
+.pill-nav-container{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:100;font-family:'Manrope',sans-serif}
+.pill-nav{display:flex;align-items:center;background-color:transparent;padding:0;gap:0}
+.pill-logo{display:flex;align-items:center;justify-content:center;border-radius:50px;background-color:#000;height:48px;padding:0 16px;flex-shrink:0;color:#fff}
+.logo-svg-container{display:flex;align-items:center;justify-content:center}
+.logo-svg-container svg{display:block;height:17px;width:auto;overflow:visible}
+.logo-svg-container svg text{font-family:'Unbounded',sans-serif}
+.ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .5s forwards}
+.orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.5s forwards,gad-orbit 7s linear 1.5s infinite}
+@keyframes gad-draw{to{stroke-dashoffset:0}}
+@keyframes gad-pop{to{opacity:1}}
+@keyframes gad-orbit{to{transform:rotate(360deg)}}
+.pill-nav-items{background-color:#000;border-radius:50px;padding:4px;border:2px solid #000;overflow:hidden}
+.pill-list{display:flex;align-items:center;gap:4px;list-style:none;margin:0;padding:0}
+.pill{position:relative;display:block;padding:8px 24px;border-radius:50px;text-decoration:none;color:#000;font-weight:600;font-size:14px;letter-spacing:.05em;text-transform:uppercase;overflow:hidden;background-color:#f0f0f0;transition:background-color .3s ease;white-space:nowrap}
+.pill.is-active{background-color:#e0e0e0}
+.hover-circle{position:absolute;left:50%;bottom:0;background-color:#000;border-radius:50%;pointer-events:none;z-index:0;transform:scale(0)}
+.label-stack{position:relative;display:block;z-index:1;overflow:hidden;height:1.2em}
+.pill-label,.pill-label-hover{display:block;line-height:1.2em;text-align:center}
+.pill-label-hover{position:absolute;top:0;left:0;width:100%;color:#fff}
+.mobile-menu-button{background:#000;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px;width:48px;height:48px;border-radius:50%;margin-left:4px}
+.hamburger-line{width:24px;height:2px;background-color:var(--pill-bg);display:block}
+.mobile-menu-popover{position:absolute;top:100%;left:-60px;right:-60px;margin-top:8px;background-color:var(--pill-bg);border-radius:16px;padding:16px;visibility:hidden;opacity:0}
+.mobile-menu-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.mobile-menu-link{color:var(--pill-text);text-decoration:none;font-size:1.1rem;display:block;text-align:center;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+@media (min-width:769px){.mobile-only{display:none !important}}
+@media (max-width:768px){.desktop-only{display:none !important}}
+
+@media (min-width:768px){
+  .float{padding:32px}
+  .glass{padding:32px}
+  .pbody{padding:0 48px}
+  .pbody p{font-size:18px;line-height:28px;margin-bottom:24px}
+  .pbody h2{font-size:60px}
+}
+@media (min-width:1024px){.pbody h2{font-size:clamp(60px,10.6vh,96px);line-height:.965}.ru .pbody h2{font-size:clamp(52px,8.6vh,80px);line-height:1.02}}  /* Cormorant шире Instrument Serif */
+@media (prefers-reduced-motion:reduce){.ring{animation:none;stroke-dashoffset:0}.orb{animation:none;opacity:1}.mtrack{animation:none}}
+</style>
+</head>
+<body>
+<div class="vwrap" id="vwrap"><video id="v" src="v.mp4" muted playsinline preload="auto"></video></div>
+<div class="loading" id="loading"><span><span data-t="load">Loading...</span> <span id="pct">0</span>%</span></div>
+
+<div class="pill-nav-container">
+  <nav class="pill-nav" aria-label="Main">
+    <a class="pill-logo" href="#" id="logo" aria-label="g.a.d.">
+      <span class="logo-svg-container" id="logosvg">
+        <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+          <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+          <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+          <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+        </svg>
+      </span>
+    </a>
+    <div class="pill-nav-items desktop-only" id="items">
+      <ul class="pill-list">
+        <li><a class="pill is-active" href="#" data-go="top"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label" data-t="home">Home</span><span class="pill-label-hover" data-t="home">Home</span></span></a></li>
+        <li><a class="pill" href="#" data-go="about"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label" data-t="about">About</span><span class="pill-label-hover" data-t="about">About</span></span></a></li>
+        <li><a class="pill" href="#" data-go="none"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label" data-t="services">Services</span><span class="pill-label-hover" data-t="services">Services</span></span></a></li>
+        <li><a class="pill" href="https://t.me/smirnovarturr" target="_blank" rel="noopener"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label" data-t="contact">Contact</span><span class="pill-label-hover" data-t="contact">Contact</span></span></a></li>
+      </ul>
+    </div>
+    <button class="mobile-menu-button mobile-only" id="mbtn" type="button" aria-label="Menu"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+  </nav>
+  <div class="mobile-menu-popover mobile-only" id="pop">
+    <ul class="mobile-menu-list">
+      <li><a class="mobile-menu-link" href="#" data-go="top" data-t="home">Home</a></li>
+      <li><a class="mobile-menu-link" href="#" data-go="about" data-t="about">About</a></li>
+      <li><a class="mobile-menu-link" href="#" data-go="none" data-t="services">Services</a></li>
+      <li><a class="mobile-menu-link" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="contact">Contact</a></li>
+    </ul>
+  </div>
+</div>
+
+<div id="root" style="position:relative;height:500vh">
+  <div class="float"><h1 class="scroll-float-text" id="float"></h1></div>
+  <div class="glass">
+    <div class="pwrap" id="pwrap">
+      <div class="panel" id="panel">
+        <div class="pbody">
+          <p data-t="sub">About Us</p>
+          <h2 data-t="h2">We transform sterile concrete into thriving <span class="it">urban</span> jungles. Our innovative designs bring wild <span class="it">nature</span> back to modern cities. Experience the <span class="it">bloom</span></h2>
+        </div>
+        <div class="marquee"><div class="mtrack" id="mtrack"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" integrity="sha384-HOvlOYPIs/zjoIkWUGXkVmXsjr8GuZLV+Q+rcPwmJOVZVpvTSXQChiN4t9Euv9Vc" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" integrity="sha384-P8VzCVnT9NBUkMrpcIZrJbA7EBjJvh/fJS6PmP+4nLIM284DtsImIv8D0fFjIkeh" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollToPlugin.min.js" integrity="sha384-dUEYjN2xd8Wk4WIZYrCpK7Ww7+r/LVtVebVp8skuwm9bKGoVo2bZrWuA79w8TI+v" crossorigin="anonymous"></script>
+<script>
+(() => {
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+let TITLE = 'Unleash The\nFull Power';
+let TAGS = ['Green roofs', 'Vertical gardens', 'Living walls', 'Courtyards', 'Urban parks'];
+if (RU) {
+  // у Dirtyline и Instrument Serif нет кириллицы: заглавные — вязью Ponomar, остальное — Montserrat Alternates; засечки — Cormorant
+  const l = document.createElement('link'); l.rel = 'stylesheet';
+  l.href = 'https://fonts.googleapis.com/css2?family=Ponomar&family=Montserrat+Alternates:wght@500&family=Cormorant:ital,wght@0,500;1,500&display=swap';
+  document.head.appendChild(l);
+  const TR = { load: 'Загрузка…', home: 'Главная', about: 'О нас', services: 'Услуги', contact: 'Контакты', sub: 'О нас',
+    h2: 'Мы превращаем серый бетон в цветущие <span class="it">городские</span> джунгли. Наши проекты возвращают дикую <span class="it">природу</span> в современные города. Почувствуйте, как всё <span class="it">цветёт</span>' };
+  TITLE = 'Раскрой\nвсю мощь';
+  TAGS = ['Зелёные крыши', 'Вертикальные сады', 'Живые стены', 'Дворы', 'Городские парки'];
+  document.documentElement.lang = 'ru';
+  document.documentElement.classList.add('ru');
+  document.title = 'g.a.d. — городские джунгли';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.innerHTML = t; });
+}
+const $ = id => document.getElementById(id);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// бегущая строка: ряд повторён 4 раза, сдвиг на -50% за 20 с
+const row = TAGS.map(t => '<span>' + t + '</span>').join('');
+$('mtrack').innerHTML = row + row + row + row;
+
+// ScrollFloat: строки → слова → буквы
+const float = $('float');
+TITLE.split('\n').forEach(line => {
+  const l = document.createElement('span'); l.style.display = 'block';
+  line.split(' ').forEach((word, wi) => {
+    if (wi) l.appendChild(document.createTextNode(' '));
+    const w = document.createElement('span'); w.style.display = 'inline-block'; w.style.whiteSpace = 'nowrap';
+    [...word].forEach((ch, ci) => { const c = document.createElement('span'); c.className = 'char' + (ci === 0 ? ' ini' : ''); c.textContent = ch; w.appendChild(c); });
+    l.appendChild(w);
+  });
+  float.appendChild(l);
+});
+gsap.fromTo(float.querySelectorAll('.char'),
+  { opacity: 1, yPercent: 0, scaleY: 1, scaleX: 1, transformOrigin: '50% 0%' },
+  { opacity: 0, yPercent: 250, scaleY: 1.2, scaleX: 0.9, stagger: 0.05, ease: 'power2.inOut', duration: 1,
+    scrollTrigger: { trigger: document.body, start: 'top top', end: '+=1000', scrub: 1.5 } });
+
+// стеклянная панель выезжает снизу
+gsap.fromTo($('pwrap'), { y: '100%' }, { y: '0%', ease: 'none',
+  scrollTrigger: { trigger: $('root'), start: 'top bottom', end: 'bottom bottom', scrub: 1.5 } });
+
+// ScrollVideo: прокрутка → кадр, перемотка не чаще, чем браузер дорисовывает прошлую
+const video = $('v'), loading = $('loading'), pct = $('pct');
+let duration = 0, currentTarget = 0, seekPending = false, scrollP = 0, drift = 0;
+const doSeek = () => {
+  if (!duration) return;
+  if (video.seeking) { seekPending = true; return; }
+  if (Math.abs(video.currentTime - currentTarget) > 0.005) video.currentTime = currentTarget;
+};
+video.addEventListener('seeked', () => { if (seekPending) { seekPending = false; doSeek(); } });
+const onMeta = () => { duration = video.duration || 0; doSeek(); };
+if (video.readyState >= 1) onMeta(); else video.addEventListener('loadedmetadata', onMeta);
+video.addEventListener('progress', () => {
+  if (!video.duration || !video.buffered.length) return;
+  pct.textContent = Math.round(video.buffered.end(video.buffered.length - 1) / video.duration * 100);
+});
+const hideLoading = () => loading.classList.add('off');
+if (video.readyState >= 3) hideLoading(); else video.addEventListener('canplay', hideLoading, { once: true });
+ScrollTrigger.create({ trigger: document.documentElement, start: 'top top', end: 'bottom bottom', scrub: true,
+  onUpdate: self => { scrollP = self.progress; currentTarget = Math.min(duration, scrollP * duration + drift); doSeek(); } });
+
+// параллакс: ролик от мыши, панель — в 3D
+const wrap = $('vwrap'), panel = $('panel');
+gsap.set(wrap, { scale: 1.05 });
+const qx = gsap.quickTo(wrap, 'x', { duration: 1.5, ease: 'power2.out' }), qy = gsap.quickTo(wrap, 'y', { duration: 1.5, ease: 'power2.out' });
+const px = gsap.quickTo(panel, 'x', { duration: 1, ease: 'power3.out' }), py = gsap.quickTo(panel, 'y', { duration: 1, ease: 'power3.out' });
+const ry = gsap.quickTo(panel, 'rotationY', { duration: 1, ease: 'power3.out' }), rx = gsap.quickTo(panel, 'rotationX', { duration: 1, ease: 'power3.out' });
+const move = (mx, my) => { qx(mx * -30); qy(my * -30); px(mx * 20); py(my * 20); ry(mx * 4); rx(-my * 4); };
+let lastMouse = -1e9, lastScroll = -1e9;
+addEventListener('mousemove', e => {
+  lastMouse = performance.now();
+  move((e.clientX / innerWidth - 0.5) * 2, (e.clientY / innerHeight - 0.5) * 2);
+});
+addEventListener('scroll', () => { lastScroll = performance.now(); }, { passive: true });
+
+// автопилот, пока страницу не трогают: кадр плавает, а вверху ролик «дышит» на 1,2 с вперёд и назад
+const AMP = 1.2, PERIOD = 10;
+let idleFrom = 0, wasIdle = false;
+gsap.ticker.add(() => {
+  if (reduce) return;
+  const now = performance.now(), t = now / 1000;
+  if (now - lastMouse > 3000) move(0.6 * Math.sin(t * 0.45), 0.45 * Math.sin(t * 0.63 + 1));
+  const idle = scrollP < 0.01 && now - lastScroll > 2500;
+  if (idle && !wasIdle) idleFrom = now;
+  wasIdle = idle;
+  const want = idle ? AMP * (1 - Math.cos((now - idleFrom) / 1000 * 2 * Math.PI / PERIOD)) / 2 : 0;
+  const next = drift + (want - drift) * 0.04;
+  if (Math.abs(next - drift) > 1e-4 || (want === 0 && drift !== 0)) {
+    drift = Math.abs(next) < 1e-3 && want === 0 ? 0 : next;
+    currentTarget = Math.min(duration, scrollP * duration + drift);
+    doSeek();
+  }
+});
+
+// PillNav: логотип и ряд пилюль появляются, заливка пилюль кругом
+const ease = 'power3.out', items = $('items'), logo = $('logo');
+gsap.fromTo(logo, { scale: 0 }, { scale: 1, duration: 0.6, ease });
+if (getComputedStyle(items).display !== 'none') gsap.fromTo(items, { width: 0 }, { width: 'auto', duration: 0.6, ease });
+logo.addEventListener('mouseenter', () => gsap.fromTo($('logosvg'), { rotate: 0 }, { rotate: 360, duration: 0.2, ease: 'none' }));
+
+const pills = [...document.querySelectorAll('.pill')], tls = [], tweens = [];
+function layout() {
+  pills.forEach((pill, i) => {
+    const circle = pill.querySelector('.hover-circle'), label = pill.querySelector('.pill-label'), white = pill.querySelector('.pill-label-hover');
+    const { width: w, height: h } = pill.getBoundingClientRect();
+    if (!w || !h) return;
+    const R = (w * w / 4 + h * h) / (2 * h), D = Math.ceil(2 * R) + 2, delta = Math.ceil(R - Math.sqrt(Math.max(0, R * R - w * w / 4))) + 1;
+    circle.style.width = D + 'px'; circle.style.height = D + 'px'; circle.style.bottom = -delta + 'px';
+    gsap.set(circle, { xPercent: -50, scale: 0, transformOrigin: '50% ' + (D - delta) + 'px' });
+    gsap.set(label, { y: 0 });
+    gsap.set(white, { y: Math.ceil(h + 100), opacity: 0 });
+    if (tls[i]) tls[i].kill();
+    const tl = gsap.timeline({ paused: true });
+    tl.to(circle, { scale: 3, xPercent: -50, duration: 2, ease, overwrite: 'auto' }, 0);
+    tl.to(label, { y: -(h + 8), duration: 2, ease, overwrite: 'auto' }, 0);
+    tl.to(white, { y: 0, opacity: 1, duration: 2, ease, overwrite: 'auto' }, 0);
+    tls[i] = tl;
+  });
+}
+pills.forEach((pill, i) => {
+  pill.addEventListener('mouseenter', () => { if (!tls[i]) return; if (tweens[i]) tweens[i].kill(); tweens[i] = tls[i].tweenTo(tls[i].duration(), { duration: 0.3, ease, overwrite: 'auto' }); });
+  pill.addEventListener('mouseleave', () => { if (!tls[i]) return; if (tweens[i]) tweens[i].kill(); tweens[i] = tls[i].tweenTo(0, { duration: 0.2, ease, overwrite: 'auto' }); });
+});
+document.fonts.ready.then(() => setTimeout(layout, 700));
+addEventListener('resize', layout);
+
+// переходы: HOME — наверх, ABOUT — к панели
+document.querySelectorAll('[data-go]').forEach(a => a.addEventListener('click', e => {
+  e.preventDefault();
+  const go = a.dataset.go;
+  if (go === 'top') gsap.to(window, { duration: 3, scrollTo: 0, ease: 'power3.inOut' });
+  if (go === 'about') gsap.to(window, { duration: 3, scrollTo: document.body.scrollHeight, ease: 'power3.inOut' });
+  if (open) toggle();
+}));
+
+// меню телефона
+const mbtn = $('mbtn'), pop = $('pop'), lines = mbtn.querySelectorAll('.hamburger-line');
+let open = false;
+function toggle() {
+  open = !open;
+  gsap.to(lines[0], { rotation: open ? 45 : 0, y: open ? 3 : 0, duration: 0.3, ease });
+  gsap.to(lines[1], { rotation: open ? -45 : 0, y: open ? -3 : 0, duration: 0.3, ease });
+  if (open) {
+    gsap.set(pop, { visibility: 'visible' });
+    gsap.fromTo(pop, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3, ease });
+  } else {
+    gsap.to(pop, { opacity: 0, y: 10, duration: 0.2, ease, onComplete: () => gsap.set(pop, { visibility: 'hidden' }) });
+  }
+}
+mbtn.addEventListener('click', toggle);
+pop.querySelectorAll('a:not([data-go])').forEach(a => a.addEventListener('click', () => { if (open) toggle(); }));
+})();
+</script>
+</body>
+</html>

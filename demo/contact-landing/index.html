@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. — Say hello</title>
+<!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия.
+     Форма не притворяется: по «Отправить» открывает письмо на нашу почту с заполненными полями, а в ответе говорит,
+     что осталось нажать «Отправить» (в исходнике — «ответим за 24 часа», хотя ничего никуда не уходило). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Cormorant:ital,wght@1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{font-family:'Inter',sans-serif}
+html,body{background:#fff}
+body{-webkit-font-smoothing:antialiased;color:#000}
+a{color:inherit;text-decoration:none}
+button,input,textarea{font:inherit;color:inherit}
+.i{display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.root{min-height:100vh;padding:12px}
+.card,.content{min-height:calc(100vh - 24px)}
+.card{position:relative;border-radius:16px;overflow:hidden;background:#1f2937}
+.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.content{position:relative;z-index:10;display:flex;flex-direction:column;padding:16px;gap:24px}
+
+/* верх */
+.nav{display:flex;align-items:center;gap:12px;width:100%;padding:8px 8px 8px 12px;border-radius:16px;background:rgba(255,255,255,.6);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 1px 2px 0 rgba(0,0,0,.05)}
+.gad{display:block;color:#000;flex:none}
+.gad svg{display:block;height:24px;width:auto;overflow:visible}
+.gad svg text{font-family:'Unbounded',sans-serif}
+.ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}
+.orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}
+@keyframes gad-draw{to{stroke-dashoffset:0}}
+@keyframes gad-pop{to{opacity:1}}
+@keyframes gad-orbit{to{transform:rotate(360deg)}}
+.links{display:none;align-items:center;gap:20px}
+.links a{color:#1f2937;font-size:14px;line-height:20px;font-weight:500;white-space:nowrap;transition:opacity .15s}
+.links a:hover{opacity:.6}
+.cta{margin-left:auto;background:#000;color:#fff;font-size:14px;line-height:20px;font-weight:500;padding:8px 16px;border-radius:12px;white-space:nowrap;transition:background-color .15s}
+.cta:hover{background:#1f2937}
+
+.spacer{flex:1;min-height:2rem}
+
+/* низ */
+.bottom{display:flex;flex-direction:column;gap:24px}
+.head{flex-shrink:0;color:#fff;font-size:30px;line-height:1.25;font-weight:500;
+  filter:drop-shadow(0 10px 8px rgba(0,0,0,.04)) drop-shadow(0 4px 3px rgba(0,0,0,.1))}
+.acc{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400}
+.formwrap{width:100%;flex-shrink:0}
+.fcard{background:#fff;border-radius:16px;box-shadow:0 25px 50px -12px rgba(0,0,0,.25);overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:16px}
+.fcard h2{font-size:20px;line-height:28px;font-weight:600;color:#000;letter-spacing:-.025em}
+.mailrow{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;background:#f9fafb;border-radius:16px;padding:10px 16px}
+.mailrow .l{min-width:0}
+.mailrow small{display:block;font-size:12px;line-height:16px;color:#9ca3af}
+.mailrow .m{display:block;color:#2563eb;font-weight:600;font-size:14px;line-height:20px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mailrow .m:hover{text-decoration:underline}
+.soc{display:flex;gap:6px;flex:none}
+.sb{width:32px;height:32px;border-radius:12px;display:flex;align-items:center;justify-content:center;transition:opacity .15s}
+.sb:hover{opacity:.8}
+.sb .i{width:13px;height:13px}
+.sb.gray{background:#f3f4f6;color:#1f2937}
+.sb.pink{background:#fce7f3;color:#ec4899}
+.sb.blue{background:#dbeafe;color:#2563eb}
+.or{display:flex;align-items:center;gap:12px;color:#9ca3af;font-weight:500;font-size:14px;line-height:20px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:#e5e7eb}
+form{display:flex;flex-direction:column;gap:16px}
+.grp{display:flex;flex-direction:column;gap:8px}
+.lab{font-size:14px;line-height:20px;font-weight:500;color:#000}
+.two{display:flex;flex-direction:column;gap:8px}
+.inp{flex:1;min-width:0;width:100%;font-size:14px;line-height:20px;padding:10px 12px;border-radius:12px;border:1px solid #e5e7eb;background:transparent;
+  transition:box-shadow .15s,border-color .15s}
+.inp::placeholder{color:#9ca3af}
+.inp:focus{outline:none;border-color:transparent;box-shadow:0 0 0 2px #111827}
+textarea.inp{resize:none;display:block}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;line-height:16px;font-weight:500;padding:8px 12px;border-radius:8px;border:1px solid #e5e7eb;background:#fff;color:#374151;cursor:pointer;transition:all .15s}
+.tag:hover{border-color:#9ca3af}
+.tag.on{background:#f3f4f6;color:#000;border-color:#000}
+.send{width:100%;background:#000;color:#fff;font-size:14px;line-height:20px;font-weight:600;padding:12px;border:0;border-radius:16px;cursor:pointer;transition:background-color .15s}
+.send:hover{background:#1f2937}
+.send:disabled{opacity:.6}
+.done{display:none;flex-direction:column;align-items:center;text-align:center;padding:24px 0;gap:12px}
+.fcard.sent form{display:none}
+.fcard.sent .done{display:flex}
+.ok{width:48px;height:48px;border-radius:9999px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:20px;color:#16a34a}
+.done b{font-size:16px;line-height:24px;font-weight:600;color:#111827}
+.done p{font-size:14px;line-height:20px;color:#6b7280;max-width:22rem}
+.done p a{color:#2563eb;font-weight:500}
+.done p a:hover{text-decoration:underline}
+
+.ru .acc{font-family:'Cormorant',serif;font-weight:500}
+@media (max-width:639px){.mailrow{padding:10px 12px}.mailrow .m{font-size:13px}}
+
+@media (min-width:640px){
+  .root{padding:16px}
+  .card,.content{min-height:calc(100vh - 32px)}
+  .card{border-radius:24px}
+  .content{padding:24px}
+  .nav{width:auto;align-self:flex-start;gap:24px;padding-left:16px}
+  .links{display:flex}
+  .cta{margin-left:0;padding:8px 20px}
+  .head{font-size:36px;line-height:1.25}
+  .fcard{border-radius:24px;padding:24px}
+  .fcard h2{font-size:24px;line-height:32px}
+  .two{flex-direction:row}
+}
+@media (min-width:768px){
+  .root{padding:24px}
+  .card,.content{min-height:calc(100vh - 48px)}
+  .content{padding:32px}
+}
+@media (min-width:1024px){
+  .card{height:calc(100vh - 48px)}
+  .content{height:100%}
+  .bottom{flex-direction:row;align-items:flex-end;justify-content:space-between}
+  .head{max-width:32rem}
+  .formwrap{width:min(480px,45%)}
+}
+@media (min-width:1280px){
+  .head{font-size:48px;line-height:1.25;max-width:42rem}
+}
+@media (prefers-reduced-motion:reduce){.ring{animation:none;stroke-dashoffset:0}.orb{animation:none;opacity:1}}
+</style>
+</head>
+<body>
+<div class="root">
+  <div class="card">
+    <video class="bg" autoplay muted loop playsinline src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260602_150901_c45b90ec-18d7-42ff-90e2-b95d7109e330.mp4"></video>
+    <div class="content">
+      <nav class="nav">
+        <a class="gad" href="#" aria-label="g.a.d.">
+          <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+            <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+            <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+            <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+          </svg>
+        </a>
+        <div class="links">
+          <a href="#" data-t="n1">Our story</a>
+          <a href="#" data-t="n2">Expertise</a>
+          <a href="#" data-t="n3">Our work</a>
+          <a href="#" data-t="n4">Journal</a>
+        </div>
+        <a class="cta" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="start">Start a project</a>
+      </nav>
+
+      <div class="spacer"></div>
+
+      <div class="bottom">
+        <p class="head" data-t="head">We craft bold ideas<br>and ship them as <span class="acc">products</span></p>
+        <div class="formwrap">
+          <div class="fcard" id="fcard">
+            <h2 data-t="hello">Say hello! 👋</h2>
+            <div class="mailrow">
+              <div class="l">
+                <small data-t="drop">Drop us a line</small>
+                <a class="m" href="mailto:paladei702@gmail.com">paladei702@gmail.com</a>
+              </div>
+              <div class="soc">
+                <a class="sb gray" id="folio" href="https://smirnov-artur.github.io/works/?lang=en" target="_blank" rel="noopener" aria-label="Portfolio" title="Portfolio">
+                  <svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                </a>
+                <a class="sb pink" href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener" aria-label="MAX" title="MAX">
+                  <svg class="i" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+                </a>
+                <a class="sb blue" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" aria-label="Telegram" title="Telegram">
+                  <svg class="i" viewBox="0 0 24 24"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
+                </a>
+              </div>
+            </div>
+            <div class="or" data-t="or">OR</div>
+            <form id="form">
+              <div class="grp">
+                <label class="lab" for="name" data-t="vision">Tell us about your vision</label>
+                <div class="two">
+                  <input class="inp" id="name" type="text" placeholder="Full name" data-p="name">
+                  <input class="inp" id="email" type="email" placeholder="Email" data-p="email">
+                </div>
+                <textarea class="inp" id="msg" rows="4" placeholder="What are you looking to build or improve..." data-p="msg"></textarea>
+              </div>
+              <div class="grp">
+                <span class="lab" data-t="help">I need help with...</span>
+                <div class="tags" id="tags"></div>
+              </div>
+              <button class="send" id="send" type="submit" data-t="send">Send my message</button>
+            </form>
+            <div class="done" aria-live="polite">
+              <span class="ok">✓</span>
+              <b data-t="doneh">Almost there!</b>
+              <p data-t="donep">Your mail app has the letter ready — just hit Send. No mail app? Write on <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Telegram</a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+const MAIL = 'paladei702@gmail.com';
+let SERVICES = ['Website', 'Mobile App', 'Web App', 'E-Commerce', 'Visual Identity', '3D & Motion', 'Digital Marketing', 'Growth & Consulting', 'Other'];
+let T = { send: 'Send my message', sending: 'Sending...', subj: 'New project', name: 'Name', mail: 'Email', need: 'Need help with', msg: 'Message' };
+const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+if (RU) {
+  const TR = { n1: 'О нас', n2: 'Экспертиза', n3: 'Работы', n4: 'Журнал', start: 'Начать проект',
+    head: 'Смелые идеи<br>превращаем в <span class="acc">продукты</span>',
+    hello: 'Будем знакомы! 👋', drop: 'Пишите на почту', or: 'ИЛИ', vision: 'Расскажите о задумке', help: 'Нужна помощь с…',
+    send: 'Отправить', doneh: 'Почти готово!',
+    donep: 'Письмо уже открылось в почте — осталось нажать «Отправить». Почты под рукой нет? Напишите в <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Telegram</a>.' };
+  const PH = { name: 'Имя', email: 'Почта', msg: 'Что хотите создать или улучшить…' };
+  SERVICES = ['Сайт', 'Мобильное приложение', 'Веб-сервис', 'Интернет-магазин', 'Фирменный стиль', '3D и анимация', 'Интернет-маркетинг', 'Рост и консалтинг', 'Другое'];
+  T = { send: 'Отправить', sending: 'Отправляем…', subj: 'Новый проект', name: 'Имя', mail: 'Почта', need: 'Нужна помощь с', msg: 'Сообщение' };
+  document.documentElement.lang = 'ru';
+  document.documentElement.classList.add('ru');
+  document.title = 'g.a.d. — будем знакомы';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.innerHTML = t; });
+  document.querySelectorAll('[data-p]').forEach(el => { el.placeholder = PH[el.dataset.p]; });
+  const f = document.getElementById('folio'); f.href = 'https://smirnov-artur.github.io/works/'; f.title = 'Портфолио'; f.setAttribute('aria-label', 'Портфолио');
+}
+
+// услуги: мультивыбор
+const selected = new Set(), tags = document.getElementById('tags');
+SERVICES.forEach(s => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'tag'; b.textContent = s;
+  b.addEventListener('click', () => { selected.has(s) ? selected.delete(s) : selected.add(s); b.classList.toggle('on', selected.has(s)); });
+  tags.appendChild(b);
+});
+
+// отправка: письмо на нашу почту с полями формы, потом «почти готово»
+const form = document.getElementById('form'), send = document.getElementById('send'), card = document.getElementById('fcard');
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const v = id => document.getElementById(id).value.trim();
+  const body = [T.name + ': ' + v('name'), T.mail + ': ' + v('email'), T.need + ': ' + ([...selected].join(', ') || '—'), '', T.msg + ':', v('msg')].join('\n');
+  location.href = 'mailto:' + MAIL + '?subject=' + encodeURIComponent(T.subj) + '&body=' + encodeURIComponent(body);
+  send.disabled = true; send.textContent = T.sending;
+  new Promise(r => setTimeout(r, 1000)).then(() => card.classList.add('sent'));
+});
+})();
+</script>
+</body>
+</html>

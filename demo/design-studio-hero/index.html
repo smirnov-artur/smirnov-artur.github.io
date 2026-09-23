@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. — UX and app design</title>
+<!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия (Instrument Serif без кириллицы → Cormorant 500). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;width:100%;overflow-x:hidden}
+body{font-family:Inter,system-ui,sans-serif;background:#000;color:#fff;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.serif{font-family:'Instrument Serif',serif;font-weight:400}
+.i{display:block;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* логотип g.a.d. */
+.gad{display:block;color:#fff}
+.gad svg{display:block;height:22px;width:auto;overflow:visible}
+.gad svg text{font-family:'Unbounded',sans-serif}
+.gad .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}
+.gad .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}
+@keyframes gad-draw{to{stroke-dashoffset:0}}
+@keyframes gad-pop{to{opacity:1}}
+@keyframes gad-orbit{to{transform:rotate(360deg)}}
+
+.hero{position:relative;width:100%;height:100vh;overflow:hidden}
+.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.layer{position:relative;z-index:10;display:flex;flex-direction:column;height:100%}
+
+/* навигация */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:20px 24px}
+.left,.right{display:flex;align-items:center}
+.left{gap:40px}
+.links{display:none;align-items:center;gap:32px}
+.links a{color:rgba(255,255,255,.8);font-size:14px;line-height:20px;font-weight:300;transition:color .2s}
+.links a:hover{color:#fff}
+.right{gap:24px}
+.reach{display:none;font-size:14px;line-height:20px;color:rgba(255,255,255,.8);font-weight:300;transition:color .2s}
+.reach:hover{color:#fff}
+.talk{display:none;background:#fff;color:#000;border-radius:9999px;padding:8px 20px;font-size:14px;line-height:20px;font-weight:500;transition:background-color .2s}
+.talk:hover{background:rgba(255,255,255,.9)}
+.burger{position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center;z-index:60}
+.burger span,.close span{position:absolute;left:8px;height:2px;border-radius:9999px;background:#fff;transition:transform .5s cubic-bezier(.76,0,.24,1),opacity .5s cubic-bezier(.76,0,.24,1)}
+.burger span{width:24px}
+.burger span:nth-child(1){top:13px}
+.burger span:nth-child(2){top:19px;width:16px}
+.burger span:nth-child(3){top:25px}
+.burger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* меню телефона */
+.menu{position:fixed;inset:0;z-index:50;pointer-events:none}
+.menu.open{pointer-events:auto}
+.shade{position:absolute;inset:0;background:rgba(0,0,0,.9);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);opacity:0;transition:opacity .7s cubic-bezier(.76,0,.24,1)}
+.box{position:relative;display:flex;flex-direction:column;height:100%;opacity:0;transition:opacity .7s cubic-bezier(.76,0,.24,1)}
+.menu.open .shade,.menu.open .box{opacity:1}
+.mhead{display:flex;align-items:center;justify-content:space-between;padding:20px 24px}
+.close{position:relative;width:40px;height:40px}
+.close span{width:24px;top:19px}
+.close span:nth-child(1){transform:rotate(45deg)}
+.close span:nth-child(2){transform:rotate(-45deg)}
+.mlinks{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 24px}
+.mlinks a{display:block;font-size:36px;line-height:40px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.1);color:#fff;
+  opacity:0;transform:translateY(32px);transition:opacity .7s cubic-bezier(.76,0,.24,1),transform .7s cubic-bezier(.76,0,.24,1),padding-left .5s cubic-bezier(.76,0,.24,1)}
+.mlinks a:hover{padding-left:16px}
+.menu.open .mlinks a{opacity:1;transform:none;transition-delay:var(--d),var(--d),0s}
+.mfoot{padding:0 24px 40px;opacity:0;transition:opacity .7s cubic-bezier(.76,0,.24,1)}
+.menu.open .mfoot{opacity:1;transition-delay:.55s}
+.mfoot a{display:block;width:100%;text-align:center;background:#fff;color:#000;border-radius:9999px;padding:16px;font-size:14px;font-weight:500}
+
+/* первый экран */
+.content{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:16px 24px 0;text-align:center}
+h1{font-size:30px;line-height:1.1;max-width:64rem}
+h1 em{font-style:italic}
+.sub{margin-top:16px;color:rgba(255,255,255,.7);font-size:14px;line-height:1.625;font-weight:300;max-width:28rem}
+.sub br{display:none}
+.btns{margin-top:20px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:9999px;padding:12px 28px;font-size:14px;line-height:20px;font-weight:500;transition:background-color .2s,border-color .2s}
+.btn-w{background:#fff;color:#000}
+.btn-w .i{transition:transform .2s}
+.btn-w:hover .i{transform:translateX(2px)}
+.btn-o{border:1px solid rgba(255,255,255,.4);color:#fff}
+.btn-o:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.6)}
+
+@media (min-width:640px){
+  .content{padding-top:24px}
+  h1{font-size:36px;line-height:1.1}
+  .sub br{display:block}
+  .btns{flex-direction:row}
+  .mlinks a{font-size:48px;line-height:1}
+}
+@media (min-width:768px){
+  .nav{padding:24px 48px}
+  .links,.reach,.talk{display:flex}
+  .burger,.menu{display:none}
+  .content{padding-top:32px}
+  h1{font-size:48px}
+  .sub{margin-top:20px;font-size:16px}
+  .btns{margin-top:24px}
+}
+@media (min-width:1024px){
+  .nav{padding-left:64px;padding-right:64px}
+  .content{padding-top:40px}
+  h1{font-size:60px}
+}
+@media (min-width:1280px){h1{font-size:72px}}
+
+/* русская версия: у Instrument Serif нет кириллицы */
+html[lang=ru] .serif{font-family:'Cormorant',serif;font-weight:500}
+@media (prefers-reduced-motion:reduce){.gad .ring{animation:none;stroke-dashoffset:0}.gad .orb{animation:none;opacity:1}}
+</style>
+</head>
+<body>
+<section class="hero">
+  <video class="bg" autoplay loop muted playsinline src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_204103_f607742e-09da-4cf5-bb06-4e67b0a531de.mp4"></video>
+  <div class="layer">
+    <nav class="nav">
+      <div class="left">
+        <a class="gad" href="#" aria-label="g.a.d.">
+          <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+            <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+            <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+            <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+          </svg>
+        </a>
+        <div class="links">
+          <a href="#" data-t="n1">Projects</a>
+          <a href="#" data-t="n2">Expertise</a>
+          <a href="#" data-t="n3">Studio</a>
+          <a href="#" data-t="n4">Insights</a>
+        </div>
+      </div>
+      <div class="right">
+        <a class="reach" href="mailto:paladei702@gmail.com" data-t="reach">Reach Out</a>
+        <a class="talk" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="talk">Let's Talk</a>
+        <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+
+    <div class="content">
+      <h1 class="serif" id="h1">UX <em>and</em> APP<br>DESIGN <em>for</em> BOLD<br>VENTURES</h1>
+      <p class="sub" id="sub">We shape digital products that define brands <br>and unlock exponential growth.</p>
+      <div class="btns">
+        <a class="btn btn-w" href="#"><span data-t="cases">See Cases</span><svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        <a class="btn btn-o" href="#"><svg class="i" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg><span data-t="reel">Watch Reel</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="menu" id="menu" aria-hidden="true">
+  <div class="shade"></div>
+  <div class="box">
+    <div class="mhead">
+      <a class="gad" href="#" aria-label="g.a.d.">
+        <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+          <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+          <circle cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6"/>
+          <circle cx="322" cy="8" r="5" fill="currentColor"/>
+        </svg>
+      </a>
+      <button class="close" id="close" type="button" aria-label="Close"><span></span><span></span></button>
+    </div>
+    <nav class="mlinks">
+      <a class="serif" href="#" style="--d:150ms" data-t="n1">Projects</a>
+      <a class="serif" href="#" style="--d:230ms" data-t="n2">Expertise</a>
+      <a class="serif" href="#" style="--d:310ms" data-t="n3">Studio</a>
+      <a class="serif" href="#" style="--d:390ms" data-t="n4">Insights</a>
+      <a class="serif" href="mailto:paladei702@gmail.com" style="--d:470ms" data-t="reach">Reach Out</a>
+    </nav>
+    <div class="mfoot"><a href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="talk">Let's Talk</a></div>
+  </div>
+</div>
+<script>
+(() => {
+if (new URLSearchParams(location.search).get('lang') === 'ru') {
+  const TR = { n1: 'Проекты', n2: 'Экспертиза', n3: 'Студия', n4: 'Статьи', reach: 'Написать', talk: 'Обсудить проект',
+    cases: 'Смотреть кейсы', reel: 'Шоурил' };
+  document.documentElement.lang = 'ru';
+  document.title = 'g.a.d. — UX и дизайн приложений';
+  document.head.insertAdjacentHTML('beforeend', '<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;1,500&display=swap" rel="stylesheet">');
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.textContent = t; });
+  document.getElementById('h1').innerHTML = 'UX <em>и</em> ДИЗАЙН<br>ПРИЛОЖЕНИЙ <em>для</em><br>СМЕЛЫХ ИДЕЙ';
+  document.getElementById('sub').innerHTML = 'Делаем цифровые продукты, по которым узнают бренд, <br>и которые помогают ему расти.';
+}
+const burger = document.getElementById('burger'), menu = document.getElementById('menu');
+const set = open => {
+  burger.classList.toggle('open', open); menu.classList.toggle('open', open);
+  burger.setAttribute('aria-expanded', open); menu.setAttribute('aria-hidden', !open);
+  document.body.style.overflow = open ? 'hidden' : '';
+};
+burger.addEventListener('click', () => set(!menu.classList.contains('open')));
+document.getElementById('close').addEventListener('click', () => set(false));
+menu.querySelectorAll('.mlinks a,.mfoot a').forEach(a => a.addEventListener('click', () => set(false)));
+addEventListener('keydown', e => { if (e.key === 'Escape') set(false); });
+})();
+</script>
+</body>
+</html>

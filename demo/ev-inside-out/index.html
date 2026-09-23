@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#708fa2"/>
+<meta name="description" content="g.a.d. Explore an electric vehicle from the inside out. An independent, fictional automotive concept."/>
+<title>g.a.d. — Electric, inside out.</title>
+<!-- Один файл вместо React + Vite + Tailwind + lucide-react: разметка, стили index.css, логика App/HoverVideo/AppearanceMenu перенесены 1:1.
+     Медиа релиза лежат рядом в media/ без пережатия (только те, что страница показывает). ?lang=ru — русская версия (Space Grotesk без кириллицы → Manrope).
+     Сверх релиза: логотип g.a.d. вместо словесного знака и автопилот — пока мышь не двигается, сам открывает капот и показывает батарею. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+/* Tailwind preflight — то, на что опирается index.css */
+*,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}
+html{line-height:1.5;-webkit-text-size-adjust:100%;tab-size:4}
+body{margin:0;line-height:inherit}
+h1,h2,h3{font-size:inherit;font-weight:inherit;margin:0}
+p{margin:0}
+a{color:inherit;text-decoration:inherit}
+small{font-size:80%}
+kbd{font-family:inherit;font-size:1em}
+button{font-family:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0;text-transform:none;-webkit-appearance:button;background-color:transparent;background-image:none}
+img,svg,video,canvas{display:block;vertical-align:middle}
+img,video{max-width:100%;height:auto}
+
+/* src/index.css релиза v1.0.0 */
+:root {
+  --sky:#708fa2; --acid:#edff39; --ink:#fff; --muted:#e1eaf0; --panel:#35586e; --line:#ffffff30; --on-acid:#10190c;
+  --radius-panel:12px; --radius-control:7px; --gutter:clamp(24px,4vw,72px);
+  --studio:#6b879d;
+  --ease:cubic-bezier(.22,.7,.25,1); --ui-fast:180ms; --ui-enter:240ms;
+  font-family:'Space Grotesk',sans-serif;font-weight:400;letter-spacing:-.03em;color:var(--ink);background:var(--sky);
+  font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;
+}
+*{box-sizing:border-box}
+body{margin:0;min-width:320px}
+button,a{-webkit-tap-highlight-color:transparent}
+button{font:inherit;letter-spacing:inherit;color:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+button:focus-visible,a:focus-visible{outline:2px solid var(--acid);outline-offset:5px}
+button:disabled{cursor:default}
+svg{stroke-width:1.5}
+::selection{background:var(--acid);color:var(--on-acid)}
+.experience{height:100vh;height:100dvh;min-height:700px;display:flex;flex-direction:column;overflow:hidden;position:relative;background:var(--studio)}
+.masthead{height:76px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;width:var(--scene-width,calc(100% - 2 * var(--gutter)));margin:0 auto;z-index:5;gap:24px;border-bottom:1px solid var(--line)}
+.wordmark{font-size:27px;font-weight:400;letter-spacing:-.055em;line-height:1;min-height:44px;display:flex;align-items:center}
+.header-middle,.concept-label{font-size:14px;line-height:1.3;color:var(--muted)}
+.header-middle{position:absolute;left:50%;transform:translateX(-50%)}
+.concept-label{font-size:13px}
+.stage{position:relative;flex:1;min-height:0}
+.image-plane{position:absolute;isolation:isolate}
+.media-envelope{position:absolute;inset:0;overflow:hidden;border-radius:16px;box-shadow:0 0 0 3px #fff;pointer-events:none;user-select:none}
+.exterior-envelope{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.car-visual,.detail-visual{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.car-image,.detail-image{position:absolute;width:100%;height:100%;object-fit:contain;object-position:center;inset:0;pointer-events:none;user-select:none}
+.car-visual{transform-origin:var(--focus-x) var(--focus-y);transition:transform 1.5s cubic-bezier(.65,0,.25,1)}
+.phase-entering .car-visual,.phase-detail .car-visual{transform:scale(1.5)}
+.hover-video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;opacity:0}
+.appearance-visual{position:absolute;inset:0;opacity:0;transition:opacity .24s ease;pointer-events:none}
+.appearance-visual.shown{opacity:1}
+.appearance-visual img{width:100%;height:100%;object-fit:contain;display:block}
+.detail-visual{opacity:0;transition:opacity .85s ease}
+.detail-visual{background:var(--sky)}
+.detail-image{transform:scale(1.08);transition:transform 1.3s cubic-bezier(.22,1,.36,1)}
+.detail-visual.shown{opacity:1}
+.detail-visual.shown .detail-image{transform:scale(1)}
+.intro{position:absolute;top:22px;left:50%;width:var(--scene-width);display:flex;align-items:center;justify-content:space-between;gap:28px;text-align:left;pointer-events:none;transform:translateX(-50%);transition:opacity .35s,transform .7s,filter .5s}
+.intro.hide{opacity:0;transform:translate(-50%,12px);filter:blur(5px)}
+.intro h1{font-size:clamp(36px,3.6vw,56px);font-weight:400;line-height:.9;letter-spacing:-.03em;margin:0}
+.intro-description{font-size:14px;line-height:1.4;color:var(--muted);margin:0;text-align:right}
+.intro-description span{display:block}
+.eyebrow{font-size:14px;font-weight:400;line-height:1.35;color:var(--muted);margin:0 0 16px}
+.hotspot{position:absolute;transform:translate(-50%,-50%);z-index:3;display:flex;align-items:center;justify-content:center;width:48px;height:48px;border:0;background:none;padding:0;border-radius:50%;transition:opacity var(--ui-fast)}
+.hotspot-ring{position:relative;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;color:var(--on-acid);background:var(--acid);box-shadow:0 0 0 5px #edff3914;transition:transform var(--ui-fast),box-shadow var(--ui-fast)}
+.hotspot-ring:after{content:'';position:absolute;inset:-5px;border:1px solid #edff3950;border-radius:50%;animation:breath 5s ease-in-out infinite}
+@keyframes breath{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.5;transform:scale(1.07)}}
+.hotspot.active .hotspot-ring,.hotspot:hover:not(:disabled) .hotspot-ring{transform:scale(1.06);box-shadow:0 0 0 5px #edff3920}
+.hotspot:disabled{opacity:.28;cursor:default;pointer-events:none}
+.hotspot:disabled .hotspot-ring:after{animation:none;opacity:0}
+.hotspot-label{position:absolute;bottom:calc(100% + 2px);left:50%;transform:translate(-50%,4px);opacity:0;display:flex;gap:10px;align-items:center;white-space:nowrap;background:var(--acid);color:var(--on-acid);border-radius:var(--radius-control);padding:11px 14px;font-size:14px;line-height:1.25;transition:opacity var(--ui-fast),transform var(--ui-enter) var(--ease);pointer-events:none}
+.hotspot.active .hotspot-label,.hotspot:focus-visible .hotspot-label{opacity:1;transform:translate(-50%,0)}
+.appearance-hotspot{position:absolute;inset:0;pointer-events:none;z-index:3}
+.appearance-hotspot.expanded{z-index:6}
+.appearance-hotspot>.hotspot{left:var(--anchor-x);top:var(--anchor-y);pointer-events:auto}
+.appearance-hotspot>.hotspot:disabled{pointer-events:none}
+.appearance-hotspot.expanded .hotspot-label{opacity:0}
+.menu-bridge{position:absolute;inset:0 0 -20px;pointer-events:auto;clip-path:polygon(calc(var(--anchor-x) - 24px) calc(var(--anchor-y) - 12px),calc(var(--anchor-x) + 24px) calc(var(--anchor-y) - 12px),calc(50% + 156px) 100%,calc(50% - 156px) 100%)}
+.appearance-menu{position:absolute;top:calc(100% + 18px);left:50%;transform:translateX(-50%);width:312px;padding:10px 18px 12px;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--panel);color:var(--ink);box-shadow:0 8px 26px #213f5112;pointer-events:auto;animation:menu-in var(--ui-enter) var(--ease)}
+.appearance-heading{display:flex;align-items:center;justify-content:space-between;font-size:15px;line-height:1.3;gap:12px;min-height:30px}
+.appearance-close{display:grid;place-items:center;width:44px;height:44px;border:0;background:transparent;border-radius:var(--radius-control);margin:-7px -12px -7px 0;transition:background var(--ui-fast),color var(--ui-fast)}
+.appearance-close:hover{background:var(--acid);color:var(--on-acid)}
+.appearance-options{display:flex;gap:8px;justify-content:space-between;margin-top:8px}
+.appearance-option{display:grid;place-items:center;min-width:44px;height:44px;padding:5px;background:transparent;border:1px solid transparent;border-radius:50%;transition:border-color var(--ui-fast),background var(--ui-fast);color:var(--on-acid)}
+.appearance-option:hover:not(:disabled){background:#ffffff12}
+.appearance-option.selected{border-color:var(--acid)}
+.appearance-option:disabled{opacity:.3;cursor:wait}
+.paint-chip{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;box-shadow:inset 0 0 0 1px #ffffff20}
+.appearance-menu.wheels .appearance-option{width:78px;height:70px;border-radius:var(--radius-control)}
+.wheel-chip{display:block;width:64px;height:58px;border-radius:4px;background-size:530% auto;background-position:48% 79%;background-repeat:no-repeat}
+.appearance-caption{margin-top:9px;font-size:14px;line-height:1.4;color:var(--ink)}
+.appearance-caption small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+@keyframes menu-in{from{opacity:0;translate:0 5px}to{opacity:1;translate:0 0}}
+.back{position:absolute;z-index:5;left:calc((100% - var(--scene-width)) / 2);top:22px;display:flex;align-items:center;gap:10px;min-height:44px;background:var(--acid);color:var(--on-acid);border:1px solid transparent;border-radius:var(--radius-control);padding:10px 14px;font-size:14px;line-height:1.25;transition:background var(--ui-fast)}
+.back:hover:not(:disabled){background:#f3ff86}
+.back kbd{font:inherit;font-size:12px;border-left:1px solid #18394b38;padding-left:9px;margin-left:8px}
+.back:disabled{opacity:.6}
+.detail-copy{position:absolute;z-index:4;right:calc((100% - var(--scene-width)) / 2 + 26px);top:114px;width:calc(var(--scene-width) * .3);max-width:380px;max-height:calc(var(--scene-height) - 52px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:#ffffff50 transparent;opacity:0;pointer-events:none;transform:translateY(15px);transition:opacity .65s,transform .8s}
+.detail-copy.shown{opacity:1;transform:translateY(0);pointer-events:auto}
+.detail-copy h2{font-size:clamp(34px,3.1vw,52px);line-height:.9;letter-spacing:-.03em;font-weight:400;margin:0 0 24px}
+.detail-copy h2 span{display:block}
+.system-description{font-size:15px;line-height:1.4;color:var(--muted);margin:0 0 22px}
+.part-list{border-top:1px solid var(--line)}
+.part-list button{display:block;width:100%;min-height:48px;border:0;border-bottom:1px solid var(--line);background:transparent;padding:14px 0;text-align:left;font-size:15px;line-height:1.35;transition:color var(--ui-fast)}
+.part-list button:hover,.part-list button.selected{color:var(--acid)}
+.part-row{display:flex;align-items:center;gap:12px}
+.part-row small{font-size:12px;color:var(--muted)}
+.part-row svg{margin-left:auto;flex-shrink:0;transition:transform var(--ui-enter)}
+.part-list button.selected svg{transform:rotate(45deg)}
+.part-description{display:block;font-size:14px;line-height:1.4;color:var(--muted);padding:10px 0 1px 26px}
+.benefit{margin-top:22px}
+.benefit>span{font-size:13px;color:var(--muted)}
+.benefit p{font-size:14px;line-height:1.4;margin:6px 0}
+.annotation{position:absolute;z-index:3;border:0;background:transparent;display:flex;align-items:center;gap:9px;transform:translate(-50%,-50%);padding:8px;min-width:44px;min-height:44px;border-radius:50%}
+.annotation>span:first-child{width:28px;height:28px;background:var(--acid);color:var(--on-acid);border-radius:50%;display:grid;place-items:center;font-size:12px}
+.annotation.open>span:first-child{box-shadow:0 0 0 4px #edff3928}
+.annotation-label{font-size:14px;line-height:1.25;color:var(--on-acid);background:var(--acid);border-radius:var(--radius-control);padding:10px 12px;white-space:nowrap;opacity:0;transition:opacity var(--ui-fast);position:absolute;bottom:100%;left:0;pointer-events:none}
+.annotation:hover .annotation-label,.annotation:focus-visible .annotation-label,.annotation.open .annotation-label{opacity:1}
+.transition-status{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:14px;display:flex;align-items:center;gap:10px;color:var(--muted);white-space:nowrap}
+.small-dot{width:5px;height:5px;border-radius:50%;background:var(--acid);display:inline-block;flex-shrink:0}
+.scene-footer{height:164px;flex-shrink:0;width:var(--scene-width,calc(100% - 2 * var(--gutter)));margin:0 auto;display:flex;flex-direction:column;justify-content:space-between;padding:24px 0 14px;color:var(--muted)}
+.feature-notes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;transition:opacity var(--ui-fast)}
+.feature-note h3{font-size:16px;line-height:1.2;font-weight:400;color:var(--ink);margin:0 0 9px}
+.feature-note p{font-size:14px;line-height:1.4;margin:0;max-width:27ch}
+.footer-baseline{display:flex;justify-content:space-between;gap:16px;padding-top:15px;border-top:1px solid var(--line);font-size:12px;line-height:1.35}
+.experience:has(.appearance-hotspot.expanded) .feature-notes{opacity:0;visibility:hidden}
+.experience:has(.appearance-hotspot.expanded) .footer-baseline{visibility:hidden}
+.error-message{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:10;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-panel);color:var(--ink);padding:12px 16px;display:flex;align-items:center;gap:16px;font-size:14px;line-height:1.4;width:max-content;max-width:calc(100% - 32px)}
+.error-message button{border:0;background:none;min-width:44px;height:44px;display:grid;place-items:center}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(min-width:901px){
+ :root{scrollbar-gutter:stable both-edges;background:var(--studio)}
+ .appearance-menu{display:grid;grid-template-columns:145px 1fr;column-gap:24px;width:560px;padding:18px 54px 18px 18px}
+ .appearance-heading{grid-column:1;grid-row:1;min-height:20px;align-items:start}
+ .appearance-close{position:absolute;right:6px;top:6px;margin:0}
+ .appearance-options{grid-column:2;grid-row:1 / 3;align-self:center;margin-top:0}
+ .appearance-caption{grid-column:1;grid-row:2;margin-top:6px}
+ .menu-bridge{clip-path:polygon(calc(var(--anchor-x) - 24px) calc(var(--anchor-y) - 12px),calc(var(--anchor-x) + 24px) calc(var(--anchor-y) - 12px),calc(50% + 280px) 100%,calc(50% - 280px) 100%)}
+}
+@media(min-width:901px) and (max-height:780px){
+ .masthead{height:64px}.intro h1{font-size:38px}.intro-description{font-size:13px}
+ .detail-copy h2{font-size:32px;margin-bottom:18px}.system-description{margin-bottom:14px}.benefit{margin-top:16px}
+ .feature-notes{gap:18px}.feature-note h3{font-size:15px}.feature-note p{font-size:13px}
+ .experience:not(.phase-overview){height:auto;min-height:100dvh}
+ .experience:not(.phase-overview) .stage{height:auto;flex:none}
+ .detail-copy{position:relative;right:auto;top:auto;width:var(--scene-width);max-width:none;max-height:none;overflow:visible;margin:0 auto;padding:calc(var(--scene-height) + 116px) 0 8px;display:grid;grid-template-columns:1fr 1fr;gap:36px}
+ .phase-overview .detail-copy{display:none}
+}
+@media(max-width:1100px){.header-middle{display:none}}
+@media(max-width:900px){
+ :root{scrollbar-gutter:stable;background:var(--studio)}
+ .experience{height:auto;min-height:100svh;overflow:hidden}
+ .masthead{height:72px;width:calc(100% - 40px)}.wordmark{font-size:25px}
+ .stage{flex:none;height:calc(var(--scene-height, (100vw - 40px) * .562799) + 132px);min-height:0}
+ .intro{top:24px;display:block}.intro h1{font-size:clamp(32px,5.8vw,48px)}.intro-description{margin-top:14px;font-size:14px;text-align:left}.intro-description span{display:inline}.intro-description span+span:before{content:' '}
+ .appearance-menu{width:300px}
+ .scene-footer{height:auto;min-height:256px;flex:1;padding-top:28px;padding-bottom:max(20px,env(safe-area-inset-bottom));gap:28px}
+ .feature-notes{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.feature-note p{max-width:30ch}
+ .footer-baseline{font-size:12px;gap:24px}.footer-baseline span:last-child{text-align:right;max-width:26ch}
+ .back{left:20px;top:28px}.back kbd{display:none}
+ .phase-detail .stage,.phase-entering .stage,.phase-returning .stage{height:auto;min-height:0}
+ .detail-copy{position:relative;top:auto;right:auto;width:auto;max-width:620px;max-height:none;overflow:visible;margin:0 auto;padding:calc(160px + var(--scene-height, (100vw - 40px) * .562799)) 20px 8px}
+ .detail-copy h2{font-size:40px}.detail-copy h2 span{display:inline}.detail-copy h2 span+span:before{content:' '}
+ .system-description{font-size:16px}.benefit{margin-top:24px}.phase-overview .detail-copy{display:none}
+ .transition-status{bottom:8px}
+ .annotation-label{font-size:12px;padding:8px;max-width:180px;white-space:normal;text-align:left}
+}
+@media(max-width:480px){
+ .masthead{height:68px}.concept-label{font-size:12px}.wordmark{font-size:24px}
+ .intro h1{font-size:clamp(30px,8.2vw,38px)}
+ .intro-description{font-size:13px;max-width:28ch}.intro-description span{display:block}.intro-description span+span:before{content:none}
+ .media-envelope{border-radius:12px}
+ .appearance-menu{width:288px;padding:12px 16px 14px}
+ .feature-note h3{font-size:15px}.feature-note p{font-size:13px}.feature-notes{gap:22px 20px}
+ .hotspot-ring{width:26px;height:26px}.hotspot-label{font-size:13px}
+ .detail-copy h2{font-size:34px}.detail-copy{padding-right:20px;padding-left:20px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*:before,*:after{animation:none!important;transition-duration:.01ms!important}.car-visual{transform:none!important}
+}
+
+/* логотип g.a.d. вместо словесного знака */
+.wordmark svg{display:block;height:24px;width:auto;overflow:visible}
+.wordmark svg text{font-family:'Unbounded',sans-serif}
+.wordmark .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}
+.wordmark .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}
+@keyframes gad-draw{to{stroke-dashoffset:0}}
+@keyframes gad-pop{to{opacity:1}}
+@keyframes gad-orbit{to{transform:rotate(360deg)}}
+@media(max-width:480px){.wordmark svg{height:21px}}
+@media(prefers-reduced-motion:reduce){.wordmark .ring{stroke-dashoffset:0}.wordmark .orb{opacity:1}}
+/* русская версия: у Space Grotesk нет кириллицы */
+html[lang=ru]{font-family:'Manrope',sans-serif}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(() => {
+const ru = new URLSearchParams(location.search).get('lang') === 'ru';
+const M = 'media/';
+
+// ---- тексты (content.ts, App.tsx, AppearanceMenu.tsx) ----
+const T = ru ? {
+  title: 'g.a.d. — Электрокар насквозь.', toOverview: 'К обзору', middle: 'Дизайн электромобиля', concept: 'Независимый концепт',
+  stage: 'Системы автомобиля', h1: 'Электрокар насквозь.', d1: 'Загляните под поверхность.', d2: 'Выберите точку, чтобы начать.',
+  notesLabel: 'Что можно изучить',
+  notes: [['Электропривод', 'Поднимите капот и посмотрите, как мотор превращает электричество в движение.'],
+    ['Батарея', 'Загляните под кузов: энергия хранится прямо под салоном.'],
+    ['Цвет кузова', 'Пять цветов: от студийного серебра до яркого электрик-зелёного.'],
+    ['Диски', 'Три характера: сравните многоспицевые, аэро- и кованые диски.']],
+  study: 'g.a.d. — дизайн-исследование', baseOverview: 'Изучайте системы. Меняйте внешний вид.', baseDetail: 'Иллюстрация инженерии. Визуализация концепта.',
+  carAlt: 'Серебристый концепт-седан в студии', cutaway: l => 'Иллюстрация в разрезе: ' + l.toLowerCase(),
+  back: 'Назад к автомобилю', returning: 'Возвращаемся к автомобилю', forDriver: 'Для водителя',
+  preparing: 'Готовим виды', toExterior: 'Возвращаемся к экстерьеру', inside: l => 'Заглядываем внутрь: ' + l.toLowerCase(),
+  opening: l => 'Открываем: ' + l, closing: l => 'Закрываем: ' + l, view: l => 'Вид: ' + l + '. Esc — назад.', overview: 'Обзор автомобиля. Выберите систему.',
+  loadError: 'Картинка не загрузилась. Обновите страницу.', dismiss: 'Закрыть сообщение',
+  paint: 'Цвет', wheels: 'Диски', bodyColour: 'Цвет кузова', wheelDesign: 'Дизайн дисков',
+  closeMenu: 'Закрыть и вернуть исходный автомобиль', unavailable: ' — недоступно', waiting: 'Возвращаемся к экстерьеру…',
+  someFailed: 'Часть вариантов не загрузилась', closeToExplore: 'Закройте, чтобы изучить другие системы',
+  opt: { silver: 'Студийное серебро', electric: 'Электрик-зелёный', lime: 'Лаймовый', sky: 'Небесно-голубой', graphite: 'Графит',
+    original: 'Многоспицевые', aero: 'Аэродиски', forged: 'Кованые спорт' },
+  battery: { label: 'Батарея', category: 'Хранение энергии', title: 'Энергия\nпод вами.', short: 'Изучить батарею',
+    description: 'Тяговая батарея хранит электроэнергию и питает привод. В этом концепте она лежит низко, под салоном.',
+    benefit: 'Низкая плоская батарея оставляет салон над ней свободным.',
+    points: [['Модули ячеек', 'Ячейки, собранные в модули, хранят энергию.'],
+      ['Высоковольтное соединение', 'Оранжевым на иллюстрации отмечен высоковольтный путь тока.'],
+      ['Защитный корпус', 'Корпус держит и защищает всю сборку.']] },
+  drive: { label: 'Электропривод', category: 'Передача мощности', title: 'Ток —\nв движение.', short: 'Изучить привод',
+    description: 'Электромотор превращает электроэнергию во вращение. Редуктор передаёт это вращение на колёса.',
+    benefit: 'Точное управление моментом даёт водителю отзывчивую связь с колёсами.',
+    points: [['Обмотки статора', 'Неподвижные обмотки создают вращающееся магнитное поле.'],
+      ['Ротор', 'Ротор вращается внутри статора и крутит вал.'],
+      ['Редуктор', 'Шестерни снижают обороты и повышают момент на колёсах.']] }
+} : {
+  title: 'g.a.d. — Electric, inside out.', toOverview: 'Return to overview', middle: 'Electric vehicle design', concept: 'Independent concept',
+  stage: 'Explore vehicle systems', h1: 'Electric, inside out.', d1: 'Explore beneath the surface.', d2: 'Select a point to begin.',
+  notesLabel: 'Ways to explore',
+  notes: [['Electric drive', 'Lift the hood. Explore how the motor turns electricity into motion.'],
+    ['Battery architecture', 'Look beneath the body. Discover the energy stored under the cabin.'],
+    ['Body finishes', 'Five colours. From studio silver to a vivid electric green.'],
+    ['Wheel designs', 'Three expressions. Compare multi-spoke, aero and forged wheels.']],
+  study: 'g.a.d. — Design study', baseOverview: 'Explore systems. Personalise the exterior.', baseDetail: 'Illustrative engineering. Concept visualisation.',
+  carAlt: 'Silver electric concept sedan in a studio', cutaway: l => 'Illustrative cutaway of the ' + l.toLowerCase(),
+  back: 'Back to vehicle', returning: 'Returning to vehicle', forDriver: 'For the driver',
+  preparing: 'Preparing the views', toExterior: 'Returning to the exterior', inside: l => 'Inside the ' + l.toLowerCase(),
+  opening: l => 'Opening ' + l, closing: l => 'Closing ' + l, view: l => l + ' view. Press Escape to return.', overview: 'Vehicle overview. Choose a system.',
+  loadError: 'An image could not load. Reload to retry.', dismiss: 'Dismiss message',
+  paint: 'Paint', wheels: 'Wheels', bodyColour: 'Body colour', wheelDesign: 'Wheel design',
+  closeMenu: 'Close and restore original vehicle', unavailable: ' — unavailable', waiting: 'Returning to exterior…',
+  someFailed: 'Some options could not load', closeToExplore: 'Close to explore other systems',
+  opt: { silver: 'Studio Silver', electric: 'Electric Green', lime: 'Lime Green', sky: 'Sky Blue', graphite: 'Graphite',
+    original: 'Multi-spoke', aero: 'Aero Disc', forged: 'Sport Forged' },
+  battery: { label: 'Battery', category: 'Energy storage', title: 'The energy\nbeneath you.', short: 'Explore the battery pack',
+    description: 'A traction battery stores electrical energy and supplies it to the drive system. In this concept, it sits low beneath the cabin.',
+    benefit: 'A low, flat package leaves the cabin above it open.',
+    points: [['Cell modules', 'Cells grouped into modules store the energy.'],
+      ['High-voltage connection', 'Orange connections mark the high-voltage electrical path in this illustration.'],
+      ['Protective enclosure', 'The pack housing supports and protects the assembly.']] },
+  drive: { label: 'Electric drive', category: 'Power delivery', title: 'Electricity,\ninto motion.', short: 'Explore the drive unit',
+    description: 'The electric motor turns electrical energy into rotation. A reduction gear transfers that rotation to the wheels.',
+    benefit: 'Control of motor torque gives the driver a responsive connection to the wheels.',
+    points: [['Stator windings', 'Stationary windings create a rotating magnetic field.'],
+      ['Rotor', 'The rotor turns within the stator and drives the shaft.'],
+      ['Reduction gear', 'Gearing lowers rotational speed and increases wheel torque.']] }
+};
+
+// ---- content.ts / appearance.ts ----
+const XY = { battery: [[31, 42], [27, 55], [49, 49]], drive: [[32, 46], [24, 49], [48, 51]] };
+const systems = {
+  battery: { ...T.battery, image: M + 'battery-blue.png', anchor: { x: 64, y: 72 } },
+  drive: { ...T.drive, image: M + 'drive-blue.png', anchor: { x: 25, y: 48 } },
+};
+for (const id in systems) systems[id].points = systems[id].points.map(([label, text], i) => ({ label, text, x: XY[id][i][0], y: XY[id][i][1] }));
+const hotspots = [
+  ...['battery', 'drive'].map(id => ({ id, label: systems[id].label, anchor: systems[id].anchor, target: id })),
+  { id: 'paint', label: T.bodyColour, anchor: { x: 55, y: 51 }, target: null },
+  { id: 'wheels', label: T.wheelDesign, anchor: { x: 48, y: 71 }, target: null },
+];
+const baseExterior = M + 'exterior-polished.png', ROOT_IMAGE = baseExterior;
+const appearanceOptions = {
+  paint: [
+    { id: 'silver', color: '#c9cfd2', image: baseExterior },
+    { id: 'electric', color: '#edff39', image: M + 'config/electric-green.png' },
+    { id: 'lime', color: '#9fdc32', image: M + 'config/lime-green.png' },
+    { id: 'sky', color: '#708fa2', image: M + 'config/sky-blue.png' },
+    { id: 'graphite', color: '#30363c', image: M + 'config/graphite.png' },
+  ],
+  wheels: [
+    { id: 'original', image: baseExterior },
+    { id: 'aero', image: M + 'config/wheels-aero.png' },
+    { id: 'forged', image: M + 'config/wheels-forged.png' },
+  ],
+};
+for (const m in appearanceOptions) appearanceOptions[m].forEach(o => o.label = T.opt[o.id]);
+const canUseHotspot = (active, id, closing) => !closing && (!active || active === id);
+
+// ---- иконки lucide ----
+const ICON = { plus: '<path d="M5 12h14"/><path d="M12 5v14"/>', x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>', check: '<path d="M20 6 9 17l-5-5"/>',
+  left: '<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>', upRight: '<path d="M7 7h10v10"/><path d="M7 17 17 7"/>' };
+const ic = (n, size, sw = 2) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${ICON[n]}</svg>`;
+const pad = n => String(n).padStart(2, '0');
+const h = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+document.title = T.title;
+if (ru) { document.documentElement.lang = 'ru'; document.head.insertAdjacentHTML('beforeend', '<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400&display=swap" rel="stylesheet">'); }
+
+// ---- разметка (App.tsx) ----
+const root = document.getElementById('root');
+root.innerHTML = `<main class="experience phase-overview" aria-busy="false">
+  <header class="masthead">
+    <a class="wordmark" href="#" aria-label="${T.toOverview}"><svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+      <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+      <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+      <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/></svg></a>
+    <span class="header-middle">${T.middle}</span>
+    <span class="concept-label">${T.concept}</span>
+  </header>
+  <section class="stage" aria-label="${T.stage}">
+    <div class="image-plane">
+      <div class="media-envelope"><div class="exterior-envelope">
+        <div class="car-visual"><img class="car-image" src="${ROOT_IMAGE}" alt="${T.carAlt}" draggable="false"><canvas class="hover-video" aria-hidden="true"></canvas><div class="appearance-visual" aria-hidden="true"><img src="${baseExterior}" alt="" draggable="false"></div></div>
+      </div><div class="detail-visual"><img class="detail-image" src="${systems.battery.image}" alt="" draggable="false"></div>
+      </div>
+    </div>
+    <div class="intro"><h1>${T.h1}</h1><p class="intro-description"><span>${T.d1}</span><span>${T.d2}</span></p></div>
+    <aside class="detail-copy" aria-hidden="true">
+      <div class="detail-introduction"><p class="eyebrow"></p><h2></h2><p class="system-description"></p></div>
+      <div class="detail-components"><div class="part-list"></div><div class="benefit"><span>${T.forDriver}</span><p></p></div></div>
+    </aside>
+  </section>
+  <footer class="scene-footer">
+    <div class="feature-notes" aria-label="${T.notesLabel}">${T.notes.map(([a, b]) => `<div class="feature-note"><h3>${a}</h3><p>${b}</p></div>`).join('')}</div>
+    <div class="footer-baseline"><span>${T.study}</span><span class="base-note"></span></div>
+  </footer>
+  <p class="sr-only" role="status" aria-live="polite"></p>
+</main>`;
+const $ = s => root.querySelector(s);
+const exp = $('.experience'), stage = $('.stage'), planeEl = $('.image-plane'), carVisual = $('.car-visual'), canvas = $('.hover-video');
+const apVisual = $('.appearance-visual'), apImg = apVisual.querySelector('img'), detailVisual = $('.detail-visual'), detailImg = $('.detail-image');
+const intro = $('.intro'), detailCopy = $('.detail-copy'), eyebrow = $('.eyebrow'), dH2 = $('.detail-copy h2'), dDesc = $('.system-description');
+const partList = $('.part-list'), benefitP = $('.benefit p'), baseNote = $('.base-note'), srStatus = $('.sr-only');
+const back = h('button', 'back'); back.setAttribute('aria-label', T.back); back.innerHTML = ic('left', 18) + '<span></span><kbd>Esc</kbd>';
+const backLabel = back.querySelector('span');
+const status = h('div', 'transition-status', '<span class="small-dot"></span><span></span>'), statusText = status.lastChild;
+const errorBox = h('div', 'error-message'); errorBox.setAttribute('role', 'alert'); errorBox.innerHTML = `<span></span><button aria-label="${T.dismiss}">${ic('x', 16)}</button>`;
+
+// ---- состояние (useState/useRef) ----
+const S = { phase: 'overview', selected: 'battery', hovered: null, annotation: null, ready: false, error: '', reduced: false, detailVisible: false,
+  appearance: null, appearancePinned: false, appearanceClosing: false, optionId: 'silver', appearanceImage: baseExterior, neutral: true,
+  loaded: new Set([baseExterior]), failed: new Set(), plane: null, auto: null };
+let queued = false;
+const set = patch => { Object.assign(S, patch); if (!queued) { queued = true; queueMicrotask(() => { queued = false; render(); }); } };
+const optionLoads = new Set();
+let appearanceTimer, leaveTimer, timer, revealTimer, suppressFocus = false, lock = false, request = 0;
+const appearanceButtons = {}, entryButtons = {};
+
+// ---- HoverVideo.tsx ----
+const hover = (() => {
+  const sources = { drive: [M + 'hood-hover-forward.mp4', M + 'hood-hover-reverse.mp4'], battery: [M + 'battery-hover-forward.mp4', M + 'battery-hover-reverse.mp4'] };
+  const nextPreviewClip = (current, desired) => current === desired ? null : current ? { id: current, reverse: true } : desired ? { id: desired, reverse: false } : null;
+  const surface = canvas, context = surface.getContext('2d', { alpha: false }), videos = new Map();
+  let settled = null, active = null, running = false, frozen = false, failed = false, generation = 0, raf = 0, watchdog = 0, cancelFrame;
+  for (const [id, pair] of Object.entries(sources)) pair.forEach((src, direction) => {
+    const video = document.createElement('video');
+    video.muted = true; video.playsInline = true; video.preload = 'auto'; video.src = src;
+    videos.set(`${id}-${direction}`, video);
+  });
+  const onNeutral = n => { if (S.neutral !== n) set({ neutral: n }); };
+  function draw(video) {
+    if (video.readyState < 2 || video.seeking || !video.videoWidth) return;
+    if (surface.width !== video.videoWidth || surface.height !== video.videoHeight) { surface.width = video.videoWidth; surface.height = video.videoHeight; }
+    context.drawImage(video, 0, 0, surface.width, surface.height);
+    surface.style.opacity = '1';
+  }
+  function stop() {
+    generation++;
+    active?.pause();
+    if (active) active.onended = active.onerror = active.onloadeddata = active.onseeked = null;
+    cancelFrame?.(); cancelFrame = undefined;
+    cancelAnimationFrame(raf); clearTimeout(watchdog);
+    running = false; active = null;
+  }
+  function update() {
+    const props = { desired: desiredHover(), mode: S.phase, reduced: S.reduced };
+    // Кадр наведения замирает, пока его накрывает переход в разрез.
+    if (props.mode === 'entering') { if (!frozen) { stop(); frozen = true } return; }
+    if (props.mode === 'detail' || props.reduced) { stop(); settled = null; frozen = false; surface.style.opacity = '0'; onNeutral(true); return; }
+    if (props.mode !== 'overview' || running || failed) return;
+    frozen = false;
+    const next = nextPreviewClip(settled, props.desired);
+    if (!next) return;
+    const video = videos.get(`${next.id}-${next.reverse ? 1 : 0}`);
+    active = video; running = true;
+    onNeutral(false);
+    const token = ++generation;
+    const valid = () => generation === token;
+    function fail() { if (!valid()) return; stop(); failed = true; onNeutral(true); }
+    function complete() { if (!valid()) return; draw(video); stop(); settled = next.reverse ? null : next.id; onNeutral(settled === null); update(); }
+    function paint() {
+      if (!valid()) return;
+      draw(video);
+      if ('requestVideoFrameCallback' in video) { const hd = video.requestVideoFrameCallback(paint); cancelFrame = () => video.cancelVideoFrameCallback(hd); }
+      else raf = requestAnimationFrame(paint);
+    }
+    function start() {
+      if (!valid()) return;
+      video.onseeked = video.onloadeddata = null;
+      if ('requestVideoFrameCallback' in video) { const hd = video.requestVideoFrameCallback(paint); cancelFrame = () => video.cancelVideoFrameCallback(hd); }
+      else raf = requestAnimationFrame(paint);
+      video.play().catch(fail);
+    }
+    function prepare() {
+      if (!valid()) return;
+      video.onloadeddata = null;
+      if (video.currentTime > 0.001) { video.onseeked = start; video.currentTime = 0; } else start();
+    }
+    video.onended = complete; video.onerror = fail;
+    watchdog = setTimeout(fail, 15000);
+    if (video.readyState >= 2) prepare(); else { video.onloadeddata = prepare; video.load(); }
+  }
+  return { update };
+})();
+function desiredHover() {
+  const hv = S.hovered || (S.phase === 'overview' ? S.auto : null);
+  return !S.appearance && (hv === 'drive' || hv === 'battery') ? hv : null;
+}
+
+// ---- App.tsx: действия ----
+function openAppearance(mode) {
+  if (S.phase !== 'overview' || !canUseHotspot(S.appearance, mode, S.appearanceClosing)) return;
+  clearTimeout(leaveTimer);
+  set({ hovered: null });
+  if (S.appearance === mode) return;
+  set({ appearance: mode, appearancePinned: false, optionId: appearanceOptions[mode][0].id, appearanceImage: baseExterior });
+}
+function closeAppearance(restoreFocus = true) {
+  if (!S.appearance || S.appearanceClosing) return;
+  const previousMode = S.appearance;
+  clearTimeout(leaveTimer);
+  set({ appearanceClosing: true, hovered: null });
+  appearanceTimer = setTimeout(() => {
+    set({ appearance: null, appearancePinned: false, appearanceClosing: false, appearanceImage: baseExterior });
+    if (restoreFocus) { suppressFocus = true; appearanceButtons[previousMode]?.focus({ preventScroll: true }); suppressFocus = false; }
+  }, S.reduced ? 0 : 260);
+}
+function chooseAppearance(id) {
+  if (!S.appearance || S.appearanceClosing || !S.neutral) return;
+  const option = appearanceOptions[S.appearance].find(item => item.id === id);
+  if (!option || !S.loaded.has(option.image)) return;
+  set({ appearancePinned: true, optionId: id, appearanceImage: option.image });
+}
+function finish(returning, id) {
+  clearTimeout(timer);
+  set({ phase: returning ? 'overview' : 'detail', detailVisible: !returning });
+  lock = false;
+  setTimeout(() => returning ? entryButtons[id]?.focus({ preventScroll: true }) : back.focus({ preventScroll: true }), 0);
+}
+function transition(id, returning = false) {
+  if (S.appearance || lock || !S.ready || (!returning && S.phase !== 'overview')) return;
+  lock = true;
+  const token = ++request;
+  set({ selected: id, hovered: null, auto: null, annotation: null, error: '', phase: returning ? 'returning' : 'entering' });
+  revealTimer = setTimeout(() => { if (request === token) set({ detailVisible: !returning }); }, S.reduced ? 0 : 350);
+  timer = setTimeout(() => { if (request === token) finish(returning, id); }, S.reduced ? 0 : 1250);
+}
+function returnToCar() { if (S.phase === 'detail') transition(S.selected, true); }
+addEventListener('keydown', e => { if (e.key === 'Escape') { if (S.appearance) closeAppearance(); else returnToCar(); } });
+back.addEventListener('click', returnToCar);
+errorBox.querySelector('button').addEventListener('click', () => set({ error: '' }));
+$('.wordmark').addEventListener('click', e => { e.preventDefault(); if (S.appearance) closeAppearance(); else returnToCar(); });
+
+// ---- точки на машине ----
+const HS = hotspots.map(item => {
+  const { id, target } = item;
+  if (id === 'paint' || id === 'wheels') {
+    const wrap = h('div', 'appearance-hotspot');
+    wrap.style.setProperty('--anchor-x', item.anchor.x + '%'); wrap.style.setProperty('--anchor-y', item.anchor.y + '%');
+    const btn = h('button', 'hotspot', `<span class="hotspot-ring"></span><span class="hotspot-label">${id === 'paint' ? T.paint : T.wheels}</span>`);
+    btn.setAttribute('aria-controls', 'appearance-' + id); btn.setAttribute('aria-label', item.label);
+    wrap.append(btn); appearanceButtons[id] = btn;
+    wrap.addEventListener('pointerenter', () => openAppearance(id));
+    wrap.addEventListener('pointerleave', () => { if (!S.appearancePinned && !wrap.contains(document.activeElement)) leaveTimer = setTimeout(() => closeAppearance(false), 140); });
+    wrap.addEventListener('focusout', e => { if (!S.appearancePinned && !wrap.contains(e.relatedTarget)) closeAppearance(false); });
+    btn.addEventListener('focus', () => { if (!suppressFocus) openAppearance(id); });
+    btn.addEventListener('click', () => { if (S.appearance === id && S.appearancePinned) closeAppearance(); else { openAppearance(id); set({ appearancePinned: true }); } });
+    return { id, el: wrap, btn, ring: btn.firstChild, appearance: true, menu: null, bridge: null, icon: '' };
+  }
+  const btn = h('button', 'hotspot', `<span class="hotspot-ring">${ic('plus', 14, 1.5)}</span><span class="hotspot-label">${esc(item.label)}${ic('upRight', 15)}</span>`);
+  btn.style.left = item.anchor.x + '%'; btn.style.top = item.anchor.y + '%';
+  btn.setAttribute('aria-label', systems[target].short);
+  entryButtons[target] = btn;
+  const enabled = () => canUseHotspot(S.appearance, id, S.appearanceClosing);
+  btn.addEventListener('pointerenter', () => { if (enabled()) set({ hovered: id }); });
+  btn.addEventListener('pointerleave', () => set({ hovered: null }));
+  btn.addEventListener('focus', () => { if (enabled()) set({ hovered: id }); });
+  btn.addEventListener('blur', () => set({ hovered: null }));
+  btn.addEventListener('click', () => transition(target));
+  return { id, el: btn, btn, appearance: false };
+});
+
+// ---- AppearanceMenu.tsx ----
+function buildMenu(mode) {
+  const menu = h('div', 'appearance-menu ' + mode);
+  menu.id = 'appearance-' + mode; menu.setAttribute('role', 'group'); menu.setAttribute('aria-label', mode === 'paint' ? T.bodyColour : T.wheelDesign);
+  menu.innerHTML = `<div class="appearance-heading"><span>${mode === 'paint' ? T.paint : T.wheels}</span><button class="appearance-close" aria-label="${T.closeMenu}">${ic('x', 16, 1.5)}</button></div><div class="appearance-options"></div><div class="appearance-caption" aria-live="polite"><span></span><small></small></div>`;
+  menu.querySelector('.appearance-close').addEventListener('click', () => closeAppearance());
+  const box = menu.querySelector('.appearance-options');
+  menu._opts = appearanceOptions[mode].map(option => {
+    const b = h('button', 'appearance-option');
+    b.title = option.label;
+    b.innerHTML = mode === 'paint' ? `<span class="paint-chip" style="background-color:${option.color};color:${option.id === 'graphite' ? '#fff' : '#111'}"></span>` : `<span class="wheel-chip" style="background-image:url(&quot;${option.image}&quot;)"></span>`;
+    b.addEventListener('click', () => chooseAppearance(option.id));
+    box.append(b);
+    return { b, option, chip: b.firstChild, checked: false };
+  });
+  menu._cap = menu.querySelector('.appearance-caption span'); menu._small = menu.querySelector('.appearance-caption small');
+  return menu;
+}
+function updateMenu(menu, mode) {
+  const waiting = !S.neutral, current = appearanceOptions[mode].find(o => o.id === S.optionId);
+  for (const o of menu._opts) {
+    const sel = o.option.id === S.optionId;
+    o.b.classList.toggle('selected', sel);
+    o.b.disabled = waiting || !S.loaded.has(o.option.image);
+    o.b.setAttribute('aria-label', o.option.label + (S.failed.has(o.option.image) ? T.unavailable : ''));
+    o.b.setAttribute('aria-pressed', sel);
+    if (mode === 'paint' && o.checked !== sel) { o.checked = sel; o.chip.innerHTML = sel ? ic('check', 14) : ''; }
+  }
+  menu._cap.textContent = waiting ? T.waiting : current.label;
+  menu._small.textContent = S.failed.size ? T.someFailed : T.closeToExplore;
+}
+
+// ---- подгрузка вариантов внешнего вида (useEffect по appearance) ----
+function preload(mode) {
+  let cancelled = false;
+  const pending = appearanceOptions[mode].filter(option => !optionLoads.has(option.image));
+  pending.forEach(option => {
+    optionLoads.add(option.image);
+    const image = new Image();
+    image.onload = () => { image.decode().then(() => {
+      if (!cancelled) { const f = new Set(S.failed); f.delete(option.image); set({ loaded: new Set(S.loaded).add(option.image), failed: f }); }
+    }).catch(() => { if (!cancelled) set({ failed: new Set(S.failed).add(option.image) }); }); };
+    image.onerror = () => { if (!cancelled) set({ failed: new Set(S.failed).add(option.image) }); };
+    image.src = option.image;
+  });
+  return () => { cancelled = true; pending.forEach(option => optionLoads.delete(option.image)); };
+}
+
+// ---- отрисовка ----
+let lastDeps = '', lastAppearance = null, cancelPreload = null, builtFor = null, annFor = null, annEls = [], parts = [];
+function buildDetail(cur) {
+  eyebrow.textContent = cur.category;
+  dH2.innerHTML = cur.title.split('\n').map(line => `<span>${esc(line)}</span>`).join('');
+  dDesc.textContent = cur.description; benefitP.textContent = cur.benefit;
+  partList.innerHTML = '';
+  parts = cur.points.map((point, i) => {
+    const b = h('button', '', `<span class="part-row"><small>${pad(i + 1)}</small>${esc(point.label)}${ic('plus', 14)}</span>`);
+    b.addEventListener('click', () => set({ annotation: S.annotation === i ? null : i }));
+    partList.append(b);
+    return { b, text: point.text, desc: null };
+  });
+}
+function render() {
+  const cur = systems[S.selected], busy = S.phase === 'entering' || S.phase === 'returning';
+  exp.className = `experience phase-${S.phase}${S.reduced ? ' reduced' : ''}`;
+  exp.setAttribute('aria-busy', busy);
+  if (S.plane) {
+    exp.style.setProperty('--scene-width', S.plane.width + 'px'); exp.style.setProperty('--scene-height', S.plane.height + 'px');
+    Object.assign(planeEl.style, { width: S.plane.width + 'px', height: S.plane.height + 'px', left: S.plane.left + 'px', top: S.plane.top + 'px' });
+  }
+  planeEl.style.setProperty('--focus-x', cur.anchor.x + '%'); planeEl.style.setProperty('--focus-y', cur.anchor.y + '%');
+  apVisual.classList.toggle('shown', !!(S.appearance && S.neutral && !S.appearanceClosing));
+  if (apImg.getAttribute('src') !== S.appearanceImage) apImg.src = S.appearanceImage;
+  detailVisual.classList.toggle('shown', S.detailVisible);
+  if (detailImg.getAttribute('src') !== cur.image) detailImg.src = cur.image;
+  detailImg.alt = T.cutaway(cur.label);
+
+  // точки обзора
+  const showHs = S.phase === 'overview' && S.ready, hv = S.hovered || S.auto;
+  for (const it of HS) {
+    if (showHs && !it.el.isConnected) planeEl.append(it.el);
+    if (!showHs && it.el.isConnected) it.el.remove();
+    const enabled = canUseHotspot(S.appearance, it.id, S.appearanceClosing);
+    it.btn.disabled = !enabled;
+    if (it.appearance) {
+      const open = S.appearance === it.id && !S.appearanceClosing;
+      it.el.classList.toggle('expanded', S.appearance === it.id);
+      it.btn.classList.toggle('active', S.appearance === it.id);
+      it.btn.setAttribute('aria-expanded', open);
+      const icon = S.appearance === it.id && S.appearancePinned ? 'x' : 'plus';
+      if (it.icon !== icon) { it.icon = icon; it.ring.innerHTML = ic(icon, 14, 1.5); }
+      if (open && !it.menu) { it.bridge = h('span', 'menu-bridge'); it.bridge.setAttribute('aria-hidden', 'true'); it.menu = buildMenu(it.id); it.el.append(it.bridge, it.menu); }
+      if (!open && it.menu) { it.bridge.remove(); it.menu.remove(); it.menu = it.bridge = null; }
+      if (it.menu) updateMenu(it.menu, it.id);
+    } else it.btn.classList.toggle('active', hv === it.id);
+  }
+
+  // разрез: точки и текст
+  if (S.phase === 'detail' && annFor !== S.selected) {
+    annEls.forEach(b => b.remove()); annFor = S.selected;
+    annEls = cur.points.map((point, i) => {
+      const b = h('button', 'annotation', `<span>${pad(i + 1)}</span><span class="annotation-label">${esc(point.label)}</span>`);
+      b.style.left = point.x + '%'; b.style.top = point.y + '%'; b.setAttribute('aria-label', point.label);
+      b.addEventListener('click', () => set({ annotation: S.annotation === i ? null : i }));
+      planeEl.append(b); return b;
+    });
+  }
+  if (S.phase !== 'detail' && annEls.length) { annEls.forEach(b => b.remove()); annEls = []; annFor = null; }
+  annEls.forEach((b, i) => { b.classList.toggle('open', S.annotation === i); b.setAttribute('aria-expanded', S.annotation === i); });
+
+  intro.classList.toggle('hide', S.phase !== 'overview'); intro.setAttribute('aria-hidden', S.phase !== 'overview');
+  if (S.phase !== 'overview') {
+    if (!back.isConnected) stage.insertBefore(back, detailCopy);
+    back.disabled = busy; backLabel.textContent = S.phase === 'returning' ? T.returning : T.back;
+  } else if (back.isConnected) back.remove();
+
+  if (builtFor !== S.selected) { builtFor = S.selected; buildDetail(cur); }
+  detailCopy.classList.toggle('shown', S.phase === 'detail'); detailCopy.setAttribute('aria-hidden', S.phase !== 'detail');
+  parts.forEach((p, i) => {
+    const on = S.annotation === i;
+    p.b.tabIndex = S.phase === 'detail' ? 0 : -1; p.b.classList.toggle('selected', on); p.b.setAttribute('aria-expanded', on);
+    if (on && !p.desc) { p.desc = h('span', 'part-description'); p.desc.textContent = p.text; p.b.append(p.desc); }
+    if (!on && p.desc) { p.desc.remove(); p.desc = null; }
+  });
+
+  if (busy || !S.ready) {
+    if (!status.isConnected) stage.append(status);
+    statusText.textContent = !S.ready ? T.preparing : S.phase === 'returning' ? T.toExterior : T.inside(cur.label);
+  } else if (status.isConnected) status.remove();
+
+  baseNote.textContent = S.phase === 'overview' ? T.baseOverview : T.baseDetail;
+  srStatus.textContent = busy ? (S.phase === 'entering' ? T.opening(cur.label) : T.closing(cur.label)) : S.phase === 'detail' ? T.view(cur.label) : T.overview;
+  if (S.error) { errorBox.firstChild.textContent = S.error; if (!errorBox.isConnected) exp.append(errorBox); } else if (errorBox.isConnected) errorBox.remove();
+
+  // эффекты после отрисовки
+  if (S.appearance !== lastAppearance) { lastAppearance = S.appearance; cancelPreload?.(); cancelPreload = S.appearance ? preload(S.appearance) : null; }
+  const deps = desiredHover() + '|' + S.phase + '|' + S.reduced;
+  if (deps !== lastDeps) { lastDeps = deps; hover.update(); }
+}
+
+// ---- размер плоскости снимка ----
+function updatePlane() {
+  const { width } = stage.getBoundingClientRect();
+  const mobile = width <= 900;
+  // Кадр, медиа и точки живут на одной неизменной плоскости координат.
+  const mediaHeight = Math.max(700, innerHeight) - (innerHeight <= 780 ? 64 : 76) - 164 - 88;
+  const w = mobile ? width - 40 : Math.min(width - 2 * Math.min(72, Math.max(24, width * .04)), mediaHeight * 1672 / 941);
+  const hh = w * 941 / 1672;
+  set({ plane: { width: w, height: hh, left: (width - w) / 2, top: mobile ? 132 : 88 } });
+}
+new ResizeObserver(updatePlane).observe(stage);
+addEventListener('resize', updatePlane);
+const media = matchMedia('(prefers-reduced-motion: reduce)');
+const upd = () => set({ reduced: media.matches }); upd(); media.addEventListener('change', upd);
+Promise.all([ROOT_IMAGE, systems.battery.image, systems.drive.image].map(source => new Promise((resolve, reject) => {
+  const image = new Image();
+  image.onload = () => { image.decode().then(resolve, resolve); };
+  image.onerror = reject;
+  image.src = source;
+}))).then(() => set({ ready: true })).catch(() => set({ error: T.loadError }));
+render();
+
+// ---- автопилот (правило портфолио: первый экран движется сам) ----
+// Пока человек не трогает страницу, по очереди открывается капот и показывается батарея — те же ролики, что при наведении.
+let lastUser = -1e9, step = 0;
+const user = () => { lastUser = performance.now(); if (S.auto) set({ auto: null }); };
+['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(t => addEventListener(t, user, { passive: true, capture: true }));
+addEventListener('pointermove', e => { if (e.movementX || e.movementY) user(); }, { passive: true, capture: true });
+const STEPS = [['drive', 2600], [null, 1300], ['battery', 2600], [null, 1300]];
+(function pilot() {
+  const free = S.ready && S.phase === 'overview' && !S.appearance && !S.hovered && !S.reduced && !document.hidden && performance.now() - lastUser > 5000;
+  if (!free) { if (S.auto) set({ auto: null }); setTimeout(pilot, 700); return; }
+  const [target, ms] = STEPS[step++ % STEPS.length];
+  set({ auto: target });
+  setTimeout(pilot, ms);
+})();
+})();
+</script>
+</body>
+</html>
