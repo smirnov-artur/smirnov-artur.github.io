@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. — Layer by layer</title>
+<!-- Живой луг: огромная дуга-кольцо в густой траве, всё рисует three.js в реальном времени — небо с облаками,
+     десятки тысяч травинок (InstancedMesh) и ромашки. Трава гнётся от ветра, курсор или палец приминает вмятину,
+     след медленно распрямляется; пока мыши нет, вмятину водит автопилот. ?lang=ru — русская версия. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Inter+Tight:wght@500;600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;background:#f3fbff;color:#0c2a3a;overflow-x:hidden}
+a{color:inherit}
+button{font:inherit;cursor:pointer}
+
+.gad svg{display:block;height:28px;width:auto;overflow:visible}
+.gad svg text{font-family:'Unbounded',sans-serif}
+.gad .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}
+.gad .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}
+@keyframes gad-draw{to{stroke-dashoffset:0}}
+@keyframes gad-pop{to{opacity:1}}
+@keyframes gad-orbit{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.gad .ring{animation:none;stroke-dashoffset:0}.gad .orb{animation:none;opacity:1}}
+
+/* первый экран */
+.hero{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden;background:linear-gradient(160deg,#065ccd,#3291e0 30%,#7fdef7 62%,#cef4fb)}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+.nav{position:absolute;z-index:5;top:0;left:0;right:0;height:80px;display:flex;align-items:center;justify-content:space-between;padding:0 3.6vw;color:#fff}
+.nav .gad{color:#fff;text-decoration:none}
+.nav .gad svg{height:22px}
+.glass{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 8px 30px -12px rgba(8,60,140,.35)}
+.pill{position:absolute;left:50%;top:19px;transform:translateX(-50%);display:flex;gap:2px;padding:4px;border-radius:999px}
+.pill a{padding:8px 16px;border-radius:999px;font-size:14px;line-height:1.2;color:rgba(255,255,255,.92);text-decoration:none;white-space:nowrap;transition:background .3s}
+.pill a.on,.pill a:hover{background:rgba(255,255,255,.24)}
+.menu{border-radius:999px;padding:8px 19px;color:#fff;font-size:14px;line-height:1.2}
+.drawer{position:absolute;z-index:6;top:70px;right:3.6vw;width:240px;padding:10px;border-radius:24px;display:none;flex-direction:column}
+.menu-open .drawer{display:flex}
+.drawer a{padding:11px 14px;border-radius:14px;color:#fff;text-decoration:none;font-size:15px}
+.drawer a:hover{background:rgba(255,255,255,.2)}
+.drawer hr{border:0;border-top:1px solid rgba(255,255,255,.3);margin:6px 8px}
+
+h1{position:absolute;z-index:2;left:0;right:0;top:19%;margin:0;text-align:center;color:#fff;pointer-events:none;font-weight:400}
+h1 .it{display:block;font-family:'Playfair Display',serif;font-style:italic;font-size:min(7.9vw,14.5vh);line-height:1.08;letter-spacing:-.015em}
+h1 .st{display:block;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:min(8.2vw,15vh);line-height:.98;letter-spacing:-.052em}
+.ru h1 .it{font-size:min(7.6vw,14vh)}
+.ru h1 .st{font-size:min(7.6vw,14vh)}
+.aside{position:absolute;z-index:2;right:4.2vw;bottom:11.5%;width:240px;margin:0;font-size:13px;line-height:1.6;color:rgba(255,255,255,.9)}
+.scroll{position:absolute;z-index:3;left:3.6vw;bottom:18px;display:flex;align-items:center;gap:13px;color:rgba(255,255,255,.85);font-size:12px;text-decoration:none}
+.scroll i{width:26px;height:26px;border-radius:50%;background:#fff;display:grid;place-items:center}
+.scroll svg{width:12px;height:12px;stroke:#123;stroke-width:2.4;fill:none}
+.lang{position:absolute;z-index:3;right:3.6vw;bottom:20px;font-size:12px;color:rgba(255,255,255,.7)}
+.lang a{text-decoration:none;opacity:.75}
+.lang a.on{opacity:1;font-weight:500}
+
+/* ниже первого экрана */
+.sec{position:relative;padding:120px 6vw}
+.kicker{font:600 12px/1 'Inter Tight',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#2f8a24}
+h2{font-family:'Inter Tight',sans-serif;font-weight:500;font-size:clamp(38px,5.4vw,80px);letter-spacing:-.045em;line-height:1.02;margin:20px 0 60px;max-width:15ch}
+h2 em,.big em{font-family:'Playfair Display',serif;font-weight:400;letter-spacing:-.01em}
+.layers{background:linear-gradient(#cef4fb,#e6f8fd 45%,#f3fbff)}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.card{position:relative;background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.9);border-radius:26px;padding:28px 26px 32px;box-shadow:0 24px 60px -34px rgba(20,90,140,.45);overflow:hidden}
+.card .num{font-family:'Playfair Display',serif;font-style:italic;font-size:46px;line-height:1;color:#2f8a24}
+.card h3{font:600 22px/1.1 'Inter Tight',sans-serif;letter-spacing:-.02em;margin:34px 0 10px}
+.card p{font-size:15px;line-height:1.55;color:#3b5b6c;margin:0}
+.card .bar{position:absolute;left:0;right:0;bottom:0;height:5px;background:linear-gradient(90deg,#1f6a0a,#6cbf38 var(--w),transparent var(--w))}
+.big{font-family:'Inter Tight',sans-serif;font-weight:500;font-size:clamp(34px,5vw,76px);letter-spacing:-.045em;line-height:1.05;text-align:center;max-width:18ch;margin:0 auto 110px}
+.big em{color:#2f8a24}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;border-top:1px solid #cfe3ea;padding-top:34px}
+.steps b{display:block;font:500 24px/1.1 'Inter Tight',sans-serif;letter-spacing:-.02em;margin:14px 0 10px}
+.steps span{font-family:'Playfair Display',serif;font-style:italic;font-size:20px;color:#2f8a24}
+.steps p{margin:0;font-size:15px;line-height:1.6;color:#3b5b6c}
+.contact{padding-top:40px}
+.panel{border-radius:36px;padding:90px 6vw;background:radial-gradient(120% 140% at 80% 0%,#3f9b25 0%,#1d5c0e 45%,#0b300a 100%);color:#fff;text-align:center;overflow:hidden}
+.panel h2{margin:0 auto 22px;max-width:none}
+.panel h2 em{color:#c9f07a}
+.panel p{max-width:520px;margin:0 auto 40px;font-size:17px;line-height:1.6;color:rgba(255,255,255,.85)}
+.btns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.btns a{padding:15px 26px;border-radius:999px;background:#fff;color:#0b300a;text-decoration:none;font-weight:500;font-size:15px}
+.btns a.ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.35)}
+footer{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:34px 6vw 40px;font-size:13px;color:#56717f}
+footer .gad{color:#0c2a3a}
+
+@media (max-width:1000px){.cards{grid-template-columns:1fr 1fr}}
+@media (max-width:760px){
+  .pill{display:none}
+  .nav{height:68px;padding:0 20px}
+  .drawer{right:20px;top:62px}
+  h1{top:20%}
+  h1 .it,.ru h1 .it{font-size:12.4vw}
+  h1 .st,.ru h1 .st{font-size:12.4vw}
+  .ru h1 .it,.ru h1 .st{font-size:11.2vw}
+  .aside{left:28px;right:28px;width:auto;bottom:auto;top:calc(20% + 30vw);text-align:center;font-size:13px}
+  .scroll{left:20px}
+  .lang{right:20px}
+  .sec{padding:84px 22px}
+  .cards,.steps{grid-template-columns:1fr}
+  .steps{gap:30px}
+  .panel{padding:64px 24px;border-radius:28px}
+}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head>
+<body>
+<section class="hero" id="top">
+  <canvas id="gl" aria-hidden="true"></canvas>
+  <header class="nav">
+    <a class="gad" href="#top" aria-label="g.a.d.">
+      <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+        <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+        <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+        <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+      </svg>
+    </a>
+    <nav class="pill glass">
+      <a class="on" href="#top" data-t="n0">Home</a>
+      <a href="#layers" data-t="n1">Layers</a>
+      <a href="#process" data-t="n2">Process</a>
+      <a href="#contact" data-t="n3">Contact</a>
+      <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Telegram</a>
+    </nav>
+    <button class="menu glass" type="button" id="menuBtn" aria-expanded="false" data-t="menu">menu</button>
+  </header>
+  <div class="drawer glass" id="drawer">
+    <a href="#layers" data-t="n1">Layers</a>
+    <a href="#process" data-t="n2">Process</a>
+    <a href="#contact" data-t="n3">Contact</a>
+    <hr>
+    <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Telegram</a>
+    <a href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a>
+    <a href="mailto:paladei702@gmail.com">paladei702@gmail.com</a>
+  </div>
+  <h1><span class="it" data-t="h1a">Layer by layer,</span><span class="st" data-t="h1b">a story grows.</span></h1>
+  <p class="aside" data-t="aside">g.a.d. grows websites and products in living layers — meaning, structure, motion and code — so every detail still knows why it is there.</p>
+  <a class="scroll" href="#layers"><i><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></i><span data-t="scroll">Scroll to dig deeper</span></a>
+  <div class="lang"><a href="?" class="on" id="lEn">EN</a> · <a href="?lang=ru" id="lRu">RU</a></div>
+</section>
+
+<section class="sec layers" id="layers">
+  <div class="kicker" data-t="k1">What we grow</div>
+  <h2 data-t="h2a"><em>Four layers</em> under every launch.</h2>
+  <div class="cards">
+    <article class="card"><div class="num">01</div><h3 data-t="c1t">Roots</h3><p data-t="c1p">Meaning first. Who you speak to, what worries them, why they should care — settled before a single pixel.</p><i class="bar" style="--w:25%"></i></article>
+    <article class="card"><div class="num">02</div><h3 data-t="c2t">Stems</h3><p data-t="c2p">Structure that carries weight. Pages, paths and states laid out so the story reads without effort.</p><i class="bar" style="--w:50%"></i></article>
+    <article class="card"><div class="num">03</div><h3 data-t="c3t">Blades</h3><p data-t="c3p">The living surface. Type, 3D, shaders and motion that answer every touch — like the meadow above.</p><i class="bar" style="--w:75%"></i></article>
+    <article class="card"><div class="num">04</div><h3 data-t="c4t">Bloom</h3><p data-t="c4p">Launch and growth. Fast on real phones, handed over with everything needed to keep it growing.</p><i class="bar" style="--w:100%"></i></article>
+  </div>
+</section>
+
+<section class="sec" id="process">
+  <p class="big" data-t="big">We never paste things on top. <em>Everything grows from within.</em></p>
+  <div class="kicker" data-t="k2">How it grows</div>
+  <h2 data-t="h2b">Three seasons, <em>one story.</em></h2>
+  <div class="steps">
+    <div><span>01</span><b data-t="s1t">Listen</b><p data-t="s1p">A short call and a written brief. You leave with a clear plan and a price.</p></div>
+    <div><span>02</span><b data-t="s2t">Grow</b><p data-t="s2p">Design and code in visible layers. You watch the page come alive every few days.</p></div>
+    <div><span>03</span><b data-t="s3t">Bloom</b><p data-t="s3p">Launch, polish on real devices, and a handover you can actually work with.</p></div>
+  </div>
+</section>
+
+<section class="sec contact" id="contact">
+  <div class="panel">
+    <h2 data-t="h2c"><em>Plant</em> an idea.</h2>
+    <p data-t="cp">Tell us what you want to grow — a site, a product page, a 3D scene. We answer with a plan.</p>
+    <div class="btns">
+      <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Telegram</a>
+      <a href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a>
+      <a class="ghost" href="mailto:paladei702@gmail.com">paladei702@gmail.com</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a class="gad" href="#top" aria-label="g.a.d.">
+    <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d."><text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text><circle cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6"/><circle cx="322" cy="8" r="5" fill="currentColor"/></svg>
+  </a>
+  <span data-t="foot">Every visual on this page is drawn live by code.</span>
+  <span>© 2026 g.a.d.</span>
+</footer>
+
+<script>
+(() => {
+const btn = document.getElementById('menuBtn');
+btn.addEventListener('click', () => btn.setAttribute('aria-expanded', document.body.classList.toggle('menu-open')));
+document.getElementById('drawer').addEventListener('click', e => { if (e.target.tagName === 'A') document.body.classList.remove('menu-open'); });
+if (new URLSearchParams(location.search).get('lang') !== 'ru') return;
+const TR = {
+  n0: 'Главная', n1: 'Слои', n2: 'Процесс', n3: 'Контакты', menu: 'меню',
+  h1a: 'Слой за слоем', h1b: 'растёт история.',
+  aside: 'g.a.d. выращивает сайты и продукты живыми слоями — смысл, структура, движение, код, — и каждая деталь помнит, зачем она здесь.',
+  scroll: 'Листайте вглубь',
+  k1: 'Что мы выращиваем', h2a: '<em>Четыре слоя</em> под каждым запуском.',
+  c1t: 'Корни', c1p: 'Сначала смысл. С кем вы говорите, что их тревожит и почему им не всё равно — решаем до первого пикселя.',
+  c2t: 'Стебли', c2p: 'Структура, которая держит вес. Страницы, пути и состояния разложены так, чтобы история читалась без усилий.',
+  c3t: 'Листья', c3p: 'Живая поверхность. Шрифт, 3D, шейдеры и движение, которые отвечают на каждое касание, — как трава наверху.',
+  c4t: 'Цветение', c4p: 'Запуск и рост. Быстро на настоящих телефонах, и передаём со всем, что нужно, чтобы расти дальше.',
+  big: 'Мы ничего не приклеиваем сверху. <em>Всё вырастает изнутри.</em>',
+  k2: 'Как это растёт', h2b: 'Три сезона, <em>одна история.</em>',
+  s1t: 'Слушаем', s1p: 'Короткий созвон и письменное задание. Вы уходите с ясным планом и ценой.',
+  s2t: 'Растим', s2p: 'Дизайн и код видимыми слоями. Каждые несколько дней видно, как страница оживает.',
+  s3t: 'Цветёт', s3p: 'Запуск, доводка на настоящих устройствах и передача, с которой можно работать.',
+  h2c: '<em>Посадите</em> идею.', cp: 'Расскажите, что хотите вырастить: сайт, страницу продукта, 3D-сцену. Ответим планом.',
+  foot: 'Всё на этой странице рисует код в реальном времени.'
+};
+document.documentElement.lang = 'ru';
+document.body.classList.add('ru');
+document.title = 'g.a.d. — Слой за слоем';
+document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.innerHTML = t; });
+document.getElementById('lEn').classList.remove('on');
+document.getElementById('lRu').classList.add('on');
+})();
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+const hero = document.getElementById('top');
+const canvas = document.getElementById('gl');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+let dpr = Math.min(devicePixelRatio || 1, 1.5);
+renderer.setPixelRatio(dpr);
+const gl = renderer.getContext();
+const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+// программный рендер (безголовый Chrome) — плотность не срезаем, он медленный при любой
+const soft = /swiftshader|llvmpipe|software/i.test(dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : '');
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(30, 1, 0.5, 400);
+const pivot = new THREE.Group(), tor = new THREE.Group();   // pivot — нижняя точка кольца, tor — центр кольца
+pivot.add(tor); scene.add(pivot);
+
+const NP = 24;   // точки вмятины: [0] под курсором, остальные — затухающий след
+const U = {
+  uTime: { value: 0 }, uWind: { value: 0.62 }, uRad: { value: 1 },
+  uPress: { value: Array.from({ length: NP }, () => new THREE.Vector4()) },
+  uPressC: { value: new THREE.Vector4(0, 0, 0, -1) },
+  uCam: { value: new THREE.Vector3() }, uLight: { value: new THREE.Vector3() }, uUp: { value: new THREE.Vector3() },
+  uFog: { value: new THREE.Vector3(20, 40, 0.3) }, uFogCol: { value: new THREE.Vector3(0.72, 0.93, 0.98) },
+  uPx: { value: 1000 }, uHead: { value: 0.14 }, uAsp: { value: 1 },
+};
+
+// ---------- небо: градиент и медленные облака ----------
+const sky = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({
+  uniforms: U, depthWrite: false, depthTest: false,
+  vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.9999, 1.0); }`,
+  fragmentShader: `
+  uniform float uTime, uAsp; varying vec2 vUv;
+  float h21(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+  float vn(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+    return mix(mix(h21(i), h21(i + vec2(1, 0)), f.x), mix(h21(i + vec2(0, 1)), h21(i + vec2(1, 1)), f.x), f.y); }
+  float fbm(vec2 p){ float s = 0.0, a = 0.5; for (int i = 0; i < 5; i++){ s += a * vn(p); p = p * 2.07 + vec2(3.1, 1.7); a *= 0.5; } return s; }
+  void main(){
+    vec2 uv = vUv;
+    float g = clamp((1.0 - uv.y) * 0.78 + uv.x * 0.3, 0.0, 1.0);
+    vec3 col = mix(vec3(0.024, 0.36, 0.80), vec3(0.18, 0.56, 0.88), smoothstep(0.0, 0.3, g));
+    col = mix(col, vec3(0.48, 0.86, 0.97), smoothstep(0.25, 0.6, g));
+    col = mix(col, vec3(0.81, 0.96, 0.99), smoothstep(0.6, 1.05, g));
+    vec2 p = vec2(uv.x * uAsp, uv.y) * vec2(1.6, 3.2) + vec2(uTime * 0.018, 0.0);
+    float n = fbm(p + vec2(0.0, fbm(p * 0.7 - uTime * 0.01) * 0.8));
+    float cl = smoothstep(0.52, 0.86, n) * smoothstep(0.15, 0.75, uv.y);
+    col = mix(col, vec3(0.93, 0.97, 1.0), cl * 0.42);
+    gl_FragColor = vec4(col, 1.0);
+  }`,
+}));
+sky.frustumCulled = false; sky.renderOrder = -1; scene.add(sky);
+
+// ---------- общее для травы: ветер, вмятина, изгиб ----------
+const COMMON = `
+uniform float uTime, uWind, uRad, uHead, uPx;
+uniform vec4 uPress[NP];
+uniform vec4 uPressC;
+uniform vec3 uCam, uLight, uUp, uFog, uFogCol;
+attribute vec3 aPos;
+attribute vec3 aNrm;
+attribute vec4 aPar;   // высота, ширина, направление наклона, случайное
+vec3 gT1, gT2, gD; float gTh, gPr;
+float hash13(vec3 p){ p = fract(p * 0.1031); p += dot(p, p.zyx + 31.32); return fract((p.x + p.y) * p.z); }
+float noise3(vec3 x){
+  vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(mix(hash13(i), hash13(i + vec3(1, 0, 0)), f.x), mix(hash13(i + vec3(0, 1, 0)), hash13(i + vec3(1, 1, 0)), f.x), f.y),
+             mix(mix(hash13(i + vec3(0, 0, 1)), hash13(i + vec3(1, 0, 1)), f.x), mix(hash13(i + vec3(0, 1, 1)), hash13(i + vec3(1, 1, 1)), f.x), f.y), f.z);
+}
+// изгиб травинки — вектор в касательной плоскости: покой + тяжесть + ветер + дрожь + вмятины
+void bend(vec3 pos, vec3 N, vec4 par, float stiff){
+  gT1 = normalize(vec3(-pos.y, pos.x, 0.0));
+  gT2 = cross(N, gT1);
+  float s = par.w;
+  vec2 b = vec2(cos(par.z), sin(par.z)) * (0.3 + 0.5 * fract(s * 13.7)) * stiff;
+  b += vec2(dot(-uUp, gT1), dot(-uUp, gT2)) * 0.42 * stiff;
+  vec3 q = pos * 0.42 + vec3(-uTime * 0.75, uTime * 0.08, 0.0);
+  float g = noise3(q) * 0.65 + noise3(q * 2.6 + 7.3) * 0.35;
+  vec3 w = vec3(1.0, 0.18, 0.4) * (g - 0.3) * uWind;
+  b += vec2(dot(w, gT1), dot(w, gT2));
+  b += vec2(sin(uTime * 2.6 + s * 60.0), cos(uTime * 2.1 + s * 41.0)) * 0.035;
+  gPr = 0.0;
+  if (distance(pos, uPressC.xyz) < uPressC.w) {
+    for (int i = 0; i < NP; i++) {
+      vec4 P = uPress[i];
+      vec3 d = pos - P.xyz;
+      float f = P.w * (1.0 - smoothstep(uRad * 0.25, uRad, length(d)));
+      vec2 dir = vec2(dot(d, gT1), dot(d, gT2));
+      b += dir / (length(dir) + 0.06 * uRad) * f * 2.3;
+      gPr = max(gPr, f);
+    }
+  }
+  float th = length(b);
+  gD = th > 1e-4 ? (b.x * gT1 + b.y * gT2) / th : gT1;
+  gTh = min(th, 1.55);
+}
+// хребет травинки — дуга постоянной кривизны; примятая прижимается к земле
+vec3 spine(vec3 N, float h, float t){
+  float th = max(gTh, 1e-3);
+  vec3 s = h * (N * sin(th * t) / th + gD * (1.0 - cos(th * t)) / th);
+  return s - N * dot(s, N) * gPr * 0.6;
+}
+float fogAmt(vec3 p){ return smoothstep(uFog.x, uFog.y, distance(p, uCam)) * uFog.z; }
+`;
+
+const GRASS_VS = `
+varying vec3 vCol; varying float vX;
+void main(){
+  vec3 N = aNrm;
+#ifdef STEM
+  bend(aPos, N, aPar, 0.45);
+#else
+  bend(aPos, N, aPar, 1.0);
+#endif
+  float t = position.y, h = aPar.x, sd = aPar.w;
+  vec3 p = aPos + spine(N, h, t);
+  float th = max(gTh, 1e-3);
+  vec3 tang = normalize(N * cos(th * t) + gD * sin(th * t));
+  vec3 V = normalize(uCam - p);
+  vec3 s0 = cross(N, gD);
+  vec3 sb = cross(tang, V);
+  sb *= dot(sb, s0) < 0.0 ? -1.0 : 1.0;
+  p += normalize(s0 + 2.5 * sb) * position.x * aPar.y;
+  float ndl = dot(N, uLight);
+  float dif = clamp(ndl * 0.8 + 0.2, 0.0, 1.0);
+#ifdef STEM
+  vec3 col = mix(vec3(0.08, 0.3, 0.05), vec3(0.36, 0.62, 0.2), t) * (0.6 + 0.6 * dif);
+#else
+  vec3 base = mix(vec3(0.03, 0.19, 0.01), vec3(0.14, 0.5, 0.04), smoothstep(0.0, 0.55, t));
+  vec3 tip = mix(vec3(0.5, 0.8, 0.22), vec3(0.3, 0.64, 0.12), fract(sd * 91.7));
+  base = mix(base, tip, smoothstep(0.45, 1.0, t));
+  base *= 0.8 + 0.4 * fract(sd * 47.3);
+  float face = abs(dot(N, V));
+  vec3 col = base * (0.25 + 1.15 * dif) * mix(1.0, 0.82, face * face);
+  float rim = 1.0 - face;
+  col += vec3(0.42, 0.66, 0.1) * rim * rim * rim * t * (0.2 + 0.5 * max(dot(N, uUp), 0.0));
+  col += vec3(0.1, 0.26, 0.18) * rim * rim * t * max(-dot(N, uUp), 0.0);   // небо подсвечивает нижнюю кромку
+  vec3 H = normalize(uLight + V);
+  float kh = dot(tang, H);
+  col += vec3(0.8, 1.0, 0.5) * pow(sqrt(max(0.0, 1.0 - kh * kh)), 40.0) * 0.14 * t * dif;
+  col += vec3(0.0, 0.03, 0.0) * (1.0 - dif);
+#endif
+  col *= 1.0 - gPr * 0.62 * (1.0 - 0.3 * t);
+  vCol = mix(col, uFogCol, fogAmt(p));
+  vX = uv.x * 2.0 - 1.0;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+}`;
+const GRASS_FS = `varying vec3 vCol; varying float vX;
+void main(){ gl_FragColor = vec4(vCol * (1.0 - 0.25 * vX * vX), 1.0); }`;
+
+const TUBE_VS = `
+varying vec3 vCol;
+void main(){
+  float dif = clamp(dot(normal, uLight) * 0.5 + 0.5, 0.0, 1.0);
+  float pr = 0.0;
+  for (int i = 0; i < NP; i++) { vec4 P = uPress[i]; pr = max(pr, P.w * (1.0 - smoothstep(uRad * 0.25, uRad, distance(position, P.xyz)))); }
+  vec3 col = vec3(0.05, 0.21, 0.025) * (0.45 + 0.8 * dif) * (1.0 - 0.6 * pr);
+  vCol = mix(col, uFogCol, fogAmt(position));
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}`;
+const TUBE_FS = `varying vec3 vCol; void main(){ gl_FragColor = vec4(vCol, 1.0); }`;
+
+// головки ромашек — точки на кончике стебля, стебель гнётся той же функцией
+const HEAD_VS = `
+varying vec3 vCol; varying float vSd;
+void main(){
+  bend(aPos, aNrm, aPar, 0.45);
+  vec3 p = aPos + spine(aNrm, aPar.x, 1.0);
+  vec4 mv = modelViewMatrix * vec4(p, 1.0);
+  gl_PointSize = uHead * (0.75 + 0.5 * fract(aPar.w * 23.1)) * uPx / -mv.z;
+  vSd = aPar.w;
+  float dif = clamp(dot(aNrm, uLight) * 0.4 + 0.7, 0.0, 1.0) * (1.0 - 0.4 * gPr);
+  vCol = mix(vec3(dif), uFogCol, fogAmt(p));
+  gl_Position = projectionMatrix * mv;
+}`;
+const HEAD_FS = `
+varying vec3 vCol; varying float vSd;
+void main(){
+  vec2 c = gl_PointCoord * 2.0 - 1.0;
+  float r = length(c);
+  float a = atan(c.y, c.x) + vSd * 6.2832;
+  float petal = 0.5 + 0.5 * pow(abs(cos(a * 4.0)), 0.8);
+  float m = 1.0 - smoothstep(petal - 0.14, petal, r);
+  if (m < 0.02) discard;
+  vec3 col = mix(vec3(0.98, 0.8, 0.2), vec3(1.0, 1.0, 0.96), smoothstep(0.2, 0.3, r)) * vCol;
+  gl_FragColor = vec4(col, m);
+}`;
+
+const mat = (vs, fs, extra = {}) => new THREE.ShaderMaterial({ uniforms: U, defines: { NP, ...(extra.defines || {}) },
+  vertexShader: COMMON + vs, fragmentShader: fs, side: extra.side || THREE.FrontSide, alphaToCoverage: !!extra.a2c });
+const grassMat = mat(GRASS_VS, GRASS_FS, { side: THREE.DoubleSide });
+const stemMat = mat(GRASS_VS, GRASS_FS, { side: THREE.DoubleSide, defines: { STEM: 1 } });
+const headMat = mat(HEAD_VS, HEAD_FS, { a2c: true });
+const tubeMat = mat(TUBE_VS, TUBE_FS);
+
+// травинка: три яруса и острый кончик
+function bladeGeo() {
+  const ts = [0, 0.38, 0.72], ws = [1, 0.78, 0.46], pos = [], uv = [];
+  ts.forEach((t, i) => { pos.push(-0.5 * ws[i], t, 0, 0.5 * ws[i], t, 0); uv.push(0, t, 1, t); });
+  pos.push(0, 1, 0); uv.push(0.5, 1);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  g.setIndex([0, 1, 2, 1, 3, 2, 2, 3, 4, 3, 5, 4, 4, 5, 6]);
+  return g;
+}
+
+// кольцо: R — большой радиус, r — толщина трубы; wide — компьютер, tall — телефон
+const MODES = {
+  wide: { R: 16.4, r: 0.9, h: 0.42, w: 0.046, dens: 950, max: 160000, rad: 1.5, head: 0.12, fl: 4, bx: 0.41, by: 0.745, k: 1.53, tilt: 0.1, yaw: 0 },
+  tall: { R: 6.2, r: 0.72, h: 0.26, w: 0.034, dens: 1500, max: 34000, rad: 0.85, head: 0.1, fl: 4, bx: 0.5, by: 0.745, k: 0.8, tilt: 0.12, yaw: 0 },
+};
+let cfg, mode = null, built = null, vis = [0, 0], qual = 1;
+let grass, stems, heads, tube, proxy;
+
+function place(pos, nrm, s, th, ph, r) {
+  const ct = Math.cos(th), st = Math.sin(th), cp = Math.cos(ph), sp = Math.sin(ph);
+  nrm[s * 3] = cp * ct; nrm[s * 3 + 1] = cp * st; nrm[s * 3 + 2] = sp;
+  pos[s * 3] = (cfg.R + r * cp) * ct; pos[s * 3 + 1] = (cfg.R + r * cp) * st; pos[s * 3 + 2] = r * sp;
+}
+function blades(cnt, pos, nrm, par, material) {
+  const g = bladeGeo();
+  g.setAttribute('aPos', new THREE.InstancedBufferAttribute(pos, 3));
+  g.setAttribute('aNrm', new THREE.InstancedBufferAttribute(nrm, 3));
+  g.setAttribute('aPar', new THREE.InstancedBufferAttribute(par, 4));
+  const m = new THREE.InstancedMesh(g, material, cnt);
+  m.frustumCulled = false; m.renderOrder = 1;
+  tor.add(m);
+  return m;
+}
+
+function build(a, b) {
+  built = [a, b];
+  for (const o of [grass, stems, heads, tube, proxy]) if (o) { tor.remove(o); o.geometry.dispose(); }
+  const { R, r } = cfg, p0 = -0.95, p1 = Math.PI + 0.95;   // φ: от задней части низа до задней части верха трубы
+  const n = Math.min(cfg.max, Math.round(R * (b - a) * r * (p1 - p0) * cfg.dens * qual));
+  const nt = Math.max(1, Math.round(Math.sqrt(n * R * (b - a) / (r * (p1 - p0))))), np = Math.max(1, Math.round(n / nt)), cnt = nt * np;
+  const pos = new Float32Array(cnt * 3), nrm = new Float32Array(cnt * 3), par = new Float32Array(cnt * 4);
+  const order = new Uint32Array(cnt);
+  for (let i = 0; i < cnt; i++) order[i] = i;
+  for (let i = cnt - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0, x = order[i]; order[i] = order[j]; order[j] = x; }
+  // сетка с дрожанием — ровная густота; порядок перемешан, чтобы урезание count прореживало равномерно
+  let k = 0;
+  for (let i = 0; i < nt; i++) for (let j = 0; j < np; j++) {
+    const s = order[k++];
+    place(pos, nrm, s, a + (i + Math.random()) / nt * (b - a), p0 + (j + Math.random()) / np * (p1 - p0), r);
+    const tall = Math.random() < 0.03 ? 1.3 : 1;
+    par[s * 4] = cfg.h * (0.55 + 0.5 * Math.random()) * tall;
+    par[s * 4 + 1] = cfg.w * (0.7 + 0.6 * Math.random());
+    par[s * 4 + 2] = Math.random() * 6.2832;
+    par[s * 4 + 3] = Math.random();
+  }
+  grass = blades(cnt, pos, nrm, par, grassMat);
+
+  // ромашки кучками по верхней кромке
+  const fp = [], fn = [], fa = [];
+  const clusters = Math.round(R * (b - a) / 2.6);
+  for (let c = 0; c < clusters; c++) {
+    const th = a + Math.random() * (b - a), ph = 2.75 + Math.random() * 0.8, m = 2 + Math.random() * cfg.fl | 0;
+    for (let i = 0; i < m; i++) {
+      const s = fp.length / 3;
+      fp.push(0, 0, 0); fn.push(0, 0, 0);
+      place(fp, fn, s, th + (Math.random() - 0.5) * 0.9 / R * 2, Math.min(3.6, ph + (Math.random() - 0.5) * 0.5), r);
+      fa.push(cfg.h * (1.8 + 0.9 * Math.random()), cfg.w * 0.42, Math.random() * 6.2832, Math.random());
+    }
+  }
+  const P = new Float32Array(fp), N = new Float32Array(fn), A = new Float32Array(fa), fc = P.length / 3;
+  stems = blades(fc, P, N, A, stemMat);
+  const hg = new THREE.BufferGeometry();
+  hg.setAttribute('position', new THREE.BufferAttribute(P, 3));
+  hg.setAttribute('aPos', new THREE.BufferAttribute(P, 3));
+  hg.setAttribute('aNrm', new THREE.BufferAttribute(N, 3));
+  hg.setAttribute('aPar', new THREE.BufferAttribute(A, 4));
+  heads = new THREE.Points(hg, headMat);
+  heads.frustumCulled = false; heads.renderOrder = 2;
+  tor.add(heads);
+
+  // сама труба — тёмный подшёрсток, видна в просветах и во вмятине
+  const tg = new THREE.TorusGeometry(R, r * 0.97, 24, Math.round((b - a) * 90), b - a).rotateZ(a);
+  tube = new THREE.Mesh(tg, tubeMat); tube.frustumCulled = false; tor.add(tube);
+  // невидимая оболочка по кончикам травы — в неё целится луч от курсора
+  proxy = new THREE.Mesh(new THREE.TorusGeometry(R, r + cfg.h * 0.55, 12, Math.round((b - a) * 60), b - a).rotateZ(a),
+    new THREE.MeshBasicMaterial({ visible: false }));
+  tor.add(proxy);
+}
+
+function layout() {
+  const w = hero.clientWidth, h = hero.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  const m = camera.aspect < 0.9 ? 'tall' : 'wide';
+  if (m !== mode) { mode = m; built = null; }
+  cfg = MODES[m];
+  const tanH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+  const d = m === 'wide' ? cfg.R / (2 * cfg.k * tanH) : cfg.R / (2 * cfg.k * tanH * camera.aspect);
+  camera.position.set(-(2 * cfg.bx - 1) * d * tanH * camera.aspect, -(1 - 2 * cfg.by) * d * tanH, d);
+  camera.updateProjectionMatrix();
+  tor.position.set(0, cfg.R, 0);
+  pivot.rotation.set(cfg.tilt, cfg.yaw, 0);
+  scene.updateMatrixWorld(true);
+  camera.updateMatrixWorld();
+  // какой кусок кольца попадает в кадр
+  const v = new THREE.Vector3();
+  let a = null, b = null;
+  for (let i = 0; i <= 720; i++) {
+    const th = -Math.PI + i / 720 * Math.PI;
+    v.set(cfg.R * Math.cos(th), cfg.R * Math.sin(th), 0);
+    tor.localToWorld(v).project(camera);
+    if (Math.abs(v.x) < 1.06 && Math.abs(v.y) < 1.25) { if (a === null) a = th; b = th; }
+  }
+  if (a === null) { a = -Math.PI / 2 - 0.5; b = -Math.PI / 2 + 0.5; }
+  vis = [a, b];
+  const pad = (cfg.r + cfg.h) * 1.6 / cfg.R;
+  if (!built || a - pad * 0.3 < built[0] || b + pad * 0.3 > built[1]) build(a - pad, b + pad);
+  U.uCam.value.copy(tor.worldToLocal(camera.position.clone()));
+  const q = tor.getWorldQuaternion(new THREE.Quaternion()).invert();
+  U.uLight.value.set(0.1, 0.85, 0.5).normalize().applyQuaternion(q);
+  U.uUp.value.set(0, 1, 0).applyQuaternion(q);
+  U.uRad.value = cfg.rad; U.uHead.value = cfg.head; U.uAsp.value = camera.aspect;
+  U.uPx.value = renderer.getDrawingBufferSize(new THREE.Vector2()).y / (2 * tanH);
+  U.uFog.value.set(d + 1, d + 12, 0.38);
+}
+
+// ---------- вмятина: курсор, палец, автопилот ----------
+const press = U.uPress.value, headP = new THREE.Vector3(), lastDrop = new THREE.Vector3();
+let headS = 0, ti = 0, hasDrop = false;
+function drop(p, s) { ti = ti % (NP - 1) + 1; press[ti].set(p.x, p.y, p.z, s); }
+function feed(hit, dt) {
+  const decay = Math.exp(-dt / 1.25), rise = 1 - Math.exp(-dt / 0.08);
+  for (let i = 1; i < NP; i++) press[i].w *= decay;
+  if (hit) {
+    if (headS > 0.05 && headP.distanceTo(hit) > cfg.rad * 1.5) { drop(headP, headS); headS = 0; hasDrop = false; }
+    headP.copy(hit);
+    headS += (1 - headS) * rise;
+    if (!hasDrop || lastDrop.distanceTo(hit) > cfg.rad * 0.2) { drop(hit, headS); lastDrop.copy(hit); hasDrop = true; }
+  } else { headS *= decay; hasDrop = false; }
+  press[0].set(headP.x, headP.y, headP.z, headS);
+  const lo = new THREE.Vector3(1e9, 1e9, 1e9), hi = new THREE.Vector3(-1e9, -1e9, -1e9), v = new THREE.Vector3();
+  let any = false;
+  for (const p of press) if (p.w > 0.01) { any = true; v.set(p.x, p.y, p.z); lo.min(v); hi.max(v); }
+  if (any) { v.addVectors(lo, hi).multiplyScalar(0.5); U.uPressC.value.set(v.x, v.y, v.z, lo.distanceTo(hi) / 2 + cfg.rad * 1.02); }
+  else U.uPressC.value.w = -1;
+}
+function autopilot(t) {
+  const [a, b] = vis, A = (b - a) * 0.34;
+  const th = (a + b) / 2 + A * Math.sin(t * 0.23) + A * 0.25 * Math.sin(t * 0.61 + 1.3);
+  const ph = Math.PI / 2 + 0.5 * Math.sin(t * 0.41) + 0.2 * Math.sin(t * 1.07);
+  const rr = cfg.r + cfg.h * 0.4, ring = cfg.R + rr * Math.cos(ph);
+  return new THREE.Vector3(ring * Math.cos(th), ring * Math.sin(th), rr * Math.sin(ph));
+}
+
+let ptr = null, lastMove = -1e9, onScreen = true;
+addEventListener('pointermove', e => { if (e.pointerType !== 'touch') { ptr = [e.clientX, e.clientY]; lastMove = performance.now(); } }, { passive: true });
+document.documentElement.addEventListener('mouseleave', () => { ptr = null; });
+const touch = e => { const t = e.touches[0]; if (t) { ptr = [t.clientX, t.clientY]; lastMove = performance.now(); } };
+hero.addEventListener('touchstart', touch, { passive: true });
+hero.addEventListener('touchmove', touch, { passive: true });
+hero.addEventListener('touchend', () => { ptr = null; lastMove = performance.now(); });
+new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; }).observe(hero);
+new ResizeObserver(layout).observe(hero);
+layout();
+
+// ---------- кадр ----------
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+let last = performance.now(), pf = { n: 0, acc: 0, step: 0 };
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  if (!onScreen) return;
+  const t = (U.uTime.value += dt);
+  let hit = null;
+  if (ptr) {
+    const rc = canvas.getBoundingClientRect();
+    ndc.set((ptr[0] - rc.left) / rc.width * 2 - 1, -(ptr[1] - rc.top) / rc.height * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    const hs = ray.intersectObject(proxy, false);
+    if (hs.length) hit = tor.worldToLocal(hs[0].point);
+  }
+  if (!hit && now - lastMove > 2500) hit = autopilot(t);
+  feed(hit, dt);
+  renderer.render(scene, camera);
+  // слабая видеокарта: прореживаем траву, потом снижаем плотность пикселей
+  if (!soft && pf.step < 3 && ++pf.n > 40) {
+    pf.acc += dt;
+    if (pf.n === 130) {
+      if (pf.acc / 90 > 1 / 50) {
+        qual *= 0.7; grass.count = Math.floor(grass.count * 0.7);
+        if (pf.step === 1 && dpr > 1) { dpr = 1; renderer.setPixelRatio(1); layout(); }
+        pf.step++;
+      } else pf.step = 3;
+      pf.n = 0; pf.acc = 0;
+    }
+  }
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

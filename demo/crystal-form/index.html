@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>g.a.d. — Form &amp; Light</title>
+<meta name="description" content="Glass, chrome and crystal objects computed live in the browser.">
+<!-- ?lang=ru — русская версия. Все визуалы рисует three.js в реальном времени, картинок и видео нет. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='19' fill='none' stroke='%23ecebe4' stroke-width='4'/%3E%3Ccircle cx='24' cy='5' r='4' fill='%23ecebe4'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Manrope:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#f4f4f1;--cream:#e4deb0;--mute:#cdcbc2;--olive:#63634b;--br:#bdbbb0;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace;--sans:'Manrope',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#222221;color:var(--ink);overflow:hidden}
+body{font-family:var(--sans);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+.ui{position:fixed;inset:0;pointer-events:none;z-index:2}
+.ui a,.ui button{pointer-events:auto}
+.mono{font-family:var(--mono)}
+
+.gad{color:inherit;display:block}
+.gad svg{display:block;height:22px;width:auto;overflow:visible}
+.gad svg text{font-family:'Unbounded',sans-serif}
+.gad .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}
+.gad .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}
+@keyframes gad-draw{to{stroke-dashoffset:0}}
+@keyframes gad-pop{to{opacity:1}}
+@keyframes gad-orbit{to{transform:rotate(360deg)}}
+
+.top{position:absolute;left:44px;right:44px;top:38px;display:flex;justify-content:space-between;align-items:flex-start}
+.brand{display:flex;align-items:center;gap:20px;color:#ecebe4}
+.tag{font-size:10px;letter-spacing:.24em;color:var(--mute);text-transform:uppercase}
+.note{text-align:right;font-size:9.5px;line-height:1.38;letter-spacing:.13em;color:var(--mute);text-transform:uppercase}
+.note a{display:inline-block;margin-top:10px;color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(228,222,176,.4);padding-bottom:2px}
+.note a:hover{border-color:var(--cream)}
+
+.intro{position:absolute;left:44px;top:min(13.6vh,132px);width:min(460px,42vw)}
+h1{font-weight:700;font-size:max(46px,min(7.6vw,10.6vh));line-height:.92;letter-spacing:-.05em;color:var(--ink)}
+.lead{margin-top:min(5.4vh,50px);max-width:345px;font-size:11.5px;line-height:1.5;color:var(--cream)}
+
+.br{position:relative}
+.br::before{content:"";position:absolute;inset:-8px;pointer-events:none;transition:inset .35s cubic-bezier(.2,.8,.2,1);
+--l:linear-gradient(var(--br),var(--br));
+background:var(--l) top left/9px 1px no-repeat,var(--l) top left/1px 9px no-repeat,var(--l) top right/9px 1px no-repeat,var(--l) top right/1px 9px no-repeat,
+var(--l) bottom left/9px 1px no-repeat,var(--l) bottom left/1px 9px no-repeat,var(--l) bottom right/9px 1px no-repeat,var(--l) bottom right/1px 9px no-repeat}
+.br:hover::before,.br:focus-visible::before{inset:-4px}
+.btn{margin:min(4.6vh,44px) 0 0 8px;height:38px;padding:0 34px;border:0;background:var(--olive);color:var(--cream);cursor:pointer;
+font:500 10px/38px var(--mono);letter-spacing:.3em;text-transform:uppercase;transition:background .25s}
+.btn:hover{background:#71714f}
+button:focus-visible{outline:1px solid var(--cream);outline-offset:3px}
+
+.arrows{position:absolute;left:52px;bottom:52px;display:flex;gap:24px}
+.sq{width:34px;height:34px;border:0;background:var(--olive);color:var(--cream);cursor:pointer;display:grid;place-items:center}
+.sq::before{inset:-6px}
+.sq:hover::before{inset:-3px}
+.sq svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.6}
+
+.slider{position:absolute;right:46px;bottom:46px;display:flex;flex-direction:column;align-items:flex-end}
+.cap{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);margin-bottom:10px;white-space:nowrap}
+.count{font-weight:700;font-size:max(40px,min(6.6vw,9.8vh));line-height:.86;letter-spacing:-.035em;color:var(--ink);margin-bottom:22px;display:flex;white-space:nowrap}
+.count b{font-weight:700;display:inline-block}
+.roll{animation:roll .8s cubic-bezier(.2,.8,.2,1)}
+@keyframes roll{from{transform:translateY(40%);opacity:0;filter:blur(8px)}to{transform:none;opacity:1;filter:none}}
+.thumbs{position:relative;display:flex;gap:10px}
+.th{width:76px;height:76px;border:0;padding:0;background:#282a2d;cursor:pointer;display:block}
+.th canvas{width:100%;height:100%;display:block;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .4s;opacity:.82}
+.th:hover canvas,.th[aria-current="true"] canvas{transform:scale(1.07);opacity:1}
+.sel{position:absolute;top:-4px;left:-4px;width:84px;height:84px;border:1px solid #fff;pointer-events:none;transition:transform .7s cubic-bezier(.7,0,.2,1)}
+.sel i{position:absolute;width:7px;height:7px;background:#fff;transform:translate(-50%,-50%)}
+.sel i:nth-child(1){left:0;top:0}.sel i:nth-child(2){left:50%;top:0}.sel i:nth-child(3){left:100%;top:0}
+.sel i:nth-child(4){left:0;top:50%}.sel i:nth-child(5){left:100%;top:50%}
+.sel i:nth-child(6){left:0;top:100%}.sel i:nth-child(7){left:50%;top:100%}.sel i:nth-child(8){left:100%;top:100%}
+
+@media (max-width:760px){
+  .top{left:20px;right:20px;top:20px;align-items:center}
+  .gad svg{height:20px}
+  .tag,.note p{display:none}
+  .note a{margin:0;font-size:9px}
+  .intro{left:20px;top:62px;width:calc(100% - 40px)}
+  h1{font-size:min(13vw,7.4vh)}
+  .lead{margin-top:14px;font-size:10.5px;max-width:330px}
+  .btn{margin-top:22px;height:34px;line-height:34px;padding:0 24px;font-size:9px}
+  .arrows{left:26px;bottom:26px;gap:20px}
+  .slider{right:20px;bottom:20px}
+  .cap{font-size:8.5px;margin-bottom:6px}
+  .count{font-size:min(12vw,6vh);margin-bottom:14px}
+  .thumbs{gap:7px}
+  .th{width:50px;height:50px}
+  .sel{width:58px;height:58px}
+  .sel i{width:5px;height:5px}
+}
+@media (max-width:760px) and (max-height:700px){.lead{display:none}}
+@media (prefers-reduced-motion:reduce){.gad .ring{animation:none;stroke-dashoffset:0}.gad .orb{animation:none;opacity:1}.roll{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+
+<div class="ui">
+  <header class="top">
+    <div class="brand">
+      <a class="gad" href="#" aria-label="g.a.d.">
+        <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+          <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+          <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+          <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+        </svg>
+      </a>
+      <span class="tag mono" data-t="tag">Object studies — IV</span>
+    </div>
+    <div class="note mono">
+      <p data-t="note">Hold still and watch.<br>The light does the talking —<br>lean in to see it bend…</p>
+      <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="hire">Commission a form ↗</a>
+    </div>
+  </header>
+
+  <section class="intro">
+    <h1 data-t="h1">Form &amp;<br>Light</h1>
+    <p class="lead mono" data-t="lead">Glass, chrome and crystal that never saw a workshop. Every object here is computed live: its facets bend the light, split it into color and put themselves back together.</p>
+    <button class="btn br" id="burst" type="button" data-t="burst">Break the form</button>
+  </section>
+
+  <nav class="arrows">
+    <button class="sq br" id="prev" type="button" aria-label="Previous form" data-a="prevA"><svg viewBox="0 0 16 16"><path d="M13 8H3M7 4 3 8l4 4"/></svg></button>
+    <button class="sq br" id="next" type="button" aria-label="Next form" data-a="nextA"><svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+  </nav>
+
+  <aside class="slider">
+    <div class="cap mono" id="cap">Knot — green glass</div>
+    <div class="count"><b id="cur">01</b>/04</div>
+    <div class="thumbs" id="thumbs">
+      <button class="th" type="button" aria-current="true"><canvas width="1" height="1"></canvas></button>
+      <button class="th" type="button"><canvas width="1" height="1"></canvas></button>
+      <button class="th" type="button"><canvas width="1" height="1"></canvas></button>
+      <button class="th" type="button"><canvas width="1" height="1"></canvas></button>
+      <div class="sel"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+  </aside>
+</div>
+
+<script>
+window.RU = new URLSearchParams(location.search).get('lang') === 'ru';
+window.CAPS = RU
+  ? ['Узел — зелёное стекло', 'Кристалл — аметист', 'Разлом — матовое ядро', 'Скрутка — ледяная призма']
+  : ['Knot — green glass', 'Crystal — amethyst cut', 'Fracture — frosted core', 'Twist — ice prism'];
+if (RU) {
+  const TR = {
+    tag: 'Предметные этюды — IV',
+    note: 'Замрите и смотрите.<br>Здесь говорит свет —<br>подойдите ближе, он гнётся…',
+    hire: 'Заказать форму ↗',
+    h1: 'Форма<br>и свет',
+    lead: 'Стекло, хром и кристалл, которых не было в мастерской. Каждый предмет считается прямо сейчас: грани ломают свет, раскладывают его в спектр и собираются обратно.',
+    burst: 'Разбить форму',
+    prevA: 'Предыдущая форма',
+    nextA: 'Следующая форма'
+  };
+  document.documentElement.lang = 'ru';
+  document.title = 'g.a.d. — Форма и свет';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.innerHTML = t; });
+  document.querySelectorAll('[data-a]').forEach(el => el.setAttribute('aria-label', TR[el.dataset.a]));
+  document.getElementById('cap').textContent = CAPS[0];
+}
+</script>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"},
+"integrity":{"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js":"sha384-GY5FqjttLCFRt/McQbyaVdCk2O1IQtOeX8Py6NfD89BIAsIyJFRl4UgSXrk2vXAk",
+"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/environments/RoomEnvironment.js":"sha384-9ItPPH2vgKbkvgrqTKq7ptGYe+WuAnqlZtlqleJW4/CJjnM5R7C+efD6iS7ADPJ9"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const $ = (s) => document.querySelector(s);
+const canvas = $('#gl');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+let PR = Math.min(window.devicePixelRatio || 1, 1.5);
+
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+pmrem.dispose();
+scene.environmentIntensity = 1.7;
+
+const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+const TAN = Math.tan(THREE.MathUtils.degToRad(15));
+const root = new THREE.Group(), tilt = new THREE.Group(), spin = new THREE.Group();
+scene.add(root); root.add(tilt); tilt.add(spin);
+const key = new THREE.DirectionalLight(0xffffff, 2.6); key.position.set(3, 4, 5); scene.add(key);
+const rim = new THREE.DirectionalLight(0xffe0c0, 1.6); rim.position.set(-4, -1.5, -3); scene.add(rim);
+
+// ---------- random + vector helpers
+function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const rand = mulberry(20260923);
+const lerp = (a, b, t) => a + (b - a) * t;
+const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+const norm = (a) => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
+const randDir = (rr = rand) => { const z = rr() * 2 - 1, p = rr() * 6.2831853, r = Math.sqrt(1 - z * z); return [r * Math.cos(p), z, r * Math.sin(p)]; };
+const rotX = (p, a) => { const c = Math.cos(a), s = Math.sin(a); return [p[0], p[1] * c - p[2] * s, p[1] * s + p[2] * c]; };
+const rotY = (p, a) => { const c = Math.cos(a), s = Math.sin(a); return [p[0] * c + p[2] * s, p[1], -p[0] * s + p[2] * c]; };
+const rotZ = (p, a) => { const c = Math.cos(a), s = Math.sin(a); return [p[0] * c - p[1] * s, p[0] * s + p[1] * c, p[2]]; };
+const sph = (u, v) => { const p = u * 6.2831853, t = v * 3.14159265, s = Math.sin(t); return [s * Math.cos(p), Math.cos(t), s * Math.sin(p)]; };
+
+// ---------- one shared (u,v) grid for all four forms: same triangles, so any form can fly into any other
+const NU = 240, NV = 60, NQ = NU * NV, NVX = NQ * 6, CH = 150;
+const chunk = [];
+for (let i = 0; i < CH; i++) chunk.push({ su: rand(), sv: 0.06 + rand() * 0.88, ax: randDir(), w: rand() });
+// shards = Voronoi cells in (u,v), u wraps and counts double so cells are round on the sphere;
+// per triangle and on a warped domain, so the edges tear instead of stepping along the grid
+const tch = new Uint16Array(NQ * 2), TP = 6.2831853;
+for (let j = 0; j < NV; j++) for (let i = 0; i < NU; i++) for (let h = 0; h < 2; h++) {
+  let u = (i + (h ? 1 / 3 : 2 / 3)) / NU, v = (j + (h ? 2 / 3 : 1 / 3)) / NV;
+  u += 0.011 * Math.sin(TP * 7 * u + 2 * Math.sin(v * 13)) + 0.004 * Math.sin(TP * 23 * u + v * 71) + (rand() - 0.5) * 0.003;
+  v += 0.022 * Math.sin(v * 31 + 2 * Math.sin(TP * 5 * u)) + 0.008 * Math.sin(v * 97 + TP * 11 * u) + (rand() - 0.5) * 0.006;
+  let best = 1e9, bi = 0;
+  for (let k = 0; k < CH; k++) {
+    let du = Math.abs(u - chunk[k].su) % 1; du = Math.min(du, 1 - du);
+    const dv = v - chunk[k].sv, d = 4 * du * du + dv * dv;
+    if (d < best) { best = d; bi = k; }
+  }
+  tch[(j * NU + i) * 2 + h] = bi;
+}
+
+// 03 — torn sphere: a grainy core under a clear glass shell; a smooth noise threshold tears the shell,
+// the torn rim curls up into a lip, and a few glass horns stick out
+const sstep = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+const hash3 = (x, y, z) => { let h = Math.imul(x, 374761393) ^ Math.imul(y, 668265263) ^ Math.imul(z, 1440662683); h = Math.imul(h ^ h >>> 13, 1274126177); return ((h ^ h >>> 16) >>> 0) / 4294967296; };
+function vnoise(x, y, z) {
+  const X = Math.floor(x), Y = Math.floor(y), Z = Math.floor(z), fx = sstep(0, 1, x - X), fy = sstep(0, 1, y - Y), fz = sstep(0, 1, z - Z);
+  const c = (i, j, k) => hash3(X + i, Y + j, Z + k);
+  return lerp(lerp(lerp(c(0, 0, 0), c(1, 0, 0), fx), lerp(c(0, 1, 0), c(1, 1, 0), fx), fy),
+    lerp(lerp(c(0, 0, 1), c(1, 0, 1), fx), lerp(c(0, 1, 1), c(1, 1, 1), fx), fy), fz) * 2 - 1;
+}
+const SPK = [];
+{ const r2 = mulberry(77); for (let i = 0; i < 5; i++) { const z = r2() * 2 - 1, a = r2() * 6.2831853, q = Math.sqrt(1 - z * z); SPK.push([q * Math.cos(a), z, q * Math.sin(a), 0.25 + r2() * 0.35]); } }
+function fFracture(u, v) {
+  const d = sph(u, v), x = d[0], y = d[1], z = d[2];
+  const n = vnoise(x * 1.5 + 4, y * 1.5, z * 1.5 - 2) + 0.15 * vnoise(x * 3.1, y * 3.1 + 9, z * 3.1);
+  let r = 0.93 + 0.13 * sstep(0.32, 0.48, n) + 0.09 * Math.exp(-(((n - 0.4) / 0.1) ** 2)) + 0.012 * vnoise(x * 6, y * 6, z * 6);
+  for (const k of SPK) { const a = Math.acos(Math.min(1, x * k[0] + y * k[1] + z * k[2])); if (a < 0.34) r += k[3] * Math.pow(1 - a / 0.34, 2.2); }
+  return [x * r, y * r, z * r];
+}
+// radial projection onto a set of planes [nx, ny, nz, dist] = convex faceted body;
+// points closer than R to a facet edge slide onto it, so edges come out straight instead of stepping with the grid
+function radial(d, pl, R = 0.04) {
+  let a = 0, t = 1e9;
+  for (let i = 0; i < pl.length; i++) { const p = pl[i], k = d[0] * p[0] + d[1] * p[1] + d[2] * p[2]; if (k > 1e-5 && p[3] / k < t) { t = p[3] / k; a = i; } }
+  const A = pl[a], P = [d[0] * t, d[1] * t, d[2] * t];
+  let best = R, m = null;
+  for (let i = 0; i < pl.length; i++) {
+    if (i === a) continue;
+    const B = pl[i], c = A[0] * B[0] + A[1] * B[1] + A[2] * B[2], s = Math.sqrt(Math.max(1e-9, 1 - c * c));
+    const dist = (B[3] - (B[0] * P[0] + B[1] * P[1] + B[2] * P[2])) / s;
+    if (dist >= 0 && dist < best) { best = dist; m = [(B[0] - c * A[0]) / s, (B[1] - c * A[1]) / s, (B[2] - c * A[2]) / s]; }
+  }
+  if (m) { P[0] += m[0] * best; P[1] += m[1] * best; P[2] += m[2] * best; }
+  return P;
+}
+// 02 — double-terminated crystal with a few random cuts
+const cPl = [], rc = mulberry(11);
+for (let k = 0; k < 6; k++) { const a = k * Math.PI / 3 + 0.2 + (rc() - 0.5) * 0.25; cPl.push([Math.cos(a), 0, Math.sin(a), 0.56 + rc() * 0.1]); }
+for (let k = 0; k < 6; k++) { const a = k * Math.PI / 3 + 0.2 + (rc() - 0.5) * 0.3, n = norm([Math.cos(a) * 0.62, 0.78, Math.sin(a) * 0.62]); cPl.push([...n, n[1] * (1.3 + rc() * 0.12)]); }
+for (let k = 0; k < 6; k++) { const a = k * Math.PI / 3 + 0.2 + (rc() - 0.5) * 0.3, n = norm([Math.cos(a) * 0.7, -0.72, Math.sin(a) * 0.7]); cPl.push([...n, -n[1] * (0.95 + rc() * 0.12)]); }
+for (let k = 0; k < 5; k++) cPl.push([...randDir(rc), 0.8 + rc() * 0.15]);
+function fCrystal(u, v) { return rotZ(rotX(radial(sph(u, v), cPl), 0.2), -0.38); }
+// 01 — (2,3) torus knot
+const kc = (t) => { const cs = Math.cos(1.5 * t); return [0.3 * (2 + cs) * Math.cos(t), 0.3 * (2 + cs) * Math.sin(t), 0.3 * Math.sin(1.5 * t)]; };
+function fKnot(u, v) {
+  const t = u * 4 * Math.PI, p = kc(t), q = kc(t + 0.01);
+  const T = [q[0] - p[0], q[1] - p[1], q[2] - p[2]], B = norm(cross(T, [q[0] + p[0], q[1] + p[1], q[2] + p[2]])), N = norm(cross(B, T));
+  const a = -v * 6.2831853, ca = Math.cos(a) * 0.21, sa = Math.sin(a) * 0.21;
+  return rotX([p[0] + N[0] * ca + B[0] * sa, p[1] + N[1] * ca + B[1] * sa, p[2] + N[2] * ca + B[2] * sa], 0.45);
+}
+// 04 — triangular prism twisted along its height
+const tPl = [];
+for (let k = 0; k < 3; k++) { const a = k * 2 * Math.PI / 3 + 0.3; tPl.push([Math.cos(a), 0, Math.sin(a), 0.48]); }
+tPl.push([0, 1, 0, 1.1], [0, -1, 0, 1.1]);
+const twistMap = (p) => rotZ(rotX(rotY(p, p[1] * 1.25), 0.15), 0.3);
+function fTwist(u, v) { return twistMap(radial(sph(u, v), tPl, 0.07)); }
+// one face of the prism, twisted: smooth normals of the curved face without the neighbours bleeding in
+const twistFace = (f) => (u, v) => { const d = sph(u, v), P = tPl[f], t = P[3] / Math.max(1e-4, dot(d, P)); return twistMap([d[0] * t, d[1] * t, d[2] * t]); };
+const faceOf = (d) => { let a = 0, t = 1e9; tPl.forEach((P, i) => { const k = dot(d, P); if (k > 1e-5 && P[3] / k < t) { t = P[3] / k; a = i; } }); return a; };
+
+// [form, normals]: 0 — finite differences, 1 — flat per triangle, 2 — per face of the twisted prism
+// (its faces are curved: each triangle takes smooth normals of its own face, so edges stay sharp)
+const FORMS = [[fKnot, 0], [fCrystal, 1], [fFracture, 0], [fTwist, 2]];
+const uvA = new Float32Array(NVX * 2), rnA = new Float32Array(NVX * 4), vch = new Uint16Array(NVX);
+const CORN = [0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1];
+for (let j = 0; j < NV; j++) for (let i = 0; i < NU; i++) {
+  const q = j * NU + i;
+  for (let m = 0; m < 6; m++) {
+    const vi = q * 6 + m, c = tch[q * 2 + (m < 3 ? 0 : 1)], k = chunk[c];
+    uvA[vi * 2] = (i + CORN[m * 2]) / NU; uvA[vi * 2 + 1] = (j + CORN[m * 2 + 1]) / NV;
+    vch[vi] = c; rnA[vi * 4] = k.ax[0]; rnA[vi * 4 + 1] = k.ax[1]; rnA[vi * 4 + 2] = k.ax[2]; rnA[vi * 4 + 3] = k.w;
+  }
+}
+const POS = [], NOR = [], CEN = [], E = 1e-3;
+function fdNormal(F, u, v, c, p) {
+  const a = F(u + E, v, c), b = F(u - E, v, c), e = F(u, Math.min(1, v + E), c), f = F(u, Math.max(0, v - E), c);
+  const n = cross([a[0] - b[0], a[1] - b[1], a[2] - b[2]], [e[0] - f[0], e[1] - f[1], e[2] - f[2]]), l = Math.hypot(n[0], n[1], n[2]);
+  return l > 1e-12 ? [n[0] / l, n[1] / l, n[2] / l] : norm(p);
+}
+for (const [F, mode] of FORMS) {
+  const P = new Float32Array(NVX * 3), N = new Float32Array(NVX * 3), C = new Float32Array(NVX * 3), cs = new Float64Array(CH * 4);
+  for (let vi = 0; vi < NVX; vi++) {
+    const u = uvA[vi * 2], v = uvA[vi * 2 + 1], c = vch[vi], p = F(u, v, c);
+    P.set(p, vi * 3);
+    cs[c * 4] += p[0]; cs[c * 4 + 1] += p[1]; cs[c * 4 + 2] += p[2]; cs[c * 4 + 3]++;
+    if (mode === 0) N.set(fdNormal(F, u, v, c, p), vi * 3);
+  }
+  if (mode === 2) for (let vi = 0; vi < NVX; vi += 3) {
+    const G = twistFace(faceOf(sph((uvA[vi * 2] + uvA[vi * 2 + 2] + uvA[vi * 2 + 4]) / 3, (uvA[vi * 2 + 1] + uvA[vi * 2 + 3] + uvA[vi * 2 + 5]) / 3)));
+    for (let m = vi; m < vi + 3; m++) N.set(fdNormal(G, uvA[m * 2], uvA[m * 2 + 1], 0, [P[m * 3], P[m * 3 + 1], P[m * 3 + 2]]), m * 3);
+  }
+  if (mode === 1) for (let o = 0; o < NVX * 3; o += 9) {
+    const n = cross([P[o + 3] - P[o], P[o + 4] - P[o + 1], P[o + 5] - P[o + 2]], [P[o + 6] - P[o], P[o + 7] - P[o + 1], P[o + 8] - P[o + 2]]);
+    const l = Math.hypot(n[0], n[1], n[2]), q = l > 1e-10 ? [n[0] / l, n[1] / l, n[2] / l] : norm([P[o] + P[o + 3] + P[o + 6], P[o + 1] + P[o + 4] + P[o + 7], P[o + 2] + P[o + 5] + P[o + 8]]);
+    N.set(q, o); N.set(q, o + 3); N.set(q, o + 6);
+  }
+  for (let vi = 0; vi < NVX; vi++) { const c = vch[vi] * 4; C[vi * 3] = cs[c] / cs[c + 3]; C[vi * 3 + 1] = cs[c + 1] / cs[c + 3]; C[vi * 3 + 2] = cs[c + 2] / cs[c + 3]; }
+  POS.push(P); NOR.push(N); CEN.push(C);
+}
+
+const geo = new THREE.BufferGeometry();
+const attr = (s) => new THREE.BufferAttribute(new Float32Array(NVX * s), s);
+const aPos = attr(3), aNor = attr(3), aTo = attr(3), nTo = attr(3), cFr = attr(3), cTo = attr(3);
+geo.setAttribute('position', aPos); geo.setAttribute('normal', aNor);
+geo.setAttribute('aTo', aTo); geo.setAttribute('nTo', nTo); geo.setAttribute('cFrom', cFr); geo.setAttribute('cTo', cTo);
+geo.setAttribute('uv', new THREE.BufferAttribute(uvA, 2)); geo.setAttribute('aRnd', new THREE.BufferAttribute(rnA, 4));
+geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 4);
+const put = (at, src) => { at.array.set(src); at.needsUpdate = true; };
+const setFrom = (f) => { put(aPos, POS[f]); put(aNor, NOR[f]); put(cFr, CEN[f]); };
+const setTo = (f) => { put(aTo, POS[f]); put(nTo, NOR[f]); put(cTo, CEN[f]); };
+
+// ---------- grain normal map (frosted plates get more of it)
+function grainNormals() {
+  const S = 256, G = 16, r = mulberry(99), h = new Float32Array(S * S), cell = new Float32Array(G * G).map(() => r());
+  const c = (i, j) => cell[((j % G + G) % G) * G + ((i % G + G) % G)];
+  const vn = (x, y) => { const X = Math.floor(x), Y = Math.floor(y), fx = x - X, fy = y - Y, sx = fx * fx * (3 - 2 * fx), sy = fy * fy * (3 - 2 * fy);
+    return lerp(lerp(c(X, Y), c(X + 1, Y), sx), lerp(c(X, Y + 1), c(X + 1, Y + 1), sx), sy); };
+  for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) h[y * S + x] = 0.3 * vn(x / S * G, y / S * G) + 0.2 * vn(x / S * G * 4, y / S * G * 4) + 0.5 * r();
+  const H = (i, j) => h[((j + S) % S) * S + ((i + S) % S)], d = new Uint8Array(S * S * 4);
+  for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) {
+    const dx = (H(x + 1, y) - H(x - 1, y)) * 3, dy = (H(x, y + 1) - H(x, y - 1)) * 3, l = Math.hypot(dx, dy, 1), o = (y * S + x) * 4;
+    d[o] = (-dx / l * 0.5 + 0.5) * 255; d[o + 1] = (-dy / l * 0.5 + 0.5) * 255; d[o + 2] = (1 / l * 0.5 + 0.5) * 255; d[o + 3] = 255;
+  }
+  const t = new THREE.DataTexture(d, S, S);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearMipmapLinearFilter;
+  t.generateMipmaps = true; t.anisotropy = 4; t.repeat.set(6, 3); t.needsUpdate = true;
+  return t;
+}
+
+// ---------- glass: transmission + dispersion + iridescence; the vertex shader flies shards between forms
+const uni = { uT: { value: 0 }, uAmp: { value: 1 }, uIntro: { value: 0 }, uFrost: { value: 1 } };
+const mat = new THREE.MeshPhysicalMaterial({
+  color: 0xffffff, metalness: 0, roughness: 0.05, transmission: 1, thickness: 1.3, ior: 1.5, dispersion: 5,
+  iridescence: 0.5, iridescenceIOR: 1.35, iridescenceThicknessRange: [120, 720], specularIntensity: 1, envMapIntensity: 1.2,
+  attenuationColor: new THREE.Color('#ffffff'), attenuationDistance: 2.5,
+  normalMap: grainNormals(), normalScale: new THREE.Vector2(0.4, 0.4), side: THREE.DoubleSide
+});
+mat.onBeforeCompile = (sh) => {
+  Object.assign(sh.uniforms, uni);
+  sh.vertexShader = sh.vertexShader
+    .replace('#include <common>', `#include <common>
+attribute vec3 aTo; attribute vec3 nTo; attribute vec3 cFrom; attribute vec3 cTo; attribute vec4 aRnd;
+uniform float uT; uniform float uAmp; uniform float uIntro;
+varying float vFrost;
+vec3 rotAx(vec3 v, vec3 a, float g) { float c = cos(g), s = sin(g); return v * c + cross(a, v) * s + a * dot(a, v) * (1.0 - c); }`)
+    .replace('#include <beginnormal_vertex>', `
+float rw = aRnd.w;
+float kk = clamp((uT - rw * 0.4) / 0.6, 0.0, 1.0);
+float ee = kk * kk * kk * (kk * (kk * 6.0 - 15.0) + 10.0);
+float bb = sin(3.14159265 * kk);
+float ki = clamp((uIntro - rw * 0.45) / 0.55, 0.0, 1.0);
+float ii = 1.0 - ki; ii = ii * ii * ii;
+float gg = bb * (2.0 + 3.5 * rw) + ii * 7.0;
+vec3 objectNormal = rotAx(normalize(mix(normal, nTo, ee) + vec3(0.0, 1e-4, 0.0)), aRnd.xyz, gg);
+#ifdef USE_TANGENT
+vec3 objectTangent = vec3(tangent.xyz);
+#endif`)
+    .replace('#include <begin_vertex>', `
+vec3 cc = mix(cFrom, cTo, ee);
+vec3 od = normalize(cc + aRnd.xyz * 0.7 + vec3(0.0, 1e-3, 0.0));
+cc += od * (bb * uAmp * (0.45 + 0.9 * rw) + ii * 4.0);
+vec3 transformed = cc + rotAx(mix(position - cFrom, aTo - cTo, ee), aRnd.xyz, gg);
+vFrost = 1.0 - smoothstep(0.97, 1.03, length(mix(position, aTo, ee)));
+#ifdef USE_ALPHAHASH
+vPosition = vec3(position);
+#endif`);
+  sh.fragmentShader = sh.fragmentShader
+    .replace('#include <common>', `#include <common>
+varying float vFrost; uniform float uFrost;
+float h21(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float vn2(vec2 p) { vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(h21(i), h21(i + vec2(1.0, 0.0)), f.x), mix(h21(i + vec2(0.0, 1.0)), h21(i + vec2(1.0, 1.0)), f.x), f.y); }`)
+    // frost only where the surface faces the camera: grainy core, clear glass rim
+    .replace('#include <color_fragment>', `#include <color_fragment>
+float frz = vFrost * uFrost * smoothstep(0.05, 0.4, abs(dot(normalize(vNormal), normalize(vViewPosition))));
+float grn = 0.65 * vn2(vNormalMapUv * 110.0) + 0.35 * vn2(vNormalMapUv * 23.0);
+diffuseColor.rgb *= 1.0 - 0.9 * frz;
+if (!gl_FrontFacing) diffuseColor.rgb *= 1.0 - 0.7 * frz;`)
+    .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, 0.07, frz);')
+    // the frosted core stays dull and dark: little mirror, no thin film
+    .replace('#include <lights_physical_fragment>', `#include <lights_physical_fragment>
+material.specularColor *= 1.0 - 0.93 * frz; material.specularF90 *= 1.0 - 0.9 * frz;
+#ifdef USE_IRIDESCENCE
+material.iridescence *= 1.0 - frz;
+#endif`)
+    .replace('#include <normal_fragment_maps>', THREE.ShaderChunk.normal_fragment_maps.replace('mapN.xy *= normalScale;', 'mapN.xy *= normalScale * (0.2 + 0.8 * frz);'))
+    .replace('#include <transmission_fragment>', THREE.ShaderChunk.transmission_fragment.replace('material.transmission = transmission;', 'material.transmission = transmission * (1.0 - 0.5 * frz);')
+      // the core is painted as dark salt-and-pepper grain; reflections and highlights still go on top
+      .replace('totalDiffuse = mix( totalDiffuse, transmitted.rgb, material.transmission );', 'totalDiffuse = mix( totalDiffuse, transmitted.rgb, material.transmission );\ntotalDiffuse = mix( totalDiffuse, vec3( 0.02 + 0.38 * grn * grn ), 0.9 * frz );'));
+};
+const mesh = new THREE.Mesh(geo, mat);
+mesh.frustumCulled = false;
+spin.add(mesh);
+
+// per-form look, blended during a transition (never 0: zero would recompile the shader)
+const LOOK = [
+  { c: '#f0fae6', a: '#7cc95a', ad: 1.4, ior: 1.6, disp: 7, ir: 1.0, th: 0.7, fr: 0, env: 1.8 },
+  { c: '#f3e6ff', a: '#9d62ff', ad: 2.4, ior: 1.75, disp: 9, ir: 1.0, th: 1.5, fr: 0, env: 1.8 },
+  { c: '#ffffff', a: '#f2efe8', ad: 2.5, ior: 1.55, disp: 10, ir: 0.6, th: 1.3, fr: 1.0, env: 2.1 },
+  { c: '#e8f4ff', a: '#4f9dff', ad: 1.5, ior: 1.7, disp: 8, ir: 0.9, th: 1.3, fr: 0, env: 1.8 }
+].map((l) => ({ ...l, c: new THREE.Color(l.c), a: new THREE.Color(l.a) }));
+function applyLook(i, j, t) {
+  const A = LOOK[i], B = LOOK[j];
+  mat.color.lerpColors(A.c, B.c, t); mat.attenuationColor.lerpColors(A.a, B.a, t);
+  mat.attenuationDistance = lerp(A.ad, B.ad, t); mat.ior = lerp(A.ior, B.ior, t); mat.dispersion = lerp(A.disp, B.disp, t);
+  mat.iridescence = lerp(A.ir, B.ir, t); mat.thickness = lerp(A.th, B.th, t);
+  uni.uFrost.value = lerp(A.fr, B.fr, t); scene.environmentIntensity = lerp(A.env, B.env, t);
+}
+
+// ---------- orbits: soft thick tubes + hairlines, dots ride on them
+const ringsG = new THREE.Group(); root.add(ringsG);
+const softVS = 'varying vec3 vN; varying vec3 vV; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalize(normalMatrix * normal); vV = -mv.xyz; gl_Position = projectionMatrix * mv; }';
+const softFS = 'uniform vec3 uC; uniform float uO; uniform float uP; varying vec3 vN; varying vec3 vV; void main(){ float f = abs(dot(normalize(vN), normalize(vV))); gl_FragColor = vec4(uC * pow(f, uP) * uO, 1.0); }';
+const lineMat = new THREE.LineBasicMaterial({ color: 0xd9d3c3, transparent: true, opacity: 0.5, depthWrite: false });
+const dotMat = new THREE.ShaderMaterial({
+  uniforms: { uS: { value: 10 } },
+  vertexShader: 'uniform float uS; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); gl_Position = projectionMatrix * mv; gl_PointSize = uS * 8.4 / -mv.z; }',
+  fragmentShader: 'void main(){ float d = length(gl_PointCoord - 0.5); float a = smoothstep(0.5, 0.0, d); gl_FragColor = vec4(vec3(1.0, 0.96, 0.88) * (a * a * 1.3 + smoothstep(0.2, 0.12, d)), 1.0); }',
+  transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+});
+const RINGS = [
+  { r: 2.1, tube: 0.038, e: [1.2, 0.25, 0.3], sp: 0.16, soft: 0.5, dots: [0.4] },
+  { r: 1.82, tube: 0.03, e: [1.42, -0.6, -0.2], sp: -0.12, soft: 0.45, dots: [2.2, 4.4] },
+  { r: 1.6, tube: 0.026, e: [0.55, 0.95, 1.25], sp: 0.2, soft: 0.4, dots: [1.1] },
+  { r: 1.95, e: [1.3, 0.1, -0.7], sp: 0.1, dots: [3.0] },
+  { r: 1.42, e: [0.95, -0.75, 0.45], sp: -0.22, dots: [0.2, 3.5] },
+  { r: 2.35, e: [1.5, 0.45, 0.12], sp: 0.07, dots: [5.1] },
+  { r: 1.3, e: [0.3, 1.2, -0.3], sp: 0.18, dots: [] },
+  { r: 2.3, tube: 0.085, e: [1.32, 0.35, 0.55], sp: 0.05, soft: 0.3, pw: 1.1, dots: [] },
+  { r: 1.98, tube: 0.07, e: [1.0, -0.55, -0.65], sp: -0.045, soft: 0.28, pw: 1.1, dots: [] }
+];
+const orbits = RINGS.map((R) => {
+  const g = new THREE.Group(); g.rotation.set(R.e[0], R.e[1], R.e[2]); ringsG.add(g);
+  if (R.soft) {
+    g.add(new THREE.Mesh(new THREE.TorusGeometry(R.r, R.tube, 10, 320), new THREE.ShaderMaterial({
+      uniforms: { uC: { value: new THREE.Vector3(0.66, 0.62, 0.56) }, uO: { value: R.soft }, uP: { value: R.pw || 2.2 } }, vertexShader: softVS, fragmentShader: softFS,
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })));
+  } else {
+    const pts = []; for (let k = 0; k < 256; k++) { const a = k / 256 * Math.PI * 2; pts.push(new THREE.Vector3(Math.cos(a) * R.r, Math.sin(a) * R.r, 0)); }
+    g.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
+  }
+  if (R.dots.length) g.add(new THREE.Points(new THREE.BufferGeometry().setFromPoints(R.dots.map((a) => new THREE.Vector3(Math.cos(a) * R.r, Math.sin(a) * R.r, 0))), dotMat));
+  return { g, R, ph: rand() * 6.28 };
+});
+
+// ---------- background: graphite + drafting lines, drawn into the WebGL scene so the glass refracts them
+const bgC = document.createElement('canvas'), bgX = bgC.getContext('2d');
+let bgTex = null;
+function drawBg(W, H, cy, unitPx) {
+  bgC.width = W; bgC.height = H;
+  const g = bgX, s = unitPx / 219, cx = W / 2;
+  const gr = g.createRadialGradient(cx, cy, 0, cx, cy, Math.hypot(W, H) * 0.6);
+  gr.addColorStop(0, '#292928'); gr.addColorStop(0.55, '#222221'); gr.addColorStop(1, '#1b1b1a');
+  g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  g.lineWidth = PR;
+  const ink = (a) => { g.strokeStyle = `rgba(226,222,206,${a})`; };
+  g.setLineDash([5 * PR, 6 * PR]); ink(0.2);
+  for (const fx of [0.254, 0.754]) { const x = Math.round(W * fx) + 0.5; g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); }
+  ink(0.09); const D = Math.hypot(W, H);
+  for (const a of [0.62, -0.62]) { g.beginPath(); g.moveTo(cx - Math.cos(a) * D, cy - Math.sin(a) * D); g.lineTo(cx + Math.cos(a) * D, cy + Math.sin(a) * D); g.stroke(); }
+  g.setLineDash([]);
+  ink(0.2); g.beginPath(); g.arc(cx, cy, 318 * s, 0, 7); g.stroke();
+  ink(0.15); g.beginPath(); g.arc(cx, cy - 1106 * s, 796 * s, 0, 7); g.stroke();
+  g.beginPath(); g.arc(cx, cy + 1116 * s, 796 * s, 0, 7); g.stroke();
+  if (bgTex) bgTex.dispose();
+  bgTex = new THREE.CanvasTexture(bgC);
+  bgTex.colorSpace = THREE.SRGBColorSpace; bgTex.minFilter = THREE.LinearFilter; bgTex.generateMipmaps = false;
+  scene.background = bgTex;
+}
+
+// ---------- post: chromatic split + grain + vignette over the finished frame
+const post = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({
+  uniforms: { tD: { value: null }, uRes: { value: new THREE.Vector2(1, 1) }, uTime: { value: 0 }, uCA: { value: 2.2 } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+  fragmentShader: `uniform sampler2D tD; uniform vec2 uRes; uniform float uTime; uniform float uCA; varying vec2 vUv;
+float hash(vec2 p){ vec3 q = fract(vec3(p.xyx) * 0.1031); q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z); }
+vec3 spec(float t){ return clamp(vec3(abs(t * 6.0 - 3.0) - 1.0, 2.0 - abs(t * 6.0 - 2.0), 2.0 - abs(t * 6.0 - 4.0)), 0.0, 1.0); }
+float luma(vec3 c){ return dot(c, vec3(0.299, 0.587, 0.114)); }
+void main(){
+  vec2 c = vUv - 0.5; vec2 cc = vec2(c.x * uRes.x / uRes.y, c.y); float l = length(cc);
+  vec2 off = cc / (l + 1e-5) * uCA * (1.0 + 4.0 * l * l) / uRes * (uRes.y / 900.0);
+  // bright edges split harder, into a whole spectrum: red inside, yellow, cyan, blue, violet outside
+  off *= 1.0 + 1.2 * smoothstep(0.55, 0.95, max(luma(texture2D(tD, vUv + off * 2.0).rgb), luma(texture2D(tD, vUv - off * 2.0).rgb)));
+  vec3 col = vec3(0.0), ws = vec3(0.0);
+  for (int i = 0; i < 5; i++) { float t = float(i) / 4.0; vec3 w = spec(t * 0.8); col += texture2D(tD, vUv + off * (t * 2.0 - 1.0)).rgb * w; ws += w; }
+  col /= ws;
+  col *= 1.0 - 0.3 * smoothstep(0.45, 1.05, l);
+  col += (hash(gl_FragCoord.xy + fract(uTime) * 613.0) - 0.5) * 0.05;
+  gl_FragColor = vec4(col, 1.0);
+}`, depthTest: false, depthWrite: false }));
+post.frustumCulled = false;
+const postScene = new THREE.Scene(); postScene.add(post);
+const postCam = new THREE.Camera();
+let fbTex = null;
+
+let objY = 0.5;
+function resize() {
+  const w = innerWidth, h = innerHeight, narrow = w < 760;
+  renderer.setPixelRatio(PR); renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  let dist = 8.9;
+  if (camera.aspect < 1.1) dist = Math.max(dist, (narrow ? 1.9 : 2.3) / (TAN * camera.aspect));
+  camera.position.set(0, 0, dist); camera.updateProjectionMatrix();
+  objY = narrow ? 0.575 : 0.5;
+  root.position.y = -(objY - 0.5) * 2 * dist * TAN;
+  const v = renderer.getDrawingBufferSize(new THREE.Vector2());
+  if (fbTex) fbTex.dispose();
+  fbTex = new THREE.FramebufferTexture(v.x, v.y);
+  fbTex.minFilter = fbTex.magFilter = THREE.LinearFilter;
+  post.material.uniforms.tD.value = fbTex; post.material.uniforms.uRes.value.copy(v);
+  drawBg(v.x, v.y, objY * v.y, v.y / 2 / (dist * TAN));
+  dotMat.uniforms.uS.value = 9 * PR * Math.min(1, dist / 8.4 * 0.9 + 0.1);
+  placeSel();
+}
+
+// ---------- slider UI
+const ths = [...document.querySelectorAll('.th')], sel = $('.sel'), curEl = $('#cur'), capEl = $('#cap');
+let shown = 0;
+function placeSel() { sel.style.transform = `translateX(${ths[shown].offsetLeft}px)`; }
+function ui(n) {
+  if (n !== shown) { curEl.textContent = '0' + (n + 1); curEl.classList.remove('roll'); void curEl.offsetWidth; curEl.classList.add('roll'); }
+  shown = n; capEl.textContent = CAPS[n];
+  ths.forEach((b, i) => b.setAttribute('aria-current', i === n ? 'true' : 'false'));
+  placeSel();
+}
+
+// ---------- thumbnails: the same four forms, rendered once by this renderer
+function thumbs() {
+  const S = Math.round(96 * PR), vs = S / PR, cam = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
+  cam.position.set(0, 0, 6.4);
+  const bg = scene.background, ry = root.position.y;
+  scene.background = new THREE.Color('#2a2c2f'); ringsG.visible = false; root.position.y = 0;
+  uni.uT.value = 0; uni.uIntro.value = 1;
+  renderer.setScissorTest(true);
+  ths.forEach((b, f) => {
+    setFrom(f); setTo(f); applyLook(f, f, 0);
+    tilt.rotation.set(0.28, 0, 0); spin.rotation.set(0.1, [0.15, 0.3, 0.6, 0.7][f], 0);
+    renderer.setViewport(0, 0, vs, vs); renderer.setScissor(0, 0, vs, vs);
+    renderer.render(scene, cam);
+    const cv = b.querySelector('canvas'); cv.width = cv.height = S;
+    cv.getContext('2d').drawImage(renderer.domElement, 0, renderer.domElement.height - S, S, S, 0, 0, S, S);
+  });
+  renderer.setScissorTest(false);
+  renderer.setViewport(0, 0, innerWidth, innerHeight);
+  scene.background = bg; ringsG.visible = true; root.position.y = ry;
+  tilt.rotation.set(0, 0, 0); spin.rotation.set(0, 0, 0);
+}
+
+// ---------- transitions: shards burst out of one form and land as the next
+const DUR = 2.6;
+let cur = 0, trans = null, queued = null, autoT = 0;
+function go(n, force) {
+  n = (n + 4) % 4; autoT = 0;
+  if (trans) { if (n !== trans.to) queued = n; ui(n); return; }
+  if (n === cur && !force) return;
+  trans = { to: n, t: 0 }; setTo(n); uni.uAmp.value = n === cur ? 1.5 : 1.0; ui(n);
+}
+$('#next').onclick = () => go(cur + 1);
+$('#prev').onclick = () => go(cur - 1);
+$('#burst').onclick = () => go(trans ? trans.to : cur, true);
+ths.forEach((b, i) => { b.onclick = () => go(i); });
+addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') go(cur + 1); if (e.key === 'ArrowLeft') go(cur - 1); });
+
+let mx = 0, my = 0, cx = 0, cy = 0, lastMove = -1e9, t = 0;
+addEventListener('pointermove', (e) => { mx = e.clientX / innerWidth * 2 - 1; my = e.clientY / innerHeight * 2 - 1; lastMove = t; });
+addEventListener('resize', resize);
+
+resize();
+thumbs();
+setFrom(0); setTo(0); applyLook(0, 0, 0);
+ui(0);
+
+const clock = new THREE.Clock();
+let fAcc = 0, fN = 0, warm = 0;
+renderer.setAnimationLoop(() => {
+  const raw = clock.getDelta(), dt = Math.min(raw, 0.05);
+  t += dt;
+  // quality guard: a slow GPU gets fewer pixels instead of a choppy scene
+  warm += raw;
+  if (warm > 4) { fAcc += raw; if (++fN === 90) { if (fAcc / fN > 1 / 45 && PR > 0.8) { PR = Math.max(0.75, PR - 0.25); resize(); } fAcc = 0; fN = 0; } }
+
+  if (uni.uIntro.value < 1) uni.uIntro.value = Math.min(1, uni.uIntro.value + dt / 2.4);
+  else if (!trans && (autoT += dt) > 6.5) go(cur + 1);
+  if (trans) {
+    trans.t += dt / DUR;
+    const k = Math.min(trans.t, 1);
+    uni.uT.value = k; applyLook(cur, trans.to, k * k * (3 - 2 * k));
+    if (trans.t >= 1) {
+      cur = trans.to; setFrom(cur); uni.uT.value = 0; trans = null;
+      if (queued !== null) { const q = queued; queued = null; go(q); }
+    }
+  }
+
+  // cursor with inertia; a slow virtual cursor takes over when the mouse rests
+  const idle = t - lastMove > 2.5, tx = idle ? Math.sin(t * 0.37) * 0.55 : mx, ty = idle ? Math.sin(t * 0.23 + 1) * 0.35 : my;
+  const f = 1 - Math.exp(-dt * 2.2);
+  cx += (tx - cx) * f; cy += (ty - cy) * f;
+  tilt.rotation.set(cy * 0.45, cx * 0.7, 0);
+  spin.rotation.y += dt * 0.22; spin.rotation.x = 0.22 * Math.sin(t * 0.21);
+  ringsG.rotation.set(cy * 0.12, cx * 0.18, 0);
+  for (const o of orbits) {
+    o.g.rotation.z += o.R.sp * dt;
+    o.g.rotation.x = o.R.e[0] + 0.22 * Math.sin(t * 0.11 + o.ph);
+    o.g.rotation.y = o.R.e[1] + 0.3 * Math.sin(t * 0.07 + o.ph * 1.3);
+  }
+  scene.environmentRotation.y = t * 0.12;
+
+  renderer.render(scene, camera);
+  renderer.copyFramebufferToTexture(fbTex);
+  post.material.uniforms.uTime.value = t;
+  renderer.render(postScene, postCam);
+});
+</script>
+</body>
+</html>
