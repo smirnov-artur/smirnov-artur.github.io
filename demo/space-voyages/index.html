@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. — Space voyages</title>
+<!-- Один файл вместо React + Babel + Framer Motion + Tailwind CDN. ?lang=ru — русская версия
+     (у Instrument Serif и Barlow нет кириллицы: по-русски Cormorant 500 и Commissioner).
+     Под нашим логотипом вместо «2.8B+ пользователей» и «34.5 мин просмотра» — возможности полёта,
+     вместо ряда «партнёров» — ряд направлений полёта. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Barlow:wght@300;400;500;600&family=Cormorant:ital,wght@0,500;1,500&family=Commissioner:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+:root{--fh:'Instrument Serif',serif;--fb:'Barlow',sans-serif;--tr:-4px}
+.ru{--fh:'Cormorant',serif;--fb:'Commissioner',sans-serif;--tr:-2px}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:#000;color:#fff;font-family:var(--fb);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.i{display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.liquid-glass{background:rgba(255,255,255,.01);background-blend-mode:luminosity;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  border:none;box-shadow:inset 0 1px 1px rgba(255,255,255,.1);position:relative;overflow:hidden}
+.liquid-glass::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.4px;
+  background:linear-gradient(180deg,rgba(255,255,255,.45) 0%,rgba(255,255,255,.15) 20%,rgba(255,255,255,0) 40%,rgba(255,255,255,0) 60%,rgba(255,255,255,.15) 80%,rgba(255,255,255,.45) 100%);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.liquid-glass-strong{background:rgba(255,255,255,.01);background-blend-mode:luminosity;-webkit-backdrop-filter:blur(50px);backdrop-filter:blur(50px);
+  border:none;box-shadow:4px 4px 4px rgba(0,0,0,.05),inset 0 1px 1px rgba(255,255,255,.15);position:relative;overflow:hidden}
+.liquid-glass-strong::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.4px;
+  background:linear-gradient(180deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.2) 20%,rgba(255,255,255,0) 40%,rgba(255,255,255,0) 60%,rgba(255,255,255,.2) 80%,rgba(255,255,255,.5) 100%);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+
+/* вход как у Framer Motion: blur(10px), opacity 0, y 20 -> на место */
+.fm{opacity:0;filter:blur(10px);transform:translateY(20px);animation:fm .6s ease-out var(--d,0s) forwards}
+@keyframes fm{to{opacity:1;filter:none;transform:none}}
+/* BlurText: слово за словом */
+.blur{display:flex;flex-wrap:wrap;justify-content:center;row-gap:.1em}
+.blur span{display:inline-block;margin-right:.28em;opacity:0}
+.blur.on span{animation:bw .7s ease-out calc(var(--i)*.1s) both}
+@keyframes bw{0%{filter:blur(10px);opacity:0;transform:translateY(50px)}50%{filter:blur(5px);opacity:.5;transform:translateY(-5px)}100%{filter:none;opacity:1;transform:none}}
+.rv{opacity:0;transform:translateY(24px);transition:opacity .8s ease-out,transform .8s ease-out;transition-delay:var(--d,0s)}
+.rv.on{opacity:1;transform:none}
+
+/* навигация */
+.nav{position:fixed;top:16px;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0 32px}
+.logo{display:flex;align-items:center;justify-content:center;height:48px;width:112px;border-radius:9999px;color:#fff}
+.logo svg{display:block;height:22px;width:auto;overflow:visible}
+.logo svg text{font-family:'Unbounded',sans-serif}
+.ring{animation:draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}
+.orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:pop .3s ease 1.35s forwards,orbit 7s linear 1.35s infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{to{opacity:1}}
+@keyframes orbit{to{transform:rotate(360deg)}}
+.spacer{width:112px;height:48px}
+.menu{display:none;align-items:center;border-radius:9999px;padding:6px}
+.menu a{padding:8px 12px;font-size:14px;line-height:20px;font-weight:500;color:rgba(255,255,255,.9);white-space:nowrap}
+.menu a:hover{color:#fff}
+.claim{display:flex;align-items:center;gap:4px;margin-left:4px;border-radius:9999px;background:#fff;color:#000!important;padding:8px 16px!important;white-space:nowrap}
+.claim .i{width:16px;height:16px}
+
+/* секция 1 */
+.hero{position:relative;min-height:100vh;min-height:100dvh;overflow:hidden;background:#000}
+.hero-video{position:absolute;left:50%;top:0;transform:translateX(-50%);width:120%;height:120%;object-fit:cover;object-position:top;z-index:0}
+.cap-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.layer{position:relative;z-index:10;display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
+.hc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:96px 16px 24px}
+.badge{display:inline-flex;align-items:center;gap:8px;border-radius:9999px;padding:4px;max-width:100%}
+.badge b{border-radius:9999px;background:#fff;color:#000;padding:4px 12px;font-size:12px;line-height:16px;font-weight:600;flex:none}
+.badge span{padding-right:12px;font-size:13px;line-height:18px;color:rgba(255,255,255,.9);text-align:left}
+h1{margin:24px 0 0;max-width:42rem;font-family:var(--fh);font-style:italic;font-weight:400;font-size:60px;line-height:.8;letter-spacing:var(--tr)}
+.ru h1{font-weight:500;line-height:.9;max-width:56rem}
+.sub{margin:16px 0 0;max-width:42rem;font-size:14px;line-height:1.25;font-weight:300}
+.ctas{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 24px;margin-top:24px}
+.go{display:flex;align-items:center;gap:8px;border-radius:9999px;padding:10px 20px;font-size:14px;line-height:20px;font-weight:500}
+.go .i{width:20px;height:20px}
+.watch{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500}
+.watch svg{width:16px;height:16px;fill:currentColor}
+.stats{display:flex;align-items:stretch;justify-content:center;gap:16px;margin-top:32px;width:100%}
+.stat{flex:1 1 0;min-width:0;max-width:220px;border-radius:1.25rem;padding:20px;text-align:left;display:flex;flex-direction:column;justify-content:space-between;gap:24px}
+.stat .i{width:28px;height:28px;stroke-width:1.5}
+.num{font-family:var(--fh);font-style:italic;font-size:36px;line-height:1;letter-spacing:-1px}
+.ru .num{font-weight:500}
+.stat p{margin:8px 0 0;font-size:12px;line-height:16px;font-weight:300}
+.partners{display:flex;flex-direction:column;align-items:center;gap:16px;padding:0 16px 32px}
+.chip{border-radius:9999px;padding:4px 14px;font-size:12px;line-height:16px;font-weight:500}
+.names{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 28px;font-family:var(--fh);font-style:italic;font-size:24px;letter-spacing:-.025em}
+.ru .names{font-weight:500}
+
+/* секция 2 */
+.caps{position:relative;min-height:100vh;min-height:100dvh;overflow:hidden;background:#000}
+.cl{position:relative;z-index:10;display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;padding:96px 32px 40px}
+.kick{margin:0 0 24px;font-size:14px;color:rgba(255,255,255,.8)}
+h2{margin:0;font-family:var(--fh);font-style:italic;font-weight:400;font-size:60px;line-height:.9;letter-spacing:-3px}
+.ru h2{font-weight:500;letter-spacing:-1.5px}
+.grid{display:grid;grid-template-columns:1fr;gap:24px;margin-top:64px}
+.card{border-radius:1.25rem;padding:24px;min-height:360px;display:flex;flex-direction:column}
+.ctop{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.ico{width:44px;height:44px;flex:none;border-radius:.75rem;display:flex;align-items:center;justify-content:center}
+.ico svg{width:24px;height:24px;fill:currentColor}
+.tags{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;max-width:70%}
+.tag{border-radius:9999px;padding:4px 12px;font-size:11px;line-height:16px;color:rgba(255,255,255,.9);white-space:nowrap}
+.fill{flex:1}
+.card h3{margin:24px 0 0;font-family:var(--fh);font-style:italic;font-weight:400;font-size:30px;line-height:1;letter-spacing:-1px}
+.ru .card h3{font-weight:500}
+.card p{margin:12px 0 0;max-width:32ch;font-size:14px;line-height:1.375;font-weight:300;color:rgba(255,255,255,.9)}
+
+@media (min-width:640px){
+  .badge span{font-size:14px;line-height:20px}
+  .stat{flex:none;width:220px}
+  .names{gap:12px 48px}
+}
+@media (min-width:768px){
+  h1{font-size:72px}
+  .sub{font-size:16px}
+  .names{font-size:30px;gap:12px 64px}
+  .cl{padding-left:64px;padding-right:64px}
+  h2{font-size:72px}
+  .grid{grid-template-columns:repeat(3,1fr)}
+  .card h3{font-size:36px}
+}
+@media (min-width:1024px){
+  .nav{padding:0 64px}
+  .menu{display:flex}
+  h1{font-size:5.5rem}
+  .cl{padding-left:80px;padding-right:80px}
+  h2{font-size:6rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .fm,.blur span,.rv{animation:none!important;opacity:1;filter:none;transform:none;transition:none}
+  .ring{animation:none;stroke-dashoffset:0}.orb{animation:none;opacity:1}
+}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a class="logo liquid-glass" href="#" aria-label="g.a.d.">
+    <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+      <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+      <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+      <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+    </svg>
+  </a>
+  <div class="menu liquid-glass">
+    <a href="#" data-t="n1">Home</a><a href="#" data-t="n2">Voyages</a><a href="#" data-t="n3">Worlds</a><a href="#" data-t="n4">Innovation</a><a href="#" data-t="n5">Plan Launch</a>
+    <a class="claim" href="https://t.me/smirnovarturr" target="_blank" rel="noopener"><span data-t="claim">Claim a Spot</span><svg class="i" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
+  </div>
+  <div class="spacer" aria-hidden="true"></div>
+</nav>
+
+<section class="hero">
+  <video class="hero-video fv" muted playsinline preload="auto" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_080021_d598092b-c4c2-4e53-8e46-94cf9064cd50.mp4"></video>
+  <div class="layer">
+    <div class="hc">
+      <div class="badge liquid-glass fm" style="--d:.4s"><b data-t="new">New</b><span data-t="badge">Maiden Crewed Voyage to Mars Arrives 2026</span></div>
+      <h1 class="blur" id="h1" data-w="Venture Past Our Sky Across the Universe"></h1>
+      <p class="sub fm" style="--d:.8s" data-t="sub">Discover the universe in ways once unimaginable. Our pioneering vessels and breakthrough engineering bring deep-space exploration within reach—secure and extraordinary.</p>
+      <div class="ctas fm" style="--d:1.1s">
+        <a class="go liquid-glass-strong" href="https://t.me/smirnovarturr" target="_blank" rel="noopener"><span data-t="start">Start Your Voyage</span><svg class="i" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
+        <a class="watch" href="#caps"><span data-t="watch">View Liftoff</span><svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></svg></a>
+      </div>
+      <div class="stats fm" style="--d:1.3s">
+        <div class="stat liquid-glass">
+          <svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div><div class="num" data-t="s1n">210 Days</div><p data-t="s1">Earth to Mars, door to dock</p></div>
+        </div>
+        <div class="stat liquid-glass">
+          <svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          <div><div class="num">24/7</div><p data-t="s2">Mission control on every orbit</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="partners fm" style="--d:1.4s">
+      <div class="chip liquid-glass" data-t="chip">Destinations on the flight manifest</div>
+      <div class="names"><span data-t="d1">Moon</span><span data-t="d2">Mars</span><span data-t="d3">Europa</span><span data-t="d4">Titan</span><span data-t="d5">Ceres</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="caps" id="caps">
+  <video class="cap-video fv" muted playsinline preload="auto" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_094631_d30ab262-45ee-4b7d-99f3-5d5848c8ef13.mp4"></video>
+  <div class="cl">
+    <div style="margin-bottom:auto">
+      <p class="kick rv" data-t="kick">// Capabilities</p>
+      <h2 class="rv" style="--d:.1s" data-t="h2">Production<br>evolved</h2>
+    </div>
+    <div class="grid">
+      <div class="card liquid-glass rv" style="--d:.1s">
+        <div class="ctop">
+          <div class="ico liquid-glass"><svg viewBox="0 0 24 24"><path d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21H5Zm1-4h12l-3.75-5-3 4L9 13l-3 4Z"/></svg></div>
+          <div class="tags"><span class="tag liquid-glass" data-t="a1">Natural Context</span><span class="tag liquid-glass" data-t="a2">Photo Realism</span><span class="tag liquid-glass" data-t="a3">Infinite Settings</span><span class="tag liquid-glass" data-t="a4">Eco-Vibe</span></div>
+        </div>
+        <div class="fill"></div>
+        <h3 data-t="c1">AI Scenery</h3>
+        <p data-t="c1p">AI analyzes your product to create indistinguishable natural environments — from Icelandic cliffs to misty forests.</p>
+      </div>
+      <div class="card liquid-glass rv" style="--d:.2s">
+        <div class="ctop">
+          <div class="ico liquid-glass"><svg viewBox="0 0 24 24"><path d="M4 6.47 5.76 10H20v8H4V6.47M22 4h-4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.89-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4Z"/></svg></div>
+          <div class="tags"><span class="tag liquid-glass" data-t="b1">Scale Fast</span><span class="tag liquid-glass" data-t="b2">Visual Consistency</span><span class="tag liquid-glass" data-t="b3">Time Saver</span><span class="tag liquid-glass" data-t="b4">Ready to Post</span></div>
+        </div>
+        <div class="fill"></div>
+        <h3 data-t="c2">Batch Production</h3>
+        <p data-t="c2p">Style your entire product line in minutes. Create a unified visual identity for catalogues and social media without weeks of retouching.</p>
+      </div>
+      <div class="card liquid-glass rv" style="--d:.3s">
+        <div class="ctop">
+          <div class="ico liquid-glass"><svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1Zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7Z"/></svg></div>
+          <div class="tags"><span class="tag liquid-glass" data-t="e1">Ray Tracing</span><span class="tag liquid-glass" data-t="e2">Physical Shadows</span><span class="tag liquid-glass" data-t="e3">Studio Quality</span><span class="tag liquid-glass" data-t="e4">Sunlight Sync</span></div>
+        </div>
+        <div class="fill"></div>
+        <h3 data-t="c3">Smart Lighting</h3>
+        <p data-t="c3p">Automatic lighting and material adjustment. Achieve flawless integration with realistic shadows and sunlight.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+const h1 = document.getElementById('h1');
+if (new URLSearchParams(location.search).get('lang') === 'ru') {
+  const TR = { n1: 'Главная', n2: 'Полёты', n3: 'Миры', n4: 'Технологии', n5: 'План запуска', claim: 'Занять место',
+    new: 'Новое', badge: 'Первый пилотируемый полёт к Марсу — уже в 2026',
+    sub: 'Откройте Вселенную так, как раньше нельзя было и представить. Наши корабли и прорывная инженерия делают дальний космос доступным — надёжно и невероятно.',
+    start: 'Начать путешествие', watch: 'Смотреть старт', s1n: '210 дней', s1: 'От Земли до Марса, от шлюза до шлюза', s2: 'Центр управления на каждом витке',
+    chip: 'Направления в полётном листе', d1: 'Луна', d2: 'Марс', d3: 'Европа', d4: 'Титан', d5: 'Церера',
+    kick: '// Возможности', h2: 'Продакшн<br>нового поколения',
+    a1: 'Живой контекст', a2: 'Фотореализм', a3: 'Любые локации', a4: 'Эко-настроение',
+    b1: 'Быстрый масштаб', b2: 'Единый стиль', b3: 'Экономия времени', b4: 'Сразу в пост',
+    e1: 'Трассировка лучей', e2: 'Физичные тени', e3: 'Студийное качество', e4: 'Свет по солнцу',
+    c1: 'ИИ-пейзажи', c1p: 'ИИ изучает ваш товар и создаёт природное окружение, неотличимое от настоящего, — от исландских скал до туманных лесов.',
+    c2: 'Серийная съёмка', c2p: 'Оформите всю линейку товаров за минуты. Единый визуальный стиль для каталогов и соцсетей без недель ретуши.',
+    c3: 'Умный свет', c3p: 'Свет и материалы подстраиваются сами. Товар вписывается в кадр безупречно — с реалистичными тенями и солнечным светом.' };
+  document.documentElement.lang = 'ru';
+  document.body.classList.add('ru');
+  document.title = 'g.a.d. — полёты в космос';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.innerHTML = t; });
+  h1.dataset.w = 'За пределы неба — сквозь всю Вселенную';
+}
+
+// BlurText: слова по одному, старт при 10 % видимости
+h1.innerHTML = h1.dataset.w.split(' ').map((w, i) => '<span style="--i:' + i + '">' + w + '</span>').join('');
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } }), { threshold: 0.1 });
+io.observe(h1);
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+// FadingVideo: своя петля с затуханием через rAF, без loop и без CSS-переходов
+const FADE_MS = 500, FADE_OUT_LEAD = 0.55;
+document.querySelectorAll('video.fv').forEach(v => {
+  let raf = 0, fadingOut = false;
+  v.style.opacity = '0';
+  const fadeTo = (target, duration = FADE_MS) => {
+    cancelAnimationFrame(raf);
+    const from = parseFloat(v.style.opacity) || 0, t0 = performance.now();
+    const step = now => {
+      const k = Math.min(1, (now - t0) / duration);
+      v.style.opacity = String(from + (target - from) * k);
+      if (k < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+  };
+  const start = () => { v.style.opacity = '0'; v.play().catch(() => {}); fadeTo(1); };
+  v.addEventListener('loadeddata', start);
+  if (v.readyState >= 2) start();
+  v.addEventListener('timeupdate', () => {
+    const left = v.duration - v.currentTime;
+    if (!fadingOut && left <= FADE_OUT_LEAD && left > 0) { fadingOut = true; fadeTo(0); }
+  });
+  v.addEventListener('ended', () => {
+    v.style.opacity = '0';
+    setTimeout(() => { v.currentTime = 0; v.play().catch(() => {}); fadingOut = false; fadeTo(1); }, 100);
+  });
+});
+})();
+</script>
+</body>
+</html>
