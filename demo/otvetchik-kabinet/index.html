@@ -8,8 +8,11 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@600&display=swap" rel="stylesheet">
+<!-- шрифты не держат отрисовку (как на витрине): Google из РФ отвечает медленно — сначала системный шрифт, а не чёрный экран -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@600&display=swap" rel="stylesheet"></noscript>
 <style>
+/* тема всегда тёмная нарочно: бренд g.a.d. — чёрный с лаймом; светлую тему Telegram (themeParams) не читаем */
 :root{--bg:#000;--s1:#111113;--s2:#1c1c1e;--s3:#2c2c2e;--s4:#3a3a3c;--line:rgba(255,255,255,.12);
   --t1:#fff;--t2:rgba(235,235,245,.62);--t3:rgba(235,235,245,.32);--lime:#d6ff3f;--lime-dim:rgba(214,255,63,.13);
   --ui:-apple-system,"SF Pro Text",Manrope,"Helvetica Neue",Arial,sans-serif;--brand:Unbounded,Manrope,sans-serif;
@@ -33,7 +36,7 @@ h1{font-size:34px;font-weight:700;letter-spacing:-.022em;padding:0 20px 2px}
 .gruppa{margin:0 16px 24px;animation:poyav .4s var(--ios) both}
 .gruppa>h4{font-size:13px;font-weight:500;color:var(--t2);text-transform:uppercase;letter-spacing:.02em;padding:0 16px 8px;display:flex;justify-content:space-between}
 .gruppa>h4 .lm{color:var(--lime)}
-.gruppa>.niz{font-size:13px;color:var(--t3);padding:8px 16px 0;line-height:1.35}
+.gruppa>.niz{font-size:13px;color:var(--t2);padding:8px 16px 0;line-height:1.35}
 .spisok{background:var(--s1);border-radius:14px;overflow:hidden}
 .stroka{display:flex;align-items:center;gap:12px;padding:0 16px;min-height:48px;width:100%;text-align:left;background:var(--s1);transition:background .12s}
 button.stroka:active{background:var(--s3)}
@@ -88,7 +91,8 @@ button.stroka:active{background:var(--s3)}
 .rz-st div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 0;box-shadow:inset 0 .5px 0 var(--line);font-size:15px;color:var(--t2)}
 .rz-st b{color:var(--t1);font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
 .rz-niz{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px;color:var(--t2);font-size:13px}
-.rz-obn{display:flex;align-items:center;gap:6px;height:32px;padding:0 13px 0 10px;border-radius:16px;background:var(--s3);font-size:13.5px;font-weight:600;flex:none}
+.rz-obn{display:flex;align-items:center;gap:6px;height:32px;padding:0 13px 0 10px;border-radius:16px;background:var(--s3);font-size:13.5px;font-weight:600;flex:none;position:relative}
+.rz-obn::after{content:"";position:absolute;inset:-6px -2px}   /* палец попадает в 44 px, а пилюля остаётся 32 */
 .rz-obn .ik{width:16px;height:16px}
 .gruppa>.knopka+.spisok{margin-top:12px}
 .rz-st .dl span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -103,10 +107,10 @@ button.stroka:active{background:var(--s3)}
 .sw::after{content:"";position:absolute;top:2px;left:22px;width:27px;height:27px;border-radius:14px;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.25);transition:left .35s var(--pruzh)}
 .sw.vykl{background:var(--s4)}.sw.vykl::after{left:2px}
 /* плавающая панель вкладок, стекло */
-.tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 14px);width:min(360px,calc(100% - 32px));height:62px;border-radius:31px;
-  display:grid;grid-template-columns:repeat(3,1fr);padding:4px;z-index:50;background:rgba(44,44,48,.55);-webkit-backdrop-filter:blur(20px) saturate(190%);backdrop-filter:blur(20px) saturate(190%);
+.tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 14px);width:min(400px,calc(100% - 32px));height:62px;border-radius:31px;
+  display:grid;grid-template-columns:repeat(4,1fr);padding:4px;z-index:50;background:rgba(44,44,48,.55);-webkit-backdrop-filter:blur(20px) saturate(190%);backdrop-filter:blur(20px) saturate(190%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 0 .5px rgba(255,255,255,.1),0 10px 30px rgba(0,0,0,.45)}
-.tab-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/3);border-radius:27px;background:rgba(255,255,255,.11);transition:transform .55s var(--pruzh)}
+.tab-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/4);border-radius:27px;background:rgba(255,255,255,.11);transition:transform .55s var(--pruzh)}
 .tabbar button{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10.5px;font-weight:600;color:rgba(235,235,245,.72)}
 .tabbar .ik{width:25px;height:25px}.tabbar .ik.f{display:none}
 .tabbar .akt{color:var(--lime)}.tabbar .akt .ik.r{display:none}.tabbar .akt .ik.f{display:block}
@@ -131,7 +135,14 @@ button.stroka:active{background:var(--s3)}
 .pochemu b{color:var(--lime);display:block;font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;margin-bottom:2px}
 .p-sw{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.06);border-radius:14px;padding:12px 14px;margin:12px 0}
 .p-sw b{display:block;font-size:16px;font-weight:500}.p-sw small{color:var(--t2);font-size:13px}
-.podskaz{color:var(--t3);font-size:13px;text-align:center;margin-top:10px}
+.vremya{font-weight:600;font-variant-numeric:tabular-nums;min-width:46px;font-size:17px}
+.dve{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.gotovo{width:34px;height:34px;border-radius:50%;background:var(--s3);display:grid;place-items:center;flex:none;position:relative}
+.gotovo::after{content:"";position:absolute;inset:-5px}.gotovo .ik{width:18px;height:18px}
+.gotovo:active{background:var(--lime);color:#0a0a0c}
+.podskaz{color:var(--t2);font-size:13px;text-align:center;margin-top:10px}
+.shtorka input{margin-bottom:10px;background:rgba(255,255,255,.1)}
+.shtorka input[type="datetime-local"]{color-scheme:dark}
 .shtorka .knopka{margin-top:10px}
 .dva{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 4px}
 .dva label{display:flex;align-items:center;gap:10px;color:var(--t2);font-size:15px}
@@ -147,13 +158,19 @@ body[data-sost="oshibka"] #sboy{display:block}
 </style>
 </head>
 <body data-sost="gruzhu">
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="b-caret-down" viewBox="0 0 256 256"><path d="M216.49,104.49l-80,80a12,12,0,0,1-17,0l-80-80a12,12,0,0,1,17-17L128,159l71.51-71.52a12,12,0,0,1,17,17Z"/></symbol><symbol id="b-caret-right" viewBox="0 0 256 256"><path d="M184.49,136.49l-80,80a12,12,0,0,1-17-17L159,128,87.51,56.49a12,12,0,1,1,17-17l80,80A12,12,0,0,1,184.49,136.49Z"/></symbol><symbol id="b-check" viewBox="0 0 256 256"><path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z"/></symbol><symbol id="b-plus" viewBox="0 0 256 256"><path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z"/></symbol><symbol id="f-chats-circle" viewBox="0 0 256 256"><path d="M232.07,186.76a80,80,0,0,0-62.5-114.17A80,80,0,1,0,23.93,138.76l-7.27,24.71a16,16,0,0,0,19.87,19.87l24.71-7.27a80.39,80.39,0,0,0,25.18,7.35,80,80,0,0,0,108.34,40.65l24.71,7.27a16,16,0,0,0,19.87-19.86Zm-16.25,1.47L224,216l-27.76-8.17a8,8,0,0,0-6,.63,64.05,64.05,0,0,1-85.87-24.88A79.93,79.93,0,0,0,174.7,89.71a64,64,0,0,1,41.75,92.48A8,8,0,0,0,215.82,188.23Z"/></symbol><symbol id="f-check-circle" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></symbol><symbol id="f-credit-card" viewBox="0 0 256 256"><path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48ZM136,176H120a8,8,0,0,1,0-16h16a8,8,0,0,1,0,16Zm64,0H168a8,8,0,0,1,0-16h32a8,8,0,0,1,0,16ZM32,88V64H224V88Z"/></symbol><symbol id="f-file-text" viewBox="0 0 256 256"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,176H96a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm0-32H96a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm-8-56V44l44,44Z"/></symbol><symbol id="r-arrow-clockwise" viewBox="0 0 256 256"><path d="M240,56v48a8,8,0,0,1-8,8H184a8,8,0,0,1,0-16H211.4L184.81,71.64l-.25-.24a80,80,0,1,0-1.67,114.78,8,8,0,0,1,11,11.63A95.44,95.44,0,0,1,128,224h-1.32A96,96,0,1,1,195.75,60L224,85.8V56a8,8,0,1,1,16,0Z"/></symbol><symbol id="r-arrow-square-out" viewBox="0 0 256 256"><path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"/></symbol><symbol id="r-arrow-up-right" viewBox="0 0 256 256"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></symbol><symbol id="r-bell-slash" viewBox="0 0 256 256"><path d="M53.92,34.62A8,8,0,1,0,42.08,45.38L58.82,63.8A79.59,79.59,0,0,0,48,104c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.8a40,40,0,0,0,78.4,0h15.44l19.44,21.38a8,8,0,1,0,11.84-10.76ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a63.65,63.65,0,0,1,6.26-27.62L168.09,184Zm166-4.73a8.13,8.13,0,0,1-2.93.55,8,8,0,0,1-7.44-5.08C196.35,156.19,192,129.75,192,104A64,64,0,0,0,96.43,48.31a8,8,0,0,1-7.9-13.91A80,80,0,0,1,208,104c0,35.35,8.05,58.59,10.52,64.88A8,8,0,0,1,214,179.25Z"/></symbol><symbol id="r-chart-line-up" viewBox="0 0 256 256"><path d="M232,208a8,8,0,0,1-8,8H32a8,8,0,0,1-8-8V48a8,8,0,0,1,16,0V156.69l50.34-50.35a8,8,0,0,1,11.32,0L128,132.69,180.69,80H160a8,8,0,0,1,0-16h40a8,8,0,0,1,8,8v40a8,8,0,0,1-16,0V91.31l-58.34,58.35a8,8,0,0,1-11.32,0L96,123.31l-56,56V200H224A8,8,0,0,1,232,208Z"/></symbol><symbol id="r-chats-circle" viewBox="0 0 256 256"><path d="M232.07,186.76a80,80,0,0,0-62.5-114.17A80,80,0,1,0,23.93,138.76l-7.27,24.71a16,16,0,0,0,19.87,19.87l24.71-7.27a80.39,80.39,0,0,0,25.18,7.35,80,80,0,0,0,108.34,40.65l24.71,7.27a16,16,0,0,0,19.87-19.86ZM62,159.5a8.28,8.28,0,0,0-2.26.32L32,168l8.17-27.76a8,8,0,0,0-.63-6,64,64,0,1,1,26.26,26.26A8,8,0,0,0,62,159.5Zm153.79,28.73L224,216l-27.76-8.17a8,8,0,0,0-6,.63,64.05,64.05,0,0,1-85.87-24.88A79.93,79.93,0,0,0,174.7,89.71a64,64,0,0,1,41.75,92.48A8,8,0,0,0,215.82,188.23Z"/></symbol><symbol id="r-credit-card" viewBox="0 0 256 256"><path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Zm0,16V88H32V64Zm0,128H32V104H224v88Zm-16-24a8,8,0,0,1-8,8H168a8,8,0,0,1,0-16h32A8,8,0,0,1,208,168Zm-64,0a8,8,0,0,1-8,8H120a8,8,0,0,1,0-16h16A8,8,0,0,1,144,168Z"/></symbol><symbol id="r-download-simple" viewBox="0 0 256 256"><path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z"/></symbol><symbol id="r-file-text" viewBox="0 0 256 256"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Zm-32-80a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,136Zm0,32a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,168Z"/></symbol><symbol id="r-hourglass" viewBox="0 0 256 256"><path d="M200,75.64V40a16,16,0,0,0-16-16H72A16,16,0,0,0,56,40V76a16.07,16.07,0,0,0,6.4,12.8L114.67,128,62.4,167.2A16.07,16.07,0,0,0,56,180v36a16,16,0,0,0,16,16H184a16,16,0,0,0,16-16V180.36a16.09,16.09,0,0,0-6.35-12.77L141.27,128l52.38-39.6A16.05,16.05,0,0,0,200,75.64ZM184,216H72V180l56-42,56,42.35Zm0-140.36L128,118,72,76V40H184Z"/></symbol><symbol id="r-magnifying-glass" viewBox="0 0 256 256"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></symbol><symbol id="r-paper-plane-tilt" viewBox="0 0 256 256"><path d="M227.32,28.68a16,16,0,0,0-15.66-4.08l-.15,0L19.57,82.84a16,16,0,0,0-2.49,29.8L102,154l41.3,84.87A15.86,15.86,0,0,0,157.74,248q.69,0,1.38-.06a15.88,15.88,0,0,0,14-11.51l58.2-191.94c0-.05,0-.1,0-.15A16,16,0,0,0,227.32,28.68ZM157.83,231.85l-.05.14,0-.07-40.06-82.3,48-48a8,8,0,0,0-11.31-11.31l-48,48L24.08,98.25l-.07,0,.14,0L216,40Z"/></symbol><symbol id="r-storefront" viewBox="0 0 256 256"><path d="M232,96a7.89,7.89,0,0,0-.3-2.2L217.35,43.6A16.07,16.07,0,0,0,202,32H54A16.07,16.07,0,0,0,38.65,43.6L24.31,93.8A7.89,7.89,0,0,0,24,96h0v16a40,40,0,0,0,16,32v72a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V144a40,40,0,0,0,16-32V96ZM54,48H202l11.42,40H42.61Zm50,56h48v8a24,24,0,0,1-48,0Zm-16,0v8a24,24,0,0,1-35.12,21.26,7.88,7.88,0,0,0-1.82-1.06A24,24,0,0,1,40,112v-8ZM200,208H56V151.2a40.57,40.57,0,0,0,8,.8,40,40,0,0,0,32-16,40,40,0,0,0,64,0,40,40,0,0,0,32,16,40.57,40.57,0,0,0,8-.8Zm4.93-75.8a8.08,8.08,0,0,0-1.8,1.05A24,24,0,0,1,168,112v-8h48v8A24,24,0,0,1,204.93,132.2Z"/></symbol></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="b-caret-down" viewBox="0 0 256 256"><path d="M216.49,104.49l-80,80a12,12,0,0,1-17,0l-80-80a12,12,0,0,1,17-17L128,159l71.51-71.52a12,12,0,0,1,17,17Z"/></symbol><symbol id="b-caret-right" viewBox="0 0 256 256"><path d="M184.49,136.49l-80,80a12,12,0,0,1-17-17L159,128,87.51,56.49a12,12,0,1,1,17-17l80,80A12,12,0,0,1,184.49,136.49Z"/></symbol><symbol id="b-check" viewBox="0 0 256 256"><path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z"/></symbol><symbol id="b-plus" viewBox="0 0 256 256"><path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z"/></symbol><symbol id="f-calendar-check" viewBox="0 0 256 256"><path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM169.66,133.66l-48,48a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L116,164.69l42.34-42.35a8,8,0,0,1,11.32,11.32ZM48,80V48H72v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80Z"/></symbol><symbol id="f-chats-circle" viewBox="0 0 256 256"><path d="M232.07,186.76a80,80,0,0,0-62.5-114.17A80,80,0,1,0,23.93,138.76l-7.27,24.71a16,16,0,0,0,19.87,19.87l24.71-7.27a80.39,80.39,0,0,0,25.18,7.35,80,80,0,0,0,108.34,40.65l24.71,7.27a16,16,0,0,0,19.87-19.86Zm-16.25,1.47L224,216l-27.76-8.17a8,8,0,0,0-6,.63,64.05,64.05,0,0,1-85.87-24.88A79.93,79.93,0,0,0,174.7,89.71a64,64,0,0,1,41.75,92.48A8,8,0,0,0,215.82,188.23Z"/></symbol><symbol id="f-check-circle" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></symbol><symbol id="f-credit-card" viewBox="0 0 256 256"><path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48ZM136,176H120a8,8,0,0,1,0-16h16a8,8,0,0,1,0,16Zm64,0H168a8,8,0,0,1,0-16h32a8,8,0,0,1,0,16ZM32,88V64H224V88Z"/></symbol><symbol id="f-file-text" viewBox="0 0 256 256"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,176H96a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm0-32H96a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm-8-56V44l44,44Z"/></symbol><symbol id="r-arrow-clockwise" viewBox="0 0 256 256"><path d="M240,56v48a8,8,0,0,1-8,8H184a8,8,0,0,1,0-16H211.4L184.81,71.64l-.25-.24a80,80,0,1,0-1.67,114.78,8,8,0,0,1,11,11.63A95.44,95.44,0,0,1,128,224h-1.32A96,96,0,1,1,195.75,60L224,85.8V56a8,8,0,1,1,16,0Z"/></symbol><symbol id="r-arrow-square-out" viewBox="0 0 256 256"><path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"/></symbol><symbol id="r-arrow-up-right" viewBox="0 0 256 256"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></symbol><symbol id="r-bell-slash" viewBox="0 0 256 256"><path d="M53.92,34.62A8,8,0,1,0,42.08,45.38L58.82,63.8A79.59,79.59,0,0,0,48,104c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.8a40,40,0,0,0,78.4,0h15.44l19.44,21.38a8,8,0,1,0,11.84-10.76ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a63.65,63.65,0,0,1,6.26-27.62L168.09,184Zm166-4.73a8.13,8.13,0,0,1-2.93.55,8,8,0,0,1-7.44-5.08C196.35,156.19,192,129.75,192,104A64,64,0,0,0,96.43,48.31a8,8,0,0,1-7.9-13.91A80,80,0,0,1,208,104c0,35.35,8.05,58.59,10.52,64.88A8,8,0,0,1,214,179.25Z"/></symbol><symbol id="r-calendar-check" viewBox="0 0 256 256"><path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-38.34-85.66a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L116,164.69l42.34-42.35A8,8,0,0,1,169.66,122.34Z"/></symbol><symbol id="r-calendar-dots" viewBox="0 0 256 256"><path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-68-76a12,12,0,1,1-12-12A12,12,0,0,1,140,132Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,184,132ZM96,172a12,12,0,1,1-12-12A12,12,0,0,1,96,172Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,140,172Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,184,172Z"/></symbol><symbol id="r-chart-line-up" viewBox="0 0 256 256"><path d="M232,208a8,8,0,0,1-8,8H32a8,8,0,0,1-8-8V48a8,8,0,0,1,16,0V156.69l50.34-50.35a8,8,0,0,1,11.32,0L128,132.69,180.69,80H160a8,8,0,0,1,0-16h40a8,8,0,0,1,8,8v40a8,8,0,0,1-16,0V91.31l-58.34,58.35a8,8,0,0,1-11.32,0L96,123.31l-56,56V200H224A8,8,0,0,1,232,208Z"/></symbol><symbol id="r-chat-dots" viewBox="0 0 256 256"><path d="M116,128a12,12,0,1,1,12,12A12,12,0,0,1,116,128ZM84,140a12,12,0,1,0-12-12A12,12,0,0,0,84,140Zm88,0a12,12,0,1,0-12-12A12,12,0,0,0,172,140Zm60-76V192a16,16,0,0,1-16,16H83l-32.6,28.16-.09.07A15.89,15.89,0,0,1,40,240a16.13,16.13,0,0,1-6.8-1.52A15.85,15.85,0,0,1,24,224V64A16,16,0,0,1,40,48H216A16,16,0,0,1,232,64ZM40,224h0ZM216,64H40V224l34.77-30A8,8,0,0,1,80,192H216Z"/></symbol><symbol id="r-chats-circle" viewBox="0 0 256 256"><path d="M232.07,186.76a80,80,0,0,0-62.5-114.17A80,80,0,1,0,23.93,138.76l-7.27,24.71a16,16,0,0,0,19.87,19.87l24.71-7.27a80.39,80.39,0,0,0,25.18,7.35,80,80,0,0,0,108.34,40.65l24.71,7.27a16,16,0,0,0,19.87-19.86ZM62,159.5a8.28,8.28,0,0,0-2.26.32L32,168l8.17-27.76a8,8,0,0,0-.63-6,64,64,0,1,1,26.26,26.26A8,8,0,0,0,62,159.5Zm153.79,28.73L224,216l-27.76-8.17a8,8,0,0,0-6,.63,64.05,64.05,0,0,1-85.87-24.88A79.93,79.93,0,0,0,174.7,89.71a64,64,0,0,1,41.75,92.48A8,8,0,0,0,215.82,188.23Z"/></symbol><symbol id="r-credit-card" viewBox="0 0 256 256"><path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Zm0,16V88H32V64Zm0,128H32V104H224v88Zm-16-24a8,8,0,0,1-8,8H168a8,8,0,0,1,0-16h32A8,8,0,0,1,208,168Zm-64,0a8,8,0,0,1-8,8H120a8,8,0,0,1,0-16h16A8,8,0,0,1,144,168Z"/></symbol><symbol id="r-download-simple" viewBox="0 0 256 256"><path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z"/></symbol><symbol id="r-file-text" viewBox="0 0 256 256"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Zm-32-80a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,136Zm0,32a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,168Z"/></symbol><symbol id="r-hourglass" viewBox="0 0 256 256"><path d="M200,75.64V40a16,16,0,0,0-16-16H72A16,16,0,0,0,56,40V76a16.07,16.07,0,0,0,6.4,12.8L114.67,128,62.4,167.2A16.07,16.07,0,0,0,56,180v36a16,16,0,0,0,16,16H184a16,16,0,0,0,16-16V180.36a16.09,16.09,0,0,0-6.35-12.77L141.27,128l52.38-39.6A16.05,16.05,0,0,0,200,75.64ZM184,216H72V180l56-42,56,42.35Zm0-140.36L128,118,72,76V40H184Z"/></symbol><symbol id="r-magnifying-glass" viewBox="0 0 256 256"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></symbol><symbol id="r-paper-plane-tilt" viewBox="0 0 256 256"><path d="M227.32,28.68a16,16,0,0,0-15.66-4.08l-.15,0L19.57,82.84a16,16,0,0,0-2.49,29.8L102,154l41.3,84.87A15.86,15.86,0,0,0,157.74,248q.69,0,1.38-.06a15.88,15.88,0,0,0,14-11.51l58.2-191.94c0-.05,0-.1,0-.15A16,16,0,0,0,227.32,28.68ZM157.83,231.85l-.05.14,0-.07-40.06-82.3,48-48a8,8,0,0,0-11.31-11.31l-48,48L24.08,98.25l-.07,0,.14,0L216,40Z"/></symbol><symbol id="r-storefront" viewBox="0 0 256 256"><path d="M232,96a7.89,7.89,0,0,0-.3-2.2L217.35,43.6A16.07,16.07,0,0,0,202,32H54A16.07,16.07,0,0,0,38.65,43.6L24.31,93.8A7.89,7.89,0,0,0,24,96h0v16a40,40,0,0,0,16,32v72a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V144a40,40,0,0,0,16-32V96ZM54,48H202l11.42,40H42.61Zm50,56h48v8a24,24,0,0,1-48,0Zm-16,0v8a24,24,0,0,1-35.12,21.26,7.88,7.88,0,0,0-1.82-1.06A24,24,0,0,1,40,112v-8ZM200,208H56V151.2a40.57,40.57,0,0,0,8,.8,40,40,0,0,0,32-16,40,40,0,0,0,64,0,40,40,0,0,0,32,16,40.57,40.57,0,0,0,8-.8Zm4.93-75.8a8.08,8.08,0,0,0-1.8,1.05A24,24,0,0,1,168,112v-8h48v8A24,24,0,0,1,204.93,132.2Z"/></symbol><symbol id="r-tray" viewBox="0 0 256 256"><path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm0,16V152h-28.7A15.86,15.86,0,0,0,168,156.69L148.69,176H107.31L88,156.69A15.86,15.86,0,0,0,76.69,152H48V48Zm0,160H48V168H76.69L96,187.31A15.86,15.86,0,0,0,107.31,192h41.38A15.86,15.86,0,0,0,160,187.31L179.31,168H208v40Z"/></symbol></svg>
 <div id="sboy"></div>
 
 <section class="ekran" id="e-dialogi">
   <h1>Диалоги</h1>
   <p class="pod"><span class="tochka" id="tochka"></span><span id="d-pod">Загружаю…</span></p>
   <div id="d-telo"><div class="skelet"></div><div class="skelet"></div><div class="skelet"></div></div>
+</section>
+
+<section class="ekran" id="e-dela" hidden>
+  <h1>Дела</h1>
+  <p class="pod" id="v-pod"></p>
+  <div id="v-telo"></div>
 </section>
 
 <section class="ekran" id="e-prays" hidden>
@@ -171,6 +188,7 @@ body[data-sost="oshibka"] #sboy{display:block}
 <nav class="tabbar" id="tabbar">
   <span class="tab-ind" id="tab-ind"></span>
   <button data-tab="dialogi" class="akt"><svg class="ik r"><use href="#r-chats-circle"/></svg><svg class="ik f"><use href="#f-chats-circle"/></svg>Диалоги<span class="bej" id="bej" hidden></span></button>
+  <button data-tab="dela"><svg class="ik r"><use href="#r-calendar-check"/></svg><svg class="ik f"><use href="#f-calendar-check"/></svg>Дела<span class="bej" id="bej-dela" hidden></span></button>
   <button data-tab="prays"><svg class="ik r"><use href="#r-file-text"/></svg><svg class="ik f"><use href="#f-file-text"/></svg>Прайс</button>
   <button data-tab="tarif"><svg class="ik r"><use href="#r-credit-card"/></svg><svg class="ik f"><use href="#f-credit-card"/></svg>Тариф</button>
 </nav>
@@ -204,7 +222,12 @@ function razobrat() {   // адрес живого сервера и снимо�
   return { api: /^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(a) ? a : null, dan };
 }
 const NACHALO = razobrat(), API = NACHALO.api;
-let D = NACHALO.dan || {}, tab = 'dialogi', otkryt = null, vseNP = false;
+let D = NACHALO.dan || {}, tab = 'dialogi', otkryt = null, vseNP = false, vseZv = false;
+// открытая шторка держится за канал и id покупателя, а не за номер строки: список пересортировывается с каждым сообщением,
+// и под тем же номером после обновления оказывался другой покупатель — «Ответил сам» и «ИИ молчит» уходили ему
+const klyuch = (x) => x.kanal + ':' + x.id;
+const najti = (k) => (D.dialogi || []).find(x => klyuch(x) === k);
+const tolkoRazbor = () => (D.kabinety || []).length > 0 && D.kabinety.every(k => k.tolko_razbor);   // ответы ещё не включали
 
 async function sServera(put, telo) {
   const r = await fetch(API + put, { method: telo ? 'POST' : 'GET', body: telo ? JSON.stringify(telo) : undefined,
@@ -216,10 +239,18 @@ const beda = (e) => /\b403\b/.test(e.message || '') ? 'Вход из Telegram д
   : 'Нет связи с сервером. Проверьте интернет — данные обновятся сами.';
 
 /* ---------- экраны ---------- */
-function stroka(o) {
-  return '<button class="stroka"' + (o.a || '') + '>' + (o.lev || '') + '<span class="telo"><span class="tx"><span class="verh"><b>' + o.zag + '</b>' +
-    (o.zn ? '<span class="zn">' + o.zn + '</span>' : '') + '</span>' + (o.pod ? '<small>' + o.pod + '</small>' : '') + '</span>' + (o.prav || SHEV) + '</span></button>';
+function stroka(o) {   // строка без действия — div: кнопка, которая ничего не делает, путает и палец, и экранного диктора
+  const t = o.a ? 'button' : 'div';
+  return '<' + t + ' class="stroka"' + (o.a || '') + '>' + (o.lev || '') + '<span class="telo"><span class="tx"><span class="verh"><b>' + o.zag + '</b>' +
+    (o.zn ? '<span class="zn">' + o.zn + '</span>' : '') + '</span>' + (o.pod ? '<small>' + o.pod + '</small>' : '') + '</span>' + (o.prav ?? (o.a ? SHEV : '')) + '</span></' + t + '>';
 }
+const sw = (vkl, a, nazv) => '<button class="sw' + (vkl ? '' : ' vykl') + '"' + a + ' role="switch" aria-checked="' + !!vkl + '" aria-label="' + nazv + '"></button>';
+// «только разбор»: ответы покупателям ещё не включали — одна кнопка, как «Включить ответы ИИ» под разбором в боте
+const vklKarta = () => '<div class="pusto">' + ik('r-chat-dots') + '<b>Покупателям пока не отвечаю</b><p>Включите ответы — две недели бесплатно. ' +
+  'Скидки и спорное всё равно спрошу у вас.</p><button class="knopka gl" data-cmd="vklyuchit_otvety">Включить ответы ИИ</button></div>';
+// проба кончилась и доступ стёрт: «Подключите Авито» звало бы на новую пробу, а бот её уже не даст
+const konecKarta = () => '<div class="pusto">' + ik('r-hourglass') + '<b>Проба закончилась ' + ek(D.proba_konec) + '</b><p>Покупателям ИИ больше не отвечает. ' +
+  'Оплатите тариф — включу в тот же день.</p><button class="knopka gl" data-cmd="kupit">Оплатить</button></div>';
 function podklyuchitKarta() {
   return D.avito_metka && API ? '<div class="pusto">' + ik('r-storefront') + '<b>Подключите Авито</b><p>Одна кнопка: откроется Авито, нажмёте «Разрешить». Ключи не нужны.</p>' +
     '<button class="knopka gl" data-avito>Подключить Авито</button></div>'
@@ -253,7 +284,7 @@ function risRazbor() {
     '<div class="rz-niz"><span>Посчитано ' + ek(rz.kogda) + '</span><button class="rz-obn" data-cmd="razbor">' + ik('r-arrow-clockwise') + 'Обновить</button></div></div>';
   if (!n) return kartochka;
   const svernut = np.length > 3 && !vseNP;
-  const chelovek = (x) => stroka({ a: x.url ? ' data-url="' + ek(x.url) + '"' : ' data-nichego', lev: '<span class="ava">' + ek((x.kto || '?')[0]) + '</span>',
+  const chelovek = (x) => stroka({ a: x.url ? ' data-url="' + ek(x.url) + '"' : '', lev: '<span class="ava">' + ek((x.kto || '?')[0]) + '</span>',
     zag: ek(x.kto), zn: ek(x.davno) + ' назад', pod: '«' + ek(x.vopros) + '»', prav: x.url ? SHEV : ' ' });
   // в ссылке кнопки списка нет (v_ssylku), только счётчик: имена с вопросами приходят с живого сервера
   // кнопка над списком, как «Обновить всё» в App Store: главное действие видно на первом экране, список — кто именно
@@ -288,8 +319,8 @@ function risNedelya() {
       niz(b.kogda, 'bylo_stalo');
   } else if (b) {   // отчёта ещё нет: неделя с ИИ не прошла — когда будет; прошла — отчёт по кнопке
     out += '<div class="gruppa"><div class="spisok">' + stroka(b.cherez
-      ? { a: ' data-nichego', lev: '<span class="plitka">' + ik('r-hourglass') + '</span>', zag: 'Первый отчёт «было — стало»',
-          pod: 'через ' + ek(b.cherez) + ' ' + P(b.cherez, 'день', 'дня', 'дней'), prav: ' ' }
+      ? { lev: '<span class="plitka">' + ik('r-hourglass') + '</span>', zag: 'Первый отчёт «было — стало»',
+          pod: 'через ' + ek(b.cherez) + ' ' + P(b.cherez, 'день', 'дня', 'дней') }
       : { a: ' data-cmd="bylo_stalo"', lev: '<span class="plitka lime">' + ik('r-chart-line-up') + '</span>', zag: 'Было — стало за неделю',
           pod: 'Неделя с ИИ против месяца до него' }) + '</div></div>';
   }
@@ -308,19 +339,54 @@ function risNedelya() {
   return out;
 }
 function risDialogi() {
-  const dl = D.dialogi || [], zh = dl.filter(x => x.status === 'vy'), n = D.otvetov_segodnya || 0;
-  $('#d-pod').textContent = !(D.kabinety || []).length ? 'Авито не подключён' : n ? 'Сегодня ИИ ответил на ' + n + ' ' + plural(n, 'сообщение', 'сообщения', 'сообщений') : 'Сегодня пока тихо';
-  $('#tochka').className = 'tochka' + ((D.kabinety || []).length ? '' : ' net');
-  const bej = $('#bej'); bej.hidden = !zh.length; bej.textContent = zh.length;
-  if (!(D.kabinety || []).length) { $('#d-telo').innerHTML = podklyuchitKarta(); return; }
-  if (!dl.length) { $('#d-telo').innerHTML = risRazbor() + risNedelya() + '<div class="pusto">' + ik('f-chats-circle') + '<b>Пока тихо</b><p>Как только покупатель напишет в Авито, здесь появится его вопрос и ответ ИИ.</p></div>'; return; }
-  const row = (x) => stroka({ a: ' data-dlg="' + dl.indexOf(x) + '"', lev: '<span class="ava' + (x.status === 'vy' ? ' vy' : '') + '">' + ek((x.kto || '?')[0]) + '</span>',
+  const kab = D.kabinety || [], dl = D.dialogi || [], zh = dl.filter(x => x.status === 'vy'), n = D.otvetov_segodnya || 0, rzt = tolkoRazbor();
+  // снимок из ссылки кнопки (zhivoy=false): переписки в нём нет нарочно — не «пока тихо», а сколько ждут и на какое время данные
+  const zhiv = D.zhivoy !== false, nZh = zhiv ? zh.length : D.zhdut || 0;
+  $('#d-pod').textContent = !kab.length ? (D.proba_konec ? 'Проба закончилась' : 'Авито не подключён') : rzt ? 'Ответы покупателям выключены'
+    : !zhiv ? 'Данные на ' + (D.obnovleno || '—') : n ? 'Сегодня ИИ ответил на ' + n + ' ' + plural(n, 'сообщение', 'сообщения', 'сообщений') : 'Сегодня пока тихо';
+  $('#tochka').className = 'tochka' + (kab.length && !rzt ? '' : ' net');
+  const bej = $('#bej'); bej.hidden = !nZh; bej.textContent = nZh;
+  if (!kab.length) { $('#d-telo').innerHTML = D.proba_konec ? konecKarta() : podklyuchitKarta(); return; }
+  const row = (x) => stroka({ a: ' data-dlg="' + ek(klyuch(x)) + '"', lev: '<span class="ava' + (x.status === 'vy' ? ' vy' : '') + '">' + ek((x.kto || '?')[0]) + '</span>',
     zag: ek(x.kto) + (x.tiho ? '<span class="molchit">ИИ молчит</span>' : ''), zn: ek(String(x.kogda || '').split(', ').pop()), pod: ek(x.vopros) });
   const ost = dl.filter(x => x.status !== 'vy');
-  $('#d-telo').innerHTML = risRazbor() + (zh.length ? '<div class="gruppa"><h4><span>Ждут вас</span><span class="lm">' + zh.length + '</span></h4><div class="spisok">' + zh.map(row).join('') +
-      '</div><div class="niz">Ответить можно прямо в Telegram — ответом на сообщение «Нужно ваше решение».</div></div>'
-    : '<div class="gruppa"><div class="spisok"><div class="vse-resheno">' + ik('f-check-circle') + 'Всё решено, покупатели ждут только ИИ.</div></div></div>') +
-    risNedelya() + (ost.length ? '<div class="gruppa"><h4><span>Недавние</span></h4><div class="spisok">' + ost.map(row).join('') + '</div></div>' : '');
+  const zhdut = !zhiv ? (nZh ? '<div class="gruppa"><h4><span>Ждут вас</span><span class="lm">' + ek(nZh) + '</span></h4><div class="spisok"><div class="vse-resheno">' +
+      'Ответьте на карточки в Telegram. Кто и о чём спросил, покажу, когда кабинет свяжется с сервером.</div></div></div>' : '')
+    : zh.length ? '<div class="gruppa"><h4><span>Ждут вас</span><span class="lm">' + zh.length + '</span></h4><div class="spisok">' + zh.map(row).join('') +
+      '</div><div class="niz">Ответить можно прямо в Telegram — ответом на карточку с именем покупателя.</div></div>'
+    : dl.length ? '<div class="gruppa"><div class="spisok"><div class="vse-resheno">' + ik('f-check-circle') + 'Всё решено, покупатели ждут только ИИ.</div></div></div>' : '';
+  const tiho = zhiv && !dl.length && !rzt ? '<div class="pusto">' + ik('f-chats-circle') + '<b>Пока тихо</b><p>Как только покупатель напишет в Авито, здесь появится его вопрос и ответ ИИ.</p></div>' : '';
+  $('#d-telo').innerHTML = risRazbor() + (rzt ? vklKarta() : '') + zhdut + risNedelya() +
+    (ost.length ? '<div class="gruppa"><h4><span>Недавние</span></h4><div class="spisok">' + ost.map(row).join('') + '</div></div>' : '') + tiho;
+}
+// встречи и заявки на экране, а не файлом (требование 37: «лучше и удобнее, чтобы это было в интерфейсе»). Время — по часам владельца
+function risDela() {
+  const vs = D.vstrechi || [], zv = D.zayavki || [], zhiv = D.zhivoy !== false, nz = D.zayavok || 0;
+  const iso = (t) => t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+  const seg = iso(new Date()), zav = iso(new Date(Date.now() + 864e5)), vch = iso(new Date(Date.now() - 864e5));
+  const den = (s) => { const d = String(s).slice(0, 10); return d === seg ? 'Сегодня' : d === zav ? 'Завтра' : d === vch ? 'Вчера' : d.slice(8, 10) + '.' + d.slice(5, 7); };
+  const naSeg = vs.filter(v => String(v.kogda).slice(0, 10) === seg).length;
+  const b = $('#bej-dela'); b.hidden = !naSeg; b.textContent = naSeg;
+  $('#v-pod').textContent = naSeg ? naSeg + ' ' + plural(naSeg, 'встреча', 'встречи', 'встреч') + ' сегодня' : 'Напомню в чате за час до каждой встречи';
+  const nova = stroka({ lev: '<span class="plitka">' + ik('b-plus') + '</span>', zag: 'Записать встречу', a: ' data-vstrecha-nov' });
+  let out = '', bylo = '';
+  for (const v of vs) {   // сервер отдаёт по времени: группы по дням идут подряд
+    const d = den(v.kogda);
+    if (d !== bylo) { out += (bylo ? '</div></div>' : '') + '<div class="gruppa"><h4><span>' + ek(d) + '</span></h4><div class="spisok">'; bylo = d; }
+    out += stroka({ lev: '<span class="vremya">' + ek(String(v.kogda).slice(11, 16)) + '</span>', zag: '<span class="dve">' + ek(v.chto) + '</span>',
+      prav: '<button class="gotovo" data-vstrecha="' + ek(v.id) + '" aria-label="Сделано: ' + ek(v.chto) + '">' + ik('b-check') + '</button>' });
+  }
+  out += bylo ? '</div></div><div class="gruppa"><div class="spisok">' + nova + '</div></div>'
+    : '<div class="gruppa"><h4><span>Встречи</span></h4><div class="spisok"><div class="vse-resheno">' + ik('r-calendar-dots') +
+      (!zhiv && D.vstrech ? 'Встреч впереди: ' + ek(D.vstrech) + '. Список покажу, когда кабинет свяжется с сервером.' : 'Впереди встреч нет.') + '</div>' + nova + '</div></div>';
+  const vid = vseZv ? zv : zv.slice(0, 5);
+  out += '<div class="gruppa"><h4><span>Заявки</span>' + (nz ? '<span class="lm">' + ek(nz) + '</span>' : '') + '</h4><div class="spisok">' +
+    (vid.length ? vid.map(x => stroka({ zag: ek(x.kto), zn: ek(x.kogda), pod: (x.tel ? ek(x.tel) + ' · ' : '') + ek(x.chto) })).join('') +
+        (zv.length > vid.length ? stroka({ a: ' data-zv-vse', zag: 'Показать все', zn: ek(zv.length), prav: ik('b-caret-down', 'shev') }) : '')
+      : '<div class="vse-resheno">' + ik('r-tray') + (!zhiv && nz ? 'Заявок: ' + ek(nz) + '. Список покажу, когда кабинет свяжется с сервером.'
+        : 'Заявок пока нет. Покупатель оставит телефон — пришлю в чат и покажу здесь.') + '</div>') +
+    (nz ? stroka({ lev: '<span class="plitka">' + ik('r-download-simple') + '</span>', zag: 'Все заявки файлом Excel', a: ' data-cmd="zayavki"' }) : '') + '</div></div>';
+  $('#v-telo').innerHTML = out;
 }
 function risPrays() {
   const n = D.prays_n || 0;
@@ -336,45 +402,55 @@ function risTarif() {
   // «Тариф «Сам», оплачено до 19.10» → крупно «Сам», мелко срок; «Тариф оплачен» без названия → «Оплачен»
   const pk = String(D.paket || '').match(/«([^»]+)»,\s*(.+)$/);
   const oplachen = D.paket && D.paket !== 'Проба', r = D.rashod || {}, dn = (D.proba || []).find(p => p[0] === 'Авито');
+  const kb = D.kabinety || [], rzt = tolkoRazbor(), konec = !oplachen && D.proba_konec && (!dn || !dn[1]);
+  const st = Math.min(99, ...kb.map(k => k.stiraem ?? 99));
+  // рядом с «Оплатить» — что ИИ уже сделал, а не пустота
+  const polza = D.otvetov ? '<p>ИИ ответил покупателям ' + ek(D.otvetov) + ' ' + plural(D.otvetov, 'раз', 'раза', 'раз') + (D.zayavok ? ' · заявок ' + ek(D.zayavok) : '') + '</p>' : '';
   const karta = oplachen
     ? '<div class="karta"><small>Ваш тариф</small><b>' + ek(pk ? pk[1] : 'Оплачен') + '</b><p>' + (pk ? ek(pk[2]) + ' · ' : '') + ek(r.n) + ' из ' + ek(r.iz) + ' ответов в этом месяце</p>' +
       '<div class="polosa"><i style="width:' + Math.min(100, Math.round(100 * (r.n || 0) / (r.iz || 1))) + '%"></i></div></div>'
-    : '<div class="karta"><small>Сейчас</small><b>Пробная неделя</b><p>' + (dn ? 'Осталось ' + dn[1] + ' ' + plural(dn[1], 'день', 'дня', 'дней') : 'Начнётся, когда подключите Авито') + ' · без оплаты</p></div>';
-  const kab = (D.kabinety || []).map(k => stroka({ lev: '<span class="plitka lime">' + ik('r-storefront') + '</span>', zag: ek(k.imya || 'Кабинет Авито'),
-    prav: '<span class="zn">' + (k.auto ? 'отвечает сам' : 'черновики') + '</span>', a: ' data-nichego' })).join('');
+    : rzt ? '<div class="karta"><small>Сейчас</small><b>Ответы выключены</b><p>Две недели бесплатно начнутся, когда включите ответы' +
+        (st < 99 ? '. Не включите — доступ к чатам сотру ' + (st ? 'через ' + ek(st) + ' ' + plural(st, 'день', 'дня', 'дней') : 'сегодня') : '') + '</p></div>'
+    : konec ? '<div class="karta"><small>Сейчас</small><b>Проба закончилась</b><p>' + ek(D.proba_konec) + ' · покупателям ИИ больше не отвечает</p>' + polza + '</div>'
+    : '<div class="karta"><small>Сейчас</small><b>Две недели бесплатно</b><p>' + (dn ? 'Осталось ' + dn[1] + ' ' + plural(dn[1], 'день', 'дня', 'дней') : 'Начнутся, когда подключите Авито') + ' · без оплаты</p>' + polza + '</div>';
+  const kab = kb.map(k => stroka({ lev: '<span class="plitka lime">' + ik('r-storefront') + '</span>', zag: ek(k.imya || 'Кабинет Авито'),
+    prav: '<span class="zn">' + (k.tolko_razbor ? 'только разбор' : k.auto ? 'отвечает сам' : 'черновики') + '</span>' })).join('');
+  const ryad = (zag, pod, vkl, a, nazv) => '<div class="stroka"><span class="telo"><span class="tx"><b>' + zag + '</b><small>' + pod + '</small></span>' + sw(vkl, a, nazv) + '</span></div>';
   $('#t-telo').innerHTML = karta +
-    '<div class="knopki"><button class="knopka gl" data-cmd="kupit">' + (oplachen ? 'Продлить' : 'Оплатить') + '</button></div>' +
+    '<div class="knopki">' + (rzt ? '<button class="knopka gl" data-cmd="vklyuchit_otvety">Включить ответы ИИ</button>'
+      : '<button class="knopka gl" data-cmd="kupit">' + (oplachen ? 'Продлить' : 'Оплатить') + '</button>') + '</div>' +
     '<div class="gruppa"><h4><span>Как отвечает ИИ</span></h4><div class="spisok">' +
-      '<div class="stroka"><span class="telo"><span class="tx"><b>Отвечает сам</b><small>Выключите — будет присылать черновики</small></span><button class="sw' + (D.sam ? '' : ' vykl') + '" data-cmd="sam_pereklyuchit" aria-label="ИИ отвечает сам"></button></span></div>' +
-      '<div class="stroka"><span class="telo"><span class="tx"><b>Копия каждого ответа</b><small>Обычно в чат — только ваши решения</small></span><button class="sw' + (D.kopii ? '' : ' vykl') + '" data-kopii aria-label="Копии в чат"></button></span></div>' +
-      '<div class="stroka"><span class="telo"><span class="tx"><b>Пишет «уточню и напишу вам»</b><small>Когда не знает ответа. Выключено — молчит и спрашивает вас</small></span><button class="sw' + (D.utochnyu ? '' : ' vykl') + '" data-utochnyu aria-label="Писать покупателю «уточню и напишу вам»"></button></span></div>' +
+      ryad('Отвечает сам', 'Выключите — будет присылать черновики', D.sam, ' data-cmd="sam_pereklyuchit"', 'ИИ отвечает сам') +
+      ryad('Копия каждого ответа', 'Обычно в чат — только ваши решения', D.kopii, ' data-kopii', 'Копии в чат') +
+      ryad('Пишет «уточню и напишу вам»', 'Когда не знает ответа. Выключено — молчит и спрашивает вас', D.utochnyu, ' data-utochnyu', 'Писать покупателю «уточню и напишу вам»') +
       stroka({ zag: 'Часы', a: ' data-chasy', prav: '<span class="zn">' + ek(D.chasy || 'круглые сутки') + '</span>' + SHEV }) +
     '</div></div>' +
-    '<div class="gruppa"><h4><span>Авито</span></h4><div class="spisok">' + kab +
+    (kab || (D.avito_metka && API) ? '<div class="gruppa"><h4><span>Авито</span></h4><div class="spisok">' + kab +
       (D.avito_metka && API ? stroka({ lev: '<span class="plitka">' + ik('b-plus') + '</span>', zag: kab ? 'Подключить ещё кабинет' : 'Подключить Авито', a: ' data-avito' }) : '') +
-    '</div></div>' +
+    '</div></div>' : '') +
     '<div class="gruppa"><h4><span>Ещё</span></h4><div class="spisok">' +
-      stroka({ lev: '<span class="plitka">' + ik('r-download-simple') + '</span>', zag: 'Заявки файлом Excel', a: ' data-cmd="zayavki"' }) +
       (kab ? stroka({ lev: '<span class="plitka">' + ik('r-bell-slash') + '</span>', zag: 'Отключить Авито', a: ' data-cmd="stop_avito"' }) : '') +
       stroka({ zag: '<span class="krasn">Удалить мои данные</span>', a: ' data-cmd="udalit"' }) +
     '</div><div class="niz">Откроется чат с ИИ-продавцом. Перед отключением и удалением он переспросит.</div></div>';
 }
-function narisovat() { risDialogi(); risPrays(); risTarif(); if (otkryt !== null) otkrytDialog(otkryt, true); }
+function narisovat() { risDialogi(); risDela(); risPrays(); risTarif(); if (otkryt !== null) otkrytDialog(otkryt, true); }
 
 /* ---------- шторка диалога ---------- */
-function otkrytDialog(i, tiho_) {
-  const x = (D.dialogi || [])[i];
-  if (!x) { zakryt(); return; }
-  otkryt = i;
+function otkrytDialog(k, tiho_) {
+  const x = najti(k);
+  if (!x) { zakryt(); return; }   // после обновления диалога нет — закрываем, а не показываем соседа
+  otkryt = k;
   const kto_otv = x.status === 'sam' ? 'Ответили вы' : x.status === 'chernovik' ? 'Черновик — ждёт кнопки в чате' : 'Ответил ИИ';
   $('#shtorka').innerHTML = '<div class="ruchka"></div><h3>' + ek(x.kto) + '</h3><p class="m">' + (x.kanal === 'tg' ? 'Telegram' : x.kanal === 'max' ? 'MAX' : 'Авито') +
     (x.ob ? ' · «' + ek(x.ob) + '»' : '') + ' · ' + ek(x.kogda) + '</p>' +
     '<div class="pz pok">' + ek(x.vopros) + '</div>' + (x.otvet ? '<div class="pz nash"><span class="kto">' + ek(kto_otv) + '</span>' + ek(x.otvet) + '</div>' : '') +
     (x.status === 'vy' ? '<div class="pochemu"><b>Почему нужны вы</b>' + ek(x.pochemu || 'ИИ передал вопрос вам') + '</div>' : '') +
-    '<div class="p-sw"><div><b>ИИ отвечает в этом чате</b><small>' + (x.tiho ? 'Молчит, отвечаете вы' : 'Выключите — и чат ваш') + '</small></div>' +
-    '<button class="sw' + (x.tiho ? ' vykl' : '') + '" data-tiho aria-label="ИИ отвечает в этом чате"></button></div>' +
+    // в MAX «не отвечать в этом чате» бот не умеет — переключатель там был бы обещанием, которого нет
+    (x.kanal === 'max' ? '' : '<div class="p-sw"><div><b>ИИ отвечает в этом чате</b><small>' + (x.tiho ? 'Молчит, отвечаете вы' : 'Выключите — и чат ваш') + '</small></div>' +
+      sw(!x.tiho, ' data-tiho', 'ИИ отвечает в этом чате') + '</div>') +
     (x.url ? '<button class="knopka gl" data-url="' + ek(x.url) + '">' + ik('r-arrow-square-out') + 'Открыть чат в Авито</button>' : '') +
-    (x.status === 'vy' ? '<button class="knopka vt" data-resheno>' + ik('b-check') + 'Решено</button><p class="podskaz">Или ответьте в Telegram на «Нужно ваше решение» — отправлю покупателю.</p>' : '');
+    (x.status === 'vy' ? '<button class="knopka vt" data-resheno>' + ik('b-check') + 'Ответил сам</button>' +
+      (x.kanal === 'max' ? '' : '<p class="podskaz">Или ответьте на карточку в Telegram — отправлю покупателю.</p>') : '');
   if (!tiho_) { $('#zatemn').classList.add('vid'); $('#shtorka').classList.add('vid'); trk('impactOccurred', 'medium'); }
   if (V_TG && TG.BackButton) { try { TG.BackButton.show(); } catch (e) {} }
 }
@@ -382,13 +458,22 @@ function zakryt() {
   otkryt = null; $('#zatemn').classList.remove('vid'); $('#shtorka').classList.remove('vid');
   if (V_TG && TG.BackButton) { try { TG.BackButton.hide(); } catch (e) {} }
 }
-function chasyShtorka() {
-  const sd = D.chasy_sd || [9, 20];
-  $('#shtorka').innerHTML = '<div class="ruchka"></div><h3>Часы</h3><p class="m">В эти часы покупателям отвечаете вы, ИИ молчит. В остальное время отвечает он.</p>' +
-    '<div class="dva"><label>с<input id="ch-s" inputmode="numeric" value="' + ek(sd[0]) + '"></label><label>до<input id="ch-do" inputmode="numeric" value="' + ek(sd[1]) + '"></label></div>' +
-    '<button class="knopka gl" data-chasy-ok>Сохранить</button><button class="knopka vt" data-cmd="chasy_vsegda">ИИ отвечает круглые сутки</button>';
+function shtorka(html) {   // шторка без диалога (часы, встреча): обновление экрана её не трогает
+  $('#shtorka').innerHTML = '<div class="ruchka"></div>' + html;
   otkryt = null; $('#zatemn').classList.add('vid'); $('#shtorka').classList.add('vid');
   if (V_TG && TG.BackButton) { try { TG.BackButton.show(); } catch (e) {} }
+}
+function chasyShtorka() {
+  const sd = D.chasy_sd || [9, 20];
+  shtorka('<h3>Часы</h3><p class="m">В эти часы покупателям отвечаете вы, ИИ молчит, в остальное время отвечает он. Часы ' + ek(D.mesto || 'по Москве') +
+    '. Через полночь можно: с 20 до 9.</p>' +
+    '<div class="dva"><label>с<input id="ch-s" inputmode="numeric" value="' + ek(sd[0]) + '"></label><label>до<input id="ch-do" inputmode="numeric" value="' + ek(sd[1]) + '"></label></div>' +
+    '<button class="knopka gl" data-chasy-ok>Сохранить</button><button class="knopka vt" data-cmd="chasy_vsegda">ИИ отвечает круглые сутки</button>');
+}
+function vstrechaShtorka() {
+  shtorka('<h3>Встреча</h3><p class="m">Напомню в чате за час.</p>' +
+    '<input id="vs-kogda" type="datetime-local" aria-label="Когда"><input id="vs-chto" maxlength="200" placeholder="Что: замер у Ирины" aria-label="Что за встреча">' +
+    '<button class="knopka gl" data-vstrecha-ok>Записать</button>');
 }
 if (V_TG && TG.BackButton) { try { TG.BackButton.onClick(zakryt); } catch (e) {} }
 
@@ -400,7 +485,9 @@ async function poslat(o) {
     catch (e) { pokazat(beda(e)); }
     return;
   }
-  try { if (!V_TG) throw 0; TG.sendData(JSON.stringify(o)); } catch (e) { pokazat('Это просмотр: откройте кабинет кнопкой в чате с ИИ-продавцом.'); }
+  // без адреса сервера менять нечем: sendData Telegram принимает только из кнопки клавиатуры, а кабинет открывается не ей —
+  // нажатие молча пропадало, а владелец думал, что сработало
+  pokazat(V_TG ? 'Сейчас кабинет только показывает. Поменять можно в чате с ИИ-продавцом.' : 'Это просмотр: откройте кабинет кнопкой в чате с ИИ-продавцом.');
 }
 let taymer;
 function pokazat(t) { const n = $('#toast'); n.textContent = t; n.dataset.on = '1'; clearTimeout(taymer); taymer = setTimeout(() => n.removeAttribute('data-on'), 3600); }
@@ -411,7 +498,7 @@ function otkrytSsylku(u) {
 function pokazTab(t) {
   if (t !== tab) trk('selectionChanged');
   tab = t;
-  ['dialogi', 'prays', 'tarif'].forEach((x, i) => {
+  ['dialogi', 'dela', 'prays', 'tarif'].forEach((x, i) => {
     $('#e-' + x).hidden = x !== t;
     const b = document.querySelector('[data-tab="' + x + '"]'); b.classList.toggle('akt', x === t);
     if (x === t) $('#tab-ind').style.transform = 'translateX(' + i * 100 + '%)';
@@ -422,19 +509,27 @@ document.addEventListener('click', (ev) => {
   const c = (s) => ev.target.closest(s);
   let e;
   if ((e = c('[data-tab]'))) return pokazTab(e.dataset.tab);
-  if ((e = c('[data-dlg]'))) return otkrytDialog(+e.dataset.dlg);
+  if ((e = c('[data-dlg]'))) return otkrytDialog(e.dataset.dlg);
   if (c('[data-np-vse]')) { vseNP = true; return risDialogi(); }
+  if (c('[data-zv-vse]')) { vseZv = true; return risDela(); }
   if (c('#zatemn')) return zakryt();
   if ((e = c('[data-url]'))) return otkrytSsylku(e.dataset.url);
-  if (c('[data-tiho]')) { const x = D.dialogi[otkryt]; return poslat({ cmd: 'tiho', id: x.id, kanal: x.kanal, vkl: !x.tiho }); }
-  if (c('[data-resheno]')) { const x = D.dialogi[otkryt]; zakryt(); return poslat({ cmd: 'resheno', id: x.id, kanal: x.kanal }); }
+  if (c('[data-tiho]')) { const x = najti(otkryt); if (!x) return zakryt(); return poslat({ cmd: 'tiho', id: x.id, kanal: x.kanal, vkl: !x.tiho }); }
+  if (c('[data-resheno]')) { const x = najti(otkryt); zakryt(); if (!x) return; return poslat({ cmd: 'resheno', id: x.id, kanal: x.kanal }); }
   if (c('[data-kopii]')) return poslat({ cmd: 'kopii', vkl: !D.kopii });
   if (c('[data-utochnyu]')) return poslat({ cmd: 'ne_znayu', vkl: !D.utochnyu });
   if (c('[data-chasy]')) return chasyShtorka();
   if (c('[data-chasy-ok]')) {
     const s = $('#ch-s').value.trim(), d = $('#ch-do').value.trim();
-    if (!/^\d+$/.test(s) || !/^\d+$/.test(d) || +s >= +d || +d > 24) return pokazat('Часы — от 0 до 24, «с» раньше «до». Например, с 9 до 20.');
+    if (!/^\d+$/.test(s) || !/^\d+$/.test(d) || +s > 23 || +d > 24 || +s === +d) return pokazat('Часы — от 0 до 24, «с» и «до» разные. Через полночь можно: с 20 до 9.');
     zakryt(); return poslat({ cmd: 'chasy', s: +s, 'do': +d });
+  }
+  if ((e = c('[data-vstrecha]'))) return poslat({ cmd: 'vstrecha_sdelano', id: e.dataset.vstrecha });
+  if (c('[data-vstrecha-nov]')) return vstrechaShtorka();
+  if (c('[data-vstrecha-ok]')) {
+    const kogda = $('#vs-kogda').value, chto = $('#vs-chto').value.trim();
+    if (!kogda || !chto) return pokazat('Нужны день, час и что за встреча.');
+    zakryt(); return poslat({ cmd: 'vstrecha', kogda, chto });
   }
   if (c('[data-avito]')) {
     const u = API && D.avito_metka ? API + '/api/avito/start?s=' + encodeURIComponent(D.avito_metka) : '';
@@ -453,9 +548,10 @@ document.addEventListener('click', (ev) => {
 });
 
 async function obnovit() {
-  if (!API) { narisovat(); document.body.dataset.sost = 'gotovo'; return; }
+  const est = () => Object.keys(D).length > 0;   // пустое D нарисовало бы «Авито не подключён» и «Оплатить» платящему без связи
+  if (!API) { if (est()) narisovat(); else $('#d-pod').textContent = 'Откройте кабинет кнопкой в чате с ИИ-продавцом'; document.body.dataset.sost = 'gotovo'; return; }
   try { D = await sServera('/api/kabinet'); document.body.dataset.sost = 'gotovo'; narisovat(); }
-  catch (e) { $('#sboy').textContent = beda(e); document.body.dataset.sost = 'oshibka'; if (!D.imya && !D.dialogi) narisovat(); }
+  catch (e) { $('#sboy').textContent = beda(e); document.body.dataset.sost = 'oshibka'; if (est()) narisovat(); else $('#d-pod').textContent = 'Нет связи'; }
 }
 obnovit();
 document.addEventListener('visibilitychange', () => { if (!document.hidden) obnovit(); });
