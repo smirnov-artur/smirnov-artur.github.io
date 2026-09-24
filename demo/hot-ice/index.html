@@ -1,0 +1,1570 @@
+<!-- vau-stranitsa · силуэт: лабораторный стенд, прибор + 5 секций · предмет: стеклянная плошка с переохлаждённым расплавом · система: расчёт теплового аккумулятора на фазовом переходе — энергия, пик, длительность, цена партии · техника: фазовое поле на GPGPU со скрытой теплотой + per-fragment transmission через onBeforeCompile -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Hot Ice — touch the liquid, it becomes stone, and the stone is hot</title>
+<meta name="description" content="A supercooled sodium-acetate melt held 36 K below its freezing point. One click seeds a crystal, the front runs at 6 mm/s, and every frozen cell hands back 264 J/g of latent heat — the dish climbs to 58 degrees while it turns solid. Phase field solved live on the GPU.">
+<meta name="theme-color" content="#04060a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2304060a'/%3E%3Cpath d='M16 5v22M6.5 10.5l19 11M25.5 10.5l-19 11' stroke='%2349bdff' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;700&display=swap"></noscript>
+<style>
+:root{
+  --void:#04060a;
+  --panel:#0a0f16;
+  --line:#182230;
+  --ink:#e9eef4;
+  --dim:#8fa0b2;
+  --cold:#49bdff;
+  --warm:#ff8b46;
+  --cryst:#ccd8e4;
+  --gut:clamp(1.15rem,3.4vw,2.6rem);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--void);color:var(--ink);
+  font-family:"Schibsted Grotesk",sans-serif;
+  font-size:16px;line-height:1.52;letter-spacing:-0.005em;
+  font-feature-settings:"ss01";
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:rgba(73,189,255,0.28);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--cold);outline-offset:3px;border-radius:2px}
+button,input,select{font:inherit;color:inherit;background:none;border:none}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;letter-spacing:0.02em}
+.wrap{width:min(100% - var(--gut) * 2,76rem);margin-inline:auto}
+
+/* ── лоадер ─────────────────────────────────────────────────────────── */
+#loader{
+  position:fixed;inset:0;z-index:90;background:var(--void);
+  display:grid;place-content:center;gap:1.1rem;
+  transition:opacity .62s cubic-bezier(.16,1,.3,1),visibility .62s cubic-bezier(.16,1,.3,1);
+}
+#loader.out{opacity:0;visibility:hidden}
+#ltrack{width:min(15rem,52vw);height:2px;background:rgba(233,238,244,0.12);overflow:hidden}
+#lbar{height:100%;width:0;background:var(--cold);box-shadow:0 0 14px rgba(73,189,255,0.55)}
+#lrow{display:flex;justify-content:space-between;font-size:0.72rem;color:var(--dim)}
+
+/* ── сцена ──────────────────────────────────────────────────────────── */
+#stage{position:fixed;inset:0;z-index:0;transition:opacity .7s cubic-bezier(.16,1,.3,1),filter .7s cubic-bezier(.16,1,.3,1)}
+#stage.dim{opacity:0.16;filter:saturate(0.5)}
+#gl,#flat{display:block;width:100%;height:100%}
+#flat{display:none;object-fit:cover}
+body.nogl #gl{display:none}
+body.nogl #flat{display:block}
+#lost,#noglnote{
+  position:absolute;left:50%;top:52%;translate:-50% -50%;
+  padding:0.9rem 1.2rem;border:1px solid var(--line);background:rgba(10,15,22,0.86);
+  color:var(--dim);font-size:0.82rem;max-width:26rem;text-align:center;display:none;
+}
+#lost.on,body.nogl #noglnote{display:block}
+
+/* рамка стенда */
+.frame{position:fixed;inset:clamp(0.6rem,1.4vw,1.35rem);z-index:1;pointer-events:none;
+  border:1px solid rgba(233,238,244,0.06);transition:opacity .7s cubic-bezier(.16,1,.3,1)}
+body.deep .frame{opacity:0}
+.cor{position:absolute;width:11px;height:11px;border:1px solid rgba(73,189,255,0.42)}
+.cor.tl{left:-1px;top:-1px;border-right:0;border-bottom:0}
+.cor.tr{right:-1px;top:-1px;border-left:0;border-bottom:0}
+.cor.bl{left:-1px;bottom:-1px;border-right:0;border-top:0}
+.cor.br{right:-1px;bottom:-1px;border-left:0;border-top:0}
+.scan{position:absolute;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,rgba(73,189,255,0),rgba(73,189,255,0.30),rgba(73,189,255,0));
+  animation:scan 11s linear infinite}
+@keyframes scan{0%{top:4%;opacity:0}12%{opacity:1}88%{opacity:1}100%{top:96%;opacity:0}}
+
+/* ── шапка ──────────────────────────────────────────────────────────── */
+header{position:fixed;top:0;left:0;right:0;z-index:20;padding:clamp(0.9rem,2vw,1.4rem) 0;
+  backdrop-filter:blur(2px)}
+.hin{display:flex;align-items:center;gap:1.4rem}
+.brand{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:0.95rem;letter-spacing:-0.03em}
+.brand span{color:var(--cold)}
+nav{margin-left:auto;display:flex;gap:1.35rem;font-size:0.8rem;color:var(--dim)}
+nav a{position:relative;padding-bottom:2px;transition:color .34s cubic-bezier(.16,1,.3,1)}
+nav a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--cold);
+  transition:right .42s cubic-bezier(.16,1,.3,1)}
+nav a:hover{color:var(--ink)}
+nav a:hover::after{right:0}
+.now{display:flex;align-items:center;gap:0.45rem;font-size:0.76rem;color:var(--dim)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--cold);animation:pulse 2.6s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(73,189,255,0.5)}50%{opacity:0.42;box-shadow:0 0 0 5px rgba(73,189,255,0)}}
+
+/* ── общий герой ────────────────────────────────────────────────────── */
+main{position:relative;z-index:2}
+#hero{min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;
+  padding:clamp(5.5rem,12vh,8rem) 0 clamp(1rem,2.4vh,1.8rem)}
+/* заслонка под текстом: сцена яркая слева, буквы должны читаться поверх неё */
+#hero::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(102deg,rgba(4,6,10,0.94) 0%,rgba(4,6,10,0.78) 24%,rgba(4,6,10,0.38) 44%,rgba(4,6,10,0) 62%),
+    linear-gradient(0deg,rgba(4,6,10,0.86) 0%,rgba(4,6,10,0.16) 22%,rgba(4,6,10,0) 40%);
+  transition:opacity .7s cubic-bezier(.16,1,.3,1)}
+body.deep #hero::before{opacity:0}
+.kicker{font-family:"IBM Plex Mono",monospace;font-size:0.735rem;letter-spacing:0.15em;
+  text-transform:uppercase;color:var(--cold)}
+h1{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;
+  font-size:clamp(2.5rem,6.1vw,5.05rem);line-height:0.94;letter-spacing:-0.045em;
+  margin:0.85rem 0 0;text-wrap:balance;max-width:15ch}
+.ln{display:block;overflow:hidden}
+.wd{display:block}
+h1 em{font-style:normal;color:var(--cryst)}
+h1 i{font-style:normal;color:var(--warm)}
+.lede{margin-top:1.35rem;max-width:37ch;color:var(--dim);font-size:clamp(0.95rem,1.16vw,1.075rem)}
+.lede b{color:var(--ink);font-weight:500}
+.hint{margin-top:1.5rem;display:inline-flex;align-items:center;gap:0.6rem;
+  font-size:0.795rem;color:var(--dim);border:1px solid var(--line);
+  padding:0.5rem 0.85rem;background:rgba(10,15,22,0.5)}
+.cue{width:16px;height:16px;border:1px solid var(--cold);border-radius:50%;
+  display:grid;place-items:center;animation:cue 2.9s cubic-bezier(.16,1,.3,1) infinite}
+.cue::after{content:"";width:3px;height:3px;border-radius:50%;background:var(--cold)}
+@keyframes cue{0%,100%{transform:scale(1);opacity:0.55}45%{transform:scale(1.42);opacity:1}}
+
+/* ── прибор ─────────────────────────────────────────────────────────── */
+.deck{display:grid;grid-template-columns:1fr auto;gap:1rem var(--gut);align-items:end}
+.gauges{display:flex;flex-wrap:wrap;gap:0.35rem 2.2rem}
+.g{min-width:6.6rem}
+.g dt{font-family:"IBM Plex Mono",monospace;font-size:0.685rem;letter-spacing:0.11em;
+  text-transform:uppercase;color:var(--dim)}
+.g dd{font-family:"IBM Plex Mono",monospace;font-size:clamp(1.15rem,1.85vw,1.6rem);
+  line-height:1.15;margin-top:0.15rem;font-weight:500}
+.g dd s{text-decoration:none;font-size:0.62em;color:var(--dim);margin-left:0.18em}
+#gTemp{color:var(--warm)}
+#gSolid{color:var(--cryst)}
+#gFront{color:var(--cold)}
+
+.ctl{display:flex;align-items:center;gap:0.95rem;flex-wrap:wrap;justify-content:flex-end}
+.slab{display:flex;flex-direction:column;gap:0.34rem}
+.slab span{font-family:"IBM Plex Mono",monospace;font-size:0.685rem;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--dim)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:min(15rem,44vw);height:16px;background:none;cursor:ew-resize}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:rgba(233,238,244,0.16)}
+input[type=range]::-moz-range-track{height:2px;background:rgba(233,238,244,0.16)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;margin-top:-5.5px;
+  border-radius:50%;background:var(--cold);box-shadow:0 0 0 0 rgba(73,189,255,0.3);
+  transition:box-shadow .32s cubic-bezier(.16,1,.3,1),transform .32s cubic-bezier(.34,1.56,.64,1)}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border:0;border-radius:50%;background:var(--cold)}
+input[type=range]:hover::-webkit-slider-thumb{box-shadow:0 0 0 6px rgba(73,189,255,0.14);transform:scale(1.14)}
+.btn{border:1px solid var(--line);padding:0.6rem 1.05rem;font-size:0.815rem;cursor:pointer;
+  background:rgba(10,15,22,0.62);position:relative;overflow:hidden;
+  transition:border-color .36s cubic-bezier(.16,1,.3,1),color .36s cubic-bezier(.16,1,.3,1)}
+.btn::before{content:"";position:absolute;inset:0;background:var(--cold);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .46s cubic-bezier(.16,1,.3,1)}
+.btn i{position:relative;font-style:normal}
+.btn:hover{border-color:rgba(73,189,255,0.65);color:var(--void)}
+.btn:hover::before{transform:scaleX(1)}
+.btn:active{transform:translateY(1px)}
+.btn.solid{border-color:rgba(73,189,255,0.4)}
+
+/* термометр */
+.therm{display:flex;align-items:flex-end;gap:0.55rem}
+.tube{width:9px;height:64px;border:1px solid var(--line);position:relative;background:rgba(4,6,10,0.72)}
+.merc{position:absolute;left:1px;right:1px;bottom:1px;height:8%;
+  background:linear-gradient(180deg,var(--warm),rgba(255,139,70,0.35));
+  transition:height .5s cubic-bezier(.65,0,.35,1)}
+.mark{position:absolute;left:-4px;right:-4px;height:1px;background:rgba(233,238,244,0.42)}
+.tlab{font-family:"IBM Plex Mono",monospace;font-size:0.65rem;color:var(--dim);line-height:1.35}
+
+/* ── секции ─────────────────────────────────────────────────────────── */
+section.pane{background:var(--void);position:relative;z-index:3;border-top:1px solid var(--line)}
+.pad{padding:clamp(3.6rem,8vh,6.4rem) 0}
+.head{display:flex;align-items:baseline;gap:1.1rem;margin-bottom:clamp(1.6rem,3.4vh,2.6rem)}
+.num{font-family:"IBM Plex Mono",monospace;font-size:0.72rem;color:var(--cold);letter-spacing:0.12em}
+h2{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;letter-spacing:-0.035em;
+  font-size:clamp(1.5rem,3.05vw,2.5rem);line-height:1.02;text-wrap:balance}
+.sub{color:var(--dim);max-width:56ch;margin-top:0.7rem;font-size:0.965rem}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.card{background:var(--panel);padding:clamp(1.15rem,2.2vw,1.7rem);
+  transition:background .44s cubic-bezier(.16,1,.3,1)}
+.card:hover{background:rgba(24,34,48,0.55)}
+.card h3{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:1.06rem;
+  letter-spacing:-0.02em;margin-bottom:0.55rem}
+.card p{color:var(--dim);font-size:0.9rem}
+.card .f{font-family:"IBM Plex Mono",monospace;font-size:0.815rem;color:var(--cryst);
+  margin:0.85rem 0;padding:0.55rem 0.7rem;background:rgba(4,6,10,0.66);border-left:2px solid var(--cold);
+  overflow-x:auto;white-space:nowrap}
+.card .live{margin-top:0.9rem;font-family:"IBM Plex Mono",monospace;font-size:0.78rem;color:var(--dim)}
+.card .live b{color:var(--warm);font-weight:500}
+
+/* график */
+.plot{border:1px solid var(--line);background:var(--panel);padding:0.9rem 0.9rem 0.6rem}
+#chart{display:block;width:100%;height:clamp(180px,30vh,290px)}
+.legend{display:flex;gap:1.4rem;margin-top:0.55rem;font-family:"IBM Plex Mono",monospace;
+  font-size:0.71rem;color:var(--dim);flex-wrap:wrap}
+.legend i{display:inline-block;width:14px;height:2px;margin-right:0.4rem;vertical-align:middle}
+.note{margin-top:1rem;color:var(--dim);font-size:0.86rem;max-width:60ch}
+
+/* калькулятор */
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:1px;background:var(--line);
+  border:1px solid var(--line)}
+.side{background:var(--panel);padding:clamp(1.15rem,2.4vw,1.9rem)}
+.field{margin-bottom:1.15rem}
+.field label{display:flex;justify-content:space-between;align-items:baseline;
+  font-family:"IBM Plex Mono",monospace;font-size:0.7rem;letter-spacing:0.09em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:0.4rem}
+.field label b{color:var(--ink);font-weight:500;letter-spacing:0}
+.field input[type=number],.field select{width:100%;border:1px solid var(--line);
+  background:rgba(4,6,10,0.6);padding:0.52rem 0.65rem;font-family:"IBM Plex Mono",monospace;
+  font-size:0.88rem;transition:border-color .34s cubic-bezier(.16,1,.3,1)}
+.field input[type=number]:hover,.field select:hover{border-color:rgba(73,189,255,0.42)}
+.field.bad input{border-color:var(--warm)}
+.err{display:none;color:var(--warm);font-size:0.755rem;margin-top:0.32rem}
+.field.bad .err{display:block}
+.chips{display:flex;gap:0.4rem;flex-wrap:wrap}
+.chip{border:1px solid var(--line);padding:0.4rem 0.7rem;font-family:"IBM Plex Mono",monospace;
+  font-size:0.755rem;cursor:pointer;color:var(--dim);
+  transition:border-color .34s cubic-bezier(.16,1,.3,1),color .34s cubic-bezier(.16,1,.3,1)}
+.chip:hover{color:var(--ink);border-color:rgba(73,189,255,0.5)}
+.chip[aria-pressed=true]{color:var(--void);background:var(--cold);border-color:var(--cold)}
+.out{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);margin-bottom:1px}
+.o{background:var(--panel);padding:clamp(0.9rem,1.9vw,1.35rem)}
+.o dt{font-family:"IBM Plex Mono",monospace;font-size:0.685rem;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--dim)}
+.o dd{font-family:"IBM Plex Mono",monospace;font-size:clamp(1.28rem,2.4vw,1.85rem);margin-top:0.2rem;font-weight:500}
+.o dd s{text-decoration:none;font-size:0.55em;color:var(--dim);margin-left:0.2em}
+.o small{display:block;color:var(--dim);font-size:0.735rem;margin-top:0.3rem}
+.o.big dd{color:var(--warm)}
+.o.pay dd{color:var(--cold)}
+.spec{background:var(--panel);padding:clamp(1rem,2vw,1.4rem)}
+.spec pre{font-family:"IBM Plex Mono",monospace;font-size:0.735rem;color:var(--dim);
+  white-space:pre;overflow-x:auto;line-height:1.72;border-left:2px solid var(--line);padding-left:0.8rem}
+.acts{display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:1.1rem}
+
+/* таблица составов */
+.tbl{width:100%;border-collapse:collapse;font-family:"IBM Plex Mono",monospace;font-size:0.815rem}
+.tbl th{text-align:right;font-weight:400;color:var(--dim);font-size:0.685rem;letter-spacing:0.09em;
+  text-transform:uppercase;padding:0.55rem 0.7rem;border-bottom:1px solid var(--line)}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl td{text-align:right;padding:0.62rem 0.7rem;border-bottom:1px solid rgba(24,34,48,0.62)}
+.tbl tr.row{cursor:pointer;transition:background .36s cubic-bezier(.16,1,.3,1)}
+.tbl tr.row:hover{background:rgba(24,34,48,0.6)}
+.tbl tr.row.on{background:rgba(73,189,255,0.10)}
+.tbl tr.row.on td:first-child{color:var(--cold)}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);background:var(--panel);padding:0 0.4rem}
+
+/* подвал */
+footer{border-top:1px solid var(--line);background:var(--void);position:relative;z-index:3}
+.fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:1.6rem}
+footer h3{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:1.35rem;
+  letter-spacing:-0.03em;max-width:18ch}
+footer p{color:var(--dim);font-size:0.885rem;margin-top:0.6rem;max-width:34ch}
+.flist{list-style:none;font-size:0.875rem;color:var(--dim)}
+.flist li{padding:0.28rem 0}
+.flist a{transition:color .34s cubic-bezier(.16,1,.3,1)}
+.flist a:hover{color:var(--cold)}
+.fend{margin-top:2.4rem;padding-top:1.1rem;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  font-family:"IBM Plex Mono",monospace;font-size:0.715rem;color:var(--dim)}
+
+/* ── расписание ─────────────────────────────────────────────────────── */
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes wipe{from{transform:translateY(105%)}to{transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.rv,.wd{opacity:0}
+body.ready .rv{animation:rise .82s cubic-bezier(.16,1,.3,1) both;animation-delay:var(--d,0ms)}
+body.ready .wd{opacity:1;animation:wipe .95s cubic-bezier(.16,1,.3,1) both;animation-delay:var(--d,0ms)}
+body.ready .fd{animation:fade 1.1s cubic-bezier(.65,0,.35,1) both;animation-delay:var(--d,0ms)}
+section.pane .rv{animation:none;opacity:0;transform:translateY(14px)}
+section.pane.in .rv{animation:rise .8s cubic-bezier(.16,1,.3,1) both;animation-delay:var(--d,0ms)}
+
+@media (max-width:1180px){
+  h1{font-size:clamp(2.4rem,7vw,4rem)}
+  .calc{grid-template-columns:1fr}
+  .fgrid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:900px){
+  .cards{grid-template-columns:1fr}
+  .deck{grid-template-columns:1fr}
+  .ctl{justify-content:flex-start}
+  nav{display:none}
+  .lede{max-width:44ch}
+  /* на узком экране плошка стоит прямо под приборами — заслонка снизу плотнее */
+  #hero::before{background:linear-gradient(0deg,rgba(4,6,10,0.95) 0%,rgba(4,6,10,0.90) 30%,
+    rgba(4,6,10,0.30) 52%,rgba(4,6,10,0) 68%),
+    linear-gradient(180deg,rgba(4,6,10,0.92) 0%,rgba(4,6,10,0.55) 26%,rgba(4,6,10,0) 44%)}
+}
+@media (max-width:640px){
+  body{font-size:15.5px}
+  .gauges{gap:0.7rem 1.5rem}
+  .g{min-width:5.2rem}
+  .g dt,.field label,.o dt,.tbl th{font-size:0.755rem}
+  .kicker{font-size:0.775rem}
+  .hint,.card p,.sub,.note,footer p,.flist{font-size:0.895rem}
+  .card .f,.spec pre,.legend,.tbl,.fend,.tlab,.chip{font-size:0.79rem}
+  .out{grid-template-columns:1fr}
+  .fgrid{grid-template-columns:1fr}
+  input[type=range]{width:min(19rem,64vw)}
+}
+@media (max-width:420px){
+  h1{font-size:2.28rem;letter-spacing:-0.04em}
+  .g dd{font-size:1.16rem}
+  .frame{inset:0.45rem}
+}
+@media (prefers-reduced-motion:reduce){
+  #loader{display:none}
+  .scan,.cue{display:none}
+  *,*::before,*::after{animation-duration:1ms !important;animation-delay:0ms !important;
+    animation-iteration-count:1 !important;transition-duration:1ms !important}
+  .rv,.wd,.fd,section.pane .rv{opacity:1 !important;transform:none !important;animation:none !important}
+  #stage{transition:none}
+}
+</style>
+
+<div id="loader">
+  <div id="lrow" class="mono"><span>SUPERCOOLING THE MELT</span><span id="lnum">000</span></div>
+  <div id="ltrack"><div id="lbar"></div></div>
+</div>
+
+<div id="stage">
+  <canvas id="gl"></canvas>
+  <canvas id="flat" width="1280" height="800" aria-label="Crystallised dish, static fallback"></canvas>
+  <div id="noglnote">WebGL 2 is off in this browser, so the phase field is drawn once on the CPU instead. Every number below still computes.</div>
+  <div id="lost">The graphics context was dropped by the system. Reload to bring the melt back.</div>
+</div>
+<div class="frame" aria-hidden="true">
+  <span class="cor tl"></span><span class="cor tr"></span><span class="cor bl"></span><span class="cor br"></span>
+  <span class="scan"></span>
+</div>
+
+<header>
+  <div class="wrap hin">
+    <a class="brand rv" style="--d:40ms" href="#hero">HOT<span>·</span>ICE</a>
+    <nav>
+      <a class="rv" style="--d:110ms" href="#front">Front</a>
+      <a class="rv" style="--d:160ms" href="#curve">Curve</a>
+      <a class="rv" style="--d:210ms" href="#calc">Calculator</a>
+      <a class="rv" style="--d:260ms" href="#pcm">Materials</a>
+    </nav>
+    <div class="now rv" style="--d:310ms"><span class="dot"></span><span class="mono" id="clock">00:00</span></div>
+  </div>
+</header>
+
+<main>
+<section id="hero">
+  <div class="wrap">
+    <p class="kicker rv" style="--d:70ms">Phase change · sodium acetate trihydrate · 58 °C</p>
+    <h1>
+      <span class="ln"><span class="wd" style="--d:150ms">Touch the</span></span>
+      <span class="ln"><span class="wd" style="--d:235ms"><em>liquid.</em></span></span>
+      <span class="ln"><span class="wd" style="--d:320ms">It becomes</span></span>
+      <span class="ln"><span class="wd" style="--d:405ms"><i>stone.</i></span></span>
+    </h1>
+    <p class="lede rv" style="--d:520ms">This melt is sitting <b>36 kelvin below its own freezing point</b> and it is still liquid, because nothing has told it where to start. A single seed does. The front then runs outward, and every cell that freezes hands back <b>264 joules per gram</b> — which is why the dish gets <b>hot</b> while it turns to stone.</p>
+    <p class="hint fd" style="--d:960ms"><span class="cue"></span> Click anywhere in the dish to drop a seed. Two seeds make two grains, and you will see the boundary where they meet.</p>
+  </div>
+
+  <div class="wrap deck">
+    <dl class="gauges">
+      <div class="g rv" style="--d:640ms"><dt>Temperature</dt><dd id="gTemp">22.0<s>°C</s></dd></div>
+      <div class="g rv" style="--d:700ms"><dt>Solidified</dt><dd id="gSolid">0.0<s>%</s></dd></div>
+      <div class="g rv" style="--d:760ms"><dt>Front speed</dt><dd id="gFront">0.00<s>mm/s</s></dd></div>
+      <div class="g rv" style="--d:820ms"><dt>Grains</dt><dd id="gGrain">0</dd></div>
+      <div class="g rv" style="--d:880ms"><dt>Undercooling</dt><dd id="gDT">36<s>K</s></dd></div>
+    </dl>
+
+    <div class="ctl">
+      <div class="therm rv" style="--d:900ms">
+        <div class="tube"><div class="merc" id="merc"></div><div class="mark" id="tmark" style="bottom:78%"></div></div>
+        <div class="tlab"><div id="thi">58 °C</div><div id="tlo">6 °C</div></div>
+      </div>
+      <label class="slab rv" style="--d:950ms">
+        <span>Melt temperature · <b class="mono" id="t0lab">22 °C</b></span>
+        <input id="t0" type="range" min="6" max="50" step="1" value="22" aria-label="Temperature of the supercooled melt in degrees Celsius">
+      </label>
+      <button class="btn solid rv" style="--d:1010ms" id="seedBtn" type="button"><i>Seed the centre</i></button>
+      <button class="btn rv" style="--d:1070ms" id="meltBtn" type="button"><i>Melt it back</i></button>
+    </div>
+  </div>
+</section>
+
+<section class="pane" id="front">
+  <div class="wrap pad">
+    <div class="head">
+      <span class="num rv" style="--d:0ms">01</span>
+      <div>
+        <h2 class="rv" style="--d:60ms">Three rules, and none of them is noise</h2>
+        <p class="sub rv" style="--d:120ms">The branching you see is not a fractal texture pasted over a circle. It falls out of a phase field solved live on the GPU at <span id="gridA" class="mono">384²</span> — one cell is <span id="cellA" class="mono">0.23</span> mm of real dish — where the only inputs are a neighbour test, a growth law and a heat balance.</p>
+      </div>
+    </div>
+    <div class="cards">
+      <article class="card rv" style="--d:180ms">
+        <h3>The front</h3>
+        <p>A cell can only freeze if a neighbouring cell is already solid and its own temperature is below the melting point. The deeper the undercooling, the faster it goes — this is the whole reason the slider changes the speed.</p>
+        <div class="f mono">v = k · (Tm − T)^1.5 · a(θ)</div>
+        <p class="live">now: <b id="lFront">0.00 mm/s</b> at <b id="lDT">36 K</b> undercooling</p>
+      </article>
+      <article class="card rv" style="--d:250ms">
+        <h3>Latent heat</h3>
+        <p>Freezing releases energy. Each cell that solidifies dumps L/c = 94 K worth of heat into its own texel, which pushes the local temperature back up towards Tm and stops the front there. The tip that happens to stick out finds cold liquid, runs faster, and the arm is born. That instability is the dendrite — it is not painted on.</p>
+        <div class="f mono">ΔT_local = (L / c) · Δφ = 94.3 K · Δφ</div>
+        <p class="live">instant adiabatic share: <b id="lAdi">38.2 %</b> of the dish</p>
+      </article>
+      <article class="card rv" style="--d:320ms">
+        <h3>Grains</h3>
+        <p>Every seed carries a lattice orientation drawn at random. Growth is 6-fold anisotropic around that orientation, and a freezing cell inherits it from whichever neighbour reached it first. Two seeds therefore grow two lattices, and where they meet the mismatch stays in the surface forever — the grain boundary.</p>
+        <div class="f mono">a(θ) = 1 + 0.45 · cos 6(ψ − θ_grain)</div>
+        <p class="live">seeds dropped: <b id="lGrain">0</b> · boundaries are drawn live in the dish</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="pane" id="curve">
+  <div class="wrap pad">
+    <div class="head">
+      <span class="num rv" style="--d:0ms">02</span>
+      <div>
+        <h2 class="rv" style="--d:60ms">Recalescence: the thing gets hotter while it freezes</h2>
+        <p class="sub rv" style="--d:120ms">This is the claim worth checking. The blue line is the solid fraction, the orange line is the mean temperature of the dish. Both are read back off the GPU field — the <span id="gridC" class="mono">384²</span> texture is reduced to 32² on the card and pulled to the CPU eight times a second, so the plot is a measurement of the simulation, not a replay of a script.</p>
+      </div>
+    </div>
+    <div class="plot rv" style="--d:190ms">
+      <canvas id="chart" width="1600" height="560"></canvas>
+      <div class="legend">
+        <span><i style="background:#ff8b46"></i>mean temperature, °C</span>
+        <span><i style="background:#49bdff"></i>solid fraction, %</span>
+        <span id="cnote">waiting for the first seed</span>
+      </div>
+    </div>
+    <p class="note rv" style="--d:230ms"><b>One honest caveat, because it changes what you are looking at.</b> In sodium acetate the thermal length D/v is 0.018 mm — fifty times finer than a cell of this field, so a literal simulation would draw a smooth wall and no arms at all. The field is therefore solved in the standard dimensionless phase-field units, scaled so the thermal length lands on three cells. Everything physical stays physical — °C, the 264 J/g of latent heat, the energy balance that caps how much can freeze at once — and the price is time: the dish runs at <span id="kap" class="mono">0.75</span>× of real speed, and every mm/s on the gauges is divided back out.</p>
+    <p class="note rv" style="--d:280ms">The temperature cannot pass Tm: at the melting point the driving force is zero and growth stops. So the curve climbs steeply, flattens on a plateau, and the rest of the dish can only freeze as fast as the glass and the air carry the heat away. That plateau is the entire product below.</p>
+  </div>
+</section>
+
+<section class="pane" id="calc">
+  <div class="wrap pad">
+    <div class="head">
+      <span class="num rv" style="--d:0ms">03</span>
+      <div>
+        <h2 class="rv" style="--d:60ms">What the plateau is worth: a heat pack, costed</h2>
+        <p class="sub rv" style="--d:120ms">Reusable hand warmers, transport boxes for vaccines, seat pads, engine pre-heaters — all of them are this dish in a pouch. Set the pouch and the duty, get the energy, the hold time and the unit cost of a batch. Every formula is written next to the number it produced.</p>
+      </div>
+    </div>
+
+    <div class="calc rv" style="--d:190ms">
+      <div class="side">
+        <div class="field" id="fVol">
+          <label for="vol">Charge volume <b><span id="volLab">180</span> ml</span></b></label>
+          <input id="vol" type="number" min="20" max="900" step="10" value="180" inputmode="numeric">
+          <p class="err">Between 20 and 900 ml — outside that a flat pouch stops behaving like a flat pouch.</p>
+        </div>
+        <div class="field" id="fThk">
+          <label for="thk">Pillow thickness <b><span id="thkLab">16</span> mm</b></label>
+          <input id="thk" type="number" min="6" max="60" step="1" value="16" inputmode="numeric">
+          <p class="err">Between 6 and 60 mm.</p>
+        </div>
+        <div class="field" id="fAmb">
+          <label for="amb">Working ambient <b><span id="ambLab">5</span> °C</b></label>
+          <input id="amb" type="number" min="-25" max="35" step="1" value="5" inputmode="numeric">
+          <p class="err">Between −25 and 35 °C.</p>
+        </div>
+        <div class="field">
+          <label for="shell">Shell and contact</label>
+          <select id="shell">
+            <option value="3.2">Inside a jacket pocket — U 3.2 W/m²K</option>
+            <option value="5.5" selected>Fabric sleeve, still air — U 5.5</option>
+            <option value="9">Bare TPU pouch, still air — U 9</option>
+            <option value="22">Held in the hand — U 22</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Batch</label>
+          <div class="chips" id="qty">
+            <button class="chip" type="button" data-q="100" aria-pressed="false">100</button>
+            <button class="chip" type="button" data-q="500" aria-pressed="true">500</button>
+            <button class="chip" type="button" data-q="2000" aria-pressed="false">2 000</button>
+            <button class="chip" type="button" data-q="10000" aria-pressed="false">10 000</button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <dl class="out">
+          <div class="o big"><dt>Heat released</dt><dd id="oE">0<s>kJ</s></dd><small id="oEf">m · L, latent only</small></div>
+          <div class="o"><dt>Plateau hold</dt><dd id="oT">0<s>min</s></dd><small id="oTf">E / (U · A · ΔT)</small></div>
+          <div class="o"><dt>Surface at hold</dt><dd id="oS">58<s>°C</s></dd><small>melting point of the charge</small></div>
+          <div class="o pay"><dt>Unit cost</dt><dd id="oC">0<s>$</s></dd><small id="oCf">charge + shell + trigger + fill</small></div>
+        </dl>
+        <div class="spec">
+          <pre id="specOut">—</pre>
+          <div class="acts">
+            <button class="btn solid" type="button" id="dl"><i>Download the spec</i></button>
+            <button class="btn" type="button" id="send"><i>Send it to us</i></button>
+            <button class="btn" type="button" id="copyLink"><i>Copy the link to this configuration</i></button>
+          </div>
+          <p class="note" id="sendNote">Engineering and the first production run: $200 for the entry study, $65/h direct, $45/h as a subcontractor, 50 % up front. Crypto or Freedom Bank.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pane" id="pcm">
+  <div class="wrap pad">
+    <div class="head">
+      <span class="num rv" style="--d:0ms">04</span>
+      <div>
+        <h2 class="rv" style="--d:60ms">Four charges, one dish</h2>
+        <p class="sub rv" style="--d:120ms">Pick a row and both the dish and the calculator switch to that substance: melting point, latent heat, specific heat and density all go into the same phase field. Water is in the table because it is the one everybody has a feeling for — and because it is the worst heat store of the four per unit of volume.</p>
+      </div>
+    </div>
+    <div class="tblwrap rv" style="--d:190ms">
+      <table class="tbl">
+        <thead><tr>
+          <th>Charge</th><th>Tm, °C</th><th>L, J/g</th><th>c, J/gK</th><th>ρ, g/cm³</th><th>L·ρ, MJ/m³</th><th>$/kg</th>
+        </tr></thead>
+        <tbody id="pcmBody">
+          <tr class="row on" data-m="acetate"><td>Sodium acetate trihydrate</td><td>58</td><td>264</td><td>2.80</td><td>1.45</td><td>383</td><td>4.20</td></tr>
+          <tr class="row" data-m="calcium"><td>Calcium chloride hexahydrate</td><td>29</td><td>190</td><td>2.20</td><td>1.71</td><td>325</td><td>0.95</td></tr>
+          <tr class="row" data-m="erythritol"><td>Erythritol</td><td>118</td><td>340</td><td>2.76</td><td>1.30</td><td>442</td><td>3.40</td></tr>
+          <tr class="row" data-m="water"><td>Water</td><td>0</td><td>334</td><td>4.18</td><td>1.00</td><td>334</td><td>0.01</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note rv" style="--d:250ms">Undercooling is a property of the charge, not a setting: sodium acetate holds 30–40 K of it for months in a sealed pouch, which is exactly why it is the one that ships. Water in a clean vessel manages 10–15 K and loses it to the first speck of dust. The dish above will still let you run water — the front simply goes somewhere else.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap pad">
+    <div class="fgrid">
+      <div>
+        <h3 class="rv" style="--d:0ms">Engineering configurators that carry their own physics</h3>
+        <p class="rv" style="--d:70ms">This page is a working sample: a phase field on the GPU, a heat balance, a bill of materials and a spec that leaves the browser. Same pipeline for ducting, glazing, racking, packaging — anything where the customer needs a number before they need a picture.</p>
+      </div>
+      <ul class="flist rv" style="--d:130ms">
+        <li><a href="https://t.me/smirnovarturr">Telegram — @smirnovarturr</a></li>
+        <li><a href="mailto:paladei702@gmail.com">paladei702@gmail.com</a></li>
+        <li><a href="https://smirnov-artur.github.io/portfolio">Portfolio</a></li>
+      </ul>
+      <ul class="flist rv" style="--d:190ms">
+        <li>$65/h direct · $45/h subcontract</li>
+        <li>$200 entry study, credited back</li>
+        <li>50 % up front · crypto, Freedom Bank</li>
+      </ul>
+    </div>
+    <div class="fend">
+      <span>Belgrade, UTC+2 · <span id="clock2">00:00</span></span>
+      <span id="gridB">Phase field 384², 9-point Laplacian, 6-fold anisotropy</span>
+      <span id="fps">— fps</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ── вещества: числа из справочников по PCM, не подогнаны под картинку ── */
+/* grow — скорость фронта в мм/с на K^1.5: v = grow · (Tm − T)^1.5.
+   dif — температуропроводность, мм²/с. Обе величины в физических единицах,
+   в клетки поля они переводятся делением на размер клетки, а не наоборот */
+const MATS = {
+  acetate:   {name:'Sodium acetate trihydrate', Tm:58,  L:264, c:2.80, rho:1.45, price:4.20, dif:0.11, grow:0.028, dtMax:50},
+  calcium:   {name:'Calcium chloride hexahydrate', Tm:29, L:190, c:2.20, rho:1.71, price:0.95, dif:0.13, grow:0.045, dtMax:26},
+  erythritol:{name:'Erythritol',               Tm:118, L:340, c:2.76, rho:1.30, price:3.40, dif:0.10, grow:0.010, dtMax:95},
+  water:     {name:'Water',                    Tm:0,   L:334, c:4.18, rho:1.00, price:0.01, dif:0.13, grow:0.140, dtMax:14},
+};
+let MAT = MATS.acetate;
+const DISH_MM = 90;                       /* диаметр плошки — 90 мм */
+let SIZE = (REDUCED || innerWidth < 760) ? 224 : 384;
+const cellMM = ()=> DISH_MM / SIZE;
+
+/* Поле решается в безразмерных единицах фазового поля — иначе тепловая длина
+   D/v у ацетата равна 0.018 мм, то есть в десять раз меньше клетки, и фронт
+   идёт ровной стеной: дендрита физически негде уместить. Сетка выбрана так,
+   чтобы тепловая длина легла на 2–3 клетки, а вся физика — скрытая теплота,
+   баланс энергии, шестилучевая анизотропия — осталась настоящей.
+   Расплата одна и она объявлена: время на экране идёт медленнее настоящего
+   в 1/kappa раз, и все скорости на приборах пересчитаны обратно в мм/с. */
+const SIM = {ref: 30};
+function simScale(){
+  SIM.vTip = SIZE / 26;                        /* клеток/с при переохлаждении ref */
+  SIM.grow = SIM.vTip / Math.pow(SIM.ref, 1.5);
+  SIM.dif  = 3.2 * SIM.vTip;                   /* тепловая длина = 3.2 клетки */
+  SIM.dt   = 0.20 / SIM.dif;                   /* явная схема: D·dt <= 0.25 */
+  SIM.kappa = (SIM.grow * cellMM()) / MAT.grow;  /* настоящих секунд в одной экранной */
+}
+
+/* ── состояние ─────────────────────────────────────────────────────── */
+const S = {
+  t0: 22, phi: 0, temp: 22, tliq: 22, grains: 0, front: 0,
+  armed: false, seeds: [], reset: 0, setT: 0, tStart: 0, lastT: 0, lastR: 0,
+};
+const hist = [];
+
+const $ = (id)=>document.getElementById(id);
+const nf = (v,d)=>v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}).replace(/,/g,' ');
+
+/* ── лоадер ────────────────────────────────────────────────────────── */
+const loader = $('loader'), lbar = $('lbar'), lnum = $('lnum');
+function markReady(){
+  document.body.classList.add('ready');
+  setTimeout(boot, 80);
+}
+if (REDUCED){ loader.remove(); markReady(); }
+else {
+  const FILL = 880, t0 = performance.now();
+  (function tick(now){
+    const t = Math.min((now - t0)/FILL, 1);
+    const e = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2;
+    lbar.style.width = (e*100).toFixed(2)+'%';
+    lnum.textContent = String(Math.round(e*100)).padStart(3,'0');
+    if (t < 1) requestAnimationFrame(tick);
+    else { loader.classList.add('out'); markReady();
+      setTimeout(()=>loader.remove(), 800); }
+  })(t0);
+}
+
+/* ── часы Белграда ─────────────────────────────────────────────────── */
+function tickClock(){
+  const d = new Date(Date.now() + new Date().getTimezoneOffset()*60000 + 7200000);
+  const s = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+  $('clock').textContent = s; $('clock2').textContent = s;
+}
+tickClock(); setInterval(tickClock, 20000);
+
+/* ── появление секций ──────────────────────────────────────────────── */
+if (!REDUCED){
+  const io = new IntersectionObserver((es)=>{ for (const e of es){ if (!e.isIntersecting) continue;
+    e.target.classList.add('in'); io.unobserve(e.target); } }, {threshold:0.08, rootMargin:'0px 0px -5% 0px'});
+  document.querySelectorAll('section.pane, footer').forEach(el=>io.observe(el));
+} else document.querySelectorAll('section.pane, footer').forEach(el=>el.classList.add('in'));
+
+/* ── состояние в адресе ────────────────────────────────────────────── */
+const P = new URLSearchParams(location.search);
+const geti = (k, d, lo, hi)=>{ const v = parseFloat(P.get(k)); return Number.isFinite(v) && v>=lo && v<=hi ? v : d; };
+const CFG = {
+  vol: geti('v', 180, 20, 900), thk: geti('d', 16, 6, 60), amb: geti('a', 5, -25, 35),
+  U: geti('u', 5.5, 1, 60), qty: geti('q', 500, 1, 100000),
+  mat: MATS[P.get('m')] ? P.get('m') : 'acetate',
+  t0: geti('t', 22, 1, 200),
+};
+MAT = MATS[CFG.mat];
+S.t0 = Math.min(CFG.t0, MAT.Tm - 3);
+simScale();
+
+function pushURL(){
+  const q = new URLSearchParams({v:CFG.vol, d:CFG.thk, a:CFG.amb, u:CFG.U, q:CFG.qty, m:CFG.mat, t:S.t0});
+  history.replaceState(null, '', location.pathname + '?' + q.toString());
+}
+
+/* ── ползунок переохлаждения ───────────────────────────────────────── */
+const t0el = $('t0');
+function slBounds(){
+  t0el.min = Math.round(Math.max(-20, MAT.Tm - MAT.dtMax));
+  t0el.max = Math.round(MAT.Tm - 4);
+  $('thi').textContent = MAT.Tm + ' °C';
+  $('tlo').textContent = t0el.min + ' °C';
+}
+slBounds();
+t0el.value = String(Math.round(S.t0));
+function syncSlider(){
+  S.t0 = +t0el.value;
+  $('t0lab').textContent = Math.round(S.t0) + ' °C';
+  $('gDT').innerHTML = Math.round(MAT.Tm - S.t0) + '<s>K</s>';
+  $('lDT').textContent = Math.round(MAT.Tm - S.t0) + ' K';
+  $('lAdi').textContent = nf(Math.min(100, 100*MAT.c*(MAT.Tm - S.t0)/MAT.L), 1) + ' %';
+  recalc(); pushURL();
+}
+t0el.addEventListener('input', ()=>{ syncSlider(); S.setT = 1; S.armed = true; });
+
+/* ── таблица составов ──────────────────────────────────────────────── */
+document.querySelectorAll('#pcmBody .row').forEach(r=>r.addEventListener('click', ()=>{
+  document.querySelectorAll('#pcmBody .row').forEach(x=>x.classList.remove('on'));
+  r.classList.add('on');
+  CFG.mat = r.dataset.m; MAT = MATS[CFG.mat];
+  slBounds();
+  S.t0 = Math.max(+t0el.min, Math.min(+t0el.max, MAT.Tm - Math.min(36, MAT.dtMax*0.75)));
+  t0el.value = String(Math.round(S.t0));
+  S.reset = 1; S.grains = 0; S.seeds.length = 0; hist.length = 0; S.armed = false;
+  if (sceneApi) sceneApi.retune();
+  syncSlider();
+}));
+
+/* ── калькулятор ───────────────────────────────────────────────────── */
+const bind = (id, key, lo, hi, lab)=>{
+  const el = $(id), box = el.closest('.field');
+  el.value = String(CFG[key]);
+  if (lab) $(lab).textContent = String(CFG[key]);
+  el.addEventListener('input', ()=>{
+    const v = parseFloat(el.value);
+    const ok = Number.isFinite(v) && v >= lo && v <= hi;
+    box.classList.toggle('bad', !ok);
+    if (ok){ CFG[key] = v; if (lab) $(lab).textContent = String(v); recalc(); pushURL(); }
+  });
+};
+bind('vol','vol',20,900,'volLab');
+bind('thk','thk',6,60,'thkLab');
+bind('amb','amb',-25,35,'ambLab');
+$('shell').value = String(CFG.U);
+$('shell').addEventListener('change', ()=>{ CFG.U = +$('shell').value; recalc(); pushURL(); });
+document.querySelectorAll('#qty .chip').forEach(c=>{
+  c.setAttribute('aria-pressed', String(+c.dataset.q === CFG.qty));
+  c.addEventListener('click', ()=>{
+    document.querySelectorAll('#qty .chip').forEach(x=>x.setAttribute('aria-pressed','false'));
+    c.setAttribute('aria-pressed','true');
+    CFG.qty = +c.dataset.q; recalc(); pushURL();
+  });
+});
+
+let SPEC = '';
+function recalc(){
+  const m = CFG.vol * MAT.rho;                       /* г */
+  const dT = Math.max(1, MAT.Tm - CFG.amb);          /* К, напор на оболочке */
+  const Elat = m * MAT.L / 1000;                     /* кДж */
+  const Esen = m * MAT.c * dT / 1000;                /* кДж, ощутимое сверх среды */
+  const A = 2 * (CFG.vol / (CFG.thk/10)) * 1.15 / 10000;  /* м², плоская подушка + кромка */
+  const Pw = CFG.U * A * dT;                          /* Вт на плато */
+  const tPlat = Elat * 1000 / Math.max(Pw, 0.05) / 60;    /* мин */
+  const tau = m * MAT.c / Math.max(CFG.U * A, 0.01);      /* с, сосредоточенная ёмкость */
+  const tTail = tau * Math.log(dT / 5) / 60;
+  const disc = CFG.qty >= 10000 ? 0.71 : CFG.qty >= 2000 ? 0.79 : CFG.qty >= 500 ? 0.88 : 1.0;
+  const cCharge = m/1000 * MAT.price;
+  const cShell = 0.34 + 0.00058 * (A*10000);
+  const cTrig = 0.19, cFill = 0.42;
+  const unit = (cCharge + cShell + cTrig + cFill) * disc;
+
+  $('oE').innerHTML = nf(Elat, 0) + '<s>kJ</s>';
+  $('oEf').textContent = nf(m,0)+' g · '+MAT.L+' J/g = '+nf(Elat,0)+' kJ latent, +'+nf(Esen,0)+' kJ sensible';
+  $('oT').innerHTML = nf(tPlat, 0) + '<s>min</s>';
+  $('oTf').textContent = nf(Pw,1)+' W over '+nf(A*10000,0)+' cm², then '+nf(tTail,0)+' min of tail';
+  $('oS').innerHTML = MAT.Tm + '<s>°C</s>';
+  $('oC').innerHTML = nf(unit, 2) + '<s>$</s>';
+  $('oCf').textContent = '×'+nf(CFG.qty,0)+' = $'+nf(unit*CFG.qty,0)+' per batch, charge is $'+nf(cCharge,2);
+
+  SPEC =
+`HOT ICE — LATENT HEAT PACK, SPECIFICATION
+charge .................. ${MAT.name}
+melting point ........... ${MAT.Tm} °C
+latent heat ............. ${MAT.L} J/g
+specific heat ........... ${MAT.c} J/gK
+--
+charge volume ........... ${CFG.vol} ml
+charge mass ............. ${nf(m,0)} g
+pillow thickness ........ ${CFG.thk} mm
+exchange area ........... ${nf(A*10000,0)} cm2
+working ambient ......... ${CFG.amb} °C
+shell coefficient U ..... ${CFG.U} W/m2K
+--
+latent energy ........... ${nf(Elat,0)} kJ
+sensible energy ......... ${nf(Esen,0)} kJ
+plateau power ........... ${nf(Pw,1)} W
+plateau hold ............ ${nf(tPlat,0)} min
+tail to ambient+5K ...... ${nf(tTail,0)} min
+storage undercooling .... ${Math.round(MAT.Tm - S.t0)} K
+instant frozen share .... ${nf(Math.min(100, 100*MAT.c*(MAT.Tm - S.t0)/MAT.L),1)} %
+--
+batch ................... ${nf(CFG.qty,0)} pcs
+unit cost ............... $${nf(unit,2)}
+batch cost .............. $${nf(unit*CFG.qty,0)}
+engineering ............. $200 entry study, $65/h direct
+`;
+  $('specOut').textContent = SPEC;
+}
+
+$('dl').addEventListener('click', ()=>{
+  const b = new Blob([SPEC], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(b); a.download = 'hot-ice-spec.txt';
+  a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+});
+$('send').addEventListener('click', ()=>{
+  const body = encodeURIComponent(SPEC + '\nconfiguration: ' + location.href + '\n');
+  location.href = 'mailto:paladei702@gmail.com?subject=' +
+    encodeURIComponent('Latent heat pack — ' + CFG.vol + ' ml, batch ' + CFG.qty) + '&body=' + body;
+});
+$('copyLink').addEventListener('click', async ()=>{
+  try { await navigator.clipboard.writeText(location.href);
+        $('sendNote').textContent = 'Link copied — it carries the whole configuration.'; }
+  catch(e){ $('sendNote').textContent = 'Copy blocked by the browser — the address bar already holds the configuration.'; }
+});
+
+/* ── показания приборов ────────────────────────────────────────────── */
+function readouts(){
+  $('gTemp').innerHTML = nf(S.temp,1) + '<s>°C</s>';
+  $('gSolid').innerHTML = nf(S.phi*100,1) + '<s>%</s>';
+  $('gFront').innerHTML = nf(S.front,2) + '<s>mm/s</s>';
+  $('gGrain').textContent = String(S.grains);
+  $('lFront').textContent = nf(S.front,2) + ' mm/s';
+  $('lGrain').textContent = String(S.grains);
+  const lo = +t0el.min, hi = MAT.Tm + (MAT.Tm - lo)*0.08;
+  const f = Math.max(0.02, Math.min(1, (S.temp - lo)/(hi - lo)));
+  $('merc').style.height = (f*100).toFixed(1)+'%';
+  $('tmark').style.bottom = (Math.max(0,Math.min(1,(MAT.Tm - lo)/(hi - lo)))*100).toFixed(1)+'%';
+  $('cnote').textContent = S.grains === 0 ? 'waiting for the first seed'
+    : S.phi > 0.985 ? 'solid — the dish is holding at the plateau'
+    : 'front running · ' + nf(S.phi*100,1) + ' % solid';
+}
+
+/* ── график ────────────────────────────────────────────────────────── */
+const chart = $('chart'), cg = chart.getContext('2d');
+function drawChart(){
+  const dpr = Math.max(1, Math.min(devicePixelRatio || 1, 2));
+  const w = Math.round(chart.clientWidth * dpr), h = Math.round(chart.clientHeight * dpr);
+  if (chart.width !== w || chart.height !== h){ chart.width = w; chart.height = h; }
+  cg.clearRect(0,0,w,h);
+  const padL = 46*dpr, padR = 44*dpr, padT = 12*dpr, padB = 22*dpr;
+  const iw = w - padL - padR, ih = h - padT - padB;
+  const lo = Math.min(S.t0, MAT.Tm) - 4, hi = MAT.Tm + 6;
+  cg.strokeStyle = 'rgba(233,238,244,0.10)'; cg.lineWidth = 1*dpr;
+  cg.font = (10*dpr)+'px "IBM Plex Mono", monospace'; cg.fillStyle = 'rgba(143,160,178,0.86)';
+  for (let i = 0; i <= 4; i++){
+    const y = padT + ih*i/4, v = hi - (hi-lo)*i/4;
+    cg.beginPath(); cg.moveTo(padL, y); cg.lineTo(w-padR, y); cg.stroke();
+    cg.fillText(Math.round(v)+'°', 6*dpr, y + 3.5*dpr);
+    /* правая шкала — своя, для доли: две величины в разных единицах на одном поле
+       без второй оси читаются как одна кривая в двух цветах */
+    cg.fillStyle = 'rgba(73,189,255,0.72)';
+    cg.fillText(String(100 - i*25).padStart(3,' ')+'%', w - padR + 4*dpr, y + 3.5*dpr);
+    cg.fillStyle = 'rgba(143,160,178,0.86)';
+  }
+  /* линия точки плавления */
+  const ym = padT + ih*(hi - MAT.Tm)/(hi-lo);
+  cg.strokeStyle = 'rgba(204,216,228,0.34)'; cg.setLineDash([4*dpr,4*dpr]);
+  cg.beginPath(); cg.moveTo(padL, ym); cg.lineTo(w-padR, ym); cg.stroke(); cg.setLineDash([]);
+  cg.fillStyle = 'rgba(204,216,228,0.7)'; cg.fillText('Tm', w-padR-20*dpr, ym-5*dpr);
+  if (hist.length < 2){
+    cg.fillStyle = 'rgba(143,160,178,0.55)';
+    cg.fillText('no seed yet — the melt is flat and cold', padL+6*dpr, padT+ih/2);
+    return;
+  }
+  const SPAN = 60000;
+  const tEnd = hist[hist.length-1].t, tBeg = Math.max(hist[0].t, tEnd - SPAN);
+  const X = (t)=> padL + iw * Math.max(0, Math.min(1, (t - tBeg)/Math.max(1, tEnd - tBeg)));
+  cg.lineWidth = 1.6*dpr; cg.lineJoin = 'round';
+  cg.strokeStyle = 'rgba(73,189,255,0.92)'; cg.beginPath();
+  hist.forEach((p,i)=>{ const y = padT + ih*(1 - p.phi); i ? cg.lineTo(X(p.t), y) : cg.moveTo(X(p.t), y); });
+  cg.stroke();
+  cg.strokeStyle = 'rgba(255,139,70,0.95)'; cg.beginPath();
+  hist.forEach((p,i)=>{ const y = padT + ih*(hi - p.T)/(hi-lo); i ? cg.lineTo(X(p.t), y) : cg.moveTo(X(p.t), y); });
+  cg.stroke();
+  const last = hist[hist.length-1];
+  cg.fillStyle = 'rgba(255,139,70,0.95)';
+  cg.beginPath(); cg.arc(X(last.t), padT + ih*(hi-last.T)/(hi-lo), 2.6*dpr, 0, 6.2832); cg.fill();
+  cg.fillStyle = 'rgba(143,160,178,0.8)';
+  cg.fillText(nf((tEnd-tBeg)/1000/SIM.kappa,0)+' s of process time', padL+4*dpr, h-6*dpr);
+}
+
+/* ── запасной плоский рисунок, если WebGL2 нет ─────────────────────── */
+function flatFallback(){
+  document.body.classList.add('nogl');
+  const cv = $('flat'), g = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  g.fillStyle = '#04060a'; g.fillRect(0,0,W,H);
+  const N = 260, ph = new Float32Array(N*N), th = new Float32Array(N*N);
+  const seeds = [[0.42,0.46,0.2],[0.66,0.62,0.75],[0.34,0.7,0.45]];
+  for (const [sx,sy,so] of seeds){
+    const i = Math.round(sy*N)*N + Math.round(sx*N); ph[i] = 1; th[i] = so;
+  }
+  const nb = [[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,1],[1,-1],[-1,-1]];
+  for (let it = 0; it < 380; it++){
+    const add = [];
+    for (let y = 1; y < N-1; y++) for (let x = 1; x < N-1; x++){
+      const i = y*N + x; if (ph[i] > 0) continue;
+      const dx = x/N-0.5, dy = y/N-0.5; if (Math.hypot(dx,dy) > 0.47) continue;
+      let best = -1, bo = 0;
+      for (const [ox,oy] of nb){ const j = (y+oy)*N + (x+ox); if (ph[j] > best){ best = ph[j]; bo = th[j]; } }
+      if (best <= 0) continue;
+      const ang = Math.atan2(dy,dx);
+      const a = 1 + 0.34*Math.cos(6*(ang - bo*2.094));
+      if (Math.random() < 0.09*a) add.push([i,bo]);
+    }
+    for (const [i,o] of add){ ph[i] = 1; th[i] = o; }
+  }
+  const R = Math.min(W,H)*0.36, cx = W*0.58, cy = H*0.5;
+  g.save(); g.translate(cx,cy); g.scale(1,0.58);
+  const grd = g.createRadialGradient(0,0,R*0.1,0,0,R);
+  grd.addColorStop(0,'rgba(16,24,34,1)'); grd.addColorStop(1,'rgba(8,12,18,1)');
+  g.fillStyle = grd; g.beginPath(); g.arc(0,0,R,0,6.2832); g.fill();
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++){
+    const i = y*N + x; if (!ph[i]) continue;
+    const px = (x/N-0.5)*2*R, py = (y/N-0.5)*2*R;
+    const sh = 0.66 + 0.3*Math.sin(th[i]*12.6);
+    g.fillStyle = 'rgba('+Math.round(198*sh+40)+','+Math.round(210*sh+40)+','+Math.round(224*sh+40)+',0.92)';
+    g.fillRect(px, py, 2*R/N + 0.7, 2*R/N + 0.7);
+  }
+  g.strokeStyle = 'rgba(204,216,228,0.4)'; g.lineWidth = 3;
+  g.beginPath(); g.arc(0,0,R*1.03,0,6.2832); g.stroke();
+  g.restore();
+  S.phi = 1; S.temp = MAT.Tm; S.grains = 3; readouts();
+}
+
+/* ── сцена ─────────────────────────────────────────────────────────── */
+const canvas = $('gl');
+let THREE = null, sceneApi = null;
+const DPR_MIN = 1;
+
+/* сетка называется той, что реально поднялась на этой машине, а не той,
+   что написана в разметке: на софтверном растеризаторе она вдвое мельче */
+function gridNote(){
+  simScale();
+  $('gridA').textContent = SIZE + '²';
+  $('cellA').textContent = nf(cellMM(), 2);
+  $('kap').textContent = nf(SIM.kappa, 2);
+  $('gridB').textContent = 'Phase field ' + SIZE + '², 9-point Laplacian, 6-fold anisotropy';
+  $('gridC').textContent = SIZE + '²';
+}
+
+function hasGL2(){
+  try { return !!document.createElement('canvas').getContext('webgl2'); } catch(e){ return false; }
+}
+
+let booted = false;
+async function boot(){
+  if (booted) return; booted = true;
+  syncSlider(); recalc(); readouts(); drawChart(); gridNote();
+  if (!hasGL2()){ flatFallback(); return; }
+  try { THREE = await import('./assets/three-scene.js'); } catch(e){ THREE = null; }
+  if (!THREE){ flatFallback(); return; }
+  try { sceneApi = await build(); }
+  catch(e){ console.warn('scene', e); sceneApi = null; flatFallback(); return; }
+  gridNote();
+  drive();
+}
+
+async function build(){
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:false, alpha:false,
+    powerPreference:'high-performance'});
+  let SOFT = false;
+  {
+    const gl = renderer.getContext();
+    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    const nm = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : '';
+    if (/swiftshader|llvmpipe|software|basic render|microsoft basic/i.test(nm)){ SOFT = true; SIZE = 128; }
+    simScale();
+  }
+  const DPR = Math.max(DPR_MIN, Math.min(devicePixelRatio || 1, 1.75));
+  renderer.setPixelRatio(DPR);
+  renderer.setSize(innerWidth, innerHeight, false);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.9;
+  if ('transmissionResolutionScale' in renderer) renderer.transmissionResolutionScale = SOFT ? 0.4 : 0.7;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, innerWidth/innerHeight, 0.05, 60);
+
+  /* фон — ровный тёмный купол с еле заметным градиентом: стеклу нужно что преломлять */
+  {
+    const c = document.createElement('canvas'); c.width = 8; c.height = 256;
+    const g = c.getContext('2d');
+    const gr = g.createLinearGradient(0,0,0,256);
+    gr.addColorStop(0,'rgb(24,34,47)'); gr.addColorStop(0.46,'rgb(8,12,18)'); gr.addColorStop(1,'rgb(3,4,7)');
+    g.fillStyle = gr; g.fillRect(0,0,8,256);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace; t.minFilter = THREE.LinearFilter;
+    const dome = new THREE.Mesh(new THREE.SphereGeometry(24, 32, 24),
+      new THREE.MeshBasicMaterial({map:t, side:THREE.BackSide, toneMapped:false}));
+    scene.add(dome);
+  }
+
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  pmrem.compileEquirectangularShader();
+  try {
+    const hdr = await new THREE.RGBELoader().loadAsync('./assets/brown_photostudio_02_256.hdr');
+    scene.environment = pmrem.fromEquirectangular(hdr).texture;
+    scene.environmentIntensity = 1.05;
+    scene.environmentRotation = new THREE.Euler(0, -Math.PI/2.4, 0);
+    hdr.dispose();
+  } catch(e){ scene.environmentIntensity = 1.0; }
+  pmrem.dispose();
+
+  /* мягкий верхний ключ, холодный контровой ярче него, слабая заливка */
+  const key  = new THREE.DirectionalLight(0xffe0bd, 1.0); key.position.set(1.6, 4.6, 2.0);
+  const rim  = new THREE.DirectionalLight(0xb6d4ff, 2.7); rim.position.set(-3.1, 1.5, -3.6);
+  const fill = new THREE.DirectionalLight(0xffffff, 0.14); fill.position.set(-1.8, 0.9, 2.6);
+  scene.add(key, rim, fill);
+
+  const R = 0.45, LIQ_Y = 0.075, LIQ_B = 0.008;
+  const rig = new THREE.Group();
+  rig.position.set(0.20, 0, 0);
+  scene.add(rig);
+
+  /* ── стол: тёмная шлифованная плита ─────────────────────────────── */
+  function brushed(px, streaks, rough){
+    const c = document.createElement('canvas'); c.width = c.height = px;
+    const g = c.getContext('2d');
+    g.fillStyle = 'rgb(150,150,150)'; g.fillRect(0,0,px,px);
+    for (let i = 0; i < streaks; i++){
+      const y = Math.random()*px, a = 0.02 + Math.random()*0.06;
+      g.strokeStyle = (Math.random() > 0.5 ? 'rgba(255,255,255,' : 'rgba(0,0,0,') + a.toFixed(3) + ')';
+      g.lineWidth = 0.5 + Math.random()*2.4;
+      g.beginPath(); g.moveTo(0,y); g.lineTo(px, y + (Math.random()-0.5)*4); g.stroke();
+    }
+    const id = g.getImageData(0,0,px,px), d = id.data;
+    for (let i = 0; i < d.length; i += 4){
+      const v = d[i]/255;
+      const r = Math.max(0, Math.min(255, (rough + (v-0.588)*0.5)*255));
+      d[i] = 0; d[i+1] = r; d[i+2] = 0; d[i+3] = 255;
+    }
+    g.putImageData(id,0,0);
+    const t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.generateMipmaps = true;
+    t.minFilter = THREE.LinearMipmapLinearFilter; t.magFilter = THREE.LinearFilter;
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    t.needsUpdate = true;
+    return t;
+  }
+  const benchRough = brushed(1024, 1500, 0.80); benchRough.repeat.set(26, 26);
+  const bench = new THREE.Mesh(new THREE.PlaneGeometry(40, 40),
+    new THREE.MeshPhysicalMaterial({color:0x070a0e, metalness:0.1, roughness:1.0,
+      roughnessMap: benchRough, envMapIntensity:0.22}));
+  bench.rotation.x = -Math.PI/2; bench.position.y = -0.021;
+  scene.add(bench);
+  /* туман отрывает плошку от стола: дальний план уходит в фон, а не тянется к горизонту */
+  scene.fog = new THREE.FogExp2(0x05070b, 0.13);
+
+  /* мягкая контактная тень пятном — вместо shadow map, у стекла она врёт */
+  {
+    const c = document.createElement('canvas'); c.width = c.height = 256;
+    const g = c.getContext('2d');
+    const rad = g.createRadialGradient(128,128,6,128,128,128);
+    rad.addColorStop(0,'rgba(0,0,0,0.80)'); rad.addColorStop(0.45,'rgba(0,0,0,0.34)');
+    rad.addColorStop(0.78,'rgba(0,0,0,0.08)'); rad.addColorStop(1,'rgba(0,0,0,0)');
+    g.fillStyle = rad; g.fillRect(0,0,256,256);
+    const t = new THREE.CanvasTexture(c); t.minFilter = THREE.LinearFilter;
+    const blob = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 1.7),
+      new THREE.MeshBasicMaterial({map:t, transparent:true, depthWrite:false, toneMapped:false}));
+    blob.rotation.x = -Math.PI/2; blob.position.set(0, -0.018, 0.015);
+    rig.add(blob);
+  }
+
+  /* ── поле фазы на GPU ───────────────────────────────────────────── */
+  const gpu = new THREE.GPUComputationRenderer(SIZE, SIZE, renderer);
+  const dt0 = gpu.createTexture();
+  {
+    const d = dt0.image.data;
+    for (let i = 0; i < d.length; i += 4){
+      d[i] = 1; d[i+1] = S.t0; d[i+2] = 0; d[i+3] = Math.random();
+    }
+  }
+  /* R хранит ДОЛЮ ЖИДКОСТИ, а не кристалла: ровно этот канал three умножает
+     на transmission, когда текстура поля отдана материалу картой пропускания —
+     оптика меняется по фронту без единой правки чужого чанка шейдера */
+  const stepFrag = `
+    uniform float uDt, uT0, uTm, uLoC, uDif, uKwall, uKair, uWallT, uGrow, uAniso, uGamma, uReset, uSetT;
+    uniform vec3 uSeed;
+    #define PI 3.141592653589793
+    float h21(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+    void main(){
+      vec2 uv = gl_FragCoord.xy / resolution.xy;
+      vec2 px = 1.0 / resolution.xy;
+      vec4 s = texture2D(texState, uv);
+      float phi = 1.0 - s.r, T = s.g, th = s.b, sd = s.a;
+      vec2 Pp = uv * 2.0 - 1.0;
+      float rr = length(Pp);
+
+      if (uReset > 0.5){ gl_FragColor = vec4(1.0, uT0, 0.0, sd); return; }
+      if (uSetT > 0.5 && phi < 0.02) T = uT0;
+
+      vec4 e = texture2D(texState, uv + vec2( px.x, 0.0));
+      vec4 w = texture2D(texState, uv + vec2(-px.x, 0.0));
+      vec4 n = texture2D(texState, uv + vec2(0.0,  px.y));
+      vec4 s2= texture2D(texState, uv + vec2(0.0, -px.y));
+      vec4 ne= texture2D(texState, uv + vec2( px.x,  px.y));
+      vec4 nw= texture2D(texState, uv + vec2(-px.x,  px.y));
+      vec4 se= texture2D(texState, uv + vec2( px.x, -px.y));
+      vec4 sw= texture2D(texState, uv + vec2(-px.x, -px.y));
+
+      /* девятиточечный лапласиан: пятиточечный навязывает решётку и растит квадраты */
+      float lap = (4.0*(e.g + w.g + n.g + s2.g) + (ne.g + nw.g + se.g + sw.g) - 20.0*T) / 6.0;
+      T += uDif * lap * uDt;
+
+      float pe = 1.0 - e.r,  pw = 1.0 - w.r,  pn = 1.0 - n.r,  ps = 1.0 - s2.r;
+      float pne = 1.0 - ne.r, pnw = 1.0 - nw.r, pse = 1.0 - se.r, psw = 1.0 - sw.r;
+      float nmax = max(max(max(pe, pw), max(pn, ps)), max(max(pne, pnw), max(pse, psw)));
+
+      if (phi < 0.02 && nmax > 0.30){
+        float best = -1.0, bo = th;
+        if (pe  > best){ best = pe;  bo = e.b;  }
+        if (pw  > best){ best = pw;  bo = w.b;  }
+        if (pn  > best){ best = pn;  bo = n.b;  }
+        if (ps  > best){ best = ps;  bo = s2.b; }
+        if (pne > best){ best = pne; bo = ne.b; }
+        if (pnw > best){ best = pnw; bo = nw.b; }
+        if (pse > best){ best = pse; bo = se.b; }
+        if (psw > best){ best = psw; bo = sw.b; }
+        th = bo;
+      }
+
+      /* Фронт передаётся дальше ТОЛЬКО от соседа, который успел промёрзнуть глубоко,
+         а промёрзнуть глубоко можно, лишь отдав скрытую теплоту. Значит скорость
+         фронта задаёт отвод тепла, а не кинетика — отсюда неустойчивость и ветви.
+         Своя клетка, где кристалл уже есть, растёт дальше сама. */
+      float own = smoothstep(0.02, 0.22, phi);
+      float nb  = smoothstep(0.33, 0.78, nmax);
+      float drive = max(own, nb);
+      if (phi < 1.0 && drive > 0.002 && rr < 0.995){
+        vec2 g = vec2((pe - pw) + 0.5*((pne + pse) - (pnw + psw)),
+                      (pn - ps) + 0.5*((pne + pnw) - (pse + psw)));
+        float ang = atan(g.y, g.x + 1e-6);
+        float c6 = cos(6.0 * (ang - th * PI / 3.0));
+        float a6 = 1.0 + uAniso * c6;
+        /* кривизна границы: у торчащего острия lap < 0. Гиббс–Томсон опускает точку
+           плавления тем сильнее, чем острее выступ, а поверхностная жёсткость
+           анизотропна — минимальна вдоль шести осей решётки зерна. Ровно эти два
+           слагаемых и превращают плоский фронт в дендрит */
+        float lapP = (pe + pw + pn + ps) + 0.5*(pne + pnw + pse + psw) - 6.0*phi;
+        float stiff = uGamma * (1.0 - 0.88 * c6);
+        float dT = max(0.0, uTm - T + stiff * lapP);
+        /* шум на границе — физический источник боковых ветвей, а не украшение */
+        float v = uGrow * pow(dT, 1.5) * a6 * drive * (0.86 + 0.28*sd);
+        /* ГЛАВНОЕ: замёрзнуть можно ровно на столько, на сколько хватает переохлаждения.
+           Скрытая теплота L/c = 94 K нагревает саму клетку, и когда она дошла до Tm,
+           рост останавливается до тех пор, пока тепло не уйдёт к соседям. Отсюда
+           фронт тормозит сам себя, ветвится — и отсюда же плато на градуснике */
+        float room = dT / uLoC;
+        float dphi = min(min(v * uDt, room), 1.0 - phi);
+        phi += dphi;
+        T += uLoC * dphi;
+      }
+
+      /* стекло и воздух уносят тепло; у стенки быстрее */
+      float wall = smoothstep(0.82, 1.0, rr);
+      T += (uWallT - T) * (uKwall*wall + uKair) * uDt;
+
+      if (rr >= 0.995){ phi = 0.0; T = uWallT; }
+      if (uSeed.z > 0.5 && length(Pp - uSeed.xy) < 0.030){
+        float dp = min(1.0 - phi, (uTm - T) / uLoC);
+        phi += dp; T += uLoC * dp;
+        th = h21(uSeed.xy * 37.0 + uSeed.z);
+      }
+      gl_FragColor = vec4(1.0 - phi, T, th, sd);
+    }
+  `;
+  const stVar = gpu.addVariable('texState', stepFrag, dt0);
+  gpu.setVariableDependencies(stVar, [stVar]);
+  const U = stVar.material.uniforms;
+  Object.assign(U, {
+    uDt:{value:1/60}, uT0:{value:S.t0}, uTm:{value:MAT.Tm}, uLoC:{value:MAT.L/MAT.c},
+    uDif:{value:0}, uKwall:{value:0.55}, uKair:{value:0.018}, uWallT:{value:S.t0},
+    uGrow:{value:MAT.grow}, uAniso:{value:0.45}, uGamma:{value:4.0},
+    uReset:{value:1}, uSetT:{value:0},
+    uSeed:{value:new THREE.Vector3(0,0,0)},
+  });
+  stVar.wrapS = THREE.ClampToEdgeWrapping; stVar.wrapT = THREE.ClampToEdgeWrapping;
+  stVar.minFilter = THREE.LinearFilter; stVar.magFilter = THREE.LinearFilter;
+  const gerr = gpu.init();
+  if (gerr) throw new Error('gpgpu: ' + gerr);
+
+  function retune(){
+    simScale();
+    U.uTm.value = MAT.Tm; U.uLoC.value = MAT.L/MAT.c;
+    U.uGrow.value = SIM.grow;
+    U.uDif.value = SIM.dif;
+    U.uT0.value = S.t0; U.uWallT.value = S.t0;
+    liqMat.userData.u.uTm.value = MAT.Tm;
+    liqMat.userData.u.uT0.value = S.t0;
+  }
+
+  /* ── свёртка поля 512² → 32², снимается на CPU 8 раз в секунду ──── */
+  /* сторона свёртки обязана делить сторону поля нацело: иначе граница цикла
+     в шейдере станет дробной и программа не соберётся */
+  const RED = 32, STEP = Math.round(SIZE / RED);
+  const redRT = new THREE.WebGLRenderTarget(RED, RED, {
+    type: THREE.UnsignedByteType, minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter,
+    depthBuffer: false, stencilBuffer: false });
+  const redMat = new THREE.ShaderMaterial({
+    uniforms:{ tS:{value:null}, uInv:{value:1/SIZE}, uTn:{value:new THREE.Vector2(20, 1/160)} },
+    vertexShader:`varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`,
+    fragmentShader:`
+      precision highp float;
+      uniform sampler2D tS; uniform float uInv; uniform vec2 uTn;
+      varying vec2 vUv;
+      void main(){
+        vec2 base = floor(vUv * ${RED}.0) * ${STEP}.0;
+        float sp = 0.0, st = 0.0, sl = 0.0, sm = 0.0;
+        for (int j = 0; j < ${STEP}; j++){
+          for (int i = 0; i < ${STEP}; i++){
+            vec2 c = (base + vec2(float(i), float(j)) + 0.5) * uInv;
+            vec4 v = texture2D(tS, c);
+            vec2 P = c * 2.0 - 1.0;
+            float m = step(length(P), 0.985);
+            float tn = (v.g + uTn.x) * uTn.y;
+            sp += m * (1.0 - v.r); st += m * tn; sl += m * v.r * tn; sm += m;
+          }
+        }
+        float k = 1.0 / float(${STEP} * ${STEP});
+        gl_FragColor = vec4(sp*k, st*k, sl*k, sm*k);
+      }
+    `,
+  });
+  const redScene = new THREE.Scene();
+  const redCam = new THREE.Camera();
+  redScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2), redMat));
+  const redBuf = new Uint8Array(RED*RED*4);
+
+  /* ── плошка: настоящее стекло ───────────────────────────────────── */
+  const prof = [
+    [0.000, 0.014],[0.090, 0.009],[0.210, 0.006],[0.330, 0.009],[0.410, 0.026],
+    [0.446, 0.062],[0.455, 0.104],[0.458, 0.132],
+    [0.474, 0.136],
+    [0.472, 0.104],[0.470, 0.058],[0.462, 0.022],[0.420,-0.004],[0.300,-0.014],[0.140,-0.018],[0.000,-0.019],
+  ].map(([x,y])=>new THREE.Vector2(x, y));
+  const glassMat = new THREE.MeshPhysicalMaterial({
+    color:0xf4f9ff, metalness:0, roughness:0.028, transmission:1.0, thickness:0.05,
+    ior:1.5, side:THREE.DoubleSide, envMapIntensity:1.7, transparent:true,
+    attenuationDistance:2.4, attenuationColor:new THREE.Color(0xd8ecff),
+  });
+  const glass = new THREE.Mesh(new THREE.LatheGeometry(prof, SOFT ? 72 : 160), glassMat);
+  rig.add(glass);
+
+  /* ── расплав ────────────────────────────────────────────────────── */
+  const liqU = {
+    uState:{value:null}, uInv:{value:1/SIZE}, uR:{value:R}, uTm:{value:MAT.Tm}, uT0:{value:S.t0},
+    uCold:{value:new THREE.Color(0x2b6f9e)}, uCryst:{value:new THREE.Color(0xc6d3e0)},
+    uWarm:{value:new THREE.Color(0xff9a5c)},
+  };
+  const liqMat = new THREE.MeshPhysicalMaterial({
+    color:0xdfe9f4, metalness:0, roughness:0.06, transmission:1.0, thickness:0.10,
+    ior:1.36, envMapIntensity:1.0, transparent:true,
+    attenuationDistance:0.9, attenuationColor:new THREE.Color(0x9dc6e6),
+  });
+  liqMat.userData.u = liqU;
+  liqMat.customProgramCacheKey = ()=>'hot-ice-liquid';
+  liqMat.onBeforeCompile = (sh)=>{
+    Object.assign(sh.uniforms, liqU);
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', `#include <common>
+        uniform sampler2D uState; uniform float uInv, uR;
+        varying vec2 vQ;`)
+      .replace('#include <begin_vertex>', `#include <begin_vertex>
+        vQ = uv;
+        float phiV = 1.0 - texture2D(uState, clamp(uv, 0.006, 0.994)).r;
+        float thV = texture2D(uState, clamp(uv, 0.006, 0.994)).b;
+        /* кристалл встаёт над уровнем жидкости: при затвердевании объём растёт */
+        float relief = phiV * (0.0082 + 0.0125 * abs(sin((position.x*38.0)*cos(thV*3.14159)
+                       + (position.z*38.0)*sin(thV*3.14159))));
+        transformed.y += relief * step(0.070, position.y);`);
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', `#include <common>
+        uniform sampler2D uState; uniform float uInv, uTm, uT0;
+        uniform vec3 uCold, uCryst, uWarm;
+        varying vec2 vQ;`)
+      .replace('#include <clipping_planes_fragment>', `#include <clipping_planes_fragment>
+        vec2 qq = clamp(vQ, 0.006, 0.994);
+        vec4 stC = texture2D(uState, qq);
+        float phiF = 1.0 - stC.r, tempF = stC.g, thF = stC.b;
+        float pE = 1.0 - texture2D(uState, qq + vec2( uInv, 0.0)).r;
+        float pW = 1.0 - texture2D(uState, qq + vec2(-uInv, 0.0)).r;
+        float pN = 1.0 - texture2D(uState, qq + vec2(0.0,  uInv)).r;
+        float pS = 1.0 - texture2D(uState, qq + vec2(0.0, -uInv)).r;
+        vec2 gPhi = vec2(pE - pW, pN - pS);
+        /* граница зёрен: соседи уже твёрдые, а решётка развёрнута иначе */
+        float oE = texture2D(uState, qq + vec2( uInv, 0.0)).b;
+        float oN = texture2D(uState, qq + vec2(0.0,  uInv)).b;
+        float dOri = max(abs(oE - thF), abs(oN - thF));
+        float gb = smoothstep(0.055, 0.30, dOri) * step(0.55, phiF) * step(0.55, min(pE, pN));
+        float edge = clamp(length(gPhi) * 3.4, 0.0, 1.0);`)
+      .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
+        roughnessFactor = mix(0.045, 0.72, smoothstep(0.05, 0.80, phiF)) + gb * 0.18;`)
+      .replace('#include <color_fragment>', `#include <color_fragment>
+        vec3 liqC = mix(uCold, vec3(0.80, 0.89, 0.97), 0.55);
+        /* крупицы: редкие грани, развёрнутые решёткой своего зерна, а не ткань */
+        float ca = cos(thF * 3.14159), sa = sin(thF * 3.14159);
+        vec2 rq = vec2(qq.x*ca - qq.y*sa, qq.x*sa + qq.y*ca) * 96.0;
+        vec2 fq = floor(rq);
+        float spark = fract(sin(dot(fq, vec2(127.1, 311.7))) * 43758.5453);
+        float grit = 0.90 + 0.14 * smoothstep(0.86, 1.0, spark);
+        vec3 solC = uCryst * grit;
+        float hot = clamp((tempF - uT0) / max(4.0, uTm - uT0), 0.0, 1.0);
+        diffuseColor.rgb = mix(liqC, solC, smoothstep(0.10, 0.86, phiF));
+        diffuseColor.rgb += uWarm * hot * smoothstep(0.05, 0.7, phiF) * 0.17;
+        diffuseColor.rgb *= 1.0 - gb * 0.34;`)
+      .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
+        vec3 bump = vec3(gPhi.x, 0.0, -gPhi.y) * 5.2 * phiF;
+        normal = normalize(normal + bump);`);
+  };
+
+  /* UV обоих кусков расплава — это координата поля, один в один.
+     Поэтому ту же текстуру можно отдать three как transmissionMap:
+     пропускание = 1 · texture.r = доля жидкости в этой точке */
+  const topGeo = new THREE.RingGeometry(0.0018, R, SOFT ? 96 : 224, SOFT ? 28 : 76);
+  topGeo.rotateX(-Math.PI/2);
+  topGeo.translate(0, LIQ_Y, 0);
+  const liqTop = new THREE.Mesh(topGeo, liqMat);
+  liqTop.renderOrder = 2;
+  rig.add(liqTop);
+
+  const sideGeo = new THREE.CylinderGeometry(R, R*0.995, LIQ_Y - LIQ_B, SOFT ? 96 : 224, 1, true);
+  sideGeo.translate(0, (LIQ_Y + LIQ_B)/2, 0);
+  {
+    const p = sideGeo.attributes.position, u = sideGeo.attributes.uv;
+    for (let i = 0; i < p.count; i++){
+      u.setXY(i, p.getX(i)/(2*R)*0.985 + 0.5, 0.5 - p.getZ(i)/(2*R)*0.985);
+    }
+    u.needsUpdate = true;
+  }
+  const liqSide = new THREE.Mesh(sideGeo, liqMat);
+  liqSide.renderOrder = 1;
+  rig.add(liqSide);
+
+  /* ── каустика под плошкой: гаснет там, где расплав стал камнем ──── */
+  const causMat = new THREE.ShaderMaterial({
+    uniforms:{ uState:{value:null}, uTime:{value:0} },
+    transparent:true, depthWrite:false, blending:THREE.AdditiveBlending, toneMapped:false,
+    vertexShader:`varying vec2 vU; void main(){ vU = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader:`
+      precision highp float;
+      uniform sampler2D uState; uniform float uTime;
+      varying vec2 vU;
+      void main(){
+        vec2 p = vU * 2.0 - 1.0;
+        float r = length(p);
+        if (r > 1.0) discard;
+        float liq = texture2D(uState, vU).r;
+        float ring = 0.5 + 0.5*sin(r*22.0 - uTime*0.8 + sin(atan(p.y,p.x)*3.0)*0.7);
+        float core = pow(1.0 - r, 2.2);
+        float a = (0.22*core + 0.10*ring*core) * smoothstep(0.38, 0.90, liq);
+        gl_FragColor = vec4(vec3(0.42, 0.68, 0.96) * a, a);
+      }
+    `,
+  });
+  const caus = new THREE.Mesh(new THREE.PlaneGeometry(R*2.05, R*2.05), causMat);
+  caus.rotation.x = -Math.PI/2; caus.position.y = -0.016;
+  rig.add(caus);
+
+  retune();
+
+  /* ── постобработка ──────────────────────────────────────────────── */
+  const MSAA = SOFT ? 0 : (renderer.capabilities.maxSamples >= 4 ? 4 : 0);
+  const rt = new THREE.WebGLRenderTarget(1, 1, {
+    type: THREE.HalfFloatType, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter,
+    samples: MSAA });
+  const composer = new THREE.EffectComposer(renderer, rt);
+  composer.addPass(new THREE.RenderPass(scene, camera));
+  const BLOOM = 0.5;
+  const bloom = new THREE.UnrealBloomPass(new THREE.Vector2(innerWidth*BLOOM, innerHeight*BLOOM),
+    0.30, 0.52, 1.35);
+  composer.addPass(bloom);
+  const grade = new THREE.ShaderPass({
+    uniforms:{ tDiffuse:{value:null}, uTime:{value:0}, uGrain:{value:0.05},
+               uVig:{value:0.36}, uAberr:{value:1.0} },
+    vertexShader:`varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader:`
+      precision highp float;
+      uniform sampler2D tDiffuse; uniform float uTime, uGrain, uVig, uAberr;
+      varying vec2 vUv;
+      void main(){
+        vec2 uv = vUv; vec2 d = uv - 0.5; float r2 = dot(d, d);
+        vec2 off = d * uAberr * 0.0016 * (0.22 + r2 * 2.4);
+        vec3 c;
+        c.r = texture2D(tDiffuse, uv + off).r;
+        c.g = texture2D(tDiffuse, uv).g;
+        c.b = texture2D(tDiffuse, uv - off).b;
+        c *= 1.0 - uVig * smoothstep(0.04, 0.66, r2);
+        float n = fract(sin(dot(uv * 437.0 + uTime, vec2(12.9898, 78.233))) * 43758.5453);
+        float lum = clamp(dot(c, vec3(0.2126, 0.7152, 0.0722)), 0.0, 1.0);
+        c += (n - 0.5) * uGrain * (0.10 + 0.90 * sqrt(lum));
+        gl_FragColor = vec4(max(c, 0.0), 1.0);
+      }
+    `,
+  });
+  composer.addPass(grade);
+  composer.addPass(new THREE.OutputPass());
+
+  const stageEl = $('stage');
+  function resize(){
+    const w = stageEl.clientWidth || innerWidth, h = stageEl.clientHeight || innerHeight, a = w/h;
+    const back = a >= 1.5 ? 1 : Math.min(1.5/a, 1.55);
+    camera.aspect = a;
+    camera.position.set(1.06*back, 1.78*back, 2.06*back);
+    rig.position.x = a >= 1.05 ? 0.30 : 0.0;
+    camera.lookAt(0.02, a >= 1.05 ? 0.05 : 0.34, 0);
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+    composer.setSize(w, h);
+    const bs = w < 900 ? Math.max(BLOOM, 0.75) : BLOOM;
+    bloom.setSize(Math.max(4, w*bs), Math.max(4, h*bs));
+  }
+  resize();
+  addEventListener('resize', resize);
+
+  /* ── ввод: затравка в точке касания ─────────────────────────────── */
+  const ray = new THREE.Raycaster();
+  const plane = new THREE.Plane(new THREE.Vector3(0,1,0), -(LIQ_Y));
+  const hit = new THREE.Vector3();
+  function seedAt(cx, cy){
+    const w = stageEl.clientWidth || innerWidth, h = stageEl.clientHeight || innerHeight;
+    const ndc = new THREE.Vector2((cx/w)*2 - 1, -(cy/h)*2 + 1);
+    ray.setFromCamera(ndc, camera);
+    if (!ray.ray.intersectPlane(plane, hit)) return false;
+    rig.worldToLocal(hit);
+    const x = hit.x/R, z = hit.z/R;
+    if (Math.hypot(x, z) > 0.93) return false;
+    /* uv поля: (x/2R+0.5, 0.5−z/2R) — значит вторая координата затравки со знаком минус */
+    S.seeds.push([x, -z]);
+    S.grains++; S.armed = true;
+    if (!S.tStart) S.tStart = performance.now();
+    return true;
+  }
+  addEventListener('pointerdown', (e)=>{
+    if (e.target.closest('a,button,input,select,textarea,header,footer,section.pane')) return;
+    seedAt(e.clientX, e.clientY);
+  }, {passive:true});
+  $('seedBtn').addEventListener('click', ()=>{
+    S.seeds.push([(Math.random()-0.5)*0.12, (Math.random()-0.5)*0.12]);
+    S.grains++; S.armed = true;
+    if (!S.tStart) S.tStart = performance.now();
+  });
+  $('meltBtn').addEventListener('click', ()=>{
+    S.reset = 1; S.grains = 0; S.seeds.length = 0; hist.length = 0;
+    S.armed = false; S.tStart = 0; S.phi = 0; S.temp = S.t0; S.front = 0;
+    readouts(); drawChart();
+  });
+
+  canvas.addEventListener('webglcontextlost', (e)=>{ e.preventDefault(); $('lost').classList.add('on'); });
+  canvas.addEventListener('webglcontextrestored', ()=>{
+    $('lost').classList.remove('on');
+    try { gpu.init(); resize(); } catch(err){ flatFallback(); }
+  });
+
+  let seedId = 1;
+  function stepSim(dt){
+    U.uDt.value = dt;
+    U.uT0.value = S.t0; U.uWallT.value = S.t0;
+    U.uReset.value = S.reset; U.uSetT.value = S.setT;
+    const sd = S.seeds.shift();
+    if (sd){ U.uSeed.value.set(sd[0], sd[1], seedId++); } else U.uSeed.value.z = 0;
+    gpu.compute();
+    S.reset = 0; S.setT = 0;
+    const tex = gpu.getCurrentRenderTarget(stVar).texture;
+    liqU.uState.value = tex; causMat.uniforms.uState.value = tex; redMat.uniforms.tS.value = tex;
+    /* та же текстура уходит штатным каналом пропускания — фаза правит оптику сама */
+    if (liqMat.transmissionMap !== tex){
+      const first = liqMat.transmissionMap === null;
+      liqMat.transmissionMap = tex;
+      if (first) liqMat.needsUpdate = true;
+    }
+  }
+
+  function measure(){
+    redMat.uniforms.tS.value = gpu.getCurrentRenderTarget(stVar).texture;
+    const prev = renderer.getRenderTarget();
+    renderer.setRenderTarget(redRT);
+    renderer.render(redScene, redCam);
+    renderer.readRenderTargetPixels(redRT, 0, 0, RED, RED, redBuf);
+    renderer.setRenderTarget(prev);
+    let sp = 0, st = 0, sl = 0, sm = 0;
+    for (let i = 0; i < redBuf.length; i += 4){
+      sp += redBuf[i]; st += redBuf[i+1]; sl += redBuf[i+2]; sm += redBuf[i+3];
+    }
+    if (sm < 1) return;
+    S.phi = Math.max(0, Math.min(1, sp/sm));
+    S.temp = (st/sm)*160 - 20;
+    const liqW = Math.max(1e-4, (sm - sp)/sm);
+    S.tliq = ((sl/sm)/liqW)*160 - 20;
+    /* скорость фронта МЕРЯЕТСЯ, а не берётся из константы модели: для круглого
+       зерна доля равна (r/R)², значит радиус фронта r = R·sqrt(f), а его производная
+       по времени и есть мм/с. Сглажено по трём последним съёмам поля */
+    const nowT = performance.now();
+    const rEq = (DISH_MM/2) * Math.sqrt(S.phi);
+    if (S.lastT){
+      const dtS = (nowT - S.lastT)/1000;
+      if (dtS > 0.02){
+        /* делим на kappa: на экране время идёт медленнее настоящего */
+        const raw = Math.max(0, (rEq - S.lastR)/dtS) / SIM.kappa;
+        S.front += (raw - S.front) * 0.45;
+      }
+    }
+    S.lastT = nowT; S.lastR = rEq;
+    if (S.armed) hist.push({t: nowT, phi: S.phi, T: S.temp});
+    if (hist.length > 900) hist.splice(0, hist.length - 900);
+  }
+
+  /* лестница деградации: сперва bloom, потом аберрация и каустика, потом буфер
+     преломления. Разрешение в ней не участвует вообще */
+  let lvl = 0;
+  const drop = (l)=>{
+    if (l === 1){ composer.removePass(bloom); }
+    else if (l === 2){ grade.uniforms.uAberr.value = 0; causMat.visible = false; }
+    else if (l === 3){ if ('transmissionResolutionScale' in renderer) renderer.transmissionResolutionScale = 0.3; }
+  };
+  const glc = renderer.getContext();
+  if (SOFT){
+    /* софтверный растеризатор: замерять бюджет нечем — каждый пробный кадр сам
+       стоит секунды и блокирует поток. Снимаем два этажа сразу и не меряем */
+    while (lvl < 3) drop(++lvl);
+    /* и прогоняем поле вперёд без рендера: шаги поля дёшевы, дорога только картинка */
+    if (!REDUCED){
+      S.seeds.push([-0.26, -0.14]); S.grains = 1; S.armed = true;
+      for (let i = 0; i < 760; i++) stepSim(SIM.dt);
+    }
+  } else {
+    stepSim(SIM.dt);
+    composer.render(); glc.finish();          /* компиляция шейдеров — вне замера */
+    const t = performance.now(); composer.render(); glc.finish();
+    if (performance.now() - t > 26) drop(++lvl);
+  }
+
+  return {renderer, composer, grade, stepSim, measure, retune, camera, rig, causMat,
+          degrade: ()=>{ if (lvl < 3) drop(++lvl); }};
+}
+
+/* ── драйвер ───────────────────────────────────────────────────────── */
+function drive(){
+  const {composer, grade, stepSim, measure, camera, rig, causMat} = sceneApi;
+  const stage = $('stage');
+
+  if (REDUCED){
+    S.seeds.push([-0.34, -0.20]); S.grains = 1;
+    stepSim(SIM.dt);
+    S.seeds.push([0.40, 0.30]); S.grains = 2;
+    stepSim(SIM.dt);
+    for (let i = 0; i < 700; i++) stepSim(SIM.dt);
+    measure(); readouts(); drawChart();
+    composer.render();
+    return;
+  }
+
+  let last = performance.now(), t0d = last, ema = 0.016, cut = 0, frames = 0, fpsT = 0, mTick = 0;
+  let px = 0, py = 0, tx = 0, ty = 0;
+  addEventListener('pointermove', (e)=>{
+    tx = (e.clientX/innerWidth - 0.5); ty = (e.clientY/innerHeight - 0.5);
+  }, {passive:true});
+
+  (function loop(now){
+    requestAnimationFrame(loop);
+    const raw = (now - last)/1000; last = now;
+    const dt = Math.min(0.033, raw);
+    ema += (Math.min(raw, 1) - ema) * 0.3;
+    if ((raw > 0.15 || ema > 0.11) && cut < 3){ cut++; sceneApi.degrade(); ema = 0.016; }
+
+    px += (tx - px)*0.045; py += (ty - py)*0.045;
+    rig.rotation.y = px * 0.16;
+    rig.rotation.x = py * 0.05;
+    grade.uniforms.uTime.value = now*0.001;
+    causMat.uniforms.uTime.value = now*0.001;
+
+    /* показательная затравка, если за первые секунды никто не тронул плошку:
+       пустое состояние честное, но оно не должно быть единственным, что видно */
+    if (!S.armed && now - t0d > 2400){
+      S.seeds.push([-0.26, -0.15]); S.grains = 1; S.armed = true; S.tStart = now;
+    }
+
+    /* поле идёт по стенным часам, а не по кадрам: шаг фиксированный 1/90 с,
+       их столько, сколько реально прошло — иначе на медленной машине физика
+       замедляется вместе с картинкой и фронт «стоит» */
+    const sub = Math.max(1, Math.min(64, Math.round(raw / SIM.dt)));
+    for (let i = 0; i < sub; i++) stepSim(SIM.dt);
+
+    mTick += raw;
+    if (mTick > 0.125){ mTick = 0; measure(); readouts(); drawChart(); }
+
+    frames++; fpsT += raw;
+    if (fpsT > 1){ $('fps').textContent = Math.max(1, Math.round(frames/fpsT)) + ' fps'; frames = 0; fpsT = 0; }
+
+    const deep = scrollY > innerHeight*0.72;
+    stage.classList.toggle('dim', deep);
+    document.body.classList.toggle('deep', deep);
+    if (!deep) composer.render();
+  })(last);
+}
+</script>

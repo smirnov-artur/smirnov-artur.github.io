@@ -1,0 +1,1258 @@
+<!doctype html>
+<!-- vau-stranitsa · силуэт: многосекционная · предмет: стальная заготовка под резцом и стружка · система: расчёт режима резания, стойкости резца и цены детали · техника: three.js PBR+HDRI, тонкоплёночная интерференция в onBeforeCompile, перестраиваемая лента стружки -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chip — the lathe that counts</title>
+<meta name="description" content="Turning close-up that computes chip geometry, cutting-zone temperature, temper colour, tool life and the cost of the part.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%2307080a'/%3E%3Cpath d='M3 11h10' stroke='%23ff7a33' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="modulepreload" href="assets/three-scene.js">
+<link rel="preload" href="assets/empty_warehouse_01_256.hdr" as="fetch" crossorigin>
+<style>
+:root{
+  --void:#07080a; --ink:#0f1114; --steel:#79808c; --chalk:#e8e5df;
+  --ember:#ff7a33; --cool:#5b8fd8; --warn:#d8a33a;
+  --e1:cubic-bezier(.16,.84,.28,1);
+  --gut:clamp(18px,4.4vw,64px);
+  --hair:1px solid rgba(232,229,223,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--void); color:var(--chalk);
+  font-family:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.5; overflow-x:clip;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+.mono{font-family:'Spline Sans Mono',ui-monospace,'SF Mono',Menlo,monospace;font-variant-numeric:tabular-nums}
+h1,h2,h3{font-weight:600;letter-spacing:-.02em;text-wrap:balance;line-height:1.02}
+p{text-wrap:pretty}
+a{color:inherit}
+::selection{background:rgba(255,122,51,.28)}
+
+/* ── сцена ─────────────────────────────────────────────── */
+#stage{position:fixed;inset:0;z-index:0}
+#stage canvas{display:block;width:100%;height:100%}
+.veil{position:fixed;inset:0;z-index:1;background:var(--void);pointer-events:none;
+  animation:veil 1.25s cubic-bezier(.16,.84,.28,1) .08s both}
+@keyframes veil{from{opacity:1}to{opacity:0}}
+.grade{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(100deg,rgba(7,8,10,.86) 0%,rgba(7,8,10,.42) 26%,rgba(7,8,10,0) 46%),radial-gradient(105% 84% at 58% 54%,rgba(7,8,10,0) 24%,rgba(7,8,10,.40) 66%,rgba(7,8,10,.86) 100%)}
+.noscene{position:fixed;inset:0;z-index:1;display:none;place-items:center}
+body.flat .noscene{display:grid}
+body.flat #stage{display:none}
+
+/* ── шапка ─────────────────────────────────────────────── */
+header{position:fixed;top:0;left:0;right:0;z-index:6;display:flex;align-items:center;gap:14px;
+  padding:14px var(--gut) 26px;
+  background:linear-gradient(180deg,rgba(7,8,10,.94) 0%,rgba(7,8,10,.72) 52%,rgba(7,8,10,0) 100%)}
+.brand{font-weight:700;letter-spacing:.14em;font-size:13px;text-transform:uppercase;
+  animation:rise .62s cubic-bezier(.16,.84,.28,1) .06s both}
+.brand em{font-style:normal;color:var(--ember)}
+.hgap{flex:1}
+.live{display:flex;align-items:center;gap:8px;font-size:12.5px;color:rgba(232,229,223,.62);
+  animation:rise .62s cubic-bezier(.16,.84,.28,1) .12s both}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ember);
+  animation:pulse 1.9s linear infinite}
+@keyframes pulse{0%{opacity:.28;transform:scale(.72)}45%{opacity:1;transform:scale(1)}100%{opacity:.28;transform:scale(.72)}}
+.hlink{font-size:12.5px;color:rgba(232,229,223,.55);text-decoration:none;padding:4px 2px;
+  border-bottom:1px solid rgba(232,229,223,0);transition:color .28s cubic-bezier(.16,.84,.28,1),border-color .28s cubic-bezier(.16,.84,.28,1)}
+.hlink:hover{color:var(--chalk);border-bottom-color:rgba(255,122,51,.72)}
+.hlink:focus-visible{outline:2px solid var(--ember);outline-offset:3px;border-radius:2px}
+
+/* ── герой ─────────────────────────────────────────────── */
+main{position:relative;z-index:2}
+.hero{min-height:100vh;min-height:100svh;display:grid;
+  grid-template-columns:minmax(0,1fr);align-content:space-between;
+  padding:96px var(--gut) 26px}
+.eyebrow{font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:rgba(232,229,223,.45);
+  animation:rise .7s cubic-bezier(.16,.84,.28,1) .1s both}
+h1{font-size:clamp(2.15rem,6.6vw,5.1rem);max-width:15ch;margin-top:14px}
+h1 .ln{display:block;animation:rise .92s cubic-bezier(.16,.84,.28,1) both}
+h1 .ln:nth-child(1){animation-delay:.18s}
+h1 .ln:nth-child(2){animation-delay:.26s}
+h1 .ln:nth-child(3){animation-delay:.34s}
+.lede{margin-top:18px;max-width:38ch;font-size:clamp(14.5px,1.15vw,17px);color:rgba(232,229,223,.66);
+  animation:rise .82s cubic-bezier(.16,.84,.28,1) .44s both}
+.hnote{margin-top:12px;font-size:12.5px;color:rgba(232,229,223,.38);max-width:44ch;
+  animation:rise .74s cubic-bezier(.16,.84,.28,1) .54s both}
+@keyframes rise{from{opacity:0;transform:translate3d(0,20px,0)}to{opacity:1;transform:none}}
+@keyframes slide{from{opacity:0;transform:translate3d(-16px,0,0)}to{opacity:1;transform:none}}
+@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+
+/* ── пульт ─────────────────────────────────────────────── */
+.deck{display:grid;gap:16px;grid-template-columns:minmax(0,1fr);align-items:end;margin-top:34px}
+.panel{position:relative;overflow:hidden;background:rgba(15,17,20,.78);backdrop-filter:blur(14px);
+  border:var(--hair);border-radius:3px;padding:16px 16px 14px;
+  animation:rise .86s cubic-bezier(.16,.84,.28,1) .6s both}
+.sweep{position:absolute;top:0;left:0;height:1px;width:34%;
+  background:linear-gradient(90deg,rgba(255,122,51,0),rgba(255,122,51,.85),rgba(255,122,51,0));
+  animation:sweep 4.6s cubic-bezier(.5,0,.16,1) infinite}
+@keyframes sweep{0%{transform:translateX(-40%)}100%{transform:translateX(340%)}}
+.ptitle{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:rgba(232,229,223,.42)}
+.rows{margin-top:12px;display:grid;gap:13px}
+.row{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:baseline;
+  animation:slide .7s cubic-bezier(.16,.84,.28,1) both}
+.row:nth-of-type(1){animation-delay:.68s}
+.row:nth-of-type(2){animation-delay:.74s}
+.row:nth-of-type(3){animation-delay:.8s}
+.row label{font-size:13px;color:rgba(232,229,223,.72)}
+.row label b{font-weight:500;color:var(--ember);font-style:normal}
+.val{font-size:14px;color:var(--chalk)}
+.val i{font-style:normal;color:rgba(232,229,223,.4);font-size:11.5px;margin-left:3px}
+input[type=range]{grid-column:1/-1;width:100%;-webkit-appearance:none;appearance:none;background:transparent;height:22px;margin:0;cursor:ew-resize}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:rgba(232,229,223,.18);border-radius:2px}
+input[type=range]::-moz-range-track{height:2px;background:rgba(232,229,223,.18);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;
+  background:var(--chalk);margin-top:-5.5px;border:0;
+  box-shadow:0 0 0 0 rgba(255,122,51,.35);
+  transition:box-shadow .3s cubic-bezier(.16,.84,.28,1),background-color .3s cubic-bezier(.16,.84,.28,1)}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--chalk);border:0}
+input[type=range]:hover::-webkit-slider-thumb{background:var(--ember);box-shadow:0 0 0 6px rgba(255,122,51,.16)}
+input[type=range]:focus-visible{outline:none}
+input[type=range]:focus-visible::-webkit-slider-thumb{background:var(--ember);box-shadow:0 0 0 4px rgba(255,122,51,.45)}
+
+.read{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;
+  background:rgba(232,229,223,.08);border:var(--hair);border-radius:3px;overflow:hidden}
+.cell{background:rgba(15,17,20,.82);padding:9px 10px 10px;
+  animation:rise .62s cubic-bezier(.16,.84,.28,1) both}
+.cell:nth-child(1){animation-delay:.86s}
+.cell:nth-child(2){animation-delay:.9s}
+.cell:nth-child(3){animation-delay:.94s}
+.cell:nth-child(4){animation-delay:.98s}
+.cell:nth-child(5){animation-delay:1.02s}
+.cell:nth-child(6){animation-delay:1.06s}
+.cell k{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(232,229,223,.38)}
+.cell v{display:block;font-size:clamp(15px,1.35vw,19px);margin-top:3px;color:var(--chalk);font-family:'Spline Sans Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.cell v s{text-decoration:none;font-size:11.5px;color:rgba(232,229,223,.4);margin-left:2px}
+.verdict{display:flex;align-items:center;gap:9px;margin-top:12px;font-size:13px;
+  animation:rise .66s cubic-bezier(.16,.84,.28,1) 1.12s both}
+.chip-b{display:inline-block;padding:3px 8px;border-radius:2px;font-size:12.5px;letter-spacing:.08em;
+  text-transform:uppercase;font-weight:600;background:rgba(255,122,51,.16);color:var(--ember)}
+.chip-b.hot{background:rgba(91,143,216,.18);color:var(--cool)}
+.chip-b.load{background:rgba(216,163,58,.18);color:var(--warn)}
+.vtext{color:rgba(232,229,223,.66)}
+.hint{margin-top:16px;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(232,229,223,.3);
+  display:flex;align-items:center;gap:8px;animation:rise .8s cubic-bezier(.16,.84,.28,1) 1.24s both}
+.tick{width:26px;height:1px;background:rgba(232,229,223,.35);transform-origin:left;
+  animation:tick 2.7s cubic-bezier(.5,0,.16,1) infinite}
+@keyframes tick{0%{transform:scaleX(.15)}50%{transform:scaleX(1)}100%{transform:scaleX(.15)}}
+</style>
+<style>
+/* ── секции ────────────────────────────────────────────── */
+section{position:relative;padding:clamp(56px,8vw,120px) var(--gut);background:var(--void);
+  border-top:var(--hair)}
+section.veiled{background:linear-gradient(180deg,rgba(7,8,10,.72) 0%,var(--void) 12%)}
+.shead{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 18px;margin-bottom:clamp(24px,3.4vw,44px)}
+.snum{font-size:12px;letter-spacing:.18em;color:var(--ember);font-family:'Spline Sans Mono',ui-monospace,monospace}
+h2{font-size:clamp(1.5rem,3.1vw,2.6rem);max-width:22ch}
+.sdesc{max-width:52ch;color:rgba(232,229,223,.58);font-size:clamp(14px,1.05vw,16px);margin-top:6px}
+
+.grid3{display:grid;gap:1px;background:rgba(232,229,223,.08);border:var(--hair)}
+.mode{background:var(--void);padding:20px 18px 18px;text-align:left;border:0;color:inherit;
+  font:inherit;cursor:pointer;display:block;width:100%;
+  transition:background-color .34s cubic-bezier(.16,.84,.28,1),transform .34s cubic-bezier(.16,.84,.28,1)}
+.mode:hover{background:rgba(232,229,223,.045)}
+.mode:focus-visible{outline:2px solid var(--ember);outline-offset:-2px}
+.mode[aria-pressed=true]{background:rgba(255,122,51,.07)}
+.mode h3{font-size:1.12rem;margin-bottom:7px}
+.mode .tag{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(232,229,223,.36)}
+.mode p{font-size:13.5px;color:rgba(232,229,223,.6);margin-top:8px;max-width:34ch}
+.mode .setline{margin-top:14px;font-size:12.5px;color:var(--ember);
+  display:flex;align-items:center;gap:7px}
+.mode .setline u{text-decoration:none;width:0;height:1px;background:var(--ember);
+  transition:width .38s cubic-bezier(.16,.84,.28,1)}
+.mode:hover .setline u{width:26px}
+
+/* формулы */
+.forms{display:grid;gap:1px;background:rgba(232,229,223,.08);border:var(--hair)}
+.card{background:var(--void);padding:20px 18px}
+.card k{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(232,229,223,.36)}
+.card h3{font-size:1.05rem;margin:7px 0 10px}
+.eq{font-family:'Spline Sans Mono',ui-monospace,monospace;font-size:13px;line-height:1.75;
+  color:rgba(232,229,223,.82);background:rgba(232,229,223,.04);border-left:2px solid rgba(255,122,51,.5);
+  padding:9px 12px;overflow-x:auto;white-space:nowrap}
+.eq b{font-weight:500;color:var(--ember)}
+.sub{margin-top:10px;font-size:12.5px;color:rgba(232,229,223,.5)}
+.sub em{font-style:normal;color:var(--chalk);font-family:'Spline Sans Mono',ui-monospace,monospace}
+.swatch{display:flex;gap:0;margin-top:12px;height:26px;border:var(--hair)}
+.swatch i{flex:1;display:block}
+.swatch i[data-on=true]{outline:2px solid var(--chalk);outline-offset:-2px;z-index:1}
+
+/* экономика */
+.econ{display:grid;gap:clamp(20px,2.6vw,38px);grid-template-columns:minmax(0,1fr)}
+.fields{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.f{display:grid;gap:5px}
+.f k{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(232,229,223,.38)}
+.f input{background:rgba(232,229,223,.05);border:var(--hair);border-radius:2px;color:var(--chalk);
+  font-family:'Spline Sans Mono',ui-monospace,monospace;font-size:14px;padding:8px 10px;width:100%;
+  transition:border-color .3s cubic-bezier(.16,.84,.28,1),background-color .3s cubic-bezier(.16,.84,.28,1)}
+.f input:hover{background:rgba(232,229,223,.08)}
+.f input:focus-visible{outline:none;border-color:rgba(255,122,51,.7);background:rgba(255,122,51,.06)}
+.f input[aria-invalid=true]{border-color:rgba(216,163,58,.8);background:rgba(216,163,58,.09)}
+table{width:100%;border-collapse:collapse;font-family:'Spline Sans Mono',ui-monospace,monospace;font-size:13px}
+th,td{text-align:right;padding:7px 8px;border-bottom:1px solid rgba(232,229,223,.07)}
+th:first-child,td:first-child{text-align:left}
+th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(232,229,223,.36);font-weight:500}
+tbody tr{transition:background-color .26s cubic-bezier(.16,.84,.28,1)}
+tbody tr:hover{background:rgba(232,229,223,.04)}
+tfoot td{border-bottom:0;padding-top:11px;color:var(--chalk)}
+.money{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:rgba(232,229,223,.08);
+  border:var(--hair);margin-top:16px}
+.money div{background:var(--void);padding:12px 13px}
+.money k{display:block;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:rgba(232,229,223,.38)}
+.money v{display:block;font-family:'Spline Sans Mono',ui-monospace,monospace;font-size:clamp(19px,2.2vw,28px);margin-top:4px}
+.chart{width:100%;height:auto;display:block;margin-top:6px}
+.chart .ax{stroke:rgba(232,229,223,.16);stroke-width:1}
+.chart .cv{fill:none;stroke:var(--ember);stroke-width:1.6}
+.chart .cvm{fill:none;stroke:rgba(232,229,223,.22);stroke-width:1}
+.chart text{font-family:'Spline Sans Mono',ui-monospace,monospace;font-size:9px;fill:rgba(232,229,223,.45)}
+.btn{display:inline-flex;align-items:center;gap:9px;background:transparent;border:1px solid rgba(232,229,223,.28);
+  color:var(--chalk);font:inherit;font-size:13.5px;padding:10px 16px;border-radius:2px;cursor:pointer;
+  transition:background-color .32s cubic-bezier(.16,.84,.28,1),border-color .32s cubic-bezier(.16,.84,.28,1),color .32s cubic-bezier(.16,.84,.28,1)}
+.btn:hover{background:var(--ember);border-color:var(--ember);color:var(--void)}
+.btn:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+.btn.solid{background:var(--ember);border-color:var(--ember);color:var(--void);font-weight:600}
+.btn.solid:hover{background:rgba(255,122,51,.82)}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+
+/* заявка */
+.ask{display:grid;gap:clamp(20px,2.6vw,40px);grid-template-columns:minmax(0,1fr)}
+.spec{font-family:'Spline Sans Mono',ui-monospace,monospace;font-size:12.5px;line-height:1.72;
+  color:rgba(232,229,223,.62);background:rgba(232,229,223,.04);border:var(--hair);padding:14px;
+  white-space:pre-wrap;border-radius:2px;max-height:290px;overflow:auto}
+form .f textarea{background:rgba(232,229,223,.05);border:var(--hair);border-radius:2px;color:var(--chalk);
+  font-family:inherit;font-size:14px;padding:9px 10px;width:100%;min-height:96px;resize:vertical;
+  transition:border-color .3s cubic-bezier(.16,.84,.28,1)}
+form .f textarea:focus-visible{outline:none;border-color:rgba(255,122,51,.7)}
+.err{font-size:12px;color:var(--warn);min-height:15px}
+.sent{font-size:13.5px;color:var(--ember)}
+footer{position:relative;z-index:2;padding:34px var(--gut) 42px;border-top:var(--hair);display:flex;flex-wrap:wrap;
+  gap:12px 26px;align-items:center;font-size:12.5px;color:rgba(232,229,223,.42);background:var(--void)}
+footer a{text-decoration:none;border-bottom:1px solid rgba(255,122,51,.4);
+  transition:color .28s cubic-bezier(.16,.84,.28,1),border-color .28s cubic-bezier(.16,.84,.28,1)}
+footer a:hover{color:var(--ember);border-bottom-color:var(--ember)}
+footer a:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+.fill{flex:1}
+
+.rv{animation:rise .8s cubic-bezier(.16,.84,.28,1) both;animation-play-state:paused}
+.rv.on{animation-play-state:running}
+
+/* ── адаптив ───────────────────────────────────────────── */
+@media (min-width:700px){
+  .fields{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .forms{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (min-width:1000px){
+  .hero{padding-bottom:34px}
+  .deck{grid-template-columns:minmax(300px,25vw) minmax(0,1fr);max-width:min(100%,940px)}
+  .econ{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}
+  .ask{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .forms{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media (min-width:1440px){
+  .hero{padding-bottom:44px}
+  .deck{max-width:1020px}
+}
+@media (max-width:699px){
+  .read{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .money{grid-template-columns:minmax(0,1fr)}
+  .hero{padding-top:82px}
+  .lede{font-size:14.5px}
+  .hnote,.cell k,.card k,.f k,.money k,.mode .tag{font-size:12.5px}
+  .eq{font-size:12.5px}
+  .spec{font-size:12.5px}
+  h1{font-size:clamp(2rem,9.2vw,2.9rem)}
+}
+@media (max-height:620px) and (min-width:1000px){
+  .hero{min-height:660px}
+}
+@media (prefers-reduced-motion:reduce){
+  .sweep,.tick,.dot{display:none}
+  .veil{animation:none;opacity:0}
+  .brand,.live,.eyebrow,h1 .ln,.lede,.hnote,.panel,.row,.cell,.verdict,.hint,.rv{
+    animation:none;opacity:1;transform:none;clip-path:none}
+  *{transition-duration:.001s}
+}
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="glass"></canvas></div>
+<div class="grade"></div>
+<div class="veil"></div>
+<div class="noscene">
+  <svg width="300" height="180" viewBox="0 0 300 180" aria-label="Cross-section of the cutting zone">
+    <path d="M10 132 H290" stroke="rgba(232,229,223,.2)"/>
+    <path d="M10 40 H210 A18 18 0 0 1 210 76 H10 Z" fill="rgba(121,128,140,.28)" stroke="rgba(232,229,223,.3)"/>
+    <path d="M214 78 L262 128 L286 108 L236 62 Z" fill="rgba(216,163,58,.35)" stroke="rgba(216,163,58,.8)"/>
+    <path d="M212 70 C246 46 236 18 202 22 C170 26 172 58 196 62" fill="none" stroke="var(--ember)" stroke-width="6"/>
+    <text x="10" y="160" fill="rgba(232,229,223,.5)" font-size="11">No WebGL2 here — the numbers below still compute.</text>
+  </svg>
+</div>
+
+<header>
+  <div class="brand">Chip<em>.</em></div>
+  <div class="hgap"></div>
+  <div class="live"><span class="dot"></span><span class="mono" id="clock">--:--:--</span></div>
+  <a class="hlink" href="#regimes">Regimes</a>
+  <a class="hlink" href="#math">Maths</a>
+  <a class="hlink" href="#money">Money</a>
+  <a class="hlink" href="#brief">Brief</a>
+</header>
+
+<main>
+<section class="hero" style="border-top:0;background:transparent">
+  <div>
+    <div class="eyebrow">Turning · C45 steel · coated carbide</div>
+    <h1><span class="ln">A lathe that</span><span class="ln">counts, not</span><span class="ln">one that spins.</span></h1>
+    <p class="lede">Chip thickness, curl radius, cutting-zone temperature and the colour that
+      temperature paints on the chip are computed from three numbers — not drawn by hand.</p>
+    <p class="hnote">Scene time is stylised: spindle ÷45, chip ÷120, carriage ×260. The numbers are not.</p>
+  </div>
+
+  <div class="deck">
+    <div class="panel">
+      <div class="sweep"></div>
+      <div class="ptitle">Cutting data</div>
+      <div class="rows">
+        <div class="row">
+          <label for="sv">Cutting speed <b>v</b></label>
+          <span class="val mono"><span id="sv-o">210</span><i>m/min</i></span>
+          <input id="sv" type="range" min="30" max="320" step="5" value="210" aria-label="Cutting speed v, metres per minute">
+        </div>
+        <div class="row">
+          <label for="ss">Feed <b>s</b></label>
+          <span class="val mono"><span id="ss-o">0.18</span><i>mm/rev</i></span>
+          <input id="ss" type="range" min="0.05" max="0.6" step="0.01" value="0.18" aria-label="Feed s, millimetres per revolution">
+        </div>
+        <div class="row">
+          <label for="st">Depth of cut <b>t</b></label>
+          <span class="val mono"><span id="st-o">2.5</span><i>mm</i></span>
+          <input id="st" type="range" min="0.3" max="4" step="0.1" value="2.5" aria-label="Depth of cut t, millimetres">
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="read">
+        <div class="cell"><k>Chip a2</k><v id="o-a2">0.32<s>mm</s></v></div>
+        <div class="cell"><k>Curl R</k><v id="o-r">1.7<s>mm</s></v></div>
+        <div class="cell"><k>Zone θ</k><v id="o-th">682<s>°C</s></v></div>
+        <div class="cell"><k>Force Fc</k><v id="o-fc">1180<s>N</s></v></div>
+        <div class="cell"><k>Power</k><v id="o-pc">3.3<s>kW</s></v></div>
+        <div class="cell"><k>Tool life</k><v id="o-tl">28<s>min</s></v></div>
+      </div>
+      <div class="verdict"><span class="chip-b" id="o-badge">Window</span><span class="vtext" id="o-verdict">Chips break into short curls, straw-coloured.</span></div>
+      <div class="hint"><span class="tick"></span><span>Drag a slider · scroll for the maths</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="veiled" id="regimes">
+  <div class="shead">
+    <span class="snum mono">01</span>
+    <div><h2>Three regimes you can see without reading a label.</h2>
+    <p class="sdesc">Every operator knows them by the swarf on the floor. Press one — the sliders move,
+      the scene follows, the numbers follow.</p></div>
+  </div>
+  <div class="grid3">
+    <button class="mode rv" type="button" data-v="210" data-s="0.18" data-t="2.5" aria-pressed="true">
+      <span class="tag">Window</span><h3>Short curls, straw</h3>
+      <p>The chip curls, hits the workpiece, snaps every few turns. Colour stops at straw — the edge
+        is warm, not burning.</p>
+      <span class="setline">Set v 210 · s 0.18 · t 2.5 <u></u></span>
+    </button>
+    <button class="mode rv" type="button" data-v="300" data-s="0.2" data-t="1.5" aria-pressed="false">
+      <span class="tag">Burning</span><h3>Blue ribbon, no break</h3>
+      <p>Above roughly 250 m/min the chip goes ductile and stops breaking. Blue means the oxide film
+        crossed 70 nm. The edge is gone in minutes.</p>
+      <span class="setline">Set v 300 · s 0.20 · t 1.5 <u></u></span>
+    </button>
+    <button class="mode rv" type="button" data-v="90" data-s="0.52" data-t="3.5" aria-pressed="false">
+      <span class="tag">Overloaded</span><h3>Thick chunks, chatter</h3>
+      <p>Feed past 0.45 mm/rev and the chip is too stiff to bend: it fractures at once, the force
+        passes 3.5 kN and the carriage starts to sing.</p>
+      <span class="setline">Set v 90 · s 0.52 · t 3.5 <u></u></span>
+    </button>
+  </div>
+</section>
+
+<section id="math">
+  <div class="shead">
+    <span class="snum mono">02</span>
+    <div><h2>What is actually being solved, in order.</h2>
+    <p class="sdesc">Four steps. Each one feeds the next, and each one is on screen with your numbers
+      substituted — no static illustration anywhere on this page.</p></div>
+  </div>
+  <div class="forms">
+    <div class="card rv">
+      <k>Step 1 · geometry</k><h3>Chip thickness and curl</h3>
+      <div class="eq" id="eq1">a1 = s·sin κ<br>φ = 45° − (β − γ)/2<br>ξ = cos(φ − γ)/sin φ<br>a2 = a1·ξ</div>
+      <p class="sub" id="sub1">Merchant's shear-angle solution with γ = 8°, κ = 95°.</p>
+    </div>
+    <div class="card rv">
+      <k>Step 2 · heat</k><h3>Temperature in the zone</h3>
+      <div class="eq" id="eq2">θ = 110·v⁰·⁴·s⁰·²·t⁰·¹⁰⁵</div>
+      <p class="sub" id="sub2">Empirical power law for carbide on medium-carbon steel.</p>
+    </div>
+    <div class="card rv">
+      <k>Step 3 · colour</k><h3>Why the chip turns blue</h3>
+      <div class="eq" id="eq3">d = 1408·e^(−3393/T)<br>δ = 2·n·d·cos θr<br>I(λ) = |r1 + r2·e^(iδ)|²</div>
+      <p class="sub" id="sub3">Oxide film thickness from temperature, then two-beam interference
+        evaluated separately at 630 / 532 / 465 nm — in the shader, per pixel, against the real view angle.</p>
+      <div class="swatch" id="swatch"></div>
+    </div>
+    <div class="card rv">
+      <k>Step 4 · load</k><h3>Force, power, tool life</h3>
+      <div class="eq" id="eq4">Fc = kc1.1·a1^(1−mc)·b<br>Pc = Fc·v/60000<br>T = (C/(v·s^0.35·t^0.15))^4</div>
+      <p class="sub" id="sub4">Kienzle with kc1.1 = 1700 N/mm², mc = 0.25; Taylor with C = 270, n = 0.25.</p>
+    </div>
+  </div>
+  <p class="sub rv" style="max-width:66ch;margin-top:18px">The break rule is the one honest fudge here:
+    a chip snaps when the bending strain ε = a2/4R passes the fracture strain εf, and εf rises with
+    temperature because hot steel is ductile. Break length is fitted, not derived —
+    <span class="mono">L = 2πR/CB⁶</span>, capped at 4…380 mm.</p>
+</section>
+
+<section id="money">
+  <div class="shead">
+    <span class="snum mono">03</span>
+    <div><h2>The same three numbers decide what the part costs.</h2>
+    <p class="sdesc">A shaft turned from Ø60 to Ø48 over 240 mm. Passes, minutes, edges burned,
+      dollars — recomputed on every slider move, and on every field below.</p></div>
+  </div>
+  <div class="econ">
+    <div>
+      <div class="fields">
+        <label class="f"><k>Blank Ø, mm</k><input id="p-d0" type="number" value="60" min="10" max="400" step="1"></label>
+        <label class="f"><k>Target Ø, mm</k><input id="p-d1" type="number" value="48" min="5" max="399" step="1"></label>
+        <label class="f"><k>Length, mm</k><input id="p-l" type="number" value="240" min="10" max="2000" step="5"></label>
+        <label class="f"><k>Batch, pcs</k><input id="p-n" type="number" value="200" min="1" max="100000" step="1"></label>
+        <label class="f"><k>Shop rate, $/h</k><input id="p-rate" type="number" value="58" min="5" max="500" step="1"></label>
+        <label class="f"><k>Edge cost, $</k><input id="p-edge" type="number" value="4.35" min="0.2" max="99" step="0.05"></label>
+      </div>
+      <p class="err" id="p-err"></p>
+      <div class="money">
+        <div><k>Per part</k><v id="m-part">$5.59</v></div>
+        <div><k>Batch total</k><v id="m-batch">$1 118</v></div>
+        <div><k>Cutting time</k><v id="m-tm">4.1 min</v></div>
+        <div><k>Edges per 100 pcs</k><v id="m-ed">3.6</v></div>
+      </div>
+      <div class="btns">
+        <button class="btn" type="button" id="b-opt">Jump to cheapest speed</button>
+        <button class="btn" type="button" id="b-link">Copy link with this setup</button>
+      </div>
+    </div>
+    <div>
+      <table>
+        <thead><tr><th>Pass</th><th>Ø before</th><th>Ø after</th><th>n, rpm</th><th>min</th></tr></thead>
+        <tbody id="passes"></tbody>
+        <tfoot><tr><td>Total</td><td></td><td></td><td id="f-n"></td><td id="f-t"></td></tr></tfoot>
+      </table>
+      <svg class="chart" id="chart" viewBox="0 0 320 132" role="img" aria-label="Cost per part against cutting speed"></svg>
+      <p class="sub">Cost per part against v, at your feed and depth. Left of the dip you pay for
+        machine hours; right of it you pay for edges.</p>
+    </div>
+  </div>
+</section>
+
+<section id="brief">
+  <div class="shead">
+    <span class="snum mono">04</span>
+    <div><h2>Take the setup with you, or hand it over.</h2>
+    <p class="sdesc">The spec on the right is generated from the state above. Send it and I'll reply
+      with what it would take to put a calculator like this on your own part catalogue.</p></div>
+  </div>
+  <div class="ask">
+    <form id="form" novalidate>
+      <div class="fields" style="grid-template-columns:minmax(0,1fr)">
+        <label class="f"><k>Name</k><input id="q-name" type="text" autocomplete="name" placeholder="Your name"></label>
+        <label class="f"><k>Email</k><input id="q-mail" type="email" autocomplete="email" placeholder="you@company.com"></label>
+        <label class="f"><k>What are you making</k><textarea id="q-msg" placeholder="Part family, volumes, what the calculator has to answer."></textarea></label>
+      </div>
+      <p class="err" id="q-err"></p>
+      <div class="btns">
+        <button class="btn solid" type="submit">Send the brief</button>
+        <button class="btn" type="button" id="b-copy">Copy spec</button>
+      </div>
+      <p class="sent" id="q-ok" hidden>Opening your mail client with the spec attached in the body. If nothing opens, the spec is already copied.</p>
+    </form>
+    <div><div class="spec mono" id="spec"></div></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span>Chip — a working demo. The shop is invented, the mechanics are not.</span>
+  <span class="fill"></span>
+  <span>Want this on your parts? <a href="https://t.me/smirnovarturr">@smirnovarturr</a></span>
+  <span>© 2026</span>
+</footer>
+<script type="module">
+/* ═══ 1. Механика резания. Всё в мм, м/мин, °C, Н, кВт, мин ═══════════ */
+const K = {
+  gamma: 8, kappa: 95, lam: 6,        // передний угол, угол в плане, наклон кромки, °
+  kc11: 1700, mc: 0.25,               // Kienzle, C45
+  Ct: 270, nt: 0.25, at: 0.35, bt: 0.15,   // расширенный Тейлор
+  thC: 110,                           // θ = 110·v^.4·s^.2·t^.105
+  fA: 1408, fB: 3393, fN: 2.4,         // плёнка: d = A·exp(−B/T), n оксида
+  R0: 1.5, kR: 0.6,                   // радиус завивки R = R0 + kR·a2
+  ef0: 0.024, efk: 1.15,              // предельная деформация εf(θ)
+};
+const D2R = Math.PI / 180, clamp = (x, a, b) => x < a ? a : x > b ? b : x;
+
+function solve(v, s, t) {
+  const kr = K.kappa * D2R, g = K.gamma * D2R;
+  const a1 = s * Math.sin(kr);                 // толщина срезаемого слоя
+  const b  = t / Math.sin(kr);                 // ширина среза
+  const mu = Math.max(0.24, 0.62 - 0.0009 * v);
+  const beta = Math.atan(mu);
+  const phi = Math.PI / 4 - (beta - g) / 2;    // Мерчант
+  const xi = Math.cos(phi - g) / Math.sin(phi);// усадка стружки
+  const a2 = a1 * xi;                          // толщина стружки
+  const vc = v / xi;                           // скорость схода
+  const th = K.thC * Math.pow(v, 0.4) * Math.pow(s, 0.2) * Math.pow(t, 0.105);
+  const d  = K.fA * Math.exp(-K.fB / (th + 273));
+  const R  = K.R0 + K.kR * a2;
+  const eps = a2 / (4 * R);
+  const efr = K.ef0 * (1 + K.efk * th / 900);
+  const CB = eps / efr;
+  const Lb = clamp(R * 2 * Math.PI / Math.pow(CB, 6), 4, 380);
+  const kc = K.kc11 * Math.pow(a1, -K.mc);
+  const Fc = kc * b * a1;
+  const Pc = Fc * v / 60000;
+  const T  = Math.min(600, Math.pow(K.Ct / (v * Math.pow(s, K.at) * Math.pow(t, K.bt)), 1 / K.nt));
+  return { a1, b, mu, beta, phi, xi, a2, vc, th, d, R, eps, efr, CB, Lb, kc, Fc, Pc, T, Q: v * s * t };
+}
+
+/* цвет побежалости: двухлучевая интерференция на плёнке толщиной d нм */
+function filmRGB(d, cosR) {
+  const delta = 2 * K.fN * d * cosR, r1 = 0.28, r2 = 0.66, n0 = 0.6294;
+  const out = [];
+  for (const lam of [630, 532, 465]) {
+    const c = Math.cos(2 * Math.PI * delta / lam);
+    out.push(((r1 * r1 + r2 * r2 + 2 * r1 * r2 * c) / (1 + r1 * r1 * r2 * r2 + 2 * r1 * r2 * c)) / n0);
+  }
+  return out;
+}
+const tint = d => filmRGB(d, 0.95).map(x => Math.round(clamp(x, 0, 1.4) * 168 + 14));
+const colourName = d => d < 32 ? 'bright steel' : d < 50 ? 'straw' : d < 66 ? 'brown-purple' : d < 86 ? 'blue' : 'grey';
+
+/* ═══ 2. Деньги ═══════════════════════════════════════════════════════ */
+function cost(v, s, t, p) {
+  const step = 2 * t;
+  const passes = Math.max(1, Math.ceil((p.d0 - p.d1) / step));
+  const rows = []; let D = p.d0, tm = 0;
+  for (let i = 0; i < passes; i++) {
+    const after = Math.max(p.d1, D - step), Dm = (D + after) / 2;
+    const n = 1000 * v / (Math.PI * Dm);
+    const min = p.l * Math.PI * Dm / (1000 * v * s);
+    rows.push({ i: i + 1, before: D, after, n, min }); tm += min; D = after;
+  }
+  const T = solve(v, s, t).T, edges = tm / T, idle = 1.4;
+  const part = (tm + idle) / 60 * p.rate + edges * p.edge;
+  return { passes, rows, tm, edges, part, batch: part * p.n, T };
+}
+
+/* ═══ 3. Состояние ════════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+const q = new URLSearchParams(location.search);
+const num = (k, d) => { const x = parseFloat(q.get(k)); return Number.isFinite(x) ? x : d; };
+const S = { v: clamp(num('v', 210), 30, 320), s: clamp(num('s', 0.18), 0.05, 0.6), t: clamp(num('t', 2.5), 0.3, 4) };
+const P = { d0: num('d0', 60), d1: num('d1', 48), l: num('l', 240), n: num('n', 200), rate: num('rate', 58), edge: num('edge', 4.35) };
+$('sv').value = S.v; $('ss').value = S.s; $('st').value = S.t;
+for (const [k, id] of [['d0','p-d0'],['d1','p-d1'],['l','p-l'],['n','p-n'],['rate','p-rate'],['edge','p-edge']]) $(id).value = P[k];
+
+const fmt = (x, n = 1) => x.toFixed(n);
+const money = x => '$' + (x >= 1000 ? Math.round(x).toLocaleString('en-US').replace(/,/g, ' ') : x.toFixed(2));
+let A = solve(S.v, S.s, S.t), C = cost(S.v, S.s, S.t, P);
+
+/* палитра-шкала побежалости под формулой */
+const sw = $('swatch');
+for (let i = 0; i < 16; i++) { const e = document.createElement('i'); sw.appendChild(e); }
+function paintSwatch() {
+  const kids = sw.children;
+  for (let i = 0; i < kids.length; i++) {
+    const dd = 12 + i * 7.2, c = tint(dd);
+    kids[i].style.background = 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')';
+    kids[i].dataset.on = Math.abs(dd - A.d) < 3.6 ? 'true' : 'false';
+  }
+}
+
+function regime() {
+  if (A.th > 760) return ['hot', 'Burning', 'The chip stays ductile and never breaks. Blue film, edge gone in ' + fmt(A.T, 1) + ' min.'];
+  if (A.CB > 1.45 || A.Fc > 3000) return ['load', 'Overload', 'Too stiff to bend: it fractures at once and the carriage chatters at ' + Math.round(A.Fc) + ' N.'];
+  if (A.CB < 0.75) return ['hot', 'Stringy', 'Feed is too light for the chip to break — it coils into a nest around the part.'];
+  return ['', 'Window', 'Chips break into short curls every ' + fmt(A.Lb, 0) + ' mm. Colour stops at ' + colourName(A.d) + '.'];
+}
+
+function chart() {
+  const el = $('chart'), W = 320, H = 132, L = 34, B = 108;
+  const xs = [], lo = 30, hi = 320;
+  let mn = 1e9, mx = -1e9, best = lo;
+  for (let i = 0; i <= 63; i++) {
+    const v = lo + (hi - lo) * i / 63, c = cost(v, S.s, S.t, P).part;
+    xs.push([v, c]); if (c < mn) { mn = c; best = v; } if (c > mx) mx = c;
+  }
+  mx = Math.min(mx, mn * 3.4);
+  const X = v => L + (W - L - 8) * (v - lo) / (hi - lo);
+  const Y = c => B - (B - 14) * clamp((c - mn) / (mx - mn || 1), 0, 1);
+  let d = '';
+  for (const [v, c] of xs) d += (d ? 'L' : 'M') + X(v).toFixed(1) + ' ' + Y(c).toFixed(1) + ' ';
+  const cx = X(S.v), cy = Y(C.part), bx = X(best);
+  el.innerHTML =
+    '<path class="ax" d="M' + L + ' ' + B + ' H' + (W - 8) + '"/>' +
+    '<path class="ax" d="M' + L + ' 12 V' + B + '"/>' +
+    '<path class="cvm" d="M' + bx.toFixed(1) + ' 14 V' + B + '"/>' +
+    '<path class="cv" d="' + d + '"/>' +
+    '<circle cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" r="3.4" fill="var(--chalk)"/>' +
+    '<text x="' + L + '" y="' + (B + 13) + '">30</text>' +
+    '<text x="' + (W - 26) + '" y="' + (B + 13) + '">320</text>' +
+    '<text x="2" y="18">' + money(mx) + '</text>' +
+    '<text x="2" y="' + B + '">' + money(mn) + '</text>' +
+    '<text x="' + clamp(bx - 16, 36, W - 60).toFixed(1) + '" y="126">min ' + Math.round(best) + ' m/min</text>';
+  el.dataset.best = best.toFixed(0);
+}
+
+function specText() {
+  return [
+    'TURNING SETUP — chip.demo',
+    '',
+    'Cutting data',
+    '  v  cutting speed      ' + S.v + ' m/min',
+    '  s  feed               ' + S.s.toFixed(2) + ' mm/rev',
+    '  t  depth of cut       ' + S.t.toFixed(1) + ' mm',
+    '  tool  rake 8°, lead 95°, inclination -6°, coated carbide',
+    '',
+    'Computed',
+    '  a1 uncut thickness    ' + A.a1.toFixed(3) + ' mm',
+    '  xi chip compression   ' + A.xi.toFixed(2),
+    '  a2 chip thickness     ' + A.a2.toFixed(3) + ' mm',
+    '  R  curl radius        ' + A.R.toFixed(2) + ' mm',
+    '  L  break length       ' + Math.round(A.Lb) + ' mm',
+    '  th zone temperature   ' + Math.round(A.th) + ' C',
+    '  d  oxide film         ' + A.d.toFixed(0) + ' nm  (' + colourName(A.d) + ')',
+    '  Fc cutting force      ' + Math.round(A.Fc) + ' N',
+    '  Pc power              ' + A.Pc.toFixed(2) + ' kW',
+    '  T  tool life          ' + A.T.toFixed(1) + ' min',
+    '  Q  removal rate       ' + A.Q.toFixed(1) + ' cm3/min',
+    '',
+    'Part  ' + P.d0 + ' -> ' + P.d1 + ' mm over ' + P.l + ' mm, batch ' + P.n,
+    '  passes                ' + C.passes,
+    '  cutting time / part   ' + C.tm.toFixed(2) + ' min',
+    '  edges / part          ' + C.edges.toFixed(3),
+    '  cost / part           ' + money(C.part),
+    '  batch total           ' + money(C.batch),
+    '',
+    'Rates: shop ' + P.rate + ' $/h, edge ' + P.edge + ' $, non-cut 1.4 min/part.',
+    location.href,
+  ].join('\n');
+}
+
+function render() {
+  A = solve(S.v, S.s, S.t); C = cost(S.v, S.s, S.t, P);
+  $('sv-o').textContent = S.v; $('ss-o').textContent = S.s.toFixed(2); $('st-o').textContent = S.t.toFixed(1);
+  $('o-a2').innerHTML = A.a2.toFixed(2) + '<s>mm</s>';
+  $('o-r').innerHTML = A.R.toFixed(2) + '<s>mm</s>';
+  $('o-th').innerHTML = Math.round(A.th) + '<s>°C</s>';
+  $('o-fc').innerHTML = Math.round(A.Fc) + '<s>N</s>';
+  $('o-pc').innerHTML = A.Pc.toFixed(2) + '<s>kW</s>';
+  $('o-tl').innerHTML = (A.T >= 599 ? '600+' : A.T.toFixed(1)) + '<s>min</s>';
+  const [cls, badge, text] = regime();
+  const bd = $('o-badge'); bd.className = 'chip-b ' + cls; bd.textContent = badge;
+  $('o-verdict').textContent = text;
+
+  $('sub1').innerHTML = 'γ 8°, κ 95°, μ ' + A.mu.toFixed(2) + ' → φ ' + (A.phi / D2R).toFixed(1) +
+    '°, ξ <em>' + A.xi.toFixed(2) + '</em>, a2 <em>' + A.a2.toFixed(3) + ' mm</em>';
+  $('sub2').innerHTML = 'v ' + S.v + ', s ' + S.s.toFixed(2) + ', t ' + S.t.toFixed(1) +
+    ' → θ <em>' + Math.round(A.th) + ' °C</em>, chip leaves at <em>' + Math.round(A.vc) + ' m/min</em>';
+  $('sub3').innerHTML = 'T ' + Math.round(A.th + 273) + ' K → d <em>' + A.d.toFixed(0) +
+    ' nm</em> → <em>' + colourName(A.d) + '</em>. The band below is the same formula swept from 12 to 120 nm.';
+  $('sub4').innerHTML = 'kc <em>' + Math.round(A.kc) + ' N/mm²</em>, Fc <em>' + Math.round(A.Fc) +
+    ' N</em>, Pc <em>' + A.Pc.toFixed(2) + ' kW</em>, T <em>' + (A.T >= 599 ? '600+' : A.T.toFixed(1)) + ' min</em>';
+  paintSwatch();
+
+  const tb = $('passes'); tb.innerHTML = C.rows.map(r =>
+    '<tr><td>' + r.i + '</td><td>' + r.before.toFixed(1) + '</td><td>' + r.after.toFixed(1) +
+    '</td><td>' + Math.round(r.n) + '</td><td>' + r.min.toFixed(2) + '</td></tr>').join('');
+  $('f-n').textContent = C.passes + ' passes'; $('f-t').textContent = C.tm.toFixed(2);
+  $('m-part').textContent = money(C.part); $('m-batch').textContent = money(C.batch);
+  $('m-tm').textContent = C.tm.toFixed(1) + ' min'; $('m-ed').textContent = (C.edges * 100).toFixed(1);
+  chart();
+  $('spec').textContent = specText();
+  window.__chipLast = A;
+  for (const b of document.querySelectorAll('.mode'))
+    b.setAttribute('aria-pressed', String(Math.abs(+b.dataset.v - S.v) < 1 && Math.abs(+b.dataset.s - S.s) < .005));
+  if (window.__chipScene) window.__chipScene.update(S, A);
+}
+
+let urlTimer = 0;
+function saveURL() {
+  clearTimeout(urlTimer);
+  urlTimer = setTimeout(() => {
+    const p = new URLSearchParams({ v: S.v, s: S.s, t: S.t, d0: P.d0, d1: P.d1, l: P.l, n: P.n, rate: P.rate, edge: P.edge });
+    history.replaceState(null, '', location.pathname + '?' + p);
+    $('spec').textContent = specText();
+  }, 260);
+}
+
+for (const [id, key] of [['sv', 'v'], ['ss', 's'], ['st', 't']])
+  $(id).addEventListener('input', e => { S[key] = parseFloat(e.target.value); render(); saveURL(); });
+
+function readParts() {
+  const lim = { 'p-d0': [10, 400], 'p-d1': [5, 399], 'p-l': [10, 2000], 'p-n': [1, 100000], 'p-rate': [5, 500], 'p-edge': [0.2, 99] };
+  const map = { 'p-d0': 'd0', 'p-d1': 'd1', 'p-l': 'l', 'p-n': 'n', 'p-rate': 'rate', 'p-edge': 'edge' };
+  let bad = '';
+  for (const id in map) {
+    const el = $(id), x = parseFloat(el.value), [lo, hi] = lim[id];
+    const ok = Number.isFinite(x) && x >= lo && x <= hi;
+    el.setAttribute('aria-invalid', String(!ok));
+    if (ok) P[map[id]] = x; else bad = bad || (el.previousElementSibling.textContent + ' must be between ' + lo + ' and ' + hi + '.');
+  }
+  if (P.d1 >= P.d0) { bad = bad || 'Target Ø must be smaller than the blank.'; $('p-d1').setAttribute('aria-invalid', 'true'); P.d1 = P.d0 - 1; }
+  $('p-err').textContent = bad;
+}
+for (const id of ['p-d0', 'p-d1', 'p-l', 'p-n', 'p-rate', 'p-edge'])
+  $(id).addEventListener('input', () => { readParts(); render(); saveURL(); });
+
+for (const b of document.querySelectorAll('.mode')) b.addEventListener('click', () => {
+  S.v = +b.dataset.v; S.s = +b.dataset.s; S.t = +b.dataset.t;
+  $('sv').value = S.v; $('ss').value = S.s; $('st').value = S.t;
+  render(); saveURL();
+});
+$('b-opt').addEventListener('click', () => {
+  S.v = clamp(Math.round(+$('chart').dataset.best / 5) * 5, 30, 320);
+  $('sv').value = S.v; render(); saveURL();
+});
+async function copy(txt, btn, done) {
+  const old = btn.textContent;
+  try { await navigator.clipboard.writeText(txt); } catch (e) {
+    const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta);
+    ta.select(); try { document.execCommand('copy'); } catch (e2) {} ta.remove();
+  }
+  btn.textContent = done; setTimeout(() => { btn.textContent = old; }, 1600);
+}
+$('b-link').addEventListener('click', e => copy(location.href, e.currentTarget, 'Link copied'));
+$('b-copy').addEventListener('click', e => copy(specText(), e.currentTarget, 'Spec copied'));
+
+$('form').addEventListener('submit', e => {
+  e.preventDefault();
+  const nm = $('q-name').value.trim(), ml = $('q-mail').value.trim(), ms = $('q-msg').value.trim();
+  let bad = '';
+  if (nm.length < 2) { bad = 'Name — at least two characters.'; $('q-name').setAttribute('aria-invalid', 'true'); }
+  else $('q-name').setAttribute('aria-invalid', 'false');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(ml)) { bad = bad || 'Email — that address will not reach anyone.'; $('q-mail').setAttribute('aria-invalid', 'true'); }
+  else $('q-mail').setAttribute('aria-invalid', 'false');
+  $('q-err').textContent = bad;
+  if (bad) return;
+  const body = encodeURIComponent(ms + '\n\n' + specText());
+  const href = 'mailto:paladei702@gmail.com?subject=' +
+    encodeURIComponent('Turning calculator — brief from ' + nm) + '&body=' + body;
+  copy(specText(), $('b-copy'), 'Spec copied');
+  $('q-ok').hidden = false;
+  location.href = href;
+});
+
+/* живой сигнал: цеховые часы */
+const clk = $('clock');
+setInterval(() => {
+  const d = new Date();
+  clk.textContent = [d.getHours(), d.getMinutes(), d.getSeconds()].map(x => String(x).padStart(2, '0')).join(':');
+}, 1000);
+
+/* появление ниже сгиба */
+if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const io = new IntersectionObserver((es) => es.forEach(en => {
+    if (en.isIntersecting) { en.target.classList.add('on'); io.unobserve(en.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('.rv').forEach((el, i) => { el.style.animationDelay = (0.05 * (i % 4)).toFixed(2) + 's'; io.observe(el); });
+} else document.querySelectorAll('.rv').forEach(el => el.classList.add('on'));
+
+readParts(); render();
+window.__chipState = S;
+</script>
+<script type="module">
+/* ═══ Сцена: заготовка, резец, стружка ════════════════════════════════ */
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cv = document.getElementById('glass');
+function flat(){ document.body.classList.add('flat'); }
+function hasGL2(){ try { return !!document.createElement('canvas').getContext('webgl2'); } catch(e){ return false; } }
+
+let THREE = null;
+if (!hasGL2()) flat(); else {
+  try { THREE = await import('./assets/three-scene.js'); } catch(e) { THREE = null; window.__why = 'import: ' + e; }
+  if (!THREE) flat(); else { try { await build(); } catch(e) { flat(); window.__why = 'build: ' + (e && e.stack || e); } }
+}
+
+async function build(){
+  const renderer = new THREE.WebGLRenderer({canvas:cv, antialias:false, alpha:false, powerPreference:'high-performance'});
+  let SOFT = false;
+  { const gl = renderer.getContext(), dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    const nm = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : '';
+    if (/swiftshader|llvmpipe|software|basic render|microsoft basic/i.test(nm)) SOFT = true; }
+  renderer.setPixelRatio(Math.max(1, Math.min(window.devicePixelRatio || 1, 2)));
+  renderer.setSize(innerWidth, innerHeight, false);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.55;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x07080a);
+  const camera = new THREE.PerspectiveCamera(26, innerWidth/innerHeight, 0.4, 120);
+
+  /* ── окружение: свет из окон цеха ── */
+  const pmrem = new THREE.PMREMGenerator(renderer); pmrem.compileEquirectangularShader();
+  try {
+    const hdr = await new THREE.RGBELoader().loadAsync('assets/empty_warehouse_01_256.hdr');
+    scene.environment = pmrem.fromEquirectangular(hdr).texture;
+    scene.environmentIntensity = 0.42;
+    scene.environmentRotation = new THREE.Euler(0, 2.1, 0);
+    hdr.dispose();
+  } catch(e) {}
+  pmrem.dispose();
+
+  const rim = new THREE.DirectionalLight(0x9ec2ff, 1.55); rim.position.set(-7, 5.5, -6.5); scene.add(rim);
+  const key = new THREE.DirectionalLight(0xffd7ab, 0.42); key.position.set(6, 7, 7); scene.add(key);
+  const zone = new THREE.PointLight(0xff7a33, 1.2, 2.3, 2); scene.add(zone);
+
+  /* ── текстура шероховатости, 1024, с мипами и анизотропией ── */
+  function roughTex(){
+    const N = 1024, c = document.createElement('canvas'); c.width = c.height = N;
+    const x = c.getContext('2d');
+    x.fillStyle = 'rgb(118,118,118)'; x.fillRect(0,0,N,N);
+    for (let i=0;i<5200;i++){
+      const y = Math.random()*N, w = 40+Math.random()*760, a = 0.03+Math.random()*0.16;
+      x.strokeStyle = 'rgba('+(Math.random()<0.5?230:26)+',0,0,'+a.toFixed(3)+')';
+      x.lineWidth = 0.6+Math.random()*1.7;
+      x.beginPath(); x.moveTo(Math.random()*N, y); x.lineTo(Math.random()*N+w, y+(Math.random()-0.5)*2); x.stroke();
+    }
+    const im = x.getImageData(0,0,N,N), p = im.data;
+    for (let i=0;i<p.length;i+=4){ const n = (Math.random()-0.5)*26; p[i]+=n; p[i+1]+=n; p[i+2]+=n; }
+    x.putImageData(im,0,0);
+    const t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping; t.generateMipmaps = true;
+    t.minFilter = THREE.LinearMipmapLinearFilter; t.magFilter = THREE.LinearFilter;
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    return t;
+  }
+  const rough = roughTex(); rough.repeat.set(7, 2.4);
+
+  /* ── заготовка: поверхность вращения, радиус живёт в массиве ── */
+  const NX = SOFT ? 108 : 176, NC = SOFT ? 84 : 128, NC1 = NC + 1;
+  const X0 = -7.6, X1 = 7.6, DX = (X1 - X0) / (NX - 1);
+  const R_START = 3.0;
+  const rad = new Float32Array(NX).fill(R_START);
+  const wGeo = new THREE.BufferGeometry();
+  const wPos = new Float32Array(NX*NC1*3), wNor = new Float32Array(NX*NC1*3), wUv = new Float32Array(NX*NC1*2);
+  const cosT = new Float32Array(NC1), sinT = new Float32Array(NC1);
+  for (let j=0;j<NC1;j++){ const a = j/NC*Math.PI*2; cosT[j]=Math.cos(a); sinT[j]=Math.sin(a); }
+  const idx = new Uint32Array((NX-1)*NC*6);
+  { let k=0; for (let i=0;i<NX-1;i++) for (let j=0;j<NC;j++){
+      const A=i*NC1+j, B=A+1, Cc=A+NC1, D=Cc+1;
+      idx[k++]=A; idx[k++]=Cc; idx[k++]=B; idx[k++]=B; idx[k++]=Cc; idx[k++]=D; } }
+  wGeo.setIndex(new THREE.BufferAttribute(idx,1));
+  wGeo.setAttribute('position', new THREE.BufferAttribute(wPos,3));
+  wGeo.setAttribute('normal', new THREE.BufferAttribute(wNor,3));
+  wGeo.setAttribute('uv', new THREE.BufferAttribute(wUv,2));
+  function rows(lo, hi){
+    lo = Math.max(0,lo); hi = Math.min(NX-1,hi);
+    for (let i=lo;i<=hi;i++){
+      const x = X0 + i*DX, r = rad[i];
+      const dr = ((rad[Math.min(NX-1,i+1)] - rad[Math.max(0,i-1)]) / (2*DX));
+      const inv = 1/Math.sqrt(1+dr*dr);
+      for (let j=0;j<NC1;j++){
+        const o = (i*NC1+j)*3;
+        wPos[o]=x; wPos[o+1]=r*cosT[j]; wPos[o+2]=r*sinT[j];
+        wNor[o]=-dr*inv; wNor[o+1]=cosT[j]*inv; wNor[o+2]=sinT[j]*inv;
+        const u=(i*NC1+j)*2; wUv[u]=j/NC; wUv[u+1]=(x-X0)/(X1-X0);
+      }
+    }
+    wGeo.attributes.position.needsUpdate = true;
+    wGeo.attributes.normal.needsUpdate = true;
+    wGeo.attributes.uv.needsUpdate = true;
+  }
+  rows(0, NX-1);
+  const steelMat = new THREE.MeshPhysicalMaterial({
+    color: 0x666c74, metalness: 1.0, roughness: 0.52, roughnessMap: rough,
+    anisotropy: 0.55, anisotropyRotation: Math.PI/2, envMapIntensity: 0.9 });
+  const work = new THREE.Mesh(wGeo, steelMat); scene.add(work);
+
+  /* торец и пруток за кадром */
+  const stub = new THREE.Mesh(new THREE.CylinderGeometry(R_START*1.02, R_START*1.02, 2.6, 48, 1, false),
+    new THREE.MeshPhysicalMaterial({color:0x4a4f57, metalness:1, roughness:0.62}));
+  stub.rotation.z = Math.PI/2; stub.position.x = X0 - 1.3; scene.add(stub);
+
+  /* ── станина ── */
+  const bed = new THREE.Mesh(new THREE.PlaneGeometry(60, 40),
+    new THREE.MeshPhysicalMaterial({color:0x0b0d10, metalness:0.2, roughness:0.95}));
+  bed.rotation.x = -Math.PI/2; bed.position.y = -6.6; scene.add(bed);
+
+  /* ── резец ── */
+  const holder = new THREE.Group();
+  const sh = new THREE.Shape();
+  const A80 = 40*Math.PI/180, LN = 0.6;
+  sh.moveTo(0,0);
+  sh.lineTo(LN*Math.cos(A80), LN*Math.sin(A80));
+  sh.lineTo(LN*Math.cos(A80)*2, 0);
+  sh.lineTo(LN*Math.cos(A80), -LN*Math.sin(A80));
+  sh.closePath();
+  const insG = new THREE.ExtrudeGeometry(sh, {depth:0.24, bevelEnabled:true, bevelSize:0.028, bevelThickness:0.028, bevelSegments:2});
+  insG.translate(0, 0, -0.12);
+  const insert = new THREE.Mesh(insG, new THREE.MeshPhysicalMaterial({
+    color: 0xd8ae52, metalness: 0.62, roughness: 0.40, envMapIntensity: 1.35, clearcoat: 0.85, clearcoatRoughness: 0.18 }));
+  insert.rotation.z = -0.5;
+  holder.add(insert);
+  scene.add(holder);
+  const shank = new THREE.Mesh(new THREE.BoxGeometry(2.7, 0.46, 0.42),
+    new THREE.MeshPhysicalMaterial({color:0x343a42, metalness:0.85, roughness:0.55}));
+  shank.position.set(1.62, -0.54, -0.02); holder.add(shank);
+
+  /* ── стружка ── */
+  const MAXST = SOFT ? 220 : 460;
+  const chGeo = new THREE.BufferGeometry();
+  const chPos = new Float32Array(MAXST*8*3), chNor = new Float32Array(MAXST*8*3);
+  const chOx = new Float32Array(MAXST*8), chGl = new Float32Array(MAXST*8);
+  const chIdx = new Uint32Array((MAXST-1)*4*6);
+  { let k=0; for (let i=0;i<MAXST-1;i++){ const a=i*8, b=(i+1)*8;
+      for (let f=0;f<4;f++){ const p=f*2;
+        chIdx[k++]=a+p; chIdx[k++]=b+p; chIdx[k++]=a+p+1;
+        chIdx[k++]=a+p+1; chIdx[k++]=b+p; chIdx[k++]=b+p+1; } } }
+  chGeo.setIndex(new THREE.BufferAttribute(chIdx,1));
+  chGeo.setAttribute('position', new THREE.BufferAttribute(chPos,3));
+  chGeo.setAttribute('normal', new THREE.BufferAttribute(chNor,3));
+  chGeo.setAttribute('aOx', new THREE.BufferAttribute(chOx,1));
+  chGeo.setAttribute('aGl', new THREE.BufferAttribute(chGl,1));
+
+  const chipUni = { uD:{value:52}, uN:{value:2.4}, uHot:{value:0} };
+  function chipMat(){
+    const m = new THREE.MeshPhysicalMaterial({color:0xb2b8c0, metalness:1, roughness:0.30, side:THREE.DoubleSide, envMapIntensity:1.05});
+    m.onBeforeCompile = (sr) => {
+      sr.uniforms.uD = chipUni.uD; sr.uniforms.uN = chipUni.uN; sr.uniforms.uHot = chipUni.uHot;
+      sr.vertexShader = 'attribute float aOx;\nattribute float aGl;\nvarying float vOx;\nvarying float vGl;\n' +
+        sr.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n vOx = aOx; vGl = aGl;');
+      sr.fragmentShader = 'uniform float uD;\nuniform float uN;\nuniform float uHot;\nvarying float vOx;\nvarying float vGl;\n' +
+        sr.fragmentShader.replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+        {
+          vec3 Vv = normalize(vViewPosition);
+          float ci = clamp(abs(dot(normalize(normal), Vv)), 0.04, 1.0);
+          float si = sqrt(max(0.0, 1.0 - ci*ci)) / uN;
+          float cr = sqrt(max(0.0, 1.0 - si*si));
+          float dn = uD * vOx;
+          float dl = 2.0 * uN * dn * cr;
+          vec3 ph = 6.2831853 * dl / vec3(630.0, 532.0, 465.0);
+          vec3 cs = cos(ph);
+          float r1 = 0.28, r2 = 0.66;
+          vec3 num = vec3(r1*r1 + r2*r2) + 2.0*r1*r2*cs;
+          vec3 den = vec3(1.0 + r1*r1*r2*r2) + 2.0*r1*r2*cs;
+          diffuseColor.rgb *= clamp(num/max(den, vec3(1e-4)) / 0.6294, 0.0, 1.35);
+          totalEmissiveRadiance += vec3(1.0, 0.30, 0.07) * uHot * vGl * 1.85;
+        }`);
+    };
+    return m;
+  }
+  const chip = new THREE.Mesh(chGeo, chipMat()); chip.frustumCulled = false; scene.add(chip);
+
+  /* обломки */
+  const POOL = SOFT ? 3 : 6, shards = [];
+  for (let i=0;i<POOL;i++){
+    const g = new THREE.BufferGeometry();
+    g.setIndex(new THREE.BufferAttribute(chIdx.slice(),1));
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(MAXST*8*3),3));
+    g.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(MAXST*8*3),3));
+    g.setAttribute('aOx', new THREE.BufferAttribute(new Float32Array(MAXST*8),1));
+    g.setAttribute('aGl', new THREE.BufferAttribute(new Float32Array(MAXST*8),1));
+    const m = chipMat(); m.transparent = true; m.opacity = 0;
+    const mesh = new THREE.Mesh(g, m); mesh.frustumCulled = false; mesh.visible = false; scene.add(mesh);
+    shards.push({mesh, vel:new THREE.Vector3(), spin:new THREE.Vector3(), life:0});
+  }
+  let shardI = 0;
+
+  /* ── искры и дым ── */
+  const NP = SOFT ? 70 : 300;
+  const pPos = new Float32Array(NP*3), pLife = new Float32Array(NP), pKind = new Float32Array(NP), pSize = new Float32Array(NP);
+  const pVel = new Float32Array(NP*3);
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
+  pGeo.setAttribute('aLife', new THREE.BufferAttribute(pLife,1));
+  pGeo.setAttribute('aKind', new THREE.BufferAttribute(pKind,1));
+  pGeo.setAttribute('aSize', new THREE.BufferAttribute(pSize,1));
+  const pMat = new THREE.ShaderMaterial({
+    uniforms:{ uPx:{value:1}, uHot:{value:0} },
+    vertexShader:`attribute float aLife; attribute float aKind; attribute float aSize;
+      varying float vL; varying float vK; uniform float uPx;
+      void main(){ vL = aLife; vK = aKind;
+        vec4 mv = modelViewMatrix * vec4(position,1.0);
+        gl_Position = projectionMatrix * mv;
+        gl_PointSize = max(2.4, aSize * uPx * 420.0 / max(0.001, -mv.z)); }`,
+    fragmentShader:`varying float vL; varying float vK; uniform float uHot;
+      void main(){
+        vec2 d = gl_PointCoord - 0.5;
+        float r = length(d) * 2.0;
+        float a = smoothstep(1.0, 0.05, r);
+        if (a <= 0.003) discard;
+        vec3 spark = mix(vec3(1.0,0.36,0.08), vec3(1.0,0.86,0.62), pow(vL,2.2)) * (0.7 + 1.9*vL);
+        vec3 smoke = vec3(0.30,0.34,0.42);
+        vec3 c = mix(spark, smoke, vK);
+        float al = mix(a*vL, a*vL*0.20*uHot, vK);
+        gl_FragColor = vec4(c, al);
+      }`,
+    transparent:true, depthWrite:false, blending:THREE.NormalBlending });
+  const pts = new THREE.Points(pGeo, pMat); pts.frustumCulled = false; scene.add(pts);
+
+  /* ── постобработка ── */
+  const MSAA = renderer.capabilities.maxSamples >= 4 ? 4 : 0;
+  const rt = new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType, minFilter:THREE.LinearFilter,
+    magFilter:THREE.LinearFilter, samples:MSAA});
+  const composer = new THREE.EffectComposer(renderer, rt);
+  composer.addPass(new THREE.RenderPass(scene, camera));
+  const BLOOM = 0.5;
+  const bloom = new THREE.UnrealBloomPass(new THREE.Vector2(innerWidth*BLOOM, innerHeight*BLOOM), 0.30, 0.62, 1.35);
+  composer.addPass(bloom);
+  const grade = new THREE.ShaderPass({
+    uniforms:{ tDiffuse:{value:null}, uTime:{value:0}, uGrain:{value:0.05}, uVig:{value:0.5}, uAb:{value:1.0} },
+    vertexShader:`varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader:`precision highp float;
+      uniform sampler2D tDiffuse; uniform float uTime, uGrain, uVig, uAb; varying vec2 vUv;
+      void main(){
+        vec2 uv = vUv, d = uv - 0.5; float r2 = dot(d,d);
+        vec2 off = d * uAb * 0.0016 * (0.22 + r2*2.4);
+        vec3 c;
+        c.r = texture2D(tDiffuse, uv + off).r;
+        c.g = texture2D(tDiffuse, uv).g;
+        c.b = texture2D(tDiffuse, uv - off).b;
+        c *= 1.0 - uVig * smoothstep(0.04, 0.66, r2);
+        float n = fract(sin(dot(uv*437.0 + uTime, vec2(12.9898,78.233))) * 43758.5453);
+        float lum = clamp(dot(c, vec3(0.2126,0.7152,0.0722)), 0.0, 1.0);
+        c += (n - 0.5) * uGrain * (0.14 + 0.86*sqrt(lum));
+        gl_FragColor = vec4(max(c, 0.0), 1.0);
+      }` });
+  composer.addPass(grade);
+  composer.addPass(new THREE.OutputPass());
+
+  /* ── состояние станка ── */
+  const M = { xt: 3.4, rc: R_START, pass: 1, parts: 0, dir: -1, retract: 0, chipL: 0, spin: 0 };
+  let A = null, S = null;
+  const U = new THREE.Vector3(0, 0.6, 0.8).normalize();
+  const cut = new THREE.Vector3(), T = new THREE.Vector3(), N = new THREE.Vector3(), B = new THREE.Vector3();
+  const tmp = new THREE.Vector3();
+
+  function target(){ return Math.max(2.0, R_START - 0.1 * (window.__chipState ? window.__chipState.t : 2) * M.pass); }
+
+  function buildChip(a2u, bu, Ru, Lu, glowRate){
+    const ds = Math.max(Ru/9, Lu/MAXST);
+    const n = Math.max(2, Math.min(MAXST, Math.floor(Lu/ds) + 1));
+    cut.copy(U).multiplyScalar(M.rc); cut.x = M.xt;
+    T.set(-0.0986, 0.948, -0.300).normalize();
+    B.copy(T).cross(U).normalize();
+    N.copy(B).cross(T).normalize();
+    const kap = 1/Ru, tau = 0.1051/Ru;
+    const P = cut.clone(), ht = a2u/2, hw = bu/2;
+    for (let i=0;i<n;i++){
+      const o = i*8*3, oa = i*8;
+      const age = (i*ds*10)/Math.max(1, glowRate);
+      const ox = Math.sqrt(Math.min(1, Math.max(0.04, age/0.34)));
+      const gl = Math.exp(-age/0.30);
+      for (let f=0; f<4; f++){
+        const useN = f < 2;
+        for (let e=0;e<2;e++){
+          const vi = o + (f*2+e)*3;
+          const s1 = useN ? (f===0?1:-1) : (e===0?1:-1);
+          const s2 = useN ? (e===0?1:-1) : (f===2?1:-1);
+          chPos[vi]   = P.x + (useN? N.x*ht*s1 + B.x*hw*s2 : N.x*ht*s1 + B.x*hw*s2);
+          chPos[vi+1] = P.y + (useN? N.y*ht*s1 + B.y*hw*s2 : N.y*ht*s1 + B.y*hw*s2);
+          chPos[vi+2] = P.z + (useN? N.z*ht*s1 + B.z*hw*s2 : N.z*ht*s1 + B.z*hw*s2);
+          const nx = useN ? N.x*s1 : B.x*s2, ny = useN ? N.y*s1 : B.y*s2, nz = useN ? N.z*s1 : B.z*s2;
+          chNor[vi]=nx; chNor[vi+1]=ny; chNor[vi+2]=nz;
+          chOx[oa+f*2+e] = ox; chGl[oa+f*2+e] = gl;
+        }
+      }
+      /* шаг вдоль кривой с постоянной кривизной и кручением */
+      P.addScaledVector(T, ds);
+      tmp.copy(N).multiplyScalar(kap*ds); T.add(tmp).normalize();
+      tmp.copy(T).multiplyScalar(-kap*ds); N.add(tmp);
+      tmp.copy(B).multiplyScalar(tau*ds); N.add(tmp).normalize();
+      B.copy(T).cross(N).normalize();
+      N.copy(B).cross(T).normalize();
+    }
+    chGeo.attributes.position.needsUpdate = true; chGeo.attributes.normal.needsUpdate = true;
+    chGeo.attributes.aOx.needsUpdate = true; chGeo.attributes.aGl.needsUpdate = true;
+    chGeo.setDrawRange(0, Math.max(0,(n-1))*24);
+    return n;
+  }
+
+  function breakOff(n){
+    const sd = shards[shardI]; shardI = (shardI+1)%POOL;
+    const g = sd.mesh.geometry;
+    g.attributes.position.array.set(chPos.subarray(0, n*8*3));
+    g.attributes.normal.array.set(chNor.subarray(0, n*8*3));
+    g.attributes.aOx.array.set(chOx.subarray(0, n*8));
+    g.attributes.aGl.array.set(chGl.subarray(0, n*8));
+    for (const k of ['position','normal','aOx','aGl']) g.attributes[k].needsUpdate = true;
+    g.setDrawRange(0, Math.max(0,(n-1))*24);
+    sd.mesh.position.set(0,0,0); sd.mesh.rotation.set(0,0,0);
+    sd.mesh.visible = true; sd.mesh.material.opacity = 1; sd.life = 0;
+    sd.vel.set((Math.random()-0.5)*1.1, 0.6+Math.random()*0.8, 1.0+Math.random()*0.9);
+    sd.spin.set((Math.random()-0.5)*3.4, (Math.random()-0.5)*3.4, (Math.random()-0.5)*3.4);
+  }
+
+  let sparkAcc = 0;
+  function spawn(i, hot, a2u){
+    const r = M.rc;
+    pPos[i*3] = M.xt + (Math.random()-0.5)*0.3;
+    pPos[i*3+1] = U.y*r + (Math.random()-0.5)*0.2;
+    pPos[i*3+2] = U.z*r + (Math.random()-0.5)*0.2;
+    const smoke = hot > 0.35 && Math.random() < 0.32;
+    pKind[i] = smoke ? 1 : 0;
+    pSize[i] = smoke ? 0.55 + Math.random()*0.5 : 0.05 + Math.random()*0.07;
+    pLife[i] = 1;
+    const sp = smoke ? 0.5 : 2.2 + Math.random()*2.6;
+    pVel[i*3]   = (-0.25 + (Math.random()-0.5)*0.9) * sp;
+    pVel[i*3+1] = (0.55 + Math.random()*0.7) * sp * (smoke?1.5:1);
+    pVel[i*3+2] = (0.72 + Math.random()*0.6) * sp;
+  }
+
+  function resize(){
+    const w = innerWidth, h = innerHeight;
+    camera.aspect = w/h;
+    const wide = w/h >= 1.15;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+    composer.setSize(w, h);
+    bloom.setSize(Math.max(160, w*BLOOM), Math.max(160, h*BLOOM));
+    pMat.uniforms.uPx.value = renderer.getPixelRatio() * (wide ? 1 : 0.85);
+    camera.userData.wide = wide;
+  }
+  addEventListener('resize', resize, {passive:true});
+  resize();
+
+  const api = { update(st, an){ S = st; A = an;
+    chipUni.uD.value = an.d;
+    chipUni.uHot.value = Math.max(0, Math.min(1, (an.th - 640)/260));
+    pMat.uniforms.uHot.value = chipUni.uHot.value;
+    zone.color.setRGB(1, 0.42 - 0.2*chipUni.uHot.value, 0.16 + 0.34*chipUni.uHot.value);
+    zone.intensity = 0.55 + 2.1*Math.min(1, an.th/900);
+  } };
+  window.__chipScene = api;
+  api.update(window.__chipState, solveLocal());
+  function solveLocal(){ return window.__chipLast || {d:52, th:680, a2:0.32, b:2.0, R:1.7, Lb:9, vc:115, Fc:1200, CB:1.05}; }
+
+  let last = performance.now(), acc = 0;
+  function frame(now){
+    const dt = Math.min(0.05, (now - last)/1000); last = now;
+    step(dt, now/1000);
+    composer.render();
+    if (!REDUCED) requestAnimationFrame(frame);
+  }
+
+  function step(dt, tsec){
+    const st = window.__chipState || {v:170,s:0.22,t:2};
+    const an = A || {};
+    const a2u = (an.a2 || 0.32)/10, bu = (an.b || 2)/10, Ru = (an.R || 1.7)/10, Lbu = (an.Lb || 9)/10;
+    const hot = chipUni.uHot.value;
+
+    /* вращение шпинделя, замедлено */
+    const rpm = 1000*st.v/(Math.PI*Math.max(1, M.rc*20));
+    M.spin += (rpm/60/45) * Math.PI*2 * dt;
+    work.rotation.x = M.spin; stub.rotation.x = M.spin;
+
+    /* подача каретки, ускорена */
+    const feedMMs = st.s * rpm / 60 * 260 / 1000;   /* мм/с сценического времени */
+    const chat = (an.Fc > 3000 || an.CB > 1.45) ? 0.012*Math.sin(tsec*46) : 0;
+    if (M.retract > 0){
+      M.retract -= dt;
+      if (M.retract <= 0){ M.retract = 0; M.dir = -1; }
+    } else {
+      M.xt += M.dir * feedMMs/10 * dt;
+      const i0 = Math.round((M.xt - X0)/DX);
+      const tr = target();
+      let lo = 1e9, hi = -1e9;
+      for (let i=Math.max(0,i0-1); i<=Math.min(NX-1, i0+1); i++){
+        if (rad[i] > tr){ rad[i] = tr + chat; lo = Math.min(lo,i); hi = Math.max(hi,i); }
+      }
+      if (hi >= lo) rows(lo-1, hi+1);
+      if (M.xt < X0 + 2.4){
+        M.pass++; M.retract = 0.5; M.xt = 3.4;
+        if (target() <= 2.42){
+          M.parts++; M.pass = 1; rad.fill(R_START); rows(0, NX-1);
+        }
+      }
+    }
+    M.rc = target();
+
+    /* резец: базис по нормали передней поверхности */
+    cut.copy(U).multiplyScalar(M.rc); cut.x = M.xt;
+    const back = M.retract > 0 ? 0.55 * Math.sin(Math.PI * Math.min(1, M.retract / 0.5)) : 0;
+    holder.position.copy(cut).addScaledVector(U, 0.03 + back);
+    holder.position.y += chat*3;
+    holder.rotation.set(-1.02, -0.22, 0);
+
+
+    /* стружка */
+    if (M.chipL <= 0 && an.Lb) M.chipL = an.Lb * 0.62;
+    const rate = (an.vc || 115)*1000/60/120;   /* мм/с сценического времени */
+    M.chipL += rate * dt;
+    if (M.chipL > (an.Lb || 9)){
+      const n = buildChip(a2u, bu, Ru, Math.min(M.chipL, an.Lb||9)/10, rate);
+      breakOff(n); M.chipL = 0.6;
+    }
+    const nSt = buildChip(a2u, bu, Ru, Math.max(0.05, M.chipL/10), rate);
+
+    /* обломки падают */
+    for (const sd of shards){
+      if (!sd.mesh.visible) continue;
+      sd.life += dt;
+      sd.vel.y -= 9.2*dt;
+      sd.mesh.position.addScaledVector(sd.vel, dt);
+      sd.mesh.rotation.x += sd.spin.x*dt; sd.mesh.rotation.y += sd.spin.y*dt; sd.mesh.rotation.z += sd.spin.z*dt;
+      if (sd.mesh.position.y < -3.0){ sd.vel.y *= -0.24; sd.vel.x *= 0.6; sd.vel.z *= 0.6;
+        sd.mesh.position.y = -3.0; sd.spin.multiplyScalar(0.5); }
+      sd.mesh.material.opacity = Math.max(0, 1 - Math.max(0, sd.life-1.7)/1.1);
+      if (sd.life > 3.0) sd.mesh.visible = false;
+    }
+
+    /* искры */
+    sparkAcc += dt * (8 + 46*Math.min(1, (an.th||680)/900) + (an.CB>1.45?34:0));
+    let born = Math.floor(sparkAcc); sparkAcc -= born;
+    for (let i=0;i<NP && born>0;i++) if (pLife[i] <= 0){ spawn(i, hot, a2u); born--; }
+    for (let i=0;i<NP;i++){
+      if (pLife[i] <= 0){ pSize[i] = 0; continue; }
+      const k = pKind[i] > 0.5;
+      pLife[i] -= dt * (k ? 0.75 : 2.1);
+      pVel[i*3+1] -= (k ? -0.4 : 7.4) * dt;
+      pPos[i*3] += pVel[i*3]*dt; pPos[i*3+1] += pVel[i*3+1]*dt; pPos[i*3+2] += pVel[i*3+2]*dt;
+      if (pLife[i] < 0) pLife[i] = 0;
+    }
+    pGeo.attributes.position.needsUpdate = true; pGeo.attributes.aLife.needsUpdate = true;
+    pGeo.attributes.aKind.needsUpdate = true; pGeo.attributes.aSize.needsUpdate = true;
+
+    zone.position.copy(cut).addScaledVector(U, 0.12);
+    grade.uniforms.uTime.value = tsec;
+
+    /* камера идёт за кареткой */
+    const wide = camera.userData.wide !== false;
+    const d = wide ? 12.6 : 15.8;
+    camera.position.set(M.xt + 0.26*d, M.rc*U.y + 0.23*d, M.rc*U.z + 0.94*d);
+    camera.lookAt(cut.x, cut.y, cut.z);
+    const th13 = Math.tan(13*Math.PI/180);
+    camera.rotateY(Math.atan((wide?0.06:0.02) * camera.aspect * th13));
+    camera.rotateX(Math.atan((wide?0.05:0.26) * th13));
+  }
+
+  if (REDUCED){
+    step(0.016, 1.0);
+    M.chipL = (A && A.Lb ? A.Lb : 20) * 0.8;
+    step(0.016, 1.4);
+    M.xt = 1.9; for (let i=0;i<24;i++){ const r=Math.round((3.4 - i*0.062 - X0)/DX); if(rad[r]>2.8) rad[r]=2.8; }
+    rows(0, NX-1);
+    step(0.016, 2.0);
+    composer.render();
+  } else requestAnimationFrame(frame);
+}
+</script>
+</body>
+</html>

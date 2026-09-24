@@ -1,0 +1,1288 @@
+<!-- vau-stranitsa · силуэт: скролл-трек · предмет: пластина и песок · система: спектр мод · техника: GPGPU + Web Audio -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nodal Lines — a steel plate, a bow, and the sand that draws the note</title>
+<meta name="description" content="Scroll sweeps the plate from 180 to 2340 Hz. On every resonance 262 144 grains of sand settle onto the nodal lines of that exact mode, computed live on the GPU from the Chladni approximation.">
+<meta name="theme-color" content="#07080a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2307080a'/%3E%3Cpath d='M4 16h24M16 4v24' stroke='%23d08a4e' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"></noscript>
+<style>
+:root{
+  --ground:#07080a;
+  --panel:#0d0f12;
+  --edge:#171a1e;
+  --bone:#e9e7e2;
+  --amber:#d08a4e;
+  --steel:#79a6dd;
+  --gap:clamp(20px,4.4vw,64px);
+  --hair:1px solid rgba(233,231,226,0.09);
+  --fs-cap:12.5px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  background:var(--ground);color:var(--bone);
+  font-family:'Geist',sans-serif;font-weight:400;font-size:16px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;overflow-x:clip;
+}
+::selection{background:rgba(208,138,78,0.3);color:var(--bone)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:2px}
+
+.mono{font-family:'Geist Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.cap{font-family:'Geist Mono',ui-monospace,monospace;font-size:var(--fs-cap);
+  letter-spacing:0.13em;text-transform:uppercase;color:rgba(233,231,226,0.42)}
+.serif{font-family:'Instrument Serif',serif;font-weight:400;font-style:italic}
+
+/* ── лоадер ───────────────────────────────────────────────── */
+#loader{position:fixed;inset:0;z-index:90;background:var(--ground);
+  display:grid;place-items:center;transform:translateY(0);
+  transition:transform 560ms cubic-bezier(0.65,0,0.35,1)}
+#loader.out{transform:translateY(-100%)}
+#loader .in{width:min(420px,72vw);opacity:1;
+  transition:opacity 460ms cubic-bezier(0.65,0,0.35,1),transform 460ms cubic-bezier(0.65,0,0.35,1)}
+#loader.out .in{opacity:0;transform:translateY(-14px)}
+#loader .wm{font-size:clamp(28px,4vw,44px);font-weight:500;letter-spacing:-0.03em;line-height:1}
+#loader .bar{height:1px;background:rgba(233,231,226,0.12);margin:20px 0 10px;position:relative}
+#loader .bar i{position:absolute;inset:0 auto 0 0;width:0;background:var(--bone);display:block}
+#loader .row{display:flex;justify-content:space-between;align-items:baseline}
+
+/* ── сцена ────────────────────────────────────────────────── */
+#stage{position:fixed;inset:0;z-index:0;background:var(--ground)}
+#gl{width:100%;height:100%;display:block;opacity:0}
+body.ready #gl{animation:fadeIn 1500ms cubic-bezier(0.65,0,0.35,1) 260ms both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+#stage.dim{opacity:0.0;transition:opacity 600ms cubic-bezier(0.19,1,0.22,1)}
+#nogl{position:absolute;inset:0;display:none;place-items:center;padding:var(--gap)}
+#nogl.on{display:grid}
+#nogl canvas{width:min(52vh,420px);height:min(52vh,420px);opacity:0.9;
+  border:var(--hair);background:rgba(13,15,18,0.5)}
+#nogl .txt{max-width:34ch;margin-top:18px;color:rgba(233,231,226,0.58);font-size:14px}
+#lost{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:none;
+  padding:10px 16px;border:var(--hair);background:rgba(13,15,18,0.82)}
+#lost.on{display:block}
+
+/* ── шапка ────────────────────────────────────────────────── */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;
+  justify-content:space-between;gap:16px;padding:18px var(--gap);
+  border-bottom:1px solid rgba(233,231,226,0.06);
+  background:linear-gradient(rgba(7,8,10,0.94),rgba(7,8,10,0.66) 62%,rgba(7,8,10,0.0));
+  backdrop-filter:blur(8px)}
+body.ready .hdr{animation:slideDown 700ms cubic-bezier(0.19,1,0.22,1) 120ms both}
+@keyframes slideDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+.hdr__mark{font-weight:500;letter-spacing:-0.02em;font-size:15px;display:flex;align-items:center;gap:10px}
+body.ready .hdr__mark{animation:rise 720ms cubic-bezier(0.19,1,0.22,1) 200ms both}
+.hdr__nav{display:flex;gap:22px;align-items:center;margin-left:auto;margin-right:6px}
+body.ready .hdr__nav{animation:rise 720ms cubic-bezier(0.19,1,0.22,1) 280ms both}
+.hdr__nav a{position:relative;font-size:13px;color:rgba(233,231,226,0.5);padding-bottom:3px}
+.hdr__nav a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;
+  background:var(--amber);transition:width 420ms cubic-bezier(0.19,1,0.22,1)}
+.hdr__nav a:hover{color:rgba(233,231,226,0.92)}
+.hdr__nav a:hover::after{width:100%}
+
+.dot{width:7px;height:7px;border-radius:50%;background:var(--amber);position:relative;flex:none;
+  animation:pulse 2400ms cubic-bezier(0.19,1,0.22,1) infinite}
+.dot::after{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid var(--amber);
+  animation:wave 2400ms cubic-bezier(0.19,1,0.22,1) infinite}
+@keyframes pulse{0%,100%{opacity:0.5;transform:scale(0.85)}50%{opacity:1;transform:scale(1.1)}}
+@keyframes wave{0%{transform:scale(0.7);opacity:0.66}100%{transform:scale(3);opacity:0}}
+
+.snd{display:flex;align-items:center;gap:10px;padding:7px 13px 7px 11px;
+  border:1px solid rgba(233,231,226,0.14);border-radius:999px;
+  font-family:'Geist Mono',ui-monospace,monospace;font-size:var(--fs-cap);letter-spacing:0.08em;
+  text-transform:uppercase;color:rgba(233,231,226,0.58);
+  transition:border-color 300ms,color 300ms,background-color 300ms}
+body.ready .snd{animation:rise 720ms cubic-bezier(0.19,1,0.22,1) 360ms both}
+.snd:hover{border-color:rgba(233,231,226,0.42);color:rgba(233,231,226,0.92);background:rgba(233,231,226,0.045)}
+.snd:active{transform:translateY(1px)}
+.snd[aria-pressed="true"]{border-color:rgba(208,138,78,0.66);color:var(--amber)}
+.snd__led{width:6px;height:6px;border-radius:50%;background:rgba(233,231,226,0.26);flex:none;
+  transition:background-color 300ms,box-shadow 300ms}
+.snd[aria-pressed="true"] .snd__led{background:var(--amber);box-shadow:0 0 9px rgba(208,138,78,0.82)}
+.snd__lvl{width:34px;height:2px;background:rgba(233,231,226,0.12);position:relative;flex:none}
+.snd__lvl i{position:absolute;inset:0 auto 0 0;width:0;background:var(--amber)}
+
+/* ── общее ────────────────────────────────────────────────── */
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes riseSoft{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.ln{display:block;overflow:hidden;padding-bottom:0.08em}
+.ln>span{display:block;transform:translateY(105%);opacity:0}
+body.ready .ln>span{animation:lineUp 980ms cubic-bezier(0.19,1,0.22,1) var(--d,0ms) both}
+@keyframes lineUp{from{transform:translateY(105%);opacity:0}to{transform:none;opacity:1}}
+
+.rv{opacity:0;transform:translateY(18px);
+  transition:opacity 900ms cubic-bezier(0.19,1,0.22,1) var(--d,0ms),
+             transform 900ms cubic-bezier(0.19,1,0.22,1) var(--d,0ms)}
+.rv.in{opacity:1;transform:none}
+
+main{position:relative;z-index:1}
+
+/* ── герой ────────────────────────────────────────────────── */
+#hero{min-height:100svh;display:grid;align-content:center;
+  padding:104px var(--gap) 88px;position:relative}
+.eyebrow{margin-bottom:26px}
+body.ready .eyebrow{animation:riseSoft 760ms cubic-bezier(0.19,1,0.22,1) 420ms both}
+h1{font-size:clamp(40px,7.4vw,104px);font-weight:500;letter-spacing:-0.035em;line-height:0.98;
+  max-width:13ch}
+.h1__d3{color:rgba(233,231,226,0.34)}
+.serif-line{margin-top:28px;max-width:30ch;font-size:clamp(17px,1.55vw,23px);
+  line-height:1.42;color:rgba(233,231,226,0.66)}
+body.ready .serif-line{animation:rise 900ms cubic-bezier(0.19,1,0.22,1) 860ms both}
+.hero__meter{margin-top:40px;display:flex;align-items:flex-end;gap:26px;flex-wrap:wrap}
+.readout{line-height:0.9}
+body.ready .readout{animation:riseSoft 700ms cubic-bezier(0.19,1,0.22,1) 940ms both}
+.readout b{font-family:'Geist Mono',ui-monospace,monospace;font-weight:500;
+  font-size:clamp(34px,4.6vw,58px);letter-spacing:-0.03em;font-variant-numeric:tabular-nums}
+.readout u{text-decoration:none;font-size:15px;color:rgba(233,231,226,0.42);margin-left:8px}
+.readout__sub{margin-top:12px}
+body.ready .readout__sub{animation:riseSoft 700ms cubic-bezier(0.19,1,0.22,1) 1020ms both}
+.hint{font-size:14px;color:rgba(233,231,226,0.5);max-width:26ch;padding-left:16px;
+  border-left:1px solid rgba(233,231,226,0.16)}
+body.ready .hint{animation:riseSoft 760ms cubic-bezier(0.19,1,0.22,1) 1080ms both}
+.cue{position:absolute;left:var(--gap);bottom:34px;display:flex;align-items:center;gap:12px}
+body.ready .cue{animation:riseSoft 820ms cubic-bezier(0.19,1,0.22,1) 1240ms both}
+.cue__line{width:1px;height:34px;background:linear-gradient(rgba(233,231,226,0.5),rgba(233,231,226,0.0));
+  animation:bob 2000ms cubic-bezier(0.19,1,0.22,1) infinite}
+@keyframes bob{0%,100%{transform:scaleY(0.5);opacity:0.42}50%{transform:scaleY(1);opacity:0.9}}
+
+.cta{position:fixed;right:var(--gap);bottom:28px;z-index:20;display:inline-flex;align-items:center;
+  gap:12px;padding:12px 18px;border:1px solid rgba(233,231,226,0.2);border-radius:999px;
+  background:rgba(13,15,18,0.66);backdrop-filter:blur(8px);font-size:14px;
+  transition:background-color 320ms,color 320ms,border-color 320ms}
+body.ready .cta{animation:rise 1100ms cubic-bezier(0.34,1.16,0.4,1) 1520ms both}
+.cta span{transition:transform 320ms cubic-bezier(0.19,1,0.22,1);display:inline-block}
+.cta:hover{background:var(--bone);color:var(--ground);border-color:var(--bone)}
+.cta:hover span{transform:translateX(5px)}
+.cta:active{transform:translateY(1px)}
+
+/* ── трек ─────────────────────────────────────────────────── */
+#track{height:420vh;position:relative}
+/* верхний отступ разводит крупное число и вордмарк: шапка ~58 px плюс воздух */
+.hud{position:sticky;top:0;height:100svh;display:grid;
+  grid-template-rows:1fr auto;padding:clamp(112px,14vh,142px) var(--gap) 96px;
+  pointer-events:none}
+.hud__col{width:min(330px,42vw);pointer-events:auto}
+.hud__big{font-family:'Geist Mono',ui-monospace,monospace;font-weight:500;
+  font-size:clamp(38px,5.4vw,74px);letter-spacing:-0.035em;line-height:0.9;
+  font-variant-numeric:tabular-nums}
+.hud__mode{margin-top:10px;font-size:15px;color:rgba(233,231,226,0.58)}
+.hud__mode em{font-style:normal;color:var(--amber)}
+.hud__state{margin-top:6px;font-size:14px;color:rgba(233,231,226,0.42)}
+.hud__meter{margin-top:22px;max-width:230px}
+body.ready .hud__meter{animation:riseSoft 800ms cubic-bezier(0.19,1,0.22,1) 1180ms both}
+.meter{height:2px;background:rgba(233,231,226,0.12);position:relative;margin-top:8px}
+.meter i{position:absolute;inset:0 auto 0 0;width:0;background:var(--amber);display:block}
+.hud__scale{margin-top:30px;border-top:var(--hair);max-height:44vh;overflow:auto;
+  scrollbar-width:thin;pointer-events:auto}
+body.ready .hud__scale{animation:riseSoft 900ms cubic-bezier(0.19,1,0.22,1) 1000ms both}
+.mode{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;width:100%;
+  padding:8px 4px;border-bottom:1px solid rgba(233,231,226,0.06);text-align:left;
+  font-family:'Geist Mono',ui-monospace,monospace;font-size:var(--fs-cap);
+  color:rgba(233,231,226,0.42);
+  transition:color 300ms,background-color 300ms,padding-left 300ms}
+body.ready .mode{animation:riseSoft 640ms cubic-bezier(0.19,1,0.22,1) var(--d,0ms) both}
+.mode:hover{color:rgba(233,231,226,0.92);background:rgba(233,231,226,0.06);padding-left:10px}
+.mode:active{background:rgba(233,231,226,0.03)}
+.mode i{font-style:normal;width:2px;height:11px;background:rgba(233,231,226,0.16);display:block;
+  transition:background-color 300ms,height 300ms}
+.mode b{font-weight:400;letter-spacing:0.04em}
+.mode s{text-decoration:none;color:rgba(233,231,226,0.34);
+  transition:color 300ms,transform 300ms cubic-bezier(0.19,1,0.22,1);display:inline-block}
+.mode:hover s{transform:translateX(-3px);color:rgba(233,231,226,0.66)}
+.mode.on{color:var(--bone);background:rgba(208,138,78,0.08)}
+.mode.on i{background:var(--amber);height:17px}
+.mode.on s{color:var(--amber)}
+.hud__foot{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;pointer-events:auto}
+.plate-tag{max-width:30ch;font-size:14px;color:rgba(233,231,226,0.42)}
+body.ready .plate-tag{animation:riseSoft 700ms cubic-bezier(0.19,1,0.22,1) 1300ms both}
+
+/* ── секции ниже сцены ────────────────────────────────────── */
+.sheet{position:relative;z-index:2;background:var(--ground);border-top:var(--hair)}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(66px,8vw,118px) var(--gap)}
+h2{font-size:clamp(28px,3.6vw,50px);font-weight:500;letter-spacing:-0.03em;line-height:1.04;
+  max-width:18ch}
+.lede{margin-top:22px;max-width:62ch;color:rgba(233,231,226,0.66);font-size:clamp(15px,1.2vw,17px);
+  line-height:1.62}
+.lede+.lede{margin-top:16px}
+
+.formula{margin-top:44px;border:var(--hair);background:var(--panel);padding:clamp(20px,2.6vw,34px);
+  overflow-x:auto}
+.formula pre{font-family:'Geist Mono',ui-monospace,monospace;font-size:clamp(13px,1.15vw,16px);
+  line-height:2;color:rgba(233,231,226,0.9);white-space:pre}
+.formula .k{color:var(--amber)}
+.formula .c{color:rgba(233,231,226,0.34)}
+.formula .s{color:var(--steel)}
+.chips{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid rgba(233,231,226,0.14);padding:6px 12px;border-radius:999px;
+  font-family:'Geist Mono',ui-monospace,monospace;font-size:var(--fs-cap);
+  color:rgba(233,231,226,0.5);transition:border-color 300ms,color 300ms,background-color 300ms}
+.chip:hover{border-color:rgba(208,138,78,0.66);color:var(--amber);background:rgba(208,138,78,0.08)}
+
+.tablewrap{margin-top:52px;overflow-x:auto;border:var(--hair)}
+table{border-collapse:collapse;width:100%;min-width:640px}
+caption{text-align:left;padding:16px 18px;border-bottom:var(--hair);
+  font-family:'Geist Mono',ui-monospace,monospace;font-size:var(--fs-cap);
+  letter-spacing:0.13em;text-transform:uppercase;color:rgba(233,231,226,0.42)}
+th{text-align:left;padding:12px 18px;border-bottom:var(--hair);font-weight:400;
+  font-family:'Geist Mono',ui-monospace,monospace;font-size:var(--fs-cap);
+  letter-spacing:0.1em;text-transform:uppercase;color:rgba(233,231,226,0.34)}
+td{padding:11px 18px;border-bottom:1px solid rgba(233,231,226,0.06);
+  font-family:'Geist Mono',ui-monospace,monospace;font-size:13px;
+  color:rgba(233,231,226,0.74);font-variant-numeric:tabular-nums}
+tbody tr{transition:background-color 300ms}
+tbody tr:hover{background:rgba(233,231,226,0.045)}
+tbody tr:hover td.f{color:var(--amber)}
+td.f{color:rgba(233,231,226,0.9);transition:color 300ms}
+td.p{width:76px;padding:6px 18px}
+.mini{width:56px;height:56px;display:block;background:rgba(7,8,10,0.82);
+  border:1px solid rgba(233,231,226,0.09)}
+
+.split{margin-top:44px;display:grid;grid-template-columns:1.35fr 1fr;gap:clamp(24px,4vw,64px);
+  align-items:start}
+.split .lede{margin-top:0}
+.aside{border:var(--hair);background:var(--panel);padding:18px}
+.pl{margin-top:14px}
+.pl>div{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:baseline;
+  padding:9px 2px;border-top:1px solid rgba(233,231,226,0.06);
+  font-family:'Geist Mono',ui-monospace,monospace;font-size:13px;
+  transition:background-color 300ms,padding-left 300ms}
+.pl>div:hover{background:rgba(233,231,226,0.045);padding-left:8px}
+.pl dt{color:rgba(233,231,226,0.9)}
+.pl dd{color:rgba(233,231,226,0.34)}
+.pl dd.v{color:var(--amber);font-variant-numeric:tabular-nums}
+
+.grid3{margin-top:52px;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,30px)}
+.card{border:var(--hair);background:var(--panel);padding:clamp(14px,1.6vw,20px)}
+.card canvas{width:100%;height:auto;aspect-ratio:1;display:block;background:rgba(7,8,10,0.9)}
+.card__n{margin-top:16px;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.card h3{margin-top:10px;font-size:17px;font-weight:500;letter-spacing:-0.01em}
+.card p{margin-top:8px;font-size:14px;line-height:1.6;color:rgba(233,231,226,0.5)}
+
+/* ── футер ────────────────────────────────────────────────── */
+#foot{position:relative;z-index:2;background:var(--ground);border-top:var(--hair);overflow:hidden}
+.foot__grid{max-width:1180px;margin:0 auto;padding:clamp(56px,7vw,110px) var(--gap) 0;
+  display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}
+.foot__links{display:flex;flex-direction:column;gap:9px;align-items:flex-end}
+.foot__links a{font-size:15px;color:rgba(233,231,226,0.58);position:relative;padding-bottom:2px;
+  transition:color 300ms}
+.foot__links a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;
+  background:rgba(233,231,226,0.5);transition:width 420ms cubic-bezier(0.19,1,0.22,1)}
+.foot__links a:hover{color:var(--bone)}
+.foot__links a:hover::after{width:100%}
+.wordmark{font-size:29vw;line-height:0.76;font-weight:500;letter-spacing:-0.05em;
+  padding:0 var(--gap);color:rgba(233,231,226,0.9);user-select:none}
+.foot__base{max-width:1180px;margin:0 auto;padding:22px var(--gap) 96px;display:flex;
+  justify-content:space-between;gap:18px;flex-wrap:wrap;border-top:var(--hair)}
+
+/* ── адаптив ──────────────────────────────────────────────── */
+@media (max-width:1200px){
+  .hud__col{width:min(300px,46vw)}
+  .hud__scale{max-height:38vh}
+  h1{max-width:11ch}
+}
+@media (max-width:900px){
+  #hero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+    background:linear-gradient(rgba(7,8,10,0.92),rgba(7,8,10,0.72) 40%,rgba(7,8,10,0.0) 70%)}
+  .hud{grid-template-rows:auto;align-content:end;padding-bottom:118px}
+  .hud__col{width:100%}
+  .hud__scale{max-height:none;overflow:visible;display:grid;grid-template-columns:1fr 1fr;
+    column-gap:14px}
+  .hud__foot{display:none}
+  .grid3{grid-template-columns:1fr}
+  .split{grid-template-columns:1fr}
+  .serif-line{max-width:34ch}
+  .foot__links{align-items:flex-start}
+}
+@media (max-width:640px){
+  :root{--fs-cap:12.5px}
+  #hero{padding-top:96px;padding-bottom:120px}
+  h1{font-size:clamp(34px,10.4vw,52px);max-width:12ch}
+  .hero__meter{gap:18px;margin-top:30px}
+  .hint{font-size:13.5px;padding-left:12px}
+  .cue{bottom:96px}
+  .cta{right:auto;left:var(--gap);bottom:22px;padding:11px 15px;font-size:13.5px}
+  .hud{padding-bottom:150px}
+  .hud__big{font-size:clamp(34px,11vw,46px)}
+  .hud__mode,.hud__state{font-size:13.5px}
+  .lede{font-size:15px}
+  .card p{font-size:13.5px}
+  .foot__links a{font-size:14px}
+  .wordmark{font-size:25vw;letter-spacing:-0.05em}
+}
+@media (max-width:420px){
+  :root{--gap:18px}
+  .hdr__nav{display:none}
+  .hdr{padding:14px 18px}
+  h1{font-size:34px}
+  .hud__scale{grid-template-columns:1fr;max-height:32vh;overflow:auto}
+}
+
+/* ── prefers-reduced-motion: узел вырезается ─────────────── */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation:none !important;transition:none !important}
+  .cue,.dot,.cue__line{display:none}
+  .rv{opacity:1 !important;transform:none !important}
+  .ln>span{transform:none !important;opacity:1 !important}
+  #gl{opacity:1 !important}
+  #loader{display:none}
+}
+</style>
+
+<div id="loader" aria-hidden="true">
+  <div class="in">
+    <div class="wm">NODAL</div>
+    <div class="bar"><i id="lbar"></i></div>
+    <div class="row"><span class="cap">chladni plate · 262 144 grains</span><span class="cap mono" id="lnum">000</span></div>
+  </div>
+</div>
+
+<div id="stage">
+  <canvas id="gl"></canvas>
+  <div id="nogl">
+    <div style="text-align:center">
+      <canvas id="flat" width="440" height="440"></canvas>
+      <p class="txt">This browser has no WebGL2, so the plate is drawn flat: the curve below is the
+        exact set where the plate stands still at mode (4,3). Every number on this page is still live.</p>
+    </div>
+  </div>
+  <div id="lost" class="cap">context lost — restoring</div>
+</div>
+
+<header class="hdr">
+  <div class="hdr__mark"><span class="dot"></span>Nodal&nbsp;Lines</div>
+  <nav class="hdr__nav">
+    <a href="#calc">The maths</a>
+    <a href="#states">Three states</a>
+    <a href="#foot">Contact</a>
+  </nav>
+  <button class="snd" id="snd" aria-pressed="false">
+    <span class="snd__led"></span><span id="sndlabel">Sound off</span>
+    <span class="snd__lvl"><i id="sndlvl"></i></span>
+  </button>
+</header>
+
+<main>
+  <section id="hero">
+    <p class="cap eyebrow">Chladni plate · mode spectrum · 180 → 2340 Hz</p>
+    <h1>
+      <span class="ln" style="--d:480ms"><span>Sand draws</span></span>
+      <span class="ln" style="--d:580ms"><span>the note</span></span>
+      <span class="ln" style="--d:680ms"><span class="h1__d3">you hear.</span></span>
+    </h1>
+    <p class="serif-line"><span class="serif">A steel plate, a bow, and 262 144 grains</span>
+      that only come to rest where the plate itself stands still.</p>
+
+    <div class="hero__meter">
+      <div>
+        <div class="readout"><b id="hz">— —</b><u>Hz</u></div>
+        <p class="readout__sub cap" id="hzsub">awaiting the bow</p>
+      </div>
+      <p class="hint">Bow the edge: scroll to sweep the frequency, drag the plate to turn it,
+        press it to strike.</p>
+    </div>
+
+    <div class="cue">
+      <span class="cue__line"></span><span class="cap">scroll</span>
+    </div>
+  </section>
+
+  <section id="track" aria-label="Frequency sweep">
+    <div class="hud">
+      <div class="hud__col">
+        <div class="hud__big"><span id="thz">180</span><u class="mono" style="font-size:15px;color:rgba(233,231,226,0.42)"> Hz</u></div>
+        <p class="hud__mode">mode <em id="tmode">(2,1)</em> · m²+n² = <span id="tsum" class="mono">5</span></p>
+        <p class="hud__state" id="tstate">between modes — the grains wander</p>
+        <div class="hud__meter">
+          <span class="cap">bow pressure</span>
+          <span class="meter"><i id="bowbar"></i></span>
+        </div>
+        <div class="hud__scale" id="scale" role="list">
+          <button class="mode" role="listitem" data-i="0" style="--d:1060ms"><i></i><b>(2,1)</b><s>180</s></button>
+          <button class="mode" role="listitem" data-i="1" style="--d:1115ms"><i></i><b>(3,1)</b><s>360</s></button>
+          <button class="mode" role="listitem" data-i="2" style="--d:1170ms"><i></i><b>(3,2)</b><s>468</s></button>
+          <button class="mode" role="listitem" data-i="3" style="--d:1225ms"><i></i><b>(4,1)</b><s>612</s></button>
+          <button class="mode" role="listitem" data-i="4" style="--d:1280ms"><i></i><b>(4,2)</b><s>720</s></button>
+          <button class="mode" role="listitem" data-i="5" style="--d:1335ms"><i></i><b>(4,3)</b><s>900</s></button>
+          <button class="mode" role="listitem" data-i="6" style="--d:1390ms"><i></i><b>(5,2)</b><s>1044</s></button>
+          <button class="mode" role="listitem" data-i="7" style="--d:1445ms"><i></i><b>(5,3)</b><s>1224</s></button>
+          <button class="mode" role="listitem" data-i="8" style="--d:1500ms"><i></i><b>(6,1)</b><s>1332</s></button>
+          <button class="mode" role="listitem" data-i="9" style="--d:1555ms"><i></i><b>(6,3)</b><s>1620</s></button>
+          <button class="mode" role="listitem" data-i="10" style="--d:1610ms"><i></i><b>(7,2)</b><s>1908</s></button>
+          <button class="mode" role="listitem" data-i="11" style="--d:1665ms"><i></i><b>(7,4)</b><s>2340</s></button>
+        </div>
+      </div>
+      <div class="hud__foot">
+        <p class="plate-tag">300 × 300 × 1.2 mm plate, free edges. The sweep is linear in frequency,
+          so the modes crowd together where m²+n² grows fastest.</p>
+        <p class="cap mono" id="fps">—</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sheet" id="calc">
+    <div class="wrap">
+      <p class="cap rv">01 — how the figure is computed</p>
+      <h2 class="rv" style="--d:90ms">Nothing here is drawn by hand. The lines are the zeros of one function.</h2>
+      <p class="lede rv" style="--d:180ms">A thin square plate with free edges has, to a good first
+        approximation, standing waves of the form below. The grains bounce wherever the plate moves
+        and stay wherever it does not, so after a second and a half of bowing they have traced the
+        set ψ = 0 for you.</p>
+
+      <div class="formula rv" style="--d:270ms">
+<pre><span class="c">// displacement of the plate, x and y in [0,1]</span>
+<span class="k">ψ</span>(x, y) = cos(<span class="s">n</span>πx)·cos(<span class="s">m</span>πy) − cos(<span class="s">m</span>πx)·cos(<span class="s">n</span>πy)
+
+<span class="c">// nodal lines — where the sand settles</span>
+<span class="k">ψ</span>(x, y) = 0
+
+<span class="c">// Kirchhoff plate: frequency grows with the sum of squares</span>
+<span class="k">f</span>(<span class="s">m</span>, <span class="s">n</span>) = f₀ · (<span class="s">m</span>² + <span class="s">n</span>²),   f₀ = 36 Hz
+
+<span class="c">// what the GPU integrates for each of 262 144 grains</span>
+v.xz ← mix(v.xz, −∇|<span class="k">ψ</span>| · drift · R, 1 − e^(−6Δt))
+v.y  ← |<span class="k">ψ</span>| · A   on contact,   then  v ← v · e^(−2.6Δt)</pre>
+      </div>
+      <div class="chips rv" style="--d:360ms">
+        <span class="chip">512 × 512 GPGPU texture</span>
+        <span class="chip">∇|ψ| by central differences, h = 0.0035</span>
+        <span class="chip">R = resonance weight, e^(−((f−f₍ₘₙ₎)/w)²)</span>
+        <span class="chip">A = bow amplitude</span>
+      </div>
+
+      <div class="tablewrap rv" style="--d:450ms">
+        <table>
+          <caption>Twelve modes used on this page · f₀ = 36 Hz</caption>
+          <thead><tr><th>#</th><th>m</th><th>n</th><th>m²+n²</th><th>f, Hz</th><th>nodal figure</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td>2</td><td>1</td><td>5</td><td class="f">180</td><td class="p"><canvas class="mini" width="112" height="112" data-m="2" data-n="1" aria-hidden="true"></canvas></td></tr>
+            <tr><td>02</td><td>3</td><td>1</td><td>10</td><td class="f">360</td><td class="p"><canvas class="mini" width="112" height="112" data-m="3" data-n="1" aria-hidden="true"></canvas></td></tr>
+            <tr><td>03</td><td>3</td><td>2</td><td>13</td><td class="f">468</td><td class="p"><canvas class="mini" width="112" height="112" data-m="3" data-n="2" aria-hidden="true"></canvas></td></tr>
+            <tr><td>04</td><td>4</td><td>1</td><td>17</td><td class="f">612</td><td class="p"><canvas class="mini" width="112" height="112" data-m="4" data-n="1" aria-hidden="true"></canvas></td></tr>
+            <tr><td>05</td><td>4</td><td>2</td><td>20</td><td class="f">720</td><td class="p"><canvas class="mini" width="112" height="112" data-m="4" data-n="2" aria-hidden="true"></canvas></td></tr>
+            <tr><td>06</td><td>4</td><td>3</td><td>25</td><td class="f">900</td><td class="p"><canvas class="mini" width="112" height="112" data-m="4" data-n="3" aria-hidden="true"></canvas></td></tr>
+            <tr><td>07</td><td>5</td><td>2</td><td>29</td><td class="f">1044</td><td class="p"><canvas class="mini" width="112" height="112" data-m="5" data-n="2" aria-hidden="true"></canvas></td></tr>
+            <tr><td>08</td><td>5</td><td>3</td><td>34</td><td class="f">1224</td><td class="p"><canvas class="mini" width="112" height="112" data-m="5" data-n="3" aria-hidden="true"></canvas></td></tr>
+            <tr><td>09</td><td>6</td><td>1</td><td>37</td><td class="f">1332</td><td class="p"><canvas class="mini" width="112" height="112" data-m="6" data-n="1" aria-hidden="true"></canvas></td></tr>
+            <tr><td>10</td><td>6</td><td>3</td><td>45</td><td class="f">1620</td><td class="p"><canvas class="mini" width="112" height="112" data-m="6" data-n="3" aria-hidden="true"></canvas></td></tr>
+            <tr><td>11</td><td>7</td><td>2</td><td>53</td><td class="f">1908</td><td class="p"><canvas class="mini" width="112" height="112" data-m="7" data-n="2" aria-hidden="true"></canvas></td></tr>
+            <tr><td>12</td><td>7</td><td>4</td><td>65</td><td class="f">2340</td><td class="p"><canvas class="mini" width="112" height="112" data-m="7" data-n="4" aria-hidden="true"></canvas></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="split">
+        <p class="lede rv" style="--d:540ms">The audible tone is built from the same numbers: the
+          fundamental is f(m,n), and the three partials above it are f(m+1,n), f(m,n+1) and f(m+1,n+1)
+          — which is why the timbre thins out as the sweep climbs. Sound stays off until you switch it on.</p>
+        <aside class="aside rv" style="--d:630ms">
+          <p class="cap">partials at mode (4,3)</p>
+          <dl class="pl">
+            <div><dt>f(4,3)</dt><dd>fundamental</dd><dd class="v">900 Hz</dd></div>
+            <div><dt>f(5,3)</dt><dd>partial 1</dd><dd class="v">1224 Hz</dd></div>
+            <div><dt>f(4,4)</dt><dd>partial 2</dd><dd class="v">1152 Hz</dd></div>
+            <div><dt>f(5,4)</dt><dd>partial 3</dd><dd class="v">1476 Hz</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="sheet" id="states">
+    <div class="wrap">
+      <p class="cap rv">02 — three states of the same plate</p>
+      <h2 class="rv" style="--d:90ms">Off resonance, on resonance, and one second after a strike.</h2>
+      <div class="grid3">
+        <div class="card rv" style="--d:180ms">
+          <canvas class="cmp" width="420" height="420" data-state="scatter" data-m="4" data-n="3" aria-hidden="true"></canvas>
+          <div class="card__n"><span class="cap">01</span><span class="cap mono">742 Hz</span></div>
+          <h3>Between modes</h3>
+          <p>No mode is close, so the plate has no still places. The grains take a slow random walk
+            and the layer stays even.</p>
+        </div>
+        <div class="card rv" style="--d:270ms">
+          <canvas class="cmp" width="420" height="420" data-state="node" data-m="4" data-n="3" aria-hidden="true"></canvas>
+          <div class="card__n"><span class="cap">02</span><span class="cap mono">900 Hz</span></div>
+          <h3>On mode (4,3)</h3>
+          <p>Resonance weight reaches 1. Within about one and a half seconds every grain has left
+            the antinodes and the curve ψ = 0 is visible.</p>
+        </div>
+        <div class="card rv" style="--d:360ms">
+          <canvas class="cmp" width="420" height="420" data-state="strike" data-m="4" data-n="3" aria-hidden="true"></canvas>
+          <div class="card__n"><span class="cap">03</span><span class="cap mono">900 Hz + strike</span></div>
+          <h3>One second after a strike</h3>
+          <p>A press throws the whole layer up at once. The figure survives — it re-forms from the
+            outside in, because the outer antinodes throw hardest.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="foot">
+  <div class="foot__grid">
+    <div>
+      <p class="cap">Built by</p>
+      <p style="margin-top:8px;font-size:19px">Artur Smirnov — web, 3D and engineering calculators</p>
+      <p class="cap mono" style="margin-top:10px">Belgrade · UTC+2 · <span id="clock">—</span> local</p>
+    </div>
+    <nav class="foot__links">
+      <a href="https://t.me/smirnovarturr" rel="noopener">t.me/smirnovarturr</a>
+      <a href="#calc">The maths behind the figure</a>
+      <a href="#hero">Back to the plate</a>
+    </nav>
+  </div>
+  <div class="wordmark" aria-hidden="true">NODAL</div>
+  <div class="foot__base">
+    <p class="cap">© 2026 Artur Smirnov</p>
+    <p class="cap">Chladni approximation · three.js · Web Audio</p>
+  </div>
+</footer>
+
+<a class="cta" href="https://t.me/smirnovarturr" rel="noopener">Bring a plate like this to your page <span>→</span></a>
+
+<script type="module">
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const F0 = 36;
+const MODES = [[2,1],[3,1],[3,2],[4,1],[4,2],[4,3],[5,2],[5,3],[6,1],[6,3],[7,2],[7,4]]
+  .map(([m,n],i)=>({i,m,n,sum:m*m+n*n,f:F0*(m*m+n*n)}));
+const F_MIN = 180, F_MAX = 2400;
+const fmt = (v)=>Math.round(v).toLocaleString('en-US').replace(/,/g,' ');
+
+/* ── лоадер: заливка вручную посчитанным easeInOutCubic ───────────────── */
+const loader = document.getElementById('loader');
+const lbar = document.getElementById('lbar'), lnum = document.getElementById('lnum');
+function markReady(){
+  if(!document.body.classList.contains('ready')) document.body.classList.add('ready');
+  /* сцена стартует ПОСЛЕ взвода расписания: сборка WebGL блокирует поток на слабой машине,
+     и расписание первой секунды не должно её ждать */
+  setTimeout(boot, 90);
+}
+if (REDUCED){ loader.remove(); markReady(); }
+else {
+  const FILL = 900, t0 = performance.now();
+  (function tick(now){
+    const t = Math.min((now-t0)/FILL, 1);
+    const e = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+    lbar.style.width = (e*100).toFixed(2)+'%';
+    lnum.textContent = String(Math.round(e*100)).padStart(3,'0');
+    if (t < 1) requestAnimationFrame(tick);
+    else { loader.classList.add('out'); markReady();
+      loader.addEventListener('transitionend', ()=>loader.remove(), {once:true});
+      setTimeout(()=>loader.remove(), 900); }
+  })(t0);
+}
+
+/* ── ψ и общий рисователь узора для 2D-подложек ───────────────────────── */
+const PI = Math.PI;
+const psi = (x,y,n,m)=>Math.cos(n*PI*x)*Math.cos(m*PI*y) - Math.cos(m*PI*x)*Math.cos(n*PI*y);
+
+function drawFigure(cv, m, n, state){
+  const g = cv.getContext('2d'); const W = cv.width, H = cv.height;
+  g.clearRect(0,0,W,H);
+  g.fillStyle = 'rgba(7,8,10,0.9)'; g.fillRect(0,0,W,H);
+  const dens = W < 200 ? 0.15 : (state === 'node' ? 0.075 : 0.1);
+  const grains = Math.round(W*H*dens);
+  g.fillStyle = 'rgba(233,231,226,0.82)';
+  const sig = W < 200 ? 0.075 : 0.09;
+  let placed = 0, guard = 0;
+  while (placed < grains && guard < grains*90){
+    guard++;
+    let x = Math.random(), y = Math.random();
+    const a = Math.abs(psi(x,y,n,m));
+    let keep;
+    if (state === 'scatter') keep = true;
+    else if (state === 'strike'){
+      const r = Math.hypot(x-0.5,y-0.5);
+      keep = Math.random() < 0.12 + 0.85*Math.exp(-(a/0.2)*(a/0.2)) * (0.45 + r);
+      x += (Math.random()-0.5)*0.045; y += (Math.random()-0.5)*0.045;
+      if (x<0||x>1||y<0||y>1) continue;
+    } else keep = Math.random() < Math.exp(-(a/sig)*(a/sig));
+    if (!keep) continue;
+    placed++;
+    g.fillRect(Math.round(x*W), Math.round(y*H), 1, 1);
+  }
+  g.strokeStyle = 'rgba(233,231,226,0.09)'; g.lineWidth = 1;
+  g.strokeRect(0.5,0.5,W-1,H-1);
+}
+
+const drawLater = new IntersectionObserver((es)=>{
+  for (const e of es){ if (!e.isIntersecting) continue;
+    const c = e.target;
+    /* канвас сравнения рисуется 1:1 к экранным пикселям — иначе зерно размывается downscale'ом */
+    if (c.classList.contains('cmp')){
+      const px = Math.max(200, Math.min(560, Math.round(c.clientWidth)));
+      c.width = c.height = px;
+    }
+    drawFigure(c, +c.dataset.m, +c.dataset.n, c.dataset.state || 'node');
+    drawLater.unobserve(c); }
+}, {rootMargin:'240px'});
+document.querySelectorAll('.mini,.cmp').forEach(c=>drawLater.observe(c));
+
+/* ── reveal секций ────────────────────────────────────────────────────── */
+if (!REDUCED){
+  const io = new IntersectionObserver((es)=>{ for (const e of es){ if (!e.isIntersecting) continue;
+    e.target.classList.add('in'); io.unobserve(e.target); } }, {threshold:0.12, rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+} else document.querySelectorAll('.rv').forEach(el=>el.classList.add('in'));
+
+/* ── часы ─────────────────────────────────────────────────────────────── */
+const clock = document.getElementById('clock');
+function tickClock(){
+  const d = new Date(Date.now() + (new Date().getTimezoneOffset()*60000) + 7200000);
+  clock.textContent = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+tickClock(); setInterval(tickClock, 20000);
+
+/* ── состояние сцены, общее для всех потребителей ─────────────────────── */
+const S = {
+  scroll: 0, scrollSm: 0, vel: 0, bow: 0, freq: F_MIN, mode: MODES[0], res: 0,
+  strike: 0, armed: false, tilt: 0, tiltT: 0, lift: 0, liftT: 0,
+};
+const hzEl = document.getElementById('hz'), hzSub = document.getElementById('hzsub');
+const thz = document.getElementById('thz'), tmode = document.getElementById('tmode');
+const tsum = document.getElementById('tsum'), tstate = document.getElementById('tstate');
+const bowbar = document.getElementById('bowbar'), fpsEl = document.getElementById('fps');
+const rows = [...document.querySelectorAll('.mode')];
+
+let RANGE = {top: 0, h: 1};
+function measureRange(){
+  const tr = document.getElementById('track');
+  RANGE = {top: tr.getBoundingClientRect().top + scrollY, h: tr.offsetHeight - innerHeight};
+}
+function trackRange(){ return RANGE; }
+measureRange();
+addEventListener('resize', measureRange);
+addEventListener('load', measureRange);
+function readScroll(){
+  const {top,h} = trackRange();
+  return Math.max(0, Math.min(1, (scrollY - top + innerHeight*0.82) / (h + innerHeight*0.82)));
+}
+function nearestMode(f){
+  let best = MODES[0], bd = Infinity;
+  for (const m of MODES){ const d = Math.abs(m.f - f); if (d < bd){ bd = d; best = m; } }
+  const w = 26 + best.f*0.045;
+  return {mode: best, res: Math.exp(-Math.pow(bd/w,2))};
+}
+let lastRow = -1;
+function updateReadouts(){
+  S.freq = F_MIN + (F_MAX - F_MIN) * S.scrollSm;
+  const nm = nearestMode(S.freq);
+  S.mode = nm.mode; S.res = nm.res;
+  const txt = S.armed ? fmt(S.freq) : '— —';
+  hzEl.textContent = txt; thz.textContent = S.armed ? fmt(S.freq) : '180';
+  hzSub.textContent = S.armed ? ('mode ('+S.mode.m+','+S.mode.n+') · resonance '+(S.res*100).toFixed(0)+'%')
+                              : 'awaiting the bow';
+  tmode.textContent = '('+S.mode.m+','+S.mode.n+')'; tsum.textContent = S.mode.sum;
+  tstate.textContent = S.strike > 0.15 ? 'struck — the layer is in the air'
+    : S.res > 0.55 ? 'on resonance — the grains hold the nodal lines'
+    : 'between modes — the grains wander';
+  bowbar.style.width = (Math.min(1, S.bow)*100).toFixed(1)+'%';
+  if (lastRow !== S.mode.i){
+    rows.forEach((r,i)=>r.classList.toggle('on', i === S.mode.i && S.res > 0.25));
+    lastRow = S.mode.i;
+  } else if (rows[S.mode.i]) rows[S.mode.i].classList.toggle('on', S.res > 0.25);
+}
+
+let prevScroll = scrollY;
+addEventListener('scroll', ()=>{
+  const d = Math.abs(scrollY - prevScroll); prevScroll = scrollY;
+  S.vel = Math.min(1, S.vel + d/620);
+  if (!S.armed && d > 0){ S.armed = true; }
+  S.scroll = readScroll();
+  if (REDUCED){ S.scrollSm = S.scroll; updateReadouts(); }
+}, {passive:true});
+
+rows.forEach(r=>r.addEventListener('click', ()=>{
+  const m = MODES[+r.dataset.i];
+  const {top,h} = trackRange();
+  const t = (m.f - F_MIN)/(F_MAX - F_MIN);
+  S.armed = true;
+  scrollTo({top: top - innerHeight*0.82 + t*(h + innerHeight*0.82), behavior: REDUCED ? 'auto' : 'smooth'});
+}));
+
+/* ── звук: только по жесту ────────────────────────────────────────────── */
+const sndBtn = document.getElementById('snd'), sndLabel = document.getElementById('sndlabel');
+const sndLvl = document.getElementById('sndlvl');
+let actx = null, master = null, parts = [];
+function audioOn(){
+  actx = new (window.AudioContext || window.webkitAudioContext)();
+  master = actx.createGain(); master.gain.value = 0.0001;
+  const lp = actx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 5200; lp.Q.value = 0.6;
+  master.connect(lp); lp.connect(actx.destination);
+  parts = [0,1,2,3].map(k=>{
+    const o = actx.createOscillator(); o.type = k === 0 ? 'sine' : 'triangle';
+    const g = actx.createGain(); g.gain.value = [0.6,0.22,0.13,0.07][k];
+    o.connect(g); g.connect(master); o.start();
+    return {o,g};
+  });
+}
+function audioOff(){ if (actx){ parts.forEach(p=>p.o.stop()); actx.close(); actx = null; parts = []; } }
+sndBtn.addEventListener('click', ()=>{
+  const on = sndBtn.getAttribute('aria-pressed') === 'true';
+  if (on){ audioOff(); sndBtn.setAttribute('aria-pressed','false'); sndLabel.textContent = 'Sound off';
+           sndLvl.style.width = '0%'; }
+  else { try { audioOn(); sndBtn.setAttribute('aria-pressed','true'); sndLabel.textContent = 'Sound on'; S.armed = true; }
+         catch(e){ sndLabel.textContent = 'Sound blocked'; } }
+});
+function audioFrame(){
+  if (!actx) return;
+  const m = S.mode;
+  const f = [ F0*(m.m*m.m + m.n*m.n),
+              F0*((m.m+1)*(m.m+1) + m.n*m.n),
+              F0*(m.m*m.m + (m.n+1)*(m.n+1)),
+              F0*((m.m+1)*(m.m+1) + (m.n+1)*(m.n+1)) ];
+  const t = actx.currentTime;
+  parts.forEach((p,k)=>p.o.frequency.setTargetAtTime(Math.min(f[k], 12000), t, 0.06));
+  const lvl = Math.min(0.26, (0.05 + 0.5*S.bow) * (0.25 + 0.75*S.res));
+  master.gain.setTargetAtTime(lvl, t, 0.08);
+  sndLvl.style.width = (Math.min(1, lvl/0.26)*100).toFixed(0)+'%';
+}
+
+/* ── сцена ────────────────────────────────────────────────────────────── */
+const canvas = document.getElementById('gl');
+const stage = document.getElementById('stage');
+const noglBox = document.getElementById('nogl');
+const lostBox = document.getElementById('lost');
+
+function flatFallback(){
+  const cv = document.getElementById('flat');
+  drawFigure(cv, 4, 3, 'node');
+  noglBox.classList.add('on'); canvas.style.display = 'none';
+}
+
+let THREE = null, sceneApi = null;
+let SIZE = (REDUCED || innerWidth < 720) ? 256 : 512;
+/* пол разрешения — 1.0 и никогда ниже: апскейл превращает пластину в квадраты.
+   Дешевеет сцена стоимостью (bloom, число зёрен, аберрация), а не резкостью */
+const DPR_MIN = 1;
+let DPR = Math.max(DPR_MIN, Math.min(devicePixelRatio || 1, 1.75));
+
+function hasGL2(){
+  try { const c = document.createElement('canvas');
+        return !!(c.getContext('webgl2')); } catch(e){ return false; }
+}
+
+let booted = false;
+async function boot(){
+  if (booted) return; booted = true;
+  if (!hasGL2()){ flatFallback(); updateReadouts(); return; }
+  try { THREE = await import('./assets/three-nodal.js'); }
+  catch(e){ THREE = null; }
+  if (!THREE){ flatFallback(); updateReadouts(); return; }
+  try { sceneApi = await build(); }
+  catch(e){ sceneApi = null; flatFallback(); }
+  drive();
+}
+
+async function build(){
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:false, alpha:false,
+    powerPreference:'high-performance'});
+  /* деградация: софтверный растеризатор не тянет 262 144 частицы и bloom.
+     Режем число зёрен и снимаем bloom — разрешение остаётся полным */
+  let SOFT = false;
+  {
+    const gl = renderer.getContext();
+    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    const name = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : '';
+    if (/swiftshader|llvmpipe|software|basic render|microsoft basic/i.test(name)){
+      SIZE = 192; SOFT = true;
+    }
+  }
+  renderer.setPixelRatio(DPR);
+  renderer.setSize(innerWidth, innerHeight, false);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.84;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x07080a);
+  scene.fog = new THREE.FogExp2(0x07080a, 0.055);
+
+  const camera = new THREE.PerspectiveCamera(28, innerWidth/innerHeight, 0.1, 90);
+  camera.position.set(3.95, 2.55, 4.3);
+  camera.lookAt(0, -0.05, 0);
+
+  /* окружение из HDRI, фон — свой тёмный цвет */
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  pmrem.compileEquirectangularShader();
+  try {
+    const hdr = await new THREE.RGBELoader().loadAsync('./assets/studio_small_09_256.hdr');
+    scene.environment = pmrem.fromEquirectangular(hdr).texture;
+    scene.environmentIntensity = 0.8;
+    scene.environmentRotation = new THREE.Euler(0, Math.PI/3, 0);
+    hdr.dispose();
+  } catch(e){ scene.environmentIntensity = 1.0; }
+  pmrem.dispose();
+
+  const key = new THREE.DirectionalLight(0xffd9b0, 0.85); key.position.set(4.2, 5.4, 3.4);
+  const rim = new THREE.DirectionalLight(0xbcd6ff, 2.3);  rim.position.set(-4.6, 2.4, -5.2);
+  const fill = new THREE.DirectionalLight(0xffffff, 0.18); fill.position.set(-2.6, 1.1, 3.6);
+  scene.add(key, rim, fill);
+
+  /* процедурная шероховатость: следы шлифовки, а не константа */
+  function brushed(px, streaks, rough){
+    const c = document.createElement('canvas'); c.width = c.height = px;
+    const g = c.getContext('2d');
+    g.fillStyle = 'rgba(150,150,150,1)'; g.fillRect(0,0,px,px);
+    for (let i = 0; i < streaks; i++){
+      const y = Math.random()*px, a = 0.02 + Math.random()*0.07;
+      g.strokeStyle = (Math.random() > 0.5 ? 'rgba(255,255,255,' : 'rgba(0,0,0,') + a.toFixed(3)+')';
+      g.lineWidth = 0.5 + Math.random()*2.2;
+      g.beginPath(); g.moveTo(0, y); g.lineTo(px, y + (Math.random()-0.5)*3); g.stroke();
+    }
+    const id = g.getImageData(0,0,px,px), d = id.data;
+    for (let i = 0; i < d.length; i += 4){
+      const v = d[i]/255;
+      const r = Math.max(0, Math.min(255, (rough + (v-0.588)*0.55)*255));
+      d[i] = 0; d[i+1] = r; d[i+2] = 255; d[i+3] = 255;   /* G = roughness, B = metalness */
+    }
+    g.putImageData(id, 0, 0);
+    const t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    /* мип-уровни обязательны: без них шлифовка на скользящем угле кипит муаром */
+    t.generateMipmaps = true;
+    t.minFilter = THREE.LinearMipmapLinearFilter;
+    t.magFilter = THREE.LinearFilter;
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    t.needsUpdate = true;
+    return t;
+  }
+  const armPlate = brushed(1024, 2600, 0.54); armPlate.repeat.set(1.6, 1.6);
+  const armFloor = brushed(512, 700, 0.9); armFloor.repeat.set(18, 18);
+
+  const rig = new THREE.Group();
+  rig.position.set(0.5, -0.16, 0);
+  scene.add(rig);
+
+  /* пластина */
+  const plateMat = new THREE.MeshPhysicalMaterial({
+    color: 0x4e545b, metalness: 1.0, roughness: 1.0,
+    roughnessMap: armPlate, metalnessMap: armPlate,
+    anisotropy: 0.78, anisotropyRotation: Math.PI/2,
+    clearcoat: 0.18, clearcoatRoughness: 0.5, envMapIntensity: 0.62,
+  });
+  /* пластина темнеет там, где на ней лежит песок: та же функция psi, что и у зерна,
+     без карт теней — иначе узор читается как белые точки, висящие ни на чём */
+  const plateU = { uN:{value:2}, uM:{value:1}, uRes:{value:0} };
+  plateMat.onBeforeCompile = (sh)=>{
+    Object.assign(sh.uniforms, plateU);
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vLocalP;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvLocalP = position;');
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', `#include <common>
+        varying vec3 vLocalP;
+        uniform float uN, uM, uRes;
+        float psiP(vec2 q, float n, float m){
+          return cos(n*PI*q.x)*cos(m*PI*q.y) - cos(m*PI*q.x)*cos(n*PI*q.y);
+        }`)
+      .replace('#include <opaque_fragment>', `#include <opaque_fragment>
+        {
+          vec2 qq = vLocalP.xz * 0.5 + 0.5;
+          float aa = abs(psiP(qq, uN, uM));
+          float dust = step(0.006, vLocalP.y) * uRes
+                     * (1.0 - smoothstep(0.0, 0.085, aa));
+          gl_FragColor.rgb *= 1.0 - 0.66 * dust;
+        }`);
+  };
+  plateMat.customProgramCacheKey = ()=>'nodal-dust';
+  const plateGeo = new THREE.BoxGeometry(2.0, 0.028, 2.0, 1, 1, 1);
+  const plate = new THREE.Mesh(plateGeo, plateMat);
+  rig.add(plate);
+
+  /* центральная втулка: матовая и тёмная. Раньше стояла полированной с envMapIntensity 1.4
+     и вылетала за порог bloom — в кадре это читалось белой кляксой посреди пластины */
+  const edgeMat = new THREE.MeshPhysicalMaterial({color:0x30353b, metalness:1, roughness:0.62,
+    envMapIntensity:0.34});
+  const bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.058, 0.026, 28), edgeMat);
+  bolt.position.y = 0.02; rig.add(bolt);
+
+  /* стойка */
+  const stemMat = new THREE.MeshPhysicalMaterial({color:0x3c4046, metalness:1, roughness:0.42,
+    envMapIntensity:1.0});
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.062, 0.92, 20), stemMat);
+  stem.position.y = -0.47; rig.add(stem);
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.38, 0.055, 40), stemMat);
+  base.position.y = -0.95; rig.add(base);
+
+  /* смычок: ведёт вдоль ОДНОГО края пластины. Раньше это была светящаяся планка
+     без концов — в кадре читалось палкой. Теперь у него есть колодка, головка
+     и волос под порогом bloom, а трость чуть выгнута над волосом */
+  const bow = new THREE.Group();
+  const woodMat = new THREE.MeshPhysicalMaterial({color:0x241a12, metalness:0, roughness:0.42,
+    clearcoat:0.5, clearcoatRoughness:0.22, envMapIntensity:0.55});
+  const hairMat = new THREE.MeshPhysicalMaterial({color:0xa79a80, metalness:0, roughness:0.9,
+    envMapIntensity:0.28});
+  const frogMat = new THREE.MeshPhysicalMaterial({color:0x14100d, metalness:0.35, roughness:0.35,
+    envMapIntensity:0.5});
+  const BOWL = 1.12;
+  const stick = new THREE.Mesh(new THREE.CylinderGeometry(0.0115, 0.0085, BOWL, 16), woodMat);
+  stick.rotation.x = Math.PI/2; stick.position.y = 0.046;
+  const hair = new THREE.Mesh(new THREE.BoxGeometry(0.017, 0.0075, BOWL*0.94), hairMat);
+  hair.position.y = 0.004;
+  /* колодка и головка — концы, по которым предмет и опознаётся смычком */
+  const frog = new THREE.Mesh(new THREE.BoxGeometry(0.036, 0.052, 0.075), frogMat);
+  frog.position.set(0, 0.026, -BOWL*0.47);
+  const tip = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.040, 0.036), frogMat);
+  tip.position.set(0, 0.023, BOWL*0.47);
+  const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.0155, 0.0155, 0.10, 14),
+    new THREE.MeshPhysicalMaterial({color:0x0e0c0a, metalness:0.7, roughness:0.28,
+      envMapIntensity:0.45}));
+  grip.rotation.x = Math.PI/2; grip.position.set(0, 0.046, -BOWL*0.40);
+  bow.add(stick, hair, frog, tip, grip);
+  bow.position.set(1.042, 0.012, 0);
+  bow.rotation.z = -0.16;
+  rig.add(bow);
+
+  /* пол и мягкая тень-пятно */
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(64, 64),
+    new THREE.MeshPhysicalMaterial({color:0x0b0d10, metalness:0, roughness:1.0,
+      roughnessMap: armFloor, envMapIntensity:0.16}));
+  floor.rotation.x = -Math.PI/2; floor.position.y = -0.99; scene.add(floor);
+
+  const blobC = document.createElement('canvas'); blobC.width = blobC.height = 128;
+  { const g = blobC.getContext('2d');
+    const rad = g.createRadialGradient(64,64,2,64,64,64);
+    rad.addColorStop(0,'rgba(0,0,0,0.72)'); rad.addColorStop(0.55,'rgba(0,0,0,0.26)');
+    rad.addColorStop(1,'rgba(0,0,0,0)');
+    g.fillStyle = rad; g.fillRect(0,0,128,128); }
+  const blob = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 2.6),
+    new THREE.MeshBasicMaterial({map: new THREE.CanvasTexture(blobC), transparent:true,
+      depthWrite:false, opacity:0.85}));
+  blob.rotation.x = -Math.PI/2; blob.position.set(rig.position.x, -0.982, rig.position.z);
+  scene.add(blob);
+
+  /* ── GPGPU: песок ──────────────────────────────────────────────────── */
+  const gpu = new THREE.GPUComputationRenderer(SIZE, SIZE, renderer);
+  const dtPos = gpu.createTexture(), dtVel = gpu.createTexture();
+  {
+    const p = dtPos.image.data, v = dtVel.image.data;
+    for (let i = 0; i < p.length; i += 4){
+      p[i]   = Math.random()*2 - 1;
+      p[i+1] = 0.0;
+      p[i+2] = Math.random()*2 - 1;
+      p[i+3] = Math.random();
+      v[i] = v[i+1] = v[i+2] = 0; v[i+3] = 1;
+    }
+  }
+
+  const COMMON = `
+    #define PI 3.141592653589793
+    float psiF(vec2 q, float n, float m){
+      return cos(n*PI*q.x)*cos(m*PI*q.y) - cos(m*PI*q.x)*cos(n*PI*q.y);
+    }
+    float hash21(vec2 s){ return fract(sin(dot(s, vec2(127.1, 311.7))) * 43758.5453123); }
+  `;
+
+  const posFrag = COMMON + `
+    uniform float uDt;
+    void main(){
+      vec2 uv = gl_FragCoord.xy / resolution.xy;
+      vec4 p = texture2D(texPos, uv);
+      vec4 v = texture2D(texVel, uv);
+      vec3 np = p.xyz + v.xyz * uDt;
+      np.x = clamp(np.x, -0.998, 0.998);
+      np.z = clamp(np.z, -0.998, 0.998);
+      np.y = max(np.y, 0.0);
+      gl_FragColor = vec4(np, p.w);
+    }
+  `;
+
+  const velFrag = COMMON + `
+    uniform float uDt, uN, uM, uAmp, uRes, uStrike, uTime;
+    void main(){
+      vec2 uv = gl_FragCoord.xy / resolution.xy;
+      vec4 p = texture2D(texPos, uv);
+      vec4 v = texture2D(texVel, uv);
+      vec2 q = p.xz * 0.5 + 0.5;
+
+      float h = 0.0035;
+      float a  = abs(psiF(q, uN, uM));
+      float gx = abs(psiF(q + vec2(h, 0.0), uN, uM)) - abs(psiF(q - vec2(h, 0.0), uN, uM));
+      float gz = abs(psiF(q + vec2(0.0, h), uN, uM)) - abs(psiF(q - vec2(0.0, h), uN, uM));
+      vec2 grad = vec2(gx, gz) / (2.0 * h);
+      float gl = length(grad) + 1e-4;
+
+      float seed = p.w;
+      float r1 = hash21(vec2(seed * 91.7, floor(uTime * 60.0)));
+      float r2 = hash21(vec2(seed * 47.3 + 13.1, floor(uTime * 60.0) + 7.0));
+
+      /* дрейф против градиента |psi| — песок скатывается к узлу */
+      vec2 want = -(grad / gl) * (1.7 * uRes * uAmp * smoothstep(0.0, 0.16, a));
+      v.xz = mix(v.xz, want, 1.0 - exp(-9.0 * uDt));
+
+      /* у самой узловой линии пластина не движется — зерно там перестаёт трястись */
+      v.xz *= exp(-mix(7.5, 0.0, smoothstep(0.0, 0.1, a)) * uRes * uDt);
+
+      /* блуждание между резонансами */
+      v.xz += (vec2(r1, r2) - 0.5) * (1.0 - uRes) * uAmp * 2.2 * uDt;
+
+      /* подскок, пропорциональный |psi| и амплитуде возбуждения */
+      float toss = a * uAmp * (0.26 + 1.9 * uStrike);
+      if (p.y <= 0.0009){
+        v.y = toss * (0.4 + 0.6 * r1);
+        v.xz *= 0.58;
+        v.xz += (vec2(r2, r1) - 0.5) * toss * 0.32;
+      }
+      v.y -= 2.6 * uDt;
+      v.xyz *= exp(-2.1 * uDt);
+
+      /* свободный край: зерно отскакивает внутрь, иначе оно залипает на границе
+         и весь песок за минуту собирается в рамку по периметру */
+      if (p.x >  0.985 && v.x > 0.0) v.x = -v.x * 0.42;
+      if (p.x < -0.985 && v.x < 0.0) v.x = -v.x * 0.42;
+      if (p.z >  0.985 && v.z > 0.0) v.z = -v.z * 0.42;
+      if (p.z < -0.985 && v.z < 0.0) v.z = -v.z * 0.42;
+      gl_FragColor = vec4(v.xyz, 1.0);
+    }
+  `;
+
+  const posVar = gpu.addVariable('texPos', posFrag, dtPos);
+  const velVar = gpu.addVariable('texVel', velFrag, dtVel);
+  gpu.setVariableDependencies(posVar, [posVar, velVar]);
+  gpu.setVariableDependencies(velVar, [posVar, velVar]);
+  const uPos = posVar.material.uniforms, uVel = velVar.material.uniforms;
+  uPos.uDt = {value: 0.016};
+  Object.assign(uVel, {
+    uDt:{value:0.016}, uN:{value:2}, uM:{value:1}, uAmp:{value:0.16},
+    uRes:{value:0}, uStrike:{value:0}, uTime:{value:0},
+  });
+  for (const vv of [posVar, velVar]){ vv.wrapS = THREE.ClampToEdgeWrapping; vv.wrapT = THREE.ClampToEdgeWrapping; }
+  const gerr = gpu.init();
+  if (gerr) throw new Error('gpgpu');
+
+  const N = SIZE*SIZE;
+  const sandGeo = new THREE.BufferGeometry();
+  {
+    const pos = new Float32Array(N*3), ref = new Float32Array(N*2), rnd = new Float32Array(N);
+    for (let i = 0; i < N; i++){
+      ref[i*2]   = (i % SIZE) / SIZE + 0.5/SIZE;
+      ref[i*2+1] = Math.floor(i / SIZE) / SIZE + 0.5/SIZE;
+      rnd[i] = Math.random();
+    }
+    sandGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    sandGeo.setAttribute('aRef', new THREE.BufferAttribute(ref, 2));
+    sandGeo.setAttribute('aRnd', new THREE.BufferAttribute(rnd, 1));
+  }
+  sandGeo.boundingSphere = new THREE.Sphere(new THREE.Vector3(0,0,0), 3);
+
+  const sandMat = new THREE.ShaderMaterial({
+    uniforms: {
+      texPos: {value: null}, uScale: {value: 620}, uSize: {value: 1.0}, uDpr: {value: 1},
+      uWarm: {value: new THREE.Color(0xffd6a8)}, uCool: {value: new THREE.Color(0xe6e3dc)},
+    },
+    vertexShader: `
+      uniform sampler2D texPos; uniform float uScale, uSize, uDpr;
+      attribute vec2 aRef; attribute float aRnd;
+      varying float vE; varying float vA; varying float vG;
+      void main(){
+        vec4 t = texture2D(texPos, aRef);
+        vec3 p = vec3(t.x, 0.016 + t.y, t.z);
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        vE = clamp(t.y * 9.0, 0.0, 1.0);
+        vA = 0.5 + 0.5 * aRnd;
+        /* разброс яркости по зерну: без него скопление читается ровной заливкой */
+        vG = 0.62 + 0.72 * fract(aRnd * 17.13);
+        /* не меньше 2 физических пикселей — на одном зерно вырождается в квадрат */
+        gl_PointSize = max(2.0 * uDpr,
+          uSize * (0.72 + 0.6 * aRnd) * (uScale / max(-mv.z, 0.001)));
+        gl_Position = projectionMatrix * mv;
+      }
+    `,
+    fragmentShader: `
+      precision highp float;
+      uniform vec3 uWarm, uCool;
+      varying float vE; varying float vA; varying float vG;
+      void main(){
+        vec2 d = (gl_PointCoord - 0.5) * 2.0;
+        float r = length(d);
+        if (r > 1.0) discard;
+        /* мягкий круглый край, а не обрезанный квадрат */
+        float m = 1.0 - smoothstep(0.34, 1.0, r);
+        m *= m;
+        vec3 c = mix(uCool, uWarm, vE * 0.85);
+        /* потолок ниже порога bloom: подброшенное зерно не должно светиться как источник */
+        gl_FragColor = vec4(c * (0.52 + 0.72 * vE) * vG, m * vA * (0.9 - 0.34 * vE));
+      }
+    `,
+    transparent: true, depthWrite: false, depthTest: true,
+    blending: THREE.NormalBlending,
+  });
+  const sand = new THREE.Points(sandGeo, sandMat);
+  sand.frustumCulled = false;
+  rig.add(sand);
+
+  /* ── постобработка ─────────────────────────────────────────────────── */
+  /* сглаживание: у рендерера antialias:false (с композером встроенное не работает),
+     поэтому MSAA живёт на целевом буфере самого композера */
+  const MSAA = SOFT ? 0 : (renderer.capabilities.maxSamples >= 4 ? 4 : 0);
+  const rt = new THREE.WebGLRenderTarget(1, 1, {
+    type: THREE.HalfFloatType, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter,
+    samples: MSAA,
+  });
+  const composer = new THREE.EffectComposer(renderer, rt);
+  composer.addPass(new THREE.RenderPass(scene, camera));
+  /* буфер bloom не опускается ниже половины: мельче — и ореол идёт крупными блоками.
+     Не хватает кадра — bloom снимают целиком, а не мельчат */
+  const BLOOM = 0.5;
+  /* порог выше единицы: композер держит HDR, и порог 0.9 засветил бы всю сцену */
+  const bloom = new THREE.UnrealBloomPass(new THREE.Vector2(innerWidth*BLOOM, innerHeight*BLOOM), 0.34, 0.45, 1.35);
+  composer.addPass(bloom);
+  const grade = new THREE.ShaderPass({
+    uniforms: { tDiffuse:{value:null}, uTime:{value:0}, uGrain:{value:0.055},
+                uVig:{value:0.34}, uAberr:{value:1.0} },
+    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader: `
+      precision highp float;
+      uniform sampler2D tDiffuse; uniform float uTime, uGrain, uVig, uAberr;
+      varying vec2 vUv;
+      void main(){
+        vec2 uv = vUv; vec2 d = uv - 0.5; float r2 = dot(d, d);
+        vec2 off = d * uAberr * 0.0017 * (0.25 + r2 * 2.2);
+        vec3 c;
+        c.r = texture2D(tDiffuse, uv + off).r;
+        c.g = texture2D(tDiffuse, uv).g;
+        c.b = texture2D(tDiffuse, uv - off).b;
+        float vig = 1.0 - uVig * smoothstep(0.05, 0.62, r2);
+        c *= vig;
+        float n = fract(sin(dot(uv * 431.0 + uTime, vec2(12.9898, 78.233))) * 43758.5453);
+        float lum = clamp(dot(c, vec3(0.2126, 0.7152, 0.0722)), 0.0, 1.0);
+        c += (n - 0.5) * uGrain * (0.12 + 0.88 * sqrt(lum));
+        gl_FragColor = vec4(max(c, 0.0), 1.0);
+      }
+    `,
+  });
+  composer.addPass(grade);
+  composer.addPass(new THREE.OutputPass());
+
+  function resize(){
+    const w = innerWidth, h = innerHeight;
+    camera.aspect = w/h;
+    const a = w/h;
+    const frame = a >= 1.55 ? 1 : Math.min(1.55/a, 1.78);
+    camera.position.set(3.55*frame, 2.3*frame*0.94, 3.87*frame);
+    rig.position.x = a >= 1.1 ? 0.5 : 0.0;
+    blob.position.set(rig.position.x, -0.982, rig.position.z);
+    /* на телефоне пластина уходит в нижнюю треть — текст стоит над ней, а не поверх */
+    camera.lookAt(0, a >= 1.1 ? -0.05 : 0.98, 0);
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+    composer.setSize(w, h);
+    /* на узком экране буфер bloom нельзя ронять: ядро задано в текселях,
+       и та же настройка даёт вдвое более широкий ореол */
+    const bs = w < 900 ? Math.max(BLOOM, 0.75) : BLOOM;
+    bloom.setSize(Math.max(4, w*bs), Math.max(4, h*bs));
+    sandMat.uniforms.uScale.value = h * renderer.getPixelRatio() * 0.019;
+    sandMat.uniforms.uDpr.value = renderer.getPixelRatio();
+  }
+  resize();
+  addEventListener('resize', resize);
+
+  /* бюджет кадра меряется на этой машине, а не предполагается.
+     Разрешение в лестнице деградации не участвует вообще: дешевеет стоимость —
+     сперва bloom, потом число зёрен, потом аберрация. Резкость не трогаем */
+  step(1/60);
+  const glc = renderer.getContext();
+  /* первый кадр компилирует шейдеры и меряет компилятор, а не сцену: он вне замера */
+  composer.render(); glc.finish();
+  const probe = ()=>{ let t = performance.now(); composer.render(); glc.finish();
+                      return performance.now() - t; };
+  let bloomOn = true;
+  const снятьЭтаж = (lvl)=>{
+    if (lvl === 1){ composer.removePass(bloom); bloomOn = false; }
+    else if (lvl === 2){ sandGeo.setDrawRange(0, Math.floor(N/2)); }
+    else if (lvl === 3){ sandGeo.setDrawRange(0, Math.floor(N/4));
+                         grade.uniforms.uAberr.value = 0; }
+  };
+  let cost = probe(), floorLvl = 0;
+  if (SOFT){ while (floorLvl < 2) снятьЭтаж(++floorLvl); cost = probe(); }
+  while (cost > 24 && floorLvl < 3){ снятьЭтаж(++floorLvl); cost = probe(); }
+
+  /* ввод указателем: наклон пластины и удар */
+  if (!REDUCED){
+    addEventListener('pointermove', (e)=>{
+      S.tiltT = (e.clientX / innerWidth - 0.5) * 0.5;
+      S.liftT = (e.clientY / innerHeight - 0.5) * 0.22;
+      S.armed = true;
+    }, {passive:true});
+    addEventListener('pointerdown', (e)=>{
+      if (e.target.closest('a,button,input,select,textarea')) return;
+      S.strike = 1; S.armed = true;
+    }, {passive:true});
+    addEventListener('keydown', (e)=>{ if (e.key === 's' || e.key === 'S') S.strike = 1; });
+  }
+
+  canvas.addEventListener('webglcontextlost', (e)=>{ e.preventDefault(); lostBox.classList.add('on'); });
+  canvas.addEventListener('webglcontextrestored', ()=>{ lostBox.classList.remove('on');
+    try { gpu.init(); resize(); } catch(err){ flatFallback(); } });
+
+  function step(dt){
+    uVel.uDt.value = dt; uPos.uDt.value = dt;
+    uVel.uN.value = S.mode.n; uVel.uM.value = S.mode.m;
+    uVel.uRes.value = S.res;
+    plateU.uN.value = S.mode.n; plateU.uM.value = S.mode.m;
+    plateU.uRes.value = S.res;
+    uVel.uAmp.value = 0.1 + 0.62*S.bow + 0.45*S.strike;
+    uVel.uStrike.value = S.strike;
+    uVel.uTime.value += dt;
+    gpu.compute();
+    sandMat.uniforms.texPos.value = gpu.getCurrentRenderTarget(posVar).texture;
+  }
+
+  const degrade = ()=>{ if (floorLvl < 3) снятьЭтаж(++floorLvl); };
+  return {renderer, composer, grade, step, rig, bow, plate, camera, sandMat, resize, degrade};
+}
+
+/* ── драйвер: один сглаженный скролл, из него всё остальное ───────────── */
+function drive(){
+  if (!sceneApi){ updateReadouts(); return; }
+  const {composer, grade, step, rig, bow} = sceneApi;
+  const trackEl = document.getElementById('track');
+
+  if (REDUCED){
+    S.scrollSm = 0.335; S.armed = true;
+    updateReadouts();
+    S.bow = 0.75;
+    for (let i = 0; i < 150; i++) step(1/44);
+    composer.render();
+  } else {
+    let last = performance.now(), ema = 0.016, frames = 0, fpsT = 0, cut = 0;
+    (function loop(now){
+      requestAnimationFrame(loop);
+      const raw = (now - last)/1000; last = now;
+      const dt = Math.min(0.033, raw);
+      ema += (Math.min(raw, 1) - ema) * 0.35;
+      /* не хватает кадра — снимаем этаж стоимости, разрешение остаётся полным */
+      if ((raw > 0.14 || ema > 0.1) && cut < 3){ cut++; sceneApi.degrade(); ema = 0.016; }
+      S.scroll = readScroll();
+      S.scrollSm += (S.scroll - S.scrollSm) * 0.055;
+      S.vel *= Math.exp(-2.4*dt);
+      S.bow += ((S.armed ? 0.2 + S.vel*0.9 : 0.11) - S.bow) * 0.06;
+      S.strike *= Math.exp(-1.9*dt);
+      S.tilt += (S.tiltT - S.tilt) * 0.045;
+      S.lift += (S.liftT - S.lift) * 0.045;
+      rig.rotation.y = S.tilt;
+      rig.rotation.x = S.lift * 0.5;
+      /* смычок ведёт вдоль одного края и на резонансе мелко дрожит */
+      const tr = S.res * S.bow;
+      bow.position.z = Math.sin(now*0.00042) * 0.40;
+      bow.rotation.x = Math.sin(now*0.00042 + 1.2) * 0.045;
+      bow.position.x = 1.048 - S.bow*0.012 + Math.sin(now*0.071) * 0.0022 * tr;
+      bow.position.y = 0.012 + Math.sin(now*0.089) * 0.0018 * tr;
+      grade.uniforms.uTime.value = now*0.001;
+      step(dt);
+      updateReadouts();
+      audioFrame();
+      frames++; fpsT += dt;
+      if (fpsT > 1){ fpsEl.textContent = Math.round(frames/fpsT)+' fps'; frames = 0; fpsT = 0; }
+      const past = scrollY > RANGE.top + trackEl.offsetHeight - innerHeight*0.4;
+      stage.classList.toggle('dim', past);
+      if (!past) composer.render();
+    })(last);
+  }
+}
+</script>
