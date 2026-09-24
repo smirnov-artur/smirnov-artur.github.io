@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Octahedrite — Artur Smirnov</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Archivo:wght@600;700&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{
+  --void:#07080A; --ink:#EFEDE9; --acc:#EDE44B;
+  --m42:rgba(239,237,233,.42); --m16:rgba(239,237,233,.16); --m13:rgba(239,237,233,.13);
+}
+*{box-sizing:border-box;border-radius:0;margin:0}
+html{scrollbar-width:none}
+html::-webkit-scrollbar{display:none}
+body{min-height:620vh;background:var(--void);color:var(--ink);
+  font:400 14px/1.5 "Archivo",system-ui,sans-serif}
+#сцена{position:fixed;inset:0;z-index:0}
+#сцена canvas{display:block;width:100%;height:100%}
+
+.поверх{position:fixed;inset:0;z-index:2;pointer-events:none}
+.поверх a{pointer-events:auto}
+.mono{font:400 10.5px/1.4 "JetBrains Mono",ui-monospace,monospace;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--m42)}
+.tab{font-variant-numeric:tabular-nums}
+
+.шапка{position:absolute;top:0;left:0;right:0;padding:30px clamp(20px,4vw,54px)}
+.волос{height:1px;background:var(--m16);transform:scaleX(0);transform-origin:left;
+  transition:transform 900ms cubic-bezier(.15,.85,.18,1) 150ms}
+html.готово .волос{transform:scaleX(1)}
+.над{margin-top:14px;opacity:0;transform:translateY(8px);
+  transition:opacity 800ms cubic-bezier(.15,.85,.18,1) 200ms,
+             transform 800ms cubic-bezier(.15,.85,.18,1) 200ms}
+html.готово .над{opacity:1;transform:none}
+
+h1{position:absolute;left:clamp(20px,4vw,54px);top:29vh;
+  font-family:"Fraunces",Georgia,serif;font-weight:300;
+  font-size:clamp(2.1rem,4.4vw,4.4rem);line-height:1.02;letter-spacing:-.022em;
+  max-width:15ch}
+.стр{display:block;overflow:hidden}
+.стр>span{display:block;transform:translateY(100%);
+  transition:transform 900ms cubic-bezier(.15,.85,.18,1)}
+html.готово .стр>span{transform:none}
+.стр:nth-of-type(1)>span{transition-delay:300ms}
+.стр:nth-of-type(2)>span{transition-delay:420ms}
+.стр:nth-of-type(3)>span{transition-delay:540ms}
+.стр:nth-of-type(4)>span{transition-delay:660ms}
+
+/* гигантское имя класса — водяной знак, кегль считается измерением */
+#вордмарк{position:absolute;left:clamp(20px,4vw,54px);right:clamp(20px,4vw,54px);
+  bottom:clamp(14px,2.4vw,30px);
+  font-family:"Archivo",sans-serif;font-weight:700;line-height:.78;
+  letter-spacing:.004em;color:var(--m13);white-space:nowrap;
+  text-transform:uppercase}
+#вордмарк .под{color:rgba(239,237,233,.90)}
+#вордмарк span{display:inline-block;transform:translateY(105%);
+  transition:transform 700ms cubic-bezier(.15,.85,.18,1)}
+html.готово #вордмарк span{transform:none}
+
+.паспорт{position:absolute;right:clamp(20px,4vw,54px);bottom:20vh;
+  font:400 12.5px/1.7 "JetBrains Mono",monospace;letter-spacing:.02em;
+  font-variant-numeric:tabular-nums;text-align:right}
+.паспорт div{opacity:0;transform:translateY(6px);
+  transition:opacity 700ms cubic-bezier(.15,.85,.18,1),
+             transform 700ms cubic-bezier(.15,.85,.18,1)}
+html.готово .паспорт div{opacity:1;transform:none}
+.паспорт div:nth-child(1){transition-delay:820ms}
+.паспорт div:nth-child(2){transition-delay:880ms}
+.паспорт div:nth-child(3){transition-delay:940ms}
+.паспорт b{color:var(--m42);font-weight:400}
+
+/* никелевая линейка справа: штрихи стоят, движется только риска */
+.линейка{position:absolute;right:clamp(20px,4vw,54px);top:26vh;height:34vh;width:64px}
+.линейка i{position:absolute;right:0;height:1px;background:var(--m16);
+  transform:scaleX(0);transform-origin:right;
+  transition:transform 620ms cubic-bezier(.15,.85,.18,1)}
+html.готово .линейка i{transform:scaleX(1)}
+#риска{position:absolute;right:0;width:34px;height:2px;background:var(--acc);
+  transform:scaleX(0);transition:transform 420ms cubic-bezier(.15,.85,.18,1) 1240ms}
+html.готово #риска{transform:scaleX(1)}
+.линейка u{position:absolute;right:40px;font:400 10px/1 "JetBrains Mono",monospace;
+  color:var(--m42);text-decoration:none;font-variant-numeric:tabular-nums}
+
+.станции{position:absolute;left:clamp(20px,4vw,54px);top:52vh;max-width:34ch}
+.ст{position:absolute;opacity:0;transform:translateY(10px);
+  transition:opacity 700ms cubic-bezier(.15,.85,.18,1),
+             transform 700ms cubic-bezier(.15,.85,.18,1)}
+.ст.вид{opacity:1;transform:none}
+.ст h2{font:600 11px/1.4 "Archivo",sans-serif;letter-spacing:.20em;
+  text-transform:uppercase;color:var(--acc);margin-bottom:10px}
+.ст p{font:400 14.5px/1.6 "Archivo",sans-serif;color:rgba(239,237,233,.62)}
+.ст p.длинный{font-size:13px;line-height:1.68;color:rgba(239,237,233,.5);margin-top:12px}
+
+.подсказка{position:absolute;left:50%;transform:translateX(-50%);bottom:12vh;
+  opacity:0;transition:opacity 700ms cubic-bezier(.15,.85,.18,1) 1450ms}
+html.готово .подсказка{opacity:.42}
+.подсказка em{font-style:normal;color:var(--acc)}
+
+.низ{position:absolute;left:clamp(20px,4vw,54px);bottom:11vh;
+  opacity:0;transition:opacity 1100ms cubic-bezier(.15,.85,.18,1)}
+.низ.вид{opacity:1}
+.низ b{display:block;font:600 15px/1.4 "Archivo",sans-serif;color:var(--ink);
+  margin:4px 0 2px}
+.низ a{color:var(--acc);text-decoration:none}
+#фпс{position:absolute;right:clamp(20px,4vw,54px);top:30px}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+
+@media (prefers-reduced-motion:reduce){
+  .волос,.над,.стр>span,#вордмарк span,.паспорт div,.линейка i,#риска,.подсказка{
+    transform:none!important;opacity:1!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div id="сцена"></div>
+
+<div class="поверх">
+  <div class="шапка">
+    <div class="волос"></div>
+    <div class="над mono">Fe–Ni · cut and etched · nital 2 %</div>
+    <div class="mono tab" id="фпс">— fps</div>
+  </div>
+
+  <h1>
+    <span class="стр"><span>One degree</span></span>
+    <span class="стр"><span>per million years.</span></span>
+    <span class="стр"><span>Nothing on Earth</span></span>
+    <span class="стр"><span>cooled that slowly.</span></span>
+  </h1>
+
+  <div class="станции" id="станции"></div>
+
+  <div class="линейка" id="линейка"><div id="риска"></div></div>
+
+  <div class="паспорт">
+    <div><b>Ni</b> <span id="p-ni">7.94</span> %</div>
+    <div><b>BAND</b> <span id="p-band">1.09</span> mm</div>
+    <div><b>COOLING</b> ≈ <span id="p-cool">15</span> K/Myr</div>
+  </div>
+
+  <div class="подсказка mono">Scroll adds nickel <em>↓</em></div>
+
+  <div id="вордмарк"><span id="вм-текст">OCTAHEDRITE</span></div>
+
+  <div class="низ" id="низ">
+    <div class="mono">Cut, etched and rendered by</div>
+    <b>Artur Smirnov</b>
+    <a href="https://t.me/smirnovarturr">t.me/smirnovarturr</a>
+  </div>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.166.1/build/three.module.js"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+/* ================= сцена: камера прибита, движется предмет ================= */
+const рен = new THREE.WebGLRenderer({antialias:true});
+рен.setPixelRatio(Math.min(devicePixelRatio, 2));
+рен.setSize(innerWidth, innerHeight);
+рен.setClearColor(0x07080A, 1);
+рен.toneMapping = THREE.NoToneMapping;          // тон-мэппинг делает сам шейдер
+рен.outputColorSpace = THREE.LinearSRGBColorSpace;
+document.getElementById('сцена').appendChild(рен.domElement);
+
+const сц = new THREE.Scene();
+const кам = new THREE.PerspectiveCamera(28, innerWidth/innerHeight, 1, 4000);
+кам.position.set(0, 0, 430);
+
+/* пластина: неправильный семиугольник, 132 x 84 x 6 мм, координаты в миллиметрах */
+const форма = new THREE.Shape();
+const точки = [[-66,-30],[-38,-42],[24,-40],[62,-16],[58,26],[10,42],[-52,30]];
+форма.moveTo(точки[0][0], точки[0][1]);
+for (let i = 1; i < точки.length; i++) форма.lineTo(точки[i][0], точки[i][1]);
+форма.closePath();
+const гео = new THREE.ExtrudeGeometry(форма, {depth:6, bevelEnabled:true,
+  bevelThickness:0.9, bevelSize:0.7, bevelSegments:3, curveSegments:2, steps:1});
+гео.center();
+гео.computeVertexNormals();
+
+const U = {
+  uCamObj:{value:new THREE.Vector3()},
+  uKeyA:{value:new THREE.Vector3(-190, 150, 260)},
+  uKeyB:{value:new THREE.Vector3( 150, 190, 240)},
+  uKeyR:{value:26.0}, uKeyI:{value:1.0},
+  uKeyCol:{value:new THREE.Color(1.0, 0.965, 0.90)},
+  uRimCol:{value:new THREE.Color(1.0, 0.895, 0.29)},
+  uSliceOff:{value:new THREE.Vector3()},
+  uPeriod:{value:2.2}, uBand:{value:1.1}, uRimW:{value:0.06},
+  uEtchDepth:{value:0.030}, uEtchAmt:{value:0.0},
+  uFront:{value:-90.0}, uNeumann:{value:0.0}, uAtaxite:{value:0.0}
+};
+
+const ВЕРШ = `
+varying vec3 vObj;
+varying vec3 vNrm;
+void main(){
+  vObj = position;
+  vNrm = normal;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}`;
+
+/* GLSL — только ASCII: кириллица в исходнике шейдера ломает компиляцию */
+const ФРАГ = `
+precision highp float;
+varying vec3 vObj;
+varying vec3 vNrm;
+
+uniform vec3  uCamObj, uKeyA, uKeyB, uKeyCol, uRimCol, uSliceOff;
+uniform float uKeyR, uKeyI, uPeriod, uBand, uRimW;
+uniform float uEtchDepth, uEtchAmt, uFront, uNeumann, uAtaxite;
+
+const float PI = 3.14159265359;
+const vec3  F0_IRON   = vec3(0.560, 0.570, 0.580);
+const vec3  F0_NICKEL = vec3(0.660, 0.610, 0.530);
+const vec3  SKY_UP    = vec3(0.052, 0.058, 0.070);
+const vec3  SKY_DN    = vec3(0.014, 0.013, 0.012);
+
+float hash12(vec2 p){
+  vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+  p3 += dot(p3, p3.yzx + 33.33);
+  return fract((p3.x + p3.y) * p3.z);
+}
+float vnoise(vec2 p){
+  vec2 i = floor(p), f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash12(i), hash12(i + vec2(1.0,0.0)), u.x),
+             mix(hash12(i + vec2(0.0,1.0)), hash12(i + vec2(1.0,1.0)), u.x), u.y);
+}
+float fbm2(vec2 p){
+  float v = 0.0, a = 0.55;
+  for (int i = 0; i < 3; i++){ v += a * vnoise(p); p *= 2.07; a *= 0.5; }
+  return v;
+}
+
+// four {111} planes of the parent taenite crystal
+vec3 plateNormal(int i){
+  if (i == 0) return vec3( 0.5773503,  0.5773503,  0.5773503);
+  if (i == 1) return vec3( 0.5773503, -0.5773503, -0.5773503);
+  if (i == 2) return vec3(-0.5773503,  0.5773503, -0.5773503);
+  return             vec3(-0.5773503, -0.5773503,  0.5773503);
+}
+
+void plateFamily(int i, vec3 p, float period, float band, float rimW,
+                 out float kam, out float tae, out vec3 gk, out vec3 tang){
+  vec3 n = plateNormal(i);
+  vec3 t = normalize(cross(vec3(0.0, 0.0, 1.0), n));
+  vec3 b = cross(n, t);
+
+  float m    = dot(p, n) / period;
+  float k    = floor(m + 0.5);
+  float sgn  = sign(m - k);
+  float dist = abs(m - k) * period;
+
+  vec2  uv = vec2(dot(p, t), dot(p, b)) * (0.45 / period) + vec2(k * 11.3, k * 5.7);
+  float w  = max(band * (0.40 + 1.10 * fbm2(uv)), 0.0);
+
+  float aa = max(fwidth(dist), 1.0e-4);
+  float x  = clamp((dist - w + aa) / (2.0 * aa), 0.0, 1.0);
+  kam = 1.0 - x * x * (3.0 - 2.0 * x);
+  gk  = -(6.0 * x * (1.0 - x) / (2.0 * aa)) * sgn * n;
+
+  float y = clamp((dist - (w + rimW) + aa) / (2.0 * aa), 0.0, 1.0);
+  tae = clamp((1.0 - y * y * (3.0 - 2.0 * y)) - kam, 0.0, 1.0);
+  tang = t;
+}
+
+vec3 skyDome(vec3 d){
+  float up = d.y * 0.5 + 0.5;
+  return mix(SKY_DN, SKY_UP, up * up);
+}
+vec3 fresnelSchlick(vec3 f0, float u){ return f0 + (1.0 - f0) * pow(1.0 - u, 5.0); }
+float smithV(float NoV, float NoL, float a){
+  float a2 = a * a;
+  float gv = NoL * sqrt(NoV * NoV * (1.0 - a2) + a2);
+  float gl = NoV * sqrt(NoL * NoL * (1.0 - a2) + a2);
+  return 0.5 / max(gv + gl, 1.0e-5);
+}
+// Karis representative point of a tube light
+vec3 tubeMRP(vec3 A, vec3 B, vec3 O, vec3 R){
+  vec3  AB = B - A, AO = A - O;
+  float ab = dot(AB, AB);
+  float rb = dot(R, AB);
+  float ao = dot(AO, R);
+  float t  = clamp((ao * rb - dot(AO, AB)) / max(ab - rb * rb, 1.0e-4), 0.0, 1.0);
+  return A + AB * t;
+}
+vec3 aces(vec3 x){
+  return clamp((x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14), 0.0, 1.0);
+}
+
+void main(){
+  vec3 pos  = vObj;
+  vec3 xtal = vObj + uSliceOff;
+  vec3 N    = normalize(vNrm);
+  vec3 V    = normalize(uCamObj - pos);
+
+  float etched = 1.0 - smoothstep(uFront - 4.0, uFront + 8.0, pos.x);
+  float wet    = exp(-pow((pos.x - uFront) / 3.0, 2.0));
+
+  float K = 0.0, T = 0.0, domK = 0.0;
+  vec3  G = vec3(0.0), domTang = vec3(1.0, 0.0, 0.0);
+  for (int i = 0; i < 4; i++){
+    float kam, tae; vec3 gk, tg;
+    plateFamily(i, xtal, uPeriod, uBand, uRimW, kam, tae, gk, tg);
+    G = G * (1.0 - kam) + gk * (1.0 - K);
+    K = K + kam * (1.0 - K);
+    T = T + tae * (1.0 - T);
+    if (kam > domK){ domK = kam; domTang = tg; }
+  }
+  T = clamp(T - K, 0.0, 1.0);
+
+  K *= (1.0 - uAtaxite);
+  T *= (1.0 - uAtaxite);
+  G *= (1.0 - uAtaxite);
+  K *= etched; T *= etched; G *= etched;
+  float P = clamp(1.0 - K - T, 0.0, 1.0);
+
+  vec3  fT   = normalize(cross(N, vec3(0.0, 1.0, 0.0)) + vec3(1.0e-4));
+  vec3  fB   = cross(N, fT);
+  vec2  fuv  = vec2(dot(xtal, fT), dot(xtal, fB));
+  float lod  = clamp(1.0 - fwidth(fuv.x) * 22.0 * 1.6, 0.0, 1.0);
+  float ple  = mix(0.5, fbm2(fuv * 22.0), lod);
+
+  vec3  f0    = F0_IRON * K + F0_NICKEL * T
+              + mix(F0_IRON, F0_NICKEL, 0.35 + 0.30 * ple) * P;
+  float rough = 0.34 * K + 0.09 * T + (0.40 + 0.14 * ple) * P;
+
+  vec3 gT = G - N * dot(G, N);
+  vec3 Nb = normalize(N + uEtchDepth * uEtchAmt * gT);
+
+  float aniso = 0.62 * K;
+  float ax = max(rough * (1.0 - aniso * 0.60), 0.02);
+  float ay = max(rough * (1.0 + aniso * 0.85), 0.02);
+
+  vec3  R  = reflect(-V, Nb);
+  vec3  Lp = tubeMRP(uKeyA, uKeyB, pos, R);
+  vec3  Ld = Lp - pos;
+  float dl = max(length(Ld), 1.0e-4);
+  vec3  L  = Ld / dl;
+
+  float widen = clamp(uKeyR / (2.0 * dl), 0.0, 1.0);
+  float axw = clamp(ax + widen, 0.02, 1.0);
+  float ayw = clamp(ay + widen, 0.02, 1.0);
+
+  vec3  H   = normalize(V + L);
+  float NoV = max(dot(Nb, V), 1.0e-4);
+  float NoL = max(dot(Nb, L), 0.0);
+  float NoH = max(dot(Nb, H), 0.0);
+  float VoH = max(dot(V, H), 1.0e-4);
+
+  vec3  Tg  = normalize(domTang - Nb * dot(domTang, Nb) + vec3(1.0e-5));
+  vec3  Bg  = cross(Nb, Tg);
+  float ToH = dot(Tg, H), BoH = dot(Bg, H);
+
+  float den = max(ToH * ToH / (axw * axw) + BoH * BoH / (ayw * ayw) + NoH * NoH, 1.0e-4);
+  float D   = 1.0 / (PI * axw * ayw * den * den);
+  vec3  Fr  = fresnelSchlick(f0, VoH);
+  vec3  spec = D * smithV(NoV, NoL, 0.5 * (axw + ayw)) * Fr * NoL * uKeyI * uKeyCol;
+
+  vec3 env = mix(skyDome(R), (SKY_UP + SKY_DN) * 0.5, clamp(rough * 1.4, 0.0, 1.0)) * f0;
+
+  float ao  = 1.0 - 0.35 * K * uEtchAmt;
+  vec3  col = (spec + env) * ao;
+  col += uRimCol * pow(1.0 - NoV, 3.5) * 0.16;
+  col += wet * 0.06 * vec3(1.0, 0.96, 0.88);
+
+  gl_FragColor = vec4(pow(aces(col), vec3(1.0 / 2.2)), 1.0);
+}`;
+
+const мат = new THREE.ShaderMaterial({uniforms:U, vertexShader:ВЕРШ, fragmentShader:ФРАГ});
+const обр = new THREE.Mesh(гео, мат);
+обр.rotation.set(-0.30, 0.42, 0.14);
+обр.scale.setScalar(2.35);
+сц.add(обр);
+
+/* ================= никель, правило рычага, классы ================= */
+const КЛАССЫ = [
+  [0.0,  5.80, 'HEXAHEDRITE',  ''],
+  [5.80, 6.20, 'OCTAHEDRITE',  'Ogg'],
+  [6.20, 9.00, 'OCTAHEDRITE',  'Og'],
+  [9.00, 12.4, 'OCTAHEDRITE',  'Om'],
+  [12.4, 13.5, 'OCTAHEDRITE',  'Of'],
+  [13.5, 15.2, 'OCTAHEDRITE',  'Off'],
+  [15.2, 99.0, 'ATAXITE',      '']
+];
+const СТАНЦИИ = [
+  [0.06, 0.30, '8 – 9 % · Coarse octahedrite',
+   'Kamacite grows on four planes at once. Where the saw met them, ribbons.', ''],
+  [0.28, 0.55, '9 – 12 % · Medium octahedrite',
+   'More nickel, less room for kamacite. The lattice tightens.', ''],
+  [0.53, 0.78, '12 – 14 % · Fine octahedrite',
+   'The bands narrow until they interlock and the figure closes.', ''],
+  [0.76, 1.00, '15 %+ · Ataxite',
+   'Past sixteen, the figure never forms. Only plessite, too fine to resolve.',
+   'Nothing here is a texture. Kamacite plates grow on the four {111} planes of the parent taenite crystal, so the shader intersects four families of parallel plates with the cut face, etches away the kamacite, and lights the relief that is left. Bandwidth is a fit to the octahedrite classes; the phase fractions come from the lever rule at 5.5 and 33 % nickel.']
+];
+
+const кСт = document.getElementById('станции');
+СТАНЦИИ.forEach(([a, b, h, p, дл], i) => {
+  const d = document.createElement('div');
+  d.className = 'ст'; d.dataset.a = a; d.dataset.b = b;
+  d.innerHTML = '<h2>' + h + '</h2><p>' + p + '</p>' +
+                (дл ? '<p class="длинный">' + дл + '</p>' : '');
+  кСт.appendChild(d);
+});
+
+/* линейка: штрихи стоят намертво */
+const кЛин = document.getElementById('линейка');
+for (let i = 0; i <= 12; i++){
+  const y = (i / 12) * 100;
+  const s = document.createElement('i');
+  s.style.top = y + '%';
+  s.style.width = (i % 3 === 0 ? 30 : 16) + 'px';
+  s.style.transitionDelay = (900 + i * 9) + 'ms';
+  кЛин.appendChild(s);
+  if (i % 3 === 0){
+    const u = document.createElement('u');
+    u.style.top = 'calc(' + y + '% - 5px)';
+    u.textContent = (8.3 + (i / 12) * 9.2).toFixed(0);
+    кЛин.appendChild(u);
+  }
+}
+
+const вмТекст = document.getElementById('вм-текст');
+const вордмарк = document.getElementById('вордмарк');
+const риска = document.getElementById('риска');
+const [pNi, pBand, pCool] = ['p-ni','p-band','p-cool'].map(i => document.getElementById(i));
+const низ = document.getElementById('низ');
+const фпс = document.getElementById('фпс');
+
+let последнееИмя = '';
+function перенабрать(имя, под){
+  const целиком = имя + (под ? ' ' + под : '');
+  if (целиком === последнееИмя) return;
+  последнееИмя = целиком;
+  вмТекст.innerHTML = имя + (под ? ' <span class="под">' + под + '</span>' : '');
+  // кегль ИЗМЕРЯЕТСЯ, а не подбирается: слово всегда впритык к полям
+  вордмарк.style.fontSize = '100px';
+  const w = вмТекст.getBoundingClientRect().width || 1;
+  const поле = Math.min(54, Math.max(20, innerWidth * 0.04));
+  вордмарк.style.fontSize = (100 * (innerWidth - 2 * поле) / w).toFixed(2) + 'px';
+}
+
+/* ================= прокрутка = вещество, не ракурс ================= */
+let pГлад = 0, скорость = 0, ni = 8.30;
+function отПрокрутки(){
+  const макс = document.body.scrollHeight - innerHeight;
+  const p = макс > 0 ? scrollY / макс : 0;
+  скорость = Math.abs(p - pГлад);
+  pГлад += (p - pГлад) * 0.035;                 // никель — самое медленное на странице
+
+  ni = 8.30 + pГлад * 9.20;   // 8.3 → 17.5 %: ниже 7.5 узора нет по физике
+  const fKam = Math.min(1, Math.max(0, (33.0 - ni) / (33.0 - 5.5)));   // правило рычага
+  const band = Math.min(4.2, Math.max(0.02, 3.6 * Math.exp(-0.42 * (ni - 6.0))));
+  const duty = 1.0 - Math.pow(1.0 - fKam, 0.25);                        // четыре семейства
+  U.uBand.value    = band;
+  U.uPeriod.value  = band / Math.max(duty, 0.06);
+  U.uRimW.value    = Math.max(band * 0.055, 0.012);
+  U.uAtaxite.value = Math.min(1, Math.max(0, (ni - 15.2) / 1.8));
+  U.uKeyI.value    = 1.0 + Math.min(скорость * 6.0, 0.35);
+
+  // числа не твинятся: измерение это не анимация
+  pNi.textContent   = ni.toFixed(2);
+  pBand.textContent = band.toFixed(2);
+  pCool.textContent = Math.round(18 / (band * band));
+  риска.style.top   = (((ni - 8.3) / 9.2) * 100).toFixed(1) + '%';
+
+  const к = КЛАССЫ.find(c => ni >= c[0] && ni < c[1]) || КЛАССЫ[0];
+  перенабрать(к[2], к[3]);
+
+  for (const d of кСт.children){
+    const вид = pГлад >= +d.dataset.a && pГлад <= +d.dataset.b;
+    d.classList.toggle('вид', вид);
+  }
+  низ.classList.toggle('вид', pГлад > 0.93);
+
+  const h1 = document.querySelector('h1');
+  const у = Math.min(1, Math.max(0, (pГлад - 0.02) / 0.06));
+  h1.style.opacity = (1 - у).toFixed(3);
+  h1.style.transform = 'translateY(' + (-34 * у).toFixed(1) + 'px)';
+  h1.style.filter = 'blur(' + (8 * у).toFixed(1) + 'px)';
+}
+addEventListener('scroll', отПрокрутки, {passive:true});
+
+/* ================= вращение: у предмета своя инерция ================= */
+let velY = 0.0018, velX = 0, rotY = 0.42, rotX = -0.30, простой = 0, тянут = false;
+addEventListener('pointerdown', () => { тянут = true; простой = 0; });
+addEventListener('pointerup',   () => { тянут = false; });
+addEventListener('pointermove', e => {
+  if (!тянут) return;
+  velY += e.movementX * 0.00042;
+  velX += e.movementY * 0.00030;
+  простой = 0;
+});
+
+/* фронт травителя: физический процесс, потому считается вручную */
+const t0 = performance.now();
+function фронт(t){
+  const мс = t - t0 - 260;
+  if (мс <= 0) return -90;
+  const u = Math.min(1, мс / 1400);
+  const e = u < 0.5 ? 4*u*u*u : 1 - Math.pow(-2*u + 2, 3) / 2;   // easeInOutCubic
+  return -90 + e * 230;
+}
+function рельеф(t){
+  const мс = t - t0 - 460;
+  if (мс <= 0) return 0;
+  const u = Math.min(1, мс / 1200);
+  return u < 0.5 ? 4*u*u*u : 1 - Math.pow(-2*u + 2, 3) / 2;
+}
+
+addEventListener('resize', () => {
+  кам.aspect = innerWidth / innerHeight; кам.updateProjectionMatrix();
+  рен.setSize(innerWidth, innerHeight);
+  последнееИмя = ''; отПрокрутки();
+});
+
+const обрМир = new THREE.Matrix4();
+let кадры = 0, отсчёт = performance.now(), прошлое = performance.now();
+рен.setAnimationLoop(t => {
+  const dt = Math.min(t - прошлое, 50); прошлое = t;
+  const k = dt / 16.667;
+
+  простой += dt;
+  rotY += velY * k;
+  rotX = Math.min(0.42, Math.max(-0.42, rotX + velX * k));
+  velY *= Math.pow(0.935, k);                     // выбег ~45 кадров: образец тяжёлый
+  velX *= Math.pow(0.935, k);
+  if (простой > 2400) velY += (0.0018 - velY) * 0.02 * k;
+  обр.rotation.set(rotX, rotY, 0.14);
+
+  U.uFront.value   = фронт(t);
+  U.uEtchAmt.value = рельеф(t);
+  U.uSliceOff.value.set(0, 0, 0.6 * Math.sin(t * 0.00011));
+
+  обрМир.copy(обр.matrixWorld).invert();
+  U.uCamObj.value.copy(кам.position).applyMatrix4(обрМир);
+
+  рен.render(сц, кам);
+  if (++кадры >= 30){ фпс.textContent = Math.round(кадры*1000/(t - отсчёт)) + ' fps';
+    кадры = 0; отсчёт = t; }
+});
+
+отПрокрутки();
+requestAnimationFrame(() => requestAnimationFrame(() => {
+  document.documentElement.classList.add('готово');
+  перенабрать('OCTAHEDRITE', 'Om');
+}));
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+ "слаг": "torbau-walther",
+ "сайт": "https://www.torbau-walther.de",
+ "имя": "Torbau Walther",
+ "лого": "logo.png",
+ "цвета": [
+  "#123140",
+  "#045880",
+  "#f0941e"
+ ],
+ "товары": [
+  {
+   "файл": "tovar1.jpg",
+   "px": "1425x900",
+   "кб": 78,
+   "откуда": "https://static.wixstatic.com/media/f1929f_c0f751083b1543fa863ca7ef6e3614b0f000.jpg/v1/fill/w_1425,h_900,al_c,q_85,usm_0.33_1.00_0.00,enc_avif,quality_auto/f1929f_c0f751083b1543fa863ca7ef6e3614b0f000.jpg"
+  },
+  {
+   "файл": "tovar2.jpg",
+   "px": "1425x495",
+   "кб": 50,
+   "откуда": "https://static.wixstatic.com/media/8ff249_85a30b36cf6a4cfda8ad7b656faa9a03~mv2.jpg/v1/fill/w_1425,h_495,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/8ff249_85a30b36cf6a4cfda8ad7b656faa9a03~mv2.jpg"
+  },
+  {
+   "файл": "tovar3.jpg",
+   "px": "502x166",
+   "кб": 15,
+   "откуда": "https://static.wixstatic.com/media/f1929f_4bb0409596764bc7bc75886fe8f40d08~mv2.png/v1/crop/x_0,y_0,w_502,h_166,q_85,enc_auto/f1929f_4bb0409596764bc7bc75886fe8f40d08~mv2.png"
+  },
+  {
+   "файл": "tovar4.jpg",
+   "px": "454x341",
+   "кб": 28,
+   "откуда": "https://static.wixstatic.com/media/f1929f_aacf5cb482cb41fbb68812b9b034a7bf~mv2.png/v1/fill/w_454,h_341,fp_0.50_0.50,q_95,enc_avif,quality_auto/f1929f_aacf5cb482cb41fbb68812b9b034a7bf~mv2.png"
+  }
+ ],
+ "тип": "ворота",
+ "фото": 0
+}

@@ -1,0 +1,1569 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Инженерные веб-инструменты — каталог работ</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%93%90%3C%2Ftext%3E%3C%2Fsvg%3E">
+<meta name="robots" content="noindex">
+<link rel="alternate" hreflang="ru" href="https://smirnov-artur.github.io/portfolio/">
+<link rel="alternate" hreflang="en" href="https://smirnov-artur.github.io/portfolio/en/">
+<link rel="alternate" hreflang="x-default" href="https://smirnov-artur.github.io/portfolio/en/">
+<link rel="preload" href="assets/fonts/geologica-var-cyr.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/golos-var-cyr.woff2" as="font" type="font/woff2" crossorigin>
+<style>*{box-sizing:border-box}html,body{margin:0;padding:0}img,video{max-width:100%}</style>
+<link rel="stylesheet" href="css/motion.css">
+<script src="js/motion.js"></script>
+</head>
+<body>
+<style>
+  /* ---------- шрифты: self-hosted woff2, subset по unicode-range ----------
+     Geologica   — дисплейный технический гротеск (заголовки)
+     Golos Text  — текстовый гротеск (проза, значения спецификаций)
+     IBM Plex Mono — технические подписи и индексы
+     Все три с кириллицей, нарисованной, а не сгенерированной из латиницы. */
+
+  @font-face {
+    font-family: "Geologica";
+    src: url("assets/fonts/geologica-var-cyr.woff2") format("woff2");
+    font-weight: 100 900; font-style: normal; font-display: swap;
+    unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  }
+  @font-face {
+    font-family: "Geologica";
+    src: url("assets/fonts/geologica-var-lat.woff2") format("woff2");
+    font-weight: 100 900; font-style: normal; font-display: swap;
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+      U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: "Golos Text";
+    src: url("assets/fonts/golos-var-cyr.woff2") format("woff2");
+    font-weight: 400 900; font-style: normal; font-display: swap;
+    unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  }
+  @font-face {
+    font-family: "Golos Text";
+    src: url("assets/fonts/golos-var-lat.woff2") format("woff2");
+    font-weight: 400 900; font-style: normal; font-display: swap;
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+      U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: "IBM Plex Mono";
+    src: url("assets/fonts/plexmono-400-cyr.woff2") format("woff2");
+    font-weight: 400; font-style: normal; font-display: swap;
+    unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  }
+  @font-face {
+    font-family: "IBM Plex Mono";
+    src: url("assets/fonts/plexmono-400-lat.woff2") format("woff2");
+    font-weight: 400; font-style: normal; font-display: swap;
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+      U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+
+  :root {
+    --paper: #EDEEEA;
+    --panel: #E4E6E1;
+    --ink: #12161B;      /* 15.6:1 — основной текст            */
+    --ink-2: #3E4650;    /*  8.2:1 — вторичная проза           */
+    --graphite: #59616B; /*  5.4:1 — только моно-подписи       */
+    --rule: #D3D6CF;
+    --rule-strong: #ADB2A9;
+    --blue: #1B34C4;
+    --blue-soft: #1B34C414;
+
+    --f-display: "Geologica", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --f-body: "Golos Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", "SFMono-Regular", Menlo, monospace;
+
+    /* Шкала: 7 ступеней вместо прежних 12 почти одинаковых размеров.
+       Верх взят по замерам basement.studio (h1 87px) и CIAO Energy (108px). */
+    --t-d1: clamp(2.6rem, 6.2vw, 5.5rem);       /* 41.6 → 88px    */
+    --t-d2: clamp(1.6rem, 3vw, 2.6rem);         /* 25.6 → 41.6px  */
+    --t-d3: clamp(1.3rem, 2.1vw, 1.85rem);      /* 20.8 → 29.6px  */
+    --t-lede: clamp(1.125rem, 1.5vw, 1.375rem); /* 18 → 22px      */
+    --t-body: 1rem;                             /* 16px           */
+    --t-small: 0.9375rem;                       /* 15px           */
+    --t-label: 0.6875rem;                       /* 11px           */
+
+    --gap: clamp(1rem, 2vw, 1.75rem);
+    --edge: clamp(1.25rem, 4.4vw, 4rem);        /* на 1440 суммарное поле 143px — как у CIAO Energy */
+    --s-section: clamp(3.5rem, 8vw, 7.5rem);    /* 56 → 115px     */
+    --s-block: clamp(1.5rem, 3vw, 2.5rem);
+
+    /* Тайминги сняты с топов: hover 0.16s · смена состояния 0.4s · раскрытие 0.7s */
+    --t-fast: 160ms; --e-fast: cubic-bezier(0.4, 0, 0.2, 1);
+    --t-mid: 400ms;  --e-mid: cubic-bezier(0.4, 0, 0.1, 1);
+    --t-slow: 700ms; --e-out: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Акцент в Display-P3 там, где экран его умеет — приём Lusion и 21hrs */
+  @supports (color: color(display-p3 1 1 1)) {
+    @media (color-gamut: p3) { :root { --blue: color(display-p3 0.086 0.196 0.769); } }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0E1116;
+      --panel: #151A21;
+      --ink: #E7E9E5;
+      --ink-2: #B4BAC2;
+      --graphite: #939CA6;
+      --rule: #262C34;
+      --rule-strong: #39424C;
+      --blue: #7C93FF;
+      --blue-soft: #7C93FF16;
+    }
+    @supports (color: color(display-p3 1 1 1)) {
+      @media (color-gamut: p3) { :root { --blue: color(display-p3 0.486 0.576 1); } }
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0E1116;
+    --panel: #151A21;
+    --ink: #E7E9E5;
+    --ink-2: #B4BAC2;
+    --graphite: #939CA6;
+    --rule: #262C34;
+    --rule-strong: #39424C;
+    --blue: #7C93FF;
+    --blue-soft: #7C93FF16;
+  }
+  :root[data-theme="light"] {
+    --paper: #EDEEEA;
+    --panel: #E4E6E1;
+    --ink: #12161B;
+    --ink-2: #3E4650;
+    --graphite: #59616B;
+    --rule: #D3D6CF;
+    --rule-strong: #ADB2A9;
+    --blue: #1B34C4;
+    --blue-soft: #1B34C414;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: var(--t-body);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-synthesis-weight: none;
+  }
+
+  .wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--edge) clamp(3.5rem, 9vw, 7rem);
+  }
+
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: var(--t-label);
+    line-height: 1.45;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-feature-settings: "case" 1;
+    color: var(--graphite);
+    margin: 0;
+  }
+
+  /* ---------- title block ---------- */
+
+  .masthead {
+    border-bottom: 1px solid var(--rule-strong);
+    padding: clamp(1.6rem, 3.4vw, 2.6rem) 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.8rem, 4.4vw, 3.4rem);
+  }
+
+  .masthead-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.6rem 1.5rem;
+  }
+
+  .masthead-aside {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 1.2rem;
+  }
+
+  /* Первый экран: заголовок слева, лид прижат к базовой линии справа —
+     так правая половина холста перестаёт пустовать (приём Exo Ape / Lusion) */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: end;
+    gap: clamp(1.4rem, 3vw, 2.4rem) clamp(2rem, 5vw, 4.5rem);
+  }
+
+  /* ---------- переключатель языка ---------- */
+
+  .lang {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-family: var(--f-mono);
+    font-size: var(--t-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .lang a {
+    color: var(--ink-2);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color var(--t-fast) var(--e-fast), border-color var(--t-fast) var(--e-fast);
+  }
+
+  .lang a:hover { color: var(--blue); border-bottom-color: var(--blue); }
+  .lang a:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+  .lang .current { color: var(--graphite); }
+  .lang .sep { color: var(--rule-strong); }
+
+  /* Оптическая компенсация веса: чем крупнее кегль, тем легче начертание.
+     88px — 500, 42px — 500, 30px и мельче — 600. */
+  h1 {
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: var(--t-d1);
+    line-height: 0.92;
+    letter-spacing: -0.04em;   /* ровно как h1 basement.studio на 87px */
+    text-wrap: balance;
+    margin: 0;
+    max-width: 15ch;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--blue);
+  }
+
+  .lede {
+    max-width: 44ch;           /* Exo Ape держит вводный абзац в 44ch */
+    font-size: var(--t-lede);
+    line-height: 1.4;
+    color: var(--ink-2);
+    margin: 0;
+    padding-bottom: 0.35em;
+  }
+
+  /* Штамп чертежа вместо трёх одинаковых карточек */
+  .offers {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--rule-strong);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .offer {
+    padding: 0.95rem clamp(0.9rem, 2vw, 1.6rem) 1.05rem 0;
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    align-content: start;
+    column-gap: 0.85rem;
+    row-gap: 0.3rem;
+  }
+
+  .offer + .offer {
+    border-left: 1px solid var(--rule);
+    padding-left: clamp(0.9rem, 2vw, 1.6rem);
+  }
+
+  .offer .idx {
+    font-family: var(--f-mono);
+    font-size: var(--t-label);
+    letter-spacing: 0.1em;
+    color: var(--graphite);
+    padding-top: 0.28em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .offer h2 {
+    font-family: var(--f-display);
+    letter-spacing: -0.015em;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.15;
+  }
+
+  .offer p {
+    margin: 0;
+    grid-column: 2;
+    color: var(--ink-2);
+    font-size: var(--t-small);
+    line-height: 1.45;
+  }
+
+  /* ---------- флагманские демо ---------- */
+
+  .flagships {
+    margin-top: clamp(2.4rem, 5vw, 4rem);
+  }
+
+  .flagships-head {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 0.9rem clamp(1.5rem, 4vw, 3.2rem);
+    align-items: end;
+    margin-bottom: clamp(1.4rem, 3vw, 2.4rem);
+  }
+
+  .flagships-id {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.4rem 1.5rem;
+    flex-wrap: wrap;
+    grid-column: 1 / -1;
+  }
+
+  .flagships h2 {
+    font-family: var(--f-display);
+    font-size: var(--t-d2);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .flagships-note {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: var(--t-small);
+    line-height: 1.5;
+    max-width: 48ch;
+  }
+
+  .cases {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: clamp(0.85rem, 1.8vw, 1.3rem);
+  }
+
+  .case {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
+    background: var(--paper);
+    border: 1px solid var(--rule-strong);
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+    transition: border-color var(--t-fast) var(--e-fast);
+  }
+
+  .case:nth-child(-n + 2) { grid-column: span 3; }
+
+  .case::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 46px;
+    height: 3px;
+    background: var(--blue);
+    z-index: 2;
+    transition: width var(--t-slow) var(--e-out);
+  }
+
+  .case:hover, .case:focus-visible { border-color: var(--blue); }
+  .case:hover::before, .case:focus-visible::before { width: calc(100% + 2px); }
+  .case:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+  .case-shot {
+    margin: 0;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #0B0E13;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .case-shot img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--t-slow) var(--e-out);
+  }
+
+  .case:hover .case-shot img { transform: scale(1.035); }
+
+  .case-body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 1rem clamp(0.9rem, 1.5vw, 1.25rem) 1.05rem;
+  }
+
+  .case-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .case h3 {
+    font-family: var(--f-display);
+    text-transform: uppercase;
+    font-size: var(--t-d3);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.04;
+    margin: 0.1rem 0 0;
+  }
+
+  .case p {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: var(--t-small);
+    line-height: 1.45;
+  }
+
+  .case-open {
+    margin-top: auto;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--f-mono);
+    font-size: var(--t-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--graphite);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    transition: color var(--t-fast) var(--e-fast);
+  }
+
+  .case:hover .case-open { color: var(--blue); }
+
+  .case-open .arrow {
+    transition: transform var(--t-mid) var(--e-mid);
+  }
+
+  .case:hover .case-open .arrow { transform: translateX(6px); }
+
+  /* ---------- разделитель каталога ---------- */
+
+  .rail {
+    border-top: 1px solid var(--rule-strong);
+    margin-top: var(--s-section);
+    padding-top: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .rail-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.4rem 1.5rem;
+  }
+
+  .rail h2 {
+    font-family: var(--f-display);
+    font-size: var(--t-d2);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  @media (max-width: 980px) {
+    .case, .case:nth-child(-n + 2) { grid-column: span 3; }
+    .case:last-child { grid-column: 1 / -1; }
+  }
+
+  @media (max-width: 620px) {
+    .flagships-head { grid-template-columns: minmax(0, 1fr); align-items: start; }
+    .case, .case:nth-child(-n + 2), .case:last-child { grid-column: 1 / -1; }
+  }
+
+  /* ---------- plates ---------- */
+
+  .plate {
+    border-top: 1px solid var(--rule);
+    padding-top: 1.2rem;
+    margin-top: clamp(3rem, 6.5vw, 5.5rem);
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--gap) clamp(1.5rem, 4vw, 3.2rem);
+    position: relative;
+  }
+
+  .plate::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 46px;
+    height: 3px;
+    background: var(--rule-strong);
+  }
+
+  .plate-head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .plate-id {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+  }
+
+  .plate h3 {
+    font-family: var(--f-display);
+    font-size: var(--t-d3);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .plate-sub {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: var(--t-small);
+    line-height: 1.5;
+    max-width: 46ch;
+  }
+
+  dl.spec {
+    margin: 0;
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    gap: 0.05rem 1.25rem;
+    font-size: var(--t-small);
+    align-content: start;
+  }
+
+  dl.spec dt {
+    font-family: var(--f-mono);
+    font-size: var(--t-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--graphite);
+    padding-top: 0.5rem;
+    white-space: nowrap;
+  }
+
+  dl.spec dd {
+    margin: 0;
+    padding: 0.38rem 0;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink-2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  dl.spec dt { border-bottom: 1px solid var(--rule); }
+  dl.spec dt:last-of-type, dl.spec dd:last-of-type { border-bottom: 0; }
+
+  .screen {
+    margin: 0;
+    align-self: start;
+  }
+
+  .screen video {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #0B0E13;
+    border: 1px solid var(--rule-strong);
+  }
+
+  .screen video[data-zoom] { cursor: zoom-in; }
+
+  .screen video[data-zoom]:focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  .zoom-hint {
+    color: var(--graphite);
+  }
+
+  /* ---------- lightbox ---------- */
+
+  dialog.lb {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    max-width: 100vw;
+    max-height: 100vh;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  dialog.lb::backdrop { background: rgba(6, 9, 13, 0.93); }
+
+  .lb-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    padding: clamp(0.8rem, 2.5vw, 2rem);
+  }
+
+  .lb-inner video {
+    max-width: 100%;
+    max-height: calc(100vh - 7rem);
+    width: auto;
+    height: auto;
+    background: #0B0E13;
+    border: 1px solid #2A3038;
+  }
+
+  .lb-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1100px;
+    font-family: var(--f-mono);
+    font-size: var(--t-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #9AA3AE;
+  }
+
+  .lb-bar button {
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: #E7E9E5;
+    background: transparent;
+    border: 1px solid #39424C;
+    padding: 0.5rem 0.9rem;
+    cursor: pointer;
+  }
+
+  .lb-bar button:hover { border-color: #7C93FF; color: #7C93FF; }
+  .lb-bar button:focus-visible { outline: 2px solid #7C93FF; outline-offset: 2px; }
+
+  .screen figcaption {
+    font-family: var(--f-mono);
+    font-size: var(--t-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--graphite);
+    padding-top: 0.65rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.2rem 1rem;
+  }
+
+  /* На узком экране три подписи в строку сминаются в столбики по два слова:
+     подсказку уводим на свою строку, а не сжимаем колонку. */
+  @media (max-width: 620px) {
+    .screen figcaption .zoom-hint { order: 1; flex-basis: 100%; }
+  }
+
+  /* ---------- стопка скриншотов ---------- */
+
+  .shots {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .shots img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--rule-strong);
+    background: #fff;
+    cursor: zoom-in;
+  }
+
+  .shots img:first-child { grid-column: 1 / -1; }
+
+  /* Первая картинка занимает всю ширину, дальше идут парами. Значит при чётном
+     числе последняя остаётся одна в левой колонке, а справа зияет дыра —
+     растягиваем её тоже. */
+  .shots img:last-child:nth-child(even) { grid-column: 1 / -1; }
+
+  .shots img:focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  .lb-inner img {
+    max-width: 100%;
+    max-height: calc(100vh - 7rem);
+    width: auto;
+    height: auto;
+    border: 1px solid #2A3038;
+    background: #fff;
+  }
+
+  /* ---------- audio a/b ---------- */
+
+  .ab {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    border: 1px solid var(--rule-strong);
+    background: var(--panel);
+    padding: clamp(1rem, 2.4vw, 1.5rem);
+  }
+
+  .ab-row { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .ab-row .ab-label {
+    font-family: var(--f-mono);
+    font-size: var(--t-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--graphite);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .ab-row.synth .ab-label { color: var(--blue); }
+
+  .ab audio { width: 100%; display: block; }
+
+  .ab-note {
+    margin: 0;
+    font-size: var(--t-small);
+    line-height: 1.5;
+    color: var(--ink-2);
+    border-top: 1px solid var(--rule);
+    padding-top: 0.9rem;
+  }
+
+  /* ---------- close ---------- */
+
+  .terms {
+    border-top: 1px solid var(--rule-strong);
+    margin-top: var(--s-section);
+    padding-top: 1.8rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--s-block) clamp(1.5rem, 4vw, 3.2rem);
+  }
+
+  .terms h2 {
+    font-family: var(--f-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 0 0 0.55rem;
+  }
+
+  .terms p { margin: 0; color: var(--ink-2); font-size: var(--t-small); line-height: 1.5; max-width: 40ch; }
+
+  .contact {
+    margin-top: clamp(2.6rem, 5.5vw, 4rem);
+    padding: clamp(1.4rem, 3vw, 2rem) clamp(1.2rem, 2.6vw, 2rem);
+    background: var(--blue-soft);
+    border-left: 3px solid var(--blue);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.8rem 1.5rem;
+  }
+
+  .contact p { margin: 0; }
+
+  .contact .handle {
+    font-family: var(--f-display);
+    font-size: clamp(1.7rem, 3.6vw, 2.6rem);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    color: var(--blue);
+  }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: minmax(0, 1fr); align-items: start; }
+    h1 { max-width: 13ch; }
+    .lede { max-width: 52ch; padding-bottom: 0; }
+  }
+
+  /* На узком экране подзаголовок в шапке дублирует h1 и съедает 60px первого кадра */
+  @media (max-width: 640px) {
+    .masthead-aside .eyebrow { display: none; }
+  }
+
+  @media (max-width: 760px) {
+    .plate { grid-template-columns: minmax(0, 1fr); }
+    .offers { grid-template-columns: minmax(0, 1fr); border-bottom: 0; }
+    .offer { padding: 0.85rem 0 0.95rem; }
+    .offer + .offer { border-left: 0; border-top: 1px solid var(--rule); padding-left: 0; }
+  }
+
+  @media (max-width: 420px) {
+    dl.spec { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    dl.spec dt { border-bottom: 0; padding-top: 0.7rem; white-space: normal; }
+    dl.spec dd { padding-top: 0.1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="masthead-top">
+      <p class="eyebrow">Каталог работ · 2026</p>
+      <div class="masthead-aside">
+        <p class="eyebrow">Расчётные веб-инструменты для производства</p>
+        <nav class="lang" aria-label="Язык страницы">
+          <span class="current" aria-current="true">RU</span>
+          <span class="sep" aria-hidden="true">/</span>
+          <a href="en/" hreflang="en" lang="en">EN</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="hero">
+      <h1>Считаю <em>оборудование</em> прямо в браузере</h1>
+
+      <p class="lede">
+        Делаю то, что веб-студии обычно не берут: расчёт, 3D и документооборот
+        внутри браузера. Ниже — пять интерактивных демо и четырнадцать рабочих проектов.
+      </p>
+    </div>
+
+    <div class="offers">
+      <div class="offer">
+        <span class="idx" aria-hidden="true">01</span>
+        <h2>Калькуляторы подбора</h2>
+        <p>Расчёт по характеристикам оборудования, подбор из каталога, выдача спецификации.</p>
+      </div>
+      <div class="offer">
+        <span class="idx" aria-hidden="true">02</span>
+        <h2>3D-конфигураторы</h2>
+        <p>Сборка изделия в браузере на Three.js, стыковка элементов, смета в реальном времени.</p>
+      </div>
+      <div class="offer">
+        <span class="idx" aria-hidden="true">03</span>
+        <h2>B2B-каталоги</h2>
+        <p>Магазин с ценами, остатками, расчётом доставки и запросом КП. Интеграция с Битрикс24.</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="flagships" aria-labelledby="flagships-title">
+      <div class="flagships-head">
+        <div class="flagships-id">
+          <p class="eyebrow">Флагманы</p>
+          <p class="eyebrow">Живые страницы, не запись экрана</p>
+        </div>
+        <h2 id="flagships-title">Пять демо — лучше один раз открыть</h2>
+        <p class="flagships-note">
+          Сложная графика в браузере: WebGL на сырых шейдерах, курсорная физика,
+          параметрическая генерация. Каждое демо — отдельная страница, ничего ставить не нужно.
+        </p>
+      </div>
+
+      <div class="cases">
+
+        <a class="case" href="cases/blocksmith/">
+          <figure class="case-shot">
+            <img src="assets/thumbs/blocksmith.jpg" width="1000" height="562" decoding="async"
+                 alt="BLOCKSMITH: чертёжный лист с заголовком, под ним живой майнкрафт-мир — Стив строит деревню таймлапсом">
+          </figure>
+          <div class="case-body">
+            <div class="case-meta">
+              <span class="eyebrow">Демо · новое</span>
+              <span class="eyebrow">WebGPU · живой мир</span>
+            </div>
+            <h3>BLOCKSMITH</h3>
+            <p>Страница, которую персонаж собирает по буквам, пока под ней в таймлапсе растёт целая деревня — до шахты со скидкой на дне.</p>
+            <span class="case-open"><span>Открыть демо</span><span class="arrow">→</span></span>
+          </div>
+        </a>
+
+        <a class="case" href="cases/aurum/">
+          <figure class="case-shot">
+            <img src="assets/thumbs/aurum.jpg" width="1000" height="562" decoding="async"
+                 alt="AURUM: бронзовая скульптура коня на тёмном фоне, крупная типографика Bronze and Time">
+          </figure>
+          <div class="case-body">
+            <div class="case-meta">
+              <span class="eyebrow">Демо 01</span>
+              <span class="eyebrow">WebGL · шейдеры</span>
+            </div>
+            <h3>AURUM</h3>
+            <p>Бронзовая скульптура на сырых шейдерах: камера облетает её на 360° по скроллу.</p>
+            <span class="case-open"><span>Открыть демо</span><span class="arrow">→</span></span>
+          </div>
+        </a>
+
+        <a class="case" href="cases/ferro/">
+          <figure class="case-shot">
+            <img src="assets/thumbs/ferro.jpg" width="1000" height="562" decoding="async"
+                 alt="Ferro: светлый лендинг студии с портретом во весь экран и заголовком Bold ideas, shipped with quiet precision">
+          </figure>
+          <div class="case-body">
+            <div class="case-meta">
+              <span class="eyebrow">Демо 02</span>
+              <span class="eyebrow">Курсор · маска</span>
+            </div>
+            <h3>Ferro</h3>
+            <p>Лендинг студии: liquid-курсор вскрывает второе изображение прямо под указателем.</p>
+            <span class="case-open"><span>Открыть демо</span><span class="arrow">→</span></span>
+          </div>
+        </a>
+
+        <a class="case" href="cases/flux/">
+          <figure class="case-shot">
+            <img src="assets/thumbs/flux.jpg" width="1000" height="562" loading="lazy" decoding="async"
+                 alt="Fluxwave: неоновый цветок на скале в сумерках и крупная надпись Fluxwave поверх видео">
+          </figure>
+          <div class="case-body">
+            <div class="case-meta">
+              <span class="eyebrow">Демо 03</span>
+              <span class="eyebrow">Видео · курсор</span>
+            </div>
+            <h3>Fluxwave</h3>
+            <p>Неоновый первый экран с живым фоновым видео и собственной физикой курсора.</p>
+            <span class="case-open"><span>Открыть демо</span><span class="arrow">→</span></span>
+          </div>
+        </a>
+
+        <a class="case" href="cases/new1/">
+          <figure class="case-shot">
+            <img src="assets/thumbs/signal.jpg" width="1000" height="562" loading="lazy" decoding="async"
+                 alt="SIGNAL: объёмная монета с тикером $SIGNAL, рядом панель шейдерных параметров">
+          </figure>
+          <div class="case-body">
+            <div class="case-meta">
+              <span class="eyebrow">Демо 04</span>
+              <span class="eyebrow">Шейдер · генератив</span>
+            </div>
+            <h3>SIGNAL</h3>
+            <p>Вводите тикер — геометрия монеты и палитра пересобираются под него на лету.</p>
+            <span class="case-open"><span>Открыть демо</span><span class="arrow">→</span></span>
+          </div>
+        </a>
+
+        <a class="case" href="cases/new2/">
+          <figure class="case-shot">
+            <img src="assets/thumbs/vault.jpg" width="1000" height="562" loading="lazy" decoding="async"
+                 alt="VAULT: тёмная панель токеномики — кривая эмиссии, показатели float и сфера предложения">
+          </figure>
+          <div class="case-body">
+            <div class="case-meta">
+              <span class="eyebrow">Демо 05</span>
+              <span class="eyebrow">Данные · WebGL</span>
+            </div>
+            <h3>VAULT</h3>
+            <p>Токеномика вживую: тянете месяц — кривая эмиссии, вестинг и сфера из 4 000 частиц пересчитываются разом.</p>
+            <span class="case-open"><span>Открыть демо</span><span class="arrow">→</span></span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <header class="rail">
+      <div class="rail-top">
+        <p class="eyebrow">Все работы</p>
+        <p class="eyebrow">Листы 01—14</p>
+      </div>
+      <h2>Четырнадцать проектов из практики</h2>
+    </header>
+
+    <section class="plate">
+      <div class="plate-head">
+        <div class="plate-id">
+          <p class="eyebrow">Лист 01</p>
+          <p class="eyebrow">Легаси → веб</p>
+        </div>
+        <h3>Vertro — старый инженерный расчёт, перенесённый в браузер</h3>
+        <p class="plate-sub">
+          Было настольное приложение на Visual Basic с базами Access — работает только на
+          одном компьютере. Вскрыл базы, вытащил данные и логику, перенёс в веб: девять
+          расчётных модулей и весь каталог оборудования теперь открываются по ссылке.
+        </p>
+        <dl class="spec">
+          <dt>Источник</dt><dd>приложение на VB6, базы Access (.mdb), контролы OCX</dd>
+          <dt>Миграция</dt><dd>вскрытие баз, извлечение данных из .exe, перенос в SQL</dd>
+          <dt>Перенесено</dt><dd>база 63 таблицы, 3 471 запись: вентиляторы, двигатели, секции</dd>
+          <dt>Модули</dt><dd>конфигуратор ЦКВ, подбор вентилятора и привода, акустика, теплообменники, характеристики</dd>
+          <dt>Стек</dt><dd>Next.js, React</dd>
+        </dl>
+      </div>
+      <figure class="screen">
+        <video muted loop playsinline preload="none" data-autoplay width="1280" height="988" poster="assets/a0-poster.jpg" data-full="assets/a0.mp4">
+          <source media="(max-width: 640px)" src="assets/a0-ld.mp4" type="video/mp4">
+          <source src="assets/a0-md.mp4" type="video/mp4">
+        </video>
+        <div class="shots">
+          <img src="assets/a1.jpg" loading="lazy" decoding="async" alt="Главная: девять расчётных модулей и счётчики перенесённой базы 63 таблицы, 3471 запись">
+        </div>
+        <figcaption><span>Живой подбор: ввод → расчёт → кривая с рабочей точкой</span><span class="zoom-hint">Нажмите, чтобы развернуть</span></figcaption>
+      </figure>
+    </section>
+
+
+    <section class="plate">
+      <div class="plate-head">
+        <div class="plate-id">
+          <p class="eyebrow">Лист 02</p>
+          <p class="eyebrow">Вентиляция</p>
+        </div>
+        <h3>Вентмаркет — подбор вентиляторов по рабочей точке</h3>
+        <p class="plate-sub">
+          Инженер задаёт расход и полное давление — система сама подбирает вентилятор,
+          строит аэродинамическую схему и собирает заказ со всей обвязкой.
+        </p>
+        <dl class="spec">
+          <dt>Каталог</dt><dd>400+ позиций оборудования</dd>
+          <dt>Расчёт</dt><dd>~20 000 полиномиальных характеристик</dd>
+          <dt>Разделы</dt><dd>аэродинамика, акустика, ЧРП, стоимость владения</dd>
+          <dt>Заказ</dt><dd>корзина, вес и объём, доставка, запрос КП</dd>
+          <dt>Интеграция</dt><dd>Битрикс24</dd>
+          <dt>Языки</dt><dd>русский, английский</dd>
+        </dl>
+      </div>
+      <figure class="screen">
+        <video muted loop playsinline preload="none" data-autoplay width="1920" height="1044" poster="assets/a2-poster.jpg" data-full="assets/a2.mp4">
+          <source media="(max-width: 640px)" src="assets/a2-ld.mp4" type="video/mp4">
+          <source src="assets/a2-md.mp4" type="video/mp4">
+        </video>
+        <figcaption><span>Экран подбора</span><span>9 c · без звука</span></figcaption>
+      </figure>
+    </section>
+
+    <section class="plate">
+      <div class="plate-head">
+        <div class="plate-id">
+          <p class="eyebrow">Лист 03</p>
+          <p class="eyebrow">Воздуховоды</p>
+        </div>
+        <h3>Вентпром — конфигуратор фасонных изделий</h3>
+        <p class="plate-sub">
+          Заказчик собирает изделие по размерам и сразу видит его в превью с проставленными
+          размерами. На выходе — смета и коммерческое предложение, без переписки с менеджером.
+        </p>
+        <dl class="spec">
+          <dt>Изделия</dt><dd>воздуховоды, отводы, переходы, тройники, врезки, зонты</dd>
+          <dt>Ввод</dt><dd>размеры, материал, тип соединения</dd>
+          <dt>Превью</dt><dd>перестраивается на лету, с размерными линиями</dd>
+          <dt>Выход</dt><dd>смета и КП</dd>
+        </dl>
+      </div>
+      <figure class="screen">
+        <video muted loop playsinline preload="none" data-autoplay width="1280" height="646" poster="assets/a3-poster.jpg" data-full="assets/a3.mp4">
+          <source media="(max-width: 640px)" src="assets/a3-ld.mp4" type="video/mp4">
+          <source src="assets/a3-md.mp4" type="video/mp4">
+        </video>
+        <figcaption><span>Сборка изделия</span><span>9 c · без звука</span></figcaption>
+      </figure>
+    </section>
+
+    <section class="plate">
+      <div class="plate-head">
+        <div class="plate-id">
+          <p class="eyebrow">Лист 04</p>
+          <p class="eyebrow">3D-конфигуратор</p>
+        </div>
+        <h3>STANDES — конфигуратор расстановки стеллажей в зале</h3>
+        <p class="plate-sub">
+          Клиент задаёт размеры зала и расставляет стеллажи, полки и витрины в 3D.
+          Смета считается на лету, сцену можно посмотреть в AR или отрендерить,
+          а готовую расстановку — отправить как ТЗ, не звоня менеджеру.
+        </p>
+        <dl class="spec">
+          <dt>Сцена</dt><dd>расстановка в зале по заданным размерам, вид 3D и 2D</dd>
+          <dt>Каталог</dt><dd>стеллажи, полки, витрины, аксессуары, перфо-панели</dd>
+          <dt>Смета</dt><dd>стоимость пересчитывается в реальном времени по составу</dd>
+          <dt>Экспорт</dt><dd>AR-просмотр, рендер, скриншот, сводка позиций, отправка ТЗ</dd>
+          <dt>Стек</dt><dd>Three.js</dd>
+        </dl>
+      </div>
+      <figure class="screen">
+        <div class="shots">
+          <img src="assets/a4.jpg" loading="lazy" decoding="async" alt="Конфигуратор STANDES: зал со стеллажами в 3D, каталог, смета, отправка ТЗ">
+        </div>
+        <figcaption><span>Расстановка стеллажей в 3D со сметой</span><span class="zoom-hint">Нажмите, чтобы развернуть</span></figcaption>
+      </figure>
+    </section>
+
+    <section class="plate">
+      <div class="plate-head">
+        <div class="plate-id">
+          <p class="eyebrow">Лист 05</p>
+          <p class="eyebrow">Автоматизация · 1С</p>
+        </div>
+        <h3>Softvent — из PDF-проекта в спецификацию для 1С</h3>
+        <p class="plate-sub">
+          Проектная документация вентиляции приходит как многостраничный PDF с таблицами по
+          ГОСТ. Система разбирает их и выдаёт готовую номенклатуру: воздуховоды в метрах,
+          фасонные части в штуках — остаётся загрузить в 1С:ERP, а не вбивать вручную.
+        </p>
+        <dl class="spec">
+          <dt>Вход</dt><dd>PDF-проект по ГОСТ 21.602-2016, десятки страниц</dd>
+          <dt>Разбор</dt><dd>поиск таблиц спецификации, распознавание позиций</dd>
+          <dt>Пересчёт</dt><dd>единицы приводятся к номенклатуре (метры → штуки по длине хлыста)</dd>
+          <dt>Выход</dt><dd>33 позиции из тестового проекта, готовы к загрузке</dd>
+          <dt>Дальше</dt><dd>UI-автозаполнение номенклатуры в 1С:ERP Софтвент</dd>
+        </dl>
+      </div>
+      <figure class="screen">
+        <div class="shots">
+          <img src="assets/a5.jpg" loading="lazy" decoding="async" alt="Вход: страница проекта — таблица характеристик вентсистем по ГОСТ">
+          <img src="assets/a6.jpg" loading="lazy" decoding="async" alt="Выход: 33 позиции чистой спецификации, воздуховоды в метрах, фасон в штуках">
+        </div>
+        <figcaption><span>Слева проект, справа извлечённая спецификация</span><span class="zoom-hint">Нажмите, чтобы развернуть</span></figcaption>
+      </figure>
+    </section>
+
+    <section class="plate">
+      <div class="plate-head">
+        <div class="plate-id">
+          <p class="eyebrow">Лист 06</p>
+          <p class="eyebrow">WebGL</p>
+        </div>
+        <h3>Диос+ — карта флота на глобусе</h3>
+        <p class="plate-sub">
+          Маршруты грузовых судов и самолётов по великим кругам от Азова до двадцати восьми
+          городов мира. Сделано на Three.js, работает в браузере без плагинов.
+        </p>
+        <dl class="spec">
+          <dt>Основа</dt><dd>текстуры Земли NASA, облачный слой, атмосферный halo</dd>
+          <dt>Маршруты</dt><dd>28 городов, живой флот из судов и самолётов</dd>
+          <dt>Стек</dt><dd>Three.js</dd>
+        </dl>
+      </div>
+      <figure class="screen">
+        <video muted loop playsinline preload="none" data-autoplay width="1280" height="610" poster="assets/a7-poster.jpg" data-full="assets/a7.mp4">
+          <source media="(max-width: 640px)" src="assets/a7-ld.mp4" type="video/mp4">
+          <source src="assets/a7-md.mp4" type="video/mp4">
+        </video>
+        <figcaption><span>Глобус с маршрутами</span><span>9 c · без звука</span></figcaption>
+      </figure>
+    </section>
+
+    <section class="plate">
+      <div class="plate-head">
+        <div class="plate-id">
+          <p class="eyebrow">Лист 07</p>
+          <p class="eyebrow">Опт</p>
+        </div>
+        <h3>Сантехмарк — оптовый каталог сантехники</h3>
+        <p class="plate-sub">
+          B2B-магазин для поставщика с четырьмя складами: бренды, остатки, прайсы и отдельный
+          дилерский вход. Первый экран собран в 3D, чтобы каталог не выглядел как прайс-лист.
+        </p>
+        <dl class="spec">
+          <dt>Разделы</dt><dd>каталог, бренды, остатки, прайсы, дилерам</dd>
+          <dt>Первый экран</dt><dd>3D-сцена: хром, капли, дым</dd>
+          <dt>География</dt><dd>4 склада, отгрузка в день заказа</dd>
+        </dl>
+      </div>
+      <figure class="screen">
+        <video muted loop playsinline preload="none" data-autoplay width="1920" height="1080" poster="assets/a8-poster.jpg" data-full="assets/a8.mp4">
+          <source media="(max-width: 640px)" src="assets/a8-ld.mp4" type="video/mp4">
+          <source src="assets/a8-md.mp4" type="video/mp4">
+        </video>
+        <figcaption><span>Первый экран</span><span>9 c · без звука</span></figcaption>
+      </figure>
+    </section>
+
+    <section class="plate">
+      <div class="plate-head">
+        <div class="plate-id">
+          <p class="eyebrow">Лист 08</p>
+          <p class="eyebrow">Дизайн · Арт-дирекшн</p>
+        </div>
+        <h3>СРЕЗ — сайт-каталог декоративных покрытий</h3>
+        <p class="plate-sub">
+          Каталог, устроенный как инструмент мастера. Восемь фактур с технической
+          картой, а вместо обычных фото — «лампа»: ведёшь свет по стене под углом,
+          и на покрытии проявляется рельеф — ровно так мастер проверяет плоскость.
+        </p>
+        <dl class="spec">
+          <dt>Концепт</dt><dd>каталог как рабочий инструмент, а не витрина</dd>
+          <dt>Фактуры</dt><dd>8 покрытий, у каждого техкарта: толщина слоя, расход, проходов кельмой, цена</dd>
+          <dt>Приём</dt><dd>скользящий свет (grazing light) проявляет рельеф фактуры по движению слайдера</dd>
+          <dt>Типографика</dt><dd>крупный гротеск Unbounded, моноширинные технические подписи</dd>
+          <dt>Стек</dt><dd>чистый HTML/CSS/JS, без библиотек</dd>
+        </dl>
+      </div>
+      <figure class="screen">
+        <video muted loop playsinline preload="none" data-autoplay width="1280" height="848" poster="assets/a9-poster.jpg" data-full="assets/a9.mp4">
+          <source media="(max-width: 640px)" src="assets/a9-ld.mp4" type="video/mp4">
+          <source src="assets/a9-md.mp4" type="video/mp4">
+        </video>
+        <figcaption><span>Свет ведут по фактуре, затем меняют покрытие</span><span class="zoom-hint">Нажмите, чтобы развернуть</span></figcaption>
+      </figure>
+    </section>
+
+    <section class="plate">
+      <div class="plate-head">
+        <div class="plate-id">
+          <p class="eyebrow">Лист 09</p>
+          <p class="eyebrow">Дизайн · Концепт</p>
+        </div>
+        <h3>Сантехмарк — концепт: витрина и кабинет дилера в одном сайте</h3>
+        <p class="plate-sub">
+          Эскизное предложение оптового сайта, оформленное как проектный документ.
+          Главное решение: один интерфейс в двух состояниях — гость из поиска видит
+          витрину, вошедший дилер — рабочий кабинет с ценами, лимитом и заказами.
+          Переключатель меняет всё сразу.
+        </p>
+        <dl class="spec">
+          <dt>Идея</dt><dd>разделение витрины и рабочего кабинета — 80% выручки приносит дилер, ему нужна скорость</dd>
+          <dt>Состояния</dt><dd>гость: каталог и цены; дилер: заказы, задолженность, лимит, документы одним архивом</dd>
+          <dt>Язык</dt><dd>графика из монтажного чертежа — честно показывает скрытый монтаж</dd>
+          <dt>Формат</dt><dd>интерактивный эскиз-документ с переключателем состояний</dd>
+        </dl>
+      </div>
+      <figure class="screen">
+        <video muted loop playsinline preload="none" data-autoplay width="1280" height="810" poster="assets/a10-poster.jpg" data-full="assets/a10.mp4">
+          <source media="(max-width: 640px)" src="assets/a10-ld.mp4" type="video/mp4">
+          <source src="assets/a10-md.mp4" type="video/mp4">
+        </video>
+        <figcaption><span>Один экран: гость видит витрину, дилер — кабинет</span><span class="zoom-hint">Нажмите, чтобы развернуть</span></figcaption>
+      </figure>
+    </section>
+
+    <section class="plate">
+      <div class="plate-head">
+        <div class="plate-id">
+          <p class="eyebrow">Лист 10</p>
+          <p class="eyebrow">Computer vision</p>
+        </div>
+        <h3>Strimkarts — распознавание карт в прямом эфире</h3>
+        <p class="plate-sub">
+          Оверлей поверх стрима: камера смотрит на стол, система узнаёт карту в момент вскрытия,
+          подтягивает её цену и ведёт счёт по всей сессии.
+        </p>
+        <dl class="spec">
+          <dt>Ввод</dt><dd>живой видеопоток с камеры</dd>
+          <dt>Распознавание</dt><dd>карта определяется в реальном времени</dd>
+          <dt>На экране</dt><dd>счётчик паков и карт, сумма, топ хитов с ценами</dd>
+          <dt>Формат</dt><dd>браузерный оверлей, заводится в OBS</dd>
+        </dl>
+      </div>
+      <figure class="screen">
+        <video muted loop playsinline preload="none" data-autoplay width="1280" height="632" poster="assets/a11-poster.jpg" data-full="assets/a11.mp4">
+          <source media="(max-width: 640px)" src="assets/a11-ld.mp4" type="video/mp4">
+          <source src="assets/a11-md.mp4" type="video/mp4">
+        </video>
+        <figcaption><span>Оверлей в работе</span><span>9 c · без звука</span></figcaption>
+      </figure>
+    </section>
+
+    <section class="plate">
+      <div class="plate-head">
+        <div class="plate-id">
+          <p class="eyebrow">Лист 11</p>
+          <p class="eyebrow">Обучение</p>
+        </div>
+        <h3>Эпидемио — тренажёр подготовки к экзамену</h3>
+        <p class="plate-sub">
+          Учебник и база вопросов разбираются в карточки, дальше приложение само решает,
+          что и когда показать. Отдельно считает, совпадает ли заявленная уверенность
+          с реальной точностью — то есть где студент себя переоценивает.
+        </p>
+        <dl class="spec">
+          <dt>База</dt><dd>3 401 карточка и 163 экзаменационных вопроса</dd>
+          <dt>Источник</dt><dd>разбор PDF на вопросы, дедупликация, сверка формулировок</dd>
+          <dt>Повторения</dt><dd>интервальный алгоритм: зрелые, молодые, изучаемые, новые</dd>
+          <dt>Режимы</dt><dd>карточки и экзамен с развёрнутым устным ответом</dd>
+          <dt>Аналитика</dt><dd>калибровка уверенности, нагрузка на неделю, активность за 30 дней</dd>
+          <dt>Разделы</dt><dd>9 тематических блоков предметной области</dd>
+        </dl>
+      </div>
+      <figure class="screen">
+        <video muted loop playsinline preload="none" data-autoplay width="1280" height="914" poster="assets/a12-poster.jpg" data-full="assets/a12.mp4">
+          <source media="(max-width: 640px)" src="assets/a12-ld.mp4" type="video/mp4">
+          <source src="assets/a12-md.mp4" type="video/mp4">
+        </video>
+        <div class="shots">
+          <img src="assets/a13.jpg" loading="lazy" decoding="async" alt="Прогресс: калибровка уверенности — совпадает ли заявленная уверенность с реальной точностью">
+        </div>
+        <figcaption><span>Живой проход: карточка → оценка уверенности → ответ → экзамен</span><span class="zoom-hint">Нажмите, чтобы развернуть</span></figcaption>
+      </figure>
+    </section>
+
+    <section class="plate">
+      <div class="plate-head">
+        <div class="plate-id">
+          <p class="eyebrow">Лист 12</p>
+          <p class="eyebrow">Обучение · Go</p>
+        </div>
+        <h3>Vector — тренажёр Go с проверкой кода и ИИ-судьёй</h3>
+        <p class="plate-sub">
+          Платформа подготовки к собеседованию по Go: урок → упражнение с реальным
+          запуском кода → закрепление. Ответы на экзамене проверяет не самооценка,
+          а разбор по рубрикам. Путь построен до оффера — восемь этапов.
+        </p>
+        <dl class="spec">
+          <dt>Практика</dt><dd>встроенный редактор, запуск кода в песочнице, сверка вывода</dd>
+          <dt>Экзамен</dt><dd>оценка ответов по рубрикам, эталонный разбор ядро / глубже / ловушка</dd>
+          <dt>Память</dt><dd>интервальные повторения (FSRS), карточки пишутся по вердикту судьи</dd>
+          <dt>Маршрут</dt><dd>единая дорожка, 8 этапов, прогресс по узлам</dd>
+          <dt>Стек</dt><dd>Go backend, React, песочница запуска, внешний ИИ-судья</dd>
+        </dl>
+      </div>
+      <figure class="screen">
+        <div class="shots">
+          <img src="assets/a14.jpg" loading="lazy" decoding="async" alt="Упражнение: редактор кода, запуск и проверка, результат совпал">
+          <img src="assets/a15.jpg" loading="lazy" decoding="async" alt="Экзамен: оценка по рубрикам, вердикт судьи, эталонный разбор">
+        </div>
+        <figcaption><span>Практика с запуском кода и экзамен с разбором</span><span class="zoom-hint">Нажмите, чтобы развернуть</span></figcaption>
+      </figure>
+    </section>
+
+    <section class="plate">
+      <div class="plate-head">
+        <div class="plate-id">
+          <p class="eyebrow">Лист 13</p>
+          <p class="eyebrow">Backend · Java</p>
+        </div>
+        <h3>AI Health Coach — серверная часть мобильного приложения</h3>
+        <p class="plate-sub">
+          Бэкенд фитнес-приложения на Spring Boot: аккаунты и подписки, питание с
+          адаптивными целями, тренировки с программой от ИИ, синхронизация с носимыми
+          устройствами и диалог с коучем на Claude API. Готов к продакшену и деплою.
+        </p>
+        <dl class="spec">
+          <dt>Стек</dt><dd>Java 21, Spring Boot 3.4, PostgreSQL, Flyway, JWT</dd>
+          <dt>Объём</dt><dd>53 REST-эндпоинта, 51 таблица, 9 доменов</dd>
+          <dt>Интеграции</dt><dd>Claude API, Firebase FCM, Garmin OAuth, HealthKit, Health Connect</dd>
+          <dt>Подписки</dt><dd>планы, триал, проверка чеков покупок из сторов</dd>
+          <dt>Деплой</dt><dd>Docker, готовые конфиги Railway и Render</dd>
+        </dl>
+      </div>
+      <figure class="screen">
+        <div class="shots">
+          <img src="assets/a16.jpg" loading="lazy" decoding="async" alt="Карта REST API: 9 доменов, 53 эндпоинта, 51 таблица, 5 внешних интеграций">
+        </div>
+        <figcaption><span>Карта API по данным спецификации проекта</span><span class="zoom-hint">Нажмите, чтобы развернуть</span></figcaption>
+      </figure>
+    </section>
+
+    <section class="plate">
+      <div class="plate-head">
+        <div class="plate-id">
+          <p class="eyebrow">Лист 14</p>
+          <p class="eyebrow">Синтез речи</p>
+        </div>
+        <h3>Клон голоса — модель говорит на чужом языке</h3>
+        <p class="plate-sub">
+          Модель обучена на записях одного человека. Сравните сами: сверху живая запись,
+          снизу — английская речь, которой он никогда не произносил. Голос тот же.
+        </p>
+        <dl class="spec">
+          <dt>Обучение</dt><dd>на собственных записях носителя голоса</dd>
+          <dt>Вход</dt><dd>произвольный текст</dd>
+          <dt>Выход</dt><dd>речь на языке, которого нет в обучающих данных</dd>
+          <dt>Применение</dt><dd>озвучка, интерактив на стриме, доступ по ролям</dd>
+        </dl>
+      </div>
+      <figure class="screen">
+        <div class="ab">
+          <div class="ab-row">
+            <span class="ab-label"><span>Оригинал · живая запись</span><span>12 c</span></span>
+            <audio controls preload="none" src="assets/a17.mp3"></audio>
+          </div>
+          <div class="ab-row synth">
+            <span class="ab-label"><span>Синтез · английский</span><span>10 c</span></span>
+            <audio controls preload="none" src="assets/a18.mp3"></audio>
+          </div>
+          <p class="ab-note">
+            Второй фрагмент сгенерирован моделью. Демонстрация возможностей синтеза,
+            сделана для самого носителя голоса и с его ведома.
+          </p>
+        </div>
+        <figcaption><span>Сравнение оригинала и синтеза</span><span>со звуком</span></figcaption>
+      </figure>
+    </section>
+
+  </main>
+
+  <section class="terms">
+    <div>
+      <h2>Как работаю</h2>
+      <p>Фиксирую объём и сумму письменно до старта. Предоплата 30–50% либо разбивка на этапы с оплатой каждого.</p>
+    </div>
+    <div>
+      <h2>Если не знаете меня</h2>
+      <p>Первый этап можно сделать маленьким — 2–3 дня и небольшая сумма, чтобы вы ничем не рисковали. Работаю и через гаранта.</p>
+    </div>
+    <div>
+      <h2>Оплата</h2>
+      <p>Карта, СБП или USDT. Объём и сумма фиксируются письменно до старта, работа по этапам.</p>
+    </div>
+  </section>
+
+  <section class="contact">
+    <p class="eyebrow">Написать в Telegram</p>
+    <p class="handle"><a href="https://t.me/smirnovarturr" style="color:inherit;text-decoration:none">@smirnovarturr</a></p>
+    <p class="eyebrow">Отвечаю в течение часа</p>
+  </section>
+
+</div>
+
+<script>
+  (function () {
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    var inline = [].slice.call(document.querySelectorAll(".screen video"));
+
+    function applyMotion() {
+      inline.forEach(function (v) {
+        if (reduce.matches) {
+          v.pause();
+          v.removeAttribute("autoplay");
+          v.setAttribute("controls", "");
+        } else {
+          v.removeAttribute("controls");
+          /* воспроизведение ведёт motion.js по вхождению в кадр */
+        }
+      });
+    }
+    applyMotion();
+    if (reduce.addEventListener) { reduce.addEventListener("change", applyMotion); }
+
+    /* ---- разворот на весь экран ---- */
+
+    var dlg = document.createElement("dialog");
+    dlg.className = "lb";
+    dlg.innerHTML =
+      '<div class="lb-inner">' +
+        '<video controls loop playsinline></video>' +
+        '<img alt="" hidden>' +
+        '<div class="lb-bar">' +
+          '<span class="lb-title"></span>' +
+          '<span>Пробел — пауза · Esc — закрыть</span>' +
+          '<button type="button" data-close>Закрыть</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(dlg);
+
+    var big = dlg.querySelector("video");
+    var bigImg = dlg.querySelector("img");
+    var title = dlg.querySelector(".lb-title");
+    var opener = null;
+
+    function show() {
+      if (typeof dlg.showModal === "function") { dlg.showModal(); } else { dlg.setAttribute("open", ""); }
+    }
+
+    function open(v) {
+      opener = v;
+      title.textContent = v.getAttribute("data-title") || "";
+      bigImg.hidden = true;
+      big.hidden = false;
+      big.src = v.currentSrc || v.getAttribute("data-full") || v.src;
+      big.currentTime = v.currentTime || 0;
+      show();
+      if (!reduce.matches) {
+        var p = big.play();
+        if (p && p.catch) { p.catch(function () {}); }
+      }
+    }
+
+    function openImage(img) {
+      opener = img;
+      title.textContent = img.getAttribute("data-title") || img.alt || "";
+      big.pause();
+      big.hidden = true;
+      bigImg.hidden = false;
+      bigImg.src = img.currentSrc || img.src;
+      bigImg.alt = img.alt || "";
+      show();
+    }
+
+    function close() {
+      big.pause();
+      big.removeAttribute("src");
+      big.load();
+      bigImg.removeAttribute("src");
+      if (typeof dlg.close === "function" && dlg.open) { dlg.close(); } else { dlg.removeAttribute("open"); }
+      if (opener) { opener.focus(); opener = null; }
+    }
+
+    [].slice.call(document.querySelectorAll(".shots img")).forEach(function (img) {
+      var plate = img.closest(".plate");
+      var heading = plate ? plate.querySelector("h3") : null;
+      img.setAttribute("data-title", heading ? heading.textContent.trim() : "");
+      img.setAttribute("tabindex", "0");
+      img.setAttribute("role", "button");
+      img.addEventListener("click", function () { openImage(img); });
+      img.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+          e.preventDefault();
+          openImage(img);
+        }
+      });
+    });
+
+    inline.forEach(function (v) {
+      var plate = v.closest(".plate");
+      var heading = plate ? plate.querySelector("h3") : null;
+      var name = heading ? heading.textContent.trim() : "Экран";
+      v.setAttribute("data-zoom", "");
+      v.setAttribute("data-title", name);
+      v.setAttribute("tabindex", "0");
+      v.setAttribute("role", "button");
+      v.setAttribute("aria-label", "Развернуть: " + name);
+
+      v.addEventListener("click", function () { open(v); });
+      v.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+          e.preventDefault();
+          open(v);
+        }
+      });
+
+      /* подсказка уже может стоять в разметке — тогда второй не надо */
+      var cap = plate ? plate.querySelector("figcaption") : null;
+      if (cap && !cap.querySelector(".zoom-hint")) {
+        var hint = document.createElement("span");
+        hint.className = "zoom-hint";
+        hint.textContent = "Нажмите, чтобы развернуть";
+        cap.insertBefore(hint, cap.lastElementChild);
+      }
+    });
+
+    dlg.addEventListener("click", function (e) {
+      if (e.target === dlg || e.target.hasAttribute("data-close")) { close(); }
+    });
+    dlg.addEventListener("cancel", function (e) { e.preventDefault(); close(); });
+  })();
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<!-- vau-stranitsa · силуэт: одноэкранная композиция · предмет: наковальня · система: нет · техника: тепловое поле по вершинам + Планк -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ковка — металл помнит тепло</title>
+<meta name="description" content="Наковальня в темноте. Курсор греет железо: под ним разгорается пятно, цвет считается по закону Планка, и после ухода металл медленно остывает.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&family=Golos+Text:wght@400;500&display=swap">
+<style>
+:root{
+  --ночь:#0a0a0c; --мел:#efe9e0; --жар:#ff6a1c;
+  --к:cubic-bezier(.16,.84,.24,1);
+}
+*{box-sizing:border-box;margin:0;border-radius:0}
+html,body{height:100%;overflow:hidden;background:var(--ночь);color:var(--мел);
+  font:400 15px/1.55 "Golos Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+
+#железо{position:fixed;inset:0;z-index:0}
+#железо canvas{display:block;width:100%;height:100%}
+
+.слой{position:fixed;inset:0;z-index:2;pointer-events:none;
+  padding:30px clamp(20px,3.4vw,56px);display:grid;grid-template-rows:auto 1fr auto}
+.слой a,.слой button{pointer-events:auto}
+
+.мелко{font:500 10.5px/1.3 "Golos Text",sans-serif;letter-spacing:.19em;text-transform:uppercase;
+  color:rgba(239,233,224,.42)}
+
+/* ── шапка ── */
+.верх{display:flex;justify-content:space-between;align-items:baseline;gap:24px}
+.марка{font:700 13px/1 "Unbounded",sans-serif;letter-spacing:.12em;color:rgba(239,233,224,.86)}
+nav{display:flex;gap:22px}
+nav a{color:rgba(239,233,224,.46);text-decoration:none;transition:color 420ms var(--к)}
+nav a:hover{color:rgba(239,233,224,.92)}
+.градус{display:flex;align-items:center;gap:9px;font-variant-numeric:tabular-nums;
+  color:rgba(239,233,224,.62)}
+.точка{width:6px;height:6px;background:var(--жар);position:relative;flex:none;
+  transform:rotate(45deg)}
+.точка::after{content:"";position:absolute;inset:-3px;border:1px solid var(--жар);
+  animation:пульс 2.4s ease-in-out infinite}
+@keyframes пульс{0%{transform:scale(.6);opacity:.85}70%,100%{transform:scale(2.1);opacity:0}}
+
+/* ── середина ── */
+.середина{align-self:center;max-width:min(46ch,44vw)}
+h1{font:400 clamp(1.9rem,3.5vw,3.4rem)/1.06 "Unbounded",Georgia,serif;letter-spacing:-.02em}
+h1 i{font-style:normal;color:var(--жар)}
+.строка{display:block;overflow:hidden}
+.строка>span{display:block;transform:translateY(108%);filter:blur(14px);
+  transition:transform 1050ms var(--к) var(--д,0ms),filter 1050ms var(--к) var(--д,0ms)}
+html.готово .строка>span{transform:none;filter:none}
+.лид{margin-top:22px;color:rgba(239,233,224,.56);max-width:34ch}
+.лид b{color:rgba(239,233,224,.88);font-weight:500}
+
+/* ── низ ── */
+.низ{display:grid;gap:16px}
+.волос{height:1px;background:rgba(239,233,224,.14);transform:scaleX(0);transform-origin:left;
+  transition:transform 1100ms var(--к) 240ms}
+html.готово .волос{transform:scaleX(1)}
+.подпись{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.автор{color:rgba(239,233,224,.5);text-decoration:none;border-bottom:1px solid rgba(239,233,224,.18);
+  padding-bottom:2px;transition:color 420ms var(--к),border-color 420ms var(--к)}
+.автор:hover{color:var(--мел);border-color:var(--жар)}
+.марка{transition:color 420ms var(--к)}
+.марка:hover{color:var(--жар)}
+.градус:hover{color:rgba(239,233,224,.92)}
+.лид b{transition:color 420ms var(--к)}
+.лид:hover b{color:var(--жар)}
+.подск:hover{opacity:.86}
+#железо:hover{cursor:crosshair}
+
+#вордмарк{position:fixed;left:clamp(20px,3.4vw,56px);right:clamp(20px,3.4vw,56px);
+  bottom:clamp(10px,1.6vw,26px);z-index:1;display:flex;justify-content:space-between;
+  font:700 16.4vw/.78 "Unbounded",sans-serif;letter-spacing:-.012em;
+  color:rgba(239,233,224,.1);pointer-events:none;user-select:none}
+#вордмарк b{display:block;font-weight:700;transform:translateY(106%);
+  transition:transform 1150ms var(--к) var(--д,0ms)}
+html.готово #вордмарк b{transform:none}
+#вордмарк span{display:block;overflow:hidden}
+
+[data-въезд]{opacity:0;transform:translateY(12px);
+  transition:opacity 900ms var(--к) var(--д,0ms),transform 900ms var(--к) var(--д,0ms)}
+html.готово [data-въезд]{opacity:1;transform:none}
+
+.подск{position:fixed;left:50%;bottom:calc(clamp(10px,1.6vw,26px) + 15.6vw);transform:translateX(-50%);
+  z-index:3;opacity:0;transition:opacity 900ms var(--к) 1700ms}
+html.готово .подск{opacity:.5}
+.подск.ушла{opacity:0!important;transition-delay:0ms}
+.подск em{font-style:normal;color:var(--жар)}
+
+#нетgl{position:fixed;inset:0;z-index:5;display:none;place-content:center;text-align:center;
+  padding:40px;background:var(--ночь)}
+#нетgl p{max-width:38ch;color:rgba(239,233,224,.62)}
+:focus-visible{outline:2px solid var(--жар);outline-offset:4px}
+
+@media (max-width:1100px){
+  .середина{max-width:min(40ch,64vw)}
+  #вордмарк{font-size:19vw}
+}
+@media (max-width:820px){
+  nav{display:none}
+  .середина{max-width:none}
+  #вордмарк{font-size:22.5vw;justify-content:flex-start;gap:.02em}
+  .подск{bottom:calc(clamp(10px,1.6vw,26px) + 24vw)}
+}
+@media (max-width:520px){
+  html,body{font-size:15px}
+  .слой{padding:22px 20px}
+  h1{font-size:clamp(1.65rem,7.4vw,2.1rem)}
+  #вордмарк{font-size:25vw}
+  /* на телефоне мельче 12 px не опускаемся: у всех наших прежних страниц было 10–11.5 */
+  .мелко{font-size:12.5px;letter-spacing:.14em}
+  .лид{font-size:15px}
+}
+@media (prefers-reduced-motion:reduce){
+  .строка>span,#вордмарк b,[data-въезд],.волос{transform:none!important;filter:none!important;
+    opacity:1!important;transition:none!important}
+  .точка::after{display:none}
+  .подск{opacity:.5!important;transition:none}
+}
+</style>
+</head>
+<body>
+<div id="железо"></div>
+
+<div class="слой">
+  <div class="верх">
+    <div class="марка" data-въезд style="--д:120ms">КОВКА</div>
+    <nav class="мелко" data-въезд style="--д:220ms">
+      <a href="#о">ремесло</a><a href="#р">работы</a><a href="#к">связаться</a>
+    </nav>
+    <div class="градус мелко" data-въезд style="--д:320ms">
+      <i class="точка"></i><span id="темп">— °C</span>
+    </div>
+  </div>
+
+  <div class="середина">
+    <h1>
+      <span class="строка"><span style="--д:260ms">Металл</span></span>
+      <span class="строка"><span style="--д:360ms">помнит</span></span>
+      <span class="строка"><span style="--д:460ms"><i>тепло</i></span></span>
+    </h1>
+    <p class="лид" data-въезд style="--д:700ms">
+      Наковальня, кованная по чертежу столетнего образца.
+      <b>Веди курсор по железу</b> — оно нагреется под рукой и будет остывать.
+    </p>
+  </div>
+
+  <div class="низ">
+    <div class="мелко" data-въезд style="--д:820ms">100 кг · лондонский образец · сталь 45</div>
+    <div class="волос"></div>
+    <div class="подпись">
+      <div class="мелко" data-въезд style="--д:900ms">ручная работа · след руки остаётся в металле</div>
+      <a class="автор" href="https://t.me/smirnovarturr" data-въезд style="--д:1000ms">t.me/smirnovarturr</a>
+    </div>
+  </div>
+</div>
+
+<div id="вордмарк" aria-hidden="true">
+  <span><b style="--д:520ms">К</b></span><span><b style="--д:600ms">О</b></span><span><b style="--д:680ms">В</b></span><span><b style="--д:760ms">К</b></span><span><b style="--д:840ms">А</b></span>
+</div>
+
+<div class="подск мелко">веди курсор по железу · <em>дольше держишь — жарче</em></div>
+
+<div id="нетgl">
+  <p>Здесь горит железо, но браузер не умеет WebGL.<br>
+  Откройте страницу в свежем Chrome, Safari или Firefox.</p>
+</div>
+
+<script type="module">
+import * as T from '_obshchee/assets/three-k.js';
+
+const узел = document.getElementById('железо');
+const мало = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let рен;
+try {
+  рен = new T.WebGLRenderer({antialias:false, alpha:false, powerPreference:'high-performance'});
+} catch(e) { document.getElementById('нетgl').style.display='grid'; }
+
+if (рен) {
+/* разрешение НЕ деградирует: пол ровно 1.0, потолок 1.75 */
+const ПЛОТН = Math.max(1, Math.min(devicePixelRatio || 1, 1.75));
+рен.setPixelRatio(ПЛОТН);
+рен.setSize(innerWidth, innerHeight, false);
+рен.toneMapping = T.ACESFilmicToneMapping;
+рен.toneMappingExposure = 1.0;
+рен.outputColorSpace = T.SRGBColorSpace;
+узел.appendChild(рен.domElement);
+
+let прошлое = 0, макс = 0;
+const сц = new T.Scene();
+сц.background = new T.Color(0x0a0a0c);
+сц.fog = new T.FogExp2(0x0a0a0c, 0.028);
+
+const кам = new T.PerspectiveCamera(32, innerWidth/innerHeight, 0.05, 60);
+const пивот = new T.Group(); сц.add(пивот);
+
+/* свет: контровой холодный ярче ключевого, ключевой еле тёплый.
+   Третий источник — само раскалённое пятно, оно живёт в шейдере. */
+const контр = new T.DirectionalLight(0x9fc0ff, 2.9); контр.position.set(-3.4, 2.6, -3.0); сц.add(контр);
+const ключ  = new T.DirectionalLight(0xffd9b0, 0.55); ключ.position.set(2.8, 2.2, 2.4); сц.add(ключ);
+сц.add(new T.HemisphereLight(0x2b3a52, 0x0a0a0c, 0.55));
+const зап = new T.DirectionalLight(0xbcd0f0, 0.5); зап.position.set(1.2, -0.4, 2.2); сц.add(зап);
+
+/* ── тепловое поле живёт на вершинах, а не в UV: развёртка модели неизвестна,
+      а вершины есть всегда. Диффузия по рёбрам, взятым из индексного буфера. ── */
+let сетка = null;
+const ГОР = 1250, ТОЧЕК = 20;
+/* каждая точка: xyz в системе предмета, w — накал 0..1 */
+const точки = new Float32Array(ТОЧЕК * 4);
+const uPts = { value: [] };
+for (let i = 0; i < ТОЧЕК; i++) uPts.value.push(new T.Vector4(0, 0, 0, 0));
+let след = 0;
+
+function греть(p, сила){
+  /* если рядом уже есть точка — доливаем в неё, иначе занимаем следующую по кругу.
+     Иначе быстрый курсор съедает весь массив за полсекунды. */
+  let ближ = -1, лучшее = 0.09 * 0.09;
+  for (let i = 0; i < ТОЧЕК; i++){
+    const o = i*4;
+    if (точки[o+3] <= 0.001) continue;
+    const dx=точки[o]-p.x, dy=точки[o+1]-p.y, dz=точки[o+2]-p.z;
+    const d2 = dx*dx+dy*dy+dz*dz;
+    if (d2 < лучшее){ лучшее = d2; ближ = i; }
+  }
+  if (ближ < 0){ ближ = след; след = (след+1) % ТОЧЕК;
+    точки[ближ*4] = p.x; точки[ближ*4+1] = p.y; точки[ближ*4+2] = p.z; точки[ближ*4+3] = 0; }
+  точки[ближ*4+3] = Math.min(1, точки[ближ*4+3] + сила);
+}
+
+function остудить(dt){
+  const спад = Math.pow(0.80, dt);          /* до тёмного примерно за десять секунд */
+  for (let i = 0; i < ТОЧЕК; i++){
+    const o = i*4;
+    точки[o+3] *= спад;
+    if (точки[o+3] < 0.004) точки[o+3] = 0;
+    uPts.value[i].set(точки[o], точки[o+1], точки[o+2], точки[o+3]);
+  }
+}
+
+/* ── материал: сталь плюс собственное свечение по закону Планка ── */
+const мат = new T.MeshStandardMaterial({
+  color:0x8b8a88, metalness:1.0, roughness:0.58, vertexColors:true,
+});
+мат.onBeforeCompile = (ш)=>{
+  ш.uniforms.uPts = uPts;
+  ш.vertexShader = ш.vertexShader
+    .replace('#include <common>', '#include <common>\n varying vec3 vLocal;')
+    .replace('#include <begin_vertex>', '#include <begin_vertex>\n vLocal = position;');
+  ш.fragmentShader = ш.fragmentShader
+    .replace('#include <common>', `#include <common>
+      varying vec3 vLocal;
+      uniform vec4 uPts[${ТОЧЕК}];
+      // Planck at 630/532/465 nm. Ratios are physical, only brightness is tuned.
+      vec3 planck(float T){
+        const vec3 lam = vec3(630e-9, 532e-9, 465e-9);
+        const float c1 = 3.7418e-16, c2 = 1.4388e-2;
+        vec3 e = exp(c2 / (lam * max(T, 1.0))) - 1.0;
+        vec3 B = c1 / (pow(lam, vec3(5.0)) * e);
+        return B / max(B.r, 1e-9);
+      }
+      float heatAt(vec3 p){
+        float h = 0.0;
+        for (int i = 0; i < ${ТОЧЕК}; i++){
+          vec4 t = uPts[i];
+          if (t.w <= 0.0) continue;
+          float d = distance(p, t.xyz);
+          h += t.w * exp(-d*d / 0.0032);      // пятно радиусом около 9 см в масштабе предмета
+        }
+        return min(h, 1.0);
+      }`)
+    .replace('#include <color_fragment>', `#include <color_fragment>
+      // curvature wear as vertex colour: rgb = polish, alpha*2 = roughness multiplier
+      diffuseColor.rgb *= mix(vec3(0.72), vec3(1.18), vColor.rgb);`)
+    .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
+      float hR = heatAt(vLocal);
+      roughnessFactor *= clamp(vColor.a * 2.0, 0.45, 1.35);
+      roughnessFactor = mix(roughnessFactor, 0.24, smoothstep(0.15, 0.85, hR));`)
+    .replace('#include <dithering_fragment>', `#include <dithering_fragment>
+      float h = heatAt(vLocal);
+      float Tk = 293.0 + h * ${ГОР}.0;
+      float seen = smoothstep(0.045, 0.20, h);   // below ~450 C steel does not glow
+      gl_FragColor.rgb += planck(Tk) * pow(h, 1.55) * 5.2 * seen;`);
+};
+
+/* ── окружение. Без него metalness 1.0 отражает пустоту и металл чёрный.
+      Тир 256 px: окружение не видно резко, оно только светит. ── */
+const пмрем = new T.PMREMGenerator(рен);
+сц.environment = пмрем.fromScene(new T.RoomEnvironment(), 0.26).texture;
+сц.environmentIntensity = 0.26;   /* приглушено: кадр остаётся ночным, но металлу есть что отражать */
+пмрем.dispose();
+
+/* расписание взводится СРАЗУ, а сцена поднимается отдельной задачей: иначе
+   появления не успевают создаться, и приёмка видит один взведённый узел вместо двадцати */
+requestAnimationFrame(()=>requestAnimationFrame(()=>document.documentElement.classList.add('готово')));
+
+/* ── загрузка ── */
+new T.GLTFLoader().load('_obshchee/assets/nakovalnya.glb', (g)=>{
+  let м=null; g.scene.traverse(o=>{ if(o.isMesh && !м) м=o; });
+  const гео = м.geometry;
+  гео.computeBoundingBox();
+  const б = гео.boundingBox, ц = new T.Vector3(); б.getCenter(ц);
+  гео.translate(-ц.x, -б.min.y, -ц.z);
+  const габ = new T.Vector3(); б.getSize(габ);
+  const к = 1.0 / габ.y;                       /* высота = 1 */
+  гео.scale(к, к, к);
+  if(!гео.index) гео.setIndex([...Array(гео.attributes.position.count).keys()]);
+  if(!гео.attributes.color){
+    const n=гео.attributes.position.count, c=new Float32Array(n*4).fill(0.5);
+    for(let i=0;i<n;i++) c[i*4+3]=0.5;
+    гео.setAttribute('color', new T.BufferAttribute(c,4));
+  }
+  сетка = new T.Mesh(гео, мат);
+  сетка.rotation.y = -0.28;
+  пивот.add(сетка);
+  готово();
+}, undefined, ()=>{ document.getElementById('нетgl').style.display='grid'; });
+
+/* ── кадр: наковальня справа от центра, точка съёмки чуть выше лица ── */
+function поставитьКамеру(){
+  const узк = innerWidth < 820;
+  const д = узк ? 4.3 : 3.05;
+  кам.position.set(д*0.20, 0.92, д);
+  кам.lookAt(узк ? 0 : -0.10, 0.36, 0);
+  кам.aspect = innerWidth/innerHeight; кам.updateProjectionMatrix();
+}
+поставитьКамеру();
+
+/* ── постобработка: сглаживание, затенение в щелях, свечение, свой финальный проход ── */
+const цель = new T.WebGLRenderTarget(innerWidth*ПЛОТН, innerHeight*ПЛОТН,
+  { type: T.HalfFloatType, samples: 4 });
+const комп = new T.EffectComposer(рен, цель);
+комп.addPass(new T.RenderPass(сц, кам));
+const свеч = new T.UnrealBloomPass(new T.Vector2(innerWidth*0.6, innerHeight*0.6), 0.30, 0.34, 1.45);
+комп.addPass(свеч);
+
+const грейд = new T.ShaderPass({
+  uniforms:{ tDiffuse:{value:null}, uT:{value:0} },
+  vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.,1.); }`,
+  fragmentShader:`
+    uniform sampler2D tDiffuse; uniform float uT; varying vec2 vUv;
+    void main(){
+      vec3 c = texture2D(tDiffuse, vUv).rgb;
+      c += vec3(0.0104,0.0076,0.0058);              // shadow lift: otherwise half the frame sits at zero
+      const float W = 3.15;
+      c = W*c/(W+c);                                 // film shoulder: pure white becomes unreachable
+      float lum = dot(c, vec3(0.2126,0.7152,0.0722));
+      float n = fract(sin(dot(vUv*vec2(1024.,1024.)+uT, vec2(12.9898,78.233)))*43758.5453);
+      c += (n-0.5)*0.055*(0.12+0.88*sqrt(lum));      // grain weighted by luminance
+      float d = distance(vUv, vec2(0.5));
+      c *= 1.0 - smoothstep(0.42, 0.96, d)*0.42;     // vignette
+      gl_FragColor = vec4(c, 1.0);
+    }`,
+});
+комп.addPass(грейд);
+
+комп.addPass(new T.OutputPass());
+
+/* ── курсор: греет, куда попал ── */
+const луч = new T.Raycaster(), мышь = new T.Vector2(-9,-9);
+let цельМыши = new T.Vector2(), былаТочка=null, держит=0, ушлаПодсказка=false;
+const подск = document.querySelector('.подск');
+const темпЭл = document.getElementById('темп');
+
+addEventListener('pointermove', (e)=>{
+  цельМыши.set(e.clientX/innerWidth*2-1, -(e.clientY/innerHeight)*2+1);
+  /* греем по ФАКТИЧЕСКОЙ точке курсора: сглаженная позиция отстаёт, и на быстром
+     движении луч промахивался мимо предмета целиком */
+  if(сетка){
+    луч.setFromCamera(цельМыши, кам);
+    const п = луч.intersectObject(сетка, false);
+    if(п.length) греть(сетка.worldToLocal(п[0].point.clone()), держит ? 0.30 : 0.115);
+  }
+  if(!ушлаПодсказка){ ушлаПодсказка=true; подск.classList.add('ушла'); }
+}, {passive:true});
+window.__diag = () => { if(!сетка) return {сетка:false};
+  луч.setFromCamera(цельМыши, кам); const п = луч.intersectObject(сетка, false);
+  let сум=0; if(тепло) for(let i=0;i<тепло.length;i++) сум+=тепло[i];
+  return {сетка:true, ndc:[+цельМыши.x.toFixed(3),+цельМыши.y.toFixed(3)], хитов:п.length,
+          вершин:тепло?тепло.length:0, сумма:+сум.toFixed(3), макс:+макс.toFixed(3)}; };
+addEventListener('pointerdown', ()=>{ держит=1; }, {passive:true});
+addEventListener('pointerup',   ()=>{ держит=0; }, {passive:true});
+addEventListener('pointerleave',()=>{ цельМыши.set(-9,-9); }, {passive:true});
+
+addEventListener('resize', ()=>{
+  поставитьКамеру();
+  рен.setSize(innerWidth, innerHeight, false);
+  комп.setSize(innerWidth, innerHeight);
+  свеч.setSize(innerWidth*0.6, innerHeight*0.6);
+});
+
+function готово(){
+  if(мало){ греть(new T.Vector3(0.15,0.42,0.06), 0.85); остудить(0.016); рисовать(0); }
+  else рен.setAnimationLoop(рисовать);
+}
+
+
+function рисовать(t){
+  const dt = Math.min(0.05, (t - прошлое)/1000 || 0.016); прошлое = t;
+
+  /* курсор со своей инерцией — слой отдельной физики */
+  мышь.x += (цельМыши.x - мышь.x)*0.14;
+  мышь.y += (цельМыши.y - мышь.y)*0.14;
+
+  остудить(dt);
+
+  /* самое горячее место — в шапку. Число подтверждается цветом на экране. */
+  let м = 0;
+  for (let i = 0; i < ТОЧЕК; i++) if (точки[i*4+3] > м) м = точки[i*4+3];
+  макс += (м - макс) * 0.16;
+  темпЭл.textContent = макс < 0.03 ? '20 °C' : Math.round(20 + макс * ГОР) + ' °C';
+
+  пивот.rotation.y = Math.sin(t*0.00009)*0.14;
+  грейд.uniforms.uT.value = t*0.001;
+  комп.render();
+}
+}
+</script>
+</body>
+</html>

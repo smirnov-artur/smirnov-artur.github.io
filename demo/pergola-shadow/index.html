@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pergola shade, by the sun — when the table leaves the shadow</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%230A0B0D'/><circle cx='8' cy='5' r='2.4' fill='%23D08B2C'/><rect x='2' y='10' width='12' height='1' fill='%23EDEAE4'/></svg>">
+<style>
+/* Спека вида: ровно десять переменных на всю страницу. */
+:root{
+  --void:#0A0B0D; --surface:#0E1013; --raise:#14171B; --pit:#05060A;
+  --line:#20242A; --line-lit:#333A43;
+  --ink:#EDEAE4; --mute:#98A0AB; --dim:#5C646E;
+  --brass:#D08B2C; --steel:#7E97A6;
+}
+*{box-sizing:border-box;border-radius:0}
+html,body{margin:0;background:var(--void);color:var(--ink);
+  font:16px/1.52 "Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.mono{font:400 .688rem/1.4 "IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.num{font-variant-numeric:tabular-nums}
+
+.обёртка{max-width:1240px;margin:0 auto;padding:0 26px}
+header{padding:56px 0 30px;border-bottom:1px solid var(--line)}
+h1{margin:.5rem 0 .6rem;font-size:clamp(2.6rem,8.2vw,6.6rem);font-weight:800;
+  line-height:.91;letter-spacing:-.038em;text-transform:uppercase;text-wrap:balance}
+header p{max-width:31ch;color:var(--mute);margin:0;font-weight:500}
+header p b{color:var(--ink);font-weight:500}
+
+/* неравная сетка: 7-5, потом 5-7 — не три одинаковые карточки */
+.ряд{display:grid;grid-template-columns:repeat(12,1fr);gap:1px;background:var(--line);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.к7{grid-column:span 7;background:var(--surface);display:flex;flex-direction:column}
+.к7>#сцена{flex:1}
+.к5{grid-column:span 5;background:var(--surface)}
+.к12{grid-column:span 12;background:var(--surface)}
+.поле{padding:26px}
+
+#сцена{position:relative;background:#0d1116;height:clamp(430px,58vh,720px)}
+#сцена canvas{display:block;width:100%;height:100%}
+#фпс{position:absolute;right:12px;top:12px;z-index:2}
+
+h2{font-size:clamp(1.6rem,3.4vw,2.5rem);font-weight:800;letter-spacing:-.025em;
+  text-transform:uppercase;line-height:1;margin:0 0 18px}
+h3{font-size:1.12rem;font-weight:600;letter-spacing:-.015em;margin:0 0 10px}
+p{color:var(--mute);max-width:62ch;font-weight:500}
+p b{color:var(--ink);font-weight:500}
+
+/* ввод всегда двойной: число и ползунок, синхронно */
+.упр{margin-bottom:20px}
+.упр .шапка{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:7px}
+.упр input[type=number]{width:96px;background:var(--raise);border:1px solid var(--line);
+  color:var(--brass);font:600 .95rem/1 "IBM Plex Mono",monospace;padding:6px 8px;
+  font-variant-numeric:tabular-nums;text-align:right}
+.упр input[type=number]:focus{outline:2px solid var(--brass);outline-offset:3px;border-color:var(--line-lit)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:22px;background:transparent;
+  cursor:ew-resize}
+input[type=range]::-webkit-slider-runnable-track{height:1px;background:var(--line-lit)}
+input[type=range]::-moz-range-track{height:1px;background:var(--line-lit)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;
+  background:var(--brass);transform:rotate(45deg);margin-top:-5px}
+input[type=range]::-moz-range-thumb{width:11px;height:11px;background:var(--brass);border:0;
+  transform:rotate(45deg)}
+select{background:var(--raise);border:1px solid var(--line);color:var(--ink);
+  font:500 .9rem "Archivo",sans-serif;padding:7px 9px;width:100%}
+
+.итоги{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);margin-top:4px}
+.итоги>div{background:var(--surface);padding:16px 18px}
+.итоги .знач{font-size:1.85rem;font-weight:800;letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums;line-height:1.05}
+.итоги .знач.тепло{color:var(--brass)}
+.итоги .знач.холод{color:var(--steel)}
+
+#чертёж{width:100%;height:100%;display:block;background:#12161b}
+.к7:has(#чертёж){min-height:340px}
+.формула{font:400 .82rem/1.85 "IBM Plex Mono",monospace;color:var(--mute);
+  background:var(--pit);border:1px solid var(--line);padding:16px 18px;overflow-x:auto;
+  white-space:pre;margin:0}
+.формула i{color:var(--brass);font-style:normal}
+
+footer{padding:38px 0 60px;color:var(--dim)}
+footer a{color:var(--mute);text-decoration:none;border-bottom:1px solid var(--line)}
+footer a:hover{color:var(--ink);border-color:var(--brass)}
+@media(max-width:900px){.к7,.к5{grid-column:span 12}}
+</style>
+</head>
+<body>
+
+<div class="обёртка">
+<header>
+  <div class="mono">Case · solar geometry · live</div>
+  <h1>When does<br>the table leave<br>the shade</h1>
+  <p>A pergola casts a real shadow. <b>Type your latitude, your date, your hour</b> — the
+     sun moves to where it actually was, and the shade lands where it actually landed.</p>
+</header>
+</div>
+
+<div class="обёртка">
+<div class="ряд">
+  <div class="к7">
+    <div id="сцена"><div class="mono num" id="фпс">— fps</div></div>
+  </div>
+  <div class="к5 поле">
+    <div class="mono">Place and moment</div>
+
+    <div class="упр" style="margin-top:16px">
+      <div class="шапка"><label class="mono" for="г">City</label></div>
+      <select id="г"></select>
+    </div>
+
+    <div class="упр">
+      <div class="шапка"><label class="mono" for="ф">Latitude, °N</label>
+        <input type="number" id="ф-ч" min="-60" max="70" step="0.5" value="52.5"></div>
+      <input type="range" id="ф" min="-60" max="70" step="0.5" value="52.5">
+    </div>
+
+    <div class="упр">
+      <div class="шапка"><label class="mono" for="д">Day of year</label>
+        <input type="number" id="д-ч" min="1" max="365" step="1" value="172"></div>
+      <input type="range" id="д" min="1" max="365" step="1" value="172">
+    </div>
+
+    <div class="упр">
+      <div class="шапка"><label class="mono" for="ч">Solar hour</label>
+        <input type="number" id="ч-ч" min="4" max="20" step="0.25" value="15"></div>
+      <input type="range" id="ч" min="4" max="20" step="0.25" value="15">
+    </div>
+
+    <div class="упр">
+      <div class="шапка"><label class="mono" for="в">Pergola height, m</label>
+        <input type="number" id="в-ч" min="2.1" max="3.4" step="0.05" value="2.6"></div>
+      <input type="range" id="в" min="2.1" max="3.4" step="0.05" value="2.6">
+    </div>
+
+    <div class="итоги">
+      <div><div class="mono">Sun altitude</div><div class="знач тепло num" id="р-выс">—</div></div>
+      <div><div class="mono">Shadow length</div><div class="знач num" id="р-длина">—</div></div>
+      <div><div class="mono">Table in shade</div><div class="знач num" id="р-стол">—</div></div>
+      <div><div class="mono">Leaves shade at</div><div class="знач холод num" id="р-когда">—</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="ряд">
+  <div class="к5 поле">
+    <h2>The drawing<br>is generated</h2>
+    <p>Not a picture — an SVG built from the same four numbers as the 3D scene. Section
+       through the pergola, sun ray at the computed altitude, shadow projected on the deck.</p>
+  </div>
+  <div class="к7"><svg id="чертёж" viewBox="0 0 720 380" role="img"
+       aria-label="Section through the pergola with the sun ray and the shadow"></svg></div>
+</div>
+
+<div class="ряд">
+  <div class="к12 поле">
+    <h2>The arithmetic, in full</h2>
+    <p>Standard solar geometry — Cooper's equation for declination, as given in
+       <b>Duffie &amp; Beckman, Solar Engineering of Thermal Processes</b>. Nothing is fitted
+       and nothing is tuned: every number below comes out of these four lines.</p>
+<pre class="формула">δ  = 23.45° · sin( 360/365 · (284 + <i>n</i>) )          declination, <i>n</i> = day of year
+H  = 15° · (<i>t</i> − 12)                                hour angle, <i>t</i> = solar hour
+α  = asin( sin<i>φ</i>·sinδ + cos<i>φ</i>·cosδ·cosH )              sun altitude, <i>φ</i> = latitude
+A  = atan2( sinH , cosH·sin<i>φ</i> − tanδ·cos<i>φ</i> )           azimuth, from south
+L  = <i>h</i> / tan α                                     shadow length, <i>h</i> = height</pre>
+    <p style="margin-top:18px">The table sits <b>1.9 m south of the posts</b>, 0.75 m tall.
+       It is in shade while the shadow reaches past it — that is the whole test, and it is
+       the question a customer actually asks before buying a pergola.</p>
+  </div>
+</div>
+</div>
+
+<div class="обёртка">
+<footer>
+  <div class="mono">Artur Smirnov · front-end and real-time 3D</div>
+  <p style="margin:10px 0 0;color:var(--dim)">
+    Three.js, WebGL, custom GLSL, parametric product configurators.
+    <a href="https://smirnov-artur.github.io/webgl/">work</a> ·
+    <a href="https://t.me/smirnovarturr">t.me/smirnovarturr</a> ·
+    <a href="https://github.com/smirnov-artur">github</a>
+  </p>
+</footer>
+</div>
+
+<script type="importmap">
+{"imports":{
+  "three":"https://unpkg.com/three@0.166.1/build/three.module.js",
+  "three/addons/":"https://unpkg.com/three@0.166.1/examples/jsm/"
+}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+
+/* ---------- одно состояние, одна функция пересчёта ---------- */
+const П = {ф: 52.5, д: 172, ч: 15, в: 2.6};
+const ГОРОДА = [['Berlin', 52.5], ['Vienna', 48.2], ['Milan', 45.5], ['Madrid', 40.4],
+                ['Amsterdam', 52.4], ['Oslo', 59.9], ['London', 51.5], ['Belgrade', 44.8],
+                ['New York', 40.7], ['Dubai', 25.2], ['Sydney', -33.9]];
+const СТОЛ_Z = 1.9, СТОЛ_В = 0.75;      // стол южнее стоек, м
+
+const рад = g => g * Math.PI / 180, град = r => r * 180 / Math.PI;
+
+function солнце(ф, д, ч) {
+  const δ = rад23(д), H = рад(15 * (ч - 12)), φ = рад(ф);
+  const sinα = Math.sin(φ) * Math.sin(δ) + Math.cos(φ) * Math.cos(δ) * Math.cos(H);
+  const α = Math.asin(Math.max(-1, Math.min(1, sinα)));
+  const A = Math.atan2(Math.sin(H), Math.cos(H) * Math.sin(φ) - Math.tan(δ) * Math.cos(φ));
+  return {α, A, δ};
+}
+function rад23(д) { return рад(23.45) * Math.sin(rадг(360 / 365 * (284 + д))); }
+function rадг(g) { return g * Math.PI / 180; }
+
+/* ---------- 3D ---------- */
+const эл = document.getElementById('сцена');
+const рен = new THREE.WebGLRenderer({antialias: true});
+рен.setPixelRatio(Math.min(devicePixelRatio, 2));
+рен.shadowMap.enabled = true; рен.shadowMap.type = THREE.PCFSoftShadowMap;
+рен.toneMapping = THREE.ACESFilmicToneMapping; рен.toneMappingExposure = 1.15;
+эл.appendChild(рен.domElement);
+
+const сц = new THREE.Scene();
+// Небо градиентом: тень читается только на свету, а весь кейс про тень.
+const небо = new THREE.Mesh(
+  new THREE.SphereGeometry(60, 32, 16),
+  // ВНИМАНИЕ: имена в GLSL только ASCII — кириллица не компилируется,
+  // шейдер молча падает и небо остаётся чёрным.
+  new THREE.ShaderMaterial({side: THREE.BackSide, depthWrite: false, uniforms:{
+      top:{value:new THREE.Color(0x5b8fc7)}, bot:{value:new THREE.Color(0xdfe8ef)}},
+    vertexShader:'varying vec3 vp; void main(){vp=position;'+
+      'gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+    fragmentShader:'varying vec3 vp; uniform vec3 top; uniform vec3 bot;'+
+      'void main(){float k=clamp(normalize(vp).y*1.35+0.22,0.0,1.0);'+
+      'gl_FragColor=vec4(mix(bot,top,k),1.0);}'}));
+сц.add(небо);
+const кам = new THREE.PerspectiveCamera(38, 16 / 11, 0.1, 90);
+кам.position.set(6.6, 2.9, 8.6);
+const орб = new OrbitControls(кам, рен.domElement);
+орб.enableDamping = true; орб.dampingFactor = .07;
+орб.target.set(0, .95, 1.0); орб.maxPolarAngle = Math.PI / 2 - .06;
+орб.minDistance = 4; орб.maxDistance = 22;
+
+сц.add(new THREE.HemisphereLight(0x9dc0e8, 0xb9ac97, 1.35));
+const луч = new THREE.DirectionalLight(0xfff2dc, 3.4);
+луч.castShadow = true; луч.shadow.mapSize.set(2048, 2048);
+const тк = луч.shadow.camera;
+тк.left = -9; тк.right = 9; тк.top = 9; тк.bottom = -9; тк.near = .5; тк.far = 40;
+луч.shadow.bias = -0.0006;
+сц.add(луч, луч.target);
+
+const настил = new THREE.Mesh(new THREE.PlaneGeometry(60, 60),
+  new THREE.MeshStandardMaterial({color: 0xb9ad99, roughness: .96}));
+настил.rotation.x = -Math.PI / 2; настил.receiveShadow = true; сц.add(настил);
+
+const мАл = new THREE.MeshStandardMaterial({color: 0x33383d, metalness: .55, roughness: .38});
+const мЛам = new THREE.MeshStandardMaterial({color: 0x474d54, metalness: .45, roughness: .46});
+const мСтол = new THREE.MeshStandardMaterial({color: 0x8a6f4e, roughness: .72});
+const куб = new THREE.BoxGeometry(1, 1, 1);
+const узел = new THREE.Group(); сц.add(узел);
+
+function брус(м, sx, sy, sz, x, y, z) {
+  const o = new THREE.Mesh(куб, м); o.scale.set(sx, sy, sz); o.position.set(x, y, z);
+  o.castShadow = true; o.receiveShadow = true; узел.add(o); return o;
+}
+
+const Ш = 4.0, Г = 3.4, ЛАМ = 11;
+function собрать(h) {
+  узел.clear();
+  for (const zx of [-1, 1]) for (const zz of [-1, 1])
+    брус(мАл, .12, h, .12, zx * (Ш - .12) / 2, h / 2, zz * (Г - .12) / 2);
+  for (const zz of [-1, 1]) брус(мАл, Ш, .1, .1, 0, h - .05, zz * (Г - .1) / 2);
+  const шаг = (Г - .1) / ЛАМ;
+  for (let i = 0; i < ЛАМ; i++) {
+    const o = брус(мЛам, Ш - .12, .016, .15, 0, h - .01, -(Г - .1) / 2 + шаг * (i + .5));
+    o.rotation.x = -.38;
+  }
+  const с = брус(мСтол, 1.3, .05, .8, 0, СТОЛ_В, СТОЛ_Z); с.castShadow = true;
+  for (const zx of [-1, 1]) for (const zz of [-1, 1])
+    брус(мСтол, .06, СТОЛ_В, .06, zx * .55, СТОЛ_В / 2, СТОЛ_Z + zz * .3);
+}
+
+/* ---------- пересчёт: числа мгновенно, свет пружиной ---------- */
+let цельСвета = new THREE.Vector3(6, 8, 6), тек = цельСвета.clone(), скор = new THREE.Vector3();
+
+function покрасить() {
+  собрать(П.в);
+  const {α, A} = солнце(П.ф, П.д, П.ч);
+  const выс = град(α);
+  const длина = выс > 0.5 ? П.в / Math.tan(α) : Infinity;
+
+  // направление на солнце: азимут от юга, +Z = юг
+  const d = 30;
+  if (выс > 0.5) {
+    цельСвета.set(d * Math.cos(α) * Math.sin(A), d * Math.sin(α), d * Math.cos(α) * Math.cos(A));
+    луч.intensity = 1.1 + 2.6 * Math.min(1, Math.sin(α) * 1.9);
+    луч.color.setHSL(0.09 - 0.05 * Math.min(1, Math.sin(α) * 2.2), 0.55, 0.62);
+  } else {
+    цельСвета.set(0, d, 0); луч.intensity = 0.35;   // сумерки, а не чёрный экран
+  }
+  сц.getObjectByProperty('type', 'Mesh');
+
+  // ЧИСЛА — без интерполяции: значение, которое опаздывает, врёт
+  р_выс.textContent = выс > 0 ? выс.toFixed(1) + '°' : 'below';
+  р_длина.textContent = выс > 0.5 ? (длина.toFixed(2) + ' m') : '—';
+  const вТени = выс > 0.5 && длина >= СТОЛ_Z;
+  р_стол.textContent = выс <= 0.5 ? 'night' : (вТени ? 'yes' : 'no');
+  р_стол.className = 'знач num ' + (вТени ? 'тепло' : 'холод');
+  р_когда.textContent = уходит(П.ф, П.д, П.в);
+  чертить(выс, длина);
+}
+
+// час, когда тень перестаёт доставать до стола — перебор с шагом в минуту
+function уходит(ф, д, h) {
+  let было = null;
+  for (let t = 6; t <= 20; t += 1 / 60) {
+    const {α} = солнце(ф, д, t);
+    const в_тени = α > рад(.5) && (h / Math.tan(α)) >= СТОЛ_Z;
+    if (было === true && !в_тени) {
+      const ч = Math.floor(t), м = Math.round((t - ч) * 60);
+      return String(ч).padStart(2, '0') + ':' + String(м % 60).padStart(2, '0');
+    }
+    было = в_тени;
+  }
+  return было ? 'all day' : 'never';
+}
+
+/* ---------- чертёж строится кодом, а не картинкой ---------- */
+const svg = document.getElementById('чертёж');
+const NS = 'http://www.w3.org/2000/svg';
+function эленент(t, a) { const e = document.createElementNS(NS, t);
+  for (const k in a) e.setAttribute(k, a[k]); return e; }
+function линия(x1, y1, x2, y2, c, w, d) {
+  return эленент('line', {x1, y1, x2, y2, stroke: c, 'stroke-width': w || 1,
+    ...(d ? {'stroke-dasharray': d} : {})});
+}
+function текст(x, y, s, c, ак) {
+  const e = эленент('text', {x, y, fill: c, 'font-family': 'IBM Plex Mono, monospace',
+    'font-size': 11, 'letter-spacing': 1.4, ...(ак ? {'text-anchor': ак} : {})});
+  e.textContent = s; return e;
+}
+function чертить(выс, длина) {
+  svg.replaceChildren();
+  const O = {x: 150, y: 300}, м = 62;            // начало и масштаб, px на метр
+  const h = П.в * м, шир = Г * м;
+  svg.appendChild(эленент('rect', {x: 40, y: O.y, width: 660, height: 46, fill: '#1b2027'}));
+  svg.appendChild(линия(40, O.y, 700, O.y, '#4a545f', 1));
+  // стойка и балка в разрезе
+  svg.appendChild(эленент('rect', {x: O.x - 4, y: O.y - h, width: 8, height: h, fill: '#2c3238'}));
+  svg.appendChild(эленент('rect', {x: O.x + шир - 4, y: O.y - h, width: 8, height: h, fill: '#2c3238'}));
+  svg.appendChild(эленент('rect', {x: O.x - 4, y: O.y - h - 6, width: шир + 8, height: 7, fill: '#3a4148'}));
+  // луч солнца под вычисленным углом
+  if (выс > 0.5) {
+    const L = Math.min(длина, 8) * м, dx = L, dy = h;
+    svg.appendChild(линия(O.x, O.y - h, O.x + dx, O.y, '#D08B2C', 1.4, '6 4'));
+    svg.appendChild(эленент('rect', {x: O.x, y: O.y, width: dx, height: 9, fill: '#D08B2C',
+      opacity: .5}));
+    svg.appendChild(текст(O.x + dx / 2, O.y + 20, 'shadow ' + длина.toFixed(2) + ' m',
+      '#D08B2C', 'middle'));
+    svg.appendChild(текст(O.x + 12, O.y - h - 14, 'α ' + выс.toFixed(1) + '°', '#D08B2C'));
+  } else {
+    svg.appendChild(текст(O.x, O.y - h - 14, 'sun below horizon', '#5C646E'));
+  }
+  // стол
+  const sx = O.x + СТОЛ_Z * м;
+  svg.appendChild(эленент('rect', {x: sx - 26, y: O.y - СТОЛ_В * м, width: 52, height: 5,
+    fill: '#6b5a44'}));
+  svg.appendChild(линия(sx - 20, O.y - СТОЛ_В * м, sx - 20, O.y, '#6b5a44', 2));
+  svg.appendChild(линия(sx + 20, O.y - СТОЛ_В * м, sx + 20, O.y, '#6b5a44', 2));
+  svg.appendChild(текст(sx, O.y + 36, 'table · 1.90 m', '#98A0AB', 'middle'));
+  // размерная линия высоты
+  svg.appendChild(линия(O.x - 34, O.y, O.x - 34, O.y - h, '#7E97A6', 1));
+  svg.appendChild(линия(O.x - 39, O.y, O.x - 29, O.y, '#7E97A6', 1));
+  svg.appendChild(линия(O.x - 39, O.y - h, O.x - 29, O.y - h, '#7E97A6', 1));
+  svg.appendChild(текст(O.x - 44, O.y - h / 2, П.в.toFixed(2) + ' m', '#7E97A6', 'end'));
+}
+
+/* ---------- связка ввода: число и ползунок в обе стороны ---------- */
+function связать(имя, ключ, преоб) {
+  const п = document.getElementById(имя), ч = document.getElementById(имя + '-ч');
+  const синх = (от, к) => { к.value = от.value; П[ключ] = преоб(+от.value); покрасить(); };
+  п.addEventListener('input', () => синх(п, ч));
+  ч.addEventListener('input', () => синх(ч, п));
+}
+['ф', 'д', 'ч', 'в'].forEach(k => связать(k, k, v => v));
+
+const сел = document.getElementById('г');
+ГОРОДА.forEach(([и, ф]) => { const o = document.createElement('option');
+  o.value = ф; o.textContent = и + ' · ' + ф + '°'; сел.appendChild(o); });
+сел.value = '52.5';
+сел.addEventListener('change', () => {
+  П.ф = +сел.value;
+  document.getElementById('ф').value = П.ф;
+  document.getElementById('ф-ч').value = П.ф;
+  покрасить();
+});
+
+const [р_выс, р_длина, р_стол, р_когда] =
+  ['р-выс', 'р-длина', 'р-стол', 'р-когда'].map(i => document.getElementById(i));
+
+function размер() {
+  const w = эл.clientWidth, h = эл.clientHeight;
+  рен.setSize(w, h, false); кам.aspect = w / h; кам.updateProjectionMatrix();
+}
+addEventListener('resize', размер);
+размер(); покрасить();
+
+/* свет идёт критически задемпфированной пружиной: чертёж не должен вихлять */
+const K = 190, C = 2 * Math.sqrt(K);
+let прошлое = performance.now(), кадры = 0, отсчёт = performance.now();
+const фпс = document.getElementById('фпс');
+рен.setAnimationLoop(t => {
+  const dt = Math.min((t - прошлое) / 1000, .05); прошлое = t;
+  const a = цельСвета.clone().sub(тек).multiplyScalar(K).sub(скор.clone().multiplyScalar(C));
+  скор.addScaledVector(a, dt); тек.addScaledVector(скор, dt);
+  луч.position.copy(тек);
+  орб.update(); рен.render(сц, кам);
+  if (++кадры >= 30) { фпс.textContent = Math.round(кадры * 1000 / (t - отсчёт)) + ' fps';
+    кадры = 0; отсчёт = t; }
+});
+</script>
+</body>
+</html>

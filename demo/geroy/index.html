@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Смирнов Артур — считаю оборудование прямо в браузере</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@font-face{font-family:'Geologica';src:url('_obshchee/assets/fonts/geologica-var-cyr.woff2') format('woff2');font-weight:100 900;unicode-range:U+0400-04FF,U+2013-2014;font-display:swap}
+@font-face{font-family:'Geologica';src:url('_obshchee/assets/fonts/geologica-var-lat.woff2') format('woff2');font-weight:100 900;unicode-range:U+0000-00FF;font-display:swap}
+@font-face{font-family:'Plex Mono';src:url('_obshchee/assets/fonts/plexmono-400-cyr.woff2') format('woff2');font-weight:400;unicode-range:U+0400-04FF;font-display:swap}
+@font-face{font-family:'Plex Mono';src:url('_obshchee/assets/fonts/plexmono-400-lat.woff2') format('woff2');font-weight:400;unicode-range:U+0000-00FF;font-display:swap}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#050506;color:#e9e7e2;font-family:'Geologica','Segoe UI',sans-serif;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+.ui{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;z-index:3}
+.in{text-align:center;padding:0 24px;max-width:1100px}
+h1{font-weight:840;font-variation-settings:'wght' 840;letter-spacing:-.028em;
+  font-size:clamp(52px,9.5vw,150px);line-height:.92;
+  text-shadow:0 2px 80px rgba(0,0,0,.7)}
+h1 .thin{font-weight:250;font-variation-settings:'wght' 250}
+.sub{margin-top:28px;font-weight:300;font-size:clamp(15px,1.6vw,21px);color:#b3afa7;letter-spacing:.01em}
+.row{margin-top:44px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;pointer-events:auto}
+.row a{color:#e9e7e2;font:400 12.5px/1 'Plex Mono',monospace;letter-spacing:.14em;text-decoration:none;
+  border:1px solid rgba(233,231,226,.28);padding:15px 26px;border-radius:2px;
+  background:rgba(5,5,6,.4);backdrop-filter:blur(6px);
+  transition:background .25s,border-color .25s,transform .25s}
+.row a:hover{background:rgba(233,231,226,.1);border-color:rgba(233,231,226,.6);transform:translateY(-1px)}
+.row a:focus-visible{outline:1px solid #fff;outline-offset:3px}
+header{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;
+  padding:24px 30px;z-index:4;pointer-events:none}
+header span{font:400 11px/1.4 'Plex Mono',monospace;letter-spacing:.22em;color:#807c73}
+.fakt{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:3;
+  font:400 11px/1.7 'Plex Mono',monospace;letter-spacing:.12em;color:#7d7970;
+  text-align:center;padding:0 20px}
+.fakt b{color:#c9c5bc;font-weight:400}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<header>
+  <span>ПОРТФОЛИО · 2026</span>
+  <span>ДИЗАЙН · ФРОНТ · БЕКЕНД</span>
+</header>
+<div class="ui">
+  <div class="in">
+    <h1>СМИРНОВ<br><span class="thin">АРТУР</span></h1>
+    <div class="sub">Считаю оборудование прямо в браузере — конфигураторы, калькуляторы, живые кейсы.</div>
+    <div class="row">
+      <a href="_obshchee/index.html">СМОТРЕТЬ РАБОТЫ</a>
+      <a href="https://t.me/smirnovarturr" rel="noopener">TELEGRAM</a>
+    </div>
+  </div>
+</div>
+<div class="fakt">ЖИВОЙ ЗАМЕР VENTPROM: <b>1660 ММ</b> ЗАГОТОВКА · <b>2.08 М²</b> ЛИСТА · <b>11.4 КГ</b> СТАЛИ — СЧИТАЕТСЯ НА СТРАНИЦЕ КЕЙСА, НЕ В ПРЕЗЕНТАЦИИ</div>
+<script type="module">
+/* Герой: тёмный дым и тёплый объёмный луч. Движение еле заметное. */
+async function boot(){
+  const T = await import('_obshchee/assets/three-2026.js');
+  const TSL = T.TSL;
+  const { Fn, uniform, float, vec2, vec3, vec4, mix, clamp, smoothstep,
+          pow, exp, sin, fract, dot, uv, mx_noise_float, screenUV } = TSL;
+
+  const canvas = document.getElementById('gl');
+  const renderer = new T.WebGPURenderer({ canvas, antialias: false });
+  await renderer.init();
+  renderer.setPixelRatio(Math.max(1, Math.min(devicePixelRatio || 1, 2)));
+  renderer.setSize(innerWidth, innerHeight);
+
+  const scene = new T.Scene();
+  const camera = new T.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+  const uT = uniform(0);
+  const uMouse = uniform(new T.Vector2(0.5, 0.5));
+  const uAspect = uniform(innerWidth / innerHeight);
+
+  const mat = new T.MeshBasicNodeMaterial();
+  mat.colorNode = Fn(() => {
+    const p = uv().toVar();
+    const q = vec2(p.x.mul(uAspect), p.y).toVar();
+    /* лёгкий параллакс от курсора — сотые доли, не заметить взглядом */
+    q.addAssign(uMouse.sub(vec2(0.5)).mul(vec2(0.012, 0.008)));
+
+    /* дым: три октавы, дрейф очень медленный */
+    const t1 = uT.mul(0.014);
+    const n1 = mx_noise_float(vec3(q.mul(1.6), t1));
+    const n2 = mx_noise_float(vec3(q.mul(3.4).add(vec2(3.7, 1.9)), t1.mul(1.7)));
+    const n3 = mx_noise_float(vec3(q.mul(4.6).add(vec2(9.1, 5.3)), t1.mul(2.2)));
+    const smoke = n1.mul(0.58).add(n2.mul(0.32)).add(n3.mul(0.10)).mul(0.5).add(0.5);
+
+    /* луч: наклонная ось справа-сверху, конус к низу */
+    const axis = float(0.66).mul(uAspect).add(p.y.oneMinus().mul(-0.22));
+    const dx = q.x.sub(axis);
+    const width = p.y.oneMinus().mul(0.30).add(0.10);
+    const shaft = exp(dx.mul(dx).div(width.mul(width)).negate())
+      .mul(pow(p.y, float(0.9)))
+      .mul(smoke.mul(0.65).add(0.35));
+
+    /* второй, холодный контр-свет слева, слабее */
+    const axis2 = float(0.18).mul(uAspect).add(p.y.oneMinus().mul(0.15));
+    const dx2 = q.x.sub(axis2);
+    const w2 = p.y.oneMinus().mul(0.36).add(0.14);
+    const shaft2 = exp(dx2.mul(dx2).div(w2.mul(w2)).negate())
+      .mul(pow(p.y, float(1.2)))
+      .mul(smoke.mul(0.5).add(0.5)).mul(0.4);
+
+    /* фон: почти чёрный, дым едва проявлен */
+    const base = mix(vec3(0.006, 0.006, 0.009), vec3(0.013, 0.014, 0.020),
+      smoke.mul(pow(p.y, float(1.5))));
+
+    const amber = vec3(1.0, 0.70, 0.42);
+    const cold  = vec3(0.45, 0.58, 0.80);
+
+    const c = base.toVar();
+    c.addAssign(amber.mul(shaft).mul(0.34));
+    c.addAssign(cold.mul(shaft2).mul(0.16));
+    /* тёплое дыхание в глубине дыма у луча */
+    c.addAssign(amber.mul(smoke.mul(smoke)).mul(shaft).mul(0.10));
+
+    /* глубокая виньетка; зерна нет — запрет владельца */
+    const dd = p.sub(vec2(0.5, 0.47)).mul(vec2(1.1, 1.0));
+    c.mulAssign(float(1).sub(dot(dd, dd).mul(0.6)).clamp(0.3, 1));
+
+    return vec4(c.max(0), 1);
+  })();
+
+  const quad = new T.Mesh(new T.PlaneGeometry(2, 2), mat);
+  scene.add(quad);
+
+  addEventListener('pointermove', e => {
+    /* плавное следование, без рывков */
+    uMouse.value.x += (e.clientX / innerWidth - uMouse.value.x) * 0.06;
+    uMouse.value.y += (1 - e.clientY / innerHeight - uMouse.value.y) * 0.06;
+  });
+
+  const t0 = performance.now();
+  function loop(){
+    uT.value = (performance.now() - t0) / 1000;
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
+  }
+  addEventListener('resize', () => {
+    renderer.setSize(innerWidth, innerHeight);
+    uAspect.value = innerWidth / innerHeight;
+  });
+  loop();
+}
+boot().catch(e => console.error('герой не поднялся:', e));
+</script>
+</body>
+</html>

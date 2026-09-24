@@ -1,0 +1,40 @@
+{
+ "слаг": "proba-ohra",
+ "сайт": "https://www.ohra.nl",
+ "имя": "OHRA",
+ "лого": "logo.svg",
+ "цвета": [
+  "#dc212a",
+  "#ffd248",
+  "#002198",
+  "#062fc4",
+  "#9babe5",
+  "#a3d7e9"
+ ],
+ "товары": [
+  {
+   "файл": "tovar1.png",
+   "px": "950x540",
+   "кб": 476,
+   "откуда": "https://www.ohra.nl/binaries/content/gallery/ohra/home/3d-hero/header-homepage-korting10.png?impolicy=ii_nocrop&w=950"
+  },
+  {
+   "файл": "tovar2.png",
+   "px": "737x419",
+   "кб": 308,
+   "откуда": "https://www.ohra.nl/binaries/content/gallery/ohra/home/3d-hero/header-homepage-korting10.png?impolicy=ii_nocrop&w=737"
+  },
+  {
+   "файл": "tovar3.png",
+   "px": "500x500",
+   "кб": 281,
+   "откуда": "https://www.ohra.nl/webfiles/1784698222799/images/nora.png"
+  },
+  {
+   "файл": "tovar4.png",
+   "px": "950x658",
+   "кб": 263,
+   "откуда": "https://www.ohra.nl/binaries/content/gallery/ohra/reisverzekering/3d-hero/reis-attentieblok-korting20.png?impolicy=ii_nocrop&w=950"
+  }
+ ]
+}

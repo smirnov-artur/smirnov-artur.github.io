@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0b0d14" />
+<title>Lo-fi rooftop — camera-mapped planes, parallax, dynamic light</title>
+<meta name="description" content="A looping lo-fi scene in Three.js: painted planes mapped from a fixed projector camera, blended with real geometry, lit by lights that move. No textures, no models — every pixel is generated in GLSL." />
+<meta property="og:title" content="Lo-fi rooftop — camera-mapped planes" />
+<meta property="og:description" content="Camera-mapped planes over real geometry, parallax, dynamic light. Procedural: no textures, no models, ~150 KB of scene." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://smirnov-artur.github.io/webgl/rooftop/" />
+<meta property="og:image" content="https://smirnov-artur.github.io/webgl/rooftop/og.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0d14'/%3E%3Ccircle cx='21' cy='13' r='5' fill='%23ff9a5c'/%3E%3Crect x='3' y='18' width='4' height='11' fill='%232a2440'/%3E%3Crect x='9' y='14' width='5' height='15' fill='%23191a2c'/%3E%3Crect x='16' y='21' width='6' height='8' fill='%23101120'/%3E%3C/svg%3E" />
+
+<style>
+  @font-face {
+    font-family: "Archivo";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("_obshchee/assets/fonts/archivo-var-latin.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("_obshchee/assets/fonts/plexmono-400-latin.woff2") format("woff2");
+  }
+
+  :root {
+    --ink: #f0e3d4;
+    --dim: #a4988c;
+    --line: rgba(240, 227, 212, .16);
+    --warm: #ffb46b;
+    --card: rgba(10, 11, 18, .58);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: #05070c; color: var(--ink);
+    font-family: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior: none;
+  }
+
+  #scene {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    display: block;
+    opacity: 0;
+    transition: opacity 1.4s ease;
+  }
+  body.ready #scene { opacity: 1; }
+
+  .ui {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    padding: clamp(14px, 2.4vw, 30px);
+    padding-bottom: max(clamp(14px, 2.4vw, 30px), env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    opacity: 0;
+    transition: opacity 1.2s ease .5s;
+  }
+  body.ready .ui { opacity: 1; }
+  .ui > * { pointer-events: none; }
+  .ui a, .ui button { pointer-events: auto; }
+
+  /* ---- top line ---- */
+  .top {
+    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: .10em; text-transform: uppercase;
+    color: var(--dim);
+  }
+  .top b { color: var(--ink); font-weight: 500; letter-spacing: .10em; }
+  .top a { color: var(--dim); text-decoration: none; border-bottom: 1px solid var(--line); }
+  .top a:hover { color: var(--warm); border-color: var(--warm); }
+
+  /* ---- hint ---- */
+  #hint {
+    grid-row: 2; align-self: center; justify-self: center;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+    color: rgba(240, 227, 212, .5);
+    transition: opacity .9s ease;
+    animation: breathe 3.4s ease-in-out infinite;
+  }
+  #hint.gone { opacity: 0; }
+  @keyframes breathe { 0%, 100% { opacity: .38 } 50% { opacity: .8 } }
+
+  /* ---- bottom ---- */
+  .bottom {
+    grid-row: 3;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap;
+  }
+
+  .card {
+    max-width: 46ch;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 14px 16px;
+    backdrop-filter: blur(14px) saturate(1.1);
+    -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  }
+  .card h1 {
+    margin: 0 0 7px;
+    font-size: 15px; font-weight: 600; letter-spacing: -.005em;
+  }
+  .card p {
+    margin: 0; font-size: 13px; line-height: 1.5; color: var(--dim);
+  }
+  .card p + p { margin-top: 8px; }
+  .card .meta {
+    margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: .05em; color: rgba(164, 152, 140, .82);
+  }
+  .card ul {
+    margin: 9px 0 0; padding: 0; list-style: none;
+    font-size: 12.5px; line-height: 1.55; color: var(--dim);
+  }
+  .card li { position: relative; padding-left: 15px; }
+  .card li::before {
+    content: ""; position: absolute; left: 2px; top: .62em;
+    width: 5px; height: 1px; background: var(--warm); opacity: .75;
+  }
+  #about ul, #about .long { display: none; }
+  #about.open ul, #about.open .long { display: block; }
+
+  #about-toggle {
+    display: inline-block; margin-top: 9px;
+    background: none; border: 0; padding: 0;
+    color: var(--warm); cursor: pointer;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+    border-bottom: 1px solid rgba(255, 180, 107, .35);
+  }
+  #about-toggle:hover { border-color: var(--warm); }
+
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; }
+  .controls button {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--dim);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 8px 11px;
+    cursor: pointer;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    transition: color .25s, border-color .25s, background .25s;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .controls button::before {
+    content: ""; width: 5px; height: 5px; border-radius: 50%;
+    background: currentColor; opacity: .3; transition: opacity .25s, box-shadow .25s;
+  }
+  .controls button[data-on="1"] { color: var(--ink); border-color: rgba(255, 180, 107, .4); }
+  .controls button[data-on="1"]::before {
+    background: var(--warm); opacity: 1; box-shadow: 0 0 7px var(--warm);
+  }
+  .controls button:hover { color: var(--warm); }
+
+  #stats {
+    position: fixed; top: 10px; right: 12px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px; color: var(--warm); opacity: .8;
+  }
+
+  @media (max-width: 720px) {
+    .card { max-width: none; padding: 11px 13px; }
+    .bottom { flex-direction: column; align-items: stretch; gap: 10px; }
+    .controls { order: -1; gap: 6px; flex-wrap: nowrap; }
+    .controls button {
+      flex: 1 1 0; min-width: 0; justify-content: center;
+      font-size: 9px; letter-spacing: .06em; padding: 8px 4px; gap: 5px;
+    }
+    .card h1 { font-size: 13.5px; margin-bottom: 5px; }
+    .card p { font-size: 12px; line-height: 1.45; }
+    /* collapsed by default on a phone: three lines is enough to say what this is */
+    #about:not(.open) .lede {
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    #about:not(.open) .meta { display: none; }
+    #about-toggle { margin-top: 7px; }
+  }
+  @media (max-width: 520px) {
+    .top .desc { display: none; }
+  }
+  @media (max-height: 520px) and (orientation: landscape) {
+    .card .meta, #about-toggle { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="scene"></canvas>
+
+<div class="ui">
+  <div class="top">
+    <b>Lo-fi rooftop</b>
+    <span class="desc">camera-mapped planes · parallax · dynamic light</span>
+    <a href="https://smirnov-artur.github.io/webgl/" target="_blank" rel="noopener">Artur Smirnov</a>
+  </div>
+
+  <div id="hint">move the pointer</div>
+
+  <div class="bottom">
+    <div class="card" id="about">
+      <h1>Painted planes, real light</h1>
+      <p class="lede">
+        Built as an answer to a lo-fi brief: flat planes mapped from a fixed
+        projector camera, blended with actual geometry, and lit by lights that
+        move. Nothing here is a texture or a model — every pixel is generated
+        in GLSL, so the whole scene weighs less than one photograph.
+      </p>
+      <p class="long">
+        The camera you look through is not the camera the picture was painted
+        from. Each layer samples its content in the projector's clip space, so
+        the composition stays pinned to the frame while the layers shear
+        against each other as the camera drifts. Turn the toggle off and the
+        painting goes back to being stuck on flat cards; open the layers and
+        you can walk around the stack and watch the projection happen.
+      </p>
+      <ul>
+        <li>Five painted layers, projected from one fixed camera</li>
+        <li>Rooftop, viaduct and sign are real meshes on real normals</li>
+        <li>Three lights — sun, neon sign, passing train — reach both halves</li>
+        <li>Hand-written GLSL throughout: skyline, windows, grade, grain</li>
+        <li>Bloom, split-tone grade and 12&nbsp;fps film grain in one pass</li>
+      </ul>
+      <button id="about-toggle" type="button">how it works</button>
+      <p class="meta">One evening, from scratch · Three.js + own GLSL · no textures, no models</p>
+    </div>
+
+    <div class="controls">
+      <button id="t-map" type="button">camera projection</button>
+      <button id="t-layers" type="button">show the layers</button>
+      <button id="t-grain" type="button">film grain</button>
+    </div>
+  </div>
+</div>
+
+<div id="stats" hidden></div>
+
+<noscript>
+  <p style="position:fixed;inset:0;display:grid;place-items:center;font-family:monospace">
+    This is a real-time WebGL scene and needs JavaScript.
+  </p>
+</noscript>
+
+<script type="module" src="./lofi.js"></script>
+</body>
+</html>

@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- vau-stranitsa · силуэт: многосекционная, 5 секций · предмет: акриловый брусок с фигурой Лихтенберга · система: расчёт облучения, глубины залегания и цены блока со спецификацией и заявкой · техника: Poisson-DBM на GPU (48³, GPUComputationRenderer) + MeshPhysicalMaterial transmission + InstancedMesh-каналы -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lichtenberg bench — lightning caught in a block of acrylic</title>
+<meta name="description" content="Electron-beam Lichtenberg figures in cast acrylic. Live growth on a 48³ potential lattice, beam-range calculator, price and specification.">
+<meta name="theme-color" content="#05070b">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23070a10'/%3E%3Cpath d='M17 4 L10 17 h5 l-3 11 9-14h-5z' fill='%237b5cff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="modulepreload" href="_obshchee/assets/three-scene.js">
+<style>
+:root{
+  --ink:#05070b;
+  --pane:#0a0e15;
+  --line:#16202c;
+  --txt:#e9eef7;
+  --dim:#8ea2bd;
+  --volt:#7b5cff;
+  --ice:#63e8ff;
+  --warn:#ffb35c;
+  --e:cubic-bezier(.22,.61,.24,1);
+  --pad:clamp(20px,4.4vw,64px);
+  --rule:1px solid var(--line);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--ink);color:var(--txt);
+  font-family:'Archivo',sans-serif;font-variation-settings:'wdth' 100,'wght' 400;
+  font-size:17px;line-height:1.52;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    linear-gradient(rgba(99,232,255,.028) 1px,transparent 1px) 0 0/100% 88px,
+    radial-gradient(120% 74% at 68% 4%,rgba(123,92,255,.10),rgba(5,7,11,0) 62%);
+}
+.mono{font-family:'IBM Plex Mono',monospace;font-feature-settings:'tnum' 1;letter-spacing:.03em}
+h1,h2,h3{font-variation-settings:'wdth' 112,'wght' 700;letter-spacing:-.018em;line-height:.98;text-wrap:balance}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid rgba(99,232,255,.85);outline-offset:3px;border-radius:2px}
+
+/* ── шапка ────────────────────────────────────────────────────────────── */
+.top{
+  position:fixed;inset:0 0 auto 0;z-index:40;display:flex;align-items:center;gap:18px;
+  padding:0 var(--pad);height:56px;
+  background:rgba(5,7,11,.74);backdrop-filter:blur(14px);border-bottom:var(--rule);
+}
+.top__id{font-size:12.5px;letter-spacing:.16em;color:var(--dim);white-space:nowrap}
+.top__id b{color:var(--txt);font-weight:500}
+.bill__t span:first-child{flex:1;min-width:0}
+.nav{display:flex;gap:22px;margin-left:auto;font-size:13.5px;letter-spacing:.05em}
+.nav a{color:var(--dim);position:relative;padding:4px 0;transition:color 260ms cubic-bezier(.22,.61,.24,1)}
+.nav a::after{
+  content:'';position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--ice);
+  transition:right 380ms cubic-bezier(.22,.61,.24,1);
+}
+.nav a:hover{color:var(--txt)}
+.nav a:hover::after{right:0}
+.live{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--dim)}
+.live i.u{font-style:normal}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ice);box-shadow:0 0 10px rgba(99,232,255,.9);
+  animation:pulse 2400ms cubic-bezier(.65,0,.35,1) infinite}
+@keyframes pulse{0%,100%{opacity:.22;transform:scale(.72)}52%{opacity:1;transform:scale(1.28)}}
+
+/* ── общий каркас ─────────────────────────────────────────────────────── */
+main{position:relative;z-index:1}
+section{padding:0 var(--pad);border-top:var(--rule)}
+section:first-child{border-top:0}
+.head{display:flex;align-items:baseline;gap:18px;padding:66px 0 26px}
+.head__n{font-size:12.5px;letter-spacing:.2em;color:var(--volt)}
+.head h2{font-size:clamp(26px,3.1vw,44px);flex:1}
+.head__note{font-size:13.5px;color:var(--dim);max-width:31ch;text-align:right}
+
+/* ── стенд ────────────────────────────────────────────────────────────── */
+.bench{display:grid;grid-template-columns:minmax(340px,38fr) 62fr;gap:clamp(24px,3vw,52px);
+  padding-top:104px;padding-bottom:56px;align-items:start}
+.kick{font-size:12.5px;letter-spacing:.2em;color:var(--ice);display:flex;align-items:center;gap:10px}
+.kick::before{content:'';width:26px;height:1px;background:rgba(99,232,255,.55)}
+h1{font-size:clamp(40px,5.6vw,82px);margin:20px 0 22px;font-variation-settings:'wdth' 116,'wght' 760}
+h1 .ln{display:block;overflow:hidden}
+h1 .ln span{display:block}
+h1 em{font-style:normal;color:var(--volt)}
+.lead{color:rgba(233,238,247,.72);max-width:44ch;font-size:clamp(15.5px,1.2vw,19px)}
+.facts{display:flex;flex-wrap:wrap;gap:26px;margin:30px 0 32px;padding-top:24px;border-top:var(--rule)}
+.fact b{display:block;font-family:'IBM Plex Mono',monospace;font-size:clamp(20px,2vw,27px);
+  font-weight:500;color:var(--txt);letter-spacing:-.01em}
+.fact span{display:block;font-size:12.5px;letter-spacing:.13em;color:var(--dim);margin-top:6px}
+
+.ctl{border-top:var(--rule);padding-top:22px}
+.ctl__row{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+  letter-spacing:.13em;color:var(--dim)}
+.ctl__val{font-family:'IBM Plex Mono',monospace;font-size:19px;color:var(--ice);letter-spacing:0}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:26px;background:transparent;margin-top:6px;cursor:ew-resize;
+}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:rgba(233,238,247,.16)}
+input[type=range]::-moz-range-track{height:2px;background:rgba(233,238,247,.16)}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--txt);
+  margin-top:-5.5px;box-shadow:0 0 0 4px rgba(123,92,255,.28);
+  transition:box-shadow 240ms cubic-bezier(.22,.61,.24,1),background 240ms cubic-bezier(.22,.61,.24,1);
+}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border:0;border-radius:50%;background:var(--txt);
+  box-shadow:0 0 0 4px rgba(123,92,255,.28)}
+input[type=range]:hover::-webkit-slider-thumb{background:var(--ice);box-shadow:0 0 0 7px rgba(99,232,255,.22)}
+.scale{display:flex;justify-content:space-between;font-size:12.5px;color:rgba(142,162,189,.7);
+  font-family:'IBM Plex Mono',monospace}
+.btns{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+.btn{
+  border:1px solid rgba(123,92,255,.5);background:rgba(123,92,255,.14);color:var(--txt);
+  padding:13px 22px;font-size:13.5px;letter-spacing:.09em;cursor:pointer;position:relative;overflow:hidden;
+  transition:background 300ms cubic-bezier(.22,.61,.24,1),border-color 300ms cubic-bezier(.22,.61,.24,1),
+             transform 300ms cubic-bezier(.34,1.4,.44,1);
+}
+.btn:hover{background:rgba(123,92,255,.3);border-color:rgba(123,92,255,.95);transform:translateY(-2px)}
+.btn:active{transform:translateY(1px)}
+.btn--ghost{border-color:rgba(233,238,247,.2);background:rgba(233,238,247,.03)}
+.btn--ghost:hover{background:rgba(233,238,247,.09);border-color:rgba(233,238,247,.45)}
+.hint{font-size:12.5px;color:rgba(142,162,189,.82);margin-top:14px}
+.hint kbd{font-family:'IBM Plex Mono',monospace;border:var(--rule);padding:1px 6px;border-radius:3px;
+  background:rgba(233,238,247,.05)}
+
+/* ── панель сцены ─────────────────────────────────────────────────────── */
+.stage{border:var(--rule);background:var(--pane);position:relative}
+.stage__bar{display:flex;align-items:center;gap:14px;padding:11px 16px;border-bottom:var(--rule);
+  font-size:12.5px;letter-spacing:.14em;color:var(--dim)}
+.stage__bar b{color:var(--txt);font-weight:500}
+.stage__aim{margin-left:auto;font-family:'IBM Plex Mono',monospace;color:var(--ice);letter-spacing:.02em}
+.canvasbox{position:relative;height:clamp(360px,60vh,640px);overflow:hidden}
+canvas{display:block;width:100%;height:100%;cursor:crosshair}
+.corner{position:absolute;width:16px;height:16px;border:1px solid rgba(99,232,255,.5);pointer-events:none}
+.corner--tl{top:10px;left:10px;border-right:0;border-bottom:0}
+.corner--tr{top:10px;right:10px;border-left:0;border-bottom:0}
+.corner--bl{bottom:10px;left:10px;border-right:0;border-top:0}
+.corner--br{bottom:10px;right:10px;border-left:0;border-top:0}
+.scanline{position:absolute;left:0;right:0;top:0;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,rgba(99,232,255,0),rgba(99,232,255,.38),rgba(99,232,255,0));
+  animation:scan 5200ms cubic-bezier(.65,0,.35,1) infinite}
+@keyframes scan{0%{transform:translateY(0);opacity:0}12%{opacity:.9}88%{opacity:.9}100%{transform:translateY(640px);opacity:0}}
+.nogl{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:32px;
+  color:var(--dim);font-size:14px}
+.nogl b{display:block;color:var(--txt);font-size:19px;margin-bottom:10px}
+body.nowebgl .nogl{display:grid}
+
+.readouts{display:grid;grid-template-columns:repeat(6,1fr);border-top:var(--rule)}
+.ro{padding:13px 14px;border-left:var(--rule);transition:background 320ms cubic-bezier(.22,.61,.24,1)}
+.ro:first-child{border-left:0}
+.ro:hover{background:rgba(99,232,255,.05)}
+.ro b{display:block;font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:500;letter-spacing:-.01em}
+.ro span{display:block;font-size:12.5px;letter-spacing:.11em;color:var(--dim);margin-top:5px}
+.ro--hot b{color:var(--volt)}
+.ro--ice b{color:var(--ice)}
+
+.log{border-top:var(--rule);max-height:150px;overflow-y:auto}
+.log__empty{padding:18px 16px;font-size:13.5px;color:rgba(142,162,189,.75)}
+.log__row{display:flex;gap:18px;padding:9px 16px;border-bottom:1px solid rgba(22,32,44,.7);
+  font-family:'IBM Plex Mono',monospace;font-size:13px;color:rgba(233,238,247,.78);
+  animation:rise2 460ms cubic-bezier(.22,.61,.24,1) both}
+.log__row i{font-style:normal;color:var(--volt)}
+.log__row u{text-decoration:none;color:var(--dim);margin-left:auto}
+
+/* ── протокол ─────────────────────────────────────────────────────────── */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding-bottom:70px}
+.step{padding:0 26px 0 0;border-left:var(--rule);padding-left:26px;
+  transition:background 380ms cubic-bezier(.22,.61,.24,1)}
+.step:first-child{border-left:0;padding-left:0}
+.step:hover{background:rgba(123,92,255,.05)}
+.step__n{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--volt);letter-spacing:.2em}
+.step svg{display:block;margin:18px 0;color:rgba(99,232,255,.72);width:100%;height:64px}
+.step h3{font-size:19px;margin-bottom:9px}
+.step p{font-size:14.5px;color:rgba(233,238,247,.66)}
+.step dl{display:flex;gap:6px;margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:12.5px}
+.step dt{color:var(--dim)}
+.step dd{color:var(--ice)}
+
+/* ── физика ───────────────────────────────────────────────────────────── */
+.phys{display:grid;grid-template-columns:44fr 56fr;gap:clamp(24px,3vw,56px);padding-bottom:34px;align-items:start}
+.formula{border:var(--rule);background:var(--pane);padding:24px;font-family:'IBM Plex Mono',monospace;
+  font-size:14.5px;line-height:1.9;color:rgba(233,238,247,.86)}
+.formula i{font-style:normal;color:var(--ice)}
+.formula em{font-style:normal;color:var(--volt)}
+.formula p{margin-top:16px;font-family:'Archivo',sans-serif;font-size:13.5px;color:var(--dim);line-height:1.55}
+.tablebox{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-family:'IBM Plex Mono',monospace;font-size:13.5px}
+th{text-align:right;font-weight:400;color:var(--dim);font-size:12.5px;letter-spacing:.11em;
+  padding:0 14px 12px 0;border-bottom:var(--rule);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;padding:10px 14px 10px 0;border-bottom:1px solid rgba(22,32,44,.66);
+  color:rgba(233,238,247,.8);white-space:nowrap}
+tbody tr{transition:background 280ms cubic-bezier(.22,.61,.24,1),color 280ms cubic-bezier(.22,.61,.24,1)}
+tbody tr:hover{background:rgba(99,232,255,.07)}
+tbody tr.on{background:rgba(123,92,255,.16)}
+tbody tr.on td{color:var(--txt)}
+tbody tr.on td:first-child{box-shadow:inset 2px 0 0 var(--volt)}
+.why{padding:0 0 74px;display:grid;grid-template-columns:44fr 56fr;gap:clamp(24px,3vw,56px)}
+.why p{color:rgba(233,238,247,.68);font-size:15.5px;max-width:62ch}
+.why p+p{margin-top:16px}
+.why h3{font-size:22px;margin-bottom:18px}
+.spec2{border-top:var(--rule)}
+.spec2 div{display:flex;justify-content:space-between;gap:16px;padding:11px 0;
+  border-bottom:1px solid rgba(22,32,44,.8);font-size:13.5px;
+  transition:padding-left 320ms cubic-bezier(.22,.61,.24,1),color 320ms cubic-bezier(.22,.61,.24,1)}
+.spec2 div:hover{padding-left:8px;color:var(--txt)}
+.spec2 dt{color:var(--dim);font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;font-size:12.5px}
+.spec2 dd{color:rgba(233,238,247,.78);text-align:right;font-family:'IBM Plex Mono',monospace}
+.spec2 dd b{color:var(--ice);font-weight:400}
+
+/* ── заказ ────────────────────────────────────────────────────────────── */
+.order{display:grid;grid-template-columns:47fr 53fr;gap:clamp(24px,3vw,56px);padding-bottom:74px;align-items:start}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:var(--rule)}
+.f{background:var(--pane);padding:15px 16px;transition:background 300ms cubic-bezier(.22,.61,.24,1)}
+.f:hover{background:rgba(99,232,255,.045)}
+.f--wide{grid-column:1/-1}
+.f label{display:block;font-size:12.5px;letter-spacing:.13em;color:var(--dim);margin-bottom:7px}
+.f input[type=number],.f select,.f input[type=text],.f input[type=email]{
+  width:100%;background:transparent;border:0;border-bottom:1px solid rgba(233,238,247,.14);
+  font-family:'IBM Plex Mono',monospace;font-size:17px;padding:5px 0;
+  transition:border-color 300ms cubic-bezier(.22,.61,.24,1);
+}
+.f input:hover,.f select:hover{border-bottom-color:rgba(99,232,255,.6)}
+.f select{cursor:pointer}
+.f select option{background:var(--pane)}
+.f.bad input{border-bottom-color:var(--warn)}
+.f__err{display:none;font-size:12.5px;color:var(--warn);margin-top:7px}
+.f.bad .f__err{display:block}
+.note{margin-top:16px;font-size:13.5px;color:rgba(142,162,189,.85);border-left:2px solid var(--warn);
+  padding-left:14px;display:none}
+.note.on{display:block;animation:rise2 420ms cubic-bezier(.22,.61,.24,1) both}
+
+.bill{border:var(--rule);background:var(--pane)}
+.bill__t{display:flex;justify-content:space-between;padding:13px 18px;font-size:13.5px;
+  border-bottom:1px solid rgba(22,32,44,.7);font-family:'IBM Plex Mono',monospace;
+  color:rgba(233,238,247,.74);transition:color 260ms cubic-bezier(.22,.61,.24,1)}
+.bill__t:hover{color:var(--txt)}
+.bill__t span:first-child{font-family:'Archivo',sans-serif;letter-spacing:.02em}
+.bill__sum{display:flex;align-items:flex-end;justify-content:space-between;padding:22px 18px;gap:16px}
+.bill__sum div{font-size:12.5px;letter-spacing:.13em;color:var(--dim)}
+.bill__sum b{font-family:'IBM Plex Mono',monospace;font-size:clamp(34px,4vw,54px);font-weight:500;
+  letter-spacing:-.02em;line-height:1;color:var(--txt)}
+.bill__sum u{text-decoration:none;font-family:'IBM Plex Mono',monospace;color:var(--ice);font-size:14px}
+.spec{border-top:var(--rule);padding:18px}
+.spec__empty{font-size:13.5px;color:rgba(142,162,189,.75)}
+.spec pre{font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.75;color:rgba(233,238,247,.76);
+  white-space:pre-wrap;display:none}
+.spec.on pre{display:block}
+.spec.on .spec__empty{display:none}
+.form{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:var(--rule)}
+.ok{display:none;border:1px solid rgba(99,232,255,.42);background:rgba(99,232,255,.07);padding:20px;margin-top:26px}
+.ok.on{display:block;animation:rise 520ms cubic-bezier(.22,.61,.24,1) both}
+.ok b{display:block;font-family:'IBM Plex Mono',monospace;font-size:19px;color:var(--ice);margin-bottom:8px}
+.ok p{font-size:14px;color:rgba(233,238,247,.76)}
+.ok a{color:var(--ice);border-bottom:1px solid rgba(99,232,255,.4)}
+
+/* ── подвал ───────────────────────────────────────────────────────────── */
+.foot{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,56px);padding:56px 0 40px}
+.foot h3{font-size:12.5px;letter-spacing:.16em;color:var(--dim);margin-bottom:14px;
+  font-variation-settings:'wdth' 100,'wght' 500}
+.foot p,.foot li{font-size:14px;color:rgba(233,238,247,.7);list-style:none}
+.foot li+li{margin-top:8px}
+.foot a{border-bottom:1px solid rgba(233,238,247,.22);transition:border-color 280ms cubic-bezier(.22,.61,.24,1),color 280ms cubic-bezier(.22,.61,.24,1)}
+.foot a:hover{color:var(--ice);border-bottom-color:var(--ice)}
+.rule{border-top:var(--rule);padding:18px 0 34px;display:flex;justify-content:space-between;
+  font-size:12.5px;color:rgba(142,162,189,.72);font-family:'IBM Plex Mono',monospace;flex-wrap:wrap;gap:12px}
+
+/* ── появление ────────────────────────────────────────────────────────── */
+.a{animation:rise 820ms cubic-bezier(.22,.61,.24,1) var(--d,0ms) both}
+.aw span{animation:wipe 1080ms cubic-bezier(.22,.61,.24,1) var(--d,0ms) both}
+@keyframes rise{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:none}}
+@keyframes rise2{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:none}}
+@keyframes wipe{from{opacity:0;transform:translateY(112%)}to{opacity:1;transform:none}}
+.rv{opacity:0;transform:translateY(22px);
+  transition:opacity 760ms cubic-bezier(.22,.61,.24,1),transform 760ms cubic-bezier(.22,.61,.24,1)}
+.rv.in{opacity:1;transform:none}
+.rv--d1{transition-delay:90ms}.rv--d2{transition-delay:180ms}.rv--d3{transition-delay:270ms}
+
+/* ── адаптив ──────────────────────────────────────────────────────────── */
+@media (min-width:1600px){
+  body{font-size:18px}
+  .bench{grid-template-columns:minmax(380px,34fr) 66fr}
+}
+@media (max-width:1180px){
+  .bench{grid-template-columns:1fr;padding-top:88px}
+  .steps{grid-template-columns:1fr 1fr;gap:32px 0}
+  .step{padding-bottom:8px}
+  .step:nth-child(3){border-left:0;padding-left:0}
+  .phys,.why,.order{grid-template-columns:1fr}
+  .head__note{display:none}
+}
+@media (max-width:860px){
+  .readouts{grid-template-columns:repeat(3,1fr)}
+  .ro:nth-child(4){border-left:0}
+  .ro{border-top:1px solid rgba(22,32,44,.8)}
+  .ro:nth-child(-n+3){border-top:0}
+  .foot{grid-template-columns:1fr;gap:34px}
+  .nav a:nth-child(2){display:none}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .top{height:52px;gap:12px}
+  .top__id .ni,.stage__bar b,.live i.u{display:none}
+  .nav{gap:16px;font-size:13px}
+  .steps{grid-template-columns:1fr}
+  .step{border-left:0;padding-left:0;border-top:var(--rule);padding-top:22px}
+  .step:first-child{border-top:0;padding-top:0}
+  .fields,.form{grid-template-columns:1fr}
+  .canvasbox{height:clamp(320px,52vh,420px)}
+  .readouts{grid-template-columns:repeat(2,1fr)}
+  .ro:nth-child(odd){border-left:0}
+  .ro:nth-child(-n+2){border-top:0}
+  .head{padding:44px 0 20px;flex-wrap:wrap;gap:10px}
+  .facts{gap:18px}
+  .rule{font-size:12.5px}
+}
+
+/* ── без движения ─────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion:reduce){
+  .scanline,.dot{display:none}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .a,.aw span,.rv,h1 .ln span,.log__row,.ok,.note{opacity:1!important;transform:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top__id mono"><span class="ni">LICHTENBERG BENCH ·</span> <b>PMMA-04</b></div>
+  <nav class="nav">
+    <a href="#protocol">Protocol</a>
+    <a href="#physics">Physics</a>
+    <a href="#order">Order</a>
+  </nav>
+  <div class="live mono"><i class="dot"></i><span id="clock">--:--:--</span><i class="u">UTC+2</i></div>
+</header>
+
+<main>
+
+<!-- ─── СТЕНД ─────────────────────────────────────────────────────────── -->
+<section class="bench" id="bench">
+  <div>
+    <div class="kick mono a" style="--d:60ms">CAPTURED LIGHTNING · CAST ACRYLIC</div>
+    <h1 class="aw">
+      <span class="ln" style="--d:140ms"><span>Lightning,</span></span>
+      <span class="ln" style="--d:230ms"><span>caught in</span></span>
+      <span class="ln" style="--d:320ms"><span>a <em>block</em>.</span></span>
+    </h1>
+    <p class="lead a" style="--d:420ms">
+      A 3 MeV electron beam parks a sheet of charge 12.4 mm under the surface of a cast acrylic
+      blank. One grounded pin at the face opens it. The channel that drains that sheet spreads
+      through the block in under 100 µs, cools in place, and stays there.
+    </p>
+
+    <div class="facts">
+      <div class="fact a" style="--d:500ms"><b>3 000 kV</b><span>BEAM POTENTIAL</span></div>
+      <div class="fact a" style="--d:560ms"><b id="f-depth">12.4 mm</b><span>CHARGE DEPTH</span></div>
+      <div class="fact a" style="--d:620ms"><b>20 MV·m⁻¹</b><span>PMMA BREAKDOWN</span></div>
+    </div>
+
+    <div class="ctl a" style="--d:680ms">
+      <div class="ctl__row a" style="--d:740ms"><span>BEAM POTENTIAL</span><span class="ctl__val mono" id="kv-out">3 000 kV</span></div>
+      <input type="range" id="kv" min="800" max="5000" step="100" value="3000" aria-label="Beam potential, kilovolts">
+      <div class="scale a" style="--d:800ms"><span>800</span><span>2 900</span><span>5 000</span></div>
+      <div class="btns">
+        <button class="btn a" style="--d:860ms" id="fire">FIRE DISCHARGE</button>
+        <button class="btn btn--ghost a" style="--d:900ms" id="clear">CLEAR BLANK</button>
+      </div>
+      <p class="hint a" style="--d:960ms">Higher potential drives the charge deeper and splits it into finer channels.
+        Click any face of the block to place the pin yourself — <kbd>click</kbd> the stage.</p>
+    </div>
+  </div>
+
+  <div class="stage a" style="--d:260ms">
+    <div class="stage__bar mono a" style="--d:360ms">
+      <span>STAGE</span><b>100 × 80 × 50 mm</b>
+      <span class="stage__aim" id="aim">PIN — · —</span>
+    </div>
+    <div class="canvasbox">
+      <canvas id="c"></canvas>
+      <i class="corner corner--tl a" style="--d:1400ms"></i><i class="corner corner--tr"></i>
+      <i class="corner corner--bl"></i><i class="corner corner--br a" style="--d:1460ms"></i>
+      <i class="scanline"></i>
+      <div class="nogl"><b>The bench needs WebGL 2</b>
+        Everything below still works: the range table, the price and the specification are plain arithmetic.</div>
+    </div>
+    <div class="readouts">
+      <div class="ro ro--hot a" style="--d:1020ms"><b id="r-ch">0</b><span>CHANNELS</span></div>
+      <div class="ro a" style="--d:1070ms"><b id="r-tip">0</b><span>TIPS</span></div>
+      <div class="ro a" style="--d:1120ms"><b id="r-fork">0</b><span>FORKS</span></div>
+      <div class="ro ro--ice a" style="--d:1170ms"><b id="r-depth">12.4</b><span>DEPTH mm</span></div>
+      <div class="ro a" style="--d:1220ms"><b id="r-charge">100</b><span>CHARGE %</span></div>
+      <div class="ro a" style="--d:1270ms"><b id="r-state">IDLE</b><span>STATE</span></div>
+    </div>
+    <div class="log a" id="log" style="--d:1330ms"><div class="log__empty">No discharge on this blank yet. The bench fires a self-test shot on power-up.</div></div>
+  </div>
+</section>
+
+<!-- ─── ПРОТОКОЛ ──────────────────────────────────────────────────────── -->
+<section id="protocol">
+  <div class="head">
+    <span class="head__n mono">01</span>
+    <h2 class="rv">Four steps. The third one is irreversible.</h2>
+    <p class="head__note rv rv--d1">Every figure below was grown by the same four operations, in the same order,
+      on the same bench.</p>
+  </div>
+  <div class="steps">
+    <article class="step rv">
+      <div class="step__n">01 — BLANK</div>
+      <svg viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+        <path d="M14 44 L14 20 L52 8 L106 8 L106 34 L68 56 L14 44Z"/>
+        <path d="M14 20 L68 30 L106 8M68 30 L68 56"/>
+      </svg>
+      <h3>Cast blank</h3>
+      <p>Cast PMMA, not extruded — extruded sheet carries flow lines that read as haze around the figure.
+        Six faces milled, then flame-polished.</p>
+      <dl><dt>density</dt><dd>1.19 g·cm⁻³</dd></dl>
+    </article>
+    <article class="step rv rv--d1">
+      <div class="step__n">02 — CHARGE</div>
+      <svg viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+        <path d="M10 46 H110M10 46 L10 30M110 46 L110 30"/>
+        <path d="M22 4 V30M38 4 V30M54 4 V30M70 4 V30M86 4 V30M102 4 V30" stroke-dasharray="3 4"/>
+        <path d="M10 34 H110" stroke-dasharray="1 3"/>
+      </svg>
+      <h3>Charge injection</h3>
+      <p>Scanned electron beam, fluence 3.0·10¹³ e·cm⁻². Electrons stop at their CSDA range and stay
+        there as a trapped sheet — a flat capacitor built inside solid plastic.</p>
+      <dl><dt>exposure</dt><dd id="s-exp">2.1 s</dd></dl>
+    </article>
+    <article class="step rv rv--d2">
+      <div class="step__n">03 — TRIGGER</div>
+      <svg viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+        <path d="M60 2 V18"/><path d="M52 18 H68 L60 26 Z" fill="currentColor" fill-opacity=".25"/>
+        <path d="M60 26 L54 38 L66 40 L48 60M60 26 L72 40 L58 44 L84 58M60 26 L44 42 L30 56"/>
+      </svg>
+      <h3>Pin trigger</h3>
+      <p>A grounded pin touches the face. Local field passes 20 MV·m⁻¹, PMMA breaks down, and the whole
+        sheet drains through one growing channel. There is no second attempt.</p>
+      <dl><dt>duration</dt><dd>&lt; 100 µs</dd></dl>
+    </article>
+    <article class="step rv rv--d3">
+      <div class="step__n">04 — ANNEAL</div>
+      <svg viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+        <path d="M16 56 H104"/><path d="M16 56 V26 A44 44 0 0 1 104 26 V56"/>
+        <path d="M40 40 C46 32 54 34 60 26 C66 34 74 32 80 40" stroke-dasharray="2 3"/>
+      </svg>
+      <h3>Anneal</h3>
+      <p>45 °C for six hours. Releases the stress the discharge left behind, so the block does not
+        craze along the channel a month later.</p>
+      <dl><dt>hold</dt><dd>6 h</dd></dl>
+    </article>
+  </div>
+</section>
+
+<!-- ─── ФИЗИКА ────────────────────────────────────────────────────────── -->
+<section id="physics">
+  <div class="head">
+    <span class="head__n mono">02</span>
+    <h2 class="rv">Depth is not a setting. It is the electron range.</h2>
+    <p class="head__note rv rv--d1">Move the bench slider — the row that lights up is the one you are firing.</p>
+  </div>
+  <div class="phys">
+    <div class="formula rv">
+      <div><em>R</em>(<i>E</i>) = 0.412 · <i>E</i><sup>1.265 − 0.0954 ln<i>E</i></sup> &nbsp;g·cm⁻² &nbsp;— <i>E</i> ≤ 2.5 MeV</div>
+      <div><em>R</em>(<i>E</i>) = 0.530 <i>E</i> − 0.106 &nbsp;g·cm⁻² &nbsp;— <i>E</i> &gt; 2.5 MeV</div>
+      <div><em>d</em> = 10 · <em>R</em> / ρ &nbsp;mm, &nbsp;ρ = 1.19 g·cm⁻³</div>
+      <p>Katz–Penfold empirical range for electrons. It is the only number on this page that decides
+        where the figure ends up: the beam does not choose a depth, it runs out of energy at one.
+        Everything else — spread, branching, thickness — follows from the field the sheet leaves behind.</p>
+    </div>
+    <div class="tablebox rv rv--d1">
+      <table>
+        <thead><tr><th>E, MeV</th><th>kV</th><th>R, g·cm⁻²</th><th>depth, mm</th><th>figure</th></tr></thead>
+        <tbody id="tb"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="why">
+    <div class="rv"><h3>Why it branches on its own</h3>
+      <dl class="spec2">
+        <div><dt>LATTICE</dt><dd>48³ · 110 592 cells</dd></div>
+        <div><dt>SOLVER</dt><dd>Poisson relaxation, 4 passes a frame</dd></div>
+        <div><dt>EXPONENT η</dt><dd><b id="w-eta">5.85</b></dd></div>
+        <div><dt>SHEET BAND</dt><dd>±3 cells around the range depth</dd></div>
+        <div><dt>STOP</dt><dd>tip field below 16 % of peak</dd></div>
+      </dl>
+    </div>
+    <div class="rv rv--d1">
+      <p>Nothing on the bench draws a tree. The block is a 48³ lattice; the trapped sheet is a charge
+        source; the channel already grown is a grounded conductor at zero potential. Every frame the
+        GPU relaxes ∇²φ = −ρ/ε over the whole lattice, and every growth step the empty cells touching
+        the channel are polled for their potential.</p>
+      <p>A cell joins the channel with probability p ∝ φ<sup>η</sup>. That single exponent is what the
+        slider moves: η ≈ 3.4 at 800 kV gives few thick channels, η ≈ 1.3 at 5 000 kV gives a dense
+        fern. Branching is not a rule in the code — it is what happens when two neighbouring cells
+        happen to win the same draw and the field splits between them.</p>
+      <p>Charge is consumed where the channel passes, so a second discharge fired into the same blank
+        has to find its own room. That is why real blocks with several strikes never repeat a shape.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ЗАКАЗ ─────────────────────────────────────────────────────────── -->
+<section id="order">
+  <div class="head">
+    <span class="head__n mono">03</span>
+    <h2 class="rv">Configure a block.</h2>
+    <p class="head__note rv rv--d1">Price is arithmetic on this page, not a quote form. The link in your
+      address bar carries the configuration.</p>
+  </div>
+  <div class="order">
+    <div class="rv">
+      <div class="fields">
+        <div class="f"><label for="i-l">LENGTH, mm</label><input type="number" id="i-l" min="40" max="300" step="5" value="100"></div>
+        <div class="f"><label for="i-w">WIDTH, mm</label><input type="number" id="i-w" min="40" max="220" step="5" value="80"></div>
+        <div class="f" id="f-h"><label for="i-h">HEIGHT, mm</label><input type="number" id="i-h" min="12" max="120" step="2" value="50">
+          <div class="f__err" id="e-h">Charge would sit deeper than the blank is thick.</div></div>
+        <div class="f"><label for="i-n">DISCHARGES</label>
+          <select id="i-n"><option>1</option><option>2</option><option>3</option><option>4</option><option>6</option></select></div>
+        <div class="f"><label for="i-p">FINISH</label>
+          <select id="i-p"><option value="six">All six faces polished</option><option value="top">Top and sides</option></select></div>
+        <div class="f"><label for="i-q">QUANTITY</label><input type="number" id="i-q" min="1" max="250" step="1" value="1"></div>
+        <div class="f f--wide"><label for="i-e">BEAM POTENTIAL, kV — <span id="e-mirror" class="mono">3 000</span></label>
+          <input type="range" id="i-e" min="800" max="5000" step="100" value="3000" aria-label="Beam potential in the order form">
+        </div>
+      </div>
+      <p class="note" id="note"></p>
+
+      <form class="form" id="req" novalidate>
+        <div class="f" id="f-name"><label for="i-name">NAME</label><input type="text" id="i-name" placeholder="Ada Ross" autocomplete="name">
+          <div class="f__err">Two characters at least.</div></div>
+        <div class="f" id="f-mail"><label for="i-mail">EMAIL</label><input type="email" id="i-mail" placeholder="ada@studio.com" autocomplete="email">
+          <div class="f__err">That address will not reach anybody.</div></div>
+        <div class="f f--wide"><label for="i-msg">WHAT IS IT FOR</label><input type="text" id="i-msg" placeholder="Award series for a power utility, 40 pcs"></div>
+        <div class="f f--wide"><button class="btn" type="submit" style="width:100%">SEND THE SPECIFICATION</button></div>
+      </form>
+      <div class="ok" id="ok"><b id="ok-ref">—</b>
+        <p>Specification copied to your clipboard and queued under this reference. Fastest reply is
+          Telegram — <a href="https://t.me/smirnovarturr" rel="noopener">@smirnovarturr</a>. 50 % upfront,
+          the rest on the photo of the finished batch.</p></div>
+    </div>
+
+    <div class="rv rv--d2">
+      <div class="bill">
+        <div class="bill__t"><span>Cast blank, <i class="mono" id="b-mass">0.48</i> kg</span><span class="mono" id="b-blank">$9</span></div>
+        <div class="bill__t"><span>Milling and flame polish, <i class="mono" id="b-area">3.4</i> dm²</span><span class="mono" id="b-pol">$22</span></div>
+        <div class="bill__t"><span>Accelerator time, <i class="mono" id="b-mach">1.5</i> min</span><span class="mono" id="b-beam">$5</span></div>
+        <div class="bill__t"><span>Trigger operation, per discharge</span><span class="mono" id="b-trig">$12</span></div>
+        <div class="bill__t"><span>Anneal and stress check</span><span class="mono">$16</span></div>
+        <div class="bill__t"><span>Inspection, photo, passport</span><span class="mono">$28</span></div>
+        <div class="bill__t"><span>Setup, split over the batch</span><span class="mono" id="b-set">$95</span></div>
+        <div class="bill__sum">
+          <div>PER BLOCK<br><u id="b-lead">lead time 9 working days</u></div>
+          <b id="b-total">$0</b>
+        </div>
+        <div class="spec" id="spec">
+          <div class="spec__empty">No figure recorded yet. Fire a discharge on the bench and the
+            specification will carry its real channel count.</div>
+          <pre id="spec-body"></pre>
+        </div>
+        <div class="bill__t" style="border-top:1px solid rgba(22,32,44,.7);border-bottom:0">
+          <span><button class="btn btn--ghost" id="dl" type="button">DOWNLOAD SPEC .TXT</button></span>
+          <span class="mono" id="b-batch">batch $0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── УСЛОВИЯ ───────────────────────────────────────────────────────── -->
+<section id="terms">
+  <div class="head">
+    <span class="head__n mono">04</span>
+    <h2 class="rv">Terms, and what is actually on this page.</h2>
+  </div>
+  <div class="foot">
+    <div class="rv">
+      <h3>WORK</h3>
+      <ul>
+        <li>Blocks from 40 to 300 mm on the long side, up to 120 mm thick.</li>
+        <li>Batches from one. Setup is charged once and split over the batch.</li>
+        <li>Engineering and one-off tooling — $65 per hour, agreed before it starts.</li>
+      </ul>
+    </div>
+    <div class="rv rv--d1">
+      <h3>MONEY</h3>
+      <ul>
+        <li>50 % upfront, the rest against photographs of the finished batch.</li>
+        <li>Crypto or Freedom bank transfer.</li>
+        <li>A failed blank is ours, not yours — the trigger step has a real reject rate.</li>
+      </ul>
+    </div>
+    <div class="rv rv--d2">
+      <h3>THE BENCH ABOVE</h3>
+      <ul>
+        <li>Growth is a Poisson–DBM solve on the GPU: 48³ lattice, 6 relaxation passes a frame.</li>
+        <li>The block is one mesh with transmission, IOR 1.49 — the figure is refracted, not drawn on top.</li>
+        <li><a href="https://github.com/smirnov-artur" rel="noopener">github.com/smirnov-artur</a> ·
+            <a href="https://t.me/smirnovarturr" rel="noopener">@smirnovarturr</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="rule">
+    <span>LICHTENBERG BENCH · PMMA-04</span>
+    <span id="uptime">bench uptime 00:00</span>
+  </div>
+</section>
+
+</main>
+
+<script type="module">
+import * as THREE from '_obshchee/assets/three-scene.js';
+
+/* ══ 0. состояние и арифметика ═══════════════════════════════════════════ */
+const RHO_PMMA = 1.19;                       /* г/см³, литой ПММА            */
+const FLUENCE  = 3.0e13;                     /* эл/см², порог самопробоя     */
+const E_CHARGE = 1.602e-19;
+const J_BEAM   = 2.27e-6;                    /* А/см² в апертуре скана       */
+const RATE_MIN = 3.00;                       /* $/мин машинного времени      */
+
+const S = { kv:3000, L:100, W:80, H:50, n:1, polish:'six', qty:1 };
+
+const MeV = () => S.kv / 1000;
+function rangeKP(E){                         /* Katz–Penfold, г/см²          */
+  return E <= 2.5 ? 0.412 * Math.pow(E, 1.265 - 0.0954 * Math.log(E))
+                  : 0.530 * E - 0.106;
+}
+const depthMm = (E) => 10 * rangeKP(E) / RHO_PMMA;
+const expSec  = () => FLUENCE * E_CHARGE / J_BEAM;   /* с на цикл зарядки    */
+
+function money(){
+  const V = S.L * S.W * S.H / 1000;                       /* см³            */
+  const m = V * RHO_PMMA / 1000;                          /* кг             */
+  const a2 = 2 * (S.L*S.W + S.L*S.H + S.W*S.H) / 10000;   /* дм², все грани */
+  const area = S.polish === 'six' ? a2 : a2 * 0.72;
+  const t1 = expSec() * (1 + 0.02 * S.H);
+  const mach = (45 + S.n * (t1 + 22) + 90) / 60;          /* мин            */
+  const blank = Math.max(9, m * 14);
+  const polish = area * 6.4;
+  const beam = mach * RATE_MIN;
+  const trig = 12 * S.n;
+  const setup = 95 / S.qty;
+  const sub = blank + polish + beam + trig + 16 + 28 + setup;
+  const marg = S.qty >= 20 ? 1.11 : S.qty >= 5 ? 1.16 : 1.22;
+  const unit = sub * marg;
+  const lead = Math.round(6 + S.qty * 0.35 + (S.n > 2 ? 2 : 0));
+  return { V, m, area, t1, mach, blank, polish, beam, trig, setup, unit, lead, total: unit * S.qty };
+}
+const $ = (s) => document.querySelector(s);
+const fmt = (x, d = 0) => x.toLocaleString('en-US', { minimumFractionDigits:d, maximumFractionDigits:d })
+  .replace(/,/g, ' ');
+const usd = (x) => '$' + fmt(Math.round(x));
+
+/* ══ 1. таблица дальности ════════════════════════════════════════════════ */
+const ROWS = [0.8, 1.2, 1.8, 2.5, 3.0, 4.0, 5.0];
+const LABEL = ['surface fern','shallow spread','mid-body','half-thickness','deep plane','deep, wide','maximum reach'];
+$('#tb').innerHTML = ROWS.map((E,i) => {
+  const R = rangeKP(E);
+  return `<tr data-e="${E}"><td>${E.toFixed(1)}</td><td>${fmt(E*1000)}</td>` +
+         `<td>${R.toFixed(3)}</td><td>${depthMm(E).toFixed(1)}</td><td>${LABEL[i]}</td></tr>`;
+}).join('');
+const rows = [...document.querySelectorAll('#tb tr')];
+rows.forEach(r => r.addEventListener('click', () => setKv(+r.dataset.e * 1000)));
+
+/* ══ 2. вывод чисел ══════════════════════════════════════════════════════ */
+let specReady = false;
+function paint(){
+  const d = depthMm(MeV()), b = money();
+  $('#kv-out').textContent = fmt(S.kv) + ' kV';
+  $('#e-mirror').textContent = fmt(S.kv);
+  $('#f-depth').textContent = d.toFixed(1) + ' mm';
+  $('#r-depth').textContent = d.toFixed(1);
+  $('#s-exp').textContent = expSec().toFixed(1) + ' s';
+  $('#w-eta').textContent = (9.0 - 1.05 * MeV()).toFixed(2);
+
+  let best = 0;
+  rows.forEach((r,i) => { if (Math.abs(+r.dataset.e - MeV()) < Math.abs(+rows[best].dataset.e - MeV())) best = i; });
+  rows.forEach((r,i) => r.classList.toggle('on', i === best));
+
+  $('#b-mass').textContent = b.m.toFixed(2);
+  $('#b-area').textContent = b.area.toFixed(1);
+  $('#b-mach').textContent = b.mach.toFixed(1);
+  $('#b-blank').textContent = usd(b.blank);
+  $('#b-pol').textContent = usd(b.polish);
+  $('#b-beam').textContent = usd(b.beam);
+  $('#b-trig').textContent = usd(b.trig);
+  $('#b-set').textContent = usd(b.setup);
+  $('#b-total').textContent = usd(b.unit);
+  $('#b-batch').textContent = 'batch ' + usd(b.total);
+  $('#b-lead').textContent = 'lead time ' + b.lead + ' working days';
+
+  const deep = d > (S.H - 3);
+  $('#f-h').classList.toggle('bad', deep);
+  const note = $('#note');
+  if (deep){
+    note.textContent = `At ${fmt(S.kv)} kV the charge sits ${d.toFixed(1)} mm down, and the blank is only ` +
+      `${S.H} mm thick. The sheet would vent through the base face instead of branching. Thicker blank, or less beam.`;
+    note.classList.add('on');
+  } else if (S.qty >= 20){
+    note.textContent = `Batch of ${S.qty}: setup is down to ${usd(b.setup)} a block and the margin step drops. ` +
+      `Above 60 pieces the accelerator is booked by the shift and the beam line gets cheaper again — ask.`;
+    note.classList.add('on');
+  } else note.classList.remove('on');
+
+  if (specReady) writeSpec(b, d);
+  syncURL();
+}
+
+function writeSpec(b, d){
+  const sp = $('#spec');
+  sp.classList.add('on');
+  $('#spec-body').textContent =
+`BLOCK          ${S.L} × ${S.W} × ${S.H} mm, cast PMMA
+MASS           ${b.m.toFixed(2)} kg          VOLUME ${fmt(b.V)} cm³
+FINISH         ${S.polish === 'six' ? 'six faces flame-polished' : 'top and sides polished'}
+BEAM           ${fmt(S.kv)} kV (${MeV().toFixed(1)} MeV), fluence 3.0e13 e/cm2
+CHARGE DEPTH   ${d.toFixed(1)} mm below the top face (Katz-Penfold)
+EXPOSURE       ${b.t1.toFixed(1)} s per cycle, ${S.n} discharge(s)
+FIGURE         ${FIG.ch} channels, ${FIG.tip} tips, ${FIG.fork} forks (grown on this page)
+MACHINE TIME   ${b.mach.toFixed(1)} min
+UNIT PRICE     ${usd(b.unit)}          BATCH ${S.qty} × = ${usd(b.total)}
+LEAD TIME      ${b.lead} working days, 50% upfront`;
+}
+
+/* ── состояние в адресе ── */
+function syncURL(){
+  const p = new URLSearchParams({ kv:S.kv, l:S.L, w:S.W, h:S.H, n:S.n, p:S.polish, q:S.qty });
+  history.replaceState(null, '', '?' + p.toString() + location.hash);
+}
+(function readURL(){
+  const p = new URLSearchParams(location.search);
+  if (p.get('kv')) S.kv = Math.min(5000, Math.max(800, +p.get('kv') || 3000));
+  for (const [k, key] of [['l','L'],['w','W'],['h','H'],['n','n'],['q','qty']])
+    if (p.get(k)) S[key] = +p.get(k) || S[key];
+  if (p.get('p')) S.polish = p.get('p') === 'top' ? 'top' : 'six';
+  $('#i-l').value = S.L; $('#i-w').value = S.W; $('#i-h').value = S.H;
+  $('#i-n').value = S.n; $('#i-q').value = S.qty; $('#i-p').value = S.polish;
+  $('#kv').value = S.kv; $('#i-e').value = S.kv;
+})();
+
+/* ── ввод ── */
+function setKv(v){
+  S.kv = Math.min(5000, Math.max(800, Math.round(v / 100) * 100));
+  $('#kv').value = S.kv; $('#i-e').value = S.kv;
+  paint(); if (bench) bench.retune();
+}
+$('#kv').addEventListener('input', e => setKv(+e.target.value));
+$('#i-e').addEventListener('input', e => setKv(+e.target.value));
+for (const [id, key, lo, hi] of [['#i-l','L',40,300],['#i-w','W',40,220],['#i-h','H',12,120],['#i-q','qty',1,250]])
+  $(id).addEventListener('input', e => {
+    const v = +e.target.value; if (!isFinite(v)) return;
+    S[key] = Math.min(hi, Math.max(lo, v)); paint();
+  });
+$('#i-n').addEventListener('change', e => { S.n = +e.target.value; paint(); });
+$('#i-p').addEventListener('change', e => { S.polish = e.target.value; paint(); });
+
+/* ── выгрузка и заявка ── */
+$('#dl').addEventListener('click', () => {
+  const txt = 'LICHTENBERG BENCH — SPECIFICATION\n\n' +
+    ($('#spec-body').textContent || 'no figure recorded') + '\n\nsmirnov-artur · t.me/smirnovarturr\n';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([txt], { type:'text/plain' }));
+  a.download = 'lichtenberg-spec.txt'; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+});
+$('#req').addEventListener('submit', ev => {
+  ev.preventDefault();
+  const name = $('#i-name').value.trim(), mail = $('#i-mail').value.trim();
+  const badName = name.length < 2, badMail = !/^[^@\s]+@[^@\s.]+\.[^@\s]{2,}$/.test(mail);
+  $('#f-name').classList.toggle('bad', badName);
+  $('#f-mail').classList.toggle('bad', badMail);
+  if (badName || badMail) return;
+  const ref = 'LB-' + new Date().toISOString().slice(2,10).replace(/-/g,'') + '-' +
+              Math.random().toString(36).slice(2,6).toUpperCase();
+  const body = ref + '\n' + name + ' · ' + mail + '\n' + ($('#i-msg').value.trim() || '—') +
+               '\n\n' + $('#spec-body').textContent;
+  if (navigator.clipboard) navigator.clipboard.writeText(body).catch(() => {});
+  $('#ok-ref').textContent = ref;
+  $('#ok').classList.add('on');
+});
+
+/* ── часы и наработка ── */
+const t0 = Date.now();
+function tick(){
+  const d = new Date(Date.now() + 2 * 3600e3);
+  $('#clock').textContent = d.toISOString().slice(11,19);
+  const s = Math.floor((Date.now() - t0) / 1000);
+  $('#uptime').textContent = 'bench uptime ' +
+    String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+}
+tick(); setInterval(tick, 1000);
+
+/* ── появление секций ── */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }),
+  { rootMargin:'-8% 0px -6% 0px' });
+document.querySelectorAll('.rv').forEach(e => io.observe(e));
+
+/* ══ 3. СТЕНД: Poisson-DBM на решётке 48³ ════════════════════════════════ */
+const FIG = { ch:0, tip:0, fork:0, charge:100, state:'IDLE' };
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let bench = null;
+
+const N = 48, TX = 7, TEX = N * TX;          /* 48³ упаковано в 336×336      */
+const NN = N * N * N;
+const BX = 5.0, BY = 2.5, BZ = 4.0;          /* брусок в единицах, 1 = 20 мм */
+const INSET = 0.90;
+const MAXSEG = 6400;
+
+function boot(){
+  const canvas = $('#c');
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias:false, alpha:false, powerPreference:'high-performance' });
+  } catch(err){ document.body.classList.add('nowebgl'); return; }
+  if (!renderer.capabilities.isWebGL2){ document.body.classList.add('nowebgl'); return; }
+
+  const gl = renderer.getContext();
+  const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+  const gpuName = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : '';
+  const SOFT = /swiftshader|llvmpipe|software|basic render/i.test(gpuName);
+
+  /* разрешение не трогаем никогда: пол pixelRatio = 1.0 */
+  const DPR = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(DPR);
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.95;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0.016, 0.021, 0.031);
+  const camera = new THREE.PerspectiveCamera(27, 1, 0.1, 60);
+
+  /* ── окружение: ночной город очень приглушённо ── */
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  pmrem.compileEquirectangularShader();
+  new THREE.RGBELoader().load('_obshchee/assets/shanghai_bund_256.hdr', hdr => {
+    scene.environment = pmrem.fromEquirectangular(hdr).texture;
+    scene.environmentIntensity = 0.46;
+    scene.environmentRotation = new THREE.Euler(0, -Math.PI * 0.78, 0);
+    hdr.dispose(); pmrem.dispose();
+  }, undefined, () => { scene.environmentIntensity = 1.0; pmrem.dispose(); });
+
+  /* один жёсткий контровой — по нему читаются фаски бруска */
+  const rim  = new THREE.DirectionalLight(0xcfe2ff, 2.6); rim.position.set(-6.2, 0.55, -4.4);
+  const key  = new THREE.DirectionalLight(0xffe6c8, 0.9); key.position.set(6.4, 0.75, -3.6);
+  const fill = new THREE.DirectionalLight(0x9fb6ff, 0.09); fill.position.set(1.2, -3.0, 4.0);
+  scene.add(rim, key, fill);
+
+  /* ── задник: мягкое пятно, чтобы силуэт бруска читался ── */
+  const bg = (() => {
+    const c = document.createElement('canvas'); c.width = c.height = 1024;
+    const g = c.getContext('2d');
+    const lg = g.createLinearGradient(0, 0, 0, 1024);
+    lg.addColorStop(0, 'rgba(9,13,22,1)'); lg.addColorStop(.52, 'rgba(24,33,54,1)');
+    lg.addColorStop(.62, 'rgba(13,18,30,1)'); lg.addColorStop(1, 'rgba(6,8,13,1)');
+    g.fillStyle = lg; g.fillRect(0, 0, 1024, 1024);
+    const rg = g.createRadialGradient(600, 470, 30, 600, 470, 520);
+    rg.addColorStop(0, 'rgba(96,124,186,.55)'); rg.addColorStop(.5, 'rgba(38,52,86,.28)');
+    rg.addColorStop(1, 'rgba(6,8,13,0)');
+    g.fillStyle = rg; g.fillRect(0, 0, 1024, 1024);
+    /* редкая сетка на задней стенке: через акрил она ломается, и брусок читается объёмом */
+    g.strokeStyle = 'rgba(150,180,230,.10)'; g.lineWidth = 1.4;
+    for (let i = 0; i <= 16; i++){
+      g.beginPath(); g.moveTo(i * 64, 0); g.lineTo(i * 64, 1024); g.stroke();
+      g.beginPath(); g.moveTo(0, i * 64); g.lineTo(1024, i * 64); g.stroke();
+    }
+    for (let i = 0; i < 9000; i++){
+      g.fillStyle = 'rgba(255,255,255,' + (Math.random() * 0.018).toFixed(3) + ')';
+      g.fillRect(Math.random() * 1024, Math.random() * 1024, 1, 1);
+    }
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace; t.generateMipmaps = true;
+    t.minFilter = THREE.LinearMipmapLinearFilter; t.magFilter = THREE.LinearFilter;
+    t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    return t;
+  })();
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(44, 26),
+    new THREE.MeshBasicMaterial({ map: bg, toneMapped: true }));
+  back.position.set(0.5, 2.4, -11); scene.add(back);
+
+  /* стол под бруском — тёмный, с мягким контактным пятном */
+  const shadowTex = (() => {
+    const c = document.createElement('canvas'); c.width = c.height = 1024;
+    const g = c.getContext('2d');
+    g.fillStyle = 'rgba(15,20,30,1)'; g.fillRect(0, 0, 1024, 1024);
+    /* сетка стола 20 мм: единственный ориентир, по которому глаз видит преломление */
+    g.strokeStyle = 'rgba(126,158,205,.15)'; g.lineWidth = 1.6;
+    for (let i = 0; i <= 32; i++){
+      g.beginPath(); g.moveTo(i * 32, 0); g.lineTo(i * 32, 1024); g.stroke();
+      g.beginPath(); g.moveTo(0, i * 32); g.lineTo(1024, i * 32); g.stroke();
+    }
+    g.strokeStyle = 'rgba(126,158,205,.28)'; g.lineWidth = 2.4;
+    for (let i = 0; i <= 8; i++){
+      g.beginPath(); g.moveTo(i * 128, 0); g.lineTo(i * 128, 1024); g.stroke();
+      g.beginPath(); g.moveTo(0, i * 128); g.lineTo(1024, i * 128); g.stroke();
+    }
+    const rg = g.createRadialGradient(512, 512, 30, 512, 512, 205);
+    rg.addColorStop(0, 'rgba(4,6,10,.80)'); rg.addColorStop(.45, 'rgba(4,6,10,.42)');
+    rg.addColorStop(1, 'rgba(4,6,10,0)');
+    g.fillStyle = rg; g.fillRect(0, 0, 1024, 1024);
+    const vg = g.createRadialGradient(512, 512, 350, 512, 512, 940);
+    vg.addColorStop(0, 'rgba(5,7,11,0)'); vg.addColorStop(1, 'rgba(5,7,11,1)');
+    g.fillStyle = vg; g.fillRect(0, 0, 1024, 1024);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace; t.generateMipmaps = true;
+    t.minFilter = THREE.LinearMipmapLinearFilter; t.magFilter = THREE.LinearFilter;
+    t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    return t;
+  })();
+  const table = new THREE.Mesh(new THREE.PlaneGeometry(19, 19),
+    new THREE.MeshBasicMaterial({ map: shadowTex, toneMapped: true }));
+  table.rotation.x = -Math.PI / 2; table.position.set(0.2, -BY/2 - 0.004, 0.4); scene.add(table);
+
+  /* ── брусок: скруглённый профиль + фаска по торцам ── */
+  function slab(w, h, d, r, bev){
+    const s = new THREE.Shape();
+    const x = w/2 - bev, y = h/2 - bev;
+    s.moveTo(-x + r, -y);
+    s.lineTo(x - r, -y); s.quadraticCurveTo(x, -y, x, -y + r);
+    s.lineTo(x, y - r);  s.quadraticCurveTo(x, y, x - r, y);
+    s.lineTo(-x + r, y); s.quadraticCurveTo(-x, y, -x, y - r);
+    s.lineTo(-x, -y + r);s.quadraticCurveTo(-x, -y, -x + r, -y);
+    const g = new THREE.ExtrudeGeometry(s, { depth: d - 2*bev, bevelEnabled:true,
+      bevelThickness: bev, bevelSize: bev, bevelSegments: 2, curveSegments: 10, steps: 1 });
+    g.computeBoundingBox(); g.center();
+    return g;
+  }
+  const microTex = (() => {
+    const c = document.createElement('canvas'); c.width = c.height = 1024;
+    const g = c.getContext('2d');
+    g.fillStyle = 'rgba(128,128,128,1)'; g.fillRect(0,0,1024,1024);
+    for (let i = 0; i < 1600; i++){
+      const x = Math.random()*1024, y = Math.random()*1024, l = 4 + Math.random()*70;
+      g.strokeStyle = 'rgba(255,255,255,' + (0.012 + Math.random()*0.05).toFixed(3) + ')';
+      g.lineWidth = 0.4 + Math.random()*1.1;
+      g.beginPath(); g.moveTo(x,y); g.lineTo(x + l*(Math.random()-0.5), y + l*(Math.random()-0.5)); g.stroke();
+    }
+    const id = g.getImageData(0,0,1024,1024), d = id.data;
+    for (let i = 0; i < d.length; i += 4){
+      const v = d[i]/255, rough = Math.max(0, Math.min(255, (0.085 + (v - 0.5) * 0.10) * 255));
+      d[i] = 0; d[i+1] = rough; d[i+2] = 0; d[i+3] = 255;   /* G = roughness */
+    }
+    g.putImageData(id, 0, 0);
+    const t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(2.2, 2.2);
+    t.generateMipmaps = true; t.minFilter = THREE.LinearMipmapLinearFilter; t.magFilter = THREE.LinearFilter;
+    t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    return t;
+  })();
+  const acrylic = new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color(1, 1, 1),
+    /* roughness умножается на G-канал карты: единица здесь значит «шероховатость
+       целиком из карты», иначе выходит зеркало и точечный блик в тысячи нит */
+    metalness: 0, roughness: 1.0, roughnessMap: microTex,
+    transmission: 1.0, ior: 1.49, thickness: 1.4,
+    attenuationColor: new THREE.Color(0.56, 0.74, 0.98), attenuationDistance: 9.0,
+    clearcoat: 0.16, clearcoatRoughness: 0.22,
+    specularIntensity: 1.0, envMapIntensity: 1.0, side: THREE.FrontSide,
+  });
+  const block = new THREE.Mesh(slab(BX, BY, BZ, 0.12, 0.085), acrylic);
+  block.renderOrder = 4;
+  scene.add(block);
+
+  /* ── каналы разряда: настоящая геометрия, не спрайты ── */
+  const seg = new THREE.CylinderGeometry(1, 1, 1, 6, 1, true);
+  const aBirth = new THREE.InstancedBufferAttribute(new Float32Array(MAXSEG), 1).setUsage(THREE.DynamicDrawUsage);
+  const aRank  = new THREE.InstancedBufferAttribute(new Float32Array(MAXSEG), 1).setUsage(THREE.DynamicDrawUsage);
+  seg.setAttribute('aBirth', aBirth); seg.setAttribute('aRank', aRank);
+  const chanMat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime:{ value:0 },
+      uHot:{ value:new THREE.Color(0.86, 0.80, 1.0) },
+      uCold:{ value:new THREE.Color(0.66, 0.82, 1.0) },
+      uGain:{ value:1.0 },
+    },
+    vertexShader:`
+      attribute float aBirth; attribute float aRank;
+      uniform float uTime;
+      varying float vAge; varying float vRim; varying float vRank;
+      void main(){
+        vec4 wp = instanceMatrix * vec4(position, 1.0);
+        vec4 mv = modelViewMatrix * wp;
+        vec3 wn = normalize(mat3(instanceMatrix) * normal);
+        vec3 vn = normalize(normalMatrix * wn);
+        vRim = 1.0 - abs(dot(vn, normalize(-mv.xyz)));
+        vAge = max(0.0, uTime - aBirth);
+        vRank = aRank;
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader:`
+      precision highp float;
+      uniform vec3 uHot; uniform vec3 uCold; uniform float uGain;
+      varying float vAge; varying float vRim; varying float vRank;
+      void main(){
+        float hot  = exp(-vAge * 12.0);            /* вспышка кончика         */
+        float warm = exp(-vAge * 3.2);            /* ствол гаснет за полсек. */
+        float rim  = pow(clamp(vRim, 0.0, 1.0), 1.7);
+        float deep = 0.55 + 0.45 * exp(-vRank * 0.022);
+        vec3 c = uCold * (0.20 + 0.55 * rim) * deep
+               + uHot * (hot * 3.0 + warm * 0.12) * (0.26 + 0.74 * rim);
+        gl_FragColor = vec4(c * uGain, 1.0);
+      }`,
+    transparent: false, depthWrite: true, toneMapped: true,
+  });
+  const chan = new THREE.InstancedMesh(seg, chanMat, MAXSEG);
+  chan.count = 0; chan.frustumCulled = false; chan.renderOrder = 1;
+  scene.add(chan);
+
+  /* ── решётка ── */
+  const solid = new Uint8Array(NN);
+  const rho   = new Float32Array(NN);
+  const parent= new Int32Array(NN).fill(-1);
+  const rank  = new Int16Array(NN);
+  const kids  = new Uint8Array(NN);
+  const fmask = new Uint8Array(NN);
+  let front = [];
+  const stateData = new Uint8Array(TEX * TEX * 4);
+  const stateTex = new THREE.DataTexture(stateData, TEX, TEX, THREE.RGBAFormat, THREE.UnsignedByteType);
+  stateTex.minFilter = stateTex.magFilter = THREE.NearestFilter;
+  stateTex.needsUpdate = true;
+
+  const idx = (x,y,z) => x + y*N + z*N*N;
+  const texAt = (i) => {
+    const z = (i / (N*N)) | 0, y = ((i / N) | 0) % N, x = i % N;
+    const px = (z % TX) * N + x, py = ((z / TX) | 0) * N + y;
+    return (py * TEX + px) * 4;
+  };
+  function pushState(i){ const p = texAt(i); stateData[p] = solid[i] ? 255 : 0;
+    stateData[p+1] = Math.max(0, Math.min(255, Math.round(rho[i] * 255))); }
+  function wpos(x, y, z, j){
+    const h = Math.sin((x*12.9898 + y*78.233 + z*37.719 + j*4.31)) * 43758.5453;
+    const r = (h - Math.floor(h) - 0.5) * 0.16;
+    return r;
+  }
+  const world = new THREE.Vector3();
+  function cellWorld(i, out){
+    const z = (i / (N*N)) | 0, y = ((i / N) | 0) % N, x = i % N;
+    out.set(
+      ((x + wpos(x,y,z,1)) / (N-1) - 0.5) * BX * INSET,
+      ((y + wpos(x,y,z,2)) / (N-1) - 0.5) * BY * INSET,
+      ((z + wpos(x,y,z,3)) / (N-1) - 0.5) * BZ * INSET);
+    return out;
+  }
+
+  /* ── GPU: релаксация потенциала ── */
+  const HEAD = `
+    const float N = 48.0; const float TX = 7.0; const float TEX = 336.0;
+    vec2 cellUV(vec3 c){
+      float z = floor(c.z + 0.5);
+      float tx = mod(z, TX), ty = floor(z / TX);
+      return (vec2(tx * N + floor(c.x + 0.5), ty * N + floor(c.y + 0.5)) + 0.5) / TEX;
+    }`;
+  const gpu = new THREE.GPUComputationRenderer(TEX, TEX, renderer);
+  gpu.setDataType(gl.getExtension('EXT_color_buffer_float') ? THREE.FloatType : THREE.HalfFloatType);
+  const phi0 = gpu.createTexture();
+  const phiVar = gpu.addVariable('phi', HEAD + `
+    uniform sampler2D uState; uniform float uSrc; uniform float uKappa;
+    void main(){
+      float px = floor(gl_FragCoord.x), py = floor(gl_FragCoord.y);
+      float tx = floor(px / N), ty = floor(py / N);
+      vec3 c = vec3(mod(px, N), mod(py, N), ty * TX + tx);
+      if (c.z > N - 0.5){ gl_FragColor = vec4(0.0); return; }
+      if (c.x < 0.5 || c.y < 0.5 || c.z < 0.5 ||
+          c.x > N - 1.5 || c.y > N - 1.5 || c.z > N - 1.5){ gl_FragColor = vec4(0.0,0.0,0.0,1.0); return; }
+      vec4 st = texture2D(uState, cellUV(c));
+      if (st.r > 0.5){ gl_FragColor = vec4(0.0,0.0,0.0,1.0); return; }
+      /* экранированный Пуассон: заряд в листе экранируется поляризацией диэлектрика,
+         поэтому влияние спадает за ~3 ячейки и канал идёт вдоль листа, а не куда угодно */
+      float s = texture2D(phi, cellUV(c + vec3( 1.0, 0.0, 0.0))).r
+              + texture2D(phi, cellUV(c + vec3(-1.0, 0.0, 0.0))).r
+              + texture2D(phi, cellUV(c + vec3( 0.0, 1.0, 0.0))).r
+              + texture2D(phi, cellUV(c + vec3( 0.0,-1.0, 0.0))).r
+              + texture2D(phi, cellUV(c + vec3( 0.0, 0.0, 1.0))).r
+              + texture2D(phi, cellUV(c + vec3( 0.0, 0.0,-1.0))).r;
+      gl_FragColor = vec4((s + st.g * uSrc) / (6.0 + uKappa), 0.0, 0.0, 1.0);
+    }`, phi0);
+  gpu.setVariableDependencies(phiVar, [phiVar]);
+  phiVar.material.uniforms.uState = { value: stateTex };
+  phiVar.material.uniforms.uSrc = { value: 0.30 };
+  phiVar.material.uniforms.uKappa = { value: 0.04 };
+  phiVar.wrapS = phiVar.wrapT = THREE.ClampToEdgeWrapping;
+  phiVar.minFilter = phiVar.magFilter = THREE.NearestFilter;
+  const gpuErr = gpu.init();
+  if (gpuErr){ document.body.classList.add('nowebgl'); return; }
+
+  /* ── GPU: опрос фронта роста ── */
+  const PROBE = 64, PN = PROBE * PROBE;
+  const probeData = new Float32Array(PN * 4);
+  const probeTex = new THREE.DataTexture(probeData, PROBE, PROBE, THREE.RGBAFormat, THREE.FloatType);
+  probeTex.minFilter = probeTex.magFilter = THREE.NearestFilter;
+  /* Читаем поле обратно восемью битами на канал с самонастройкой масштаба:
+     RGBA8 читается везде, а вероятность всё равно берётся как доля от максимума. */
+  const probeRT = new THREE.WebGLRenderTarget(PROBE, PROBE, {
+    type: THREE.UnsignedByteType, minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter,
+    depthBuffer: false, stencilBuffer: false });
+  const probeOut = new Uint8Array(PN * 4);
+  const cum = new Float64Array(PN);
+  const picks = new Int16Array(256 * 3);
+  let probeScale = 40;
+  const gScene = new THREE.Scene();
+  const gCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const gMat = new THREE.ShaderMaterial({
+    uniforms: { uPhi:{ value:null }, uProbe:{ value:probeTex }, uScale:{ value:40 } },
+    vertexShader:`varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`,
+    fragmentShader: HEAD + `
+      uniform sampler2D uPhi; uniform sampler2D uProbe; uniform float uScale; varying vec2 vUv;
+      void main(){
+        vec4 q = texture2D(uProbe, vUv);
+        if (q.w < 0.5){ gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0); return; }
+        float v = texture2D(uPhi, cellUV(q.xyz)).r;
+        gl_FragColor = vec4(clamp(v * uScale, 0.0, 1.0), 0.0, 0.0, 1.0);
+      }`,
+  });
+  gScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), gMat));
+
+  /* ── постобработка ── */
+  const MSAA = SOFT ? 0 : (renderer.capabilities.maxSamples >= 4 ? 4 : 0);
+  const rt = new THREE.WebGLRenderTarget(1, 1, {
+    type: THREE.HalfFloatType, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, samples: MSAA });
+  const composer = new THREE.EffectComposer(renderer, rt);
+  composer.addPass(new THREE.RenderPass(scene, camera));
+  const BLOOM = 0.5;
+  const bloom = new THREE.UnrealBloomPass(new THREE.Vector2(64, 64), 0.26, 0.50, 2.55);
+  composer.addPass(bloom);
+  const grade = new THREE.ShaderPass({
+    uniforms: { tDiffuse:{ value:null }, uTime:{ value:0 }, uGrain:{ value:0.05 }, uVig:{ value:0.42 } },
+    vertexShader:`varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader:`
+      precision highp float;
+      uniform sampler2D tDiffuse; uniform float uTime, uGrain, uVig; varying vec2 vUv;
+      void main(){
+        vec2 uv = vUv; vec2 d = uv - 0.5; float r2 = dot(d, d);
+        vec2 off = d * 0.0016 * (0.22 + r2 * 2.4);
+        vec3 c;
+        c.r = texture2D(tDiffuse, uv + off).r;
+        c.g = texture2D(tDiffuse, uv).g;
+        c.b = texture2D(tDiffuse, uv - off).b;
+        c *= 1.0 - uVig * smoothstep(0.04, 0.66, r2);
+        float n = fract(sin(dot(uv * 437.0 + uTime, vec2(12.9898, 78.233))) * 43758.5453);
+        float lum = clamp(dot(c, vec3(0.2126, 0.7152, 0.0722)), 0.0, 1.0);
+        c += (n - 0.5) * uGrain * (0.1 + 0.9 * sqrt(lum));
+        gl_FragColor = vec4(max(c, 0.0), 1.0);
+      }`,
+  });
+  composer.addPass(grade);
+  composer.addPass(new THREE.OutputPass());
+
+  /* ── размер ── */
+  const baseCam = new THREE.Vector3(), camTarget = new THREE.Vector3();
+  const mouse = { x:0, y:0, tx:0, ty:0 };
+  function resize(){
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return;
+    const a = w / h;
+    camera.aspect = a;
+    const k = a >= 1.5 ? 1 : Math.min(1.5 / a, 1.62);
+    camera.position.set(6.95 * k, 4.30 * k, 9.30 * k);
+    baseCam.copy(camera.position);
+    camera.lookAt(0, 0.22, 0);
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+    composer.setSize(w, h);
+    const bs = w < 900 ? Math.max(BLOOM, 0.75) : BLOOM;
+    bloom.setSize(Math.max(8, w * bs), Math.max(8, h * bs));
+  }
+  resize();
+  addEventListener('resize', resize);
+
+  /* ── зарядка листа ── */
+  let layerY = 0, eta = 2.0, radBase = 0.026;
+  function retune(){
+    const d = depthMm(MeV());
+    const frac = Math.min(0.94, Math.max(0.06, 1 - d / 50));  /* 50 мм — толщина стенда */
+    layerY = Math.round(frac * (N - 1));
+    eta = 9.0 - 1.05 * MeV();
+    radBase = 0.0260 - 0.0022 * MeV();
+    chanMat.uniforms.uGain.value = 0.90 + 0.03 * MeV();
+  }
+  let rhoSum0 = 1;
+  function chargeSheet(){
+    for (let i = 0; i < NN; i++) rho[i] = 0;
+    for (let z = 2; z < N-2; z++) for (let x = 2; x < N-2; x++)
+      for (let dy = -2; dy <= 2; dy++){
+        const y = layerY + dy; if (y < 2 || y > N-3) continue;
+        rho[idx(x,y,z)] = Math.exp(-dy*dy * 0.62);
+      }
+    /* уже прожжённые каналы заземлены: рядом с ними лист не удерживает заряд */
+    for (let i = 0; i < NN; i++){
+      if (!solid[i]) continue;
+      const z = (i/(N*N))|0, y = ((i/N)|0)%N, x = i%N;
+      for (let dx = -2; dx <= 2; dx++) for (let dy = -2; dy <= 2; dy++) for (let dz = -2; dz <= 2; dz++){
+        const nx = x+dx, ny = y+dy, nz = z+dz;
+        if (nx<0||ny<0||nz<0||nx>=N||ny>=N||nz>=N) continue;
+        rho[idx(nx,ny,nz)] *= (dx*dx+dy*dy+dz*dz) <= 2 ? 0.10 : 0.80;
+      }
+    }
+    rhoSum0 = 0;
+    for (let i = 0; i < NN; i += 3) rhoSum0 += rho[i];
+    for (let i = 0; i < NN; i++) pushState(i);
+    stateTex.needsUpdate = true;
+  }
+
+  /* ── разряд ── */
+  let growing = false, stale = 0, shot = 0, shotSeg = 0, shotT0 = 0, phiPeak = 0, steps = 0;
+  const NB = [];
+  for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) for (let dz = -1; dz <= 1; dz++)
+    if (dx || dy || dz) NB.push([dx, dy, dz, Math.sqrt(dx*dx + dy*dy + dz*dz)]);
+
+  /* Канал живёт в листе заряда: вне листа тянуть его нечем. Исключение — коридор
+     от иглы вниз до листа, тот самый прокол, которым разряд и запускают. */
+  let seedX = 24, seedZ = 24, BAND = 3;
+  function addFront(i, from){
+    if (solid[i] || fmask[i]) return;
+    const z = (i/(N*N))|0, y = ((i/N)|0)%N, x = i%N;
+    if (Math.abs(y - layerY) > BAND &&
+        !(Math.abs(x - seedX) <= 2 && Math.abs(z - seedZ) <= 2)) return;
+    fmask[i] = 1; parent[i] = from; rank[i] = from >= 0 ? rank[from] + 1 : 0;
+    front.push(i);
+  }
+  const va = new THREE.Vector3(), vb = new THREE.Vector3(), qq = new THREE.Quaternion(),
+        UP = new THREE.Vector3(0,1,0), mm = new THREE.Matrix4(), vs = new THREE.Vector3(), vc = new THREE.Vector3();
+  function activate(i, now){
+    solid[i] = 1; fmask[i] = 2; rho[i] = 0;
+    const z = (i / (N*N)) | 0, y = ((i / N) | 0) % N, x = i % N;
+    /* канал заземлён и вытягивает заряд не только из своей ячейки: ширина сбора
+       около трёх ячеек — от неё зависит, сколько ветвей поместится в лист */
+    for (let dx = -3; dx <= 3; dx++) for (let dy = -3; dy <= 3; dy++) for (let dz = -3; dz <= 3; dz++){
+      const nx = x+dx, ny = y+dy, nz = z+dz;
+      if (nx<0||ny<0||nz<0||nx>=N||ny>=N||nz>=N) continue;
+      const j = idx(nx,ny,nz), q = dx*dx+dy*dy+dz*dz;
+      rho[j] *= q <= 4 ? 0.03 : q <= 9 ? 0.30 : 0.78;
+      pushState(j);
+    }
+    pushState(i);
+    const p = parent[i];
+    if (p >= 0 && chan.count < MAXSEG){
+      cellWorld(p, va); cellWorld(i, vb);
+      vc.subVectors(vb, va);
+      const len = vc.length() || 0.001;
+      qq.setFromUnitVectors(UP, vc.divideScalar(len));
+      const r = radBase * (0.55 + 0.45 * Math.exp(-rank[i] * 0.045));
+      vs.set(r, len * 1.5, r);
+      mm.compose(va.add(vb).multiplyScalar(0.5), qq, vs);
+      const k = chan.count;
+      chan.setMatrixAt(k, mm);
+      aBirth.array[k] = now; aRank.array[k] = rank[i];
+      chan.count = k + 1; shotSeg++;
+      if (kids[p] === 0) FIG.tip--; if (kids[p] === 1) FIG.fork++;
+      if (kids[p] < 250) kids[p]++;
+      FIG.tip++; FIG.ch++;
+    }
+    for (const [dx,dy,dz] of NB){
+      const nx = x+dx, ny = y+dy, nz = z+dz;
+      if (nx<1||ny<1||nz<1||nx>=N-1||ny>=N-1||nz>=N-1) continue;
+      addFront(idx(nx,ny,nz), i);
+    }
+  }
+
+  function fire(cell, now){
+    if (shot === 0){ $('#log').innerHTML = ''; }
+    seedX = cell % N; seedZ = (cell / (N*N)) | 0;
+    phiPeak = 0; steps = 0;
+    chargeSheet();
+    activate(cell, now);
+    stale = 0; growing = true; shotSeg = 0; shotT0 = now; shot++;
+    FIG.state = 'GROWING';
+    stateTex.needsUpdate = true;
+    chan.instanceMatrix.needsUpdate = true;
+    for (let k = 0; k < (SOFT ? 24 : 70); k++) gpu.compute();
+  }
+
+  function growStep(now){
+    if (!growing) return;
+    front = front.filter(i => !solid[i]);
+    if (!front.length){ finish(now); return; }
+    const take = Math.min(front.length, PN);
+    let pool = front;
+    if (front.length > PN){
+      pool = [];
+      const step = front.length / PN;
+      for (let k = 0; k < PN; k++) pool.push(front[Math.floor(k * step + Math.random() * step) % front.length]);
+    }
+    probeData.fill(0);
+    for (let k = 0; k < take; k++){
+      const i = pool[k], z = (i/(N*N))|0, y = ((i/N)|0)%N, x = i%N;
+      probeData[k*4] = x; probeData[k*4+1] = y; probeData[k*4+2] = z; probeData[k*4+3] = 1;
+    }
+    probeTex.needsUpdate = true;
+    gMat.uniforms.uPhi.value = gpu.getCurrentRenderTarget(phiVar).texture;
+    gMat.uniforms.uScale.value = probeScale;
+    renderer.setRenderTarget(probeRT);
+    renderer.render(gScene, gCam);
+    renderer.readRenderTargetPixels(probeRT, 0, 0, PROBE, PROBE, probeOut);
+    renderer.setRenderTarget(null);
+
+    let mx = 0;
+    for (let k = 0; k < take; k++) if (probeOut[k*4] > mx) mx = probeOut[k*4];
+    /* самонастройка масштаба: держим максимум фронта в верхней половине байта */
+    if (mx >= 254) probeScale *= 0.55;
+    else if (mx < 90) probeScale *= mx > 3 ? 200 / Math.max(4, mx) : 3;
+    probeScale = Math.min(4e5, Math.max(1, probeScale));
+
+    let n = 0;
+    const cap = SOFT ? 16 : 12;
+    if (mx > 2){
+      /* Выбор по рулетке, как в модели диэлектрического пробоя: вес ячейки w = φ^η,
+         и за шаг занимается ДОЛЯ фронта, а не фиксированное число. Фиксированное число
+         съедает весь фронт целиком на старте, и вместо ветвей вырастает ком. */
+      let tot = 0;
+      for (let k = 0; k < take; k++){
+        const v = probeOut[k*4] / mx;
+        cum[k] = (tot += v > 0.004 ? Math.pow(v, eta) : 0);
+      }
+      const K = Math.max(1, Math.min(cap, Math.round(front.length * 0.03)));
+      /* два выигравших за один шаг не встают вплотную: поле между ними всё равно
+         пересчитается только в следующем кадре, а без разноса растёт сплошное кольцо */
+      let px = 0;
+      if (tot > 1e-9) for (let t = 0; t < K * 5 && n < K; t++){
+        const r = Math.random() * tot;
+        let lo = 0, hi = take - 1;
+        while (lo < hi){ const mid = (lo + hi) >> 1; if (cum[mid] < r) lo = mid + 1; else hi = mid; }
+        const i = pool[lo];
+        if (solid[i]) continue;
+        const z = (i/(N*N))|0, y = ((i/N)|0)%N, x = i%N;
+        let near = false;
+        for (let q = 0; q < px; q++){
+          if (Math.abs(picks[q*3]-x) <= 2 && Math.abs(picks[q*3+1]-y) <= 2 && Math.abs(picks[q*3+2]-z) <= 2){ near = true; break; }
+        }
+        if (near) continue;
+        picks[px*3] = x; picks[px*3+1] = y; picks[px*3+2] = z; px++;
+        activate(i, now); n++;
+      }
+    }
+    stateTex.needsUpdate = true;
+    chan.instanceMatrix.needsUpdate = true;
+    aBirth.needsUpdate = true; aRank.needsUpdate = true;
+    /* Разряд гаснет сам: когда поле на всех кончиках падает ниже доли от пикового,
+       пробивать больше нечего — лист высажен. Это и есть условие остановки, а не таймер */
+    const phiAbs = mx / probeScale;
+    if (phiAbs > phiPeak) phiPeak = phiAbs;
+    steps++;
+    if (n === 0) stale++; else stale = 0;
+    if (stale > 12 || chan.count >= MAXSEG - 4 ||
+        (steps > 14 && phiAbs < 0.16 * phiPeak)) finish(now);
+  }
+
+  function finish(now){
+    growing = false; FIG.state = 'SETTLED';
+    const d = depthMm(MeV());
+    const row = document.createElement('div');
+    row.className = 'log__row';
+    row.innerHTML = `<i>#${String(shot).padStart(2,'0')}</i><span>${fmt(S.kv)} kV</span>` +
+      `<span>${d.toFixed(1)} mm</span><span>${shotSeg} ch</span><u>${(now - shotT0).toFixed(1)} s</u>`;
+    $('#log').prepend(row);
+    specReady = true;
+    paint();
+  }
+
+  /* ── прицел и клик ── */
+  const ray = new THREE.Raycaster(), pt = new THREE.Vector2();
+  let aimPoint = null;
+  function pick(ev){
+    const r = canvas.getBoundingClientRect();
+    pt.x = ((ev.clientX - r.left) / r.width) * 2 - 1;
+    pt.y = -((ev.clientY - r.top) / r.height) * 2 + 1;
+    ray.setFromCamera(pt, camera);
+    const hit = ray.intersectObject(block, false)[0];
+    return hit ? hit.point : null;
+  }
+  canvas.addEventListener('pointermove', ev => {
+    const p = pick(ev);
+    aimPoint = p;
+    $('#aim').textContent = p
+      ? 'PIN ' + fmt((p.x / BX + 0.5) * S.L, 0) + ' · ' + fmt((p.z / BZ + 0.5) * S.W, 0) + ' mm'
+      : 'PIN — · —';
+    mouse.tx = ((ev.clientX - canvas.getBoundingClientRect().left) / canvas.clientWidth - 0.5);
+    mouse.ty = ((ev.clientY - canvas.getBoundingClientRect().top) / canvas.clientHeight - 0.5);
+  });
+  canvas.addEventListener('pointerleave', () => { $('#aim').textContent = 'PIN — · —'; mouse.tx = mouse.ty = 0; });
+  canvas.addEventListener('click', ev => {
+    const p = pick(ev); if (!p) return;
+    seedAt(p.x, p.y, p.z);
+  });
+  function seedAt(wx, wy, wz){
+    let x = Math.round(((wx / (BX * INSET)) + 0.5) * (N-1));
+    let y = Math.round(((wy / (BY * INSET)) + 0.5) * (N-1));
+    let z = Math.round(((wz / (BZ * INSET)) + 0.5) * (N-1));
+    x = Math.max(2, Math.min(N-3, x)); y = Math.max(2, Math.min(N-3, y)); z = Math.max(2, Math.min(N-3, z));
+    let i = idx(x,y,z), guard = 0;
+    while (solid[i] && guard++ < 40){
+      x = Math.max(2, Math.min(N-3, x + (Math.random()*3|0) - 1));
+      z = Math.max(2, Math.min(N-3, z + (Math.random()*3|0) - 1));
+      i = idx(x,y,z);
+    }
+    fire(i, clock);
+  }
+  $('#fire').addEventListener('click', () => {
+    seedAt((Math.random()-0.5) * BX * 0.62, BY * 0.44, (Math.random()-0.5) * BZ * 0.62);
+  });
+  $('#clear').addEventListener('click', () => {
+    solid.fill(0); rho.fill(0); fmask.fill(0); kids.fill(0); parent.fill(-1);
+    front = []; chan.count = 0; growing = false; shot = 0;
+    FIG.ch = FIG.tip = FIG.fork = 0; FIG.state = 'IDLE'; specReady = false;
+    $('#spec').classList.remove('on');
+    $('#log').innerHTML = '<div class="log__empty">Blank cleared. Fire again, or click a face.</div>';
+    for (let i = 0; i < NN; i++) pushState(i);
+    stateTex.needsUpdate = true;
+    gpu.renderTexture(phi0, gpu.getCurrentRenderTarget(phiVar));
+    paint();
+  });
+
+  /* ── петля ── */
+  let clock = 0, last = performance.now(), acc = 0, hud = 0;
+  const ITER = SOFT ? 2 : 4;
+  function frame(now){
+    const rdt = (now - last) / 1000; const dt = Math.min(0.05, rdt); last = now; clock += dt;
+    chanMat.uniforms.uTime.value = clock;
+    grade.uniforms.uTime.value = clock;
+    mouse.x += (mouse.tx - mouse.x) * 0.06; mouse.y += (mouse.ty - mouse.y) * 0.06;
+    camTarget.set(
+      baseCam.x + mouse.x * 1.15 + Math.sin(clock * 0.16) * 0.11,
+      baseCam.y - mouse.y * 0.75 + Math.cos(clock * 0.13) * 0.07,
+      baseCam.z);
+    camera.position.lerp(camTarget, 0.07);
+    camera.lookAt(0, 0.22, 0);
+
+    if (growing){
+      /* поле обязано пересчитываться МЕЖДУ шагами роста: на застоявшемся поле
+         выбор перестаёт различать кончик и середину, и вместо ветвей растёт диск */
+      acc += Math.min(0.5, rdt);
+      for (let g = 0; g < 3 && acc > 0.035 && growing; g++){
+        acc -= 0.035;
+        for (let it = 0; it < ITER; it++) gpu.compute();
+        growStep(clock);
+      }
+      for (let it = 0; it < ITER; it++) gpu.compute();
+    }
+    if (++hud % 6 === 0) paintHud();
+    composer.render();
+    raf = requestAnimationFrame(frame);
+  }
+  function paintHud(){
+    $('#r-ch').textContent = fmt(FIG.ch);
+    $('#r-tip').textContent = fmt(Math.max(0, FIG.tip));
+    $('#r-fork').textContent = fmt(FIG.fork);
+    $('#r-state').textContent = FIG.state;
+    if (growing){
+      let s = 0;
+      for (let i = 0; i < NN; i += 3) s += rho[i];
+      FIG.charge = Math.max(0, Math.min(100, Math.round(100 * s / Math.max(1e-6, rhoSum0))));
+      $('#r-charge').textContent = FIG.charge;
+    }
+  }
+
+  /* ── старт ── */
+  let raf = 0;
+  retune();
+  chargeSheet();
+  bench = { retune: () => { retune(); if (!growing) chargeSheet(); } };
+
+  window.__b = { scene, camera, renderer, composer, chan, block, bloom, acrylic, back, table };
+  if (REDUCED){
+    /* движение вырезано: фигура достраивается пакетом и кадр рисуется один раз */
+    fire(idx(20, layerY + 8, 22), 0);
+    let pass = 0;
+    const burst = () => {
+      for (let it = 0; it < 10; it++) gpu.compute();
+      for (let s = 0; s < 3; s++) growStep(0);
+      paintHud(); composer.render();
+      if (++pass < 26 && growing) setTimeout(burst, 0);
+      else {
+        if (growing) finish(0);
+        chanMat.uniforms.uTime.value = 6; paintHud(); composer.render();
+      }
+    };
+    burst();
+  } else {
+    raf = requestAnimationFrame(frame);
+    setTimeout(() => { if (!shot) seedAt(-BX * 0.16, BY * 0.44, BZ * 0.08); }, 760);
+  }
+}
+
+paint();
+/* сцена поднимается ПОСЛЕ первой отрисовки: три текстуры 1024² с десятками тысяч
+   примитивов строятся на главном потоке, и до этой правки они задерживали её на 1.5 с */
+requestAnimationFrame(() => setTimeout(() => {
+  try { boot(); } catch(err){ document.body.classList.add('nowebgl'); }
+}, 0));
+</script>
+</body>
+</html>
