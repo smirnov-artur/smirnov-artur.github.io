@@ -167,7 +167,8 @@
    "Planet Jumping",
    "A portal to the next planet: click and fly Mars → Earth → Venus."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "planet-jumping-en"
  },
  {
   "slug": "ventprom-tools",
@@ -250,7 +251,8 @@
    "Fashion archive",
    "The model turns with your cursor; below, the archive pops in card by card."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "archive-en"
  },
  {
   "slug": "nodal",
@@ -961,7 +963,8 @@
    "3D figurines",
    "A character carousel: color, scale and focus change together."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "figurines-en"
  },
  {
   "slug": "dreams",
@@ -974,7 +977,8 @@
    "Night sky",
    "A cinematic video background, big serif type, glass buttons."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "dreams-en"
  },
  {
   "slug": "ai-workers",
@@ -987,7 +991,8 @@
    "AI workers",
    "A full-screen forest video with a glass menu and cards on top."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "ai-workers-en"
  },
  {
   "slug": "store-builder",
@@ -1000,7 +1005,8 @@
    "Store builder",
    "A 3D wheel of 37 store creatives spins behind a live shop mock while the headline wipes up"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "store-builder-en"
  },
  {
   "slug": "fox-404",
@@ -1013,7 +1019,8 @@
    "Fox 404 page",
    "A fox in a cap scrolls its phone over a breathing 404"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "fox-404-en"
  },
  {
   "slug": "private-jets",
@@ -1026,7 +1033,8 @@
    "Private jets",
    "A black jet flies through clouds behind a bold typographic hero"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "private-jets-en"
  },
  {
   "slug": "defi-node-grid",
@@ -1039,7 +1047,8 @@
    "Liquid Assets",
    "Jellyfish video under a self-drawing grid, with nodes and connectors appearing one by one"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "defi-node-grid-en"
  },
  {
   "slug": "city-scroll-story",
@@ -1052,7 +1061,8 @@
    "Mostar scroll story",
    "The old bridge parts like a curtain into a river close-up, story panels fade through blue haze and sight cards fly in, playing by itself until you scroll."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "city-scroll-story-en"
  },
  {
   "slug": "dot-matrix-ai",
@@ -1065,7 +1075,8 @@
    "Dot-matrix AI landing",
    "Dot-matrix code shimmers above glowing purple dunes while the headline fades in line by line and four metrics count up."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "dot-matrix-ai-en"
  },
  {
   "slug": "ai-trip-planner",
@@ -1078,7 +1089,8 @@
    "AI trip planner",
    "Hand-drawn world landmarks come alive under a frosted-glass card holding a ready trip request."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "ai-trip-planner-en"
  },
  {
   "slug": "data-platform",
@@ -1091,7 +1103,8 @@
    "Data platform",
    "A stormy sea video while the revenue chart grows bar by bar"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "data-platform-en"
  },
  {
   "slug": "pet-store",
@@ -1104,7 +1117,8 @@
    "Pet store",
    "Headline words pop in while pets peek over the panels"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "pet-store-en"
  },
  {
   "slug": "wellness-glass",
@@ -1117,7 +1131,8 @@
    "Natural wellness",
    "A glass head with a glowing brain turns behind liquid-glass buttons"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "wellness-glass-en"
  },
  {
   "slug": "3d-ball-store",
@@ -1130,7 +1145,8 @@
    "3D ball store",
    "A textured 3D ball spins and cycles colourways, flies into the cart and travels through six scroll scenes: specs, rings, podium, debris"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "3d-ball-store-en"
  },
  {
   "slug": "space-voyages",
@@ -1143,7 +1159,8 @@
    "Space voyages",
    "Space videos fade in and out on a loop while the headline blurs in word by word over liquid glass"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "space-voyages-en"
  },
  {
   "slug": "terrarium-spotlight",
@@ -1156,7 +1173,8 @@
    "Terrarium spotlight",
    "A light spot wanders across the terrarium revealing live video, the scene drifts after it, a giant G.A.D. stands behind the glass"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "terrarium-spotlight-en"
  },
  {
   "slug": "train-window",
@@ -1169,7 +1187,8 @@
    "Train window",
    "Four landscapes roll past a gently rocking train window; in Deep Woods the text turns dark"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "train-window-en"
  },
  {
   "slug": "scroll-bloom",
@@ -1182,7 +1201,8 @@
    "Scroll Bloom",
    "Scrolling scrubs a glowing flower film frame by frame while stars drift and three cards wipe in."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "scroll-bloom-en"
  },
  {
   "slug": "dashboard-signal",
@@ -1195,7 +1215,8 @@
    "One Clear Signal",
    "The headline slides in line by line over a looping pixel-flower video, and a glass demo card rises last."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "dashboard-signal-en"
  },
  {
   "slug": "strata-spotlight",
@@ -1208,7 +1229,8 @@
    "Strata Spotlight",
    "A soft spotlight roams bare rock and reveals the mossy, flowering layer beneath; it follows the cursor or finger."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "strata-spotlight-en"
  },
  {
   "slug": "data-shield",
@@ -1221,7 +1243,8 @@
    "Data Shield",
    "A night snowboarder loops behind the giant staggered words “protect your data”."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "data-shield-en"
  },
  {
   "slug": "falcon-login",
@@ -1234,7 +1257,8 @@
    "Falcon login screen",
    "A looping falcon dive beside a login card: elements rise in one by one on load, and the layout rebuilds itself for tablet and phone."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "falcon-login-en"
  },
  {
   "slug": "ai-portal",
@@ -1247,7 +1271,8 @@
    "AI infrastructure landing",
    "Full-bleed video of a figure walking into a glowing portal, the headline rises in on load, and phones get a frosted-glass menu."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "ai-portal-en"
  },
  {
   "slug": "wellness-rainbow",
@@ -1260,7 +1285,8 @@
    "Wellness studio",
    "An Earth-from-orbit video hero, then a rainbow and clouds drifting with the scroll in smooth parallax."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "wellness-rainbow-en"
  },
  {
   "slug": "cyber-flora",
@@ -1273,7 +1299,8 @@
    "Cyber-botany scroll story",
    "A five-screen scroll story: a cyber flower opens and turns while glass cards, manifesto lines and a sign-up form float in."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "cyber-flora-en"
  },
  {
   "slug": "monitor-head",
@@ -1286,7 +1313,8 @@
    "Monitor-head agent",
    "The retro-monitor head turns after the cursor while the AI agent types its greeting."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "monitor-head-en"
  },
  {
   "slug": "voice-id-signup",
@@ -1299,7 +1327,8 @@
    "Voice ID sign-up",
    "A glass ring shimmers behind the sign-up panel, and on phones the menu opens as a circle from the button."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "voice-id-signup-en"
  },
  {
   "slug": "llm-platform",
@@ -1312,7 +1341,8 @@
    "LLM platform by the lake",
    "A lakeside landscape moves in the video while the menu and headline rise in one by one."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "llm-platform-en"
  },
  {
   "slug": "glass-key-hero",
@@ -1325,7 +1355,8 @@
    "Glass key",
    "A glass key presses itself and glows, while a strip of services scrolls endlessly below."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "glass-key-hero-en"
  },
  {
   "slug": "ai-email-client",
@@ -1338,7 +1369,8 @@
    "AI email client",
    "Looping video, shimmering headline and a live inbox mockup with an AI summary"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "ai-email-client-en"
  },
  {
   "slug": "ev-inside-out",
@@ -1351,7 +1383,8 @@
    "Electric car, inside out",
    "Opens the hood and X-rays the battery on its own; hotspots switch paint, wheels and cutaways"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "ev-inside-out-en"
  },
  {
   "slug": "plant-supplements",
@@ -1364,7 +1397,8 @@
    "Plant supplements store",
    "Words rise out of blur, the jar floats, benefit cards rotate every 3.5 s"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "plant-supplements-en"
  },
  {
   "slug": "contact-landing",
@@ -1377,7 +1411,8 @@
    "Contact landing",
    "Full-screen mountain meadow video behind a glass nav and a project form with service tags."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "contact-landing-en"
  },
  {
   "slug": "scroll-flight",
@@ -1390,7 +1425,8 @@
    "Energy: scroll flight",
    "Scrolling flies the camera from mountain peaks through clouds to a ship at sea as three captions take turns."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "scroll-flight-en"
  },
  {
   "slug": "jungle-train",
@@ -1403,7 +1439,8 @@
    "Urban jungle",
    "Scrolling rolls through a flower-filled train car, the headline letters fall away and a glass panel slides up."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "jungle-train-en"
  },
  {
   "slug": "silver-wave",
@@ -1416,7 +1453,8 @@
    "AI agents in minutes",
    "A silver particle wave swells behind the headline while the buttons shimmer like liquid metal."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "silver-wave-en"
  },
  {
   "slug": "neural-llama",
@@ -1429,7 +1467,8 @@
    "Brain and Body",
    "A llama in VR goggles turns its head after the cursor while the headline decodes itself letter by letter."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "neural-llama-en"
  },
  {
   "slug": "fiber-eye",
