@@ -1481,7 +1481,8 @@
    "Fiber-Optic Eye",
    "Scrolling gathers glowing fiber-optic strands into a blue iris."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "fiber-eye-en"
  },
  {
   "slug": "cube-wall-security",
@@ -1494,7 +1495,8 @@
    "AI Security",
    "A 3D wall of cubes in Spline: light sweeps across it and green signals run between the blocks."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "cube-wall-security-en"
  },
  {
   "slug": "cinematic-404",
@@ -1507,7 +1509,8 @@
    "404 page",
    "Live aqueduct landscape behind a huge glassy 404"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "cinematic-404-en"
  },
  {
   "slug": "pixel-portfolio",
@@ -1520,7 +1523,8 @@
    "Pixel portfolio",
    "Looping video portrait behind a headline set in pixel type"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "pixel-portfolio-en"
  },
  {
   "slug": "portrait-marquee",
@@ -1533,7 +1537,8 @@
    "Portrait marquee",
    "A giant name scrolls behind a cut-out portrait"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "portrait-marquee-en"
  },
  {
   "slug": "fluted-glass-studio",
@@ -1546,7 +1551,8 @@
    "Fluted glass studio",
    "Orange liquid trails the cursor through fluted glass"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "fluted-glass-studio-en"
  },
  {
   "slug": "aquarium-studio",
@@ -1559,7 +1565,8 @@
    "Visual storytelling studio",
    "Goldfish swim through a shaft of light in a dark tank while the badge, headline, text and button rise in one after another."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "aquarium-studio-en"
  },
  {
   "slug": "studio-portraits",
@@ -1572,7 +1579,8 @@
    "Studio portraits",
    "Portraits cross-fade and slowly zoom in, the avatar row switches between them"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "studio-portraits-en"
  },
  {
   "slug": "design-studio-hero",
@@ -1585,7 +1593,8 @@
    "Design studio hero",
    "Fullscreen video loop under a serif headline, with an animated burger menu"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "design-studio-hero-en"
  },
  {
   "slug": "3d-creator-portfolio",
@@ -1598,7 +1607,8 @@
    "3D creator portfolio",
    "Portrait drifts after the cursor, work reels slide with scroll, project cards stack up"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "3d-creator-portfolio-en"
  },
  {
   "slug": "cinematic-studio",
@@ -1611,7 +1621,8 @@
    "Cinematic studio",
    "Framed hero video, giant logo pulls up, text reveals letter by letter on scroll"
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "cinematic-studio-en"
  },
  {
   "slug": "visuals",
@@ -1624,7 +1635,8 @@
    "Visuals",
    "A second image shows through under the cursor — the hero catches fire."
   ],
-  "cat": "web"
+  "cat": "web",
+  "ve": "visuals-en"
  },
  {
   "slug": "zentry-premium",
