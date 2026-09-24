@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V Vortex | Портфолио Sarah Vortex</title>
+    <style>
+        @font-face {
+            font-family: 'PP Neue Montreal';
+            /* файлы PP Neue Montreal на CDN Webflow больше не отдаются (403) — латиница из Inter */
+            src: url('https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2') format('woff2');
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: 'PP Neue Montreal';
+            src: url('https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2') format('woff2');
+            font-weight: 500;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital@1&display=swap');
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primaryDark: '#051A24',
+                        dark: '#0D212C',
+                        mutedDark: '#273C46',
+                        lightText: '#F6FCFF',
+                        lightMuted: '#E0EBF0',
+                    },
+                    fontFamily: {
+                        body: ["'PP Neue Montreal'", '-apple-system', 'BlinkMacSystemFont', "'Segoe UI'", 'sans-serif'],
+                        mondwest: ["'Libre Baskerville'", 'serif'],
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    },
+                    animation: {
+                        marquee: 'marquee 30s linear infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .mondwest { font-family: 'Libre Baskerville', serif; font-style: italic; }
+            .animate-delay-100 { animation-delay: 100ms; }
+            .animate-delay-200 { animation-delay: 200ms; }
+            .animate-delay-300 { animation-delay: 300ms; }
+            .animate-delay-400 { animation-delay: 400ms; }
+        }
+        @media (max-width: 767px) {
+            .marquee-track { animation-duration: 10s !important; }
+        }
+    </style>
+<style id="cyr">/* русские буквы: исходный шрифт без кириллицы, глифы — у близкого с кириллицей */
+@font-face{font-family:'Libre Baskerville';font-style:italic;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ptserif/v19/EJRTQgYoZZY2vCFuvAFT_rC1chb-.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Libre Baskerville';font-style:italic;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ptserif/v19/EJRTQgYoZZY2vCFuvAFT_rm1chb-.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'PP Neue Montreal';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'PP Neue Montreal';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'PP Neue Montreal';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'PP Neue Montreal';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+</style>
+</head>
+<body class="bg-white text-primaryDark font-body overflow-x-hidden">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { motion, useInView, useScroll, useTransform } = window.Motion;
+        const { useState, useEffect, useRef } = React;
+
+        /* ── Reusable Button ── */
+        const Button = ({ children, variant = 'primary', href }) => {
+            const base = "px-7 py-3 rounded-full font-medium text-sm transition-all whitespace-nowrap inline-block cursor-pointer";
+            const v = {
+                primary: "bg-[#051A24] text-white hover:bg-[#0D212C] shadow-[0_10px_20px_rgba(5,26,36,0.15),0_4px_6px_rgba(5,26,36,0.1)]",
+                secondary: "bg-white text-[#051A24] border border-[#E0EBF0] shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:shadow-lg",
+                tertiary: "bg-white text-[#051A24] shadow-[inset_0_2px_4px_rgba(0,0,0,0.06)]"
+            };
+            const cls = `${base} ${v[variant]}`;
+            if (href) return <a href={href} className={cls}>{children}</a>;
+            return <button className={cls}>{children}</button>;
+        };
+
+        /* ── useInViewAnimation hook ── */
+        const useInViewAnimation = () => {
+            const ref = useRef(null);
+            const isInView = useInView(ref, { once: true, amount: 0.1 });
+            return { ref, isInView };
+        };
+
+        /* ── 1. HERO ── */
+        const Hero = () => {
+            const { ref, isInView } = useInViewAnimation();
+            return (
+                <section ref={ref} className="max-w-[440px] mx-auto px-6 pt-12 md:pt-16 text-center">
+                    <h1 className={`text-[32px] md:text-[40px] lg:text-[44px] font-semibold mb-2 mondwest opacity-0 ${isInView ? 'animate-fade-in-up' : ''}`}>
+                        V Vortex
+                    </h1>
+                    <p className={`font-mono text-xs md:text-sm text-primaryDark mb-12 opacity-0 animate-delay-100 ${isInView ? 'animate-fade-in-up' : ''}`}>
+                        Креативная студия Sarah Vortex
+                    </p>
+                    <h2 className={`text-4xl md:text-5xl font-medium tracking-tight mb-8 leading-tight opacity-0 animate-delay-200 ${isInView ? 'animate-fade-in-up' : ''}`}>
+                        На <span className="mondwest">новой волне</span>,<br /> <span className="mondwest">смело и дерзко.</span>
+                    </h2>
+                    <div className={`space-y-6 text-sm md:text-base text-mutedDark mb-12 opacity-0 animate-delay-300 ${isInView ? 'animate-fade-in-up' : ''}`}>
+                        <p>Десять лет в Apple я проектировала интерфейсы, которыми вы пользуетесь ежедневно. В V Vortex несу это мастерство самым смелым командам.</p>
+                        <p>Вместе с основателями превращаю абстрактные идеи в продукты, меняющие рынок.</p>
+                        <p className="font-semibold text-primaryDark">Сотрудничество — от $25,000/мес.</p>
+                    </div>
+                    <div className={`flex flex-col sm:flex-row justify-center gap-4 opacity-0 animate-delay-400 ${isInView ? 'animate-fade-in-up' : ''}`}>
+                        <Button variant="primary">Написать мне</Button>
+                        <Button variant="secondary">Смотреть проекты</Button>
+                    </div>
+                </section>
+            );
+        };
+
+        /* ── 2. INFINITE IMAGE MARQUEE ── */
+        const Marquee = () => {
+            const images = [
+                "https://motionsites.ai/assets/hero-grow-ai-preview-BlQ8tAQ-.gif",
+                "https://motionsites.ai/assets/hero-evr-ventures-preview-DZxeVFEX.gif",
+                "https://motionsites.ai/assets/hero-wealth-preview-B70idl_u.gif",
+                "https://motionsites.ai/assets/hero-neuralyn-preview-Br4FRDQA.gif",
+                "https://motionsites.ai/assets/hero-grow-ai-preview-BlQ8tAQ-.gif",
+                "https://motionsites.ai/assets/hero-evr-ventures-preview-DZxeVFEX.gif",
+                "https://motionsites.ai/assets/hero-wealth-preview-B70idl_u.gif",
+                "https://motionsites.ai/assets/hero-neuralyn-preview-Br4FRDQA.gif"
+            ];
+            return (
+                <div className="w-full overflow-hidden mt-16 md:mt-20 mb-16">
+                    <div className="flex w-max animate-marquee marquee-track">
+                        {[...images, ...images].map((src, i) => (
+                            <img key={i} src={src} className="h-[280px] md:h-[500px] object-cover mx-3 rounded-2xl shadow-lg" />
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        /* ── 3. TESTIMONIAL QUOTE ── */
+        const TestimonialQuote = () => {
+            const { ref, isInView } = useInViewAnimation();
+            const containerRef = useRef(null);
+            const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start end", "end start"] });
+            const imgY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
+            return (
+                <section ref={ref} className="max-w-2xl mx-auto px-6 py-24 text-center">
+                    <blockquote className={`text-3xl md:text-4xl font-medium leading-tight mb-8 opacity-0 ${isInView ? 'animate-fade-in-up' : ''}`}>
+                        «Мало кто умеет, как Sarah, превращать сложные системы в понятный людям опыт. Она приносит в стартапы <span className="mondwest">стандарт Apple</span>.»
+                    </blockquote>
+                    <cite className={`block mondwest text-xl not-italic opacity-0 animate-delay-100 ${isInView ? 'animate-fade-in-up' : ''}`}>— Sarah Vortex</cite>
+                    <div className="flex justify-center gap-12 mt-16 text-mutedDark opacity-60">
+                        {['Apple', 'Stripe', 'Vercel'].map(b => (
+                            <span key={b} className="text-lg font-medium tracking-wide">{b}</span>
+                        ))}
+                    </div>
+                    <div ref={containerRef} className="mt-12 overflow-hidden rounded-2xl max-w-md mx-auto">
+                        <motion.img
+                            src="https://motionsites.ai/assets/hero-grow-ai-preview-BlQ8tAQ-.gif"
+                            className="w-full h-64 object-cover"
+                            style={{ y: imgY }}
+                        />
+                    </div>
+                </section>
+            );
+        };
+
+        /* ── 4. PRICING ── */
+        const Pricing = () => {
+            const { ref, isInView } = useInViewAnimation();
+            return (
+                <section ref={ref} className="max-w-7xl mx-auto px-6 py-24">
+                    <div className={`flex flex-col md:flex-row justify-end gap-6 opacity-0 ${isInView ? 'animate-fade-in-up' : ''}`}>
+                        <div className="bg-primaryDark text-white p-12 rounded-3xl max-w-md w-full">
+                            <h3 className="text-2xl font-medium mb-4">Помесячное партнёрство</h3>
+                            <p className="text-lightMuted mb-8">Личный дизайн-партнёр. Безлимит запросов. Сдача за 48 часов.</p>
+                            <div className="text-4xl font-semibold mb-8">$25,000<span className="text-lg font-normal text-lightMuted">/мес</span></div>
+                            <Button variant="secondary">Начать</Button>
+                        </div>
+                        <div className="bg-white border border-[#E0EBF0] p-12 rounded-3xl max-w-md w-full">
+                            <h3 className="text-2xl font-medium mb-4">Отдельный проект</h3>
+                            <p className="text-mutedDark mb-8">Проекты с фиксированным объёмом: новые продукты, ребрендинг, сложные системы.</p>
+                            <div className="text-4xl font-semibold mb-8">$25,000<span className="text-lg font-normal text-mutedDark">+</span></div>
+                            <Button variant="primary">Оставить заявку</Button>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        /* ── 5. TESTIMONIAL CAROUSEL ── */
+        const TestimonialCarousel = () => {
+            const [active, setActive] = useState(0);
+            const testimonials = [
+                { name: "Alex Rivera", role: "Гендиректор, Luminary", quote: "Sarah полностью преобразила наш цифровой облик. Такого внимания к деталям больше нет ни у кого.", avatar: "https://i.pravatar.cc/100?img=32" },
+                { name: "Maria Chen", role: "Основательница, Arc", quote: "С V Vortex ощущение, будто на связи всегда дизайн-команда уровня Apple.", avatar: "https://i.pravatar.cc/100?img=25" },
+                { name: "James Park", role: "Техдиректор, Helix", quote: "За две недели продукт прошёл путь от концепции до полностью рабочего прототипа.", avatar: "https://i.pravatar.cc/100?img=33" },
+                { name: "Elena Voss", role: "Директор по маркетингу, Drift", quote: "После редизайна конверсия выросла втрое. Вложения окупились сразу.", avatar: "https://i.pravatar.cc/100?img=44" },
+                { name: "Sam Wright", role: "Директор по продукту, Nova", quote: "Каждый пиксель на своём месте. Это дизайн высшей пробы.", avatar: "https://i.pravatar.cc/100?img=51" }
+            ];
+            useEffect(() => {
+                const interval = setInterval(() => setActive(p => (p + 1) % testimonials.length), 3000);
+                return () => clearInterval(interval);
+            }, []);
+
+            return (
+                <section className="max-w-7xl mx-auto px-6 py-24 overflow-hidden">
+                    <h2 className="text-3xl font-medium mb-12 text-center">Что говорят <span className="mondwest">клиенты</span></h2>
+                    <div className="relative">
+                        <div className="flex transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${active * 100}%)` }}>
+                            {testimonials.map((t, i) => (
+                                <div key={i} className="min-w-full flex justify-center px-4">
+                                    <div className="max-w-lg text-center">
+                                        <img src={t.avatar} className="w-16 h-16 rounded-full mx-auto mb-6 border-2 border-lightMuted" />
+                                        <p className="text-xl md:text-2xl font-medium leading-relaxed mb-6">«{t.quote}»</p>
+                                        <div className="font-semibold">{t.name}</div>
+                                        <div className="text-sm text-mutedDark">{t.role}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex justify-center gap-4 mt-8">
+                            <button onClick={() => setActive(p => (p - 1 + testimonials.length) % testimonials.length)} className="w-10 h-10 rounded-full border border-[#E0EBF0] flex items-center justify-center hover:bg-primaryDark hover:text-white transition-colors">
+                                <i data-lucide="chevron-left" className="w-4 h-4"></i>
+                            </button>
+                            <button onClick={() => setActive(p => (p + 1) % testimonials.length)} className="w-10 h-10 rounded-full border border-[#E0EBF0] flex items-center justify-center hover:bg-primaryDark hover:text-white transition-colors">
+                                <i data-lucide="chevron-right" className="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        /* ── 6. PROJECTS ── */
+        const Projects = () => {
+            const projects = [
+                { title: "Редизайн Linear", img: "https://motionsites.ai/assets/hero-grow-ai-preview-BlQ8tAQ-.gif" },
+                { title: "Сайт Raycast", img: "https://motionsites.ai/assets/hero-evr-ventures-preview-DZxeVFEX.gif" },
+                { title: "Дашборд Mux", img: "https://motionsites.ai/assets/hero-wealth-preview-B70idl_u.gif" }
+            ];
+            return (
+                <section className="max-w-[1200px] mx-auto px-6 py-24">
+                    <h2 className="text-3xl font-medium mb-12">Избранные <span className="mondwest">проекты</span></h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {projects.map((p, i) => (
+                            <motion.div key={i} className="group cursor-pointer"
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.15 }}
+                            >
+                                <div className="aspect-video rounded-2xl overflow-hidden mb-4 bg-gray-100">
+                                    <img src={p.img} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                </div>
+                                <h4 className="text-lg font-medium">{p.title}</h4>
+                            </motion.div>
+                        ))}
+                    </div>
+                </section>
+            );
+        };
+
+        /* ── 7. PARTNER CTA ── */
+        const PartnerCTA = () => {
+            const { ref, isInView } = useInViewAnimation();
+            return (
+                <section ref={ref} className="bg-primaryDark text-white py-32 px-6 text-center">
+                    <div className={`max-w-3xl mx-auto opacity-0 ${isInView ? 'animate-fade-in-up' : ''}`}>
+                        <h2 className="text-4xl md:text-5xl font-medium tracking-tight mb-6">
+                            Давайте создадим <span className="mondwest">что-то</span> великое.
+                        </h2>
+                        <p className="text-lightMuted text-lg mb-10">Запишитесь на бесплатный вводный созвон — поймём, подходим ли мы друг другу.</p>
+                        <Button variant="secondary">Написать мне</Button>
+                    </div>
+                </section>
+            );
+        };
+
+        /* ── 8. FOOTER ── */
+        const Footer = () => (
+            <footer className="max-w-7xl mx-auto px-6 py-24 border-t border-[#E0EBF0]">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+                    <div>
+                        <div className="mondwest text-2xl font-semibold mb-4">V Vortex</div>
+                        <p className="text-sm text-mutedDark">Креативная студия Sarah Vortex. Мастерство уровня Apple для амбициозных команд.</p>
+                    </div>
+                    <div>
+                        <h4 className="font-medium mb-4">Студия</h4>
+                        <ul className="space-y-3 text-sm text-mutedDark">
+                            {['Проекты', 'Услуги', 'Процесс', 'Цены'].map(l => <li key={l}><a href="#" className="hover:text-primaryDark transition-colors">{l}</a></li>)}
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 className="font-medium mb-4">Контакты</h4>
+                        <ul className="space-y-3 text-sm text-mutedDark">
+                            {['Twitter', 'LinkedIn', 'Instagram', 'Dribbble'].map(l => <li key={l}><a href="#" className="hover:text-primaryDark transition-colors">{l}</a></li>)}
+                        </ul>
+                    </div>
+                </div>
+                <div className="flex flex-col md:flex-row justify-between items-center text-sm text-mutedDark border-t border-[#E0EBF0] pt-8">
+                    <p>© 2026 V Vortex Studio. Все права защищены.</p>
+                    <div className="flex space-x-6 mt-4 md:mt-0">
+                        <a href="#" className="hover:text-primaryDark transition-colors">Конфиденциальность</a>
+                        <a href="#" className="hover:text-primaryDark transition-colors">Условия</a>
+                    </div>
+                </div>
+            </footer>
+        );
+
+        /* ── 9. FIXED BOTTOM NAV ── */
+        const FixedNav = () => (
+            <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
+                <div className="bg-white/80 backdrop-blur-xl border border-[#E0EBF0] rounded-full px-4 py-2 flex items-center gap-4 shadow-xl">
+                    <div className="mondwest font-bold text-xl px-2">V</div>
+                    <Button variant="primary">Написать мне</Button>
+                </div>
+            </div>
+        );
+
+        /* ── APP ── */
+        const App = () => {
+            useEffect(() => { lucide.createIcons(); }, []);
+            return (
+                <div className="pt-20">
+                    <Hero />
+                    <Marquee />
+                    <TestimonialQuote />
+                    <Pricing />
+                    <TestimonialCarousel />
+                    <Projects />
+                    <PartnerCTA />
+                    <Footer />
+                    <FixedNav />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloom AI | Дух инноваций</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Source+Serif+4:ital,wght@1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Poppins', 'sans-serif'],
+                        serif: ['Source Serif 4', 'serif'],
+                    },
+                    borderRadius: { custom: '1rem' },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer components {
+            .liquid-glass {
+                background: rgba(255,255,255,0.01);
+                background-blend-mode: luminosity;
+                backdrop-filter: blur(4px);
+                border: none;
+                box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
+                position: relative; overflow: hidden;
+            }
+            .liquid-glass::before {
+                content: ''; position: absolute; inset: 0;
+                border-radius: inherit; padding: 1.4px;
+                background: linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 20%, transparent 40%, transparent 60%, rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%);
+                -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+                -webkit-mask-composite: xor; mask-composite: exclude;
+                pointer-events: none;
+            }
+            .liquid-glass-strong {
+                background: rgba(255,255,255,0.01);
+                background-blend-mode: luminosity;
+                backdrop-filter: blur(50px);
+                box-shadow: 4px 4px 4px rgba(0,0,0,0.05), inset 0 1px 1px rgba(255,255,255,0.15);
+                position: relative;
+            }
+            .liquid-glass-strong::before {
+                content: ''; position: absolute; inset: 0;
+                border-radius: inherit; padding: 1.4px;
+                background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.2) 20%, transparent 40%, transparent 60%, rgba(255,255,255,0.2) 80%, rgba(255,255,255,0.5) 100%);
+                -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+                -webkit-mask-composite: xor; mask-composite: exclude;
+                pointer-events: none;
+            }
+        }
+    </style>
+<style id="cyr">/* русские буквы: исходный шрифт без кириллицы, глифы — у близкого с кириллицей */
+@font-face{font-family:'Poppins';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459WRhyzbi.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459W1hyzbi.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459WRhyzbi.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459W1hyzbi.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:600;font-display:swap;src:url(https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459WRhyzbi.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:600;font-display:swap;src:url(https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459W1hyzbi.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+</style>
+</head>
+<body class="bg-black text-white font-display antialiased overflow-x-hidden">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useEffect } = React;
+
+        const App = () => {
+            useEffect(() => { lucide.createIcons(); }, []);
+
+            return (
+                <div className="relative min-h-screen flex flex-col lg:flex-row">
+                    {/* Full-screen Background Video */}
+                    <video 
+                        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260315_073750_51473149-4350-4920-ae24-c8214286f323.mp4"
+                        className="fixed inset-0 w-full h-full object-cover -z-10"
+                        autoPlay loop muted playsInline
+                    />
+
+                    {/* ── LEFT PANEL (52%) ── */}
+                    <div className="w-full lg:w-[52%] min-h-screen relative flex flex-col p-4 lg:p-6">
+                        <div className="liquid-glass-strong absolute inset-4 lg:inset-6 rounded-3xl pointer-events-none"></div>
+                        
+                        {/* Nav */}
+                        <nav className="relative z-10 flex justify-between items-center px-6 py-5">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                                    <i data-lucide="sparkles" className="w-4 h-4"></i>
+                                </div>
+                                <span className="text-2xl font-semibold tracking-tighter">bloom</span>
+                            </div>
+                            <button className="liquid-glass rounded-full px-5 py-2 flex items-center gap-2 text-sm hover:scale-105 transition-transform">
+                                <i data-lucide="menu" className="w-4 h-4"></i> Меню
+                            </button>
+                        </nav>
+
+                        {/* Hero Center */}
+                        <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-8 text-center">
+                            <div className="w-20 h-20 rounded-2xl bg-white/10 flex items-center justify-center mb-10">
+                                <i data-lucide="sparkles" className="w-8 h-8"></i>
+                            </div>
+                            <h1 className="text-5xl lg:text-7xl font-medium tracking-[-0.05em] leading-[0.95] mb-8">
+                                Инновации<br /><span className="font-serif italic text-white/80">в духе bloom AI</span>
+                            </h1>
+                            <button className="liquid-glass-strong rounded-full px-8 py-4 flex items-center gap-3 text-sm font-medium hover:scale-105 active:scale-95 transition-transform mb-8">
+                                Исследовать
+                                <span className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center">
+                                    <i data-lucide="download" className="w-3.5 h-3.5"></i>
+                                </span>
+                            </button>
+                            <div className="flex flex-wrap justify-center gap-3">
+                                {['Арт-галерея', 'ИИ-генерация', '3D-структуры'].map(tag => (
+                                    <span key={tag} className="liquid-glass rounded-full px-4 py-1.5 text-xs text-white/80">{tag}</span>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Bottom Quote */}
+                        <div className="relative z-10 px-8 pb-8 text-center">
+                            <div className="text-xs tracking-widest uppercase text-white/50 mb-4">Дизайн будущего</div>
+                            <p className="text-lg font-medium mb-4">
+                                «Мы представили мир <span className="font-serif italic text-white/80">без конца и края.</span>»
+                            </p>
+                            <div className="flex items-center justify-center gap-4 text-xs tracking-widest uppercase text-white/50">
+                                <span className="h-px w-12 bg-white/20"></span>
+                                MARCUS AURELIO
+                                <span className="h-px w-12 bg-white/20"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ── RIGHT PANEL (48%) ── */}
+                    <div className="hidden lg:flex w-[48%] min-h-screen flex-col p-6">
+                        {/* Top Social Bar */}
+                        <div className="flex justify-between items-center mb-8">
+                            <div className="liquid-glass rounded-full px-4 py-2 flex items-center gap-4">
+                                {['twitter', 'linkedin', 'instagram'].map(icon => (
+                                    <a key={icon} href="#" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:text-white/80 transition-colors">
+                                        <i data-lucide={icon} className="w-4 h-4"></i>
+                                    </a>
+                                ))}
+                                <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                                    <i data-lucide="arrow-right" className="w-4 h-4"></i>
+                                </span>
+                            </div>
+                            <button className="liquid-glass rounded-full px-5 py-2 flex items-center gap-2 text-sm hover:scale-105 transition-transform">
+                                <i data-lucide="sparkles" className="w-4 h-4"></i> Аккаунт
+                            </button>
+                        </div>
+
+                        {/* Community Card */}
+                        <div className="liquid-glass rounded-2xl p-6 w-56 mb-auto">
+                            <h3 className="text-sm font-semibold mb-2">Войдите в экосистему</h3>
+                            <p className="text-xs text-white/60 leading-relaxed">Вступайте в сообщество авторов, которые создают будущее ИИ-дизайна.</p>
+                        </div>
+
+                        {/* Bottom Feature Section */}
+                        <div className="liquid-glass rounded-[2.5rem] p-6 mt-auto">
+                            <div className="grid grid-cols-2 gap-4 mb-4">
+                                <div className="liquid-glass rounded-3xl p-5">
+                                    <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center mb-4">
+                                        <i data-lucide="wand-2" className="w-4 h-4"></i>
+                                    </span>
+                                    <h4 className="text-sm font-medium mb-1">Обработка</h4>
+                                    <p className="text-xs text-white/50">Генерация с ИИ в реальном времени</p>
+                                </div>
+                                <div className="liquid-glass rounded-3xl p-5">
+                                    <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center mb-4">
+                                        <i data-lucide="book-open" className="w-4 h-4"></i>
+                                    </span>
+                                    <h4 className="text-sm font-medium mb-1">Архив роста</h4>
+                                    <p className="text-xs text-white/50">Ваша творческая эволюция</p>
+                                </div>
+                            </div>
+                            <div className="liquid-glass rounded-3xl p-5 flex items-center gap-5">
+                                <div className="w-24 h-16 rounded-xl bg-white/5 overflow-hidden shrink-0">
+                                    <img src="https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?w=200&h=150&fit=crop" className="w-full h-full object-cover opacity-60" />
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className="text-sm font-medium mb-1">Продвинутый скульптинг растений</h4>
+                                    <p className="text-xs text-white/50">Создавайте живое искусство с точностью ИИ</p>
+                                </div>
+                                <button className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 hover:scale-105 transition-transform text-lg">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</body>
+</html>

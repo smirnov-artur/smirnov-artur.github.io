@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClubX | Закрытый клуб техинвесторов</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Instrument Serif', 'serif'],
+                    },
+                    colors: {
+                        background: 'hsl(201 100% 13%)',
+                    },
+                    keyframes: {
+                        'fade-rise': {
+                            'from': { opacity: '0', transform: 'translateY(24px)' },
+                            'to': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    },
+                    animation: {
+                        'fade-rise': 'fade-rise 0.8s ease-out both',
+                        'fade-rise-delay': 'fade-rise 0.8s ease-out 0.2s both',
+                        'fade-rise-delay-2': 'fade-rise 0.8s ease-out 0.4s both',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .glass-pill {
+                @apply bg-white/20 backdrop-blur-sm border border-gray-900/10 rounded-full;
+            }
+            .glass-card {
+                @apply bg-white/10 backdrop-blur-sm border border-gray-900/10 rounded-3xl;
+            }
+        }
+    </style>
+<style id="cyr">/* русские буквы: исходный шрифт без кириллицы, глифы — у близкого с кириллицей */
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/cormorant/v24/H4cjBXOCl9bbnla_nHIq6quyoqOOag.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/cormorant/v24/H4cjBXOCl9bbnla_nHIq6qu7oqOOag.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/cormorant/v24/H4clBXOCl9bbnla_nHIq4pu9uqc.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/cormorant/v24/H4clBXOCl9bbnla_nHIq65u9uqc.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+</style>
+</head>
+<body class="bg-background text-gray-900 font-sans overflow-hidden">
+    <!-- Full-screen Background Video -->
+    <video 
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260323_071151_38c3924f-c312-48af-a196-3fbb80e4226f.mp4"
+        class="fixed inset-0 w-full h-full object-cover -z-10"
+        autoPlay loop muted playsInline
+    ></video>
+
+    <!-- Navigation -->
+    <nav class="relative z-50 px-8 py-8 flex justify-between items-center max-w-7xl mx-auto">
+        <div class="flex items-center space-x-2">
+            <div class="h-10 w-10 bg-[#FF4500] rounded-full flex items-center justify-center text-white font-serif text-2xl font-bold">C</div>
+            <span class="text-xl font-bold tracking-tight">ClubX</span>
+        </div>
+        <div class="hidden md:flex items-center space-x-8">
+            <a href="#" class="text-sm font-medium transition-colors text-gray-900">Главная</a>
+            <a href="#" class="text-sm font-medium transition-colors text-gray-600 hover:text-gray-900">Студия</a>
+            <a href="#" class="text-sm font-medium transition-colors text-gray-600 hover:text-gray-900">О нас</a>
+            <a href="#" class="text-sm font-medium transition-colors text-gray-600 hover:text-gray-900">Журнал</a>
+            <a href="#" class="text-sm font-medium transition-colors text-gray-600 hover:text-gray-900">Контакты</a>
+        </div>
+        <button class="bg-gray-900 text-white rounded-full px-6 py-2.5 text-sm font-medium transition-transform hover:scale-[1.03] active:scale-[0.97]">
+            Начать путь
+        </button>
+    </nav>
+
+    <!-- Hero Content -->
+    <main class="relative z-10 flex flex-col items-center text-center pt-32 pb-12 px-6">
+        <!-- Social Proof Badge -->
+        <div class="glass-pill px-4 py-2 flex items-center space-x-3 mb-8 animate-fade-rise">
+            <div class="flex -space-x-2.5">
+                <img src="https://i.pravatar.cc/100?img=12" alt="" class="w-8 h-8 rounded-full border-2 border-white/30" />
+                <img src="https://i.pravatar.cc/100?img=13" alt="" class="w-8 h-8 rounded-full border-2 border-white/30" />
+                <img src="https://i.pravatar.cc/100?img=14" alt="" class="w-8 h-8 rounded-full border-2 border-white/30" />
+                <img src="https://i.pravatar.cc/100?img=15" alt="" class="w-8 h-8 rounded-full border-2 border-white/30" />
+                <img src="https://i.pravatar.cc/100?img=16" alt="" class="w-8 h-8 rounded-full border-2 border-white/30" />
+            </div>
+            <span class="text-sm font-medium text-gray-800">В клубе уже 400+ техинвесторов. Присоединяйтесь!</span>
+        </div>
+
+        <h1 class="text-5xl sm:text-6xl md:text-[4.9rem] font-bold leading-[0.95] tracking-[-1.5px] max-w-5xl animate-fade-rise">
+            Капитал. Свобода. Круг.
+        </h1>
+        
+        <p class="text-base sm:text-lg text-gray-800 max-w-2xl mt-6 leading-relaxed animate-fade-rise-delay">
+            Закрытый клуб ведущих технологических инвесторов.
+        </p>
+        
+        <button class="bg-gray-900 text-white rounded-full px-12 py-4 text-sm font-medium mt-9 transition-transform hover:scale-[1.03] active:scale-[0.97] animate-fade-rise-delay-2 shadow-2xl">
+            Начать путь
+        </button>
+    </main>
+
+    <!-- Stats Bar -->
+    <div class="fixed bottom-8 inset-x-0 mx-auto w-full max-w-4xl px-6 animate-fade-rise-delay-2">
+        <div class="glass-card px-8 py-6 grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="flex flex-col">
+                <span class="text-3xl sm:text-4xl font-light tracking-tight text-white">410+</span>
+                <span class="text-white/70 text-sm">IT-специалистов</span>
+            </div>
+            <div class="flex flex-col border-l border-white/10 md:pl-8">
+                <span class="text-3xl sm:text-4xl font-light tracking-tight text-white">€11 млн</span>
+                <span class="text-white/70 text-sm">Инвестировано</span>
+            </div>
+            <div class="flex flex-col border-l border-white/10 md:pl-8">
+                <span class="text-3xl sm:text-4xl font-light tracking-tight text-white">14</span>
+                <span class="text-white/70 text-sm">Сделок закрыто</span>
+            </div>
+            <div class="flex flex-col border-l border-white/10 md:pl-8">
+                <span class="text-3xl sm:text-4xl font-light tracking-tight text-white">2,5</span>
+                <span class="text-white/70 text-sm">Года на рынке</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
