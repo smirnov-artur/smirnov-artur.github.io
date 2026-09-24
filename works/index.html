@@ -366,8 +366,12 @@ $('plist').innerHTML = PROJ.map((p, i) => {
     `</div></div>`;
 }).join('');
 
-// ленты: первые 30 работ пополам, каждая тройкой
-const LENTA = WORKS.slice(0, 30), half = Math.ceil(LENTA.length / 2);
+// ленты после портрета: только красивые сайты, без инструментов и кода (24.09, Артур); каждая тройкой
+const LENTA = ['living-grass', 'archive', 'planet-jumping', 'aurum', 'private-jets', 'vanny-concepts', 'figurines', 'dreams',
+  'bubble-orb', 'fox-404', 'city-scroll-story', 'flux', 'wellness-glass', 'train-window', 'crystal-form', 'defi-node-grid',
+  'slowlight', 'sunvalley-pokaz', 'ferro', 'ai-workers', 'terrarium-spotlight', 'neural-llama', 'data-platform', 'pet-store',
+  'space-voyages', 'jungle-train', 'falcon-login', 'cinematic-404', 'ev-inside-out', 'scroll-bloom', 'data-shield', 'strata-spotlight']
+  .map(s => bySlug[s]).filter(Boolean), half = Math.ceil(LENTA.length / 2);
 const rows = [[$('r1'), LENTA.slice(0, half), 1], [$('r2'), LENTA.slice(half), -1]];
 rows.forEach(([row, list]) => { row.innerHTML = [...list, ...list, ...list].map(w => tile(w, '', `<span>${esc(tx(w)[0])}</span>`)).join(''); });
 
