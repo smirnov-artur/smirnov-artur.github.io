@@ -9,7 +9,53 @@
   "en": [
    "Living grass",
    "A huge grass-covered arc sways in the wind, the cursor presses a trailing dent, clouds drift across the sky — all drawn live by code."
-  ]
+  ],
+  "cat": "3d"
+ },
+ {
+  "slug": "seller",
+  "cat": "ai",
+  "ru": [
+   "ИИ-продавец для Авито",
+   "Отвечает покупателям в чатах Авито, спорное присылает владельцу в Telegram"
+  ],
+  "en": [
+   "AI seller for Avito",
+   "Answers buyers in Avito chats and sends the tricky ones to the owner's Telegram"
+  ],
+  "v": "seller",
+  "href": "https://gad-production.ru/"
+ },
+ {
+  "slug": "raspad",
+  "cat": "3d",
+  "ru": [
+   "Распад",
+   "Бетонный монолит собирается из пыли, трескается, рушится, плавится и испаряется"
+  ],
+  "en": [
+   "Decay",
+   "A concrete monolith assembles from dust, cracks, collapses, melts and evaporates"
+  ],
+  "href": "https://smirnov-artur.github.io/raspad/",
+  "v": "pf-raspad"
+ },
+ {
+  "slug": "ventmarket",
+  "cat": "tools",
+  "ru": [
+   "Подбор вентилятора по рабочей точке",
+   "Расход и давление — подходящая модель, её кривая и заказ"
+  ],
+  "en": [
+   "Fan selection by operating point",
+   "Airflow and pressure in — the matching unit, its curve and the order"
+  ],
+  "img": "old/a2.jpg",
+  "vid": "old/a2.mp4",
+  "lb": {
+   "video": "old/a2.mp4"
+  }
  },
  {
   "slug": "bubble-orb",
@@ -21,7 +67,53 @@
   "en": [
    "Glass bubble",
    "A glass bubble with an iridescent film floats over a rippled floor; the cursor pulls and dents it, scrolling floods the screen with rainbow light"
-  ]
+  ],
+  "cat": "3d"
+ },
+ {
+  "slug": "standes",
+  "cat": "tools",
+  "ru": [
+   "Стеллажи в 3D по вашему залу",
+   "Секции примагничиваются друг к другу, спецификация и цена считаются на лету"
+  ],
+  "en": [
+   "Shelving in 3D for your room",
+   "Sections snap together; the spec and price update live"
+  ],
+  "href": "https://smirnov-artur.github.io/standes/",
+  "v": "pf-standes-3d"
+ },
+ {
+  "slug": "aurum",
+  "cat": "3d",
+  "ru": [
+   "Бронза на шейдерах",
+   "Камера облетает скульптуру по прокрутке, свет считается на каждый пиксель"
+  ],
+  "en": [
+   "Bronze in shaders",
+   "The camera orbits the sculpture as you scroll; lighting per pixel"
+  ],
+  "href": "https://smirnov-artur.github.io/portfolio/cases/aurum/",
+  "v": "pf-aurum"
+ },
+ {
+  "slug": "srez",
+  "cat": "web",
+  "ru": [
+   "Каталог покрытий со светом",
+   "Свет скользит по стене и проявляет рельеф фактуры"
+  ],
+  "en": [
+   "Wall finish catalogue",
+   "Light grazes the wall and reveals the texture"
+  ],
+  "img": "old/a9.jpg",
+  "vid": "old/a9.mp4",
+  "lb": {
+   "video": "old/a9.mp4"
+  }
  },
  {
   "slug": "crystal-form",
@@ -33,7 +125,36 @@
   "en": [
    "Glass forms",
    "A glass sculpture with rainbow dispersion shatters and reassembles into the next form while orbit rings drift around it"
-  ]
+  ],
+  "cat": "3d"
+ },
+ {
+  "slug": "slowlight",
+  "cat": "3d",
+  "ru": [
+   "Slowlight — биография фотона",
+   "Интерактивное эссе, нарисованное одним шейдером"
+  ],
+  "en": [
+   "Slowlight — a photon's biography",
+   "An interactive essay drawn by a single shader"
+  ],
+  "href": "https://smirnov-artur.github.io/slowlight/",
+  "v": "pf-slowlight"
+ },
+ {
+  "slug": "rooftop",
+  "cat": "3d",
+  "ru": [
+   "Лоу-фай крыша",
+   "Нарисованные плоскости, настоящий свет и параллакс"
+  ],
+  "en": [
+   "Lo-fi rooftop",
+   "Painted planes, real light and parallax"
+  ],
+  "href": "/demo/rooftop/",
+  "v": "pf-rooftop"
  },
  {
   "slug": "planet-jumping",
@@ -45,7 +166,78 @@
   "en": [
    "Planet Jumping",
    "A portal to the next planet: click and fly Mars → Earth → Venus."
-  ]
+  ],
+  "cat": "web"
+ },
+ {
+  "slug": "ventprom-tools",
+  "cat": "tools",
+  "ru": [
+   "Инженерные калькуляторы вентиляции",
+   "Аэродинамика, тепло и влага, акустика и подбор — всё считается в браузере"
+  ],
+  "en": [
+   "Ventilation engineering calculators",
+   "Aerodynamics, heat and moisture, acoustics and selection, all in the browser"
+  ],
+  "href": "https://smirnov-artur.github.io/ventprom-tools/",
+  "v": "pf-ventprom-tools"
+ },
+ {
+  "slug": "rybtseh-pokaz",
+  "cat": "web",
+  "ru": [
+   "Рыбный цех: два концепта сайта",
+   "Два полноценных многостраничных сайта в разных стилях"
+  ],
+  "en": [
+   "Fish producer: two site concepts",
+   "Two complete multi-page sites in different styles"
+  ],
+  "href": "https://smirnov-artur.github.io/rybtseh-pokaz/",
+  "v": "pf-rybtseh-pokaz"
+ },
+ {
+  "slug": "vault",
+  "cat": "3d",
+  "ru": [
+   "Токеномика вживую",
+   "Тянете месяц — кривая эмиссии и сфера из частиц пересчитываются"
+  ],
+  "en": [
+   "Live tokenomics",
+   "Drag the month — the emission curve and the particle sphere recompute"
+  ],
+  "href": "https://smirnov-artur.github.io/portfolio/cases/new2/",
+  "v": "pf-vault"
+ },
+ {
+  "slug": "maket-kabinet",
+  "cat": "ai",
+  "ru": [
+   "Чат и кабинет ИИ-продавца",
+   "Как владелец видит работу ИИ: чат в Telegram и кабинет с отчётом"
+  ],
+  "en": [
+   "AI seller chat and dashboard",
+   "How the owner sees the AI at work: a Telegram chat and a dashboard"
+  ],
+  "href": "/demo/maket-kabinet/",
+  "v": "pf-maket-kabinet"
+ },
+ {
+  "slug": "hot-ice",
+  "cat": "3d",
+  "ru": [
+   "Горячий лёд",
+   "Коснитесь жидкости — она кристаллизуется в камень"
+  ],
+  "en": [
+   "Hot ice",
+   "Touch the liquid — it crystallises into stone"
+  ],
+  "href": "/demo/hot-ice/",
+  "v": "pf-hot-ice"
  },
  {
   "slug": "archive",
@@ -57,7 +249,706 @@
   "en": [
    "Fashion archive",
    "The model turns with your cursor; below, the archive pops in card by card."
-  ]
+  ],
+  "cat": "web"
+ },
+ {
+  "slug": "nodal",
+  "cat": "3d",
+  "ru": [
+   "Песок рисует ноту",
+   "Пластина Хладни: частота рисует узор из песка"
+  ],
+  "en": [
+   "Sand draws the note",
+   "A Chladni plate: the frequency draws a sand pattern"
+  ],
+  "href": "/demo/nodal/",
+  "v": "pf-nodal"
+ },
+ {
+  "slug": "kredit",
+  "cat": "tools",
+  "ru": [
+   "Калькулятор досрочного погашения",
+   "График платежей с нестандартными условиями и досрочными взносами"
+  ],
+  "en": [
+   "Early repayment calculator",
+   "A payment schedule with custom terms and early repayments"
+  ],
+  "href": "/demo/kredit/",
+  "v": "pf-kredit"
+ },
+ {
+  "slug": "blocksmith",
+  "cat": "3d",
+  "ru": [
+   "Сайт, который строит себя",
+   "Персонаж собирает страницу по буквам, под ней растёт деревня"
+  ],
+  "en": [
+   "A site that builds itself",
+   "A character builds the page letter by letter while a village grows below"
+  ],
+  "href": "https://smirnov-artur.github.io/portfolio/cases/blocksmith/",
+  "v": "pf-blocksmith"
+ },
+ {
+  "slug": "dios",
+  "cat": "3d",
+  "ru": [
+   "Глобус с маршрутами",
+   "Суда и самолёты идут по великим кругам, Three.js"
+  ],
+  "en": [
+   "Route globe",
+   "Ships and planes along great circles, in Three.js"
+  ],
+  "img": "old/a7.jpg",
+  "vid": "old/a7.mp4",
+  "lb": {
+   "video": "old/a7.mp4"
+  }
+ },
+ {
+  "slug": "avito-otvetchik",
+  "cat": "ai",
+  "ru": [
+   "Ответчик для чатов Авито",
+   "Страница продукта: отвечает по складу и прайсу владельца"
+  ],
+  "en": [
+   "Avito chat responder",
+   "Product page: answers from the owner's stock and prices"
+  ],
+  "href": "/demo/avito-otvetchik/",
+  "v": "pf-avito-otvetchik"
+ },
+ {
+  "slug": "ai-ekspeditor",
+  "cat": "ai",
+  "ru": [
+   "ИИ-экспедитор",
+   "Telegram-бот для экспедитора грузов"
+  ],
+  "en": [
+   "AI freight forwarder",
+   "A Telegram bot for a freight forwarder"
+  ],
+  "img": "gh/ai-ekspeditor.jpg",
+  "href": "https://github.com/smirnov-artur/ai-ekspeditor"
+ },
+ {
+  "slug": "vino",
+  "cat": "ai",
+  "ru": [
+   "ИИ-фильм о виноделии",
+   "Сцены, герои и монтаж сделаны нейросетями"
+  ],
+  "en": [
+   "AI film about winemaking",
+   "Scenes, characters and edit made with neural networks"
+  ],
+  "v": "vino",
+  "lb": {
+   "video": "old/vino.mp4",
+   "vert": true
+  }
+ },
+ {
+  "slug": "golos",
+  "cat": "ai",
+  "ru": [
+   "Клон голоса",
+   "Модель говорит голосом человека на языке, которого нет в записях"
+  ],
+  "en": [
+   "Voice clone",
+   "The model speaks in a person's voice in a language absent from the recordings"
+  ],
+  "img": "old/golos.jpg",
+  "lb": {
+   "audio": [
+    [
+     "Оригинал",
+     "Original",
+     "old/a17.mp3"
+    ],
+    [
+     "Синтез",
+     "Synthesis",
+     "old/a18.mp3"
+    ]
+   ]
+  }
+ },
+ {
+  "slug": "strimkarts",
+  "cat": "ai",
+  "ru": [
+   "Распознавание карт на стриме",
+   "Камера узнаёт карту в момент вскрытия и ведёт счёт на экране"
+  ],
+  "en": [
+   "Live card recognition",
+   "The camera recognises each card as it's opened and keeps score on screen"
+  ],
+  "img": "old/a11.jpg",
+  "vid": "old/a11.mp4",
+  "lb": {
+   "video": "old/a11.mp4"
+  }
+ },
+ {
+  "slug": "ventprom-packer",
+  "cat": "tools",
+  "ru": [
+   "Укладка воздуховодов в транспорт",
+   "Алгоритм раскладывает груз в 3D прямо в браузере"
+  ],
+  "en": [
+   "Duct loading planner",
+   "The packing algorithm lays out the load in 3D right in the browser"
+  ],
+  "href": "https://smirnov-artur.github.io/ventprom-packer/",
+  "v": "pf-ventprom-packer"
+ },
+ {
+  "slug": "ventprom",
+  "cat": "tools",
+  "ru": [
+   "Конфигуратор воздуховодов",
+   "Размеры — превью с размерными линиями — смета"
+  ],
+  "en": [
+   "Duct fitting configurator",
+   "Dimensions in — a preview with dimension lines — a costed spec"
+  ],
+  "img": "old/a3.jpg",
+  "vid": "old/a3.mp4",
+  "href": "https://smirnov-artur.github.io/webgl/case/ventprom/"
+ },
+ {
+  "slug": "vertro",
+  "cat": "tools",
+  "ru": [
+   "Программа расчёта — в браузере",
+   "Настольное приложение с базами Access перенесено в веб: подбор, расчёт, кривая"
+  ],
+  "en": [
+   "Desktop engineering app, moved to the web",
+   "An Access-based desktop app now runs in the browser: selection, calculation, curve"
+  ],
+  "img": "old/a0.jpg",
+  "vid": "old/a0.mp4",
+  "lb": {
+   "video": "old/a0.mp4",
+   "imgs": [
+    "old/a1.jpg"
+   ]
+  }
+ },
+ {
+  "slug": "softvent",
+  "cat": "tools",
+  "ru": [
+   "PDF-проект — спецификация для 1С",
+   "Таблицы из проектной документации превращаются в готовую номенклатуру"
+  ],
+  "en": [
+   "PDF drawings to a 1C specification",
+   "Tables from design PDFs turn into a ready item list"
+  ],
+  "img": "old/a5.jpg",
+  "lb": {
+   "imgs": [
+    "old/a5.jpg",
+    "old/a6.jpg"
+   ]
+  }
+ },
+ {
+  "slug": "shelf-config",
+  "cat": "tools",
+  "ru": [
+   "Конфигуратор стеллажа по размерам",
+   "Ширина, высота, глубина и полки — площадь, масса стали и нагрузка"
+  ],
+  "en": [
+   "Shelving configurator by size",
+   "Width, height, depth and shelves in — area, steel mass and load"
+  ],
+  "href": "/demo/proba-ohra/",
+  "v": "pf-proba-ohra"
+ },
+ {
+  "slug": "stick",
+  "cat": "tools",
+  "ru": [
+   "Параметрический конфигуратор",
+   "Одна геометрия, любая отделка: цвет, материал, гравировка и цена"
+  ],
+  "en": [
+   "Parametric configurator",
+   "One geometry, any finish: colour, material, engraving and price"
+  ],
+  "href": "/demo/stick/",
+  "v": "pf-stick"
+ },
+ {
+  "slug": "pergola-shadow",
+  "cat": "tools",
+  "ru": [
+   "Тень перголы по солнцу",
+   "Когда стол выйдет из тени: расчёт по положению солнца"
+  ],
+  "en": [
+   "Pergola shade by the sun",
+   "When the table leaves the shade, computed from the sun's position"
+  ],
+  "href": "/demo/pergola-shadow/",
+  "v": "pf-pergola-shadow"
+ },
+ {
+  "slug": "chip",
+  "cat": "tools",
+  "ru": [
+   "Токарная обработка в цифрах",
+   "Режимы резания — толщина стружки, температура и её цвет"
+  ],
+  "en": [
+   "Turning, in numbers",
+   "Cutting parameters in — chip thickness, temperature and its colour"
+  ],
+  "href": "/demo/chip/",
+  "v": "pf-chip"
+ },
+ {
+  "slug": "solana-tape",
+  "cat": "tools",
+  "ru": [
+   "Телеметрия сети Solana",
+   "Здоровье сети, валидаторы и экономика — лентой самописца"
+  ],
+  "en": [
+   "Solana network telemetry",
+   "Network health, validators and economy drawn like a chart recorder"
+  ],
+  "href": "https://smirnov-artur.github.io/solana-tape/",
+  "v": "pf-solana-tape"
+ },
+ {
+  "slug": "wb-unit",
+  "cat": "tools",
+  "ru": [
+   "Юнит-экономика Wildberries и Ozon",
+   "Сколько остаётся с одной продажи после комиссий, логистики и налога"
+  ],
+  "en": [
+   "Wildberries & Ozon unit economics",
+   "What's left from one sale after fees, logistics and tax"
+  ],
+  "href": "/demo/wb-unit/",
+  "v": "pf-wb-unit"
+ },
+ {
+  "slug": "fudkost",
+  "cat": "tools",
+  "ru": [
+   "Фудкост и цена блюда",
+   "Себестоимость блюда по ингредиентам и цена под нужную наценку"
+  ],
+  "en": [
+   "Food cost calculator",
+   "Dish cost from ingredients and the price for a target margin"
+  ],
+  "href": "/demo/fudkost/",
+  "v": "pf-fudkost"
+ },
+ {
+  "slug": "ploshchad",
+  "cat": "tools",
+  "ru": [
+   "Стоимость работ по площади",
+   "Вид работ, площадь и опции — цена и срок"
+  ],
+  "en": [
+   "Cost by area",
+   "Job type, area and options in — price and timing"
+  ],
+  "href": "/demo/ploshchad/",
+  "v": "pf-ploshchad"
+ },
+ {
+  "slug": "razmer",
+  "cat": "tools",
+  "ru": [
+   "Стоимость изделия по размерам",
+   "Размеры и материал — цена, срок и эскиз"
+  ],
+  "en": [
+   "Cost by dimensions",
+   "Size and material in — price, lead time and a sketch"
+  ],
+  "href": "/demo/razmer/",
+  "v": "pf-razmer"
+ },
+ {
+  "slug": "kuhnya",
+  "cat": "tools",
+  "ru": [
+   "Калькулятор кухни на заказ",
+   "Цена кухни по длине, форме, классу и фурнитуре"
+  ],
+  "en": [
+   "Custom kitchen calculator",
+   "Kitchen price by length, layout, class and hardware"
+  ],
+  "href": "/demo/kuhnya/",
+  "v": "pf-kuhnya"
+ },
+ {
+  "slug": "okna",
+  "cat": "tools",
+  "ru": [
+   "Калькулятор пластиковых окон",
+   "Цена окна по размерам, профилю, стеклопакету и отделке"
+  ],
+  "en": [
+   "PVC window calculator",
+   "Window price by size, profile, glazing and trim"
+  ],
+  "href": "/demo/okna/",
+  "v": "pf-okna"
+ },
+ {
+  "slug": "potolok",
+  "cat": "tools",
+  "ru": [
+   "Калькулятор натяжного потолка",
+   "Цена потолка по размерам, полотну, углам и светильникам"
+  ],
+  "en": [
+   "Stretch ceiling calculator",
+   "Ceiling price by size, fabric, corners and lights"
+  ],
+  "href": "/demo/potolok/",
+  "v": "pf-potolok"
+ },
+ {
+  "slug": "ozon-finance",
+  "cat": "tools",
+  "ru": [
+   "Начисления Ozon — в Google Таблицу",
+   "Выгрузка финансов Ozon через новые методы API"
+  ],
+  "en": [
+   "Ozon accruals to Google Sheets",
+   "Ozon finance export through the new API methods"
+  ],
+  "img": "gh/ozon-finance-accrual-sheets.jpg",
+  "href": "https://github.com/smirnov-artur/ozon-finance-accrual-sheets"
+ },
+ {
+  "slug": "ledger",
+  "cat": "tools",
+  "ru": [
+   "Двойная запись на Go",
+   "Учёт денег проводками: дебет и кредит всегда сходятся"
+  ],
+  "en": [
+   "Double-entry ledger in Go",
+   "Money kept as postings: debit and credit always balance"
+  ],
+  "img": "gh/ledger.jpg",
+  "href": "https://github.com/smirnov-artur/ledger"
+ },
+ {
+  "slug": "idempotency",
+  "cat": "tools",
+  "ru": [
+   "Идемпотентность платёжных запросов",
+   "Повтор запроса не спишет деньги дважды"
+  ],
+  "en": [
+   "Idempotent payment requests",
+   "A retried request never charges twice"
+  ],
+  "img": "gh/idempotency.jpg",
+  "href": "https://github.com/smirnov-artur/idempotency"
+ },
+ {
+  "slug": "outbox",
+  "cat": "tools",
+  "ru": [
+   "Надёжная отправка событий в Kafka",
+   "Событие уйдёт, даже если сервис упадёт посреди операции"
+  ],
+  "en": [
+   "Reliable event publishing to Kafka",
+   "The event goes out even if the service dies mid-operation"
+  ],
+  "img": "gh/outbox.jpg",
+  "href": "https://github.com/smirnov-artur/outbox"
+ },
+ {
+  "slug": "saga",
+  "cat": "tools",
+  "ru": [
+   "Сага для платёжных сценариев",
+   "Распределённая операция с откатом шагов без двухфазной фиксации"
+  ],
+  "en": [
+   "Saga for payment flows",
+   "A distributed operation with step compensation, no two-phase commit"
+  ],
+  "img": "gh/saga-orchestrator.jpg",
+  "href": "https://github.com/smirnov-artur/saga-orchestrator"
+ },
+ {
+  "slug": "signal",
+  "cat": "3d",
+  "ru": [
+   "Монета под тикер",
+   "Введите тикер — геометрия и цвет монеты пересобираются"
+  ],
+  "en": [
+   "Token hero",
+   "Type a ticker — the coin's geometry and palette rebuild"
+  ],
+  "href": "https://smirnov-artur.github.io/portfolio/cases/new1/",
+  "v": "pf-signal"
+ },
+ {
+  "slug": "lichtenberg",
+  "cat": "3d",
+  "ru": [
+   "Молния в акриле",
+   "Фигура Лихтенберга растёт в блоке, рядом расчёт и цена"
+  ],
+  "en": [
+   "Lightning in acrylic",
+   "A Lichtenberg figure grows in the block, with a calculator and price"
+  ],
+  "href": "/demo/lichtenberg/",
+  "v": "pf-lichtenberg"
+ },
+ {
+  "slug": "lab",
+  "cat": "3d",
+  "ru": [
+   "Drift — частицы на видеокарте",
+   "Облако частиц течёт в поле потока, всё считается на GPU"
+  ],
+  "en": [
+   "Drift — GPU particles",
+   "A particle cloud flows through a flow field, all computed on the GPU"
+  ],
+  "href": "https://smirnov-artur.github.io/webgl/lab/",
+  "v": "pf-lab"
+ },
+ {
+  "slug": "roy",
+  "cat": "3d",
+  "ru": [
+   "Рой частиц",
+   "Миллион частиц на вычислительном шейдере"
+  ],
+  "en": [
+   "Particle swarm",
+   "A million particles on a compute shader"
+  ],
+  "href": "/demo/roy/",
+  "v": "pf-roy"
+ },
+ {
+  "slug": "zhidkost",
+  "cat": "3d",
+  "ru": [
+   "Жидкость и разрушение",
+   "Симуляция жидкости и разрушения на видеокарте"
+  ],
+  "en": [
+   "Fluid and fracture",
+   "Fluid and fracture simulated on the GPU"
+  ],
+  "href": "/demo/zhidkost-razrushenie/",
+  "v": "pf-zhidkost-razrushenie"
+ },
+ {
+  "slug": "survival",
+  "cat": "3d",
+  "ru": [
+   "Прототип игры",
+   "Робот, хаб и выживание прямо в браузере"
+  ],
+  "en": [
+   "Game prototype",
+   "A robot, a hub and survival right in the browser"
+  ],
+  "href": "/demo/survival/",
+  "v": "pf-survival"
+ },
+ {
+  "slug": "glb-optimize",
+  "cat": "3d",
+  "ru": [
+   "Облегчение 3D-сцены",
+   "Та же сцена в разы легче: сравнение до и после"
+  ],
+  "en": [
+   "3D scene optimisation",
+   "The same scene, several times lighter: before and after"
+  ],
+  "href": "/demo/glb-optimize/",
+  "v": "pf-glb-optimize"
+ },
+ {
+  "slug": "orb",
+  "cat": "3d",
+  "ru": [
+   "Obsidian Orb",
+   "Сфера отзывается на звук"
+  ],
+  "en": [
+   "Obsidian Orb",
+   "An orb that reacts to sound"
+  ],
+  "href": "https://smirnov-artur.github.io/webgl/orb/",
+  "v": "pf-orb"
+ },
+ {
+  "slug": "sunvalley-pokaz",
+  "cat": "web",
+  "ru": [
+   "Винодельня: вход в долину",
+   "Показ сайта винодельни с входом в долину"
+  ],
+  "en": [
+   "Winery: enter the valley",
+   "A winery site showcase that opens into the valley"
+  ],
+  "href": "https://smirnov-artur.github.io/sunvalley-pokaz/",
+  "v": "pf-sunvalley-pokaz"
+ },
+ {
+  "slug": "vanny-concepts",
+  "cat": "web",
+  "ru": [
+   "Салон ванн и душевых кабин",
+   "Тёмная версия сайта дилера сантехники"
+  ],
+  "en": [
+   "Bath and shower showroom",
+   "A dark version of a plumbing dealer's site"
+  ],
+  "href": "https://smirnov-artur.github.io/vanny-concepts/",
+  "v": "pf-vanny-concepts"
+ },
+ {
+  "slug": "kanara",
+  "cat": "web",
+  "ru": [
+   "Мебель для интерьеров",
+   "Сайт производителя мебели для дома, кафе и офисов"
+  ],
+  "en": [
+   "Interior furniture",
+   "A site for a furniture maker for homes, cafés and offices"
+  ],
+  "href": "/demo/kanara/",
+  "v": "pf-kanara"
+ },
+ {
+  "slug": "ferro",
+  "cat": "web",
+  "ru": [
+   "Студия с жидким курсором",
+   "Курсор вскрывает второе изображение прямо под указателем"
+  ],
+  "en": [
+   "Liquid-cursor studio",
+   "The cursor reveals a second image right beneath it"
+  ],
+  "href": "https://smirnov-artur.github.io/portfolio/cases/ferro/",
+  "v": "pf-ferro"
+ },
+ {
+  "slug": "flux",
+  "cat": "web",
+  "ru": [
+   "Fluxwave",
+   "Неоновый первый экран с живым видео и физикой курсора"
+  ],
+  "en": [
+   "Fluxwave",
+   "A neon hero with live video and cursor physics"
+  ],
+  "href": "https://smirnov-artur.github.io/portfolio/cases/flux/",
+  "v": "pf-flux"
+ },
+ {
+  "slug": "santeh-3d",
+  "cat": "web",
+  "ru": [
+   "Оптовый каталог с 3D",
+   "Каталог, остатки и прайсы, первый экран — 3D-сцена"
+  ],
+  "en": [
+   "Wholesale catalogue with 3D",
+   "Catalogue, stock and prices; the first screen is a 3D scene"
+  ],
+  "img": "old/a8.jpg",
+  "vid": "old/a8.mp4",
+  "lb": {
+   "video": "old/a8.mp4"
+  }
+ },
+ {
+  "slug": "santeh-diler",
+  "cat": "web",
+  "ru": [
+   "Витрина и кабинет дилера",
+   "Один интерфейс: гость видит витрину, дилер — свой кабинет"
+  ],
+  "en": [
+   "Storefront and dealer cabinet",
+   "One interface: a guest sees the store, a dealer sees their cabinet"
+  ],
+  "img": "old/a10.jpg",
+  "vid": "old/a10.mp4",
+  "lb": {
+   "video": "old/a10.mp4"
+  }
+ },
+ {
+  "slug": "webgl-site",
+  "cat": "web",
+  "ru": [
+   "Витрина 3D-разработки",
+   "Англоязычный сайт: конфигураторы и шейдеры, фон — живой шейдер"
+  ],
+  "en": [
+   "Real-time 3D showcase",
+   "An English site on configurators and shaders; the background is a live shader"
+  ],
+  "href": "https://smirnov-artur.github.io/webgl/",
+  "v": "pf-webgl"
+ },
+ {
+  "slug": "kalk",
+  "cat": "web",
+  "ru": [
+   "Лендинг: калькулятор за день",
+   "Короткая страница услуги"
+  ],
+  "en": [
+   "Landing: a calculator in a day",
+   "A short service page"
+  ],
+  "href": "/demo/kalk/",
+  "v": "pf-kalk"
  },
  {
   "slug": "figurines",
@@ -69,7 +960,8 @@
   "en": [
    "3D figurines",
    "A character carousel: color, scale and focus change together."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "dreams",
@@ -81,7 +973,8 @@
   "en": [
    "Night sky",
    "A cinematic video background, big serif type, glass buttons."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "ai-workers",
@@ -93,7 +986,8 @@
   "en": [
    "AI workers",
    "A full-screen forest video with a glass menu and cards on top."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "store-builder",
@@ -105,7 +999,8 @@
   "en": [
    "Store builder",
    "A 3D wheel of 37 store creatives spins behind a live shop mock while the headline wipes up"
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "fox-404",
@@ -117,7 +1012,8 @@
   "en": [
    "Fox 404 page",
    "A fox in a cap scrolls its phone over a breathing 404"
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "private-jets",
@@ -129,7 +1025,8 @@
   "en": [
    "Private jets",
    "A black jet flies through clouds behind a bold typographic hero"
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "defi-node-grid",
@@ -141,7 +1038,8 @@
   "en": [
    "Liquid Assets",
    "Jellyfish video under a self-drawing grid, with nodes and connectors appearing one by one"
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "city-scroll-story",
@@ -153,7 +1051,8 @@
   "en": [
    "Mostar scroll story",
    "The old bridge parts like a curtain into a river close-up, story panels fade through blue haze and sight cards fly in, playing by itself until you scroll."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "dot-matrix-ai",
@@ -165,7 +1064,8 @@
   "en": [
    "Dot-matrix AI landing",
    "Dot-matrix code shimmers above glowing purple dunes while the headline fades in line by line and four metrics count up."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "ai-trip-planner",
@@ -177,7 +1077,8 @@
   "en": [
    "AI trip planner",
    "Hand-drawn world landmarks come alive under a frosted-glass card holding a ready trip request."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "data-platform",
@@ -189,7 +1090,8 @@
   "en": [
    "Data platform",
    "A stormy sea video while the revenue chart grows bar by bar"
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "pet-store",
@@ -201,7 +1103,8 @@
   "en": [
    "Pet store",
    "Headline words pop in while pets peek over the panels"
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "wellness-glass",
@@ -213,7 +1116,8 @@
   "en": [
    "Natural wellness",
    "A glass head with a glowing brain turns behind liquid-glass buttons"
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "3d-ball-store",
@@ -225,7 +1129,8 @@
   "en": [
    "3D ball store",
    "A textured 3D ball spins and cycles colourways, flies into the cart and travels through six scroll scenes: specs, rings, podium, debris"
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "space-voyages",
@@ -237,7 +1142,8 @@
   "en": [
    "Space voyages",
    "Space videos fade in and out on a loop while the headline blurs in word by word over liquid glass"
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "terrarium-spotlight",
@@ -249,7 +1155,8 @@
   "en": [
    "Terrarium spotlight",
    "A light spot wanders across the terrarium revealing live video, the scene drifts after it, a giant G.A.D. stands behind the glass"
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "train-window",
@@ -261,7 +1168,8 @@
   "en": [
    "Train window",
    "Four landscapes roll past a gently rocking train window; in Deep Woods the text turns dark"
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "scroll-bloom",
@@ -273,7 +1181,8 @@
   "en": [
    "Scroll Bloom",
    "Scrolling scrubs a glowing flower film frame by frame while stars drift and three cards wipe in."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "dashboard-signal",
@@ -285,7 +1194,8 @@
   "en": [
    "One Clear Signal",
    "The headline slides in line by line over a looping pixel-flower video, and a glass demo card rises last."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "strata-spotlight",
@@ -297,7 +1207,8 @@
   "en": [
    "Strata Spotlight",
    "A soft spotlight roams bare rock and reveals the mossy, flowering layer beneath; it follows the cursor or finger."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "data-shield",
@@ -309,7 +1220,8 @@
   "en": [
    "Data Shield",
    "A night snowboarder loops behind the giant staggered words “protect your data”."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "falcon-login",
@@ -321,7 +1233,8 @@
   "en": [
    "Falcon login screen",
    "A looping falcon dive beside a login card: elements rise in one by one on load, and the layout rebuilds itself for tablet and phone."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "ai-portal",
@@ -333,7 +1246,8 @@
   "en": [
    "AI infrastructure landing",
    "Full-bleed video of a figure walking into a glowing portal, the headline rises in on load, and phones get a frosted-glass menu."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "wellness-rainbow",
@@ -345,7 +1259,8 @@
   "en": [
    "Wellness studio",
    "An Earth-from-orbit video hero, then a rainbow and clouds drifting with the scroll in smooth parallax."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "cyber-flora",
@@ -357,7 +1272,8 @@
   "en": [
    "Cyber-botany scroll story",
    "A five-screen scroll story: a cyber flower opens and turns while glass cards, manifesto lines and a sign-up form float in."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "monitor-head",
@@ -369,7 +1285,8 @@
   "en": [
    "Monitor-head agent",
    "The retro-monitor head turns after the cursor while the AI agent types its greeting."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "voice-id-signup",
@@ -381,7 +1298,8 @@
   "en": [
    "Voice ID sign-up",
    "A glass ring shimmers behind the sign-up panel, and on phones the menu opens as a circle from the button."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "llm-platform",
@@ -393,7 +1311,8 @@
   "en": [
    "LLM platform by the lake",
    "A lakeside landscape moves in the video while the menu and headline rise in one by one."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "glass-key-hero",
@@ -405,7 +1324,8 @@
   "en": [
    "Glass key",
    "A glass key presses itself and glows, while a strip of services scrolls endlessly below."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "ai-email-client",
@@ -417,7 +1337,8 @@
   "en": [
    "AI email client",
    "Looping video, shimmering headline and a live inbox mockup with an AI summary"
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "ev-inside-out",
@@ -429,7 +1350,8 @@
   "en": [
    "Electric car, inside out",
    "Opens the hood and X-rays the battery on its own; hotspots switch paint, wheels and cutaways"
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "plant-supplements",
@@ -441,7 +1363,8 @@
   "en": [
    "Plant supplements store",
    "Words rise out of blur, the jar floats, benefit cards rotate every 3.5 s"
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "contact-landing",
@@ -453,7 +1376,8 @@
   "en": [
    "Contact landing",
    "Full-screen mountain meadow video behind a glass nav and a project form with service tags."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "scroll-flight",
@@ -465,7 +1389,8 @@
   "en": [
    "Energy: scroll flight",
    "Scrolling flies the camera from mountain peaks through clouds to a ship at sea as three captions take turns."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "jungle-train",
@@ -477,7 +1402,8 @@
   "en": [
    "Urban jungle",
    "Scrolling rolls through a flower-filled train car, the headline letters fall away and a glass panel slides up."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "silver-wave",
@@ -489,7 +1415,8 @@
   "en": [
    "AI agents in minutes",
    "A silver particle wave swells behind the headline while the buttons shimmer like liquid metal."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "neural-llama",
@@ -501,7 +1428,8 @@
   "en": [
    "Brain and Body",
    "A llama in VR goggles turns its head after the cursor while the headline decodes itself letter by letter."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "fiber-eye",
@@ -513,7 +1441,8 @@
   "en": [
    "Fiber-Optic Eye",
    "Scrolling gathers glowing fiber-optic strands into a blue iris."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "cube-wall-security",
@@ -525,7 +1454,8 @@
   "en": [
    "AI Security",
    "A 3D wall of cubes in Spline: light sweeps across it and green signals run between the blocks."
-  ]
+  ],
+  "cat": "web"
  },
  {
   "slug": "cinematic-404",
@@ -537,6 +1467,124 @@
   "en": [
    "404 page",
    "Live aqueduct landscape behind a huge glassy 404"
-  ]
+  ],
+  "cat": "web"
+ },
+ {
+  "slug": "pixel-portfolio",
+  "v": "pixel-portfolio",
+  "ru": [
+   "Пиксельное портфолио",
+   "Видеопортрет крутится по кругу за заголовком из пиксельных слов"
+  ],
+  "en": [
+   "Pixel portfolio",
+   "Looping video portrait behind a headline set in pixel type"
+  ],
+  "cat": "web"
+ },
+ {
+  "slug": "portrait-marquee",
+  "v": "portrait-marquee",
+  "ru": [
+   "Портрет и бегущая строка",
+   "Огромная надпись бежит строкой за вырезанным портретом"
+  ],
+  "en": [
+   "Portrait marquee",
+   "A giant name scrolls behind a cut-out portrait"
+  ],
+  "cat": "web"
+ },
+ {
+  "slug": "fluted-glass-studio",
+  "v": "fluted-glass-studio",
+  "ru": [
+   "Студия за рифлёным стеклом",
+   "Оранжевая жидкость тянется за курсором сквозь рифлёное стекло"
+  ],
+  "en": [
+   "Fluted glass studio",
+   "Orange liquid trails the cursor through fluted glass"
+  ],
+  "cat": "web"
+ },
+ {
+  "slug": "aquarium-studio",
+  "v": "aquarium-studio",
+  "ru": [
+   "Студия визуальных историй",
+   "Золотые рыбки плывут в столбе света в тёмном аквариуме, бейдж, заголовок, текст и кнопка поднимаются по очереди."
+  ],
+  "en": [
+   "Visual storytelling studio",
+   "Goldfish swim through a shaft of light in a dark tank while the badge, headline, text and button rise in one after another."
+  ],
+  "cat": "web"
+ },
+ {
+  "slug": "studio-portraits",
+  "v": "studio-portraits",
+  "ru": [
+   "Портреты студии",
+   "Портреты сменяют друг друга и медленно приближаются, лента аватаров их переключает"
+  ],
+  "en": [
+   "Studio portraits",
+   "Portraits cross-fade and slowly zoom in, the avatar row switches between them"
+  ],
+  "cat": "web"
+ },
+ {
+  "slug": "design-studio-hero",
+  "v": "design-studio-hero",
+  "ru": [
+   "Первый экран дизайн-студии",
+   "Видео на весь экран под антиквенным заголовком и анимированное меню"
+  ],
+  "en": [
+   "Design studio hero",
+   "Fullscreen video loop under a serif headline, with an animated burger menu"
+  ],
+  "cat": "web"
+ },
+ {
+  "slug": "3d-creator-portfolio",
+  "v": "3d-creator-portfolio",
+  "ru": [
+   "3D-портфолио",
+   "Портрет плывёт за курсором, ленты работ едут от прокрутки, карточки проектов складываются стопкой"
+  ],
+  "en": [
+   "3D creator portfolio",
+   "Portrait drifts after the cursor, work reels slide with scroll, project cards stack up"
+  ],
+  "cat": "web"
+ },
+ {
+  "slug": "cinematic-studio",
+  "v": "cinematic-studio",
+  "ru": [
+   "Киностудия",
+   "Видео в рамке, огромный логотип выезжает снизу, текст проявляется по буквам от прокрутки"
+  ],
+  "en": [
+   "Cinematic studio",
+   "Framed hero video, giant logo pulls up, text reveals letter by letter on scroll"
+  ],
+  "cat": "web"
+ },
+ {
+  "slug": "visuals",
+  "v": "visuals",
+  "ru": [
+   "Визуал",
+   "Под курсором проявляется вторая картинка — герой загорается."
+  ],
+  "en": [
+   "Visuals",
+   "A second image shows through under the cursor — the hero catches fire."
+  ],
+  "cat": "web"
  }
 ]
