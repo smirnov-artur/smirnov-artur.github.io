@@ -3566,5 +3566,35 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "pulse-3d",
+  "v": "pulse-3d",
+  "ve": "pulse-3d-en",
+  "ru": [
+   "Закрытый Web3-клуб",
+   "Видео с героем крутится колесом мыши, затем поднимается панель с 3D-стеной текста манифеста."
+  ],
+  "en": [
+   "Web3 private club",
+   "A mascot video scrubs with the scroll, then a rounded panel rises to a rotating 3D wall of manifesto text."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "bio-active",
+  "v": "bio-active",
+  "ve": "bio-active-en",
+  "ru": [
+   "Наука о коже",
+   "Гигантский глаз из тумана на видео, а на скролле текст и статистика сменяются вместе с кадром"
+  ],
+  "en": [
+   "Skincare science",
+   "A giant nebula-eye video crossfades on scroll while the headline and stats swap with it"
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
