@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="utf-8">
 <script src="/works/js/gad-loader.js"></script>
 <script>if(new URLSearchParams(location.search).get('embed')==='1')document.documentElement.classList.add('embed')</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Made-to-Order Product Price Calculator</title>
-<meta name="description" content="Live price for a made-to-order product by dimensions, material and finish. Embeds on any site with one line, calculated from your own price list.">
+<title>Калькулятор стоимости изделия по размерам</title>
+<meta name="description" content="Живой расчёт цены изделия на заказ по размерам, материалу и обработке. Встраивается на любой сайт одной строкой, считает по вашему прайсу.">
 <style>.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}</style>
 <style>
 :root{
@@ -76,105 +76,105 @@ button:hover,a.knopka:hover{border-color:var(--aktsent)}
 <body>
 <div class="obolochka">
 <header>
-  <a class="gad-bar" href="https://smirnov-artur.github.io/works/en" aria-label="g.a.d.">
+  <a class="gad-bar" href="https://smirnov-artur.github.io/works/" aria-label="g.a.d.">
     <svg class="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
       <path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z" />
       <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
       <circle class="orb" cx="322" cy="8" r="5" fill="currentColor" />
     </svg>
   </a>
-  <h1>Product price by dimensions</h1>
-  <p class="podzag">Enter the dimensions, pick a material and finish. Price, area, weight and lead time are calculated
-  <b>instantly, from the shop's own price list</b>, with no call to a sales rep. The estimate can be copied or sent as a request.</p>
+  <h1>Стоимость изделия по размерам</h1>
+  <p class="podzag">Введите размеры, выберите материал и обработку. Цена, площадь, масса и срок считаются
+  <b>сразу, по прайсу производства</b>, без звонка менеджеру. Расчёт можно скопировать или отправить как заявку.</p>
 </header>
 
 <div class="setka">
 <section class="karta">
-  <h2>Parameters</h2>
-  <div class="pole"><label>Product</label>
+  <h2>Параметры</h2>
+  <div class="pole"><label>Изделие</label>
     <select id="tip"></select></div>
   <div class="pole tri">
-    <div><label>Width, mm</label><input id="w" type="number" min="100" max="6000" step="10" value="1200"></div>
-    <div><label>Height, mm</label><input id="h" type="number" min="100" max="4000" step="10" value="800"></div>
-    <div id="pole-t"><label>Thickness, mm</label><input id="t" type="number" min="1" max="120" step="1" value="20"></div>
+    <div><label>Ширина, мм</label><input id="w" type="number" min="100" max="6000" step="10" value="1200"></div>
+    <div><label>Высота, мм</label><input id="h" type="number" min="100" max="4000" step="10" value="800"></div>
+    <div id="pole-t"><label>Толщина, мм</label><input id="t" type="number" min="1" max="120" step="1" value="20"></div>
   </div>
-  <div class="pole"><label>Material</label>
+  <div class="pole"><label>Материал</label>
     <select id="material"></select></div>
-  <div class="pole"><label>Quantity, pcs</label><input id="n" type="number" min="1" max="200" step="1" value="1"></div>
-  <div class="pole"><label>Finish and add-ons</label>
+  <div class="pole"><label>Количество, шт</label><input id="n" type="number" min="1" max="200" step="1" value="1"></div>
+  <div class="pole"><label>Обработка и дополнительно</label>
     <div id="optsii"></div></div>
 </section>
 
 <section class="karta">
-  <h2>Estimate</h2>
+  <h2>Расчёт</h2>
   <div class="chertezh"><svg id="svg" viewBox="0 0 400 200" aria-hidden="true"></svg></div>
-  <div class="itog"><span id="tsena">0</span> <small>$</small></div>
-  <p class="srok">Lead time: <b id="srok">—</b>. 50% deposit.</p>
+  <div class="itog"><span id="tsena">0</span> <small>₽</small></div>
+  <p class="srok">Срок изготовления: <b id="srok">—</b>. Предоплата 50 %.</p>
   <table id="tablitsa"></table>
   <div class="knopki">
-    <button class="glavnaya" id="zayavka">Send estimate as a request</button>
-    <button id="kopiya">Copy estimate</button>
+    <button class="glavnaya" id="zayavka">Отправить расчёт как заявку</button>
+    <button id="kopiya">Скопировать расчёт</button>
   </div>
   <p class="primech" id="primech"></p>
-  <div class="vstroit">Embeds on any site with one line (WordPress, Squarespace, Webflow, Shopify):
-    <code>&lt;iframe src="https://smirnov-artur.github.io/demo/razmer/?embed=1" style="width:100%;height:900px;border:0"&gt;&lt;/iframe&gt;</code>
+  <div class="vstroit">Встраивается на любой сайт одной строкой (Tilda, WordPress, Битрикс, Shopify):
+    <code>&lt;iframe src="https://smirnov-artur.github.io/demo/razmer/ru/?embed=1" style="width:100%;height:900px;border:0"&gt;&lt;/iframe&gt;</code>
   </div>
 </section>
 </div>
 
 <footer class="podval">
-  Demo. The price list here is illustrative and sits in one block at the top of the script: for your shop, the numbers
-  change, not the code. A calculator built for your price list — 3 days, $150; with a drawing and 3D — from $450.
-  <a href="https://smirnov-artur.github.io/demo/kalk/">All calculators and prices</a> · Telegram <a href="https://t.me/smirnovarturr">@smirnovarturr</a>
+  Демонстрация. Прайс в этом примере условный и лежит одним блоком в начале скрипта: под ваше производство
+  меняются числа, а не код. Такой калькулятор под ваш прайс — 3 дня и 15 000 ₽, с чертежом и 3D — от 45 000 ₽.
+  <a href="https://smirnov-artur.github.io/demo/kalk/ru/">Все калькуляторы и цены</a> · Telegram <a href="https://t.me/smirnovarturr">@smirnovarturr</a>
 </footer>
 </div>
 
 <script>
-// PRICE LIST. Everything specific to your shop lives here.
-// Numbers are illustrative — a demonstration of the mechanics, not any company's real price list.
+// ПРАЙС. Всё, что настраивается под конкретное производство, лежит здесь.
+// Числа условные — демонстрация механики, не прайс какой-либо компании.
 const PRAIS = {
   tipy: {
-    stoleshnitsa: { imya: "Countertop", tolshchina: true, plotnost: 0, materialy: ["ldsp","mdf","massiv","kvarts"], srokBaza: 3, srokNaM2: 1.5 },
-    fasad:        { imya: "Cabinet door / facade", tolshchina: true, plotnost: 0, materialy: ["ldsp","mdf","massiv"], srokBaza: 4, srokNaM2: 1 },
-    steklo:       { imya: "Glass partition", tolshchina: true, plotnost: 2500, materialy: ["steklo","triplex"], srokBaza: 5, srokNaM2: 2 },
-    metall:       { imya: "Steel sheet / shelf", tolshchina: true, plotnost: 7850, materialy: ["st3","nerzh","alyum"], srokBaza: 2, srokNaM2: 0.5 },
+    stoleshnitsa: { imya: "Столешница", tolshchina: true, plotnost: 0, materialy: ["ldsp","mdf","massiv","kvarts"], srokBaza: 3, srokNaM2: 1.5 },
+    fasad:        { imya: "Фасад / дверца шкафа", tolshchina: true, plotnost: 0, materialy: ["ldsp","mdf","massiv"], srokBaza: 4, srokNaM2: 1 },
+    steklo:       { imya: "Стеклянная перегородка", tolshchina: true, plotnost: 2500, materialy: ["steklo","triplex"], srokBaza: 5, srokNaM2: 2 },
+    metall:       { imya: "Стальной лист / полка", tolshchina: true, plotnost: 7850, materialy: ["st3","nerzh","alyum"], srokBaza: 2, srokNaM2: 0.5 },
   },
   materialy: {
-    ldsp:   { imya: "Chipboard 16–25 mm",       zaM2: 29 },
-    mdf:    { imya: "Painted MDF",              zaM2: 68 },
-    massiv: { imya: "Solid oak",                zaM2: 145 },
-    kvarts: { imya: "Quartz agglomerate",       zaM2: 210 },
-    steklo: { imya: "Tempered glass",           zaM2: 42, plotnost: 2500 },
-    triplex:{ imya: "Laminated (triplex)",      zaM2: 79, plotnost: 2500 },
-    st3:    { imya: "Mild steel St3",           zaM2: 19, plotnost: 7850 },
-    nerzh:  { imya: "Stainless AISI 304",       zaM2: 56, plotnost: 7900 },
-    alyum:  { imya: "Aluminium",                zaM2: 41, plotnost: 2700 },
+    ldsp:   { imya: "ЛДСП 16–25 мм",           zaM2: 2900 },
+    mdf:    { imya: "МДФ крашеный",            zaM2: 6800 },
+    massiv: { imya: "Массив дуба",             zaM2: 14500 },
+    kvarts: { imya: "Кварцевый агломерат",     zaM2: 21000 },
+    steklo: { imya: "Стекло закалённое",       zaM2: 4200, plotnost: 2500 },
+    triplex:{ imya: "Триплекс",                zaM2: 7900, plotnost: 2500 },
+    st3:    { imya: "Сталь Ст3",               zaM2: 1900, plotnost: 7850 },
+    nerzh:  { imya: "Нержавеющая AISI 304",    zaM2: 5600, plotnost: 7900 },
+    alyum:  { imya: "Алюминий",                zaM2: 4100, plotnost: 2700 },
   },
-  // finish: per perimeter ($/running m), per area ($/m²) or a flat fee per item
+  // обработка: по периметру (₽ за м.п.), по площади (₽ за м²) или фиксированно за изделие
   optsii: [
-    { id: "kromka",   imya: "Edge trim / finishing", edinitsa: "mp",  tsena: 2,  dlya: ["stoleshnitsa","fasad","metall"] },
-    { id: "polirovka",imya: "Glass edge polishing",   edinitsa: "mp",  tsena: 4,  dlya: ["steklo"] },
-    { id: "vyrez",    imya: "Sink cut-out / holes",   edinitsa: "sht", tsena: 12, dlya: ["stoleshnitsa","steklo","metall"] },
-    { id: "pokraska", imya: "Powder coating",         edinitsa: "m2",  tsena: 9,  dlya: ["metall"] },
-    { id: "montazh",  imya: "Installation",           edinitsa: "pct", tsena: 12, dlya: ["stoleshnitsa","fasad","steklo","metall"] },
-    { id: "dostavka", imya: "Delivery in the city",   edinitsa: "sht", tsena: 15, dlya: ["stoleshnitsa","fasad","steklo","metall"], odinRaz: true },
+    { id: "kromka",   imya: "Кромка / обработка торцов", edinitsa: "mp",  tsena: 180,  dlya: ["stoleshnitsa","fasad","metall"] },
+    { id: "polirovka",imya: "Полировка кромки стекла",   edinitsa: "mp",  tsena: 350,  dlya: ["steklo"] },
+    { id: "vyrez",    imya: "Вырез под мойку / отверстия", edinitsa: "sht", tsena: 1200, dlya: ["stoleshnitsa","steklo","metall"] },
+    { id: "pokraska", imya: "Порошковая окраска",        edinitsa: "m2",  tsena: 900,  dlya: ["metall"] },
+    { id: "montazh",  imya: "Монтаж",                    edinitsa: "pct", tsena: 12,   dlya: ["stoleshnitsa","fasad","steklo","metall"] },
+    { id: "dostavka", imya: "Доставка по городу",        edinitsa: "sht", tsena: 1500, dlya: ["stoleshnitsa","fasad","steklo","metall"], odinRaz: true },
   ],
-  skidki: [ { ot: 5, pct: 5 }, { ot: 10, pct: 10 } ],   // by quantity
-  minZakaz: 30,
+  skidki: [ { ot: 5, pct: 5 }, { ot: 10, pct: 10 } ],   // от количества штук
+  minZakaz: 3000,
 };
 
 const $ = id => document.getElementById(id);
-const fmt = n => '$' + Math.round(n).toLocaleString("en-US");
+const fmt = n => Math.round(n).toLocaleString("ru-RU");
 
 function zapolnitTipy(){
   $("tip").innerHTML = Object.entries(PRAIS.tipy).map(([k,v]) => `<option value="${k}">${v.imya}</option>`).join("");
 }
 function zapolnitMaterialy(){
   const t = PRAIS.tipy[$("tip").value];
-  $("material").innerHTML = t.materialy.map(m => `<option value="${m}">${PRAIS.materialy[m].imya} — ${fmt(PRAIS.materialy[m].zaM2)}/m²</option>`).join("");
+  $("material").innerHTML = t.materialy.map(m => `<option value="${m}">${PRAIS.materialy[m].imya} — ${fmt(PRAIS.materialy[m].zaM2)} ₽/м²</option>`).join("");
   $("optsii").innerHTML = PRAIS.optsii.filter(o => o.dlya.includes($("tip").value)).map(o => {
-    const ed = {mp:"/running m", m2:"/m²", sht:"/pc", pct:"% of price"}[o.edinitsa];
-    return `<label class="galka"><input type="checkbox" data-opt="${o.id}"><span>${o.imya}</span><em>${o.edinitsa==='pct'?o.tsena:fmt(o.tsena)}${ed}</em></label>`;
+    const ed = {mp:"₽/м.п.", m2:"₽/м²", sht:"₽/шт", pct:"% от стоимости"}[o.edinitsa];
+    return `<label class="galka"><input type="checkbox" data-opt="${o.id}"><span>${o.imya}</span><em>${fmt(o.tsena)} ${ed}</em></label>`;
   }).join("");
   $("optsii").querySelectorAll("input").forEach(i => i.addEventListener("change", schitat));
 }
@@ -186,22 +186,22 @@ function schitat(){
   const m2 = (w/1000) * (h/1000);
   const mp = 2 * ((w + h) / 1000);
   const plotnost = mat.plotnost || tip.plotnost || 0;
-  const massa = plotnost ? m2 * (t/1000) * plotnost : 0;   // kg per item
+  const massa = plotnost ? m2 * (t/1000) * plotnost : 0;   // кг на одно изделие
 
   const stroki = [];
   let odnoIzdelie = m2 * mat.zaM2;
-  stroki.push({ gruppa: "Material" });
-  stroki.push({ imya: `${mat.imya}, ${m2.toFixed(2)} m² × ${fmt(mat.zaM2)}`, summa: odnoIzdelie });
+  stroki.push({ gruppa: "Материал" });
+  stroki.push({ imya: `${mat.imya}, ${m2.toFixed(2)} м² × ${fmt(mat.zaM2)} ₽`, summa: odnoIzdelie });
 
   let obrabotka = 0, razovo = 0, montazhPct = 0;
   const vybrano = [...$("optsii").querySelectorAll("input:checked")].map(i => PRAIS.optsii.find(o => o.id === i.dataset.opt));
-  if (vybrano.length) stroki.push({ gruppa: "Finish and services" });
+  if (vybrano.length) stroki.push({ gruppa: "Обработка и услуги" });
   for (const o of vybrano) {
     let s = 0, pod = "";
-    if (o.edinitsa === "mp") { s = mp * o.tsena; pod = `${mp.toFixed(2)} running m × ${fmt(o.tsena)}`; }
-    if (o.edinitsa === "m2") { s = m2 * o.tsena; pod = `${m2.toFixed(2)} m² × ${fmt(o.tsena)}`; }
-    if (o.edinitsa === "sht") { s = o.tsena; pod = o.odinRaz ? "per order" : "per item"; }
-    if (o.edinitsa === "pct") { montazhPct += o.tsena; pod = `${o.tsena}% of item price`; }
+    if (o.edinitsa === "mp") { s = mp * o.tsena; pod = `${mp.toFixed(2)} м.п. × ${fmt(o.tsena)} ₽`; }
+    if (o.edinitsa === "m2") { s = m2 * o.tsena; pod = `${m2.toFixed(2)} м² × ${fmt(o.tsena)} ₽`; }
+    if (o.edinitsa === "sht") { s = o.tsena; pod = o.odinRaz ? "за заказ" : "за изделие"; }
+    if (o.edinitsa === "pct") { montazhPct += o.tsena; pod = `${o.tsena} % от стоимости изделий`; }
     if (o.odinRaz) razovo += s; else if (o.edinitsa !== "pct") obrabotka += s;
     if (o.edinitsa !== "pct") stroki.push({ imya: `${o.imya}, ${pod}`, summa: s });
     else stroki.push({ imya: `${o.imya}, ${pod}`, summa: null, pct: o.tsena });
@@ -210,28 +210,28 @@ function schitat(){
   let zaIzdelie = odnoIzdelie + obrabotka;
   let izdeliya = zaIzdelie * n;
   const skidka = [...PRAIS.skidki].reverse().find(s => n >= s.ot);
-  stroki.push({ gruppa: "Total" });
-  stroki.push({ imya: `Items: ${n} pc × ${fmt(zaIzdelie)}`, summa: izdeliya });
-  if (skidka) { const sk = izdeliya * skidka.pct / 100; izdeliya -= sk; stroki.push({ imya: `Volume discount ${skidka.pct}%`, summa: -sk }); }
+  stroki.push({ gruppa: "Итог" });
+  stroki.push({ imya: `Изделий: ${n} шт × ${fmt(zaIzdelie)} ₽`, summa: izdeliya });
+  if (skidka) { const sk = izdeliya * skidka.pct / 100; izdeliya -= sk; stroki.push({ imya: `Скидка за объём ${skidka.pct} %`, summa: -sk }); }
   let montazh = izdeliya * montazhPct / 100;
-  if (montazhPct) stroki.push({ imya: `Installation ${montazhPct}%`, summa: montazh });
-  if (razovo) stroki.push({ imya: "One-time services", summa: razovo });
+  if (montazhPct) stroki.push({ imya: `Монтаж ${montazhPct} %`, summa: montazh });
+  if (razovo) stroki.push({ imya: "Разовые услуги", summa: razovo });
   let itogo = Math.max(PRAIS.minZakaz, izdeliya + montazh + razovo);
-  if (massa) stroki.push({ imya: `Weight: ${(massa).toFixed(1)} kg per item, ${(massa*n).toFixed(0)} kg total`, summa: null });
+  if (massa) stroki.push({ imya: `Масса: ${(massa).toFixed(1)} кг за изделие, ${(massa*n).toFixed(0)} кг всего`, summa: null });
 
   const srokDney = Math.ceil(tip.srokBaza + tip.srokNaM2 * m2 * n);
-  $("tsena").textContent = Math.round(itogo).toLocaleString("en-US");
-  $("srok").textContent = `${srokDney} business day${srokDney === 1 ? "" : "s"}`;
+  $("tsena").textContent = fmt(itogo);
+  $("srok").textContent = `${srokDney} раб. ${srokDney === 1 ? "день" : srokDney < 5 ? "дня" : "дней"}`;
   $("tablitsa").innerHTML = stroki.map(s => s.gruppa ? `<tr><td class="gruppa" colspan="2">${s.gruppa}</td></tr>`
-    : `<tr><td>${s.imya}</td><td>${s.summa == null ? "" : (s.summa < 0 ? "−" : "") + fmt(Math.abs(s.summa))}</td></tr>`).join("");
-  $("primech").textContent = itogo === PRAIS.minZakaz ? `Minimum order ${fmt(PRAIS.minZakaz)}.` : "";
+    : `<tr><td>${s.imya}</td><td>${s.summa == null ? "" : (s.summa < 0 ? "−" : "") + fmt(Math.abs(s.summa)) + " ₽"}</td></tr>`).join("");
+  $("primech").textContent = itogo === PRAIS.minZakaz ? `Минимальный заказ ${fmt(PRAIS.minZakaz)} ₽.` : "";
   $("pole-t").style.display = tip.tolshchina ? "" : "none";
   risovat(w, h, t);
 
-  const tekst = [`${tip.imya}: ${w}×${h}×${t} mm, ${mat.imya}, ${n} pc`,
-    ...vybrano.map(o => "+ " + o.imya), `Total ${fmt(itogo)}, lead time ${srokDney} business days`].join("\n");
-  $("kopiya").onclick = () => { navigator.clipboard && navigator.clipboard.writeText(tekst); $("kopiya").textContent = "Copied"; setTimeout(() => $("kopiya").textContent = "Copy estimate", 1500); };
-  $("zayavka").onclick = () => { location.href = "mailto:paladei702@gmail.com?subject=" + encodeURIComponent("Request: " + tip.imya) + "&body=" + encodeURIComponent(tekst + "\n\nContact info: "); };
+  const tekst = [`${tip.imya}: ${w}×${h}×${t} мм, ${mat.imya}, ${n} шт`,
+    ...vybrano.map(o => "+ " + o.imya), `Итого ${fmt(itogo)} ₽, срок ${srokDney} раб. дн.`].join("\n");
+  $("kopiya").onclick = () => { navigator.clipboard && navigator.clipboard.writeText(tekst); $("kopiya").textContent = "Скопировано"; setTimeout(() => $("kopiya").textContent = "Скопировать расчёт", 1500); };
+  $("zayavka").onclick = () => { location.href = "mailto:paladei702@gmail.com?subject=" + encodeURIComponent("Заявка: " + tip.imya) + "&body=" + encodeURIComponent(tekst + "\n\nКонтакт для связи: "); };
 }
 
 function risovat(w, h, t){
@@ -243,10 +243,10 @@ function risovat(w, h, t){
   svg.innerHTML = `
     <rect x="${x}" y="${y}" width="${pw}" height="${ph}" fill="none" stroke="${lin}" stroke-width="2" rx="2"/>
     <line x1="${x}" y1="${y+ph+16}" x2="${x+pw}" y2="${y+ph+16}" stroke="${tus}" stroke-width="1"/>
-    <text x="${x+pw/2}" y="${y+ph+30}" text-anchor="middle" font-size="12" fill="${tus}">${w} mm</text>
+    <text x="${x+pw/2}" y="${y+ph+30}" text-anchor="middle" font-size="12" fill="${tus}">${w} мм</text>
     <line x1="${x-16}" y1="${y}" x2="${x-16}" y2="${y+ph}" stroke="${tus}" stroke-width="1"/>
     <text x="${x-20}" y="${y+ph/2}" text-anchor="end" font-size="12" fill="${tus}" dominant-baseline="middle">${h}</text>
-    <text x="${x+pw-6}" y="${y+16}" text-anchor="end" font-size="11" fill="${tus}">t = ${t} mm</text>`;
+    <text x="${x+pw-6}" y="${y+16}" text-anchor="end" font-size="11" fill="${tus}">t = ${t} мм</text>`;
 }
 
 zapolnitTipy(); zapolnitMaterialy(); schitat();

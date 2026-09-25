@@ -873,15 +873,16 @@
   "slug": "kalk",
   "cat": "web",
   "ru": [
-   "Лендинг: калькулятор за день",
-   "Короткая страница услуги"
+   "Калькуляторы для бизнеса",
+   "Клиент сам считает цену и сразу оставляет заявку — восемь живых калькуляторов в одной витрине"
   ],
   "en": [
-   "Landing: a calculator in a day",
-   "A short service page"
+   "Business calculators",
+   "The customer calculates their own price and leaves the lead — eight live calculators in one showcase"
   ],
-  "href": "/demo/kalk/",
-  "v": "pf-kalk"
+  "v": "kalk",
+  "rp": 1,
+  "ve": "kalk-en"
  },
  {
   "slug": "ai-workers",
@@ -3314,20 +3315,6 @@
   "hre": "https://smirnov-artur.github.io/ventprom-tools/en/"
  },
  {
-  "slug": "kredit",
-  "cat": "tools",
-  "ru": [
-   "Калькулятор досрочного погашения",
-   "График платежей с нестандартными условиями и досрочными взносами"
-  ],
-  "en": [
-   "Early repayment calculator",
-   "A payment schedule with custom terms and early repayments"
-  ],
-  "href": "/demo/kredit/",
-  "v": "pf-kredit"
- },
- {
   "slug": "ventprom-packer",
   "cat": "tools",
   "ru": [
@@ -3465,104 +3452,6 @@
   ],
   "href": "https://smirnov-artur.github.io/solana-tape/",
   "v": "pf-solana-tape"
- },
- {
-  "slug": "wb-unit",
-  "cat": "tools",
-  "ru": [
-   "Юнит-экономика Wildberries и Ozon",
-   "Сколько остаётся с одной продажи после комиссий, логистики и налога"
-  ],
-  "en": [
-   "Wildberries & Ozon unit economics",
-   "What's left from one sale after fees, logistics and tax"
-  ],
-  "href": "/demo/wb-unit/",
-  "v": "pf-wb-unit"
- },
- {
-  "slug": "fudkost",
-  "cat": "tools",
-  "ru": [
-   "Фудкост и цена блюда",
-   "Себестоимость блюда по ингредиентам и цена под нужную наценку"
-  ],
-  "en": [
-   "Food cost calculator",
-   "Dish cost from ingredients and the price for a target margin"
-  ],
-  "href": "/demo/fudkost/",
-  "v": "pf-fudkost"
- },
- {
-  "slug": "ploshchad",
-  "cat": "tools",
-  "ru": [
-   "Стоимость работ по площади",
-   "Вид работ, площадь и опции — цена и срок"
-  ],
-  "en": [
-   "Cost by area",
-   "Job type, area and options in — price and timing"
-  ],
-  "href": "/demo/ploshchad/",
-  "v": "pf-ploshchad"
- },
- {
-  "slug": "razmer",
-  "cat": "tools",
-  "ru": [
-   "Стоимость изделия по размерам",
-   "Размеры и материал — цена, срок и эскиз"
-  ],
-  "en": [
-   "Cost by dimensions",
-   "Size and material in — price, lead time and a sketch"
-  ],
-  "href": "/demo/razmer/",
-  "v": "pf-razmer"
- },
- {
-  "slug": "kuhnya",
-  "cat": "tools",
-  "ru": [
-   "Калькулятор кухни на заказ",
-   "Цена кухни по длине, форме, классу и фурнитуре"
-  ],
-  "en": [
-   "Custom kitchen calculator",
-   "Kitchen price by length, layout, class and hardware"
-  ],
-  "href": "/demo/kuhnya/",
-  "v": "pf-kuhnya"
- },
- {
-  "slug": "okna",
-  "cat": "tools",
-  "ru": [
-   "Калькулятор пластиковых окон",
-   "Цена окна по размерам, профилю, стеклопакету и отделке"
-  ],
-  "en": [
-   "PVC window calculator",
-   "Window price by size, profile, glazing and trim"
-  ],
-  "href": "/demo/okna/",
-  "v": "pf-okna"
- },
- {
-  "slug": "potolok",
-  "cat": "tools",
-  "ru": [
-   "Калькулятор натяжного потолка",
-   "Цена потолка по размерам, полотну, углам и светильникам"
-  ],
-  "en": [
-   "Stretch ceiling calculator",
-   "Ceiling price by size, fabric, corners and lights"
-  ],
-  "href": "/demo/potolok/",
-  "v": "pf-potolok"
  },
  {
   "slug": "ozon-finance",

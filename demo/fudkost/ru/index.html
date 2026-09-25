@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="utf-8">
 <script src="/works/js/gad-loader.js"></script>
 <script>if(new URLSearchParams(location.search).get('embed')==='1')document.documentElement.classList.add('embed')</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Food Cost &amp; Menu Price Calculator</title>
-<meta name="description" content="Work out a dish's food cost from its ingredients, accounting for prep waste, and the menu price needed to hit a target food-cost percentage.">
+<title>Калькулятор фудкоста и цены блюда</title>
+<meta name="description" content="Посчитайте себестоимость блюда по ингредиентам с учётом отхода при обработке, фудкост % и наценку, рекомендуемую цену в меню под целевой фудкост.">
 <style>.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}</style>
 <style>
 :root{
@@ -99,73 +99,74 @@ button.kopirovat.ok{border-color:var(--aktsent);color:var(--aktsent)}
 <div class="obolochka">
 
 <header>
-  <a class="gad-bar" href="https://smirnov-artur.github.io/works/en" aria-label="g.a.d.">
+  <a class="gad-bar" href="https://smirnov-artur.github.io/works/" aria-label="g.a.d.">
     <svg class="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
       <path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z" />
       <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
       <circle class="orb" cx="322" cy="8" r="5" fill="currentColor" />
     </svg>
   </a>
-  <h1>Food cost &amp; menu price</h1>
-  <p class="podzag">A dish's cost from its ingredients, accounting for prep waste —
-  and what it really costs to put on the menu to hit your target food cost.</p>
+  <h1>Фудкост и цена блюда</h1>
+  <p class="podzag">Себестоимость блюда по ингредиентам с учётом отхода при обработке —
+  и сколько на самом деле стоит поставить в меню, чтобы попасть в целевой фудкост.</p>
 </header>
 
 <div class="karta">
-  <h2>Ingredients per serving</h2>
+  <h2>Ингредиенты на порцию</h2>
   <div id="ingredients"></div>
-  <button type="button" class="dobavit" id="addRow">+ add ingredient</button>
+  <button type="button" class="dobavit" id="addRow">+ добавить ингредиент</button>
 </div>
 
 <div class="karta">
-  <h2>Menu price and food cost</h2>
+  <h2>Цена в меню и фудкост</h2>
   <div class="para">
-    <div class="pole"><label for="menuPrice">Menu price, $</label>
-      <input id="menuPrice" type="number" inputmode="decimal" min="0" step="0.5" value="18"></div>
-    <div class="pole"><label for="targetFC">Target food cost, %</label>
+    <div class="pole"><label for="menuPrice">Цена в меню, ₽</label>
+      <input id="menuPrice" type="number" inputmode="decimal" min="0" step="10" value="490"></div>
+    <div class="pole"><label for="targetFC">Целевой фудкост, %</label>
       <input id="targetFC" type="number" inputmode="decimal" min="1" max="95" step="1" value="30"></div>
   </div>
   <div class="itogi" id="itogi"></div>
-  <button type="button" class="kopirovat" id="copyBtn">Copy estimate</button>
+  <button type="button" class="kopirovat" id="copyBtn">Скопировать расчёт</button>
 </div>
 
 <p class="snoska">
-  Enter <b>net</b> weight — how much product actually ends up in the serving after trimming and prep.
-  <b>Gross</b> — how much raw product you need to buy to end up with that net weight after waste — is
-  calculated automatically and shown read-only under the row:
-  <code>gross = net ÷ (1 − waste% ÷ 100)</code>, rounded to 1 g. The line's cost is by gross, the way a
-  kitchen accountant does it: <code>cost = gross ÷ 1000 × price_per_kg</code>. For example, 100 g net with
-  20% waste requires buying 125 g. Waste of 100% or more means "nothing is left after prep" — such a row
-  is flagged and excluded from the total. Food cost % = serving cost ÷ menu price × 100; markup % =
-  (price − cost) ÷ cost × 100; recommended price = cost ÷ target food cost × 100, rounded up to the
-  nearest $1. The table is saved in this browser, so you can come back and continue.
+  В таблицу вводится <b>нетто</b> — сколько продукта фактически идёт в порцию после очистки,
+  обрезки и обработки. <b>Брутто</b> — сколько сырья нужно закупить, чтобы после отхода получить
+  это нетто, — считается автоматически и показывается под строкой только для чтения:
+  <code>брутто = нетто ÷ (1 − отход% ÷ 100)</code>, округлено до 1 г. Себестоимость строки —
+  уже по брутто, как и положено технологу: <code>себестоимость = брутто ÷ 1000 × цена_за_кг</code>.
+  Например, 100 г нетто с отходом 20 % требуют закупки 125 г. Отход 100 % и больше означает
+  «после обработки не остаётся ничего» — такая строка помечается и не входит в сумму.
+  Фудкост % = себестоимость порции ÷ цена в меню × 100; наценка % = (цена − себестоимость) ÷
+  себестоимость × 100; рекомендуемая цена — себестоимость ÷ целевой фудкост × 100, округлено
+  вверх до 10 ₽. Таблица сохраняется в этом браузере, можно вернуться и продолжить.
 </p>
 
 <div class="kontakt">
-  <p>Need a calculator like this for your business — on your site or in a Telegram bot?
-  Message me on Telegram: <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">@smirnovarturr</a></p>
+  <p>Нужен такой калькулятор под ваш бизнес — на сайт или в Telegram-бота?
+  Напишите в Telegram: <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">@smirnovarturr</a></p>
 </div>
 
 </div>
 <script>
 const $ = id => document.getElementById(id);
-const numEn = new Intl.NumberFormat('en-US',{maximumFractionDigits:0});
-const num2En = new Intl.NumberFormat('en-US',{maximumFractionDigits:2});
-const pctEn = new Intl.NumberFormat('en-US',{maximumFractionDigits:1,minimumFractionDigits:1});
-const usd = n => Number.isFinite(n) ? '$' + numEn.format(Math.round(n)) : '—';
-const usd2 = n => Number.isFinite(n) ? '$' + num2En.format(n) : '—';
-const pct = n => Number.isFinite(n) ? pctEn.format(n) + '%' : '—';
+const numRu = new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0});
+const num2Ru = new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2});
+const pctRu = new Intl.NumberFormat('ru-RU',{maximumFractionDigits:1,minimumFractionDigits:1});
+const rub = n => Number.isFinite(n) ? numRu.format(Math.round(n)) + ' ₽' : '—';
+const rub2 = n => Number.isFinite(n) ? num2Ru.format(n) + ' ₽' : '—';
+const pct = n => Number.isFinite(n) ? pctRu.format(n) + ' %' : '—';
 
-const STORAGE_KEY = 'foodcost-table-v2-en'; // v2: "gross" field replaced by "net" — old format is simply ignored
+const STORAGE_KEY = 'fudkost-tablitsa-v2'; // v2: поле "брутто" заменено на "нетто" — старый формат просто игнорируем
 
-// The row takes NET weight — how much product actually goes into the serving after cleaning and
-// prep (what a chef writes on a spec sheet). Gross — how much raw product you need to buy so that
-// after waste (trimming, bones, reduction) you end up with that net weight — is computed from the
-// waste %, not typed in by hand:
-//   gross = net / (1 − waste% / 100)
-//   line_cost = gross / 1000 × price_per_kg
-// Waste of 100% or more is division by zero (or negative): buying a finite amount would never be
-// enough, so the row is marked invalid, not recalculated, and excluded from the total.
+// В строке вводится нетто — сколько продукта фактически идёт в порцию после очистки и
+// обработки (то, что технолог пишет в ТТК). Брутто — сколько сырья нужно закупить, чтобы
+// после отхода (чистка, кости, уварка) получить это нетто, — считается из отхода, а не
+// вводится руками:
+//   брутто = нетто / (1 − отход% / 100)
+//   себестоимость_строки = брутто / 1000 × цена_за_кг
+// Отход 100% и больше — деление на ноль (или в минус), закупить нужно было бы бесконечно
+// много: строка считается некорректной, не пересчитывается и не входит в сумму.
 function rowCalc(netto, p, w){
   const n = Math.max(0, netto);
   const waste = Math.max(0, w);
@@ -183,13 +184,13 @@ function makeRow(data){
   d.className = 'ing-row';
   d.innerHTML = `
     <div class="ing-top">
-      <input type="text" class="ing-name" value="${escapeHtml(data.name || '')}" placeholder="Ingredient">
-      <button type="button" class="udalit" title="Remove ingredient" aria-label="Remove ingredient">×</button>
+      <input type="text" class="ing-name" value="${escapeHtml(data.name || '')}" placeholder="Ингредиент">
+      <button type="button" class="udalit" title="Удалить ингредиент" aria-label="Удалить ингредиент">×</button>
     </div>
     <div class="ing-nums">
-      <div><label>Net per serving, g</label><input type="number" inputmode="decimal" class="ing-netto" min="0" step="1" value="${data.netto}" title="How much product goes into the dish after cleaning and prep"></div>
-      <div><label>Price, $/kg</label><input type="number" inputmode="decimal" class="ing-p" min="0" step="0.1" value="${data.p}"></div>
-      <div><label>Waste, %</label><input type="number" inputmode="decimal" class="ing-w" min="0" max="99" step="1" value="${data.w}"></div>
+      <div><label>Нетто в порции, г</label><input type="number" inputmode="decimal" class="ing-netto" min="0" step="1" value="${data.netto}" title="Сколько продукта идёт в блюдо после очистки и обработки"></div>
+      <div><label>Цена, ₽/кг</label><input type="number" inputmode="decimal" class="ing-p" min="0" step="1" value="${data.p}"></div>
+      <div><label>Отход, %</label><input type="number" inputmode="decimal" class="ing-w" min="0" max="99" step="1" value="${data.w}"></div>
     </div>
     <div class="ing-cost"></div>`;
   d.querySelector('.udalit').addEventListener('click', () => { d.remove(); recalc(); });
@@ -211,7 +212,7 @@ function readRows(){
 }
 
 function save(state){
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){ /* private mode etc. — silently skip */ }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){ /* приватный режим и т.п. — молча пропускаем */ }
 }
 
 function load(){
@@ -220,6 +221,8 @@ function load(){
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (!parsed || !Array.isArray(parsed.rows) || !parsed.rows.length) return null;
+    // Старый формат (v1) хранил вес в поле g и не знал про нетто — если форма не сходится,
+    // просто игнорируем сохранённое и берём пример по умолчанию.
     if (parsed.rows.some(r => typeof r.netto !== 'number')) return null;
     return parsed;
   } catch(e){ return null; }
@@ -234,8 +237,8 @@ function recalc(){
     const r = rowCalc(netto, p, w);
     row.classList.toggle('nevalid', r.invalid);
     row.querySelector('.ing-cost').innerHTML = r.invalid
-      ? `<span>Waste ≥ 100% — would need infinite purchase, row excluded from total</span>`
-      : `<span>Gross ≈ ${Math.round(r.brutto)} g</span><span>Line cost: <b>${usd2(r.cost)}</b></span>`;
+      ? `<span>Отход ≥ 100% — закупка бесконечна, строка не учтена в сумме</span>`
+      : `<span>Брутто ≈ ${Math.round(r.brutto)} г</span><span>Себестоимость строки: <b>${rub2(r.cost)}</b></span>`;
     if (!r.invalid) totalCost += r.cost;
   });
 
@@ -243,14 +246,14 @@ function recalc(){
   const targetFC = +$('targetFC').value || 0;
   const foodCostPct = menuPrice > 0 ? totalCost / menuPrice * 100 : NaN;
   const markupPct = totalCost > 0 ? (menuPrice - totalCost) / totalCost * 100 : NaN;
-  const recommendedPrice = targetFC > 0 ? Math.ceil(totalCost / (targetFC / 100)) : NaN;
+  const recommendedPrice = targetFC > 0 ? Math.ceil((totalCost / (targetFC / 100)) / 10) * 10 : NaN;
   const over = Number.isFinite(foodCostPct) && foodCostPct > targetFC;
 
   $('itogi').innerHTML = `
-    <div class="plitka glav"><div class="podpis">Serving cost</div><div class="chislo">${usd2(totalCost)}</div></div>
-    <div class="plitka ${over ? 'over' : ''}"><div class="podpis">Food cost</div><div class="chislo">${pct(foodCostPct)}</div></div>
-    <div class="plitka"><div class="podpis">Markup</div><div class="chislo">${pct(markupPct)}</div></div>
-    <div class="plitka"><div class="podpis">Recommended price (at ${targetFC || 0}% food cost)</div><div class="chislo">${usd(recommendedPrice)}</div></div>`;
+    <div class="plitka glav"><div class="podpis">Себестоимость порции</div><div class="chislo">${rub2(totalCost)}</div></div>
+    <div class="plitka ${over ? 'over' : ''}"><div class="podpis">Фудкост</div><div class="chislo">${pct(foodCostPct)}</div></div>
+    <div class="plitka"><div class="podpis">Наценка</div><div class="chislo">${pct(markupPct)}</div></div>
+    <div class="plitka"><div class="podpis">Рекомендуемая цена (при ${targetFC || 0} % фудкоста)</div><div class="chislo">${rub(recommendedPrice)}</div></div>`;
 
   save({ rows: readRows(), menuPrice, targetFC });
   return { totalCost, menuPrice, targetFC, foodCostPct, markupPct, recommendedPrice };
@@ -259,26 +262,26 @@ function recalc(){
 function summaryText(){
   const s = recalc();
   const rows = readRows();
-  const lines = ['Food cost & menu price', ''];
+  const lines = ['Фудкост и цена блюда', ''];
   rows.forEach(row => {
-    const label = row.name || 'Ingredient';
+    const label = row.name || 'Ингредиент';
     const r = rowCalc(row.netto, row.p, row.w);
-    if (r.invalid) lines.push(`${label}: net ${row.netto} g, waste ${row.w}% → waste ≥ 100%, row excluded`);
-    else lines.push(`${label}: net ${row.netto} g, gross ${Math.round(r.brutto)} g, waste ${row.w}%, price ${row.p}/kg → ${usd2(r.cost)}`);
+    if (r.invalid) lines.push(`${label}: нетто ${row.netto} г, отход ${row.w} % → отход ≥ 100%, строка не учтена`);
+    else lines.push(`${label}: нетто ${row.netto} г, брутто ${Math.round(r.brutto)} г, отход ${row.w} %, цена ${row.p} ₽/кг → ${rub2(r.cost)}`);
   });
   lines.push('');
-  lines.push(`Serving cost: ${usd2(s.totalCost)}`);
-  lines.push(`Menu price: ${usd(s.menuPrice)}`);
-  lines.push(`Food cost: ${pct(s.foodCostPct)}`);
-  lines.push(`Markup: ${pct(s.markupPct)}`);
-  lines.push(`Target food cost: ${s.targetFC}%`);
-  lines.push(`Recommended price: ${usd(s.recommendedPrice)}`);
+  lines.push(`Себестоимость порции: ${rub2(s.totalCost)}`);
+  lines.push(`Цена в меню: ${rub(s.menuPrice)}`);
+  lines.push(`Фудкост: ${pct(s.foodCostPct)}`);
+  lines.push(`Наценка: ${pct(s.markupPct)}`);
+  lines.push(`Целевой фудкост: ${s.targetFC} %`);
+  lines.push(`Рекомендуемая цена: ${rub(s.recommendedPrice)}`);
   return lines.join('\n');
 }
 
 function copyText(text, btn){
   const old = btn.textContent;
-  const done = ok => { btn.textContent = ok ? 'Copied' : "Didn't work — select the text manually";
+  const done = ok => { btn.textContent = ok ? 'Скопировано' : 'Не вышло — выделите текст вручную';
     btn.classList.toggle('ok', ok); setTimeout(()=>{btn.textContent=old; btn.classList.remove('ok');}, 1800); };
   function fallback(){
     try{
@@ -296,12 +299,12 @@ function copyText(text, btn){
 }
 
 const PRIMER = [
-  { name:'Spaghetti', netto:100, p:1.3, w:0 },
-  { name:'Guanciale (or bacon)', netto:60, p:7.5, w:5 },
-  { name:'Egg yolks (or whole eggs)', netto:40, p:3, w:0 },
-  { name:'Grated parmesan or pecorino', netto:30, p:18, w:5 },
-  { name:'Garlic', netto:5, p:3, w:10 },
-  { name:'Black pepper and salt', netto:2, p:12, w:0 },
+  { name:'Спагетти', netto:100, p:130, w:0 },
+  { name:'Гуанчиале (или бекон)', netto:60, p:750, w:5 },
+  { name:'Желтки (или яйца)', netto:40, p:300, w:0 },
+  { name:'Пармезан или пекорино тёртый', netto:30, p:1800, w:5 },
+  { name:'Чеснок', netto:5, p:300, w:10 },
+  { name:'Перец чёрный и соль', netto:2, p:1200, w:0 },
 ];
 
 const saved = load();
@@ -313,30 +316,30 @@ if (saved){
   PRIMER.forEach(addRow);
 }
 
-$('addRow').addEventListener('click', () => { addRow({name:'', netto:100, p:2, w:0}); recalc(); });
+$('addRow').addEventListener('click', () => { addRow({name:'', netto:100, p:200, w:0}); recalc(); });
 $('menuPrice').addEventListener('input', recalc);
 $('targetFC').addEventListener('input', recalc);
 $('copyBtn').addEventListener('click', () => copyText(summaryText(), $('copyBtn')));
 recalc();
 
-/* Self-check: ?check in the address bar. Verifies the row formula, waste ≥100%, and the default example. */
-if (new URLSearchParams(location.search).has('check')){
-  const c1 = rowCalc(100, 100, 20); // net 100g, $100/kg, waste 20% -> gross 125g -> $12.5
+/* Самопроверка: ?proverka в адресной строке. Проверяет формулу строки, отход ≥100% и пример по умолчанию. */
+if (new URLSearchParams(location.search).has('proverka')){
+  const c1 = rowCalc(100, 100, 20); // нетто 100г, 100₽/кг, отход 20% -> брутто 125г -> 12.5₽
   const ok1 = !c1.invalid && Math.abs(c1.brutto - 125) < 0.001 && Math.abs(c1.cost - 12.5) < 0.001;
-  const c2 = rowCalc(50, 100, 100); // waste 100% -> impossible to buy a finite amount
+  const c2 = rowCalc(50, 100, 100); // отход 100% -> невозможно закупить конечное количество
   const ok2 = c2.invalid === true;
   const primerCost = PRIMER.reduce((s,r) => s + rowCalc(r.netto, r.p, r.w).cost, 0);
-  const ok3 = Math.abs(primerCost - 1.332772) < 0.0005;
-  const rec = Math.ceil(primerCost/0.30);
-  const ok4 = rec >= primerCost/0.30 && rec < primerCost/0.30 + 1;
+  const ok3 = Math.abs(primerCost - 133.2772) < 0.05;
+  const rec = Math.ceil((primerCost/0.30)/10)*10;
+  const ok4 = rec >= primerCost/0.30 && rec < primerCost/0.30 + 10;
   const div = document.createElement('div');
   div.className = 'snoska';
   div.style.cssText = 'border:1px solid var(--liniya);border-radius:10px;padding:12px;margin-top:14px';
-  div.innerHTML = `<b>${ok1&&ok2&&ok3&&ok4 ? 'Self-check passed' : 'Self-check FAILED'}</b><br>
-    row formula (net 100g, $100/kg, waste 20%): gross ${c1.brutto.toFixed(4)} g (expect 125), ${c1.cost.toFixed(4)} (expect 12.5) — ${ok1?'ok':'MISMATCH'}<br>
-    waste 100% is flagged invalid — ${ok2?'yes':'MISMATCH'}<br>
-    carbonara example cost: ${primerCost.toFixed(4)} (expect ≈1.3328) — ${ok3?'ok':'MISMATCH'}<br>
-    recommended price — rounds up and covers the target food cost — ${ok4?'yes':'MISMATCH'}`;
+  div.innerHTML = `<b>${ok1&&ok2&&ok3&&ok4 ? 'Самопроверка пройдена' : 'Самопроверка НЕ пройдена'}</b><br>
+    формула строки (нетто 100г, 100₽/кг, отход 20%): брутто ${c1.brutto.toFixed(4)} г (ожидание 125), ${c1.cost.toFixed(4)} ₽ (ожидание 12.5) — ${ok1?'сходится':'РАСХОЖДЕНИЕ'}<br>
+    отход 100% помечается как некорректный — ${ok2?'да':'РАСХОЖДЕНИЕ'}<br>
+    себестоимость примера карбонары: ${primerCost.toFixed(4)} ₽ (ожидание ≈133.28) — ${ok3?'сходится':'РАСХОЖДЕНИЕ'}<br>
+    рекомендуемая цена — кратна 10 и покрывает целевой фудкост — ${ok4?'да':'РАСХОЖДЕНИЕ'}`;
   document.querySelector('.obolochka').appendChild(div);
 }
 </script>
