@@ -3149,6 +3149,21 @@
   "rp": 1
  },
  {
+  "slug": "outbound-ai",
+  "v": "outbound-ai",
+  "ve": "outbound-ai-en",
+  "ru": [
+   "ИИ-агент продаж",
+   "Видео зациклено на фоне, а последние слова заголовка окрашены градиентом от синего к жёлтому."
+  ],
+  "en": [
+   "AI sales agent",
+   "A looping animated video plays behind a headline whose final words are painted in a blue-to-yellow gradient."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "seller",
   "cat": "ai",
   "ru": [
