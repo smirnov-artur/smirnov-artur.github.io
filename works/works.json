@@ -2603,5 +2603,33 @@
    "A glowing eye video fills the hero, then scroll reveals a temple-glow portrait with blurred headline swaps."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "bold-studio",
+  "v": "bold-studio",
+  "ve": "bold-studio-en",
+  "ru": [
+   "Креативный коллектив",
+   "Видео с черепахой-ниндзя и воином в красном свете, а заголовки и цифры плавно всплывают следом."
+  ],
+  "en": [
+   "Creative collective",
+   "A red-lit video of a ninja turtle and an armored warrior plays behind fade-up headlines and stats."
+  ],
+  "cat": "web"
+ },
+ {
+  "slug": "interactive-discovery",
+  "v": "interactive-discovery",
+  "ve": "interactive-discovery-en",
+  "ru": [
+   "Курс геологии",
+   "Мягкое пятно света следует за курсором по фото скалы, открывая под ним мшистое цветное изображение."
+  ],
+  "en": [
+   "Geology course",
+   "A soft spotlight follows the cursor over a rock photo, unmasking a mossier, colorful image underneath."
+  ],
+  "cat": "web"
  }
 ]
