@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<script src="/works/js/gad-loader.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Коллекция g.a.d.: огромный анимированный логотип на месте заголовка, парящий кадр с моделью, витрина эксклюзивного изделия и кольцо из коллекции от $25,550." />
+<title>g.a.d. — Ювелирная коллекция</title>
+<link href="https://db.onlinewebfonts.com/c/7973d1644865c7217230fea96daae6fe?family=Test+Founders+Grotesk+Light" rel="stylesheet">
+<link href="https://db.onlinewebfonts.com/c/12487acadbf8efa35235fe8d339411ec?family=NimbusSanExt" rel="stylesheet">
+<style>.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}</style>
+<style>
+*, *::before, *::after {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: 'Test Founders Grotesk Light', sans-serif;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+overflow: hidden;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fade-in-up {
+from { opacity: 0; transform: translateY(24px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in-down {
+from { opacity: 0; transform: translateY(-24px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in-scale {
+from { opacity: 0; transform: translate(-50%, 0) scale(0.95); }
+to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+@keyframes fade-in {
+from { opacity: 0; }
+to { opacity: 1; }
+}
+
+@keyframes line-grow {
+from { transform: scaleY(0); }
+to { transform: scaleY(1); }
+}
+
+.animate-fade-in-up {
+animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in-down {
+animation: fade-in-down 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in-scale {
+animation: fade-in-scale 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in {
+animation: fade-in 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-line-grow {
+transform-origin: top;
+animation: line-grow 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ===== LAYOUT ===== */
+.page-wrapper {
+display: flex;
+flex-direction: column;
+height: 100vh;
+overflow: hidden;
+}
+
+.hero-section {
+position: relative;
+flex: 1;
+width: 100%;
+background-color: #E96B00;
+overflow: hidden;
+}
+
+/* ===== GRADIENT GLOW ===== */
+.gradient-glow {
+position: absolute;
+left: -96px;
+top: 33%;
+width: 1360px;
+height: 1360px;
+border-radius: 50%;
+background: rgba(246, 187, 126, 0.4);
+filter: blur(450px);
+}
+
+/* ===== GRID LINES ===== */
+.grid-lines {
+position: absolute;
+inset: 0;
+z-index: 1;
+pointer-events: none;
+}
+
+.grid-line {
+position: absolute;
+top: 0;
+width: 1px;
+height: 100%;
+background: rgba(255, 255, 255, 0.16);
+}
+
+/* ===== NAVIGATION ===== */
+.nav {
+position: relative;
+z-index: 50;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 28px 24px 0;
+}
+
+.nav-links {
+display: flex;
+align-items: center;
+gap: 16px;
+}
+
+.nav-links a {
+color: white;
+text-decoration: none;
+font-size: 20px;
+line-height: 1.25;
+transition: opacity 0.2s;
+}
+
+.nav-links a:hover {
+opacity: 0.8;
+}
+
+.cart-badge {
+display: flex;
+align-items: center;
+justify-content: center;
+width: 20px;
+height: 20px;
+background: black;
+border-radius: 50%;
+color: white;
+font-size: 13px;
+line-height: 1;
+}
+
+.cart-link {
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+/* ===== LARGE HEADING ===== */
+.hero-heading-wrapper {
+position: absolute;
+top: 5%;
+left: 0;
+right: 0;
+z-index: 10;
+text-align: center;
+}
+
+.hero-heading {
+font-family: 'NimbusSanExt', sans-serif;
+font-weight: bold;
+color: white;
+font-size: clamp(12rem, 24vw, 30rem);
+line-height: 0.85;
+letter-spacing: -0.10em;
+white-space: nowrap;
+}
+
+/* ===== CENTER HERO IMAGE ===== */
+.hero-image-wrapper {
+position: absolute;
+top: 8%;
+left: 50%;
+transform: translateX(-50%);
+z-index: 20;
+width: 54%;
+max-width: 760px;
+}
+
+.hero-image-wrapper img {
+width: 100%;
+height: auto;
+object-fit: cover;
+position: relative;
+z-index: 10;
+}
+
+/* ===== LEFT COLUMN ===== */
+.left-column {
+position: absolute;
+left: 0;
+top: 42%;
+bottom: 0;
+z-index: 30;
+width: calc(25.4% + 86px);
+max-width: 451px;
+display: flex;
+flex-direction: column;
+}
+
+.exclusive-card {
+position: relative;
+background: white;
+aspect-ratio: 280 / 160;
+overflow: hidden;
+flex-shrink: 0;
+width: calc(100% - 86px);
+}
+
+.exclusive-card .label {
+position: absolute;
+top: 12px;
+left: 12px;
+color: black;
+font-size: 18px;
+font-weight: 500;
+z-index: 10;
+}
+
+.exclusive-card img {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+.left-middle-row {
+display: flex;
+flex: 1;
+}
+
+.left-middle-text {
+flex: 1;
+padding: 16px 12px;
+}
+
+.left-middle-text p {
+color: white;
+font-size: 20px;
+line-height: 1.625;
+}
+
+.arrow-button {
+width: 86px;
+height: 84px;
+background: black;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+align-self: flex-start;
+cursor: pointer;
+transition: background-color 0.2s;
+}
+
+.arrow-button:hover {
+background: rgba(0, 0, 0, 0.9);
+}
+
+.arrow-button svg {
+width: 20px;
+height: 20px;
+color: white;
+}
+
+.explore-button {
+width: calc(100% - 86px);
+height: 88px;
+background: black;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+flex-shrink: 0;
+transition: background-color 0.2s;
+}
+
+.explore-button:hover {
+background: rgba(0, 0, 0, 0.9);
+}
+
+.explore-button span {
+color: white;
+font-size: 20px;
+font-weight: 500;
+}
+
+/* ===== AWARDS SECTION ===== */
+.awards-section {
+display: flex;
+position: absolute;
+right: 24px;
+top: 42%;
+z-index: 30;
+width: calc(25.4% - 24px);
+max-width: 341px;
+align-items: center;
+justify-content: space-between;
+}
+
+.awards-number {
+display: flex;
+align-items: center;
+gap: 4px;
+}
+
+.awards-bracket {
+color: white;
+font-size: 48px;
+font-weight: 300;
+}
+
+.awards-value-wrapper {
+display: flex;
+align-items: flex-start;
+}
+
+.awards-value {
+color: white;
+font-size: 48px;
+font-weight: 700;
+}
+
+.awards-plus {
+color: white;
+font-size: 20px;
+font-weight: 700;
+position: relative;
+top: -4px;
+}
+
+.awards-text {
+text-align: right;
+}
+
+.awards-text p {
+color: white;
+font-size: 20px;
+text-transform: uppercase;
+line-height: 1.375;
+letter-spacing: 0.025em;
+}
+
+/* ===== SINCE 2017 ===== */
+.since-2017 {
+position: absolute;
+right: 24px;
+top: 60%;
+z-index: 30;
+}
+
+.since-2017 span {
+color: white;
+font-size: 20px;
+}
+
+/* ===== PRODUCT CARD (DESKTOP) ===== */
+.product-card-desktop {
+position: absolute;
+right: 0;
+bottom: 0;
+z-index: 30;
+width: 25.4%;
+max-width: 365px;
+}
+
+.product-card {
+background: white;
+padding: 12px;
+height: 276px;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+position: relative;
+}
+
+.product-card h3 {
+color: black;
+font-size: 20px;
+font-weight: 500;
+line-height: 1.25;
+}
+
+.product-card .subtitle {
+color: rgba(0, 0, 0, 0.6);
+font-size: 14px;
+margin-top: 4px;
+}
+
+.product-card .center-image {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 75%;
+height: auto;
+object-fit: contain;
+}
+
+.product-card .price-label {
+color: rgba(11, 33, 34, 0.64);
+font-size: 14px;
+}
+
+.product-card .price {
+color: #0B2122;
+font-size: 20px;
+font-weight: 500;
+}
+
+.product-arrow {
+position: absolute;
+bottom: 0;
+right: 0;
+width: 92px;
+height: 84px;
+background: black;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: background-color 0.2s;
+}
+
+.product-arrow:hover {
+background: rgba(0, 0, 0, 0.9);
+}
+
+.product-arrow svg {
+width: 20px;
+height: 20px;
+color: white;
+}
+
+/* ===== MOBILE STYLES ===== */
+.mobile-only { display: none; }
+.mobile-logo { display: none; }
+.hamburger { display: none; }
+.mobile-menu { display: none; }
+.mobile-product-card { display: none; }
+.mobile-grid-line { display: none; }
+.desktop-grid-line { display: block; }
+
+@media (max-width: 1023px) {
+.page-wrapper {
+height: 100vh;
+}
+
+.mobile-only { display: block; }
+.desktop-only { display: none; }
+.mobile-grid-line { display: block; }
+.desktop-grid-line { display: none; }
+
+.nav {
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+padding: 20px 16px 0;
+}
+
+.nav-links { display: none; }
+
+.mobile-logo {
+display: block;
+font-family: 'NimbusSanExt', sans-serif;
+color: white;
+font-size: 24px;
+font-weight: bold;
+line-height: 1;
+}
+
+.hamburger {
+display: flex;
+align-items: center;
+justify-content: center;
+width: 40px;
+height: 40px;
+background: none;
+border: none;
+color: white;
+cursor: pointer;
+position: relative;
+z-index: 50;
+}
+
+.hamburger svg {
+width: 24px;
+height: 24px;
+}
+
+.hero-heading-wrapper { display: none; }
+
+.hero-image-wrapper {
+top: auto;
+bottom: -40px;
+width: 132%;
+max-width: none;
+}
+
+.left-column { display: none; }
+
+.awards-section {
+left: 16px;
+right: 16px;
+top: auto;
+bottom: 16px;
+width: auto;
+max-width: none;
+}
+
+.awards-bracket { font-size: 72px; }
+.awards-value { font-size: 72px; }
+.awards-plus { font-size: 24px; }
+
+.since-2017 { display: none; }
+.product-card-desktop { display: none; }
+
+.mobile-product-card {
+display: block;
+position: relative;
+width: 100%;
+flex-shrink: 0;
+}
+
+.mobile-product-card .product-card {
+height: 260px;
+}
+}
+
+/* ===== SVG ICON ===== */
+.icon-arrow-up-right {
+stroke: currentColor;
+stroke-width: 2;
+stroke-linecap: round;
+stroke-linejoin: round;
+fill: none;
+}
+</style>
+<style id="cyr">/* русские буквы: исходный шрифт без кириллицы, глифы — у близкого с кириллицей */
+@font-face{font-family:'Test Founders Grotesk Light';font-style:normal;font-weight:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuOKfAZJhiI2B.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Test Founders Grotesk Light';font-style:normal;font-weight:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuOKfAZthiI2B.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<!-- MAIN HERO SECTION -->
+<section class="hero-section">
+
+<!-- Gradient Glow -->
+<div class="gradient-glow"></div>
+
+<!-- Grid Lines -->
+<div class="grid-lines">
+<!-- Mobile lines -->
+<div class="grid-line mobile-grid-line animate-line-grow" style="left: 33.333%; animation-delay: 0.2s;"></div>
+<div class="grid-line mobile-grid-line animate-line-grow" style="left: 66.666%; animation-delay: 0.35s;"></div>
+<!-- Desktop lines -->
+<div class="grid-line desktop-grid-line animate-line-grow" style="left: 25%; animation-delay: 0.2s;"></div>
+<div class="grid-line desktop-grid-line animate-line-grow" style="left: 50%; animation-delay: 0.35s;"></div>
+<div class="grid-line desktop-grid-line animate-line-grow" style="left: 75%; animation-delay: 0.5s;"></div>
+</div>
+
+<!-- Navigation -->
+<nav class="nav animate-fade-in-down" style="animation-delay: 0.1s;">
+<!-- Desktop left links -->
+<div class="nav-links desktop-only">
+<a href="#">Поиск</a>
+<a href="#">Каталог</a>
+<a href="#">О нас</a>
+</div>
+
+<!-- Desktop right links -->
+<div class="nav-links desktop-only">
+<a href="#">Профиль</a>
+<a href="#">Избранное</a>
+<a href="#" class="cart-link">
+Корзина
+<span class="cart-badge">2</span>
+</a>
+</div>
+
+<!-- Mobile logo -->
+<div class="mobile-logo"><svg class="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d."><path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/><circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/><circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/></svg></div>
+
+<!-- Mobile hamburger -->
+<button class="hamburger" aria-label="Открыть меню" onclick="toggleMenu()">
+<svg id="menu-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<line x1="4" x2="20" y1="12" y2="12"></line>
+<line x1="4" x2="20" y1="6" y2="6"></line>
+<line x1="4" x2="20" y1="18" y2="18"></line>
+</svg>
+<svg id="close-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none; position:absolute;">
+<path d="M18 6 6 18"></path>
+<path d="m6 6 12 12"></path>
+</svg>
+</button>
+</nav>
+
+<!-- Mobile Menu Overlay -->
+<div id="mobile-menu" class="mobile-menu" style="position:fixed; inset:0; z-index:40; visibility:hidden; transition: all 0.5s cubic-bezier(0.77,0,0.18,1);">
+<div id="menu-backdrop" style="position:absolute; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); opacity:0; transition: opacity 0.5s cubic-bezier(0.77,0,0.18,1);" onclick="toggleMenu()"></div>
+<div id="menu-panel" style="position:absolute; top:0; left:0; height:100%; width:80%; max-width:320px; background:#E96B00; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); transform:translateX(-100%); transition: transform 0.5s cubic-bezier(0.77,0,0.18,1);">
+<div style="display:flex; flex-direction:column; gap:4px; padding:96px 24px 0;">
+<a href="#" class="menu-item" style="color:white; text-decoration:none; font-size:30px; font-weight:500; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.1); transition: all 0.3s; opacity:0; transform:translateX(-20px);">Поиск</a>
+<a href="#" class="menu-item" style="color:white; text-decoration:none; font-size:30px; font-weight:500; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.1); transition: all 0.3s; opacity:0; transform:translateX(-20px);">Каталог</a>
+<a href="#" class="menu-item" style="color:white; text-decoration:none; font-size:30px; font-weight:500; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.1); transition: all 0.3s; opacity:0; transform:translateX(-20px);">О нас</a>
+<a href="#" class="menu-item" style="color:white; text-decoration:none; font-size:30px; font-weight:500; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.1); transition: all 0.3s; opacity:0; transform:translateX(-20px);">Профиль</a>
+<a href="#" class="menu-item" style="color:white; text-decoration:none; font-size:30px; font-weight:500; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.1); transition: all 0.3s; opacity:0; transform:translateX(-20px);">Избранное</a>
+</div>
+</div>
+</div>
+
+<!-- Large "g.a.d." Heading (desktop) -->
+<div class="hero-heading-wrapper desktop-only animate-fade-in" style="animation-delay: 0.3s;">
+<h1 class="hero-heading"><svg class="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d."><path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/><circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/><circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/></svg></h1>
+</div>
+
+<!-- Center Hero Image -->
+<div class="hero-image-wrapper animate-fade-in-scale" style="animation-delay: 0.5s;">
+<img src="https://soft-zoom-63098134.figma.site/_assets/v11/9028130a3e77802079d3a2e663b85ee12d365b61.png" alt="Модель в украшениях" />
+</div>
+
+<!-- Left Column (desktop) -->
+<div class="left-column desktop-only animate-fade-in-up" style="animation-delay: 0.7s;">
+<!-- Exclusive Card -->
+<div class="exclusive-card">
+<span class="label">Эксклюзив</span>
+<img src="https://soft-zoom-63098134.figma.site/_assets/v11/d499425c000b01d01831365b4b9df4feb1bead8a.png" alt="Эксклюзивное украшение" />
+</div>
+<!-- Middle Row -->
+<div class="left-middle-row">
+<div class="left-middle-text">
+<p>Каждое украшение — диалог мастерства и чувства</p>
+</div>
+<div class="arrow-button">
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M7 7h10v10"></path>
+<path d="M7 17 17 7"></path>
+</svg>
+</div>
+</div>
+<!-- Explore Button -->
+<div class="explore-button">
+<span>Смотреть коллекцию</span>
+</div>
+</div>
+
+<!-- Awards Section -->
+<div class="awards-section animate-fade-in-up" style="animation-delay: 0.9s;">
+<div class="awards-number">
+<span class="awards-bracket">[</span>
+<div class="awards-value-wrapper">
+<span class="awards-value">12</span>
+<span class="awards-plus">+</span>
+</div>
+<span class="awards-bracket">]</span>
+</div>
+<div class="awards-text">
+<p>Награды<br>Отмечают<br>Инновации</p>
+</div>
+</div>
+
+<!-- Since 2017 (desktop) -->
+<div class="since-2017 desktop-only animate-fade-in" style="animation-delay: 1.1s;">
+<span>[ С 2017 года ]</span>
+</div>
+
+<!-- Product Card Desktop -->
+<div class="product-card-desktop desktop-only animate-fade-in-up" style="animation-delay: 1.0s;">
+<div class="product-card">
+<div>
+<h3>Стёганое кольцо</h3>
+<p class="subtitle">18К жёлтое</p>
+</div>
+<img class="center-image" src="https://soft-zoom-63098134.figma.site/_assets/v11/6297b1b8b8a1c0720cbd098274da6619ad35b486.png" alt="Стёганое кольцо" />
+<div>
+<p class="price-label">От</p>
+<p class="price">$25,550</p>
+</div>
+</div>
+<div class="product-arrow">
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M7 7h10v10"></path>
+<path d="M7 17 17 7"></path>
+</svg>
+</div>
+</div>
+
+</section>
+
+<!-- Mobile Product Card (below hero section) -->
+<div class="mobile-product-card animate-fade-in-up" style="animation-delay: 0.8s;">
+<div class="product-card">
+<div>
+<h3>Стёганое кольцо</h3>
+<p class="subtitle">18К жёлтое</p>
+</div>
+<img class="center-image" src="https://soft-zoom-63098134.figma.site/_assets/v11/6297b1b8b8a1c0720cbd098274da6619ad35b486.png" alt="Стёганое кольцо" />
+<div>
+<p class="price-label">От</p>
+<p class="price">$25,550</p>
+</div>
+</div>
+<div class="product-arrow">
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M7 7h10v10"></path>
+<path d="M7 17 17 7"></path>
+</svg>
+</div>
+</div>
+</div>
+
+<script>
+let menuOpen = false;
+
+function toggleMenu() {
+menuOpen = !menuOpen;
+const overlay = document.getElementById('mobile-menu');
+const backdrop = document.getElementById('menu-backdrop');
+const panel = document.getElementById('menu-panel');
+const menuIcon = document.getElementById('menu-icon');
+const closeIcon = document.getElementById('close-icon');
+const items = document.querySelectorAll('.menu-item');
+
+if (menuOpen) {
+overlay.style.visibility = 'visible';
+backdrop.style.opacity = '1';
+panel.style.transform = 'translateX(0)';
+menuIcon.style.display = 'none';
+closeIcon.style.display = 'block';
+items.forEach((item, i) => {
+setTimeout(() => {
+item.style.opacity = '1';
+item.style.transform = 'translateX(0)';
+}, 80 + i * 50);
+});
+} else {
+backdrop.style.opacity = '0';
+panel.style.transform = 'translateX(-100%)';
+menuIcon.style.display = 'block';
+closeIcon.style.display = 'none';
+items.forEach((item) => {
+item.style.opacity = '0';
+item.style.transform = 'translateX(-20px)';
+});
+setTimeout(() => {
+overlay.style.visibility = 'hidden';
+}, 500);
+}
+}
+</script>
+</body>
+</html>

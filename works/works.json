@@ -3521,5 +3521,50 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "jewelry-store",
+  "v": "jewelry-store",
+  "ve": "jewelry-store-en",
+  "ru": [
+   "Ювелирный магазин",
+   "Линии сетки вытягиваются, логотип дорисовывается за кадром с моделью, а карточки товаров всплывают вокруг неё."
+  ],
+  "en": [
+   "Jewelry store",
+   "Grid lines grow in, a giant logo draws itself behind a floating model shot, and cards fade up around her."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "ai-driving-assistant",
+  "v": "ai-driving-assistant",
+  "ve": "ai-driving-assistant-en",
+  "ru": [
+   "Личный автопилот",
+   "Видео салона разворачивается на весь экран при скролле, волна голоса пульсирует, а дорога сама рисуется точками."
+  ],
+  "en": [
+   "Private autopilot",
+   "A dashboard video expands to fullscreen on scroll while a waveform pulses and a route draws itself with pins."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "product-studio",
+  "v": "product-studio",
+  "ve": "product-studio-en",
+  "ru": [
+   "Креативная студия",
+   "Светящийся шар на видео сменяется другим клипом при скролле к разделу о студии."
+  ],
+  "en": [
+   "Creative studio",
+   "A glowing orb video crossfades to a second clip as the about section scrolls into view."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
