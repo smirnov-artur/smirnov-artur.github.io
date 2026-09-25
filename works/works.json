@@ -2771,5 +2771,19 @@
    "A glossy chrome android scrubs frame by frame as the cursor moves, beside a typewriter headline."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "cargox-mobile",
+  "v": "cargox-mobile",
+  "ve": "cargox-mobile-en",
+  "ru": [
+   "Логистика без границ",
+   "Три экрана в телефонах: видео с грузовиком, наплывающий заголовок, анимированная карта маршрутов и форма связи."
+  ],
+  "en": [
+   "Global freight logistics",
+   "Three phone screens: a truck hero video, a sliding headline, an animated shipping map, and a contact form."
+  ],
+  "cat": "web"
  }
 ]
