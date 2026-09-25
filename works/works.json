@@ -3328,6 +3328,36 @@
   "rp": 1
  },
  {
+  "slug": "ecovolta-hero",
+  "v": "ecovolta-hero",
+  "ve": "ecovolta-hero-en",
+  "ru": [
+   "Солнечная ферма",
+   "Видео с панелями и турбинами за заголовком, который проявляется по буквам, а ниже бежит лента клиентов."
+  ],
+  "en": [
+   "Solar farm hero",
+   "A solar-and-turbine video loops behind a letter-by-letter headline, with a scrolling client marquee below."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "prioritize-hero",
+  "v": "prioritize-hero",
+  "ve": "prioritize-hero-en",
+  "ru": [
+   "Коллаж задач",
+   "Стикер, папки с карточками задач и иконки интеграций проявляются и сдвигаются вокруг крупного заголовка."
+  ],
+  "en": [
+   "Floating task collage",
+   "A sticky note, task folders and integration icons fade and slide in around a bold pop-in headline."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "seller",
   "cat": "ai",
   "ru": [

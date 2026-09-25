@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — планируйте, создавайте и запускайте любую идею</title>
+    <meta name="description" content="g.a.d. — платформа для рабочих процессов. Стикеры, карточки задач и папки интеграций проявляются вокруг крупного заголовка.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..500&family=Caveat:wght@400..700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'], handwriting: ['Caveat', 'cursive'] } } } }</script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@11.18.2/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/lucide@0.469.0"></script>
+    <style>.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}</style>
+    <style>
+        body{background:#FDFDFD;font-family:'Inter',sans-serif;color:#141414;overflow-x:hidden}
+    </style>
+</head>
+<body class="antialiased">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { motion, AnimatePresence } = Motion;
+
+        const NAV_LINKS = ['Возможности', 'Решения', 'Ресурсы', 'Тарифы'];
+
+        const GadMark = ({ className }) => (
+            <svg className={"gad-logo " + (className || '')} viewBox="293 1 58 58" role="img" aria-label="g.a.d.">
+                <circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100" />
+                <circle className="orb" cx="322" cy="8" r="5" fill="currentColor" />
+            </svg>
+        );
+
+        
+        const GadLogo = ({ className, style }) => (
+            <svg className={'gad-logo ' + (className || '')} style={style} viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+                <path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/>
+                <circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100"/>
+                <circle className="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+            </svg>
+        );
+
+        const MenuIcon = (p) => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" {...p}><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg>;
+        const XIcon = (p) => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" {...p}><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>;
+
+        const Folder = ({ className, style }) => <i data-lucide="folder" className={className} style={style}></i>;
+
+        const Navbar = () => {
+            const [open, setOpen] = useState(false);
+            return (
+                <nav className="relative w-full z-50 flex items-center justify-between px-6 md:px-12 py-6" style={{ background: '#FDFDFD' }}>
+                    <div className="flex items-center gap-2">
+                        <span className="text-2xl" style={{ color: '#141414' }}><GadLogo /></span>
+                    </div>
+                    <div className="hidden md:flex items-center gap-8 text-sm text-gray-500">
+                        {NAV_LINKS.map(l => <a key={l} href="#" className="hover:text-black">{l}</a>)}
+                    </div>
+                    <div className="hidden md:flex items-center gap-4">
+                        <a href="#" className="text-sm text-gray-500 hover:text-black">Войти</a>
+                        <a href="#" className="try-free-btn bg-white border rounded-xl px-4 py-2 text-sm hover:bg-gray-50" style={{ color: '#141414' }}>Попробовать бесплатно</a>
+                    </div>
+                    <button onClick={() => setOpen(v => !v)} aria-label="Меню" className="md:hidden p-2">
+                        {open ? <XIcon /> : <MenuIcon />}
+                    </button>
+                    <AnimatePresence>
+                        {open && (
+                            <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                                className="absolute top-full left-0 w-full bg-white shadow-lg md:hidden">
+                                <div className="flex flex-col p-6 gap-4">
+                                    {NAV_LINKS.map(l => <a key={l} href="#" className="text-gray-600">{l}</a>)}
+                                    <hr />
+                                    <a href="#" className="text-gray-500">Войти</a>
+                                    <a href="#" className="text-center rounded-xl px-4 py-2.5 text-white shadow-lg shadow-blue-500/20" style={{ background: '#2563EB' }}>Попробовать бесплатно</a>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </nav>
+            );
+        };
+
+        const TaskCard = ({ color, num, name, seeds, date, pct, over }) => (
+            <div className="bg-white/95 rounded-xl p-3 shadow-md w-52">
+                <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                        <span className="w-6 h-6 shrink-0 rounded-md flex items-center justify-center text-white text-xs font-bold" style={{ background: color }}>{num}</span>
+                        <span className="text-sm font-medium truncate" style={{ color: '#141414' }}>{name}</span>
+                    </div>
+                    <div className="flex -space-x-2 shrink-0">
+                        {seeds.map(s => <img key={s} src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${s}`} referrerPolicy="no-referrer" className="w-6 h-6 rounded-full border-2 border-white" alt="" />)}
+                    </div>
+                </div>
+                <div className="mt-2.5 flex items-center gap-2">
+                    <span className="text-[10px] text-gray-400 shrink-0">{date}</span>
+                    <div className="relative flex-1 h-1.5 rounded-full bg-gray-100">
+                        <div className="absolute inset-y-0 left-0 rounded-full" style={{ width: Math.min(pct, 100) + '%', background: '#00BFFF' }} />
+                        {over && <div className="absolute inset-y-0 rounded-full" style={{ left: '100%', width: (pct - 100) + '%', background: '#FF5252' }} />}
+                    </div>
+                    <span className="text-[10px] text-gray-500 shrink-0">{Math.min(pct, 100)}%</span>
+                </div>
+            </div>
+        );
+
+        const Hero = () => (
+            <section className="px-4 md:px-6 pb-12">
+                <div className="w-full min-h-[85vh] py-32 bg-white rounded-2xl md:rounded-[2.5rem] border border-black/10 overflow-hidden relative flex flex-col items-center justify-center text-center">
+                    <div className="absolute inset-0 pointer-events-none" style={{ background: '#ffffff', backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(0,0,0,0.08) 1px, transparent 0)', backgroundSize: '20px 20px' }} />
+
+                    <div className="relative z-10 flex flex-col items-center px-4">
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
+                            className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-8" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}>
+                            <span style={{ color: '#2563EB' }}><GadMark className="w-8 h-8" /></span>
+                        </motion.div>
+                        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}
+                            className="text-4xl md:text-6xl lg:text-7xl tracking-tight" style={{ color: '#141414' }}>
+                            Планируйте, создавайте <br />и запускайте <span className="text-gray-500">любую идею</span>.
+                        </motion.h1>
+                        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }}
+                            className="text-gray-400 text-xl mt-5">
+                            Организуйте рабочий процесс и воплощайте творческие идеи.
+                        </motion.p>
+                        <motion.button initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} whileHover={{ scale: 1.05 }} transition={{ delay: 0.6 }}
+                            className="cta-trial mt-8 rounded-xl px-7 py-3.5 text-white shadow-lg shadow-blue-500/20" style={{ background: '#2563EB' }}>
+                            Начать бесплатно
+                        </motion.button>
+                    </div>
+
+                    {/* группа 1 — top-left: жёлтая заметка + папка с галочкой (без референса — расставлено
+                        по углам вручную: точные offset'ы прompta друг на друга налезали) */}
+                    <div className="absolute top-6 left-4 origin-top-left scale-[0.4] sm:scale-50 md:scale-75 lg:scale-90">
+                        <motion.div initial={{ opacity: 0, rotate: 2 }} animate={{ opacity: 1, rotate: 3 }} transition={{ delay: 0.4 }} className="relative w-56">
+                            <div className="bg-[#FFF188] p-7 w-56 shadow-lg relative">
+                                <div className="absolute left-1/2 -translate-x-1/2 -top-1.5 w-3 h-3 rounded-full" style={{ background: '#D32F2F' }} />
+                                <p className="font-handwriting text-[21px] leading-snug" style={{ color: '#424242' }}>Записывайте мгновенные мысли, упорядочивайте детали проекта и действуйте точно.</p>
+                            </div>
+                        </motion.div>
+                        <motion.div initial={{ opacity: 0, rotate: 6 }} animate={{ opacity: 1, rotate: 12 }} transition={{ delay: 0.6 }} className="relative mt-3 ml-10">
+                            <Folder className="w-56 h-56 fill-white/60" style={{ filter: 'drop-shadow(0 6px 14px rgba(0,0,0,.12))' }} />
+                            <div className="absolute top-1/2 left-1/2 bg-white rounded-xl p-2.5 shadow flex items-center justify-center" style={{ transform: 'translate(-50%,-50%) rotate(-2deg)' }}>
+                                <span className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: '#2563EB' }}>
+                                    <i data-lucide="check" className="w-5 h-5 text-white"></i>
+                                </span>
+                            </div>
+                        </motion.div>
+                    </div>
+
+                    {/* группа 2 — bottom-left: папка "Active Sprints" с двумя карточками задач.
+                        Внешний div (позиция+responsive-scale) держим ОБЫЧНЫМ — motion.div сам управляет
+                        своим transform и молча стирает scale-[] класс, если посадить responsive-scale на него. */}
+                    <div className="absolute bottom-4 left-4 origin-bottom-left scale-[0.4] sm:scale-50 md:scale-75 lg:scale-90">
+                        <motion.div initial={{ opacity: 0, y: 50, rotate: -5 }} animate={{ opacity: 1, y: 0, rotate: -4 }} transition={{ delay: 0.8 }} className="relative w-72">
+                            <Folder className="w-72 h-72 fill-[#F2F3F5]" style={{ color: '#e5e7eb', filter: 'drop-shadow(0 8px 20px rgba(0,0,0,.1))' }} />
+                            <div className="absolute inset-0 pt-7 px-6 flex flex-col gap-2">
+                                <span className="text-base font-semibold text-gray-700">Активные спринты</span>
+                                <TaskCard color="#FF5722" num="8" name="Дизайн-хаб" seeds={['Felix', 'Aneka']} date="12 сен" pct={65} />
+                                <TaskCard color="#00C853" num="3" name="Обновление прода" seeds={['Sam', 'Maya']} date="18 сен" pct={110} over />
+                            </div>
+                        </motion.div>
+                    </div>
+
+                    {/* группа 3 — bottom-right: папка "Seamless Sync" с иконками интеграций */}
+                    <div className="absolute bottom-4 right-4 origin-bottom-right scale-[0.4] sm:scale-50 md:scale-75 lg:scale-90">
+                        <motion.div initial={{ opacity: 0, y: 50, rotate: 5 }} animate={{ opacity: 1, y: 0, rotate: 4 }} transition={{ delay: 1.0 }} className="relative w-72">
+                            <Folder className="w-72 h-72 fill-[#F2F3F5]" style={{ color: '#e5e7eb', filter: 'drop-shadow(0 8px 20px rgba(0,0,0,.1))' }} />
+                            <div className="absolute inset-0 pt-7 px-6 flex flex-col gap-3">
+                                <span className="text-base font-semibold text-gray-700">Бесшовная синхронизация</span>
+                                <div className="flex gap-3">
+                                    {[['mail', '#EA4335'], ['slack', '#4A154B'], ['calendar', '#4285F4']].map(([ic, col]) => (
+                                        <div key={ic} className="integration-icon w-14 h-14 bg-white rounded-xl shadow-md flex items-center justify-center hover:scale-105 transition-transform" style={{ color: col }}>
+                                            <i data-lucide={ic} className="w-6 h-6"></i>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+
+                    {/* группа 4 — top-right: папка "Deadlines" + плашка запуска + плавающий таймер */}
+                    <div className="absolute top-6 right-4 origin-top-right scale-[0.4] sm:scale-50 md:scale-75 lg:scale-90">
+                        <motion.div initial={{ opacity: 0, x: 50, rotate: 4 }} animate={{ opacity: 1, x: 0, rotate: 6 }} transition={{ delay: 1.2 }} className="relative w-72">
+                            <Folder className="w-72 h-72 fill-[#F2F3F5]" style={{ color: '#e5e7eb', filter: 'drop-shadow(0 8px 20px rgba(0,0,0,.1))' }} />
+                            <div className="absolute inset-0 pt-7 px-6 flex flex-col gap-3">
+                                <span className="text-base font-semibold text-gray-700">Дедлайны</span>
+                                <div className="relative bg-white/90 p-4 rounded-2xl w-60">
+                                    <span className="absolute -top-2 right-2 bg-gray-100 rounded-full px-2.5 py-1 text-[10px] text-gray-500">Встречи</span>
+                                    <div className="font-medium" style={{ color: '#141414' }}>Запуск проекта</div>
+                                    <div className="text-xs text-gray-400 mt-1">Ревью с дизайн-лидами</div>
+                                    <div className="mt-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs" style={{ background: '#E1F5FE', color: '#03A9F4' }}>
+                                        <i data-lucide="clock" className="w-3 h-3"></i> 13:00 - 13:45
+                                    </div>
+                                </div>
+                            </div>
+                            <Folder className="absolute inset-0 w-72 h-72 fill-white/60" style={{ transform: 'rotate(15deg)' }} />
+                            {/* таймер "floating independently atop this group" — рисуем после folder-оверлея, иначе его тонкие штрихи тонут под белой заливкой 60% */}
+                            <motion.div initial={{ opacity: 0, x: -20, scale: 0.8, rotate: -8 }} animate={{ opacity: 1, x: 0, scale: 1, rotate: -8 }} transition={{ delay: 1.4 }}
+                                className="absolute top-12 left-4 bg-white rounded-xl shadow-lg p-3">
+                                <div className="relative w-7 h-7 flex items-center justify-center text-gray-700">
+                                    <i data-lucide="timer" className="w-6 h-6"></i>
+                                    <div className="absolute w-7 h-0.5 bg-red-500" style={{ transform: 'rotate(45deg)' }} />
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
+        );
+
+        const App = () => {
+            useEffect(() => { window.lucide && window.lucide.createIcons(); }, []);
+            return (
+                <div style={{ background: '#FDFDFD' }}>
+                    <Navbar />
+                    <Hero />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>
