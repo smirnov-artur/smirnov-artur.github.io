@@ -655,8 +655,9 @@
    "A site that builds itself",
    "A character builds the page letter by letter while a village grows below"
   ],
-  "href": "https://smirnov-artur.github.io/portfolio/cases/blocksmith/",
-  "v": "pf-blocksmith"
+  "v": "blocksmith",
+  "ve": "blocksmith-en",
+  "rp": 1
  },
  {
   "slug": "dios",
