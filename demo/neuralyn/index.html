@@ -214,7 +214,7 @@
 
         const Testimonial = () => {
             const containerRef = useRef(null);
-            const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start end", "end center"] });
+            const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start end", "end end"] });
             
             const text = "g.a.d. revolutionized how we handle financial insights using smart analytics. We are now driving better outcomes quicker than we ever imagined — and the whole team finally looks at the same numbers.";
             const words = text.split(" ");

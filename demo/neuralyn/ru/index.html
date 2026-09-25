@@ -219,7 +219,7 @@
 
         const Testimonial = () => {
             const containerRef = useRef(null);
-            const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start end", "end center"] });
+            const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start end", "end end"] });
             
             const text = "g.a.d. перевернул нашу работу с финансовыми данными благодаря умной аналитике. Теперь мы добиваемся лучших результатов быстрее, чем могли представить, — и вся команда наконец смотрит на одни и те же цифры.";
             const words = text.split(" ");
