@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>g.a.d. — Бронза и время</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Italiana&family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@1,500&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #000000;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+body {
+    min-height: 900vh;
+    font-family: 'Outfit', sans-serif;
+    color: #ffffff;
+    overflow-x: hidden;
+    cursor: none;
+}
+
+* { cursor: none !important; }
+::-webkit-scrollbar { display: none; width: 0; }
+
+#webgl {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+    outline: none;
+}
+
+/* ---------------- custom cursor ---------------- */
+.cursor-inner {
+    position: fixed; top: 0; left: 0;
+    width: 6px; height: 6px;
+    border: 2px solid rgba(255, 255, 255, 1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9999;
+}
+.cursor-outer {
+    position: fixed; top: 0; left: 0;
+    width: 40px; height: 40px;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9998;
+    transition: width 0.3s, height 0.3s, background 0.3s;
+}
+.cursor-outer.hover {
+    width: 60px; height: 60px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ---------------- overlay layer ---------------- */
+.cinematic-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0 60px 40px 60px;
+    box-sizing: border-box;
+}
+
+/* ---------------- header ---------------- */
+.main-header {
+    display: flex; justify-content: space-between; align-items: center;
+    width: 100%; z-index: 20;
+    pointer-events: auto;
+    padding: 20px 0;
+}
+.brand { font-size: 14px; font-weight: 600; letter-spacing: 5px; text-transform: uppercase; }
+.brand .gad-logo { display: block; height: 24px; }
+.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}
+.header-nav { display: flex; align-items: center; gap: 24px; }
+.nav-link {
+    color: #ffffff; text-decoration: none;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+    font-weight: 500; transition: color 0.3s;
+}
+.nav-link:hover { color: #ffffff; }
+.nav-dot { width: 3px; height: 3px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; }
+.contact-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 24px;
+    background: #ffffff; color: #000000;
+    text-decoration: none;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
+    border-radius: 20px;
+    transition: transform 0.3s, background 0.3s;
+}
+.btn-circle {
+    display: inline-block; width: 6px; height: 6px;
+    border: 1px solid #000000; border-radius: 50%; background: transparent;
+}
+.contact-btn:hover { transform: scale(1.05); background: #f0f0f0; }
+
+/* ---------------- slides ---------------- */
+.slide { position: absolute; bottom: 12%; pointer-events: none; }
+
+#slide-1 { left: 0; width: 100%; }
+#slide-1 .slide-title { margin-left: 60px; }
+#slide-1 .desc-row { position: relative; display: flex; width: 100%; }
+#slide-1 .col-1 {
+    margin-left: 60px;
+    width: calc(25vw - 60px);
+    max-width: calc(25vw - 60px);
+}
+#slide-1 .col-2 {
+    position: absolute;
+    left: calc(25vw + 40px);
+    width: calc(25vw - 60px);
+    max-width: calc(25vw - 60px);
+}
+
+#slide-2 { left: 0; width: 100%; }
+#slide-2-img {
+    position: fixed;
+    top: 90px;
+    left: 60px;
+    width: calc(25vw - 60px);
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    z-index: 2;
+    pointer-events: none;
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 1.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
+    opacity: 0;
+}
+#slide-2-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transform: scale(1.15);
+    transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#slide-2-img.active { clip-path: inset(0 0 0 0); opacity: 1; }
+#slide-2-img.active img { transform: scale(1); }
+#slide-2 .slide-title { margin-left: calc(25vw + 40px); }
+#slide-2 .slide-desc {
+    margin-left: calc(50vw + 20px);
+    width: calc(25vw - 60px);
+    max-width: calc(25vw - 60px);
+}
+
+#slide-3 {
+    left: calc(50vw + 20px);
+    width: calc(25vw - 60px);
+    max-width: calc(25vw - 60px);
+}
+#slide-3 .slide-title { white-space: nowrap; }
+
+#slide-4 { left: calc(25% + 40px); max-width: 600px; }
+
+.slide-title {
+    font-family: 'Italiana', serif;
+    font-size: clamp(2.6rem, 8vw, 116px);
+    line-height: 1.0;
+    font-weight: 400;
+    letter-spacing: 0.018em;
+    margin-bottom: 20px;
+    color: #fff6ed;
+    /* separation for the odd specular that still lands under a glyph */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.42), 0 10px 44px rgba(0, 0, 0, 0.55);
+}
+.slide-desc {
+    font-size: 16px; line-height: 1.7; font-weight: 300;
+    color: #d1d5db; letter-spacing: 0.5px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+                transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    transition-delay: 0.4s;
+}
+.slide.active .slide-desc { opacity: 1; transform: translateY(0); }
+.slide-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(50px);
+    filter: blur(12px);
+    transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+                transform 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+                filter 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.slide.active .slide-title .char { opacity: 1; transform: translateY(0); filter: blur(0); }
+.slide.active { pointer-events: auto; }
+
+/* ---------------- grid overlay + stories progress ---------------- */
+.story-dashes {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex; flex-direction: column; gap: 12px;
+}
+.story-dash { width: 2px; height: 40px; background: rgba(255, 255, 255, 0.15); border-radius: 2px; }
+.story-dash-fill { width: 100%; height: 0%; background: #ffffff; border-radius: 2px; }
+
+.grid-horizontal-line {
+    position: fixed; top: 70px; left: 0; right: 0;
+    width: 100%; height: 1px;
+    background: rgba(255, 255, 255, 0.12);
+    z-index: 5; pointer-events: none;
+}
+.grid-lines {
+    position: fixed; top: 0; left: 40px; right: 40px;
+    width: calc(100% - 80px); height: 100vh;
+    display: flex; justify-content: space-between;
+    z-index: 5; pointer-events: none;
+}
+.grid-line {
+    position: relative; width: 1px; height: 100%;
+    background: rgba(255, 255, 255, 0.12);
+}
+.grid-line:nth-child(3) { margin-top: 70px; height: calc(100vh - 70px); }
+.grid-dot {
+    position: absolute; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.35);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.15);
+}
+
+/* ---------------- scrim under the copy ----------------
+   The sculpture is lit from above, so its croup lands bright exactly where the
+   title sits. A bottom-up gradient keeps the type off the highlight without
+   flattening the frame — the same trick a colourist uses for lower thirds. */
+.text-scrim {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    height: 58%;
+    z-index: 6;
+    pointer-events: none;
+    --scrim: 0.62;
+    background: linear-gradient(to top,
+        rgba(0, 0, 0, var(--scrim)) 0%,
+        rgba(0, 0, 0, calc(var(--scrim) * 0.86)) 24%,
+        rgba(0, 0, 0, calc(var(--scrim) * 0.52)) 52%,
+        rgba(0, 0, 0, calc(var(--scrim) * 0.20)) 78%,
+        rgba(0, 0, 0, 0) 100%);
+}
+
+/* ---------------- corner cta ---------------- */
+.corner-cta {
+    position: fixed;
+    bottom: 14px; right: 14px;
+    z-index: 99999;
+    pointer-events: auto;
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 7px 14px;
+    background: rgba(18, 12, 8, 0.55);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.62);
+    text-decoration: none;
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px; font-weight: 400; letter-spacing: 0.6px;
+    white-space: nowrap;
+    transition: color 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+}
+.corner-cta:hover {
+    color: #ffffff;
+    background: rgba(28, 18, 10, 0.72);
+    border-color: rgba(255, 255, 255, 0.28);
+}
+.corner-cta .cta-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #ffbd5a;
+    box-shadow: 0 0 6px rgba(255, 189, 90, 0.7);
+    flex: none;
+}
+.corner-cta .cta-handle { color: rgba(255, 255, 255, 0.9); font-weight: 600; }
+@media (max-width: 600px) {
+    .corner-cta { font-size: 10px; padding: 6px 11px; bottom: 10px; right: 10px; }
+}
+
+/* ---------------- tablet: narrow the four-column rhythm ---------------- */
+@media (max-width: 1024px) {
+    .cinematic-container { padding: 0 32px 32px 32px; }
+    #slide-1 .slide-title { margin-left: 32px; }
+    #slide-1 .col-1 { margin-left: 32px; width: calc(38vw - 40px); max-width: calc(38vw - 40px); }
+    #slide-1 .col-2 { left: calc(38vw + 8px); width: calc(38vw - 40px); max-width: calc(38vw - 40px); }
+    #slide-2 .slide-title { margin-left: 32px; }
+    #slide-2 .slide-desc { margin-left: calc(38vw + 8px); width: calc(45vw - 40px); max-width: calc(45vw - 40px); }
+    #slide-2-img { top: 84px; left: 32px; width: calc(32vw - 40px); }
+    #slide-3 { left: 32px; width: calc(55vw); max-width: calc(55vw); }
+    #slide-4 { left: 32px; max-width: 60vw; }
+    .slide-desc { font-size: 15px; }
+}
+
+/* ---------------- phone: everything collapses to one column ---------------- */
+@media (max-width: 760px) {
+    .cinematic-container { padding: 0 20px 20px 20px; }
+
+    .header-nav { display: none; }
+    .brand { font-size: 12px; letter-spacing: 4px; }
+    .brand .gad-logo { height: 20px; }
+    .contact-btn { padding: 9px 18px; font-size: 9px; }
+
+    .grid-lines { left: 16px; right: 16px; width: calc(100% - 32px); }
+    .grid-line:nth-child(2), .grid-line:nth-child(4) { display: none; }
+    .story-dash { height: 26px; }
+
+    .slide,
+    #slide-1, #slide-2, #slide-3, #slide-4 {
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        bottom: 12%;
+        padding: 0 20px;
+    }
+
+    #slide-1 .slide-title,
+    #slide-2 .slide-title { margin-left: 0; }
+    #slide-3 .slide-title { white-space: normal; }
+
+    #slide-1 .desc-row { display: block; }
+    #slide-1 .col-1,
+    #slide-1 .col-2,
+    #slide-2 .slide-desc {
+        position: static;
+        left: auto;
+        margin-left: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+    #slide-1 .col-2 { margin-top: 14px; }
+
+    #slide-2-img {
+        top: 84px;
+        left: 20px;
+        width: 40vw;
+    }
+
+    .slide-title { margin-bottom: 14px; }
+    .slide-desc { font-size: 13.5px; line-height: 1.62; letter-spacing: 0.2px; }
+    /* portrait puts the sculpture directly behind the copy, so the scrim works harder */
+    .text-scrim { height: 66%; --scrim: 0.88; }
+    .slide-title .char { transform: translateY(28px); filter: blur(8px); }
+}
+
+/* short viewports (landscape phones) keep the block inside the screen */
+@media (max-height: 560px) {
+    .slide-title { font-size: clamp(2rem, 6.2vh, 116px); margin-bottom: 10px; }
+    .slide-desc { font-size: 12.5px; line-height: 1.5; }
+    .slide { bottom: 8%; }
+}
+
+/* touch devices get a real cursor back */
+@media (pointer: coarse) {
+    body { cursor: auto; }
+    * { cursor: auto !important; }
+    a, button, .contact-btn, .nav-link { cursor: pointer !important; }
+    .cursor-inner, .cursor-outer { display: none; }
+}
+</style>
+<style id="cyr">/* русские буквы: исходный шрифт без кириллицы, глифы — у близкого с кириллицей */
+@font-face{font-family:'Italiana';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/cormorant/v24/H4c2BXOCl9bbnla_nHIA47NMUjsNbCVrFk9Tc75q7T2u.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Italiana';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/cormorant/v24/H4c2BXOCl9bbnla_nHIA47NMUjsNbCVrFk9Tc7dq7T2u.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Outfit';font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/jost/v20/92zatBhPNqw73oDd4iYl.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Outfit';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/jost/v20/92zatBhPNqw73oDd4iYl.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Outfit';font-style:normal;font-weight:600;font-display:swap;src:url(https://fonts.gstatic.com/s/jost/v20/92zatBhPNqw73oDd4iYl.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+</style>
+</head>
+<body>
+
+<div class="cursor-inner"></div>
+<div class="cursor-outer"></div>
+
+<div class="cinematic-container">
+
+    <div class="main-header">
+        <div class="brand"><svg class="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d."><path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/><circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/><circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/></svg></div>
+        <nav class="header-nav">
+            <a href="#slide-1" class="nav-link">Бронза</a>
+            <span class="nav-dot"></span>
+            <a href="#slide-2" class="nav-link">Мрамор</a>
+            <span class="nav-dot"></span>
+            <a href="#slide-3" class="nav-link">Поток</a>
+            <span class="nav-dot"></span>
+            <a href="#slide-4" class="nav-link">Цифра</a>
+        </nav>
+        <div class="header-actions">
+            <a href="#" class="contact-btn">Связаться <span class="btn-circle"></span></a>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-1">
+        <h1 class="slide-title">Бронза <br>и время</h1>
+        <div class="desc-row">
+            <p class="slide-desc col-1">Вневременной материал, в котором хранятся века человеческой истории. Текучий в жарком пламени, вечный в своей форме. Каждый изгиб ловит напряжённый, драматичный миг.</p>
+            <p class="slide-desc col-2">Рождённый из расплавленного огня и творческой воли, он соединяет древнюю память с современным взглядом. Текучая энергия, застывшая в тяжёлой неподвижной бронзе.</p>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-2">
+        <h2 class="slide-title">Эмоция <br>в мраморе</h2>
+        <p class="slide-desc">Скульптура, застывшая на пике человеческого страдания и героической борьбы. Лаокоон и его сыновья во власти безжалостного рока.</p>
+    </div>
+
+    <div class="slide" id="slide-3">
+        <h2 class="slide-title">Жидкий <br>металл</h2>
+        <p class="slide-desc">Искусство, которое дышит. Завораживающие волны жидкой бронзы текут сквозь пространство, отражая каждый контур и каждую напряжённую мышцу античного шедевра.</p>
+    </div>
+
+    <div class="slide" id="slide-4">
+        <h2 class="slide-title">Вечное <br>мгновение</h2>
+        <p class="slide-desc">Античная форма сквозь призму новых измерений. Классический шедевр, заново рождённый в потоках сияющей цифровой материи.</p>
+    </div>
+
+</div>
+
+<div class="slide-image-mask" id="slide-2-img">
+    <img src="../assets/1.webp" alt="Бронзовый конь в зале музея" width="760" height="757" loading="lazy" decoding="async">
+</div>
+
+<div class="text-scrim"></div>
+
+<div class="grid-horizontal-line"></div>
+<div class="grid-lines">
+    <div class="grid-line"><div class="grid-dot top"></div><div class="grid-dot bottom"></div></div>
+    <div class="grid-line"><div class="grid-dot top"></div><div class="grid-dot bottom"></div></div>
+    <div class="grid-line"><div class="grid-dot top"></div><div class="grid-dot bottom"></div></div>
+    <div class="grid-line"><div class="grid-dot top"></div><div class="grid-dot bottom"></div></div>
+    <div class="grid-line story-progress-container">
+        <div class="grid-dot top"></div>
+        <div class="grid-dot bottom"></div>
+        <div class="story-dashes">
+            <div class="story-dash"><div class="story-dash-fill" id="dash-fill-1"></div></div>
+            <div class="story-dash"><div class="story-dash-fill" id="dash-fill-2"></div></div>
+            <div class="story-dash"><div class="story-dash-fill" id="dash-fill-3"></div></div>
+            <div class="story-dash"><div class="story-dash-fill" id="dash-fill-4"></div></div>
+        </div>
+    </div>
+</div>
+
+<canvas id="webgl"></canvas>
+
+<a class="corner-cta" href="https://t.me/smirnovarturr" target="_blank" rel="noopener noreferrer">
+    <span class="cta-dot"></span>Хотите такой сайт? <span class="cta-handle">@smirnovarturr</span>
+</a>
+
+<script type="module">
+/* three r160 + GLTFLoader + DRACOLoader + EffectComposer, bundled and minified
+   into one self-hosted file — no third-party origin, one request instead of ~40 */
+import * as THREE from '../assets/three-bundle.js';
+import {
+    GLTFLoader, DRACOLoader,
+    EffectComposer, RenderPass, ShaderPass, UnrealBloomPass
+} from '../assets/three-bundle.js';
+
+const ASSET_BASE_URL = "../assets";
+
+/* ------------------------------------------------------------------ *
+ *  state
+ * ------------------------------------------------------------------ */
+let scene, camera, renderer, canvas;
+let composer, bloomPass, gradePass;
+let bgMaterial, bgMesh;
+let sparks, sparkGeometry, sparkVelocities = [];
+let model = null, pivot = null;
+let modelMaterials = [];
+let modelOpacity = 0;
+
+const sizes = { width: window.innerWidth, height: window.innerHeight };
+const clock = new THREE.Clock();
+
+let currentScroll = 0;
+let scrollVelocity = 0;
+
+let targetMouseX = 0, targetMouseY = 0;
+let mouseX = 0, mouseY = 0;
+
+let cursorX = 0, cursorY = 0;
+let outerX = 0, outerY = 0;
+
+const cursorInner = document.querySelector('.cursor-inner');
+const cursorOuter = document.querySelector('.cursor-outer');
+
+let gridDots = [];
+
+const cameraTarget = new THREE.Vector3();
+
+/* phones render at 1.5x max, desktops at 2x — same clamp the top studios use */
+const isMobile = () => window.innerWidth < 900;
+const dprCap = () => Math.min(window.devicePixelRatio || 1, isMobile() ? 1.5 : 2);
+
+/* portrait screens have a far narrower horizontal FOV, so the camera pulls back
+   to keep the same horizontal framing a 16:10 desktop gets */
+const REF_ASPECT = 1.6;
+function framingScale() {
+    const a = sizes.width / sizes.height;
+    return a >= REF_ASPECT ? 1 : Math.min(REF_ASPECT / a, 1.85);
+}
+
+/* ------------------------------------------------------------------ *
+ *  per-letter title split
+ * ------------------------------------------------------------------ */
+function splitTitlesIntoChars() {
+    document.querySelectorAll('.slide-title').forEach((title) => {
+        const nodes = Array.from(title.childNodes);
+        let html = '';
+        let index = 0;
+        nodes.forEach((node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                const text = node.textContent;
+                for (let i = 0; i < text.length; i++) {
+                    const ch = text[i];
+                    if (ch === ' ') {
+                        html += '<span class="space">&nbsp;</span>';
+                    } else {
+                        html += '<span class="char" style="transition-delay:' +
+                                (index * 0.035).toFixed(3) + 's">' + ch + '</span>';
+                        index++;
+                    }
+                }
+            } else if (node.nodeName === 'BR') {
+                html += '<br>';
+            } else if (node.outerHTML) {
+                html += node.outerHTML;
+            }
+        });
+        title.innerHTML = html;
+    });
+}
+
+const EXPOSURE = 2.2;
+
+/* ------------------------------------------------------------------ *
+ *  liquid-bronze background wave shader
+ * ------------------------------------------------------------------ */
+const bgVertexShader = /* glsl */`
+varying vec2 vUv;
+void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`;
+
+const bgFragmentShader = /* glsl */`
+precision highp float;
+
+uniform float uTime;
+uniform vec2  uResolution;
+uniform vec2  uMouse;
+uniform float uScroll;
+uniform float uPostGain;   //js {value: 0.6 / EXPOSURE}
+
+varying vec2 vUv;
+
+/* --- hash based 3D value noise --- */
+float hash(vec3 p) {
+    p = fract(p * 0.3183099 + vec3(0.71, 0.113, 0.419));
+    p *= 17.0;
+    return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+}
+
+float noise(vec3 x) {
+    vec3 i = floor(x);
+    vec3 f = fract(x);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(mix(mix(hash(i + vec3(0.0, 0.0, 0.0)), hash(i + vec3(1.0, 0.0, 0.0)), f.x),
+                   mix(hash(i + vec3(0.0, 1.0, 0.0)), hash(i + vec3(1.0, 1.0, 0.0)), f.x), f.y),
+               mix(mix(hash(i + vec3(0.0, 0.0, 1.0)), hash(i + vec3(1.0, 0.0, 1.0)), f.x),
+                   mix(hash(i + vec3(0.0, 1.0, 1.0)), hash(i + vec3(1.0, 1.0, 1.0)), f.x), f.y), f.z);
+}
+
+float fbm(vec3 p) {
+    float v = 0.0;
+    float a = 0.5;
+    for (int i = 0; i < 4; i++) {
+        v += a * noise(p);
+        p *= 2.02;
+        a *= 0.5;
+    }
+    return v;
+}
+
+vec2 dir(float a) { return vec2(cos(a), sin(a)); }
+
+void main() {
+    /* screen space uv, y in [-1, 1] */
+    vec2 uv = (gl_FragCoord.xy * 2.0 - uResolution.xy) / uResolution.y;
+
+    float t = uTime * 0.08;
+    float scrollDeform = uScroll * 5.0;
+
+    /* mouse gives the surface a subtle parallax breath */
+    vec2 m = uMouse * 0.18;
+
+    /* turbulent field that warps the sine layers */
+    float n  = noise(vec3(uv * 1.05 + m, t * 1.20)) * 2.0 - 1.0;
+    float n2 = noise(vec3(uv * 1.90 - m, t * 0.85 + 11.7)) * 2.0 - 1.0;
+
+    /* --- three layered sine waves --- */
+    float w1 = sin(dot(uv, dir( 0.6)) * 2.4 + t * 1.10 + n  * 0.95 + scrollDeform * 0.60);
+    float w2 = sin(dot(uv, dir(-0.7)) * 3.2 - t * 1.45 + n2 * 0.75 + scrollDeform * 0.85);
+    float w3 = sin(dot(uv, dir( 1.2)) * 4.0 + t * 1.85 + n  * 0.55 + scrollDeform * 1.10);
+
+    float wave = w1 * 0.50 + w2 * 0.35 + w3 * 0.15;
+    float h = clamp(wave * 0.5 + 0.5, 0.0, 1.0);
+
+    /* --- molten bronze palette (top of the page) --- */
+    vec3 b0 = vec3(0.000, 0.000, 0.000);   /* shadow          */
+    vec3 b1 = vec3(0.235, 0.082, 0.020);   /* rich copper     */
+    vec3 b2 = vec3(0.560, 0.253, 0.062);   /* deep bronze     */
+    vec3 b3 = vec3(1.000, 0.741, 0.353);   /* polished gold   */
+
+    /* --- deep sapphire palette (bottom of the page) --- */
+    vec3 s0 = vec3(0.000, 0.000, 0.008);   /* shadow          */
+    vec3 s1 = vec3(0.016, 0.055, 0.196);   /* abyss blue      */
+    vec3 s2 = vec3(0.055, 0.196, 0.494);   /* sapphire        */
+    vec3 s3 = vec3(0.545, 0.792, 1.000);   /* icy highlight   */
+
+    float p = smoothstep(0.0, 1.0, uScroll);
+    vec3 c0 = mix(b0, s0, p);
+    vec3 c1 = mix(b1, s1, p);
+    vec3 c2 = mix(b2, s2, p);
+    vec3 c3 = mix(b3, s3, p);
+
+    vec3 col = mix(c0, c1, smoothstep(0.26, 0.66, h));
+    col = mix(col, c2, smoothstep(0.68, 0.90, h));
+    col = mix(col, c3, smoothstep(0.93, 1.00, h));
+
+    /* metallic crest sheen */
+    float crest = smoothstep(0.88, 1.0, h);
+    col *= mix(1.0, 1.4, crest);
+
+    /* fine grain so the metal never looks flat */
+    col += (fbm(vec3(uv * 26.0, t * 3.0)) - 0.5) * 0.030;
+
+    /* vignette */
+    col *= 1.0 - dot(uv, uv) * 0.12;
+
+    /* keep it a background, never a subject */
+    col *= 0.68;
+
+    /* the composer works in linear HDR, so hand it linear values pre-divided by
+       the exposure the grade pass will apply — the palette above stays authored
+       in display space where it was tuned */
+    col = pow(max(col, 0.0), vec3(2.2)) * uPostGain;
+
+    gl_FragColor = vec4(col, 1.0);
+}
+`;
+
+function createBackgroundShader() {
+    const geometry = new THREE.PlaneGeometry(30, 30);
+    bgMaterial = new THREE.ShaderMaterial({
+        vertexShader: bgVertexShader,
+        fragmentShader: bgFragmentShader,
+        uniforms: {
+            uTime:       { value: 0 },
+            uResolution: { value: new THREE.Vector2(sizes.width, sizes.height) },
+            uMouse:      { value: new THREE.Vector2(0, 0) },
+            uScroll:     { value: 0 },
+            uPostGain:   { value: 0.6 / EXPOSURE }
+        },
+        depthWrite: false,
+        depthTest: false,
+        fog: false
+    });
+    bgMesh = new THREE.Mesh(geometry, bgMaterial);
+    bgMesh.position.z = -8.0;
+    bgMesh.renderOrder = -10;
+    bgMesh.frustumCulled = false;
+    camera.add(bgMesh);
+}
+
+/* ------------------------------------------------------------------ *
+ *  final grade — ACES, lens aberration, vignette, film grain.
+ *  Everything the composer produced lands here in linear HDR and leaves
+ *  as the sRGB frame you actually see.
+ * ------------------------------------------------------------------ */
+const GradeShader = {
+    uniforms: {
+        tDiffuse:    { value: null },
+        uResolution: { value: new THREE.Vector2(1, 1) },
+        uTime:       { value: 0 },
+        uExposure:   { value: EXPOSURE },
+        uVignette:   { value: 0.30 },  //js {range: [0, 1]}
+        uGrain:      { value: 0.026 }, //js {range: [0, 0.1]}
+        uAberration: { value: 1.0 }    //js {range: [0, 4]}
+    },
+    vertexShader: /* glsl */`
+varying vec2 vUv;
+void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`,
+    fragmentShader: /* glsl */`
+precision highp float;
+
+uniform sampler2D tDiffuse;
+uniform vec2  uResolution;
+uniform float uTime;
+uniform float uExposure;
+uniform float uVignette;
+uniform float uGrain;
+uniform float uAberration;
+
+varying vec2 vUv;
+
+/* the exact ACES fit three ships, so the grade matches what the scene was lit for */
+const mat3 ACES_IN = mat3(
+    0.59719, 0.07600, 0.02840,
+    0.35458, 0.90834, 0.13383,
+    0.04823, 0.01566, 0.83777
+);
+const mat3 ACES_OUT = mat3(
+     1.60475, -0.10208, -0.00327,
+    -0.53108,  1.10813, -0.07276,
+    -0.07367, -0.00605,  1.07602
+);
+vec3 rrtOdtFit(vec3 v) {
+    vec3 a = v * (v + 0.0245786) - 0.000090537;
+    vec3 b = v * (0.983729 * v + 0.4329510) + 0.238081;
+    return a / b;
+}
+vec3 acesFilmic(vec3 c) {
+    c *= uExposure / 0.6;
+    c = ACES_IN * c;
+    c = rrtOdtFit(c);
+    c = ACES_OUT * c;
+    return clamp(c, 0.0, 1.0);
+}
+
+vec3 linearToSRGB(vec3 c) {
+    return mix(c * 12.92, 1.055 * pow(max(c, 0.0), vec3(1.0 / 2.4)) - 0.055, step(0.0031308, c));
+}
+
+float hash21(vec2 p) {
+    p = fract(p * vec2(443.897, 441.423));
+    p += dot(p, p + 19.19);
+    return fract(p.x * p.y);
+}
+
+void main() {
+    vec2 d = vUv - 0.5;
+    float r2 = dot(d, d);
+
+    /* lateral chromatic aberration: zero in the centre, grows to the corners */
+    vec2 off = d * r2 * uAberration * 0.006;
+    vec3 col = vec3(
+        texture2D(tDiffuse, vUv + off).r,
+        texture2D(tDiffuse, vUv).g,
+        texture2D(tDiffuse, vUv - off).b
+    );
+
+    col = acesFilmic(col);
+    col *= mix(1.0, smoothstep(1.45, 0.12, r2 * 2.0), uVignette);
+    col = linearToSRGB(col);
+
+    /* grain sits heavier in the shadows, the way film actually behaves */
+    float g = hash21(vUv * uResolution + fract(uTime) * 137.0) - 0.5;
+    col += g * uGrain * (1.0 - 0.55 * dot(col, vec3(0.3333)));
+
+    gl_FragColor = vec4(col, 1.0);
+}
+`
+};
+
+/* ------------------------------------------------------------------ *
+ *  forge sparks
+ * ------------------------------------------------------------------ */
+function createSparkTexture() {
+    const c = document.createElement('canvas');
+    c.width = 64; c.height = 64;
+    const ctx = c.getContext('2d');
+    const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    g.addColorStop(0.00, 'rgba(255,255,255,1)');
+    g.addColorStop(0.18, 'rgba(255,255,255,0.85)');
+    g.addColorStop(0.45, 'rgba(255,255,255,0.28)');
+    g.addColorStop(1.00, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 64, 64);
+    const tex = new THREE.CanvasTexture(c);
+    tex.needsUpdate = true;
+    return tex;
+}
+
+function createSparks() {
+    const sparkCount = 450;
+    const positions = new Float32Array(sparkCount * 3);
+    const colors = new Float32Array(sparkCount * 3);
+
+    const fiery = new THREE.Color('#ff7a1f');
+    const icy   = new THREE.Color('#9fd8ff');
+
+    sparkVelocities = [];
+
+    for (let i = 0; i < sparkCount; i++) {
+        const i3 = i * 3;
+        positions[i3 + 0] = (Math.random() - 0.5) * 3.0;
+        positions[i3 + 1] = (Math.random() - 0.5) * 5.5;
+        positions[i3 + 2] = (Math.random() - 0.5) * 3.0;
+
+        const c = Math.random() < 0.6 ? fiery : icy;
+        colors[i3 + 0] = c.r;
+        colors[i3 + 1] = c.g;
+        colors[i3 + 2] = c.b;
+
+        sparkVelocities.push({
+            y: 0.0025 + Math.random() * 0.0065,
+            x: (Math.random() - 0.5) * 0.0016,
+            z: (Math.random() - 0.5) * 0.0016,
+            phase: Math.random() * Math.PI * 2,
+            drift: 0.3 + Math.random() * 0.9
+        });
+    }
+
+    sparkGeometry = new THREE.BufferGeometry();
+    sparkGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    sparkGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+        size: 0.025,
+        map: createSparkTexture(),
+        transparent: true,
+        /* the composer target is half-float, so additive sparks no longer clamp
+           at 1.0 and bloom picks them up — they need less base opacity than before */
+        opacity: 0.5,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        vertexColors: true,
+        sizeAttenuation: true
+    });
+
+    sparks = new THREE.Points(sparkGeometry, material);
+    sparks.frustumCulled = false;
+    scene.add(sparks);
+}
+
+function updateSparks(elapsed) {
+    if (!sparks) return;
+    const pos = sparkGeometry.attributes.position.array;
+    const speedMultiplier = 1 + scrollVelocity * 9;
+    const turbulence = scrollVelocity * 0.8;
+
+    for (let i = 0; i < sparkVelocities.length; i++) {
+        const i3 = i * 3;
+        const v = sparkVelocities[i];
+
+        pos[i3 + 1] += v.y * speedMultiplier;
+        pos[i3 + 0] += v.x * speedMultiplier +
+                       Math.sin(elapsed * v.drift + v.phase) * 0.0012 * (1 + turbulence * 6);
+        pos[i3 + 2] += v.z * speedMultiplier +
+                       Math.cos(elapsed * v.drift * 0.8 + v.phase) * 0.0012 * (1 + turbulence * 6);
+
+        if (pos[i3 + 1] > 3.0 || Math.abs(pos[i3 + 0]) > 3.5 || Math.abs(pos[i3 + 2]) > 3.5) {
+            pos[i3 + 0] = (Math.random() - 0.5) * 3.0;
+            pos[i3 + 1] = -2.5;
+            pos[i3 + 2] = (Math.random() - 0.5) * 3.0;
+        }
+    }
+    sparkGeometry.attributes.position.needsUpdate = true;
+}
+
+/* ------------------------------------------------------------------ *
+ *  bronze horse
+ * ------------------------------------------------------------------ */
+
+/* Fresnel rim with per-channel dispersion, injected into the standard PBR
+   material rather than replacing it — shadows and lighting stay, and the metal
+   gets the prismatic edge that separates cast bronze from grey plastic. */
+const bronzeUniforms = {
+    uFresnelPow:  { value: 4.6 },  //js {range: [1, 8]}
+    uDispersion:  { value: 0.45 }, //js {range: [0, 1]}
+    uRimStrength: { value: 0.44 }, //js {range: [0, 2]}
+    uRimColor:    { value: new THREE.Color('#ffcf94') }
+};
+
+function applyBronzeDispersion(mat) {
+    mat.onBeforeCompile = (shader) => {
+        Object.assign(shader.uniforms, bronzeUniforms);
+        shader.fragmentShader =
+            'uniform float uFresnelPow;\n' +
+            'uniform float uDispersion;\n' +
+            'uniform float uRimStrength;\n' +
+            'uniform vec3  uRimColor;\n' +
+            shader.fragmentShader.replace(
+                '#include <colorspace_fragment>',
+                [
+                    '{',
+                    '    vec3  V = normalize(vViewPosition);',
+                    '    float fres = pow(1.0 - clamp(dot(V, normal), 0.0, 1.0), uFresnelPow);',
+                    '    /* red bends least, blue most — the edge splits into colour */',
+                    '    vec3 split = vec3(pow(fres, 1.0 - uDispersion), fres, pow(fres, 1.0 + uDispersion));',
+                    '    gl_FragColor.rgb += split * uRimColor * uRimStrength;',
+                    '}',
+                    '#include <colorspace_fragment>'
+                ].join('\n')
+            );
+    };
+    mat.customProgramCacheKey = () => 'aurum-bronze-dispersion';
+    mat.needsUpdate = true;
+}
+
+function loadModel() {
+    const draco = new DRACOLoader();
+    draco.setDecoderPath(ASSET_BASE_URL + '/draco/');
+    draco.setDecoderConfig({ type: 'wasm' });
+    const loader = new GLTFLoader();
+    loader.setDRACOLoader(draco);
+    loader.load(
+        ASSET_BASE_URL + '/bronze_horse.glb',
+        (gltf) => {
+            model = gltf.scene;
+            modelMaterials = [];
+
+            model.traverse((child) => {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                    const mats = Array.isArray(child.material) ? child.material : [child.material];
+                    mats.forEach((mat) => {
+                        if (!mat) return;
+                        mat.roughness = 0.42;
+                        mat.metalness = 0.92;
+                        mat.flatShading = false;
+                        if (mat.map) mat.map.anisotropy = 16;
+                        mat.transparent = true;
+                        mat.opacity = 0;
+                        applyBronzeDispersion(mat);
+                        modelMaterials.push(mat);
+                    });
+                }
+            });
+
+            /* auto scale so the largest dimension is 3.5 */
+            const box = new THREE.Box3().setFromObject(model);
+            const size = box.getSize(new THREE.Vector3());
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const scale = maxDim > 0 ? 3.5 / maxDim : 1;
+            model.scale.setScalar(scale);
+
+            /* recenter using the scaled bounding box */
+            const scaledBox = new THREE.Box3().setFromObject(model);
+            const center = scaledBox.getCenter(new THREE.Vector3());
+            model.position.sub(center);
+
+            pivot = new THREE.Group();
+            pivot.add(model);
+            pivot.position.y = -0.4;
+            scene.add(pivot);
+            draco.dispose();
+        },
+        undefined,
+        (err) => {
+            console.warn('[g.a.d.] bronze_horse.glb failed to load:', err && err.message ? err.message : err);
+            draco.dispose();
+        }
+    );
+}
+
+function updateModelFade() {
+    if (!modelMaterials.length || modelOpacity >= 1) return;
+    modelOpacity += (1 - modelOpacity) * 0.03;
+    if (modelOpacity > 0.995) modelOpacity = 1;
+    for (let i = 0; i < modelMaterials.length; i++) {
+        modelMaterials[i].opacity = modelOpacity;
+        if (modelOpacity === 1) {
+            modelMaterials[i].transparent = false;
+            modelMaterials[i].needsUpdate = true;
+        }
+    }
+}
+
+/* ------------------------------------------------------------------ *
+ *  overlay updates
+ * ------------------------------------------------------------------ */
+const SLIDE_RANGES = [
+    [-0.10, 0.12],
+    [ 0.28, 0.40],
+    [ 0.56, 0.68],
+    [ 0.84, 1.05]
+];
+
+function updateSlides(scroll) {
+    for (let i = 1; i <= 4; i++) {
+        const fill = document.getElementById('dash-fill-' + i);
+        if (fill) {
+            const p = Math.max(0, Math.min(1, (scroll - (i - 1) * 0.25) / 0.25));
+            fill.style.height = (p * 100) + '%';
+        }
+    }
+
+    for (let i = 0; i < SLIDE_RANGES.length; i++) {
+        const el = document.getElementById('slide-' + (i + 1));
+        if (!el) continue;
+        const active = scroll >= SLIDE_RANGES[i][0] && scroll <= SLIDE_RANGES[i][1];
+        el.classList.toggle('active', active);
+        if (i === 1) {
+            const img = document.getElementById('slide-2-img');
+            if (img) img.classList.toggle('active', active);
+        }
+    }
+}
+
+function updateGridDots(scroll) {
+    for (let i = 0; i < gridDots.length; i++) {
+        const startY = (i * 17) % 80 + 10;
+        let speed = 90 + (i * 55) % 180;
+        if (i % 2 === 0) speed = -speed;
+        const y = (((startY + scroll * speed) % 100) + 100) % 100;
+        gridDots[i].style.top = y + '%';
+    }
+}
+
+function setupNavigation() {
+    const targetScrolls = [0.0, 0.34, 0.62, 0.94];
+    document.querySelectorAll('.nav-link').forEach((link, i) => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const maxScroll = document.body.scrollHeight - window.innerHeight;
+            window.scrollTo({ top: targetScrolls[i] * maxScroll, behavior: 'smooth' });
+        });
+    });
+    document.querySelectorAll('a').forEach((el) => {
+        el.addEventListener('mouseenter', () => cursorOuter.classList.add('hover'));
+        el.addEventListener('mouseleave', () => cursorOuter.classList.remove('hover'));
+    });
+}
+
+/* ------------------------------------------------------------------ *
+ *  scene
+ * ------------------------------------------------------------------ */
+function initScene() {
+    canvas = document.getElementById('webgl');
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color('#000000');
+    scene.fog = new THREE.FogExp2('#000000', 0.01);
+
+    camera = new THREE.PerspectiveCamera(50, sizes.width / sizes.height, 0.1, 100);
+    camera.position.set(0, 0.2, 3.0);
+    scene.add(camera);
+
+    createBackgroundShader();
+
+    renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: false,          /* MSAA comes from the composer target instead */
+        alpha: false,
+        stencil: false,
+        powerPreference: "high-performance"
+    });
+    renderer.setSize(sizes.width, sizes.height);
+    renderer.setPixelRatio(dprCap());
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    /* the grade pass does ACES itself, so the renderer must not do it twice */
+    renderer.toneMapping = THREE.NoToneMapping;
+
+    initComposer();
+}
+
+/* ------------------------------------------------------------------ *
+ *  post chain: render (MSAA, half-float) -> bloom -> grade
+ * ------------------------------------------------------------------ */
+function initComposer() {
+    const mobile = isMobile();
+    const target = new THREE.WebGLRenderTarget(sizes.width, sizes.height, {
+        type: THREE.HalfFloatType,
+        samples: mobile ? 0 : 4
+    });
+
+    composer = new EffectComposer(renderer, target);
+    composer.setPixelRatio(dprCap());
+    composer.setSize(sizes.width, sizes.height);
+
+    composer.addPass(new RenderPass(scene, camera));
+
+    const bloomRes = new THREE.Vector2(
+        sizes.width  * (mobile ? 0.5 : 1),
+        sizes.height * (mobile ? 0.5 : 1)
+    );
+    bloomPass = new UnrealBloomPass(bloomRes, mobile ? 0.24 : 0.38, 0.62, 0.92);
+    composer.addPass(bloomPass);
+
+    gradePass = new ShaderPass(GradeShader);
+    gradePass.material.toneMapped = false;
+    gradePass.renderToScreen = true;
+    composer.addPass(gradePass);
+}
+
+function initLights() {
+    const ambientLight = new THREE.AmbientLight('#ffffff', 0.1);
+    scene.add(ambientLight);
+
+    const keyLight = new THREE.SpotLight('#ffffff', 18.0);
+    keyLight.position.set(4, 6, 3);
+    keyLight.angle = Math.PI / 4;
+    keyLight.penumbra = 0.9;
+    keyLight.castShadow = true;
+    const shadowRes = isMobile() ? 1024 : 2048;
+    keyLight.shadow.mapSize.width = shadowRes;
+    keyLight.shadow.mapSize.height = shadowRes;
+    keyLight.shadow.camera.near = 1.0;
+    keyLight.shadow.camera.far = 15;
+    keyLight.shadow.bias = -0.001;
+    scene.add(keyLight);
+
+    const rimLight = new THREE.DirectionalLight('#e3f2ff', 10.0);
+    rimLight.position.set(-5, 3, -4);
+    scene.add(rimLight);
+
+    const fillLight = new THREE.DirectionalLight('#fff3e6', 0.8);
+    fillLight.position.set(-2, -4, 2);
+    scene.add(fillLight);
+}
+
+/* ------------------------------------------------------------------ *
+ *  animation loop
+ * ------------------------------------------------------------------ */
+function animate() {
+    requestAnimationFrame(animate);
+
+    const elapsed = clock.getElapsedTime();
+
+    /* --- smoothed scroll --- */
+    const maxScroll = document.body.scrollHeight - window.innerHeight;
+    const targetScroll = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+    scrollVelocity = Math.abs(targetScroll - currentScroll);
+    currentScroll += (targetScroll - currentScroll) * 0.025;
+
+    /* --- smoothed mouse --- */
+    mouseX += (targetMouseX - mouseX) * 0.05;
+    mouseY += (targetMouseY - mouseY) * 0.05;
+
+    /* --- outer cursor ring --- */
+    outerX += (cursorX - outerX) * 0.2;
+    outerY += (cursorY - outerY) * 0.2;
+    cursorOuter.style.left = outerX + 'px';
+    cursorOuter.style.top = outerY + 'px';
+
+    /* --- 360 degree scroll orbit --- */
+    const frame = framingScale();
+    const phi = currentScroll * Math.PI * 2;
+    const camY = (0.35 + Math.sin(currentScroll * Math.PI) * 0.8) * frame;
+    const radius = (4.2 - Math.sin(currentScroll * Math.PI) * 0.6) * frame;
+    cameraTarget.set(radius * Math.sin(phi), camY, radius * Math.cos(phi));
+    camera.position.lerp(cameraTarget, 0.025);
+
+    const e = Math.min(Math.max(currentScroll / 0.28, 0), 1);
+    const easeFactor = e * e * (3 - 2 * e);
+    /* on desktop the sculpture slides right to clear the text column;
+       on portrait it stays centred and is lifted into the upper half instead */
+    const portrait = frame > 1.15;
+    /* even at scroll 0 the sculpture is held off the title column — centred, it
+       put its lit chest straight behind the type */
+    const lookAtX = portrait ? 0 : -(0.38 + 0.52 * easeFactor);
+    const lookAtY = portrait ? -1.35 : -0.15;
+    camera.lookAt(lookAtX, lookAtY, 0);
+
+    /* --- model tilt --- */
+    if (pivot) {
+        pivot.rotation.y = mouseX * 0.25;
+        pivot.rotation.x = mouseY * 0.15;
+        updateModelFade();
+    }
+
+    /* --- sparks --- */
+    updateSparks(elapsed);
+
+    /* --- shader uniforms --- */
+    if (bgMaterial) {
+        bgMaterial.uniforms.uTime.value = elapsed;
+        bgMaterial.uniforms.uScroll.value = currentScroll;
+        bgMaterial.uniforms.uMouse.value.set(mouseX, -mouseY);
+        bgMaterial.uniforms.uResolution.value.set(
+            sizes.width * renderer.getPixelRatio(),
+            sizes.height * renderer.getPixelRatio()
+        );
+    }
+
+    if (gradePass) {
+        gradePass.uniforms.uTime.value = elapsed;
+        gradePass.uniforms.uResolution.value.set(
+            sizes.width * renderer.getPixelRatio(),
+            sizes.height * renderer.getPixelRatio()
+        );
+    }
+
+    updateSlides(currentScroll);
+    updateGridDots(currentScroll);
+
+    composer.render();
+}
+
+/* ------------------------------------------------------------------ *
+ *  events
+ * ------------------------------------------------------------------ */
+window.addEventListener('mousemove', (event) => {
+    cursorX = event.clientX;
+    cursorY = event.clientY;
+    cursorInner.style.left = cursorX + 'px';
+    cursorInner.style.top = cursorY + 'px';
+
+    targetMouseX = (event.clientX / window.innerWidth) * 2 - 1;
+    targetMouseY = (event.clientY / window.innerHeight) * 2 - 1;
+});
+
+window.addEventListener('resize', () => {
+    sizes.width = window.innerWidth;
+    sizes.height = window.innerHeight;
+    if (!camera || !renderer) return;
+    camera.aspect = sizes.width / sizes.height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(sizes.width, sizes.height);
+    renderer.setPixelRatio(dprCap());
+    if (composer) {
+        composer.setPixelRatio(dprCap());
+        composer.setSize(sizes.width, sizes.height);
+    }
+    if (bloomPass) {
+        const s = isMobile() ? 0.5 : 1;
+        bloomPass.setSize(sizes.width * s, sizes.height * s);
+    }
+});
+
+/* ------------------------------------------------------------------ *
+ *  bootstrap
+ * ------------------------------------------------------------------ */
+function init() {
+    splitTitlesIntoChars();
+    gridDots = Array.from(document.querySelectorAll('.grid-dot'));
+
+    initScene();
+    initLights();
+    createSparks();
+    loadModel();
+    setupNavigation();
+
+    updateSlides(0);
+    updateGridDots(0);
+
+    animate();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+</script>
+
+</body>
+</html>
