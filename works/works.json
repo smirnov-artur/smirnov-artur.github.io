@@ -3446,5 +3446,20 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "rocket-cta",
+  "v": "rocket-cta",
+  "ve": "rocket-cta-en",
+  "ru": [
+   "Курс сайтов на AI",
+   "Чат-панель и зацикленное ночное видео плывут в панели параллакса, а трава наплывает на них при скролле."
+  ],
+  "en": [
+   "AI website course",
+   "A chat panel and a looping night-time video float in a parallax dashboard as grass slides over them on scroll."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
