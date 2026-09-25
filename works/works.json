@@ -2785,5 +2785,19 @@
    "Three phone screens: a truck hero video, a sliding headline, an animated shipping map, and a contact form."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "halo-benefits",
+  "v": "halo-benefits",
+  "ve": "halo-benefits-en",
+  "ru": [
+   "Преимущества стейблкоина",
+   "Карточки с преимуществами на пастельном фото, а ниже бегущей строкой прокручиваются имена партнёров."
+  ],
+  "en": [
+   "Stablecoin benefits",
+   "A benefit-card grid over a pastel photo, with partner names scrolling by in an endless marquee below."
+  ],
+  "cat": "web"
  }
 ]
