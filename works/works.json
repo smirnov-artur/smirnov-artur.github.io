@@ -51,18 +51,18 @@
   "vhe": "fox-404-hq-en"
  },
  {
-  "slug": "dreams",
-  "v": "dreams",
+  "slug": "big-bang-origin",
+  "v": "big-bang-origin",
   "ru": [
-   "Ночное небо",
-   "Кино на фоне, крупный шрифт с засечками, стеклянные кнопки."
+   "Рождение Вселенной",
+   "Прокрутка покадрово ведёт от Большого взрыва к открывшемуся глазу, ниже плывут туманности"
   ],
   "en": [
-   "Night sky",
-   "A cinematic video background, big serif type, glass buttons."
+   "Origin of the universe",
+   "Scrolling plays the Big Bang frame by frame into an opening eye, then nebula cards drift by"
   ],
   "cat": "web",
-  "ve": "dreams-en",
+  "ve": "big-bang-origin-en",
   "rp": 1
  },
  {
@@ -96,18 +96,18 @@
   "rp": 1
  },
  {
-  "slug": "bold-studio",
-  "v": "bold-studio",
-  "ve": "bold-studio-en",
+  "slug": "iron-man-stark",
+  "v": "iron-man-stark",
   "ru": [
-   "Креативный коллектив",
-   "Видео с черепахой-ниндзя и воином в красном свете, а заголовки и цифры плавно всплывают следом."
+   "Броня Железного человека",
+   "Прокрутка покадрово собирает броню Iron Man, рядом всплывают цитаты Тони Старка"
   ],
   "en": [
-   "Creative collective",
-   "A red-lit video of a ninja turtle and an armored warrior plays behind fade-up headlines and stats."
+   "Iron Man armour",
+   "Scrolling assembles the Iron Man suit frame by frame while Tony Stark quotes pop up"
   ],
   "cat": "web",
+  "ve": "iron-man-stark-en",
   "rp": 1
  },
  {
@@ -143,6 +143,21 @@
   "rp": 1
  },
  {
+  "slug": "dreams",
+  "v": "dreams",
+  "ru": [
+   "Ночное небо",
+   "Кино на фоне, крупный шрифт с засечками, стеклянные кнопки."
+  ],
+  "en": [
+   "Night sky",
+   "A cinematic video background, big serif type, glass buttons."
+  ],
+  "cat": "web",
+  "ve": "dreams-en",
+  "rp": 1
+ },
+ {
   "slug": "orbit-engineers",
   "v": "orbit-engineers",
   "ru": [
@@ -155,21 +170,6 @@
   ],
   "cat": "web",
   "ve": "orbit-engineers-en",
-  "rp": 1
- },
- {
-  "slug": "scroll-bloom",
-  "v": "scroll-bloom",
-  "ru": [
-   "Цветок на прокрутке",
-   "Прокрутка листает ролик с цветком по кадрам, звёзды плывут, три карточки проявляются шторкой."
-  ],
-  "en": [
-   "Scroll Bloom",
-   "Scrolling scrubs a glowing flower film frame by frame while stars drift and three cards wipe in."
-  ],
-  "cat": "web",
-  "ve": "scroll-bloom-en",
   "rp": 1
  },
  {
@@ -188,6 +188,51 @@
   "rp": 1
  },
  {
+  "slug": "zentry-premium",
+  "v": "zentry-premium",
+  "ru": [
+   "Игровая метавселенная",
+   "Кадр с видео раскрывается на весь экран, заголовки влетают по словам, карточки клонятся за курсором"
+  ],
+  "en": [
+   "Gaming metaverse",
+   "A video frame unfolds to full screen, titles fly in word by word, cards tilt after the cursor"
+  ],
+  "cat": "web",
+  "ve": "zentry-premium-en",
+  "rp": 1
+ },
+ {
+  "slug": "hot-ice",
+  "cat": "3d",
+  "ru": [
+   "Горячий лёд",
+   "Коснитесь жидкости — она кристаллизуется в камень"
+  ],
+  "en": [
+   "Hot ice",
+   "Touch the liquid — it crystallises into stone"
+  ],
+  "v": "hot-ice",
+  "rp": 1,
+  "ve": "hot-ice-en"
+ },
+ {
+  "slug": "scroll-bloom",
+  "v": "scroll-bloom",
+  "ru": [
+   "Цветок на прокрутке",
+   "Прокрутка листает ролик с цветком по кадрам, звёзды плывут, три карточки проявляются шторкой."
+  ],
+  "en": [
+   "Scroll Bloom",
+   "Scrolling scrubs a glowing flower film frame by frame while stars drift and three cards wipe in."
+  ],
+  "cat": "web",
+  "ve": "scroll-bloom-en",
+  "rp": 1
+ },
+ {
   "slug": "terrarium-spotlight",
   "v": "terrarium-spotlight",
   "ru": [
@@ -200,6 +245,21 @@
   ],
   "cat": "web",
   "ve": "terrarium-spotlight-en",
+  "rp": 1
+ },
+ {
+  "slug": "liquid-glass-agency",
+  "v": "liquid-glass-agency",
+  "ru": [
+   "Студия на жидком стекле",
+   "Слова заголовка проступают из размытия, ниже — стеклянные карточки и секции с видео"
+  ],
+  "en": [
+   "Liquid-glass studio",
+   "Headline words sharpen out of a blur, followed by glass cards and video sections"
+  ],
+  "cat": "web",
+  "ve": "liquid-glass-agency-en",
   "rp": 1
  },
  {
@@ -218,18 +278,18 @@
   "rp": 1
  },
  {
-  "slug": "viktor-portfolio",
-  "v": "viktor-portfolio",
+  "slug": "neovision",
+  "v": "neovision",
   "ru": [
-   "Портфолио разработчика",
-   "Видео с человеком в светящемся визоре, а кнопка проекта плавно открывает второй видеоэкран"
+   "Виртуальная реальность",
+   "Человек в VR-шлеме на видео, тонкий заголовок, а ниже вкладки меняют анимированные превью"
   ],
   "en": [
-   "Developer portfolio",
-   "A man in a glowing visor on video; Next Project fades into a second video screen"
+   "Virtual reality",
+   "A man in a VR headset on video, thin headline, and tabs below swap animated previews"
   ],
   "cat": "web",
-  "ve": "viktor-portfolio-en",
+  "ve": "neovision-en",
   "rp": 1
  },
  {
@@ -246,6 +306,21 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "lichtenberg",
+  "cat": "3d",
+  "ru": [
+   "Молния в акриле",
+   "Фигура Лихтенберга растёт в блоке, рядом расчёт и цена"
+  ],
+  "en": [
+   "Lightning in acrylic",
+   "A Lichtenberg figure grows in the block, with a calculator and price"
+  ],
+  "v": "lichtenberg",
+  "rp": 1,
+  "ve": "lichtenberg-en"
  },
  {
   "slug": "train-window",
@@ -275,6 +350,21 @@
   ],
   "cat": "web",
   "ve": "city-scroll-story-en",
+  "rp": 1
+ },
+ {
+  "slug": "evr-ventures",
+  "v": "evr-ventures",
+  "ru": [
+   "Устойчивое развитие",
+   "Стеклянный куб вращается в радужном свете, кольцо прогресса заполняется, логотипы бегут строкой"
+  ],
+  "en": [
+   "Sustainability consulting",
+   "A glass cube spins in rainbow light, a progress ring fills up and partner logos scroll past"
+  ],
+  "cat": "web",
+  "ve": "evr-ventures-en",
   "rp": 1
  },
  {
@@ -320,6 +410,51 @@
    "Rings bloom around the logo on load, then the sunset video crossfades to an interior scene on scroll."
   ],
   "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "nova-space-systems",
+  "v": "nova-space-systems",
+  "ru": [
+   "Космические запуски",
+   "Огромное слово «РАКЕТЫ» поверх видео, ниже строгая сетка с зацикленными роликами ракет"
+  ],
+  "en": [
+   "Space launches",
+   "Giant ROCKETS type over a video, then a strict grid with looping rocket clips"
+  ],
+  "cat": "web",
+  "ve": "nova-space-systems-en",
+  "rp": 1
+ },
+ {
+  "slug": "zhidkost-razrushenie",
+  "cat": "3d",
+  "ru": [
+   "Жидкость и разрушение",
+   "Симуляция жидкости и разрушения на видеокарте"
+  ],
+  "en": [
+   "Fluid and fracture",
+   "Fluid and fracture simulated on the GPU"
+  ],
+  "v": "zhidkost-razrushenie",
+  "rp": 1,
+  "ve": "zhidkost-razrushenie-en"
+ },
+ {
+  "slug": "gta-vi-landing",
+  "v": "gta-vi-landing",
+  "ru": [
+   "Игра с открытым миром",
+   "Прокрутка сжимает арт до логотипа VI и покадрово проматывает ролики с героями"
+  ],
+  "en": [
+   "Open-world game",
+   "Scrolling shrinks the art into the VI logo and scrubs the character clips frame by frame"
+  ],
+  "cat": "web",
+  "ve": "gta-vi-landing-en",
   "rp": 1
  },
  {
@@ -383,19 +518,19 @@
   "rp": 1
  },
  {
-  "slug": "bold-portfolio-hero",
-  "v": "bold-portfolio-hero",
+  "slug": "nodal",
+  "cat": "3d",
   "ru": [
-   "Портрет в маске",
-   "Портрет в фигурной маске перекрывает огромный заголовок на красно-оранжевом градиенте"
+   "Песок рисует ноту",
+   "Пластина Хладни: частота рисует узор из песка"
   ],
   "en": [
-   "Masked portrait",
-   "A portrait in a blob-shaped mask overlaps a huge headline on a red-orange gradient"
+   "Sand draws the note",
+   "A Chladni plate: the frequency draws a sand pattern"
   ],
-  "cat": "web",
-  "ve": "bold-portfolio-hero-en",
-  "rp": 1
+  "v": "nodal",
+  "rp": 1,
+  "ve": "nodal-en"
  },
  {
   "slug": "neural-llama",
@@ -428,6 +563,21 @@
   "rp": 1
  },
  {
+  "slug": "valorant-gaming-landing",
+  "v": "valorant-gaming-landing",
+  "ru": [
+   "Тактический шутер",
+   "Игровое видео за логотипом, ниже лента новостей и страницы агентов с видеофоном"
+  ],
+  "en": [
+   "Tactical shooter",
+   "Gameplay video behind the logo, then a news strip and agent pages over a looping video"
+  ],
+  "cat": "web",
+  "ve": "valorant-gaming-landing-en",
+  "rp": 1
+ },
+ {
   "slug": "slowlight",
   "cat": "3d",
   "ru": [
@@ -442,19 +592,19 @@
   "v": "pf-slowlight"
  },
  {
-  "slug": "nodal",
-  "cat": "3d",
+  "slug": "viktor-portfolio",
+  "v": "viktor-portfolio",
   "ru": [
-   "Песок рисует ноту",
-   "Пластина Хладни: частота рисует узор из песка"
+   "Портфолио разработчика",
+   "Видео с человеком в светящемся визоре, а кнопка проекта плавно открывает второй видеоэкран"
   ],
   "en": [
-   "Sand draws the note",
-   "A Chladni plate: the frequency draws a sand pattern"
+   "Developer portfolio",
+   "A man in a glowing visor on video; Next Project fades into a second video screen"
   ],
-  "v": "nodal",
-  "rp": 1,
-  "ve": "nodal-en"
+  "cat": "web",
+  "ve": "viktor-portfolio-en",
+  "rp": 1
  },
  {
   "slug": "oyla",
@@ -500,6 +650,126 @@
   "v": "rooftop",
   "rp": 1,
   "ve": "rooftop-en"
+ },
+ {
+  "slug": "space-voyages",
+  "v": "space-voyages",
+  "ru": [
+   "Полёты в космос",
+   "Космические ролики по кругу гаснут и загораются, заголовок проявляется по словам сквозь жидкое стекло"
+  ],
+  "en": [
+   "Space voyages",
+   "Space videos fade in and out on a loop while the headline blurs in word by word over liquid glass"
+  ],
+  "cat": "web",
+  "ve": "space-voyages-en",
+  "rp": 1
+ },
+ {
+  "slug": "survival",
+  "cat": "3d",
+  "ru": [
+   "Прототип игры",
+   "Робот, хаб и выживание прямо в браузере"
+  ],
+  "en": [
+   "Game prototype",
+   "A robot, a hub and survival right in the browser"
+  ],
+  "v": "survival",
+  "rp": 1,
+  "ve": "survival-en"
+ },
+ {
+  "slug": "nimbus",
+  "v": "nimbus",
+  "ve": "nimbus-en",
+  "ru": [
+   "Облачная платформа данных",
+   "Миграции, программируемая инфраструктура и комплаенс проходят через единый контур управления — от 3D-куба операций до живых карточек с кодом."
+  ],
+  "en": [
+   "Cloud data platform",
+   "Storage migrations, programmable infrastructure and compliance run through one control layer — from an exploding 3D tile to live code cards."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "bold-studio",
+  "v": "bold-studio",
+  "ve": "bold-studio-en",
+  "ru": [
+   "Креативный коллектив",
+   "Видео с черепахой-ниндзя и воином в красном свете, а заголовки и цифры плавно всплывают следом."
+  ],
+  "en": [
+   "Creative collective",
+   "A red-lit video of a ninja turtle and an armored warrior plays behind fade-up headlines and stats."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "bold-portfolio-hero",
+  "v": "bold-portfolio-hero",
+  "ru": [
+   "Портрет в маске",
+   "Портрет в фигурной маске перекрывает огромный заголовок на красно-оранжевом градиенте"
+  ],
+  "en": [
+   "Masked portrait",
+   "A portrait in a blob-shaped mask overlaps a huge headline on a red-orange gradient"
+  ],
+  "cat": "web",
+  "ve": "bold-portfolio-hero-en",
+  "rp": 1
+ },
+ {
+  "slug": "league-of-legends-hero",
+  "v": "league-of-legends-hero",
+  "ru": [
+   "MOBA-игра",
+   "Арты чемпионов перетекают друг в друга, колесо мыши листает полноэкранные слайды"
+  ],
+  "en": [
+   "MOBA game",
+   "Champion art melts from one hero to the next as the mouse wheel flips full-screen slides"
+  ],
+  "cat": "web",
+  "ve": "league-of-legends-hero-en",
+  "rp": 1
+ },
+ {
+  "slug": "framelix-3d-studios",
+  "v": "framelix-3d-studios",
+  "ru": [
+   "Студия 3D-анимации",
+   "Светящиеся синие стрекозы машут крыльями на видео, ниже бежит сиреневая строка и крутится ролик"
+  ],
+  "en": [
+   "3D motion studio",
+   "Glowing blue dragonflies flap their wings on video; a lilac ticker scrolls and a clip loops below"
+  ],
+  "cat": "web",
+  "ve": "framelix-3d-studios-en",
+  "rp": 1
+ },
+ {
+  "slug": "designpro-academy",
+  "v": "designpro-academy",
+  "ru": [
+   "Школа продуктового дизайна",
+   "За заголовком изгибается стеклянная лента на видео, по голубым словам пробегает блик"
+  ],
+  "en": [
+   "Product design school",
+   "A glassy ribbon video bends behind the headline while a shine sweeps across the blue words"
+  ],
+  "cat": "web",
+  "ve": "designpro-academy-en",
+  "rp": 1
  },
  {
   "slug": "bubble-orb",
@@ -593,21 +863,6 @@
   "rp": 1
  },
  {
-  "slug": "hot-ice",
-  "cat": "3d",
-  "ru": [
-   "Горячий лёд",
-   "Коснитесь жидкости — она кристаллизуется в камень"
-  ],
-  "en": [
-   "Hot ice",
-   "Touch the liquid — it crystallises into stone"
-  ],
-  "v": "hot-ice",
-  "rp": 1,
-  "ve": "hot-ice-en"
- },
- {
   "slug": "archive",
   "v": "archive",
   "ru": [
@@ -670,21 +925,6 @@
   "rp": 1
  },
  {
-  "slug": "lichtenberg",
-  "cat": "3d",
-  "ru": [
-   "Молния в акриле",
-   "Фигура Лихтенберга растёт в блоке, рядом расчёт и цена"
-  ],
-  "en": [
-   "Lightning in acrylic",
-   "A Lichtenberg figure grows in the block, with a calculator and price"
-  ],
-  "v": "lichtenberg",
-  "rp": 1,
-  "ve": "lichtenberg-en"
- },
- {
   "slug": "lab",
   "cat": "3d",
   "ru": [
@@ -712,36 +952,6 @@
   "v": "roy",
   "rp": 1,
   "ve": "roy-en"
- },
- {
-  "slug": "zhidkost-razrushenie",
-  "cat": "3d",
-  "ru": [
-   "Жидкость и разрушение",
-   "Симуляция жидкости и разрушения на видеокарте"
-  ],
-  "en": [
-   "Fluid and fracture",
-   "Fluid and fracture simulated on the GPU"
-  ],
-  "v": "zhidkost-razrushenie",
-  "rp": 1,
-  "ve": "zhidkost-razrushenie-en"
- },
- {
-  "slug": "survival",
-  "cat": "3d",
-  "ru": [
-   "Прототип игры",
-   "Робот, хаб и выживание прямо в браузере"
-  ],
-  "en": [
-   "Game prototype",
-   "A robot, a hub and survival right in the browser"
-  ],
-  "v": "survival",
-  "rp": 1,
-  "ve": "survival-en"
  },
  {
   "slug": "glb-optimize",
@@ -1010,21 +1220,6 @@
   ],
   "cat": "web",
   "ve": "3d-ball-store-en",
-  "rp": 1
- },
- {
-  "slug": "space-voyages",
-  "v": "space-voyages",
-  "ru": [
-   "Полёты в космос",
-   "Космические ролики по кругу гаснут и загораются, заголовок проявляется по словам сквозь жидкое стекло"
-  ],
-  "en": [
-   "Space voyages",
-   "Space videos fade in and out on a loop while the headline blurs in word by word over liquid glass"
-  ],
-  "cat": "web",
-  "ve": "space-voyages-en",
   "rp": 1
  },
  {
@@ -1403,96 +1598,6 @@
   "rp": 1
  },
  {
-  "slug": "zentry-premium",
-  "v": "zentry-premium",
-  "ru": [
-   "Игровая метавселенная",
-   "Кадр с видео раскрывается на весь экран, заголовки влетают по словам, карточки клонятся за курсором"
-  ],
-  "en": [
-   "Gaming metaverse",
-   "A video frame unfolds to full screen, titles fly in word by word, cards tilt after the cursor"
-  ],
-  "cat": "web",
-  "ve": "zentry-premium-en",
-  "rp": 1
- },
- {
-  "slug": "gta-vi-landing",
-  "v": "gta-vi-landing",
-  "ru": [
-   "Игра с открытым миром",
-   "Прокрутка сжимает арт до логотипа VI и покадрово проматывает ролики с героями"
-  ],
-  "en": [
-   "Open-world game",
-   "Scrolling shrinks the art into the VI logo and scrubs the character clips frame by frame"
-  ],
-  "cat": "web",
-  "ve": "gta-vi-landing-en",
-  "rp": 1
- },
- {
-  "slug": "iron-man-stark",
-  "v": "iron-man-stark",
-  "ru": [
-   "Броня Железного человека",
-   "Прокрутка покадрово собирает броню Iron Man, рядом всплывают цитаты Тони Старка"
-  ],
-  "en": [
-   "Iron Man armour",
-   "Scrolling assembles the Iron Man suit frame by frame while Tony Stark quotes pop up"
-  ],
-  "cat": "web",
-  "ve": "iron-man-stark-en",
-  "rp": 1
- },
- {
-  "slug": "big-bang-origin",
-  "v": "big-bang-origin",
-  "ru": [
-   "Рождение Вселенной",
-   "Прокрутка покадрово ведёт от Большого взрыва к открывшемуся глазу, ниже плывут туманности"
-  ],
-  "en": [
-   "Origin of the universe",
-   "Scrolling plays the Big Bang frame by frame into an opening eye, then nebula cards drift by"
-  ],
-  "cat": "web",
-  "ve": "big-bang-origin-en",
-  "rp": 1
- },
- {
-  "slug": "valorant-gaming-landing",
-  "v": "valorant-gaming-landing",
-  "ru": [
-   "Тактический шутер",
-   "Игровое видео за логотипом, ниже лента новостей и страницы агентов с видеофоном"
-  ],
-  "en": [
-   "Tactical shooter",
-   "Gameplay video behind the logo, then a news strip and agent pages over a looping video"
-  ],
-  "cat": "web",
-  "ve": "valorant-gaming-landing-en",
-  "rp": 1
- },
- {
-  "slug": "league-of-legends-hero",
-  "v": "league-of-legends-hero",
-  "ru": [
-   "MOBA-игра",
-   "Арты чемпионов перетекают друг в друга, колесо мыши листает полноэкранные слайды"
-  ],
-  "en": [
-   "MOBA game",
-   "Champion art melts from one hero to the next as the mouse wheel flips full-screen slides"
-  ],
-  "cat": "web",
-  "ve": "league-of-legends-hero-en",
-  "rp": 1
- },
- {
   "slug": "aethera-studio",
   "v": "aethera-studio",
   "ru": [
@@ -1718,21 +1823,6 @@
   "rp": 1
  },
  {
-  "slug": "designpro-academy",
-  "v": "designpro-academy",
-  "ru": [
-   "Школа продуктового дизайна",
-   "За заголовком изгибается стеклянная лента на видео, по голубым словам пробегает блик"
-  ],
-  "en": [
-   "Product design school",
-   "A glassy ribbon video bends behind the headline while a shine sweeps across the blue words"
-  ],
-  "cat": "web",
-  "ve": "designpro-academy-en",
-  "rp": 1
- },
- {
   "slug": "digitwist-ai-builder",
   "v": "digitwist-ai-builder",
   "ru": [
@@ -1763,21 +1853,6 @@
   "rp": 1
  },
  {
-  "slug": "evr-ventures",
-  "v": "evr-ventures",
-  "ru": [
-   "Устойчивое развитие",
-   "Стеклянный куб вращается в радужном свете, кольцо прогресса заполняется, логотипы бегут строкой"
-  ],
-  "en": [
-   "Sustainability consulting",
-   "A glass cube spins in rainbow light, a progress ring fills up and partner logos scroll past"
-  ],
-  "cat": "web",
-  "ve": "evr-ventures-en",
-  "rp": 1
- },
- {
   "slug": "finlytic-ai-agent",
   "v": "finlytic-ai-agent",
   "ru": [
@@ -1790,21 +1865,6 @@
   ],
   "cat": "web",
   "ve": "finlytic-ai-agent-en",
-  "rp": 1
- },
- {
-  "slug": "framelix-3d-studios",
-  "v": "framelix-3d-studios",
-  "ru": [
-   "Студия 3D-анимации",
-   "Светящиеся синие стрекозы машут крыльями на видео, ниже бежит сиреневая строка и крутится ролик"
-  ],
-  "en": [
-   "3D motion studio",
-   "Glowing blue dragonflies flap their wings on video; a lilac ticker scrolls and a clip loops below"
-  ],
-  "cat": "web",
-  "ve": "framelix-3d-studios-en",
   "rp": 1
  },
  {
@@ -1853,21 +1913,6 @@
   "rp": 1
  },
  {
-  "slug": "liquid-glass-agency",
-  "v": "liquid-glass-agency",
-  "ru": [
-   "Студия на жидком стекле",
-   "Слова заголовка проступают из размытия, ниже — стеклянные карточки и секции с видео"
-  ],
-  "en": [
-   "Liquid-glass studio",
-   "Headline words sharpen out of a blur, followed by glass cards and video sections"
-  ],
-  "cat": "web",
-  "ve": "liquid-glass-agency-en",
-  "rp": 1
- },
- {
   "slug": "logoisum-video-agency",
   "v": "logoisum-video-agency",
   "ru": [
@@ -1895,21 +1940,6 @@
   ],
   "cat": "web",
   "ve": "mindloop-landing-en",
-  "rp": 1
- },
- {
-  "slug": "neovision",
-  "v": "neovision",
-  "ru": [
-   "Виртуальная реальность",
-   "Человек в VR-шлеме на видео, тонкий заголовок, а ниже вкладки меняют анимированные превью"
-  ],
-  "en": [
-   "Virtual reality",
-   "A man in a VR headset on video, thin headline, and tabs below swap animated previews"
-  ],
-  "cat": "web",
-  "ve": "neovision-en",
   "rp": 1
  },
  {
@@ -1985,21 +2015,6 @@
   ],
   "cat": "web",
   "ve": "nickel-payments-en",
-  "rp": 1
- },
- {
-  "slug": "nova-space-systems",
-  "v": "nova-space-systems",
-  "ru": [
-   "Космические запуски",
-   "Огромное слово «РАКЕТЫ» поверх видео, ниже строгая сетка с зацикленными роликами ракет"
-  ],
-  "en": [
-   "Space launches",
-   "Giant ROCKETS type over a video, then a strict grid with looping rocket clips"
-  ],
-  "cat": "web",
-  "ve": "nova-space-systems-en",
   "rp": 1
  },
  {
@@ -3123,21 +3138,6 @@
   "en": [
    "Team workspace",
    "Mountains on video, a liquid-glass menu and a headline that reveals letter by letter."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "nimbus",
-  "v": "nimbus",
-  "ve": "nimbus-en",
-  "ru": [
-   "Облачная платформа данных",
-   "Миграции, программируемая инфраструктура и комплаенс проходят через единый контур управления — от 3D-куба операций до живых карточек с кодом."
-  ],
-  "en": [
-   "Cloud data platform",
-   "Storage migrations, programmable infrastructure and compliance run through one control layer — from an exploding 3D tile to live code cards."
   ],
   "cat": "web",
   "rp": 1
