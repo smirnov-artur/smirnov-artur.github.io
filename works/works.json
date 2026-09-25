@@ -2883,5 +2883,19 @@
    "Three phone mockups fade and rise in over purple: a looping video hero, a speaker grid, and an FAQ list."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "integration-saas",
+  "v": "integration-saas",
+  "ve": "integration-saas-en",
+  "ru": [
+   "Хаб интеграций",
+   "Видео зацикленного светящегося портала плывёт в розовых облаках за крупным заголовком."
+  ],
+  "en": [
+   "Integration hub",
+   "A looping video of a glowing stone portal drifts through pink clouds behind the bold hero text."
+  ],
+  "cat": "web"
  }
 ]

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataVio | One Central Hub for Every Data Source</title>
+    <meta name="description" content="DataVio unifies every API, warehouse, and workflow into one adaptive integration hub built for transparency, governance, and scale.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        geist: ['Geist', 'system-ui', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            background: #000;
+            font-family: 'Geist', system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const NAV_LINKS = ['Platform', 'Pricing', 'Solutions', 'Connectors'];
+        const AVATARS = [
+            'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100',
+            'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100',
+            'https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=100',
+        ];
+
+        const MenuIcon = (props) => (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+                <line x1="4" x2="20" y1="12" y2="12" />
+                <line x1="4" x2="20" y1="6" y2="6" />
+                <line x1="4" x2="20" y1="18" y2="18" />
+            </svg>
+        );
+
+        const XIcon = (props) => (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+            </svg>
+        );
+
+        const MobileMenu = ({ open, onClose }) => (
+            <React.Fragment>
+                <div
+                    className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                    onClick={onClose}
+                    aria-hidden="true"
+                />
+                <div
+                    className={`fixed top-0 right-0 h-full w-[280px] sm:w-[320px] bg-white z-50 shadow-2xl transition-transform duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${open ? 'translate-x-0' : 'translate-x-full'}`}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Mobile menu"
+                >
+                    <div className="flex justify-end px-5 py-5">
+                        <button onClick={onClose} aria-label="Close menu" className="text-gray-800">
+                            <XIcon className="w-6 h-6" />
+                        </button>
+                    </div>
+                    <nav className="flex flex-col px-6">
+                        {NAV_LINKS.map((link, i) => (
+                            <a
+                                key={link}
+                                href="#"
+                                onClick={onClose}
+                                className="text-gray-800 text-lg font-medium py-3 border-b border-gray-100 transition-all duration-300"
+                                style={{
+                                    transitionDelay: open ? `${(i + 1) * 60}ms` : '0ms',
+                                    opacity: open ? 1 : 0,
+                                    transform: open ? 'translateX(0)' : 'translateX(16px)',
+                                }}
+                            >
+                                {link}
+                            </a>
+                        ))}
+                    </nav>
+                    <div className="px-6 mt-6">
+                        <a
+                            href="#"
+                            onClick={onClose}
+                            className="block text-center bg-gray-900 text-white rounded-lg px-6 py-3 text-sm font-medium transition-all duration-300"
+                            style={{
+                                transitionDelay: open ? '320ms' : '0ms',
+                                opacity: open ? 1 : 0,
+                                transform: open ? 'translateY(0)' : 'translateY(16px)',
+                            }}
+                        >
+                            Sign In
+                        </a>
+                    </div>
+                </div>
+            </React.Fragment>
+        );
+
+        const App = () => {
+            const [menuOpen, setMenuOpen] = useState(false);
+
+            useEffect(() => {
+                document.body.style.overflow = menuOpen ? 'hidden' : '';
+                return () => { document.body.style.overflow = ''; };
+            }, [menuOpen]);
+
+            return (
+                <div className="relative h-screen w-full overflow-hidden font-geist">
+                    <video
+                        className="absolute inset-0 h-full w-full object-cover object-[70%_center] md:object-center"
+                        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260702_151414_1020688d-fcb3-4b2a-9bc2-cd1dae8853dd.mp4"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                    />
+
+                    <div className="absolute inset-0 z-[1] md:hidden" style={{ background: 'linear-gradient(to top, #B69198 0%, #B69198 30%, transparent 55%)' }} />
+                    <div className="absolute inset-0 z-[1] hidden md:block" style={{ background: 'linear-gradient(to right, #B69198 0%, #B69198 30%, transparent 55%)' }} />
+
+                    <div className="relative z-10 h-full flex flex-col">
+                        <nav className="flex items-center justify-between px-5 sm:px-6 md:px-12 lg:px-16 py-4 md:py-5">
+                            <div className="flex items-center gap-6 lg:gap-8">
+                                <span className="text-white text-lg sm:text-xl md:text-2xl font-semibold tracking-tight">DataVio</span>
+                                <div className="hidden md:flex items-center gap-6 lg:gap-8">
+                                    {NAV_LINKS.map((link) => (
+                                        <a key={link} href="#" className="text-white/80 hover:text-white text-sm font-medium transition-colors duration-200">
+                                            {link}
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="flex items-center">
+                                <a href="#" className="hidden md:inline text-white/80 hover:text-white text-sm font-medium transition-colors duration-200">
+                                    Sign In
+                                </a>
+                                <button onClick={() => setMenuOpen(true)} aria-label="Open menu" className="md:hidden text-white">
+                                    <MenuIcon className="w-6 h-6" />
+                                </button>
+                            </div>
+                        </nav>
+
+                        <div className="flex-1 flex flex-col justify-between px-5 sm:px-6 md:px-12 lg:px-16 py-4 sm:py-6 md:py-10">
+                            <div className="max-w-3xl pt-2 sm:pt-4 md:pt-8">
+                                <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-normal text-white leading-[1.1] tracking-tight">
+                                    One Central Hub<br />for Every Source
+                                </h1>
+                            </div>
+
+                            <div className="max-w-3xl pb-2 sm:pb-4 md:pb-6">
+                                <p className="text-white/75 text-sm sm:text-base md:text-lg leading-relaxed max-w-xl">
+                                    <span className="text-white font-semibold">End fragmented pipelines.</span> Connect every API, warehouse, and workflow into one adaptive layer built for <span className="text-white font-semibold">transparency, governance, and scalable systems</span>.
+                                </p>
+
+                                <div className="mt-5 sm:mt-6 md:mt-8 flex flex-wrap gap-3 sm:gap-4">
+                                    <a href="#" className="bg-white text-gray-900 text-sm font-medium rounded-lg px-5 sm:px-6 py-2.5 sm:py-3 hover:bg-white/90 transition-colors">
+                                        Start Integration
+                                    </a>
+                                    <a href="#" className="text-white/80 text-sm font-medium hover:text-white transition-colors self-center">
+                                        Schedule Call
+                                    </a>
+                                </div>
+
+                                <div className="mt-6 sm:mt-8 md:mt-10 inline-flex items-center gap-3 sm:gap-4 bg-white/10 backdrop-blur-md border border-white/15 rounded-xl px-4 sm:px-5 py-3 sm:py-3.5">
+                                    <div className="flex -space-x-2.5 shrink-0" aria-hidden="true">
+                                        {AVATARS.map((src) => (
+                                            <img key={src} src={src} alt="" className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white/30 object-cover" />
+                                        ))}
+                                    </div>
+                                    <p className="text-white/80 text-xs sm:text-sm leading-snug max-w-[220px] sm:max-w-xs">
+                                        <span className="text-white font-semibold">Adopted by 2,000+ companies and dev teams</span> who ship quicker, iterate safely, and keep full ownership of their pipelines.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>
