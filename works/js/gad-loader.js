@@ -131,7 +131,14 @@
   var angle = 0, omega = 0, drawn = first ? 0 : 1, exitT = 0, leaving = null, mx = .5, my = .5, tx = 0, ty = 0, gone = false;
   var MIN = reduce ? 250 : first ? 2050 : 450, CRUISE = TAU / 1.9, DRAW0 = 60, DRAW = 950, PORTAL = first ? 900 : 760;
 
-  function onLoad() { if (!loaded) { loaded = true; loadT = now(); } }
+  // страница может попросить подождать своё, например 3D-модель: window.gadWait = промис (не дольше 12 с)
+  var cap = 7000;
+  function onLoad() {
+    if (loaded) return;
+    var w = W.gadWait;
+    if (w && typeof w.then === 'function') { W.gadWait = 0; cap = 12000; w.then(onLoad, onLoad); return; }
+    loaded = true; loadT = now();
+  }
   if (D.readyState === 'complete') onLoad(); else W.addEventListener('load', onLoad);
   if (fine) W.addEventListener('pointermove', function (e) { mx = e.clientX / (W.innerWidth || 1); my = e.clientY / (W.innerHeight || 1); }, { passive: true });
 
@@ -158,7 +165,7 @@
 
     // ход загрузки
     target = Math.max(target, progress(t));
-    if (T > 7000) target = 1;
+    if (T > cap) target = 1;
     shown += (target - shown) * (target === 1 ? .2 : .08);
     if (target === 1 && 1 - shown < .004) shown = 1;
     if (!exitT && shown === 1 && T >= MIN) exitT = t;

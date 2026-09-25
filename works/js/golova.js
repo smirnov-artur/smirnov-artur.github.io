@@ -198,8 +198,9 @@ export function golova(canvas) {
   const holod = new THREE.DirectionalLight('#bfe4ff', 1.2); holod.position.set(-3, 4, 5);
   const kontur = new THREE.DirectionalLight('#39b8ff', 3); kontur.position.set(4, -1, -3);         // ледяной контровой, цвет Ледяной Скорби
   mirSh.add(holod, kontur);
-  let gotov = false;
-  const os = shlem(() => { gotov = true; }); sharnir.add(os);
+  let gotov = false, gotovShlem, gotovLaty;
+  const zhdat = Promise.all([new Promise((r) => { gotovShlem = r; }), new Promise((r) => { gotovLaty = r; })]);
+  const os = shlem(() => { gotov = true; gotovShlem(); }); sharnir.add(os);
   // болванка головы: закрывает изнанку шлема и пишет в буфер чёрный цвет с альфой (лицо в прорези в тени), к шее тень сходит на нет.
   // На уровне глаз тень раскрывается почти в ноль: Артур просил видеть в прорезях настоящие глаза нежити, а не синие огни
   const bolvanka = new THREE.Mesh(new THREE.SphereGeometry(0.5, 48, 32), new THREE.ShaderMaterial({
@@ -216,7 +217,7 @@ export function golova(canvas) {
   // наплечники и грудь. Голова у фигуры своя, она снимается в шейдере стали: выбрасывается всё выше ворота и ближе к оси, чем полуширина головы.
   // Стоит на плечах и за головой не поворачивается. Первый вариант, бюст от 4DigitalARTS, Артур забраковал: наплечники мелкие и мыльные
   const srez = { value: new THREE.Vector2(9, 0) }, razvod = { value: new THREE.Vector2(POSADKA.lr, POSADKA.lt) };
-  const laty = shlem(null, 'assets/model/lich.glb', srez, POSADKA.lm, razvod); laty.rotation.y = Math.PI; mirSh.add(laty);
+  const laty = shlem(() => gotovLaty(), 'assets/model/lich.glb', srez, POSADKA.lm, razvod); laty.rotation.y = Math.PI; mirSh.add(laty);
 
   let W = 1, H = 1, pw = 1, ph = 1;
   function razmer() {
@@ -310,4 +311,5 @@ export function golova(canvas) {
     renderer.render(scene, camera);
   }
   requestAnimationFrame(kadr);
+  return zhdat; // заставка g.a.d. ждёт, пока шлем и латы загрузятся (window.gadWait)
 }
