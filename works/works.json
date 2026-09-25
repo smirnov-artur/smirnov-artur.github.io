@@ -2673,5 +2673,19 @@
    "Rings bloom around the logo on load, then the sunset video crossfades to an interior scene on scroll."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "subscription-agency",
+  "v": "subscription-agency",
+  "ve": "subscription-agency-en",
+  "ru": [
+   "Креатив по подписке",
+   "Мягкие изогнутые линии пульсируют на фоне, а теги услуг и логотипы клиентов бегут по экрану."
+  ],
+  "en": [
+   "On-demand creative",
+   "Soft curved lines pulse behind a bold headline while service tags and client logos scroll past."
+  ],
+  "cat": "web"
  }
 ]

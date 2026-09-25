@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alwayzz — премиальный креатив по запросу</title>
+    <meta name="description" content="Alwayzz — премиальное креативное агентство: брендинг, дизайн и видео по запросу для основателей, брендов и агентств.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400;1,600&family=Cedarville+Cursive&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <style>
+        :root{
+            --bg:#ffffff;
+            --text:#0a0a0a;
+            --muted:#6b6b6b;
+            --button-bg:#0a0a0a;
+            --button-text:#ffffff;
+            --border-soft:rgba(0,0,0,0.08);
+            --green:#17c964;
+        }
+        *{box-sizing:border-box;}
+        html,body{margin:0;padding:0;}
+        body{
+            background:var(--bg);
+            color:var(--text);
+            font-family:'Inter',sans-serif;
+            -webkit-font-smoothing:antialiased;
+            overflow-x:hidden;
+        }
+        a{color:inherit;text-decoration:none;}
+        button{font:inherit;cursor:pointer;}
+        img{display:block;max-width:100%;}
+
+        /* Navbar */
+        .navbar{position:fixed;top:0;left:0;right:0;z-index:100;}
+        .nav-inner{max-width:1200px;margin:0 auto;padding:19px 36px;display:flex;align-items:center;justify-content:space-between;}
+        .logo{font-family:'Source Serif 4',serif;font-style:italic;font-weight:600;font-size:30px;letter-spacing:-0.08em;color:var(--text);}
+        .logo .reg{font-family:'Inter',sans-serif;font-style:normal;font-weight:600;font-size:14px;letter-spacing:normal;vertical-align:super;margin-left:1px;}
+        .menu-btn{display:inline-flex;align-items:center;gap:8px;background:var(--button-bg);color:var(--button-text);border:none;border-radius:999px;padding:14px 18px;font-size:14px;font-weight:500;}
+        .chevron{transition:transform .3s ease;}
+        .chevron-open{transform:rotate(180deg);}
+
+        /* Drawer */
+        .drawer{position:fixed;inset:0;z-index:90;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility 0s linear .4s;}
+        .drawer-open{opacity:1;visibility:visible;transition:opacity .4s ease;}
+        .drawer-links{display:flex;flex-direction:column;align-items:center;gap:20px;}
+        .drawer-link{font-size:48px;font-weight:500;letter-spacing:-0.04em;color:var(--text);}
+        .drawer-footer{position:absolute;bottom:32px;font-size:13px;color:var(--muted);}
+
+        /* Hero */
+        .hero{position:relative;overflow:hidden;min-height:850px;padding:160px 36px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+        .hero::before{content:'';position:absolute;inset:0;z-index:0;background-image:url('https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260626_041422_4a459e05-abce-4150-9fb7-4ededc423cd1.png&w=1280&q=85');background-size:cover;background-position:center;}
+
+        .hero-lines{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;}
+        .lines-side{position:absolute;top:0;bottom:0;}
+        .lines-left{left:0;}
+        .lines-right{right:0;}
+        .line-v{position:absolute;top:0;bottom:0;border:2.5px solid #FCFAF8;opacity:0;animation:line-pulse 5s ease-in-out infinite;}
+        .line-v-left{left:0;border-left:none;border-radius:0 80% 80% 0;}
+        .line-v-right{right:0;border-right:none;border-radius:80% 0 0 80%;}
+        .lines-horizontal{display:none;}
+        .line-h{position:absolute;top:0;left:0;right:0;border:2.5px solid #FCFAF8;border-top:none;border-radius:0 0 80% 80%;opacity:0;animation:line-pulse 5s ease-in-out infinite;}
+
+        .hero-content{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;width:100%;}
+
+        .ticker{width:100%;max-width:500px;height:36px;overflow:hidden;margin-bottom:40px;-webkit-mask-image:linear-gradient(90deg,transparent 0%,black 12%,black 88%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0%,black 12%,black 88%,transparent 100%);}
+        .ticker-track{display:flex;align-items:center;gap:10px;width:max-content;animation:marquee-left 30s linear infinite;}
+        .ticker-item{font-size:13px;font-weight:500;color:var(--muted);padding:6px 14px;border-radius:999px;background:rgb(251,251,251);white-space:nowrap;}
+
+        .hero-title{max-width:550px;font-size:82px;line-height:1.03;letter-spacing:-0.07em;font-weight:600;margin:0 0 28px;}
+        .brand-word{font-family:'Source Serif 4',serif;font-style:italic;font-weight:600;letter-spacing:-0.08em;}
+        .reg-title{font-family:'Inter',sans-serif;font-style:normal;font-weight:600;font-size:24px;letter-spacing:normal;vertical-align:super;}
+
+        .hero-subtitle{max-width:476px;font-size:17px;line-height:1.45;font-weight:400;color:var(--muted);margin:0 0 36px;}
+
+        .cta-row{display:flex;align-items:center;justify-content:center;gap:16px;}
+        .btn-primary{height:56px;padding:18px 30px;border-radius:999px;background:var(--button-bg);color:var(--button-text);border:none;font-size:15px;font-weight:600;display:inline-flex;align-items:center;transition:transform .2s ease,box-shadow .2s ease;}
+        .btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,0,0,0.12);}
+        .btn-book{display:inline-flex;align-items:center;gap:12px;background:#fff;border:4px solid rgb(248,248,248);border-radius:999px;padding:8px 24px 8px 8px;}
+        .btn-book-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+        .btn-book-text{display:flex;flex-direction:column;align-items:flex-start;text-align:left;}
+        .btn-book-primary{font-size:14px;font-weight:600;color:var(--text);}
+        .btn-book-secondary{font-size:12px;font-weight:500;color:rgb(152,152,152);display:flex;align-items:center;gap:6px;}
+        .dot{width:8px;height:8px;border-radius:50%;background:rgb(29,204,93);display:inline-block;}
+
+        .hero-blur{position:absolute;left:0;right:0;bottom:0;height:178px;z-index:2;background:linear-gradient(to bottom,transparent 0%,rgba(255,255,255,0.4) 40%,#ffffff 100%);pointer-events:none;}
+
+        /* Trusted by */
+        .trusted{padding:36px;}
+        .trusted-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:32px;}
+        .trusted-label{max-width:163px;font-size:14px;font-weight:500;color:var(--muted);margin:0;flex-shrink:0;}
+        .trusted-marquee{flex:1;min-width:0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent 0%,black 12%,black 88%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0%,black 12%,black 88%,transparent 100%);}
+        .trusted-track{display:flex;align-items:center;gap:48px;width:max-content;animation:marquee-left 30s linear infinite;}
+        .trusted-logo{font-size:16px;color:var(--text);white-space:nowrap;}
+
+        @keyframes marquee-left{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+        @keyframes line-pulse{0%{opacity:0;transform:scale(1);}15%{opacity:0.9;}70%{opacity:0.4;}100%{opacity:0;transform:scale(0.85);}}
+
+        @media (max-width:1199px){
+            .hero{padding:140px 32px;}
+            .hero-title{font-size:clamp(60px,8vw,72px);}
+            .nav-inner{padding:19px 32px;}
+            .drawer-link{font-size:40px;}
+        }
+        @media (max-width:809px){
+            .hero{min-height:760px;padding:120px 24px 96px;}
+            .hero::before{inset:auto;top:50%;left:50%;width:100vh;height:100vw;transform:translate(-50%,-50%) rotate(90deg);}
+            .lines-vertical{display:none;}
+            .lines-horizontal{display:block;}
+            .hero-title{font-size:clamp(44px,13vw,52px);}
+            .cta-row{flex-direction:column;width:100%;}
+            .btn-primary,.btn-book{width:100%;max-width:320px;justify-content:center;}
+            .trusted-inner{flex-direction:column;align-items:flex-start;gap:16px;}
+            .trusted-label{max-width:none;}
+            .trusted-marquee{width:100%;flex:none;}
+            .nav-inner{padding:20px;}
+            .drawer-link{font-size:32px;}
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+
+        const SERVICES = ["Брендинг", "Разработка приложений", "Визуальный дизайн", "Видеопродакшн", "Иконографика"];
+        const TRUSTED = [
+            { name: "Airbnb", fontFamily: "'Cedarville Cursive', cursive", fontWeight: 700 },
+            { name: "Shopify", fontFamily: "system-ui, sans-serif", fontWeight: 800 },
+            { name: "Notion", fontFamily: "Georgia, serif", fontWeight: 500 },
+            { name: "Linear", fontFamily: "'Inter', sans-serif", fontWeight: 600 },
+            { name: "Webflow", fontFamily: "'Inter', sans-serif", fontWeight: 700 },
+            { name: "Figma", fontFamily: "system-ui, sans-serif", fontWeight: 600 },
+            { name: "Slack", fontFamily: "Georgia, serif", fontWeight: 700 },
+            { name: "Stripe", fontFamily: "system-ui, sans-serif", fontWeight: 800 },
+            { name: "Vercel", fontFamily: "'Inter', sans-serif", fontWeight: 600 },
+            { name: "Framer", fontFamily: "'Source Serif 4', serif", fontWeight: 600 },
+        ];
+        const DRAWER_LINKS = ["Проекты", "Тарифы", "Команда", "Вопросы", "Связаться с нами"];
+
+        const Chevron = ({ open }) => (
+            <svg className={"chevron" + (open ? " chevron-open" : "")} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+        );
+
+        const App = () => {
+            const [open, setOpen] = useState(false);
+            const close = (e) => { e.preventDefault(); setOpen(false); };
+
+            return (
+                <div className="page">
+                    <nav className="navbar">
+                        <div className="nav-inner">
+                            <div className="logo">Alwayzz<sup className="reg">®</sup></div>
+                            <button type="button" className="menu-btn" aria-label="Меню" onClick={() => setOpen(o => !o)}>
+                                Меню
+                                <Chevron open={open} />
+                            </button>
+                        </div>
+                    </nav>
+
+                    <div className={"drawer" + (open ? " drawer-open" : "")}>
+                        <nav className="drawer-links">
+                            {DRAWER_LINKS.map(l => (
+                                <a key={l} href="#" className="drawer-link" onClick={close}>{l}</a>
+                            ))}
+                        </nav>
+                        <div className="drawer-footer">© 2026 Alwayzz. Все права защищены.</div>
+                    </div>
+
+                    <section className="hero">
+                        <div className="hero-lines lines-vertical" aria-hidden="true">
+                            <div className="lines-side lines-left">
+                                {Array.from({ length: 20 }).map((_, i) => (
+                                    <span key={i} className="line-v line-v-left" style={{ width: (60 + i * 10) + 'px', animationDelay: (i * 0.25) + 's' }} />
+                                ))}
+                            </div>
+                            <div className="lines-side lines-right">
+                                {Array.from({ length: 20 }).map((_, i) => (
+                                    <span key={i} className="line-v line-v-right" style={{ width: (60 + i * 10) + 'px', animationDelay: (i * 0.25) + 's' }} />
+                                ))}
+                            </div>
+                        </div>
+                        <div className="hero-lines lines-horizontal" aria-hidden="true">
+                            {Array.from({ length: 20 }).map((_, i) => (
+                                <span key={i} className="line-h" style={{ height: (60 + i * 10) + 'px', animationDelay: (i * 0.25) + 's' }} />
+                            ))}
+                        </div>
+
+                        <div className="hero-content">
+                            <div className="ticker">
+                                <div className="ticker-track">
+                                    {[0, 1, 2, 3].flatMap((rep) => SERVICES.map((s, i) => (
+                                        <span className="ticker-item" key={rep + '-' + i}>{s}</span>
+                                    )))}
+                                </div>
+                            </div>
+
+                            <h1 className="hero-title">
+                                Премиальный креатив <span className="brand-word">alwayzz<sup className="reg-title">®</sup></span> по запросу.
+                            </h1>
+
+                            <p className="hero-subtitle">Гибкое партнёрство для основателей, брендов и агентств, которым нужен первоклассный дизайн в комфортном для них темпе.</p>
+
+                            <div className="cta-row">
+                                <button type="button" className="btn-primary">Смотреть тарифы</button>
+                                <button type="button" className="btn-book">
+                                    <img className="btn-book-avatar" src="https://framerusercontent.com/images/hfneFL6CHBi5BnNvCeOaqU9HqE4.png" alt="" />
+                                    <span className="btn-book-text">
+                                        <span className="btn-book-primary">Созвон на 15 минут</span>
+                                        <span className="btn-book-secondary"><span className="dot"></span>Выбрать время</span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="hero-blur" aria-hidden="true"></div>
+                    </section>
+
+                    <section className="trusted">
+                        <div className="trusted-inner">
+                            <p className="trusted-label">Сотрудничаем с лучшими компаниями по всему миру</p>
+                            <div className="trusted-marquee">
+                                <div className="trusted-track">
+                                    {[0, 1, 2, 3].flatMap((rep) => TRUSTED.map((c, i) => (
+                                        <span key={rep + '-' + i} className="trusted-logo" style={{ fontFamily: c.fontFamily, fontWeight: c.fontWeight }}>{c.name}</span>
+                                    )))}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>
