@@ -2869,5 +2869,19 @@
    "A number counts to 100 on load, then dentistry cards fade up, each cropping a slice of one shared photo."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "innovation-summit",
+  "v": "innovation-summit",
+  "ve": "innovation-summit-en",
+  "ru": [
+   "Экраны приложения",
+   "Три экрана приложения появляются на фиолетовом фоне: видео-заставка, сетка спикеров и список вопросов."
+  ],
+  "en": [
+   "Event app screens",
+   "Three phone mockups fade and rise in over purple: a looping video hero, a speaker grid, and an FAQ list."
+  ],
+  "cat": "web"
  }
 ]
