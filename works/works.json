@@ -3062,5 +3062,20 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "lodge-booking-app",
+  "v": "lodge-booking-app",
+  "ve": "lodge-booking-app-en",
+  "ru": [
+   "Бронирование шале",
+   "Три телефона в стиле liquid glass крутят видео с домиками, а календарь и время открываются в форме брони."
+  ],
+  "en": [
+   "Cabin booking app",
+   "Three frosted-glass phones loop cabin videos while a calendar and time pickers open for booking a stay."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
