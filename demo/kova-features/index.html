@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kova | Designed to Sharpen Every Decision</title>
+<meta name="description" content="Kova's features section: AI budgeting, bank-grade security, spend insights, and wealth-building tools for smarter money decisions.">
+<link href="https://db.onlinewebfonts.com/c/53077f9a3eee9c479d37d6af20394ded?family=Cooper+BT+W01+Light" rel="stylesheet">
+<link href="https://db.onlinewebfonts.com/c/5ade3423145f3b9f7031574333ca0b73?family=Cooper+BT+W01+Medium" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/framer-motion@11.18.2/dist/framer-motion.js"></script>
+<style>
+.font-cooper {
+  font-family: 'Cooper BT W01 Light', 'Georgia', serif;
+}
+.font-cooper-medium {
+  font-family: 'Cooper BT W01 Medium', 'Cooper BT W01 Light', 'Georgia', serif;
+  font-weight: 500;
+}
+</style>
+</head>
+<body class="bg-[#FDF5EB]">
+<div id="root"></div>
+<script type="text/babel">
+const { motion } = Motion;
+
+const IMG_BUDGETING = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260517_061249_f20dfeda-1033-45ce-a3ee-070965599cbf.png&w=1280&q=85';
+const IMG_SECURITY = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260517_061305_db631f5f-185f-4fda-a7a8-1dd7359ef2ea.png&w=1280&q=85';
+const IMG_WEALTH = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260517_061316_50e651f8-02d0-4add-9ddb-7d81d15ac02e.png&w=1280&q=85';
+
+function PlayIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="white">
+      <polygon points="6 3 20 12 6 21 6 3" />
+    </svg>
+  );
+}
+function SparklesIcon({ size = 16, className = '' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
+      <path d="M20 3v4" />
+      <path d="M22 5h-4" />
+      <path d="M4 17v2" />
+      <path d="M5 18H3" />
+    </svg>
+  );
+}
+function ShieldCheckIcon({ size = 16, className = '' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  );
+}
+function PieChartIcon({ size = 16, className = '' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+      <path d="M22 12A10 10 0 0 0 12 2v10z" />
+    </svg>
+  );
+}
+function TrendingUpIcon({ size = 16, className = '' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+      <polyline points="16 7 22 7 22 13" />
+    </svg>
+  );
+}
+
+function FadeUp({ children, delay = 0, className = '', immediate = false }) {
+  const variants = {
+    hidden: { opacity: 0, y: 24, filter: 'blur(8px)' },
+    visible: { opacity: 1, y: 0, filter: 'blur(0px)' },
+  };
+  const transition = { duration: 0.7, delay, ease: [0.25, 0.1, 0.25, 1] };
+  if (immediate) {
+    return (
+      <motion.div className={className} initial="hidden" animate="visible" variants={variants} transition={transition}>
+        {children}
+      </motion.div>
+    );
+  }
+  return (
+    <motion.div className={className} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }} variants={variants} transition={transition}>
+      {children}
+    </motion.div>
+  );
+}
+
+function FeatureCard({ delay, bgClass, image, alt, Icon, label, description }) {
+  return (
+    <FadeUp delay={delay} className={`relative rounded-2xl overflow-hidden ${bgClass} aspect-[3/4] flex flex-col justify-between`}>
+      <img src={image} alt={alt} className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#08150C]/80 via-[#08150C]/20 to-transparent"></div>
+      <div className="relative z-10 p-4">
+        <div className="inline-flex items-center gap-1.5 text-white text-sm font-medium px-2.5 py-1 rounded-full">
+          <Icon size={16} className="text-white" />
+          {label}
+        </div>
+      </div>
+      <div className="relative z-10 p-4">
+        <p className="text-white/80 text-sm sm:text-base leading-relaxed">{description}</p>
+      </div>
+    </FadeUp>
+  );
+}
+
+function DonutChart() {
+  const segments = [
+    { color: '#C46B2D', dasharray: '26.4 61.56', offset: '0' },
+    { color: '#7A8C3E', dasharray: '22 65.96', offset: '-26.4' },
+    { color: '#A8B87A', dasharray: '17.6 70.36', offset: '-48.4' },
+    { color: '#B8AFA4', dasharray: '22 65.96', offset: '-66' },
+  ];
+  return (
+    <div className="relative w-28 h-28 sm:w-36 sm:h-36">
+      <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
+        <circle cx="18" cy="18" r="14" fill="none" stroke="#F4F1EC" strokeWidth="5" />
+        {segments.map((s, i) => (
+          <circle key={i} cx="18" cy="18" r="14" fill="none" stroke={s.color} strokeWidth="5" strokeDasharray={s.dasharray} strokeDashoffset={s.offset} />
+        ))}
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-lg sm:text-xl font-bold text-[#08150C]">50%</span>
+        <span className="text-xs sm:text-sm text-stone-500">of budget</span>
+      </div>
+    </div>
+  );
+}
+
+function SpendInsightsCard({ delay }) {
+  return (
+    <FadeUp delay={delay}>
+      <div className="relative rounded-2xl overflow-hidden aspect-[3/4] flex flex-col p-5" style={{ backgroundColor: '#EBE4DC' }}>
+        <div className="inline-flex items-center gap-1.5 text-stone-700 text-sm font-medium px-2.5 py-1 rounded-full self-start mb-4">
+          <PieChartIcon size={16} />
+          Spend Insights
+        </div>
+        <div className="flex flex-col items-center justify-center flex-1 gap-3 rounded-2xl p-4" style={{ backgroundColor: '#F4F1EC' }}>
+          <div className="text-center mb-1">
+            <p className="text-sm sm:text-base font-semibold text-stone-800">Monthly Spend</p>
+            <p className="text-xs sm:text-sm text-stone-500">1 Apr – 30 May 2026</p>
+          </div>
+          <DonutChart />
+        </div>
+      </div>
+    </FadeUp>
+  );
+}
+
+function App() {
+  return (
+    <section className="bg-[#FDF5EB] py-14 sm:py-20 px-5 sm:px-10 lg:px-20">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 sm:mb-10">
+          <FadeUp delay={0}>
+            <h2 className="font-cooper-medium text-2xl sm:text-3xl md:text-4xl text-[#08150C] leading-snug">
+              Designed to sharpen every decision
+            </h2>
+          </FadeUp>
+          <FadeUp delay={0.1} className="self-start sm:self-auto">
+            <button type="button" className="flex-shrink-0 flex items-center gap-2 bg-[#08150C] text-white text-sm font-medium px-5 py-2.5 rounded-xl hover:bg-[#1a2e1f] transition-colors">
+              Watch Demo
+              <PlayIcon size={13} />
+            </button>
+          </FadeUp>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <FeatureCard
+            delay={0.05}
+            bgClass="bg-[#08150C]"
+            image={IMG_BUDGETING}
+            alt="Smart Budgeting"
+            Icon={SparklesIcon}
+            label="Smart Budgeting"
+            description="Let AI reshape how you plan your spending. Kova adapts to your..."
+          />
+          <FeatureCard
+            delay={0.15}
+            bgClass="bg-stone-700"
+            image={IMG_SECURITY}
+            alt="Bank-Grade Security"
+            Icon={ShieldCheckIcon}
+            label="Bank-Grade Security"
+            description="Keep your money safe with end-to-end encryption, live fraud alerts, and two-factor auth..."
+          />
+          <SpendInsightsCard delay={0.25} />
+          <FeatureCard
+            delay={0.35}
+            bgClass="bg-stone-700"
+            image={IMG_WEALTH}
+            alt="Wealth Building"
+            Icon={TrendingUpIcon}
+            label="Wealth Building"
+            description="Grow your net worth with tools that help you set targets, monitor gains, and act..."
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

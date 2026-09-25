@@ -2701,5 +2701,33 @@
    "A truck drives down the highway at sunset, then yellow arrows animate along routes between glowing dots."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "wellbeing-os",
+  "v": "wellbeing-os",
+  "ve": "wellbeing-os-en",
+  "ru": [
+   "Платформа благополучия",
+   "Видео с жёлтыми цветами закрывает весь экран, а сверху — крупный заголовок и стеклянные выпадающие меню."
+  ],
+  "en": [
+   "Wellness platform",
+   "A looping video of yellow blossoms fills the screen behind a bold headline and glass nav dropdowns."
+  ],
+  "cat": "web"
+ },
+ {
+  "slug": "kova-features",
+  "v": "kova-features",
+  "ve": "kova-features-en",
+  "ru": [
+   "Функции финтех-приложения",
+   "Заголовок, кнопка и четыре карточки по очереди всплывают из размытия, открывая круговую диаграмму и три фото."
+  ],
+  "en": [
+   "Fintech app features",
+   "A heading, a button and four cards fade up out of a blur one by one, revealing a donut chart and three photos."
+  ],
+  "cat": "web"
  }
 ]
