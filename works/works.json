@@ -3282,6 +3282,51 @@
   "rp": 1
  },
  {
+  "slug": "zenith-footer",
+  "v": "zenith-footer",
+  "ve": "zenith-footer-en",
+  "ru": [
+   "Футер фитнес-клуба",
+   "Бегуны пересекают солнечный холм на видео, а стеклянная карточка футера проявляется с кнопками и ссылками."
+  ],
+  "en": [
+   "Fitness club footer",
+   "Runners cross a sunlit hill in the video while a frosted glass footer card fades up with links and buttons."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "rivr-defi-landing",
+  "v": "rivr-defi-landing",
+  "ve": "rivr-defi-landing-en",
+  "ru": [
+   "Платформа DeFi-стейкинга",
+   "На фоне видео с хранилищами плывёт мягкий заголовок, а карточки метрик и bento-плитки всплывают при скролле."
+  ],
+  "en": [
+   "DeFi staking platform",
+   "A looping vault video plays behind a soft heading while stat cards and bento tiles fade upward on scroll."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "ai-automation",
+  "v": "ai-automation",
+  "ve": "ai-automation-en",
+  "ru": [
+   "AI-агентство автоматизации",
+   "Видео с частицами и искрами остаётся на месте, а слова заголовка и карточки услуг проявляются при прокрутке."
+  ],
+  "en": [
+   "AI automation agency",
+   "A fixed video of glowing particles and embers stays still while headline words and cards fade up as you scroll."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "seller",
   "cat": "ai",
   "ru": [

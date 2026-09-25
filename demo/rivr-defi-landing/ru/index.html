@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>g.a.d. — Активы в свободном потоке</title>
+<meta name="description" content="g.a.d. — лендинг для DeFi: видео с хранилищами на фоне мягкого заголовка, шахматная сетка метрик и bento-карточки с гигантскими водяными знаками-иконками.">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/framer-motion@11.18.2/dist/framer-motion.js"></script>
+<script src="https://unpkg.com/lucide@0.469.0"></script>
+<style>
+@font-face {
+  font-family: 'Helvetica Regular';
+  src: url('https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.eot');
+  src: url('https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.eot?#iefix') format('embedded-opentype'),
+       url('https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.woff2') format('woff2'),
+       url('https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.woff') format('woff'),
+       url('https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.ttf') format('truetype'),
+       url('https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.svg#Helvetica Regular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+:root { --font-helvetica: 'Helvetica Regular', ui-sans-serif, system-ui, sans-serif; }
+html { font-family: var(--font-helvetica); }
+body { margin: 0; overflow-x: hidden; background-color: #f0f0f0; font-family: var(--font-helvetica); }
+.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}
+</style>
+<style id="cyr">/* русские буквы: исходный шрифт без кириллицы, глифы — у близкого с кириллицей */
+@font-face{font-family:'Helvetica Regular';font-style:normal;font-weight:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZJhiI2B.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Helvetica Regular';font-style:normal;font-weight:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZthiI2B.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+</style>
+</head>
+<body class="antialiased">
+<div id="root"></div>
+<script type="text/babel">
+const { useEffect, useRef, useState } = React;
+const { motion } = Motion;
+
+const cn = (...a) => a.filter(Boolean).join(' ');
+
+const GadLogo = ({ className, style }) => (
+    <svg className={cn('gad-logo', className)} style={style} viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+        <path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/>
+        <circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100"/>
+        <circle className="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+    </svg>
+);
+
+const CornerPatch = ({ className }) => (
+    <svg className={className} width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+        <path d="M56 56V0C56 30.9279 30.9279 56 0 56H56Z" fill="#f0f0f0"/>
+    </svg>
+);
+
+const Navbar = () => (
+    <nav className="relative z-20 w-full flex items-center justify-between px-6 pt-6 md:px-10 md:pt-8">
+        <div className="text-[#3a3f47] md:w-40"><GadLogo style={{ height: '22px' }} /></div>
+        <div className="hidden md:flex flex-1 items-center justify-center gap-8 text-sm text-[#3a3f47]">
+            <a href="#" onClick={e => e.preventDefault()} className="hover:text-black transition-colors">Экосистема</a>
+            <a href="#" onClick={e => e.preventDefault()} className="inline-flex items-center gap-1 hover:text-black transition-colors">Экономика<i data-lucide="chevron-right" className="w-3.5 h-3.5"></i></a>
+            <a href="#" onClick={e => e.preventDefault()} className="hover:text-black transition-colors">Разработчики</a>
+            <a href="#" onClick={e => e.preventDefault()} className="hover:text-black transition-colors">Управление</a>
+        </div>
+        <a href="#" onClick={e => e.preventDefault()}
+           className="group inline-flex items-center gap-2 rounded-full bg-[rgb(30,50,90)] hover:bg-[rgb(22,38,70)] transition-colors pl-4 pr-1.5 py-1.5 text-sm text-white">
+            Заказать демо
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/20 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+                <i data-lucide="arrow-up-right" className="w-3.5 h-3.5"></i>
+            </span>
+        </a>
+    </nav>
+);
+
+const HeroBadge = () => (
+    <span className="inline-flex items-center gap-2 rounded-full bg-white/60 backdrop-blur-md border border-white/20 px-4 py-1.5 text-sm text-[#3a3f47]">
+        <i data-lucide="sparkles" className="w-4 h-4"></i>
+        Гибкий стейкинг
+    </span>
+);
+
+const BottomLeftCard = () => (
+    <div className="absolute left-4 bottom-4 md:left-8 md:bottom-8 z-10 flex items-center gap-4 rounded-2xl md:rounded-3xl bg-white/30 backdrop-blur-xl border border-white/40 p-3 md:p-4">
+        <div className="flex -space-x-2">
+            {[0, 1, 2].map(i => (
+                <span key={i} className="w-7 h-7 rounded-full bg-white/70 border border-white/60" />
+            ))}
+        </div>
+        <div className="text-xs md:text-sm text-[#3a3f47] pr-1 whitespace-nowrap">5,2 тыс. стейкеров</div>
+        <a href="#" onClick={e => e.preventDefault()} className="rounded-full bg-white px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm text-[#1a1d22] hover:bg-white/90 transition-colors whitespace-nowrap">
+            Discord
+        </a>
+    </div>
+);
+
+const BottomRightCorner = () => (
+    <div className="absolute right-0 bottom-0 z-10">
+        <CornerPatch className="absolute right-0 bottom-full" />
+        <CornerPatch className="absolute right-full bottom-0" />
+        <div className="relative bg-[#f0f0f0] rounded-tl-[3.5rem] pl-14 pt-8 pr-6 pb-6 flex items-center gap-3">
+            <span className="flex items-center justify-center w-9 h-9 rounded-full border border-black/10 text-[#3a3f47]">
+                <i data-lucide="arrow-up-right" className="w-4 h-4"></i>
+            </span>
+            <span className="text-xs text-[#6b7280] whitespace-nowrap hidden sm:inline">Документация / Библиотека</span>
+        </div>
+    </div>
+);
+
+const Hero = () => (
+    <section className="w-full h-screen flex items-center justify-center p-3 md:p-5 bg-[#f0f0f0]">
+        <section className="relative w-full max-w-[1536px] h-full rounded-[1.5rem] md:rounded-[3rem] overflow-hidden flex flex-col items-center group">
+            <video className="absolute inset-0 w-full h-full object-cover" autoPlay muted loop playsInline
+                   src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260428_193507_4286c423-2fd9-4efd-92bd-91a939453fc1.mp4" />
+            <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 55% 45% at 50% 46%, rgba(240,240,240,0.55), transparent 72%)' }} />
+            <div className="relative z-10 w-full flex flex-col flex-1">
+                <Navbar />
+                <div className="flex-1 flex flex-col items-center justify-center text-center px-6 gap-6">
+                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>
+                        <HeroBadge />
+                    </motion.div>
+                    <motion.h1 initial={{ opacity: 0, y: 16, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+                               className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight"
+                               style={{ color: '#5E6470', textShadow: '0 4px 40px rgba(240,240,240,0.9), 0 1px 12px rgba(240,240,240,0.8)' }}>
+                        Активы в свободном потоке
+                    </motion.h1>
+                    <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                              className="max-w-xl text-sm md:text-base text-[#3a3f47]"
+                              style={{ textShadow: '0 2px 18px rgba(240,240,240,0.9), 0 1px 6px rgba(240,240,240,0.8)' }}>
+                        Получите доступ к умным хранилищам, застейкайте $GAD — и автоматические стратегии будут держать ваш капитал в движении круглосуточно.
+                    </motion.p>
+                </div>
+            </div>
+            <BottomLeftCard />
+            <BottomRightCorner />
+        </section>
+    </section>
+);
+
+const FadeUp = ({ children, delay = 0, className }) => (
+    <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.4 }}
+                transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }} className={className}>
+        {children}
+    </motion.div>
+);
+
+const METRICS = [
+    { value: '$2.4B', label: 'Всего заблокировано' },
+    { value: '8.5%', label: 'Средняя реализованная доходность' },
+    { value: '140K+', label: 'Активных участников' },
+    { value: '< 2s', label: 'Скорость финализации' },
+];
+
+const Metrics = () => (
+    <section className="w-full max-w-[1536px] mx-auto px-3 md:px-5 py-6 md:py-12">
+        <div className="bg-[rgba(30,50,90,0.02)] border border-[rgba(30,50,90,0.05)] rounded-[1.5rem] md:rounded-[3rem] p-8 md:p-16">
+            <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-[rgba(30,50,90,0.1)]">
+                {METRICS.map((m, i) => (
+                    <FadeUp key={m.label} delay={i * 0.1} className="px-4 md:px-8 py-6 first:pl-0 md:first:pl-0">
+                        <div className="text-3xl md:text-5xl tracking-tight text-[#1a1d22]">{m.value}</div>
+                        <div className="mt-2 text-xs md:text-sm text-[#6b7280]">{m.label}</div>
+                    </FadeUp>
+                ))}
+            </div>
+        </div>
+    </section>
+);
+
+const FeatureCard = ({ className, children }) => (
+    <div className={cn('group relative bg-white rounded-[1.5rem] md:rounded-[2rem] overflow-hidden p-8 flex flex-col transition-shadow duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)]', className)}>
+        {children}
+    </div>
+);
+
+const Features = () => (
+    <section className="w-full max-w-[1536px] mx-auto px-3 md:px-5 py-6 md:py-12">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-8 md:mb-10 px-2">
+            <FadeUp>
+                <h2 className="text-3xl md:text-4xl tracking-tight text-[#1a1d22] max-w-lg break-words">Архитектура высокой производительности для DeFi</h2>
+            </FadeUp>
+            <FadeUp delay={0.1}>
+                <a href="#" onClick={e => e.preventDefault()} className="inline-flex items-center gap-2 rounded-full border border-black/10 px-5 py-2.5 text-sm text-[#1a1d22] hover:bg-white transition-colors whitespace-nowrap">
+                    Начать стейкинг
+                    <i data-lucide="arrow-up-right" className="w-4 h-4"></i>
+                </a>
+            </FadeUp>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-4 md:gap-5">
+            <FeatureCard className="md:row-span-2 min-h-[28rem]">
+                <i data-lucide="layers" className="absolute bottom-0 right-0 w-48 h-48 md:-bottom-10 md:-right-10 md:w-72 md:h-72 opacity-[0.02] text-black transition-transform duration-500 group-hover:scale-110"></i>
+                <div className="relative flex flex-col h-full justify-between">
+                    <h3 className="text-2xl text-[#1a1d22] max-w-xs">Откройте ликвидность застейканных активов</h3>
+                    <p className="text-sm text-[#6b7280] max-w-xs">Превратите заблокированные позиции в доступную ликвидность без вывода из стейкинга — доходность продолжит накапливаться.</p>
+                </div>
+            </FeatureCard>
+
+            <FeatureCard className="md:col-span-2 min-h-[16rem]">
+                <i data-lucide="activity" className="absolute bottom-0 right-0 w-40 h-40 md:-bottom-10 md:-right-10 md:w-64 md:h-64 opacity-[0.02] text-black"></i>
+                <div className="relative flex flex-col h-full justify-between">
+                    <h3 className="text-2xl text-[#1a1d22] max-w-sm">Доходность в реальном времени</h3>
+                    <p className="text-sm text-[#6b7280] max-w-sm">Следите за каждым базисным пунктом доходности — он появляется в вашем дашборде сразу, как только фиксируется.</p>
+                </div>
+            </FeatureCard>
+
+            <FeatureCard className="min-h-[13rem]">
+                <div className="relative flex flex-col h-full justify-between">
+                    <div>
+                        <h3 className="text-xl text-[#1a1d22]">Банковская надёжность</h3>
+                        <p className="mt-2 text-sm text-[#6b7280]">Смарт-контракты проверены независимыми аудиторами безопасности, а баг-баунти работает круглосуточно.</p>
+                    </div>
+                    <a href="#" onClick={e => e.preventDefault()} className="self-start inline-flex items-center gap-2 rounded-full border border-black/10 px-4 py-2 text-xs text-[#1a1d22] hover:bg-[#f0f0f0] transition-colors">
+                        Смотреть аудиты
+                    </a>
+                </div>
+            </FeatureCard>
+
+            <FeatureCard className="min-h-[13rem] items-center justify-center text-center">
+                <div className="relative flex flex-col items-center gap-4">
+                    <h3 className="text-xl text-[#1a1d22]">Кросс-чейн</h3>
+                    <p className="text-sm text-[#6b7280] max-w-[14rem]">Перемещайте активы между блокчейнами в один клик.</p>
+                    <button className="flex items-center justify-center w-12 h-12 rounded-full bg-[#e5e5e5] text-[#1a1d22] transition-transform duration-300 hover:scale-110">
+                        <i data-lucide="arrow-up-right" className="w-5 h-5"></i>
+                    </button>
+                </div>
+            </FeatureCard>
+        </div>
+    </section>
+);
+
+const CTA = () => (
+    <section className="w-full flex items-center justify-center p-3 md:p-5 bg-[#f0f0f0]">
+        <section className="relative w-full max-w-[1536px] rounded-[1.5rem] md:rounded-[3rem] overflow-hidden flex items-center justify-center min-h-[26rem] md:min-h-[32rem]">
+            <video className="absolute inset-0 w-full h-full object-cover" autoPlay muted loop playsInline
+                   src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260427_104731_bfd355f7-1f84-4f81-ad88-52c2bca70bad.mp4" />
+            <div className="absolute inset-0 bg-black/20" />
+            <FadeUp className="relative z-10 flex flex-col items-center text-center gap-8 px-6">
+                <h2 className="text-4xl md:text-6xl text-white tracking-tight max-w-2xl">Растопите застывшие активы в текучую доходность.</h2>
+                <div className="flex flex-row gap-3">
+                    <a href="#" onClick={e => e.preventDefault()} className="group inline-flex items-center gap-2 rounded-full bg-white pl-5 pr-1.5 py-1.5 text-sm text-[#1a1d22] hover:bg-white/90 transition-colors">
+                        Открыть приложение
+                        <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-black/10 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+                            <i data-lucide="arrow-up-right" className="w-4 h-4"></i>
+                        </span>
+                    </a>
+                    <a href="#" onClick={e => e.preventDefault()} className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 px-5 py-2.5 text-sm text-white hover:bg-white/20 transition-colors">
+                        Документация
+                    </a>
+                </div>
+            </FadeUp>
+        </section>
+    </section>
+);
+
+const FOOTER_LINKS = ['Протокол', 'Разработчики', 'Сообщество'];
+
+const Footer = () => (
+    <footer className="w-full max-w-[1536px] mx-auto border-t border-black/10 px-6 md:px-10 py-10 md:py-14 flex flex-col md:flex-row gap-10 md:gap-6 md:justify-between">
+        <div className="max-w-sm text-[#3a3f47]">
+            <GadLogo style={{ height: '20px' }} />
+            <p className="mt-4 text-sm text-[#6b7280]">Гибкий слой ликвидности для застейканных активов — для следующего поколения DeFi.</p>
+        </div>
+        <div className="grid grid-cols-3 gap-6 text-sm">
+            {FOOTER_LINKS.map(l => (
+                <a key={l} href="#" onClick={e => e.preventDefault()} className="text-[#9ca3af] hover:text-[#1a1d22] transition-colors whitespace-nowrap">{l}</a>
+            ))}
+        </div>
+    </footer>
+);
+
+const App = () => {
+    useEffect(() => { lucide.createIcons(); }, []);
+    return (
+        <main className="min-h-screen bg-[#f0f0f0]">
+            <Hero />
+            <Metrics />
+            <Features />
+            <CTA />
+            <Footer />
+        </main>
+    );
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>
