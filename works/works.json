@@ -3251,5 +3251,20 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "nexacore-results",
+  "v": "nexacore-results",
+  "ve": "nexacore-results-en",
+  "ru": [
+   "Этапы поставки",
+   "Четыре колонки с градиентными линиями поднимаются лестницей на фоне волнистого градиента."
+  ],
+  "en": [
+   "Delivery pillars",
+   "Four gradient-line pillars climb in a staircase behind a gradient headline over a wavy backdrop."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
