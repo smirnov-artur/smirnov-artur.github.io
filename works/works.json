@@ -3386,5 +3386,20 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "tech-forward",
+  "v": "tech-forward",
+  "ve": "tech-forward-en",
+  "ru": [
+   "Бионическая карта",
+   "Механическая рука сжимается в тумане за чёрно-белым заголовком, который проявляется с анимацией"
+  ],
+  "en": [
+   "Bionic banking card",
+   "A robotic hand flexes in mist behind a bold black-and-white headline that fades and slides in"
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
