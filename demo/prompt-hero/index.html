@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — Archive Collection</title>
+    <meta name="description" content="g.a.d. — a full-screen video hero you steer with the cursor; scroll and a black panel rises into a scaling grid of archive photos and a round &quot;view&quot; button.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <style>.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}</style>
+    <style>
+        html, body { margin: 0; background: #000; }
+        #scroll-spacer { position: relative; user-select: none; background: #fff; height: 500vh; -webkit-font-smoothing: antialiased; }
+        @media (min-width: 1024px) and (pointer: fine) { #scroll-spacer { cursor: none; } }
+
+        .cursor-dot { position: fixed; top: 0; left: 0; z-index: 50; pointer-events: none; mix-blend-mode: exclusion; transform: translate(-50%, -50%); }
+        .cursor-dot svg { width: 48px; height: 48px; display: block; }
+
+        @keyframes heroIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes heroFade { from { opacity: 0; } to { opacity: 1; } }
+
+        .hero-logo { position: fixed; top: 16px; left: 16px; z-index: 20; pointer-events: none; mix-blend-mode: exclusion; color: #fff; height: 38px; animation: heroIn .6s cubic-bezier(.25,.1,.25,1) both; }
+        @media (min-width: 640px) { .hero-logo { top: 32px; left: 32px; height: 82px; } }
+        @media (min-width: 1024px) { .hero-logo { height: 110px; } }
+
+        .hero-caption { position: fixed; left: 16px; top: 118px; width: calc(100vw - 32px); z-index: 20; pointer-events: none; mix-blend-mode: exclusion; margin: 0; color: #fff; font-family: 'Inter Tight', sans-serif; font-weight: 500; font-size: 12px; line-height: 140%; letter-spacing: -0.04em; animation: heroIn .6s cubic-bezier(.25,.1,.25,1) both; animation-delay: .3s; }
+        @media (min-width: 640px) { .hero-caption { left: 32px; top: 180px; width: calc(50vw - 48px); } }
+        @media (min-width: 1024px) { .hero-caption { top: 244px; width: 692px; } }
+
+        .hero-nav { position: fixed; top: 16px; right: 16px; z-index: 20; pointer-events: none; mix-blend-mode: exclusion; height: 30px; display: flex; align-items: center; justify-content: space-between; gap: 20px; color: #fff; animation: heroIn .6s cubic-bezier(.25,.1,.25,1) both; animation-delay: .15s; }
+        @media (min-width: 640px) { .hero-nav { top: 32px; right: 32px; width: 330px; gap: 50px; } }
+        .hero-nav .nav-about { display: none; font-family: 'Inter Tight', sans-serif; font-weight: 500; font-size: 15px; text-transform: uppercase; white-space: nowrap; }
+        @media (min-width: 640px) { .hero-nav .nav-about { display: inline-block; } }
+        .hero-nav .nav-icons { display: flex; align-items: center; gap: 20px; }
+        @media (min-width: 640px) { .hero-nav .nav-icons { gap: 50px; } }
+        .hero-nav .burger { width: 24px; height: 24px; display: block; }
+        @media (min-width: 640px) { .hero-nav .burger { width: 30px; height: 30px; } }
+        .hero-nav .nav-cart { font-family: 'Inter Tight', sans-serif; font-weight: 500; font-size: 13px; white-space: nowrap; }
+        @media (min-width: 640px) { .hero-nav .nav-cart { font-size: 15px; } }
+
+        .hero-info { position: fixed; left: 0; right: 0; bottom: 48px; z-index: 20; pointer-events: none; mix-blend-mode: exclusion; display: flex; flex-direction: column; align-items: center; color: #fff; font-family: 'Inter Tight', sans-serif; font-weight: 500; letter-spacing: -0.04em; animation: heroFade .6s cubic-bezier(.25,.1,.25,1) both; animation-delay: .45s; }
+        @media (min-width: 640px) { .hero-info { left: auto; right: 32px; bottom: 80px; width: 330px; } }
+        .hero-info .info-top { display: flex; flex-direction: column; align-items: flex-start; width: 252px; margin-bottom: 12px; }
+        @media (min-width: 640px) { .hero-info .info-top { width: 100%; margin-bottom: 32px; } }
+        .hero-info .info-circle { position: relative; width: 20px; height: 20px; }
+        @media (min-width: 640px) { .hero-info .info-circle { width: 30px; height: 30px; } }
+        .hero-info .info-circle svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+        .hero-info .info-circle svg circle { stroke-width: 2px; vector-effect: non-scaling-stroke; }
+        @media (min-width: 640px) { .hero-info .info-circle svg circle { stroke-width: 2.5px; } }
+        .hero-info .info-circle span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; text-transform: uppercase; }
+        @media (min-width: 640px) { .hero-info .info-circle span { font-size: 15px; } }
+        .hero-info .info-label { margin: 0; font-size: 20px; line-height: 100%; text-align: center; text-transform: uppercase; }
+        @media (min-width: 640px) { .hero-info .info-label { font-size: 30px; } }
+        .hero-info .info-price { margin: 10px 0 0; font-size: 60px; line-height: 100%; text-align: center; }
+        @media (min-width: 640px) { .hero-info .info-price { font-size: 80px; margin-top: 14px; } }
+
+        .hero-buy { position: fixed; left: 16px; right: 16px; bottom: 60px; height: 100px; z-index: 20; pointer-events: none; mix-blend-mode: exclusion; background: #fff; border-radius: 1335px; display: flex; align-items: center; justify-content: center; transform-origin: right bottom; transform: scale(0); }
+        @media (min-width: 640px) { .hero-buy { left: auto; right: 32px; bottom: 32px; width: 330px; height: 174px; } }
+        .hero-buy span { color: #fff; mix-blend-mode: exclusion; font-family: 'Inter Tight', sans-serif; font-weight: 500; letter-spacing: -0.04em; font-size: 72px; }
+        @media (min-width: 640px) { .hero-buy span { font-size: 110px; } }
+
+        .hero-canvas { position: fixed; left: 0; top: 220px; width: 100vw; height: calc(100vh - 220px); z-index: 0; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .3s ease; }
+        @media (min-width: 640px) { .hero-canvas { inset: 0; top: 0; width: 100%; height: 100%; } }
+        .hero-canvas.is-loaded { opacity: 1; }
+        .hero-canvas video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+        .hero-overlay { position: fixed; inset: 0; z-index: 12; pointer-events: none; background: #fff; opacity: 0; }
+
+        .hero-footer { position: fixed; left: 16px; right: 16px; bottom: 24px; z-index: 20; pointer-events: none; mix-blend-mode: exclusion; display: flex; justify-content: space-between; color: #fff; font-family: 'Inter Tight', sans-serif; font-weight: 500; letter-spacing: -0.02em; text-transform: uppercase; font-size: 11px; opacity: 0; }
+        @media (min-width: 640px) { .hero-footer { right: auto; bottom: 32px; justify-content: flex-start; gap: 80px; font-size: 13px; } }
+
+        .bp-panel { position: fixed; inset: 0; z-index: 10; background: #000; transform: translateY(100vh); }
+        .bp-wrap { width: 100%; padding-top: min(400px, 40vh); }
+        .bp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
+        @media (min-width: 640px) { .bp-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1024px) { .bp-grid { grid-template-columns: repeat(4, 1fr); } }
+        .bp-cell { aspect-ratio: 2/3; overflow: hidden; position: relative; }
+        .bp-card { width: 100%; height: 100%; will-change: transform; transform: scale(0); }
+        .bp-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        @media (prefers-reduced-motion: reduce) { .bp-card { will-change: auto; } }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useMemo } = React;
+
+        const LEFT_SRC = "https://d8j0ntlcm91z4.cloudfront.net/user_39ca84eAE1ODL9hbR5VhoEj8tBf/hf_20260625_154433_532a85d3-dabf-4265-b8bd-19ac6af31842.mp4";
+        const RIGHT_SRC = "https://d8j0ntlcm91z4.cloudfront.net/user_39ca84eAE1ODL9hbR5VhoEj8tBf/hf_20260625_154401_a664f076-b971-4557-8728-40ef9ea4c49b.mp4";
+
+        const GALLERY = [
+            "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260629_104530_521b2f85-c0f3-4d0e-9704-b578315b4cb9.png&w=1920&q=85",
+            "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260629_103711_76ccdb8b-5043-4f47-9c54-4379713393ea.png&w=1920&q=85",
+            "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260629_103728_394f6a1b-85e2-4386-a4f6-408472a0a5b7.png&w=1920&q=85",
+            "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260629_103739_86743e0e-16a7-4bee-bf38-dd67985344dc.png&w=1920&q=85",
+            "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260629_103748_b2215dc8-a3a7-470d-b19a-5b87fa7d0c37.png&w=1920&q=85",
+            "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260629_103758_e919ce72-5c9d-4b87-9be6-d7647b34825c.png&w=1920&q=85",
+            "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260629_103808_013583d0-3386-4547-9832-37c7d8edb3ac.png&w=1920&q=85",
+            "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260629_103937_a0c49d0a-33eb-4ead-aea6-c1baf241acbc.png&w=1920&q=85",
+            "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260629_103956_d18ed8fd-7b6f-4b86-91f9-20010fe38670.png&w=1920&q=85",
+            "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260629_104034_ba5a9963-87ff-4008-a545-6bd686c088b5.png&w=1920&q=85",
+        ];
+
+        const SYMS = ['8', '$', '^^', '%', '/'];
+
+        function getCols() {
+            const w = window.innerWidth;
+            return w < 640 ? 2 : w < 1024 ? 3 : 4;
+        }
+
+        function buildLayout(count, cols) {
+            const rows = [];
+            let placed = 0, r = 0;
+            while (placed < count) {
+                const row = new Array(cols).fill(-1);
+                const a = (r * 2 + (r % 2)) % cols;
+                row[a] = placed++;
+                if (r % 3 === 0 && placed < count) {
+                    let b = (a + 2) % cols;
+                    if (b === a) b = (a + 1) % cols;
+                    row[b] = placed++;
+                }
+                rows.push(row);
+                r++;
+            }
+            return rows;
+        }
+
+        function CursorGlyph() {
+            return (
+                <svg viewBox="0 0 48 48" fill="none">
+                    <circle cx="24" cy="24" r="22.75" stroke="white" strokeWidth="2.5" />
+                    <g fill="white">
+                        <rect x="22.5" y="13" width="3" height="9" rx="1.5" />
+                        <rect x="22.5" y="13" width="3" height="9" rx="1.5" transform="rotate(60 24 24)" />
+                        <rect x="22.5" y="13" width="3" height="9" rx="1.5" transform="rotate(120 24 24)" />
+                    </g>
+                </svg>
+            );
+        }
+
+        function GadLogo() {
+            return (
+                <svg className="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d." style={{ height: '100%' }}><path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z" /><circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100" /><circle className="orb" cx="322" cy="8" r="5" fill="currentColor" /></svg>
+            );
+        }
+
+        function Burger() {
+            return (
+                <svg className="burger" viewBox="0 0 40 40" fill="none">
+                    <path d="M0 14H40" stroke="white" strokeWidth="2.5" />
+                    <path d="M0 26H40" stroke="white" strokeWidth="2.5" />
+                </svg>
+            );
+        }
+
+        function InfoCircle() {
+            return (
+                <svg viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18.75" stroke="white" />
+                </svg>
+            );
+        }
+
+        function App() {
+            const spacerRef = useRef(null);
+            const panelRef = useRef(null);
+            const wrapRef = useRef(null);
+            const canvasRef = useRef(null);
+            const leftRef = useRef(null);
+            const rightRef = useRef(null);
+            const cursorRef = useRef(null);
+            const overlayRef = useRef(null);
+            const footerRef = useRef(null);
+            const infoRef = useRef(null);
+            const buyRef = useRef(null);
+            const cardsRef = useRef([]);
+            const activeSideRef = useRef('right');
+            const mouseXRef = useRef(window.innerWidth / 2);
+            const maxScrollRef = useRef(0);
+
+            const [cols, setCols] = useState(getCols);
+            const [symbol, setSymbol] = useState('8');
+            const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 1024 && !window.matchMedia('(pointer: coarse)').matches);
+            const [loaded, setLoaded] = useState(false);
+
+            const rows = useMemo(() => buildLayout(GALLERY.length, cols), [cols]);
+            cardsRef.current = [];
+
+            useEffect(() => {
+                const onResize = () => {
+                    setCols(getCols());
+                    setIsDesktop(window.innerWidth >= 1024 && !window.matchMedia('(pointer: coarse)').matches);
+                };
+                window.addEventListener('resize', onResize);
+                return () => window.removeEventListener('resize', onResize);
+            }, []);
+
+            useEffect(() => {
+                const recalc = () => {
+                    const vh = window.innerHeight;
+                    const contentH = wrapRef.current ? wrapRef.current.scrollHeight : 0;
+                    const maxScroll = Math.max(0, contentH - vh);
+                    maxScrollRef.current = maxScroll;
+                    if (spacerRef.current) spacerRef.current.style.height = (vh + maxScroll + 2 * vh) + 'px';
+                };
+                recalc();
+                window.addEventListener('resize', recalc);
+                return () => window.removeEventListener('resize', recalc);
+            }, [rows]);
+
+            useEffect(() => {
+                let raf;
+                const tick = () => {
+                    const vh = window.innerHeight;
+                    const scrollY = window.scrollY;
+                    const maxScroll = maxScrollRef.current;
+
+                    const panelY = Math.min(vh, Math.max(0, vh - scrollY));
+                    if (panelRef.current) panelRef.current.style.transform = `translateY(${panelY}px)`;
+
+                    const wrapY = scrollY > vh ? -(Math.min(scrollY, vh + maxScroll) - vh) : 0;
+                    if (wrapRef.current) wrapRef.current.style.transform = `translateY(${wrapY}px)`;
+
+                    cardsRef.current.forEach((el) => {
+                        if (!el) return;
+                        const r = el.getBoundingClientRect();
+                        if (r.bottom <= 0 || r.top >= vh) { el.style.transform = 'scale(0)'; return; }
+                        const enter = Math.min(1, (vh - r.top) / (vh * 0.6));
+                        const exit = Math.min(1, r.bottom / (vh * 0.4));
+                        const s = Math.max(0, Math.min(enter, exit));
+                        el.style.transform = `scale(${s})`;
+                    });
+
+                    if (canvasRef.current) canvasRef.current.style.visibility = scrollY > vh ? 'hidden' : 'visible';
+
+                    const outroStart = vh + maxScroll;
+                    const outroRange = Math.max(1, vh - 100);
+                    const progress = Math.max(0, Math.min(1, (scrollY - outroStart) / outroRange));
+                    if (overlayRef.current) overlayRef.current.style.opacity = String(progress);
+                    if (footerRef.current) footerRef.current.style.opacity = String(progress);
+                    if (buyRef.current) buyRef.current.style.transform = `scale(${progress})`;
+                    if (infoRef.current) {
+                        const offset = window.innerWidth < 640 ? 132 : 166;
+                        infoRef.current.style.transform = progress > 0 ? `translateY(${-offset * progress}px)` : '';
+                    }
+                    raf = requestAnimationFrame(tick);
+                };
+                raf = requestAnimationFrame(tick);
+                return () => cancelAnimationFrame(raf);
+            }, []);
+
+            useEffect(() => {
+                let last = 0;
+                const onScroll = () => {
+                    const now = performance.now();
+                    if (now - last < 80) return;
+                    last = now;
+                    setSymbol(SYMS[Math.floor(Math.random() * SYMS.length)]);
+                };
+                window.addEventListener('scroll', onScroll, { passive: true });
+                return () => window.removeEventListener('scroll', onScroll);
+            }, []);
+
+            useEffect(() => {
+                if (!isDesktop) return;
+                const el = cursorRef.current;
+                if (!el) return;
+                const onMove = (e) => { el.style.left = e.clientX + 'px'; el.style.top = e.clientY + 'px'; mouseXRef.current = e.clientX; };
+                window.addEventListener('mousemove', onMove);
+                return () => window.removeEventListener('mousemove', onMove);
+            }, [isDesktop]);
+
+            useEffect(() => {
+                let leftReady = false, rightReady = false;
+                const check = () => { if (leftReady && rightReady) setLoaded(true); };
+                const l = leftRef.current, r = rightRef.current;
+                const onL = () => { leftReady = true; check(); };
+                const onR = () => { rightReady = true; check(); };
+                if (l) l.addEventListener('loadeddata', onL);
+                if (r) r.addEventListener('loadeddata', onR);
+                return () => { if (l) l.removeEventListener('loadeddata', onL); if (r) r.removeEventListener('loadeddata', onR); };
+            }, []);
+
+            useEffect(() => {
+                const left = leftRef.current, right = rightRef.current;
+                if (!left || !right) return;
+
+                if (isDesktop) {
+                    let raf;
+                    const tick = () => {
+                        const width = window.innerWidth;
+                        const x = mouseXRef.current;
+                        const center = width / 2;
+                        const dead = Math.max(30, width * 0.05);
+                        if (Math.abs(x - center) <= dead) {
+                            const cur = activeSideRef.current === 'left' ? left : right;
+                            if (cur && !cur.seeking) cur.currentTime = 0;
+                        } else if (x < center - dead) {
+                            activeSideRef.current = 'right';
+                            left.style.display = 'none'; right.style.display = 'block';
+                            const range = Math.max(1, center - dead);
+                            const dist = Math.max(0, (center - dead) - x);
+                            const progress = Math.min(1, dist / range);
+                            if (right.duration && !right.seeking) right.currentTime = progress * right.duration;
+                        } else {
+                            activeSideRef.current = 'left';
+                            right.style.display = 'none'; left.style.display = 'block';
+                            const range = Math.max(1, width - (center + dead));
+                            const dist = Math.max(0, x - (center + dead));
+                            const progress = Math.min(1, dist / range);
+                            if (left.duration && !left.seeking) left.currentTime = progress * left.duration;
+                        }
+                        raf = requestAnimationFrame(tick);
+                    };
+                    raf = requestAnimationFrame(tick);
+                    return () => cancelAnimationFrame(raf);
+                }
+
+                const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                if (reduce) return;
+                const swapTo = (toLeft) => {
+                    left.style.display = toLeft ? 'block' : 'none';
+                    right.style.display = toLeft ? 'none' : 'block';
+                    const v = toLeft ? left : right;
+                    try { v.currentTime = 0; } catch (e) {}
+                    v.play().catch(() => {});
+                };
+                const onLeftEnded = () => swapTo(false);
+                const onRightEnded = () => swapTo(true);
+                left.addEventListener('ended', onLeftEnded);
+                right.addEventListener('ended', onRightEnded);
+                swapTo(false);
+                return () => {
+                    left.removeEventListener('ended', onLeftEnded);
+                    right.removeEventListener('ended', onRightEnded);
+                };
+            }, [isDesktop]);
+
+            return (
+                <div id="scroll-spacer" ref={spacerRef}>
+                    {isDesktop && (
+                        <div className="cursor-dot" ref={cursorRef}><CursorGlyph /></div>
+                    )}
+
+                    <div className="hero-logo"><GadLogo /></div>
+
+                    <p className="hero-caption">
+                        When switching between videos near the center, do not reset currentTime to 0 abruptly. Add a small dead zone: if cursor is within +/-50px of center, keep both videos at currentTime = 0 and show whichever was last active.
+                    </p>
+
+                    <nav className="hero-nav">
+                        <span className="nav-about">About</span>
+                        <div className="nav-icons">
+                            <Burger />
+                            <span className="nav-cart">[ CART ]</span>
+                        </div>
+                    </nav>
+
+                    <div className="hero-info" ref={infoRef}>
+                        <div className="info-top">
+                            <div className="info-circle">
+                                <InfoCircle />
+                                <span id="circle-symbol">{symbol}</span>
+                            </div>
+                        </div>
+                        <p className="info-label">ARCHIVE COLLECTION<br />"g.a.d."</p>
+                        <p className="info-price">$97,33</p>
+                    </div>
+
+                    <div className="hero-buy" ref={buyRef}><span>view</span></div>
+
+                    <div className={`hero-canvas${loaded ? ' is-loaded' : ''}`} ref={canvasRef}>
+                        <video ref={leftRef} src={LEFT_SRC} style={{ display: 'none' }} muted playsInline preload="auto" />
+                        <video ref={rightRef} src={RIGHT_SRC} style={{ display: 'block' }} muted playsInline preload="auto" />
+                    </div>
+
+                    <div className="hero-overlay" ref={overlayRef}></div>
+
+                    <div className="hero-footer" ref={footerRef}>
+                        <span>g.a.d. (r) 2026</span>
+                        <span>privacy policy</span>
+                    </div>
+
+                    <div className="bp-panel" ref={panelRef}>
+                        <div className="bp-wrap" ref={wrapRef}>
+                            <div className="bp-grid">
+                                {rows.map((row, ri) => row.map((cell, ci) => (
+                                    cell === -1
+                                        ? <div className="bp-cell" key={`${ri}-${ci}`}></div>
+                                        : (
+                                            <div className="bp-cell" key={`${ri}-${ci}`}>
+                                                <div
+                                                    className="bp-card"
+                                                    ref={(el) => { cardsRef.current[cell] = el; }}
+                                                    style={{ transformOrigin: ci < cols / 2 ? 'right bottom' : 'left bottom' }}
+                                                >
+                                                    <img src={GALLERY[cell]} alt={`Archive look ${cell + 1}`} loading="lazy" decoding="async" />
+                                                </div>
+                                            </div>
+                                        )
+                                )))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>
