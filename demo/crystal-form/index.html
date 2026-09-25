@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>g.a.d. — Form &amp; Light</title>
 <meta name="description" content="Glass, chrome and crystal objects computed live in the browser.">
@@ -142,7 +143,7 @@ button:focus-visible{outline:1px solid var(--cream);outline-offset:3px}
 </div>
 
 <script>
-window.RU = new URLSearchParams(location.search).get('lang') === 'ru';
+window.RU = false;
 window.CAPS = RU
   ? ['Узел — зелёное стекло', 'Кристалл — аметист', 'Разлом — матовое ядро', 'Скрутка — ледяная призма']
   : ['Knot — green glass', 'Crystal — amethyst cut', 'Fracture — frosted core', 'Twist — ice prism'];

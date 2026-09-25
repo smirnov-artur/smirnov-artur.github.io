@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>g.a.d. — protect your data</title>
 <!-- Один файл вместо React + Tailwind. ?lang=ru — русская версия (у Readex Pro нет кириллицы, по-русски набрано Geologica).
@@ -134,7 +135,7 @@ a { color: inherit; text-decoration: none; }
 </div>
 <script>
 (function () {
-  if (new URLSearchParams(location.search).get('lang') !== 'ru') return;
+  if (true) return;
   var TR = {
     n1: 'платформа', n2: 'решения', n3: 'компания', n4: 'поддержка', go: 'начать',
     w1: 'защити', w2: 'свои', w3: 'данные',

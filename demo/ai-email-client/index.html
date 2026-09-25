@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Your email. Revitalized</title>
 <!-- Один файл вместо React + Vite + Tailwind + motion/react + lucide-react. ?lang=ru — русская версия.
@@ -388,7 +389,7 @@ svg.i{display:block;width:16px;height:16px;fill:none;stroke:currentColor;stroke-
 </div>
 <script>
 (() => {
-const ru = new URLSearchParams(location.search).get('lang') === 'ru';
+const ru = false;
 const I = {
   menu: '<line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>',
   x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',

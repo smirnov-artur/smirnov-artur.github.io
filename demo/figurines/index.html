@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — 3D figurines</title>
 <!-- Один файл вместо React + lucide-react. ?lang=ru — русская версия (у Anton нет кириллицы, по-русски крупные надписи набраны Oswald).
@@ -91,7 +92,7 @@ a{color:inherit}
 </div>
 <script>
 (() => {
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { ghost: '3D-форма', t1: 'Фигурки g.a.d.', disc: 'Смотреть',
     t2: 'Работа потрясающая, пришла полностью готовой. Отделка — загляденье, 3D сделано безупречно. Огромное спасибо! Удачи вам. Заказывайте.' };
   document.documentElement.lang = 'ru';

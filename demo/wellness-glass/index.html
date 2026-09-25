@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — natural wellness</title>
 <!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия.
@@ -164,7 +165,7 @@ h1 em{display:block;font-style:normal;font-weight:300}
 </section>
 <script>
 (() => {
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { n1: 'Главная', n2: 'Наш подход', n3: 'Методы', badge: 'наш путь к естественному здоровью',
     h1a: 'Исцелите тело', h1b: 'естественно', sub: 'Целостный подход. Ощутимый результат.', cta: 'Начать путь',
     s1: 'Природные, растительные методы', s2: 'Поддержка, когда она нужна' };

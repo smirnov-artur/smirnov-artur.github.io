@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. - Design &amp; Engineering</title>
 <!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия.
@@ -213,7 +214,7 @@ h1 .px{font-weight:400;font-size:1.25em;display:inline-block;line-height:1;verti
 </div>
 <script>
 (() => {
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { n1: 'ОБО МНЕ', n2: 'ПРОЦЕСС', n3: 'ПРОЕКТЫ', n4: 'КАТАЛОГ', n6: 'СВЯЗЬ',
     studio: 'СТУДИЯ', des: 'ДИЗАЙН И', eng: 'РАЗРАБОТКА', what: 'Что я делаю',
     top: 'Делаю сайты и продукты уровня топ-1% для брендов и цифровых сервисов',

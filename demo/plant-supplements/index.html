@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — The power of nature</title>
 <!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия (у DM Sans нет кириллицы → Manrope).
@@ -235,7 +236,7 @@ html[lang=ru] .head{letter-spacing:-.06em}
 </div>
 <script>
 (() => {
-const ru = new URLSearchParams(location.search).get('lang') === 'ru';
+const ru = false;
 // [слово, приглушённое?] по строкам; задержки 0.3s, 0.4s, ... по порядку
 const LINES = ru
   ? [[['Сила'], ['природы', 1]], [['в', 1], ['каждой']], [['капсуле']]]

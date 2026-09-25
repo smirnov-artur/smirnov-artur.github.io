@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>g.a.d. — Studio</title>
 <!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия (у Helvetica Neue ME нет кириллицы — там Arimo).
@@ -172,7 +173,7 @@ header{position:absolute;left:0;right:0;top:0;z-index:30;display:flex;align-item
 </section>
 <script>
 (() => {
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const l = document.createElement('link');
   l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Arimo:wght@400&display=swap';
   document.head.appendChild(l);

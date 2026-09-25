@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>g.a.d.</title>
 <!-- ?lang=ru — русская версия. Ролик пережат с ключевым кадром каждые 4 кадра (v.mp4 рядом): кадр выбирается прокруткой.
@@ -392,7 +393,7 @@ nav .social svg { width: 1.25rem; height: 1.25rem; display: block; }
 <script>
 (function () {
   // русская версия
-  if (new URLSearchParams(location.search).get("lang") === "ru") {
+  if (false) {
     const TR = {
       guides: "Гайды", journal: "Журнал", sub: "Наша цель:",
       h1a: "Живые", h1b: "3D-миры", h1c: "в браузере — за минуты.",

@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. — 3D Creator</title>
+<!-- Один файл вместо React + Tailwind + Framer Motion + lucide-react. ?lang=ru — русская версия (у Kanit нет кириллицы, по-русски набрано Montserrat).
+     portrait.webp — тот же портрет, ужатый из PNG 2,5 МБ. Гифка hero-celestia из промпта отдаёт 404, во втором ряду ленты 9 картинок вместо 10.
+     Вместо «Hi, i'm jack» — g.a.d., логотип в середине меню; из «Обо мне» убраны выдуманные «пять лет опыта»,
+     вместо названий клиентских проектов (Nextlevel Studio, Solaris Digital) — нейтральные имена: под нашим логотипом они читались бы как наши клиенты.
+     Первый экран без мыши: магнит портрета ведёт невидимый курсор, как только мышь замирает. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0C0C0C}
+body{font-family:'Kanit',sans-serif;color:#D7E2EA;-webkit-font-smoothing:antialiased}
+.ru body{font-family:'Montserrat',sans-serif}
+main{background:#0C0C0C;overflow-x:clip}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:none}
+.hero-heading{background:linear-gradient(180deg,#646973 0%,#BBCCD7 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+/* появление (FadeIn) */
+.fade{opacity:0;transition-property:opacity,transform;transition-timing-function:cubic-bezier(.25,.1,.25,1)}
+.fade.in{opacity:1;transform:none!important}
+
+/* логотип */
+.gad{display:block;color:#D7E2EA}
+.gad svg{display:block;height:20px;width:auto;overflow:visible}
+.gad svg text{font-family:'Unbounded',sans-serif}
+.gad .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}
+.gad .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}
+@keyframes gad-draw{to{stroke-dashoffset:0}}
+@keyframes gad-pop{to{opacity:1}}
+@keyframes gad-orbit{to{transform:rotate(360deg)}}
+
+/* кнопки */
+.cbtn{display:inline-block;border-radius:9999px;background:linear-gradient(123deg,#18011F 7%,#B600A8 37%,#7621B0 72%,#BE4C00 100%);
+  box-shadow:0 4px 4px rgba(181,1,167,.25),4px 4px 12px #7721B1 inset;outline:2px solid #fff;outline-offset:-3px;
+  color:#fff;font-weight:500;text-transform:uppercase;letter-spacing:.1em;padding:12px 32px;font-size:12px;line-height:16px;white-space:nowrap}
+.live{display:inline-block;border-radius:9999px;border:2px solid #D7E2EA;color:#D7E2EA;font-weight:500;text-transform:uppercase;letter-spacing:.1em;
+  padding:12px 32px;font-size:14px;line-height:20px;white-space:nowrap;transition:background-color .2s}
+.live:hover{background:rgba(215,226,234,.1)}
+
+/* 1. первый экран */
+.hero{position:relative;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow-x:clip}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:24px 24px 0;position:relative;z-index:20}
+.nav>a:not(.gad){color:#D7E2EA;font-weight:500;text-transform:uppercase;letter-spacing:.05em;font-size:14px;line-height:20px;transition:opacity .2s;white-space:nowrap}
+@media (max-width:639px){.nav{gap:8px}.ru .nav>a:not(.gad){font-size:11px;letter-spacing:.02em}.ru .gad svg{height:17px}}
+.nav>a:not(.gad):hover{opacity:.7}
+.hwrap{overflow:hidden;width:100%;margin-top:24px}
+.hh{font-weight:900;text-transform:uppercase;letter-spacing:-.025em;line-height:1;white-space:nowrap;width:100%;text-align:center;font-size:14vw}
+.hh .b{text-transform:none}
+.bar{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;padding:0 24px 28px;position:relative;z-index:20}
+.lead{color:#D7E2EA;font-weight:300;text-transform:uppercase;letter-spacing:.025em;line-height:1.375;font-size:clamp(.75rem,1.4vw,1.5rem);max-width:160px}
+.portrait{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10;width:280px;pointer-events:none}
+.magnet{will-change:transform}
+.portrait img{width:100%;height:auto}
+
+/* 2. лента */
+.marquee{background:#0C0C0C;padding:96px 0 40px;display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:12px;width:max-content;will-change:transform}
+.row img{width:420px;height:270px;border-radius:16px;object-fit:cover;flex:none;background:#151515}
+
+/* 3. обо мне */
+.about{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:64px}
+.deco{position:absolute;height:auto}
+.d1{top:4%;left:1%;width:120px}
+.d2{bottom:8%;left:3%;width:100px}
+.d3{top:4%;right:1%;width:120px}
+.d4{bottom:8%;right:3%;width:130px}
+.atxt{display:flex;flex-direction:column;align-items:center;gap:40px;position:relative;z-index:1}
+.big{font-weight:900;text-transform:uppercase;line-height:1;letter-spacing:-.025em;text-align:center;font-size:clamp(3rem,12vw,160px)}
+.anim{color:#D7E2EA;font-weight:500;text-align:center;line-height:1.625;max-width:560px;font-size:clamp(1rem,2vw,1.35rem)}
+.anim .w{display:inline-block;white-space:nowrap}
+.anim .c{opacity:.2}
+
+/* 4. услуги */
+.services{background:#fff;color:#0C0C0C;border-radius:40px 40px 0 0;padding:80px 20px}
+.services .big{color:#0C0C0C;margin-bottom:64px}
+.slist{max-width:64rem;margin:0 auto}
+.sitem{display:flex;align-items:center;gap:clamp(1.25rem,4vw,4rem);padding:32px 0;border-top:1px solid rgba(12,12,12,.15)}
+.sitem:last-child{border-bottom:1px solid rgba(12,12,12,.15)}
+.snum{font-weight:900;line-height:1;font-size:clamp(3rem,10vw,140px);color:#0C0C0C;flex:none;letter-spacing:-.025em}
+.sname{font-weight:500;text-transform:uppercase;font-size:clamp(1rem,2.2vw,2.1rem);line-height:1.2}
+.sdesc{font-weight:300;line-height:1.625;max-width:42rem;font-size:clamp(.85rem,1.6vw,1.25rem);opacity:.6;margin-top:8px}
+
+/* 5. проекты */
+.projects{position:relative;z-index:10;background:#0C0C0C;border-radius:40px 40px 0 0;margin-top:-40px;padding:80px 20px 120px}
+.projects .big{margin-bottom:48px}
+.pwrap{height:85vh;position:sticky;top:96px}
+.pcard{position:relative;border-radius:40px;border:2px solid #D7E2EA;background:#0C0C0C;padding:16px;transform-origin:50% 0;will-change:transform}
+.ptop{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;margin-bottom:16px}
+.pnum{font-weight:900;line-height:1;font-size:clamp(3rem,10vw,140px);letter-spacing:-.025em}
+.pmeta{flex:1;min-width:0}
+.pcat{display:block;text-transform:uppercase;letter-spacing:.1em;font-size:clamp(.7rem,1vw,.9rem);opacity:.6;font-weight:300}
+.pname{font-weight:500;text-transform:uppercase;font-size:clamp(1rem,2.2vw,2.1rem);line-height:1.2}
+.pimgs{display:flex;gap:12px}
+.pc1{width:40%;display:flex;flex-direction:column;gap:12px}
+.pc2{width:60%}
+.pimgs img{width:100%;object-fit:cover;border-radius:40px;background:#151515}
+.pimgs .i1{height:clamp(130px,16vw,230px)}
+.pimgs .i2{height:clamp(160px,22vw,340px)}
+.pc2 img{height:calc(clamp(130px,16vw,230px) + clamp(160px,22vw,340px) + 12px)}
+
+@media (min-width:640px){
+  .hwrap{margin-top:16px}
+  .hh{font-size:15vw}
+  .bar{padding-bottom:32px}
+  .lead{max-width:220px}
+  .cbtn{padding:14px 40px;font-size:14px;line-height:20px}
+  .live{padding:14px 40px;font-size:16px;line-height:24px}
+  .portrait{top:auto;bottom:0;transform:translateX(-50%);width:360px}
+  .marquee{padding-top:128px}
+  .about{padding:80px 32px;gap:80px}
+  .atxt{gap:56px}
+  .d1{width:160px;left:2%}.d2{width:140px;left:6%}.d3{width:160px;right:2%}.d4{width:170px;right:6%}
+  .services{border-radius:50px 50px 0 0;padding:96px 32px}
+  .services .big{margin-bottom:80px}
+  .sitem{padding:40px 0}
+  .projects{border-radius:50px 50px 0 0;margin-top:-48px;padding:96px 32px 140px}
+  .pcard{border-radius:50px;padding:24px}
+  .pimgs{gap:16px}.pc1{gap:16px}
+  .pimgs img{border-radius:50px}
+  .pc2 img{height:calc(clamp(130px,16vw,230px) + clamp(160px,22vw,340px) + 16px)}
+}
+@media (min-width:768px){
+  .nav{padding:32px 40px 0}
+  .nav>a:not(.gad){font-size:18px;line-height:28px}
+  .gad svg{height:26px}
+  .hwrap{margin-top:-20px}
+  .hh{font-size:16vw}
+  .bar{padding:0 40px 40px}
+  .lead{max-width:260px}
+  .cbtn{padding:16px 48px;font-size:16px;line-height:24px}
+  .portrait{width:440px}
+  .marquee{padding-top:160px}
+  .about{padding:80px 40px;gap:96px}
+  .atxt{gap:64px}
+  .d1{width:210px;left:4%}.d2{width:180px;left:10%}.d3{width:210px;right:4%}.d4{width:220px;right:10%}
+  .services{border-radius:60px 60px 0 0;padding:128px 40px}
+  .services .big{margin-bottom:112px}
+  .sitem{padding:48px 0}
+  .projects{border-radius:60px 60px 0 0;margin-top:-56px;padding:128px 40px 160px}
+  .projects .big{margin-bottom:64px}
+  .pwrap{top:128px}
+  .pcard{border-radius:60px;padding:32px}
+  .pimgs img{border-radius:60px}
+}
+@media (min-width:1024px){
+  .nav>a:not(.gad){font-size:1.4rem;line-height:1.3}
+  .gad svg{height:30px}
+  .hh{font-size:17.5vw}
+  .portrait{width:520px}
+}
+@media (prefers-reduced-motion:reduce){
+  .fade{transition:none}
+  .gad .ring{animation:none;stroke-dashoffset:0}.gad .orb{animation:none;opacity:1}
+}
+</style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <nav class="nav fade" data-y="-20" data-d="0">
+      <a href="#about" data-t="n1">About</a>
+      <a href="#services" data-t="n2">Price</a>
+      <a class="gad" href="#" aria-label="g.a.d.">
+        <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+          <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+          <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+          <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+        </svg>
+      </a>
+      <a href="#projects" data-t="n3">Projects</a>
+      <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="n4">Contact</a>
+    </nav>
+    <div class="hwrap"><h1 class="hero-heading hh fade" id="hh" data-y="40" data-d=".15"><span data-t="hi">Hi, i’m</span> <span class="b">g.a.d.</span></h1></div>
+    <div class="bar">
+      <p class="lead fade" data-y="20" data-d=".35" data-t="lead">a 3d creator driven by crafting striking and unforgettable projects</p>
+      <div class="fade" data-y="20" data-d=".5"><a class="cbtn" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="cta">Contact Me</a></div>
+    </div>
+    <div class="portrait"><div class="fade" id="pfade" data-y="30" data-d=".6"><div class="magnet" id="magnet"><img src="../portrait.webp" alt="" width="1450" height="1570"></div></div></div>
+  </section>
+
+  <section class="marquee" id="marquee">
+    <div class="row" id="r1"></div>
+    <div class="row" id="r2"></div>
+  </section>
+
+  <section class="about" id="about">
+    <img class="deco d1 fade" data-x="-80" data-y="0" data-d=".1" data-dur=".9" alt="" src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/moon_icon.11395d36.png">
+    <img class="deco d2 fade" data-x="-80" data-y="0" data-d=".25" data-dur=".9" alt="" src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/p59_1.4659672e.png">
+    <img class="deco d3 fade" data-x="80" data-y="0" data-d=".15" data-dur=".9" alt="" src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/lego_icon-1.703bb594.png">
+    <img class="deco d4 fade" data-x="80" data-y="0" data-d=".3" data-dur=".9" alt="" src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/Group_134-1.2e04f3ce.png">
+    <div class="atxt">
+      <h2 class="hero-heading big fade" data-y="40" data-t="about">About me</h2>
+      <p class="anim" id="anim" data-t="atext">I focus on branding, web design, and user experience. I truly enjoy working with businesses that aim to stand out and present their best image. Let’s build something incredible together!</p>
+    </div>
+    <div class="fade"><a class="cbtn" href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="cta">Contact Me</a></div>
+  </section>
+
+  <section class="services" id="services">
+    <h2 class="big fade" data-t="serv">Services</h2>
+    <div class="slist" id="slist"></div>
+  </section>
+
+  <section class="projects" id="projects">
+    <h2 class="hero-heading big fade" data-t="proj">Project</h2>
+    <div class="plist" id="plist"></div>
+  </section>
+</main>
+
+<script>
+(() => {
+const RU = true;
+const IMG = id => 'https://images.higgs.ai/?default=1&output=webp&url=' +
+  encodeURIComponent('https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260412_' + id + '.png') + '&w=1280&q=85';
+const SERV = RU ? [
+  ['3D-моделирование', 'Детальные объекты, персонажи и окружения под задачу клиента — для игр, товаров и визуализаций.'],
+  ['Рендеринг', 'Фотореалистичные рендеры с продуманным светом, текстурами и материалами: идея выглядит как готовая вещь.'],
+  ['Моушн-дизайн', 'Анимация и моушн-графика, которые добавляют энергии и истории брендам, товарам и цифровым продуктам.'],
+  ['Брендинг', 'Цельный визуальный стиль — от логотипа до полной системы бренда, — который ясно звучит и запоминается.'],
+  ['Веб-дизайн', 'Чистые современные сайты, которые ведут к заявке: продуманы сетка, шрифты и удобство.']
+] : [
+  ['3D Modeling', 'Creation of detailed objects, characters, or environments tailored to specific client needs, ideal for games, products, and visualizations.'],
+  ['Rendering', 'High-quality, photorealistic renders that showcase designs with custom lighting, textures, and materials to bring concepts to life.'],
+  ['Motion Design', 'Dynamic animations and motion graphics that add energy and storytelling to brands, products, and digital experiences.'],
+  ['Branding', 'Crafting cohesive visual identities — from logos to full brand systems — that communicate a clear and memorable presence.'],
+  ['Web Design', 'Designing clean, modern, and conversion-focused websites with attention to layout, typography, and user experience.']
+];
+const PROJ = [
+  [RU ? 'Концепт' : 'Concept', RU ? 'Сайт студии' : 'Studio website', ['055344_5eff02e0-87a5-41ce-b64f-eb08da8f33db', '055431_11d841fd-8b41-46a5-82e4-b04f2407a7d8', '055451_e317bf2d-28d4-48cc-86b0-6f72f25b6327']],
+  [RU ? 'Личный' : 'Personal', RU ? 'Фирменный стиль' : 'Brand identity', ['055654_911201c5-36d9-4bc6-bac7-331adfce159f', '055723_5ceda0b8-d9c2-4665-b2e3-83ba19ba76d1', '055753_adc5dcbd-a8e6-49c0-b43a-9b030d835cea']],
+  [RU ? 'Концепт' : 'Concept', RU ? 'Цифровой запуск' : 'Digital launch', ['055759_963cfb0b-4bd1-4b0f-9d0a-09bd6cf95b2f', '060108_438f781a-9846-4dcc-89ab-c4e6cb830f5b', '055818_9d062121-ad7e-46b9-999a-1a6a692ef1ee']]
+];
+// hero-celestia-preview-0yO3jXO8.gif из промпта мёртвая (404) — во втором ряду 9 картинок
+const GIFS = ['hero-space-voyage-preview-eECLH3Yc', 'hero-codenest-preview-Cgppc2qV', 'hero-vex-ventures-preview-BczMFIiw', 'hero-stellar-ai-v2-preview-DjvxjG3C',
+  'hero-asme-preview-B_nGDnTP', 'hero-transform-data-preview-Cx5OU29N', 'hero-vitara-preview-Cjz2QYyU', 'hero-terra-preview-BFjrCr7T', 'hero-skyelite-preview-DHaZIgUv',
+  'hero-aethera-preview-DknSlcTa', 'hero-designpro-preview-D8c5_een', 'hero-stellar-ai-preview-D3HL6bw1', 'hero-xportfolio-preview-D4A8maiC', 'hero-orbit-web3-preview-BXt4OttD',
+  'hero-nexora-preview-cx5HmUgo', 'hero-evr-ventures-preview-DZxeVFEX', 'hero-planet-orbit-preview-DWAP8Z1P', 'hero-new-era-preview-CocuDUm9', 'hero-wealth-preview-B70idl_u',
+  'hero-luminex-preview-CxOP7ce6'].map(n => 'https://motionsites.ai/assets/' + n + '.gif');
+
+if (RU) {
+  const TR = { n1: 'Обо мне', n2: 'Цены', n3: 'Проекты', n4: 'Контакты', hi: 'Привет, я', lead: '3D-дизайнер: делаю яркие проекты, которые запоминаются',
+    cta: 'Написать мне', about: 'Обо мне', serv: 'Услуги', proj: 'Проекты',
+    atext: 'Я занимаюсь брендингом, веб-дизайном и удобством интерфейсов. Люблю работать с бизнесом, который хочет выделиться и показать себя с лучшей стороны. Давайте сделаем что-то невероятное вместе!' };
+  document.documentElement.lang = 'ru';
+  document.documentElement.classList.add('ru');
+  document.title = 'g.a.d. — 3D-дизайнер';
+  document.head.insertAdjacentHTML('beforeend', '<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;900&display=swap" rel="stylesheet">');
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.textContent = t; });
+}
+const $ = id => document.getElementById(id);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// услуги и проекты
+$('slist').innerHTML = SERV.map((s, i) => `<div class="sitem fade" data-d="${i * 0.1}"><div class="snum">0${i + 1}</div><div><h3 class="sname">${s[0]}</h3><p class="sdesc">${s[1]}</p></div></div>`).join('');
+$('plist').innerHTML = PROJ.map((p, i) => `<div class="pwrap"><div class="pcard" style="top:${i * 28}px"><div class="ptop"><div class="pnum">0${i + 1}</div>` +
+  `<div class="pmeta"><span class="pcat">${p[0]}</span><h3 class="pname">${p[1]}</h3></div><a class="live" href="#">${RU ? 'Открыть проект' : 'Live Project'}</a></div>` +
+  `<div class="pimgs"><div class="pc1"><img class="i1" loading="lazy" alt="" src="${IMG(p[2][0])}"><img class="i2" loading="lazy" alt="" src="${IMG(p[2][1])}"></div>` +
+  `<div class="pc2"><img loading="lazy" alt="" src="${IMG(p[2][2])}"></div></div></div></div>`).join('');
+
+// лента: 11 и 9 картинок, каждая тройкой
+const rows = [[$('r1'), GIFS.slice(0, 11), 1], [$('r2'), GIFS.slice(11), -1]];
+rows.forEach(([row, list]) => { row.innerHTML = [...list, ...list, ...list].map(u => `<img loading="lazy" alt="" src="${u}">`).join(''); });
+
+// FadeIn: whileInView once, margin 50px
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '50px' });
+document.querySelectorAll('.fade').forEach(el => {
+  const d = el.dataset;
+  el.style.transform = `translate(${d.x || 0}px,${d.y !== undefined ? d.y : 30}px)`;
+  el.style.transitionDuration = (d.dur || 0.7) + 's';
+  el.style.transitionDelay = (d.d || 0) + 's';
+  io.observe(el);
+});
+
+// заголовок в одну строку: ужать, если не влез (русский длиннее)
+const hh = $('hh');
+function fit() {
+  hh.style.fontSize = '';
+  const w = hh.parentElement.clientWidth, sw = hh.scrollWidth;
+  if (sw > w) hh.style.fontSize = parseFloat(getComputedStyle(hh).fontSize) * w / sw * 0.97 + 'px';
+}
+fit();
+document.fonts && document.fonts.ready.then(fit);
+addEventListener('resize', fit);
+
+// текст по буквам
+const anim = $('anim');
+anim.innerHTML = anim.textContent.split(' ').map(w => '<span class="w">' + [...w].map(c => '<span class="c">' + c + '</span>').join('') + '</span>').join(' ');
+const chars = [...anim.querySelectorAll('.c')];
+
+// магнит портрета + невидимый курсор, пока мышь стоит
+const mg = $('magnet'), pf = $('pfade');
+let lastMouse = -1e9, mouseOn = false;
+function magnet(x, y, ease) {
+  const r = pf.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  const near = Math.abs(x - cx) < r.width / 2 + 150 && Math.abs(y - cy) < r.height / 2 + 150;
+  mg.style.transition = ease ? (near ? 'transform .3s ease-out' : 'transform .6s ease-in-out') : 'none';
+  mg.style.transform = near ? `translate3d(${(x - cx) / 3}px,${(y - cy) / 3}px,0)` : 'translate3d(0,0,0)';
+}
+addEventListener('mousemove', e => { lastMouse = performance.now(); mouseOn = true; magnet(e.clientX, e.clientY, true); }, { passive: true });
+
+let rowW = [0, 0];
+const measure = () => { rowW = rows.map(([row]) => (row.scrollWidth + 12) / 3); };
+measure();
+addEventListener('resize', measure);
+
+let lastY = null;
+function frame(now) {
+  const y = scrollY, vh = innerHeight;
+  if (y !== lastY) {
+    lastY = y;
+    // лента: сдвиг от прокрутки, база — минус одна тройка, чтобы слева не было пустоты
+    const top = $('marquee').getBoundingClientRect().top + y;
+    const off = (y - top + vh) * 0.3;
+    rows.forEach(([row, , dir], i) => { row.style.transform = `translateX(${dir * (off - 200) - rowW[i]}px)`; });
+    // буквы: offset ['start 0.8', 'end 0.2']
+    const r = anim.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, (vh * 0.8 - r.top) / (r.height + vh * 0.6)));
+    const n = chars.length;
+    chars.forEach((c, i) => { const o = 0.2 + 0.8 * Math.min(1, Math.max(0, (p - i / n) * n)); if (c._o !== o) { c._o = o; c.style.opacity = o; } });
+    // карточки: стопка, каждая уменьшается до 1 - (n-1-i)*0.03
+    const pl = $('plist'), pr = pl.getBoundingClientRect();
+    const pp = Math.min(1, Math.max(0, -pr.top / Math.max(1, pr.height - vh)));
+    pl.querySelectorAll('.pcard').forEach((c, i, all) => {
+      const target = 1 - (all.length - 1 - i) * 0.03, from = i / all.length;
+      const k = Math.min(1, Math.max(0, (pp - from) / (1 - from)));
+      c.style.transform = `scale(${1 - (1 - target) * k})`;
+    });
+  }
+  if (!reduce && now - lastMouse > 2500 && y < vh) {
+    const r = pf.getBoundingClientRect(), t = now / 1000;
+    magnet(r.left + r.width / 2 + Math.sin(t * 0.9) * r.width * 0.25, r.top + r.height / 2 + Math.sin(t * 1.3) * r.height * 0.12, false);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

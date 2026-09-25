@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — studio</title>
 <!-- Один файл вместо Vite + React + Tailwind. ?lang=ru — русская версия.
@@ -101,7 +102,7 @@ h1 .gad svg{display:inline-block;height:1em;width:auto;overflow:visible;vertical
 </section>
 <script>
 (() => {
-const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+const RU = false;
 const img = id => 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260727_' + id + '.png&w=1280&q=85';
 // [картинка, направление EN, RU, описание EN, RU]
 const S = [

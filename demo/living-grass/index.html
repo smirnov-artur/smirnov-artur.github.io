@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Layer by layer</title>
 <!-- Живой луг: огромная дуга-кольцо в густой траве, всё рисует three.js в реальном времени — небо с облаками,
@@ -139,7 +140,6 @@ footer .gad{color:#0c2a3a}
   <h1><span class="it" data-t="h1a">Layer by layer,</span><span class="st" data-t="h1b">a story grows.</span></h1>
   <p class="aside" data-t="aside">g.a.d. grows websites and products in living layers — meaning, structure, motion and code — so every detail still knows why it is there.</p>
   <a class="scroll" href="#layers"><i><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></i><span data-t="scroll">Scroll to dig deeper</span></a>
-  <div class="lang"><a href="?" class="on" id="lEn">EN</a> · <a href="?lang=ru" id="lRu">RU</a></div>
 </section>
 
 <section class="sec layers" id="layers">
@@ -189,7 +189,7 @@ footer .gad{color:#0c2a3a}
 const btn = document.getElementById('menuBtn');
 btn.addEventListener('click', () => btn.setAttribute('aria-expanded', document.body.classList.toggle('menu-open')));
 document.getElementById('drawer').addEventListener('click', e => { if (e.target.tagName === 'A') document.body.classList.remove('menu-open'); });
-if (new URLSearchParams(location.search).get('lang') !== 'ru') return;
+if (true) return;
 const TR = {
   n0: 'Главная', n1: 'Слои', n2: 'Процесс', n3: 'Контакты', menu: 'меню',
   h1a: 'Слой за слоем', h1b: 'растёт история.',
@@ -212,8 +212,6 @@ document.documentElement.lang = 'ru';
 document.body.classList.add('ru');
 document.title = 'g.a.d. — Слой за слоем';
 document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.innerHTML = t; });
-document.getElementById('lEn').classList.remove('on');
-document.getElementById('lRu').classList.add('on');
 })();
 </script>
 

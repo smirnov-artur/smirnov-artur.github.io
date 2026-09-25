@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — creative studio</title>
 <!-- Один файл вместо React + Tailwind + framer-motion + lucide-react. ?lang=ru — русская версия
@@ -188,7 +189,7 @@ a{color:inherit;text-decoration:none}
 
 <script>
 (() => {
-const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+const RU = false;
 const ICON = id => 'https://images.higgs.ai/?default=1&output=webp&url=' +
   encodeURIComponent('https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_' + id + '.png') + '&w=1280&q=85';
 const T = RU ? {

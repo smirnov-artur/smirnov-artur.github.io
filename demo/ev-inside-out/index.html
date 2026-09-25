@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="theme-color" content="#708fa2"/>
 <meta name="description" content="g.a.d. Explore an electric vehicle from the inside out. An independent, fictional automotive concept."/>
@@ -210,7 +211,7 @@ html[lang=ru]{font-family:'Manrope',sans-serif}
 <div id="root"></div>
 <script>
 (() => {
-const ru = new URLSearchParams(location.search).get('lang') === 'ru';
+const ru = false;
 const M = 'media/';
 
 // ---- тексты (content.ts, App.tsx, AppearanceMenu.tsx) ----

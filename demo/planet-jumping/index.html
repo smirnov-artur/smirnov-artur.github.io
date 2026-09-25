@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Planet Jumping</title>
 <!-- Видео и картинки грузятся по ссылкам с CloudFront. Шрифтов SF Pro и Aalto нет:
@@ -273,7 +274,7 @@ const states = {
 };
 
 // русская версия: ?lang=ru. Ключи — английские имена, по ним же ищем активную планету
-const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+const RU = false;
 const planetsRu = ['Меркурий', 'Венера', 'Земля', 'Марс', 'Юпитер', 'Сатурн', 'Уран', 'Нептун'];
 const ru = {
   mars: { name: 'Марс', next: 'Земля',

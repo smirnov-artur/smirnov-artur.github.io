@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. AI — security done right</title>
+<!-- Один файл вместо React + Vite + Tailwind + shadcn/ui: классы переписаны в CSS, сцена Spline — через @splinetool/viewer. ?lang=ru — русская версия
+     (у Sora нет кириллицы, по-русски Manrope). Название бренда — g.a.d., логотип — наш.
+     Строка доверия «Columbus, OH. 12 systems deployed» заменена на то, что делает продукт: чужой город и число внедрений под нашим логотипом читались бы как наши. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='19' fill='none' stroke='white' stroke-width='4'/%3E%3Ccircle cx='24' cy='5' r='4' fill='white'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@splinetool/viewer@1.12.98/build/spline-viewer.js" integrity="sha384-5KRdYpyz8Zx+LzF0bwomJHnD1s0t9OH3lCeAe/QbKKtuQS0NITBULFRCgHiwPa8Y" crossorigin="anonymous"></script>
+<style>
+:root {
+  --background: 0 0% 10%; --foreground: 0 0% 96%;
+  --primary: 119 99% 46%; --primary-foreground: 0 0% 4%;
+  --secondary: 0 0% 18%; --secondary-foreground: 0 0% 96%;
+  --muted: 0 0% 16%; --muted-foreground: 0 0% 60%;
+  --accent: 119 99% 46%; --accent-foreground: 0 0% 4%;
+  --destructive: 0 84% 60%; --border: 0 0% 20%; --input: 0 0% 20%; --ring: 119 99% 46%;
+  --radius: .5rem; --nav-button: 0 0% 18%; --hero-bg: 0 0% 8%;
+}
+*, *::before, *::after { box-sizing: border-box; border: 0 solid hsl(var(--border)); }
+html, body { margin: 0; }
+body { font-family: 'Sora', sans-serif; background: hsl(var(--background)); color: hsl(var(--foreground)); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.ru body { font-family: 'Manrope', sans-serif; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; }
+h1, p { margin: 0; }
+
+@keyframes fade-up { 0% { opacity: 0; transform: translateY(20px); filter: blur(4px); } 100% { opacity: 1; transform: translateY(0); filter: blur(0); } }
+@keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+.animate-fade-up { opacity: 0; animation: fade-up .7s cubic-bezier(.16,1,.3,1) forwards; }
+
+.page { background: hsl(var(--hero-bg)); min-height: 100vh; }
+
+/* шапка */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 20px 32px; }
+.logo { display: block; color: hsl(var(--foreground)); }
+.logo svg { display: block; height: 24px; width: auto; overflow: visible; }
+.logo svg text { font-family: 'Unbounded', sans-serif; }
+.ring { animation: gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards; }
+.orb { opacity: 0; transform-box: view-box; transform-origin: 322px 30px; animation: gad-pop .3s ease 1.35s forwards, gad-orbit 7s linear 1.35s infinite; }
+@keyframes gad-draw { to { stroke-dashoffset: 0; } }
+@keyframes gad-pop { to { opacity: 1; } }
+@keyframes gad-orbit { to { transform: rotate(360deg); } }
+.links { display: none; gap: 32px; }
+.links a { font-size: 14px; line-height: 20px; color: hsl(var(--muted-foreground)); text-transform: uppercase; letter-spacing: .1em; transition: color .15s cubic-bezier(.4,0,.2,1); }
+.links a:hover { color: hsl(var(--foreground)); }
+.quote { display: none; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; height: 44px; padding: 0 24px; border-radius: 8px;
+  font-size: 12px; line-height: 16px; font-weight: 500; text-transform: uppercase; letter-spacing: .1em;
+  color: hsl(var(--foreground)); background: hsl(var(--nav-button)); transition: all .15s cubic-bezier(.4,0,.2,1); }
+.quote:hover { background: hsl(var(--nav-button) / .8); }
+.quote:active { transform: scale(.97); }
+@media (min-width: 768px) { .links { display: flex; } .quote { display: inline-flex; } }
+@media (min-width: 1024px) { .nav { padding: 20px 64px; } }
+
+/* первый экран */
+.hero { position: relative; min-height: 100vh; min-height: 100svh; display: flex; align-items: flex-end; background: hsl(var(--hero-bg)); overflow: hidden; }
+.scene { position: absolute; inset: 0; }
+.scene .fallback { position: absolute; inset: 0; background: hsl(var(--hero-bg)); transition: opacity .6s ease; }
+.scene.ready .fallback { opacity: 0; pointer-events: none; }
+spline-viewer { display: block; width: 100%; height: 100%; }
+.shade { position: absolute; inset: 0; z-index: 1; background: rgba(0,0,0,.3); pointer-events: none; }
+.content { position: relative; z-index: 10; pointer-events: none; width: 100%; max-width: 90%; padding: 128px 24px 40px; }
+h1 { font-size: clamp(3rem, 8vw, 6rem); font-weight: 700; line-height: 1.05; letter-spacing: -.05em; color: hsl(var(--foreground)); margin-bottom: 8px; text-transform: uppercase; }
+h1 .brand { text-transform: none; }
+h1 .ai { color: hsl(var(--primary)); }
+.sub { color: hsl(var(--foreground) / .8); font-size: clamp(1.125rem, 2.5vw, 1.875rem); font-weight: 300; margin-bottom: 12px; }
+.desc { color: hsl(var(--muted-foreground)); font-size: clamp(.875rem, 1.5vw, 1.25rem); font-weight: 300; margin-bottom: 16px; }
+.btns { display: flex; flex-wrap: wrap; gap: 12px; font-weight: 700; }
+.btns button { pointer-events: auto; border-radius: 2px; padding: 12px 24px; font-size: 14px; line-height: 20px; font-weight: 700; transition: all .15s cubic-bezier(.4,0,.2,1); }
+.btns button:active { transform: scale(.97); }
+.b1 { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+.b1:hover { filter: brightness(1.1); }
+.b2 { background: #fff; color: hsl(var(--background)); }
+.b2:hover { filter: brightness(.9); }
+.trust { margin-top: 16px; color: hsl(var(--muted-foreground) / .6); font-size: 12px; line-height: 16px; font-weight: 300; }
+@media (min-width: 640px) { .content { max-width: 448px; } }
+@media (min-width: 768px) {
+  .content { padding-left: 40px; padding-right: 40px; padding-bottom: 40px; }
+  h1 { margin-bottom: 16px; } .sub { margin-bottom: 24px; } .desc { margin-bottom: 32px; }
+  .btns button { padding: 16px 32px; }
+  .trust { margin-top: 24px; }
+}
+@media (min-width: 1024px) { .content { max-width: 672px; } }
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up { animation: none; opacity: 1; }
+  .ring { animation: none; stroke-dashoffset: 0; } .orb { animation: none; opacity: 1; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="nav">
+    <a class="logo" href="#" aria-label="g.a.d.">
+      <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+        <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+        <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+        <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+      </svg>
+    </a>
+    <div class="links">
+      <a href="#services" data-t="n1">Services</a>
+      <a href="#about-us" data-t="n2">About Us</a>
+      <a href="#projects" data-t="n3">Projects</a>
+      <a href="#team" data-t="n4">Team</a>
+      <a href="#contacts" data-t="n5">Contacts</a>
+    </div>
+    <a class="quote" href="#" data-t="quote">Get Quote</a>
+  </nav>
+
+  <section class="hero">
+    <div class="scene" id="scene">
+      <spline-viewer id="spline" url="https://prod.spline.design/Slk6b8kz3LRlKiyk/scene.splinecode"></spline-viewer>
+      <div class="fallback"></div>
+    </div>
+    <div class="shade"></div>
+    <div class="content">
+      <h1 class="animate-fade-up" style="animation-delay:.2s"><span class="brand">g.a.d.</span><span class="ai"> AI</span></h1>
+      <p class="sub animate-fade-up" style="animation-delay:.4s" data-t="sub">We implement security correctly.</p>
+      <p class="desc animate-fade-up" style="animation-delay:.55s" data-t="desc">Enterprise security systems built in days. AI-powered surveillance deployed with zero-trust architecture. Smart access control set up for your entire facility. All of it done right, not just fast.</p>
+      <div class="btns animate-fade-up" style="animation-delay:.7s">
+        <button class="b1" type="button" data-t="call">Book a Call</button>
+        <button class="b2" type="button" data-t="work">Our Work</button>
+      </div>
+      <p class="trust animate-fade-up" style="animation-delay:.85s" data-t="trust">AI security partner: design, deployment, 24/7 monitoring.</p>
+    </div>
+  </section>
+</div>
+<script>
+(() => {
+if (true) {
+  const TR = {
+    n1: 'Услуги', n2: 'О нас', n3: 'Проекты', n4: 'Команда', n5: 'Контакты', quote: 'Узнать цену',
+    sub: 'Делаем безопасность правильно.',
+    desc: 'Системы безопасности для бизнеса — за считанные дни. ИИ-видеонаблюдение на архитектуре нулевого доверия. Умный контроль доступа на всём объекте. Всё сделано как надо, а не просто быстро.',
+    call: 'Записаться на звонок', work: 'Наши работы',
+    trust: 'Партнёр по ИИ-безопасности: проект, запуск, мониторинг 24/7.'
+  };
+  document.documentElement.lang = 'ru';
+  document.documentElement.classList.add('ru');
+  document.title = 'g.a.d. AI — безопасность как надо';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.textContent = t; });
+}
+// сцена загрузилась — убрать заглушку и значок Spline (в исходнике сцена встроена через @splinetool/react-spline, значка там нет)
+const sv = document.getElementById('spline');
+sv.addEventListener('load-complete', () => {
+  document.getElementById('scene').classList.add('ready');
+  const logo = sv.shadowRoot && sv.shadowRoot.querySelector('#logo');
+  if (logo) logo.remove();
+});
+})();
+</script>
+</body>
+</html>

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Brain and Body</title>
 <!-- Один файл вместо React + Vite + Tailwind + Framer Motion: пружины и появление — CSS-переходы и requestAnimationFrame. ?lang=ru — русская версия
@@ -289,7 +290,7 @@ footer { background: #000; overflow: hidden; display: flex; flex-direction: colu
 
 <script>
 (() => {
-const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+const RU = false;
 if (RU) {
   const TR = {
     about: 'О системе', metrics: 'Метрики', download: 'Скачать', wm: 'Трансценденция',

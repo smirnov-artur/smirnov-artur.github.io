@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Clarity</title>
 <!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия (у Instrument Serif нет кириллицы: по-русски Cormorant 500).
@@ -169,7 +170,7 @@ h1{margin:20px 0 0;max-width:56rem;font-weight:400;font-size:36px;line-height:1.
 
 <script>
 (() => {
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { l1: 'Как это работает', l2: 'Возможности', l3: 'Цены', l4: 'Сообщество', go: 'Начать',
     badge: 'Для тех, кто ищет ясность', h1: 'Ясность в бесконечно<br>шумной Вселенной',
     sub: 'Поднимитесь над хаосом уведомлений, бесконечной ленты и непрерывных требований. Узнайте, как беречь внимание и создавать осознанно.',

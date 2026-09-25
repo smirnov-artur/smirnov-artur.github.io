@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>g.a.d. — Layers hold tales of time</title>
 <!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия.
@@ -161,7 +162,7 @@ a { color: inherit; text-decoration: none; }
 </div>
 <script>
 (function () {
-  if (new URLSearchParams(location.search).get('lang') === 'ru') {
+  if (false) {
     var TR = {
       n1: 'Курс', n2: 'Полевые гиды', n3: 'Геология', n4: 'Тарифы', n5: 'Онлайн-тур', su: 'Регистрация',
       h1: 'Слои хранят', h2: 'истории времён',

@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. — Archive collection “PROMPT”</title>
+<!-- Один файл вместо React + GSAP + Motion: прокрутка считается в requestAnimationFrame, появление — CSS. ?lang=ru — русская версия.
+     l.mp4 и r.mp4 — те же ролики, пережатые с ключевым кадром каждые 4 кадра: в исходниках ключевой кадр один на 5 секунд,
+     и перемотка за курсором дёргалась бы. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;background:#fff}
+body{font-family:'Inter Tight',system-ui,sans-serif;font-weight:500;color:#fff;-webkit-font-smoothing:antialiased}
+#scroll-spacer{position:relative;user-select:none;-webkit-user-select:none;background:#fff;height:500vh}
+.ui{position:fixed;z-index:20;pointer-events:none;mix-blend-mode:exclusion}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.rise{animation:rise .6s cubic-bezier(.25,.1,.25,1) both}
+
+/* курсор */
+#cursor{position:fixed;left:-100px;top:-100px;z-index:50;pointer-events:none;mix-blend-mode:exclusion;width:48px;height:48px;transform:translate(-50%,-50%);display:none}
+#cursor svg{display:block;width:48px;height:48px}
+#cursor .dot{transform-box:view-box;transform-origin:24px 24px;animation:orbit 2.4s linear infinite}
+@media (min-width:1024px) and (hover:hover) and (pointer:fine){#cursor{display:block}#scroll-spacer{cursor:none}}
+
+/* логотип g.a.d. */
+#logo{top:16px;left:16px;width:124px}
+#logo svg{display:block;width:100%;height:auto;overflow:visible}
+.ring{animation:draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}
+.orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:pop .3s ease 1.35s forwards,orbit 7s linear 1.35s infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{to{opacity:1}}
+@keyframes orbit{to{transform:rotate(360deg)}}
+
+#caption{margin:0;left:16px;top:118px;width:calc(100vw - 32px);font-size:12px;line-height:140%;letter-spacing:-.04em;animation-delay:.3s}
+#nav{top:16px;right:16px;height:30px;display:flex;justify-content:space-between;align-items:center;animation-delay:.15s}
+#nav .about{display:none;font-size:15px;text-transform:uppercase}
+#nav .r{display:flex;align-items:center;gap:20px}
+#nav svg{display:block;width:24px;height:24px}
+#nav .cart{font-size:13px;white-space:nowrap}
+
+#outro-info{left:0;right:0;bottom:48px;display:flex;flex-direction:column;align-items:center;animation:fade .6s cubic-bezier(.25,.1,.25,1) .45s both}
+.ib{display:flex;flex-direction:column;align-items:flex-start;width:252px;margin-bottom:12px}
+.circ{position:relative;width:20px;height:20px}
+.circ svg{position:absolute;inset:0;width:100%;height:100%}
+#circle-symbol{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;line-height:1;letter-spacing:-.04em;text-transform:uppercase}
+.coll{font-size:20px;line-height:100%;text-align:center;letter-spacing:-.04em;text-transform:uppercase}
+.price{font-size:60px;line-height:100%;text-align:center;letter-spacing:-.04em}
+
+#outro-buy{left:16px;right:16px;bottom:60px;height:100px;transform-origin:right bottom;transform:scale(0);background:#fff;border-radius:1335px;display:flex;align-items:center;justify-content:center}
+#outro-buy span{font-size:72px;line-height:1;letter-spacing:-.04em;color:#fff;mix-blend-mode:exclusion}
+.ru #outro-buy span{font-size:56px}
+
+#main-canvas{position:fixed;left:0;top:220px;width:100vw;height:calc(100vh - 220px);z-index:0;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .3s ease}
+#main-canvas.on{opacity:1}
+#main-canvas video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+#outro-overlay{position:fixed;inset:0;z-index:12;background:#fff;opacity:0;pointer-events:none}
+#outro-footer{left:16px;right:16px;bottom:24px;display:flex;justify-content:space-between;opacity:0;font-size:11px;letter-spacing:-.02em;text-transform:uppercase}
+
+#panel{position:fixed;inset:0;z-index:10;background:#000;transform:translateY(100vh);overflow:hidden}
+#wrap{width:100%;padding-top:min(400px,40vh)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr)}
+.cell{aspect-ratio:2/3}
+.bp-card{width:100%;height:100%;transform:scale(0);will-change:transform}
+.bp-card img{display:block;width:100%;height:100%;object-fit:cover}
+
+@media (min-width:640px){
+  #logo{width:266px}
+  #caption{top:180px;width:calc(50vw - 48px)}
+  #main-canvas{inset:0;width:100%;height:100%}
+}
+@media (min-width:1024px){
+  #logo{top:32px;left:32px;width:355px}
+  #caption{left:32px;top:244px;width:692px}
+  #nav{top:32px;right:32px;width:330px}
+  #nav .about{display:block}
+  #nav .r{gap:50px}
+  #nav svg{width:30px;height:30px}
+  #nav .cart{font-size:15px}
+  #outro-info{left:auto;right:32px;bottom:80px;width:330px}
+  .ib{width:100%;margin-bottom:32px}
+  .circ{width:30px;height:30px}
+  #circle-symbol{font-size:15px}
+  .coll{font-size:30px}
+  .price{font-size:80px}
+  #outro-buy{left:auto;right:32px;bottom:32px;width:330px;height:174px}
+  #outro-buy span{font-size:110px}
+  .ru #outro-buy span{font-size:70px}
+  #outro-footer{right:auto;bottom:32px;gap:80px;justify-content:flex-start;font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){
+  .bp-card{will-change:auto}
+  .rise,#outro-info{animation:none}
+  .ring{animation:none;stroke-dashoffset:0}
+  .orb{animation:none;opacity:1}
+}
+</style>
+</head>
+<body>
+<div id="scroll-spacer">
+  <div id="cursor" aria-hidden="true">
+    <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22.75" fill="none" stroke="#fff" stroke-width="2.5"/><circle cx="24" cy="24" r="3" fill="#fff"/><circle class="dot" cx="24" cy="11" r="3.2" fill="#fff"/></svg>
+  </div>
+
+  <div class="ui rise" id="logo">
+    <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+      <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="#fff">g.a.d.</text>
+      <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+      <circle class="orb" cx="322" cy="8" r="5" fill="#fff"/>
+    </svg>
+  </div>
+
+  <p class="ui rise" id="caption" data-t="cap">Archive collection “PROMPT”. Pieces from past drops, reissued in small runs: caps, beanies and tees in black. Move the cursor and the look turns with it. Scroll down to open the archive.</p>
+
+  <header class="ui rise" id="nav">
+    <span class="about" data-t="about">About</span>
+    <div class="r">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M0 14H40M0 26H40" stroke="#fff" stroke-width="2.5"/></svg>
+      <span class="cart" data-t="cart">[ CART ]</span>
+    </div>
+  </header>
+
+  <div class="ui" id="outro-info">
+    <div class="ib">
+      <div class="circ">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18.75" fill="none" stroke="#fff" stroke-width="2.5"/></svg>
+        <span id="circle-symbol">8</span>
+      </div>
+      <div class="coll" data-t="coll">Archive collection<br>“PROMPT”</div>
+    </div>
+    <div class="price" data-t="price">$97,33</div>
+  </div>
+
+  <div class="ui" id="outro-buy"><span data-t="view">view</span></div>
+
+  <div id="main-canvas">
+    <video id="vl" muted playsinline preload="auto" src="../l.mp4" style="display:none"></video>
+    <video id="vr" muted playsinline preload="auto" src="../r.mp4"></video>
+  </div>
+
+  <div id="outro-overlay"></div>
+  <div class="ui" id="outro-footer"><span>g.a.d. © 2026</span><span data-t="privacy">Privacy policy</span></div>
+
+  <div id="panel"><div id="wrap"><div class="grid" id="grid"></div></div></div>
+</div>
+
+<script>
+(() => {
+const RU = true;
+if (RU) {
+  const TR = {
+    cap: 'Архивная коллекция «PROMPT». Вещи прошлых дропов, переизданные малым тиражом: кепки, шапки и футболки в чёрном. Ведите курсор — образ поворачивается за ним. Листайте вниз — откроется архив.',
+    about: 'О нас', cart: '[ КОРЗИНА ]', coll: 'Архив<br>«PROMPT»', price: '9 733 ₽', view: 'смотреть', privacy: 'Конфиденциальность'
+  };
+  document.documentElement.lang = 'ru';
+  document.body.classList.add('ru');
+  document.title = 'g.a.d. — архивная коллекция «PROMPT»';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.innerHTML = t; });
+}
+
+const IMGS = ['104530_521b2f85-c0f3-4d0e-9704-b578315b4cb9', '103711_76ccdb8b-5043-4f47-9c54-4379713393ea', '103728_394f6a1b-85e2-4386-a4f6-408472a0a5b7',
+  '103739_86743e0e-16a7-4bee-bf38-dd67985344dc', '103748_b2215dc8-a3a7-470d-b19a-5b87fa7d0c37', '103758_e919ce72-5c9d-4b87-9be6-d7647b34825c',
+  '103808_013583d0-3386-4547-9832-37c7d8edb3ac', '103937_a0c49d0a-33eb-4ead-aea6-c1baf241acbc', '103956_d18ed8fd-7b6f-4b86-91f9-20010fe38670',
+  '104034_ba5a9963-87ff-4008-a545-6bd686c088b5'
+].map(id => 'https://images.higgs.ai/?default=1&output=webp&url=' +
+  encodeURIComponent('https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260629_' + id + '.png') + '&w=1920&q=85');
+
+const $ = id => document.getElementById(id);
+const root = $('scroll-spacer'), panel = $('panel'), wrap = $('wrap'), grid = $('grid');
+const overlay = $('outro-overlay'), info = $('outro-info'), buy = $('outro-buy'), footer = $('outro-footer');
+const box = $('main-canvas'), vL = $('vl'), vR = $('vr'), sym = $('circle-symbol'), cursor = $('cursor');
+const touch = matchMedia('(hover: none), (pointer: coarse)').matches;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (touch) $('caption').textContent = RU   // на телефоне курсора нет, ролики играют сами
+  ? 'Архивная коллекция «PROMPT». Вещи прошлых дропов, переизданные малым тиражом: кепки, шапки и футболки в чёрном. Листайте вниз — откроется архив.'
+  : 'Archive collection “PROMPT”. Pieces from past drops, reissued in small runs: caps, beanies and tees in black. Scroll down to open the archive.';
+
+// ряды сетки: в каждом ряду одна карточка в колонке a, в каждом третьем — вторая в колонке b, остальное — пустые клетки
+function buildLayout(count, cols) {
+  const rows = [];
+  for (let r = 0, n = 0; n < count; r++) {
+    const row = new Array(cols).fill(-1), a = (r * 2 + (r % 2)) % cols;
+    row[a] = n++;
+    if (r % 3 === 0 && n < count) { let b = (a + 2) % cols; if (b === a) b = (a + 1) % cols; row[b] = n++; }
+    rows.push(row);
+  }
+  return rows;
+}
+
+let cols = 0, cards = [], vh = innerHeight, maxScroll = 0, outroOffset = 166, lastY = null;
+function build() {
+  const c = innerWidth < 640 ? 2 : innerWidth < 1024 ? 3 : 4;
+  if (c !== cols) {
+    cols = c; cards = []; grid.textContent = '';
+    grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    buildLayout(IMGS.length, cols).forEach(row => row.forEach((idx, col) => {
+      const cell = document.createElement('div'); cell.className = 'cell';
+      if (idx >= 0) {
+        const card = document.createElement('div'); card.className = 'bp-card';
+        card.style.transformOrigin = col < cols / 2 ? 'right bottom' : 'left bottom';
+        const img = new Image(); img.src = IMGS[idx]; img.alt = ''; img.draggable = false; img.decoding = 'async';
+        card.appendChild(img); cell.appendChild(card); cards.push({ el: card, cell, s: -1 });
+      }
+      grid.appendChild(cell);
+    }));
+  }
+  vh = innerHeight;
+  maxScroll = Math.max(0, wrap.scrollHeight - vh);
+  root.style.height = (vh + maxScroll + 2 * vh) + 'px';
+  cards.forEach(k => { k.top = k.cell.offsetTop; k.h = k.cell.offsetHeight; });   // от верха панели, без transform
+  outroOffset = innerWidth >= 1024 ? 166 : 132;
+  lastY = null;
+}
+build();
+addEventListener('resize', build);
+
+// видео: на компьютере перематываются за курсором, на телефоне играют по очереди
+let active = vR, mx = null, loaded = 0;
+const show = v => { if (v !== active) { active.style.display = 'none'; v.style.display = 'block'; active = v; } };
+[vL, vR].forEach(v => {
+  v.muted = true;
+  const ok = () => { if (++loaded === 2) box.classList.add('on'); };
+  if (v.readyState >= 2) ok(); else v.addEventListener('loadeddata', ok, { once: true });
+});
+if (touch) {
+  if (!reduce) {
+    const next = (from, to) => from.addEventListener('ended', () => { show(to); to.currentTime = 0; to.play().catch(() => {}); });
+    next(vL, vR); next(vR, vL);
+    show(vL); vL.play().catch(() => {});
+  }
+} else {
+  addEventListener('mousemove', e => {
+    mx = e.clientX;
+    cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+  }, { passive: true });
+}
+function scrub() {
+  if (touch || mx === null || lastY > vh) return;
+  const w = innerWidth, c = w / 2, dz = Math.max(30, w * 0.05);
+  let v = active, p = 0;
+  if (mx < c - dz) { v = vR; p = (c - dz - mx) / (c - dz); }
+  else if (mx > c + dz) { v = vL; p = (mx - c - dz) / (w - c - dz); }
+  show(v);
+  if (v.seeking || !v.duration) return;   // ждём, пока браузер дорисует прошлую перемотку
+  const t = Math.min(1, Math.max(0, p)) * (v.duration - 0.05);
+  if (Math.abs(v.currentTime - t) > 0.01) v.currentTime = t;
+}
+
+const SYMS = ['8', '$', '^^', '%', '/'];
+let symAt = 0;
+addEventListener('scroll', () => {
+  const now = performance.now();
+  if (now - symAt > 80) { symAt = now; sym.textContent = SYMS[Math.random() * SYMS.length | 0]; }
+}, { passive: true });
+
+function frame() {
+  const y = scrollY;
+  if (y !== lastY) {
+    lastY = y;
+    const panelY = vh - Math.min(y, vh);                         // фаза 1: панель выезжает снизу
+    const inner = Math.min(Math.max(y - vh, 0), maxScroll);       // фаза 2: панель стоит, едет содержимое
+    panel.style.transform = `translateY(${panelY}px)`;
+    wrap.style.transform = `translateY(${-inner}px)`;
+    for (const k of cards) {
+      const top = panelY - inner + k.top, bottom = top + k.h;
+      let s = 0;
+      if (bottom > 0 && top < vh) s = Math.max(0, Math.min(1, (vh - top) / (vh * 0.6), bottom / (vh * 0.4)));
+      if (s !== k.s) { k.s = s; k.el.style.transform = `scale(${s})`; }
+    }
+    const o = Math.min(1, Math.max(0, (y - vh - maxScroll) / (vh - 100)));   // финал: белый экран и «view»
+    overlay.style.opacity = o;
+    footer.style.opacity = o;
+    info.style.transform = `translateY(${-outroOffset * o}px)`;
+    buy.style.transform = `scale(${o})`;
+    box.style.visibility = y > vh ? 'hidden' : 'visible';
+  }
+  scrub();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

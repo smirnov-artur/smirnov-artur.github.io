@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>g.a.d. — Visuals</title>
 <!-- ?lang=ru — русская версия. Пятно-проявка рисуется CSS-маской с радиальным градиентом (в исходнике каждый кадр кодировался PNG через canvas.toDataURL — тяжело).
@@ -319,7 +320,7 @@ a { text-decoration: none; }
     <div class="menu-socials">
       <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Telegram</a>
       <a href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a>
-      <a href="https://smirnov-artur.github.io/works/?lang=en" target="_blank" rel="noopener" data-t="folio" id="folio">Portfolio</a>
+      <a href="https://smirnov-artur.github.io/works/en" target="_blank" rel="noopener" data-t="folio" id="folio">Portfolio</a>
     </div>
   </div>
   <div style="margin-top:32px;">
@@ -371,7 +372,7 @@ a { text-decoration: none; }
 
 <script>
 (function() {
-  var RU = new URLSearchParams(location.search).get('lang') === 'ru';
+  var RU = false;
   var text = "I build compelling visual stories & motion that make ideas shine.";
   if (RU) {
     var TR = { work: 'Работы', about: 'Обо мне', blog: 'Блог', folio: 'Портфолио', talk: 'Обсудить', big: 'Визуал', start: 'Начать проект' };

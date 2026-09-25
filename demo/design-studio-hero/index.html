@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — UX and app design</title>
 <!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия (Instrument Serif без кириллицы → Cormorant 500). -->
@@ -179,7 +180,7 @@ html[lang=ru] .serif{font-family:'Cormorant',serif;font-weight:500}
 </div>
 <script>
 (() => {
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { n1: 'Проекты', n2: 'Экспертиза', n3: 'Студия', n4: 'Статьи', reach: 'Написать', talk: 'Обсудить проект',
     cases: 'Смотреть кейсы', reel: 'Шоурил' };
   document.documentElement.lang = 'ru';

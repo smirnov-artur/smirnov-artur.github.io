@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. // ÍNDEX</title>
 <!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия.
@@ -231,7 +232,7 @@ const L = [[38, 14, 52, 14, 1200], [52, 14, 60, 27, 1400], [32, 58, 20, 74, 1500
 document.getElementById('lines').outerHTML = L.map(([a, b, c, d, t]) =>
   `<svg class="con anim-fade-in" style="animation-delay:${t}ms"><line x1="${a}%" y1="${b}%" x2="${c}%" y2="${d}%" stroke="rgba(255,255,255,0.25)" stroke-width="1" vector-effect="non-scaling-stroke"/></svg>`).join('');
 
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { n1: 'ЭКОСИСТЕМА', n2: 'ПУЛЫ_ЛИКВИДНОСТИ', n3: 'ИНДЕКС_GAD', n4: 'УПРАВЛЕНИЕ',
     con: '[ ПОДКЛЮЧЁН ]', st: 'СТАТУС:', pm: 'ПРАЙМ_КЛИЕНТ',
     h1: 'Живые активы. Светлая доходность.',

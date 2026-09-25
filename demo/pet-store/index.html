@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — pet store</title>
 <!-- Один файл вместо Vite + React + Tailwind + lucide-react. ?lang=ru — русская версия.
@@ -302,7 +303,7 @@ html[lang=ru] .txt h1{font-size:clamp(52px,6.4vw,94px)}
 </div>
 <script>
 (() => {
-const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+const RU = false;
 let lines = [['Everything'], ['Your', 'Pets', 'Love']];
 if (RU) {
   const f = document.createElement('link'); f.rel = 'stylesheet';

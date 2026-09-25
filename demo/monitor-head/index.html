@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Meet A.R.I.A.</title>
 <!-- Один файл вместо React + Vite + Tailwind. ?lang=ru — русская версия (у Helvetica Now нет кириллицы, по-русски текст набран Inter Tight).
@@ -132,7 +133,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 (() => {
 const $ = id => document.getElementById(id);
 let TEXT = 'Glad you stopped in. Good taste tends to find us. Now, what are we building?';
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { labs: 'Лаборатория', studio: 'Студия', open: 'Вакансии', shop: 'Магазин', touch: 'Написать нам',
     intro: 'Привет, знакомьтесь — A.R.I.A.,<br>адаптивный агент-собеседник g.a.d.',
     p1: 'Предложить идею', p2: 'Работать с нами', p3: 'Просто поздороваться', p4: 'Как мы работаем', reach: 'Пишите:' };

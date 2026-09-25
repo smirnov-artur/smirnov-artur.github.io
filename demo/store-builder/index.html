@@ -2,6 +2,7 @@
 <html lang="en-US">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>g.a.d. — Streamline the shop process</title>
 <!-- Один файл, без сборки. ?lang=ru — русская версия (у Poppins нет кириллицы, по-русски гротеск Montserrat).
@@ -321,7 +322,7 @@ html.intro .wa{opacity:0;scale:.88}
 <script>
 document.documentElement.classList.add('intro');
 setTimeout(function(){document.documentElement.classList.remove('intro');},4000);
-if (new URLSearchParams(location.search).get('lang') === 'ru') document.documentElement.classList.add('ru');
+if (false) document.documentElement.classList.add('ru');
 </script>
 </head>
 <body>

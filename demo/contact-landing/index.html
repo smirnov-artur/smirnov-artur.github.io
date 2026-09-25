@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Say hello</title>
 <!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия.
@@ -161,7 +162,7 @@ textarea.inp{resize:none;display:block}
                 <a class="m" href="mailto:paladei702@gmail.com">paladei702@gmail.com</a>
               </div>
               <div class="soc">
-                <a class="sb gray" id="folio" href="https://smirnov-artur.github.io/works/?lang=en" target="_blank" rel="noopener" aria-label="Portfolio" title="Portfolio">
+                <a class="sb gray" id="folio" href="https://smirnov-artur.github.io/works/en" target="_blank" rel="noopener" aria-label="Portfolio" title="Portfolio">
                   <svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
                 </a>
                 <a class="sb pink" href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener" aria-label="MAX" title="MAX">
@@ -204,7 +205,7 @@ textarea.inp{resize:none;display:block}
 const MAIL = 'paladei702@gmail.com';
 let SERVICES = ['Website', 'Mobile App', 'Web App', 'E-Commerce', 'Visual Identity', '3D & Motion', 'Digital Marketing', 'Growth & Consulting', 'Other'];
 let T = { send: 'Send my message', sending: 'Sending...', subj: 'New project', name: 'Name', mail: 'Email', need: 'Need help with', msg: 'Message' };
-const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+const RU = false;
 if (RU) {
   const TR = { n1: 'О нас', n2: 'Экспертиза', n3: 'Работы', n4: 'Журнал', start: 'Начать проект',
     head: 'Смелые идеи<br>превращаем в <span class="acc">продукты</span>',

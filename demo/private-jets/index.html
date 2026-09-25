@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Private jets</title>
 <!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия (у Inter есть кириллица). -->
@@ -108,7 +109,7 @@ h1 span{display:block}
 </div>
 <script>
 (() => {
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { n1: 'Главная', n2: 'История', n3: 'Тарифы', n4: 'Преимущества', n5: 'Вопросы',
     kick: 'Частные самолёты', l1: 'Премиум.', l2: 'Доступно.', sub: 'Ваш труд заслуживает признания.',
     b1: 'Подробнее', b2: 'Забронировать' };

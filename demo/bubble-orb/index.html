@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Listening to the Earth</title>
 <!-- ?lang=ru — русская версия. Пузырь, пол с кольцами, тень и радужная заливка рисуются three.js в реальном времени:
@@ -187,7 +188,7 @@ a{color:inherit;text-decoration:none}
         <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Telegram</a>
         <a href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a>
         <a href="mailto:paladei702@gmail.com">paladei702@gmail.com</a>
-        <a id="folio" href="https://smirnov-artur.github.io/works/?lang=en" target="_blank" rel="noopener" data-t="folio">Portfolio</a>
+        <a id="folio" href="https://smirnov-artur.github.io/works/en" target="_blank" rel="noopener" data-t="folio">Portfolio</a>
       </div>
     </div>
   </footer>
@@ -195,7 +196,7 @@ a{color:inherit;text-decoration:none}
 
 <script>
 (function () {
-  if (new URLSearchParams(location.search).get('lang') === 'ru') {
+  if (false) {
     var TR = {
       menu: 'Меню', call: 'Написать нам', m1: 'Что мы слышим', m2: 'Полевые заметки', m3: 'Контакты',
       h1: 'Слушаем,<br>как дышит Земля',

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Foundation of the new digital epoch</title>
 <!-- Один файл вместо React + Tailwind v4 + Motion + lucide-react: появление и наведение — CSS. ?lang=ru — русская версия (у Outfit нет кириллицы, по-русски заголовок набран Manrope).
@@ -102,7 +103,7 @@ h1{margin:0;font-family:var(--font-display);font-size:clamp(30px,9.3vw,42px);fon
 
 <script>
 (() => {
-const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+const RU = false;
 const ITEMS = [
   ['Websites', 'Сайты', '#3b82f6', '#1d4ed8'],
   ['Web apps', 'Веб-сервисы', '#facc15', '#f59e0b'],

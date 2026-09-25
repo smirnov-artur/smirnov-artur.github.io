@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Archive collection “PROMPT”</title>
 <!-- Один файл вместо React + GSAP + Motion: прокрутка считается в requestAnimationFrame, появление — CSS. ?lang=ru — русская версия.
@@ -151,7 +152,7 @@ body{font-family:'Inter Tight',system-ui,sans-serif;font-weight:500;color:#fff;-
 
 <script>
 (() => {
-const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+const RU = false;
 if (RU) {
   const TR = {
     cap: 'Архивная коллекция «PROMPT». Вещи прошлых дропов, переизданные малым тиражом: кепки, шапки и футболки в чёрном. Ведите курсор — образ поворачивается за ним. Листайте вниз — откроется архив.',

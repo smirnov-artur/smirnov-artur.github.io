@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="g.a.d. — strategy-led design studio crafting digital experiences for brands ready to dominate their category online.">
+<title>g.a.d. — Design Studio</title>
+<!-- Один файл вместо React + Tailwind + lucide-react + пакета shaders: Swirl, ChromaFlow, FlutedGlass и FilmGrain
+     перенесены на чистый WebGL по формулам пакета. ?lang=ru — русская версия.
+     Пятно ChromaFlow без мыши водит автопилот. Под логотипом g.a.d. убраны чужое и ложное: значок «Certified Partner»
+     с чужой звёздочкой, «Site of the Month 2025», имена чужих клиентов; лондонское время — московское. -->
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji";line-height:1.5;-webkit-font-smoothing:antialiased;background:#fff;color:#111827}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+img,video,svg,canvas{display:block}
+.i{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.wrap{max-width:1440px;margin:0 auto}
+.gx{padding-left:20px;padding-right:20px}
+.ez{transition-duration:.5s;transition-timing-function:cubic-bezier(.25,.1,.25,1)}
+
+/* кнопки с перекатом текста */
+.roll{overflow:hidden;height:20px}
+.roll>span{display:flex;flex-direction:column;transition:transform .5s cubic-bezier(.25,.1,.25,1)}
+.roll>span>span{height:20px;display:flex;align-items:center;font-weight:500;white-space:nowrap}
+.btn:hover .roll>span{transform:translateY(-50%)}
+.btn .arr{transition:transform .5s cubic-bezier(.25,.1,.25,1)}
+.btn:hover .arr{transform:rotate(-45deg)}
+.orange{background:#F26522;color:#fff;border-radius:9999px;padding:8px 8px 8px 20px;display:flex;align-items:center;gap:12px;transition:background-color .3s;width:fit-content}
+.orange:hover{background:#e05a1a}
+.orange .roll>span>span{font-size:13px}
+.orange .dot{width:28px;height:28px;background:#fff;border-radius:9999px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#F26522}
+.orange .arr{width:16px;height:16px}
+
+/* 1. первый экран */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;background:#EFEFEF}
+.fx{position:absolute;inset:0;z-index:10;pointer-events:none;overflow:hidden}
+.fx canvas{width:100%;height:100%}
+nav.top{position:relative;z-index:20;width:100%}
+.navin{padding:8px}
+.pill{background:#fff;border-radius:9999px;padding:5px;display:flex;align-items:center;justify-content:space-between}
+.left{display:flex;align-items:center;gap:24px}
+.mark{width:36px;height:36px;background:#111827;border-radius:9999px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff}
+.mark svg{width:20px;height:20px}
+.links{display:none;align-items:center;gap:24px}
+.links a{font-size:14px;line-height:20px;color:#111827;transition:color .3s}
+.links a:hover{color:#6b7280}
+.right{display:none;align-items:center;gap:16px}
+.taking{display:none;font-size:13px;line-height:20px;color:#4b5563}
+.clock{display:flex;align-items:center;gap:6px;font-size:13px;line-height:20px;color:#4b5563}
+.clock svg{width:14px;height:14px}
+.dark{background:#111827;color:#fff;border-radius:9999px;padding:8px 8px 8px 20px;display:flex;align-items:center;gap:10px}
+.dark .roll>span>span{font-size:13px}
+.dark .dot{width:24px;height:24px;background:#fff;border-radius:9999px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#111827}
+.dark .arr{width:14px;height:14px}
+.mbtn{background:#111827;border-radius:9999px;padding:10px;display:flex;align-items:center;justify-content:center;color:#fff}
+.mbtn svg{width:18px;height:18px}
+.mbtn .x{display:none}
+.mbtn.open .m{display:none}
+.mbtn.open .x{display:block}
+.grow{flex:1}
+.hc{position:relative;z-index:20;width:100%;padding-bottom:56px}
+.lbl{color:#111827;margin-bottom:20px}
+.lbl svg{height:18px;width:auto;overflow:visible}
+.ring{animation:draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}
+.orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:pop .3s ease 1.35s forwards,orbit 7s linear 1.35s infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{to{opacity:1}}
+@keyframes orbit{to{transform:rotate(360deg)}}
+h1{font-weight:500;line-height:1.08;letter-spacing:-.03em;color:#111827;font-size:clamp(1.75rem,7vw,4.2rem)}
+h1 br{display:none}
+.cta{margin-top:32px;display:flex;flex-direction:column;align-items:flex-start;gap:16px}
+.badge{display:flex;align-items:center;gap:10px;background:#fff;border-radius:4px;padding:8px 12px;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:box-shadow .3s}
+.badge:hover{box-shadow:0 4px 16px rgba(0,0,0,.12)}
+.badge svg{width:20px;height:20px;color:#E8704E;flex-shrink:0}
+.badge b{font-size:13px;line-height:20px;font-weight:500;color:#111827}
+.badge em{font-style:normal;font-size:10px;line-height:15px;background:#111827;color:#fff;padding:2px 6px;border-radius:4px;font-weight:500}
+
+/* меню телефона */
+.sheet{position:fixed;inset:0;z-index:50;display:none}
+.sheet.open{display:block}
+.sheet .bd{position:absolute;inset:0;background:rgba(0,0,0,.6)}
+.sheet .box{position:absolute;bottom:0;left:0;right:0;margin:0 12px 12px}
+.sheet .in{background:#fff;border-radius:16px;padding:24px;animation:slideUp .5s cubic-bezier(.32,.72,0,1) forwards}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sheet .clock{margin-bottom:24px}
+.sl{display:flex;flex-direction:column;gap:16px;margin-bottom:32px}
+.sl a{font-size:28px;line-height:1.2;font-weight:500;color:#111827}
+.start{width:100%;background:#111827;color:#fff;border-radius:9999px;padding:12px 8px 12px 20px;display:flex;align-items:center;justify-content:space-between}
+.start span:first-child{font-size:14px;font-weight:500}
+.start .dot{width:32px;height:32px;background:#fff;border-radius:9999px;display:flex;align-items:center;justify-content:center;color:#111827}
+.start .dot svg{width:16px;height:16px}
+
+/* номер-значок секций */
+.brow{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.num{width:24px;height:24px;border-radius:9999px;background:#111827;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:600}
+.tag{font-size:12px;line-height:16px;font-weight:500;border:1px solid #e5e7eb;border-radius:9999px;padding:4px 12px}
+
+/* 2. о студии */
+.about{background:#fff;padding:64px 0 48px;overflow:hidden}
+.about h2{font-size:clamp(1.5rem,4vw,3.2rem);font-weight:500;line-height:1.12;letter-spacing:-.02em;color:#111827;margin-bottom:48px}
+.about h2 br{display:none}
+.am p{font-size:15px;line-height:1.6;font-weight:500;color:#111827;margin-bottom:24px}
+.am .orange{margin-bottom:32px}
+.pics{display:flex;flex-direction:column;gap:16px}
+.pics img{width:100%;border-radius:12px;object-fit:cover}
+.p1{aspect-ratio:438/346}
+.p2{aspect-ratio:900/600}
+.ad{display:none}
+
+/* 3. проекты */
+.cases{background:#F5F5F5;padding:64px 0}
+.cases .tag{border-color:#d1d5db}
+.cases h2{font-weight:500;line-height:1.08;letter-spacing:-.03em;color:#111827;font-size:clamp(1.75rem,7vw,4.2rem);margin-bottom:40px}
+.cards{display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
+.cv{position:relative;border-radius:16px;overflow:hidden;cursor:pointer}
+.cv video{width:100%;height:100%;object-fit:cover}
+.c1{aspect-ratio:329/246;background:#1a1d2e}
+.c2{aspect-ratio:1/1;background:#6b6b6b}
+.hv{position:absolute;bottom:16px;left:16px}
+.hv div{height:36px;width:36px;border-radius:9999px;display:flex;align-items:center;gap:8px;padding:0 10px;overflow:hidden;transition:all .3s ease-in-out}
+.hv span{font-size:13px;font-weight:500;white-space:nowrap;opacity:0;transition:opacity .3s .1s}
+.hv svg{width:14px;height:14px;flex-shrink:0;transform:rotate(-45deg);transition:transform .3s ease-in-out}
+.c1 .hv div{background:#fff;color:#111827}
+.c2 .hv div{background:#111827;color:#fff}
+.cv:hover .hv div{width:var(--w)}
+.cv:hover .hv span{opacity:1}
+.cv:hover .hv svg{transform:none}
+.cd{font-size:13px;color:#4b5563;margin-top:16px;line-height:1.625}
+.cn{font-size:14px;font-weight:600;color:#111827;margin-top:4px}
+
+@media (min-width:640px){
+  .navin{padding:12px}
+  .mark{width:40px;height:40px}
+  .gx{padding-left:32px;padding-right:32px}
+  .hc{padding-bottom:64px}
+  .lbl{margin-bottom:32px}
+  .lbl svg{height:20px}
+  h1{font-size:clamp(2.5rem,5vw,4.2rem)}
+  h1 br,.about h2 br{display:block}
+  .cta{margin-top:48px;flex-direction:row;align-items:center;gap:20px}
+  .orange{padding-left:24px}
+  .orange .roll>span>span{font-size:14px}
+  .orange .dot{width:32px;height:32px}
+  .badge{padding:10px 16px}
+  .badge svg{width:24px;height:24px}
+  .badge b{font-size:14px}
+  .badge em{font-size:11px;padding:2px 8px}
+  .sl a{font-size:32px}
+  .brow{margin-bottom:32px}
+  .num{width:28px;height:28px;font-size:12px}
+  .tag{font-size:13px;padding:6px 16px}
+  .about{padding:80px 0 64px}
+  .about h2{margin-bottom:64px}
+  .am p{font-size:17px}
+  .pics{flex-direction:row;gap:20px}
+  .pics>div:first-child{width:45%}
+  .pics>div:last-child{width:55%}
+  .pics img{border-radius:16px}
+  .cases{padding:80px 0}
+  .cases h2{font-size:clamp(2.5rem,5vw,4.2rem);margin-bottom:56px}
+  .cards{gap:24px}
+  .cd{font-size:14px}
+  .cn{font-size:15px}
+}
+@media (min-width:768px){
+  .links,.right{display:flex}
+  .mbtn,.sheet,.sheet.open{display:none}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (min-width:1024px){
+  .taking{display:block}
+  .gx{padding-left:48px;padding-right:48px}
+  .hc{padding-bottom:80px}
+  .about{padding:128px 0 96px}
+  .about h2{margin-bottom:112px}
+  .am{display:none}
+  .ad{display:grid;grid-template-columns:26% 1fr 48%;align-items:end;gap:24px}
+  .ad img{width:100%;border-radius:16px;object-fit:cover}
+  .ad .p2{aspect-ratio:3/2}
+  .ad .mid{align-self:start;display:flex;flex-direction:column;justify-content:flex-end}
+  .ad p{font-size:16px;line-height:1.65;font-weight:500;color:#111827;white-space:nowrap;margin-bottom:24px}
+  .ad .orange .roll>span>span{font-size:14px}
+  .ad .orange .dot{width:32px;height:32px}
+  .cases{padding:112px 0}
+  .cases h2{margin-bottom:64px}
+  .cards{gap:28px}
+}
+@media (min-width:1280px){.ad{gap:32px}.ad p{font-size:18px}}
+@media (prefers-reduced-motion:reduce){.ring{animation:none;stroke-dashoffset:0}.orb{animation:none;opacity:1}}
+</style>
+</head>
+<body>
+<main>
+<section class="hero" id="hero">
+  <div class="fx"><canvas id="fx"></canvas></div>
+
+  <nav class="top">
+    <div class="wrap navin">
+      <div class="pill">
+        <div class="left">
+          <a class="mark" href="#" aria-label="g.a.d."><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19" fill="none" stroke="currentColor" stroke-width="4"/><circle cx="24" cy="5" r="4" fill="currentColor"/></svg></a>
+          <div class="links"><a href="#" data-t="l1">Projects</a><a href="#" data-t="l2">Studio</a><a href="#" data-t="l3">Journal</a><a href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="l4">Connect</a></div>
+        </div>
+        <div class="right">
+          <span class="taking" data-t="taking">Taking on projects for Q4 2026</span>
+          <div class="clock"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span class="tm"></span></div>
+          <a class="btn dark" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">
+            <span class="roll"><span><span data-t="book">Book a strategy call</span><span data-t="book">Book a strategy call</span></span></span>
+            <span class="dot"><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+          </a>
+        </div>
+        <button class="mbtn" id="mbtn" type="button" aria-label="Menu">
+          <svg class="i m" viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M4 6h16"/><path d="M4 18h16"/></svg>
+          <svg class="i x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="grow"></div>
+
+  <div class="hc wrap gx">
+    <div class="lbl">
+      <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+        <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+        <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+        <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+      </svg>
+    </div>
+    <h1 data-h="h1">We craft digital experiences <br>for brands ready to dominate <br>their category online.</h1>
+    <div class="cta">
+      <a class="btn orange" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">
+        <span class="roll"><span><span data-t="start">Start a project</span><span data-t="start">Start a project</span></span></span>
+        <span class="dot"><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+      </a>
+      <div class="badge">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19" fill="none" stroke="currentColor" stroke-width="4"/><circle cx="24" cy="5" r="4" fill="currentColor"/></svg>
+        <b data-t="ai">AI-powered studio</b><em>2026</em>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sheet" id="sheet">
+  <div class="bd" id="bd"></div>
+  <div class="box">
+    <div class="in">
+      <div class="clock"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span class="tm"></span></div>
+      <div class="sl"><a href="#" data-t="l1">Projects</a><a href="#" data-t="l2">Studio</a><a href="#" data-t="l3">Journal</a><a href="https://t.me/smirnovarturr" target="_blank" rel="noopener" data-t="l4">Connect</a></div>
+      <a class="start" href="https://t.me/smirnovarturr" target="_blank" rel="noopener"><span data-t="start">Start a project</span><span class="dot"><svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></a>
+    </div>
+  </div>
+</div>
+
+<section class="about">
+  <div class="wrap">
+    <div class="brow gx"><div class="num">1</div><span class="tag" data-t="intro">Introducing g.a.d.</span></div>
+    <h2 class="gx" data-h="h2">Strategy-led creatives, delivering <br>results in digital and beyond.</h2>
+
+    <div class="am gx">
+      <p data-t="p">Through research, creative thinking and iteration we help growing brands realize their digital full potential.</p>
+      <a class="btn orange" href="#">
+        <span class="roll"><span><span data-t="ab">About our studio</span><span data-t="ab">About our studio</span></span></span>
+        <span class="dot"><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+      </a>
+      <div class="pics">
+        <div><img class="p1" alt="g.a.d. studio" src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260516_090123_74be96d4-9c1b-40cf-932a-96f4f4babed3.png&amp;w=1280&amp;q=85"></div>
+        <div><img class="p2" alt="g.a.d. workspace" src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260516_090133_c157d30b-a99a-4477-bec1-a446149ec3f2.png&amp;w=1280&amp;q=85"></div>
+      </div>
+    </div>
+
+    <div class="ad gx">
+      <div style="align-self:end"><img class="p1" alt="g.a.d. studio" src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260516_090123_74be96d4-9c1b-40cf-932a-96f4f4babed3.png&amp;w=1280&amp;q=85"></div>
+      <div class="mid">
+        <p data-h="pd">Through research, creative thinking<br>and iteration we help growing brands<br>realize their digital full potential.</p>
+        <a class="btn orange" href="#">
+          <span class="roll"><span><span data-t="ab">About our studio</span><span data-t="ab">About our studio</span></span></span>
+          <span class="dot"><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        </a>
+      </div>
+      <div style="align-self:end"><img class="p2" alt="g.a.d. workspace" src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260516_090133_c157d30b-a99a-4477-bec1-a446149ec3f2.png&amp;w=1280&amp;q=85"></div>
+    </div>
+  </div>
+</section>
+
+<section class="cases">
+  <div class="wrap">
+    <div class="brow gx"><div class="num">2</div><span class="tag" data-t="sel">Selected work</span></div>
+    <h2 class="gx" data-t="our">Our projects</h2>
+    <div class="cards gx">
+      <div>
+        <div class="cv c1">
+          <video autoplay muted loop playsinline src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260516_122702_390f5305-8719-41d5-ae80-d23ab3796c28.mp4"></video>
+          <div class="hv"><div style="--w:148px"><span data-t="more">Learn more</span><svg class="i" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div></div>
+        </div>
+        <p class="cd" data-t="d1">An interactive 3D showcase built to keep visitors exploring</p>
+        <p class="cn" data-t="n1">3D showcase</p>
+      </div>
+      <div>
+        <div class="cv c2">
+          <video autoplay muted loop playsinline src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260516_123323_f909c2b8-ff6c-4edf-882b-8ebcdbe389b5.mp4"></video>
+          <div class="hv"><div style="--w:168px"><span data-t="case">View case study</span><svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div></div>
+        </div>
+        <p class="cd" data-t="d2">Transforming a dated platform into a conversion-focused brand experience</p>
+        <p class="cn" data-t="n2">Platform redesign</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+(() => {
+const RU = true;
+if (RU) {
+  const TR = { l1: 'Проекты', l2: 'Студия', l3: 'Журнал', l4: 'Связь', taking: 'Беру проекты на IV квартал 2026',
+    book: 'Записаться на созвон', start: 'Начать проект', ai: 'Студия на ИИ', intro: 'Знакомьтесь: g.a.d.',
+    p: 'Исследуем, пробуем и дорабатываем — так растущий бренд раскрывает свой цифровой потенциал целиком.',
+    ab: 'О студии', sel: 'Избранные работы', our: 'Наши проекты', more: 'Подробнее', case: 'Смотреть кейс',
+    d1: 'Интерактивная 3D-витрина, которую хочется изучать дальше', n1: '3D-витрина',
+    d2: 'Устаревшая платформа становится бренд-опытом, который продаёт', n2: 'Редизайн платформы' };
+  const HT = { h1: 'Делаем цифровой опыт <br>для брендов, готовых стать <br>первыми в своей нише.',
+    h2: 'Креатив со стратегией: результат <br>в цифре и за её пределами.',
+    pd: 'Исследуем, пробуем, дорабатываем —<br>так растущий бренд раскрывает<br>свой цифровой потенциал целиком.' };
+  document.documentElement.lang = 'ru';
+  document.title = 'g.a.d. — дизайн-студия';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.textContent = t; });
+  document.querySelectorAll('[data-h]').forEach(el => { const t = HT[el.dataset.h]; if (t) el.innerHTML = t; });
+  document.querySelector('.c1 .hv div').style.setProperty('--w', '136px');
+  document.querySelector('.c2 .hv div').style.setProperty('--w', '160px');
+}
+
+// московское время в шапке и меню
+const tick = () => {
+  const t = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow', hour12: false });
+  document.querySelectorAll('.tm').forEach(el => el.textContent = RU ? t + ' в Москве' : t + ' in Moscow');
+};
+tick(); setInterval(tick, 1000);
+
+// меню телефона: лист снизу
+const mbtn = document.getElementById('mbtn'), sheet = document.getElementById('sheet');
+const set = open => { sheet.classList.toggle('open', open); mbtn.classList.toggle('open', open); document.body.style.overflow = open ? 'hidden' : ''; };
+mbtn.addEventListener('click', () => set(!sheet.classList.contains('open')));
+document.getElementById('bd').addEventListener('click', () => set(false));
+sheet.querySelectorAll('.sl a').forEach(a => a.addEventListener('click', () => set(false)));
+
+// ---- шейдер первого экрана: Swirl + ChromaFlow под FlutedGlass и FilmGrain (формулы пакета shaders) ----
+const hero = document.getElementById('hero'), cv = document.getElementById('fx');
+const gl = cv.getContext('webgl', { antialias: false, alpha: false });
+if (!gl) return;
+const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+const FS = `precision highp float;
+uniform vec2 uRes;uniform float uTime;uniform sampler2D uField;
+const float PI=3.14159265;
+vec2 swirlField(vec2 uv,float detail,float t){
+  float f1=detail;
+  vec2 d1=vec2(uv.x+sin(uv.y*f1*1.7+t*.8)*.12+cos(uv.x*f1*.9-t*.5)*.05,uv.y+cos(uv.x*f1*1.3-t*.6)*.12+sin(uv.y*f1*1.1+t*.7)*.05);
+  float p1=sin(d1.x*f1*2.1+d1.y*f1*1.8+t*.4);
+  float f2=detail*2.1;
+  vec2 d2=vec2(d1.x+cos(d1.y*f2*2.7-t*.45)*.07+sin(d1.x*f2*1.9+t*.6)*.04,d1.y+sin(d1.x*f2*2.3+t*.65)*.07+cos(d1.y*f2*1.6-t*.4)*.04);
+  float p2=cos(d2.x*f2*1.4-d2.y*f2*1.9+t*.35);
+  float f3=detail*3.7;
+  vec2 d3=vec2(d2.x+sin(d2.y*f3*1.8+t*.85)*.04+cos(d2.x*f3*1.3-t*.55)*.025+sin((d2.x+d2.y)*f3*.7+t*.9)*.02,
+               d2.y+cos(d2.x*f3*1.6-t*.75)*.04+sin(d2.y*f3*1.1+t*.5)*.025+cos((d2.x+d2.y)*f3*.8-t*.95)*.02);
+  float p3=sin(d3.x*f3*1.1+d3.y*f3*1.5-t*.55);
+  float c=p1*.45+p2*.35+p3*.2;
+  float bf=smoothstep(.3,.7,c*.5+.5);
+  return vec2(bf,sin(t*2.5+c*8.)*.015+1.);
+}
+vec3 tap(vec2 uv){vec4 s=texture2D(uField,uv);return vec3((s.xy*255.-128.)/127.,s.z);}
+vec4 chroma(vec2 uv){
+  float px=1./128.;
+  vec3 s0=tap(uv),s1=tap(uv+vec2(px,0.)),s2=tap(uv+vec2(0.,px)),s3=tap(uv-vec2(px,0.)),s4=tap(uv-vec2(0.,px));
+  float li=smoothstep(0.,.1,(s0.z+s1.z+s2.z+s3.z+s4.z)*.2);
+  vec2 fl=(s0.xy+s1.xy+s2.xy+s3.xy+s4.xy)*.2;
+  float m=length(fl);float has=smoothstep(.01,.1,m);
+  float nx=fl.x/(m+.001),ny=fl.y/(m+.001);
+  float r=smoothstep(0.,.7,max(nx,0.)),l=smoothstep(0.,.7,max(-nx,0.)),u=smoothstep(0.,.7,max(ny,0.)),d=smoothstep(0.,.7,max(-ny,0.));
+  float hw=l+r,vw=u+d,tw=hw+vw+.001;
+  vec4 dir=vec4(1.,.3725,.0118,1.)*((hw*hw+vw*vw)/tw);
+  return mix(vec4(1.),dir,has)*li;
+}
+vec2 mirror(vec2 uv){return 1.-abs(mod(uv,2.)-1.);}
+void main(){
+  vec2 uv=vec2(gl_FragCoord.x/uRes.x,1.-gl_FragCoord.y/uRes.y);
+  float aspect=uRes.x/uRes.y;
+  float t=-uTime*.15;
+  float ra=31.*PI/180.;float ca=cos(ra),sa=sin(ra);
+  vec2 ac=vec2((uv.x-.5)*aspect,uv.y-.5);
+  float fu=ac.x*ca+ac.y*sa;
+  float cell=(fract(fu*8.+t)-.5)*2.;
+  float slope=sign(cell)*pow(max(abs(cell),1e-4),3.);
+  float refrU=-slope*4.*(.5/8.);
+  vec2 ruv=vec2(uv.x+refrU*ca/aspect,uv.y+refrU*sa);
+  float chrU=refrU*.61*.5;
+  vec2 co=vec2(chrU*ca/aspect,chrU*sa);
+  vec2 sw=swirlField(mirror(ruv),1.7,uTime);
+  vec3 bg=mix(vec3(1.),vec3(.9412),sw.x)*sw.y;
+  vec4 cr=chroma(mirror(ruv+co)),cg=chroma(mirror(ruv)),cb=chroma(mirror(ruv-co));
+  vec3 col=vec3(cr.r+bg.r*(1.-cr.a),cg.g+bg.g*(1.-cg.a),cb.b+bg.b*(1.-cb.a));
+  float nz=sqrt(1.-min(slope*slope,1.));
+  float hh=-90.*PI/360.;
+  float nDotH=max(slope*sin(hh)+nz*cos(hh),0.);
+  col+=pow(nDotH,256.)*(.04+.96*pow(1.-nz,5.))*.12;
+  float n=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);
+  float br=clamp(dot(col,vec3(.2126,.7152,.0722)),0.,1.);
+  col+=(n*2.-1.)*pow(1.-br+1e-6,2.)*.005;
+  gl_FragColor=vec4(col,1.);
+}`;
+const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+const pr = gl.createProgram();
+gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr);
+if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return;
+gl.useProgram(pr);
+gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+const uRes = gl.getUniformLocation(pr, 'uRes'), uTime = gl.getUniformLocation(pr, 'uTime');
+
+// поле ChromaFlow 128×128 на процессоре: x, y — поток, z — «жидкость» (как в пакете)
+const G = 128, field = new Float32Array(G * G * 4), tmp = new Float32Array(G * G * 4), tex8 = new Uint8Array(G * G * 4);
+const tex = gl.createTexture();
+gl.bindTexture(gl.TEXTURE_2D, tex);
+[[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]].forEach(([k, v]) => gl.texParameteri(gl.TEXTURE_2D, k, v));
+for (let k = 0; k < tex8.length; k += 4) { tex8[k] = tex8[k + 1] = 128; }
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, G, G, 0, gl.RGBA, gl.UNSIGNED_BYTE, tex8);
+const RADIUS = 3.5 * .05, MOMENTUM = 13;
+let velX = 0, velY = 0, prevX = .5, prevY = .5, fieldMax = 0;
+function stepField(px, py, dt, aspect) {
+  const vx = (px - prevX) / dt, vy = (py - prevY) / dt;
+  velX = velX * .85 + vx * .15; velY = velY * .85 + vy * .15;
+  prevX = px; prevY = py;
+  const injecting = Math.abs(vx) + Math.abs(vy) > .01;
+  if (!injecting && fieldMax < 1e-4) return false;
+  const fade = 1 - dt, flowSpeed = MOMENTUM * 50 * dt;
+  let mx = 0;
+  for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) {
+    const idx = (i * G + j) * 4, fx0 = field[idx], fy0 = field[idx + 1];
+    tmp[idx] = fx0 * fade; tmp[idx + 1] = fy0 * fade; tmp[idx + 2] = field[idx + 2] * fade;
+    if (Math.abs(fx0) > .001 || Math.abs(fy0) > .001) {
+      const ax = j - fx0 * flowSpeed, ay = i - fy0 * flowSpeed, x0 = Math.floor(ax), y0 = Math.floor(ay);
+      if (x0 >= 0 && y0 >= 0 && x0 + 1 < G && y0 + 1 < G) {
+        const fx = ax - x0, fy = ay - y0, a = (y0 * G + x0) * 4 + 2, b = a + 4, c = a + G * 4, e = c + 4;
+        tmp[idx + 2] = (field[a] * (1 - fx) * (1 - fy) + field[b] * fx * (1 - fy) + field[c] * (1 - fx) * fy + field[e] * fx * fy) * fade;
+      }
+    }
+    const m = Math.max(Math.abs(tmp[idx]), Math.abs(tmp[idx + 1]), tmp[idx + 2]); if (m > mx) mx = m;
+  }
+  if (injecting) {
+    const sp = Math.hypot(velX, velY), er = RADIUS * Math.min(sp * sp * 20, 1), maxD = er * 2 * er * 2, r2 = er * er, add = dt, spm = Math.min(sp * 10, 1);
+    for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) {
+      const cx = (j + .5) / G, cy = (i + .5) / G;
+      const dx = aspect >= 1 ? (cx - px) * aspect : cx - px, dy = aspect >= 1 ? cy - py : (cy - py) / aspect, ds = dx * dx + dy * dy;
+      if (ds < maxD) {
+        const idx = (i * G + j) * 4, inf = Math.exp(-ds / r2);
+        tmp[idx] = Math.max(-1, Math.min(1, tmp[idx] + velX * inf * add));
+        tmp[idx + 1] = Math.max(-1, Math.min(1, tmp[idx + 1] + velY * inf * add));
+        tmp[idx + 2] = Math.max(0, Math.min(1, tmp[idx + 2] + inf * add * spm));
+      }
+    }
+  }
+  fieldMax = injecting ? 1 : mx;
+  field.set(tmp);
+  for (let k = 0; k < field.length; k += 4) {
+    tex8[k] = Math.round(field[k] * 127 + 128); tex8[k + 1] = Math.round(field[k + 1] * 127 + 128); tex8[k + 2] = Math.round(field[k + 2] * 255);
+  }
+  gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, G, G, gl.RGBA, gl.UNSIGNED_BYTE, tex8);
+  return true;
+}
+
+// указатель: мышь или палец; без них пятно водит автопилот (правило: первый экран движется сам)
+let mouse = null, lastMove = -1e9, px = .5, py = .5;
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+addEventListener('pointermove', e => {
+  const r = hero.getBoundingClientRect();
+  mouse = [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height]; lastMove = performance.now();
+}, { passive: true });
+
+let scale = Math.min(devicePixelRatio || 1, 1.5), W = 0, H = 0, slow = 0;
+const resize = () => {
+  W = Math.max(1, Math.round(hero.clientWidth * scale)); H = Math.max(1, Math.round(hero.clientHeight * scale));
+  if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; gl.viewport(0, 0, W, H); }
+};
+resize(); addEventListener('resize', resize);
+let onScreen = true;
+new IntersectionObserver(([en]) => { onScreen = en.isIntersecting; }).observe(hero);
+
+const t0 = performance.now(); let last = t0;
+function frame(now) {
+  requestAnimationFrame(frame);
+  if (!onScreen) { last = now; return; }
+  const raw = (now - last) / 1000; last = now;
+  // ponytail: грубая подстройка разрешения под слабую видеокарту; плавная — если понадобится
+  slow = raw > .045 ? slow + 1 : 0;
+  if (slow > 10 && scale > .5) { scale = Math.max(.5, scale - .25); slow = 0; resize(); }
+  const dt = Math.min(raw, .016), T = (now - t0) / 1000;
+  let tx, ty;
+  if (mouse && now - lastMove < 2500) { [tx, ty] = mouse; }
+  else if (!still) { const a = T * .9; tx = .5 + .34 * Math.sin(a) + .06 * Math.sin(a * 2.6); ty = .52 + .24 * Math.sin(a * 1.37 + 1.2) + .05 * Math.cos(a * 3.1); }
+  else { tx = px; ty = py; }
+  const k = Math.min(1, raw * 10); px += (tx - px) * k; py += (ty - py) * k;
+  if (dt > 0) stepField(px, py, dt, W / H);
+  gl.uniform2f(uRes, W, H); gl.uniform1f(uTime, T);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

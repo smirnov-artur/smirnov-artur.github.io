@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Beauty &amp; Wellness</title>
 <!-- Один файл вместо React + Vite + Tailwind. ?lang=ru — русская версия (Instrument Serif без кириллицы → Cormorant 500).
@@ -154,7 +155,7 @@ html[lang=ru] .serif{font-family:'Cormorant',serif;font-weight:500}
 </div>
 <script>
 (function(){
-  if (new URLSearchParams(location.search).get('lang') === 'ru') {
+  if (false) {
     var TR = { n1:'О нас', n2:'Услуги', n3:'Журнал', n4:'Контакты', book:'Записаться на консультацию',
       h1:'Бережное касание. Сияние изнутри.', lead:'Уход за красотой и здоровьем от мастеров — с теплом и вниманием к деталям.',
       cta:'Начать обновление', s1:'Смотрите', s2:'со звуком',

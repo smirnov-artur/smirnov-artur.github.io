@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Brand &amp; Visual Storytelling</title>
 <!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия.
@@ -139,7 +140,7 @@ h1{font-size:30px;line-height:1.1;font-weight:500;letter-spacing:-.025em;color:#
 </div>
 <script>
 (() => {
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { m1: 'Главная', m2: 'Проекты', m3: 'Студия', m4: 'Связаться', talk: 'Обсудим',
     badge: 'Бренд и визуальные истории', cta: 'Смотреть работы',
     lead: 'Воплощаем замыслы через ремесло, движение и бесконечный поиск красоты.' };

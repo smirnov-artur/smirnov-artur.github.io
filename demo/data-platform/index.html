@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>g.a.d. — data platform</title>
 <!-- Один файл вместо Vite + React + Tailwind + lucide-react: классы Tailwind переписаны в CSS один к одному. ?lang=ru — русская версия.
@@ -272,7 +273,7 @@ const grid = document.getElementById('grid');
 const axis = document.getElementById('axis');
 ['10:00', '12:00', '14:00', '16:00', '16:00'].forEach((t, i) => { const s = document.createElement('span'); s.textContent = t; s.style.opacity = i >= 3 ? 0.4 : 1; axis.appendChild(s); });
 
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { n1: 'Платформа', n2: 'Цены', n3: 'Материалы', n4: 'Блог', login: 'Войти', demo: 'Заказать демо',
     h1: 'Поднимите главные данные на новую высоту', sub: 'Системы рассуждений и прогнозные модели для задач, у которых ещё нет ответа',
     talk: 'Написать нам', rev: 'Рост выручки', vs: 'к прошлому периоду ($10,7 млн)' };

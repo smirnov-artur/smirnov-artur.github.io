@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Urban jungle</title>
 <!-- Один файл вместо React + Vite + Tailwind + hls.js. GSAP с ScrollTrigger и ScrollToPlugin — с jsdelivr. ?lang=ru — русская версия.
@@ -146,7 +147,7 @@ a{color:inherit;text-decoration:none}
 <script>
 (() => {
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+const RU = false;
 let TITLE = 'Unleash The\nFull Power';
 let TAGS = ['Green roofs', 'Vertical gardens', 'Living walls', 'Courtyards', 'Urban parks'];
 if (RU) {

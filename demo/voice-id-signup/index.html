@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>g.a.d. — Your voice ID to the network</title>
 <!-- Один файл вместо React. ?lang=ru — русская версия (у Sora нет кириллицы: по-русски почта и нижняя строка набраны Manrope, «g.a.d.» остаётся в Sora). -->
@@ -189,7 +190,7 @@ h1{margin:clamp(28px,3vw,52px) 0 0;font-family:var(--font-display);font-weight:2
 <script>
 (() => {
 const $ = id => document.getElementById(id);
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { story: 'История', platforms: 'Платформы', identity: 'Голос', contact: 'Контакты', join: 'Вступить',
     chip: '[ Вход по голосу ]', tag: 'Ваш голос — ключ к сети g.a.d.', email: 'Почта',
     proceed: 'Продолжить по почте', access: 'Войти', invite: 'У меня есть приглашение',

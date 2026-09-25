@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — AI workers</title>
 <!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия.
@@ -177,7 +178,7 @@ h1{margin:0;max-width:36rem;font-size:30px;line-height:1.1;font-weight:600;lette
 </section>
 <script>
 (() => {
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { m1: 'Модули', m2: 'Клиенты', m3: 'Решения', m4: 'Тарифы', go: 'Начать',
     h1: 'ИИ-работники, которые пашут, пока вы отдыхаете', stat: 'ИИ-работники берут на себя рутину, пока команда отдыхает.',
     shift: 'Ночная смена', quote: '«За ночь: 38 заявок закрыто, 12 клиентам ответил, 2 вопроса оставил вам. Остальное сделано.»',

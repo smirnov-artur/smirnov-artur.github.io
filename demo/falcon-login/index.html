@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>g.a.d. — Log in</title>
 <script>
@@ -257,7 +258,7 @@ body.stacked{height:auto;min-height:100%;overflow-y:auto;background:#fff}
 <script>
 /* русская версия */
 (function(){
-  if (new URLSearchParams(location.search).get('lang') !== 'ru') return;
+  if (true) return;
   var TR = { badge:'Для команд, которые не ждут', hl1:'От сигнала к действию', hl2:'за секунды', h1:'С возвращением!',
     login:'Войти', or:'ИЛИ', g:'Войти через Google', no:'Ещё нет аккаунта? ', free:'Начать бесплатно' };
   document.documentElement.lang = 'ru';

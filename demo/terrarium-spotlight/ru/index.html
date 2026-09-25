@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. — Spotlight reveal</title>
+<!-- Один файл вместо React + Vite + Tailwind. ?lang=ru — русская версия (у Instrument Serif нет кириллицы, но крупное слово
+     латиницей — g.a.d. — в обеих версиях). Пятно-проявка рисуется CSS-маской с радиальным градиентом тех же стопов
+     (в исходнике каждый кадр кодировался PNG через canvas.toDataURL — тяжело). Пока курсора нет, пятно гуляет само. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+*{font-family:'Inter',sans-serif}
+html,body{margin:0}
+body{background:#fff;-webkit-font-smoothing:antialiased}
+body.lock{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+
+.liquid-glass{background:rgba(255,255,255,.01);background-blend-mode:luminosity;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  border:none;box-shadow:inset 0 1px 1px rgba(255,255,255,.1);position:relative;overflow:hidden}
+.liquid-glass::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1.4px;
+  background:linear-gradient(180deg,rgba(255,255,255,.45) 0%,rgba(255,255,255,.15) 20%,rgba(255,255,255,0) 40%,rgba(255,255,255,0) 60%,rgba(255,255,255,.15) 80%,rgba(255,255,255,.45) 100%);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+
+/* навигация */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:20px 20px}
+.logo{display:block;color:#fff}
+.logo svg{display:block;height:28px;width:auto;overflow:visible}
+.logo svg text{font-family:'Unbounded',sans-serif}
+.ring{animation:draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}
+.orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:pop .3s ease 1.35s forwards,orbit 7s linear 1.35s infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{to{opacity:1}}
+@keyframes orbit{to{transform:rotate(360deg)}}
+.pill{display:none;position:fixed;left:50%;top:20px;transform:translateX(-50%);align-items:center;gap:2px;border-radius:9999px;padding:4px}
+.pill button{border-radius:9999px;padding:8px 16px;font-size:14px;line-height:20px;font-weight:500;color:rgba(255,255,255,.7);transition:color .2s,background-color .2s}
+.pill button:hover{color:#fff}
+.cta{display:none;align-items:center;gap:8px;border-radius:9999px;padding:10px 20px;font-size:14px;line-height:20px;font-weight:500;color:#fff}
+.dot{width:8px;height:8px;border-radius:9999px;background:#4ade80;flex:none}
+.burger{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:5px;width:48px;height:40px;border-radius:9999px;padding:0 14px}
+.burger i{display:block;height:1.5px;background:#fff;border-radius:2px}
+.burger i:first-child{width:20px}.burger i:last-child{width:14px}
+
+/* меню телефона */
+.mm{position:fixed;inset:0;z-index:55;background:#0a0a0a;display:flex;flex-direction:column;opacity:0;visibility:hidden;transition:opacity .5s cubic-bezier(.77,0,.18,1),visibility 0s linear .5s}
+.mm.open{opacity:1;visibility:visible;transition:opacity .5s cubic-bezier(.77,0,.18,1)}
+.mm-top{display:flex;align-items:center;justify-content:space-between;padding:20px}
+.x{position:relative;width:44px;height:44px;border-radius:9999px;transform:rotate(-90deg) scale(.8);opacity:0;transition:transform .5s cubic-bezier(.77,0,.18,1),opacity .5s}
+.mm.open .x{transform:none;opacity:1}
+.x i{position:absolute;left:12px;top:21px;width:20px;height:1.5px;background:#fff;border-radius:2px}
+.x i:first-child{transform:rotate(45deg)}.x i:last-child{transform:rotate(-45deg)}
+.mm-links{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px}
+.mm-links button,.mm-cta{opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.77,0,.18,1),transform .6s cubic-bezier(.77,0,.18,1)}
+.mm-links button{font-size:30px;line-height:36px;font-weight:500;color:rgba(255,255,255,.9)}
+.mm.open .mm-links button,.mm.open .mm-cta{opacity:1;transform:none;transition-delay:var(--d)}
+.mm-cta{align-self:center;display:flex;align-items:center;gap:8px;margin:0 0 48px;border-radius:9999px;padding:14px 28px;font-size:16px;font-weight:500;color:#fff}
+
+/* герой */
+.hero{position:relative;height:100vh;height:100dvh;overflow:hidden;background:#000}
+.grid{position:absolute;inset:-32px;z-index:0;opacity:.1;will-change:transform}
+.grid svg{width:100%;height:100%;display:block}
+.stage{position:absolute;inset:-16px;z-index:10;will-change:transform}
+.bg{position:absolute;inset:0;z-index:10;background:center/cover no-repeat}
+.word{position:absolute;left:0;right:0;top:96px;z-index:20;margin:0;text-align:center;text-transform:uppercase;color:#fff;
+  font-family:'Instrument Serif',serif;font-weight:400;font-size:4.5rem;line-height:.9;white-space:nowrap;pointer-events:none}
+.ov{position:absolute;inset:0;z-index:25;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.spot{position:absolute;inset:0;z-index:30;pointer-events:none;-webkit-mask-image:radial-gradient(circle 0px at -999px -999px,#000,transparent);mask-image:radial-gradient(circle 0px at -999px -999px,#000,transparent)}
+.spot video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;clip-path:inset(40% 0 0 0)}
+
+@media (min-width:480px){.word{font-size:5.5rem}}
+@media (min-width:640px){.word{font-size:10rem;top:128px}.mm-links button{font-size:36px;line-height:40px}}
+@media (min-width:768px){
+  .nav{padding:24px 32px}
+  .pill{display:flex;top:24px}
+  .cta{display:flex}
+  .burger,.mm{display:none}
+  .word{font-size:13rem;top:144px}
+}
+@media (min-width:1024px){.word{font-size:16rem}}
+@media (prefers-reduced-motion:reduce){.ring{animation:none;stroke-dashoffset:0}.orb{animation:none;opacity:1}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <a class="logo" href="#" aria-label="g.a.d.">
+    <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+      <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+      <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+      <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+    </svg>
+  </a>
+  <nav class="pill liquid-glass">
+    <button type="button" data-t="n1">Device</button><button type="button" data-t="n2">Real Stories</button><button type="button" data-t="n3">Science</button><button type="button" data-t="n4">Plans</button><button type="button" data-t="n5">Reach Us</button>
+  </nav>
+  <a class="cta liquid-glass" href="https://t.me/smirnovarturr" target="_blank" rel="noopener"><span class="dot"></span><span data-t="cta">Reserve Yours</span></a>
+  <button class="burger liquid-glass" id="open" type="button" aria-label="Menu"><i></i><i></i></button>
+</header>
+
+<div class="mm" id="mm">
+  <div class="mm-top">
+    <span></span>
+    <button class="x liquid-glass" id="close" type="button" aria-label="Close"><i></i><i></i></button>
+  </div>
+  <div class="mm-links">
+    <button type="button" style="--d:100ms" data-t="n1">Device</button>
+    <button type="button" style="--d:160ms" data-t="n2">Real Stories</button>
+    <button type="button" style="--d:220ms" data-t="n3">Science</button>
+    <button type="button" style="--d:280ms" data-t="n4">Plans</button>
+    <button type="button" style="--d:340ms" data-t="n5">Reach Us</button>
+  </div>
+  <a class="mm-cta liquid-glass" style="--d:400ms" href="https://t.me/smirnovarturr" target="_blank" rel="noopener"><span class="dot"></span><span data-t="cta">Reserve Yours</span></a>
+</div>
+
+<section class="hero font-helvetica-neue" id="hero">
+  <div class="grid" id="grid" aria-hidden="true">
+    <svg><defs><pattern id="cell" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M 48 0 L 0 0 0 48" fill="none" stroke="#64748b" stroke-width="0.6"/></pattern></defs><rect width="100%" height="100%" fill="url(#cell)"/></svg>
+  </div>
+  <div class="stage" id="stage">
+  <div class="bg" style="background-image:url('https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260713_140344_79e1296a-86d7-43fd-9b5f-63ffe560f291.png&w=1280&q=85')"></div>
+  <h1 class="word">g.a.d.</h1>
+  <img class="ov" src="https://soft-zoom-63098134.figma.site/_assets/v11/3f10f1876e118f72a396e05a6c2d099569478272.png" alt="">
+  <div class="spot" id="spot">
+    <video autoplay loop muted playsinline src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260713_162101_0d7498c5-29bb-47bf-a99f-2773c0a880a9.mp4"></video>
+  </div>
+  </div>
+</section>
+
+<script>
+(() => {
+if (true) {
+  const TR = { n1: 'Устройство', n2: 'Истории', n3: 'Наука', n4: 'Тарифы', n5: 'Связаться', cta: 'Забронировать' };
+  document.documentElement.lang = 'ru';
+  document.title = 'g.a.d. — проявка светом';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.textContent = t; });
+}
+
+// меню телефона: блокируем прокрутку, пока открыто
+const mm = document.getElementById('mm');
+const setMenu = open => { mm.classList.toggle('open', open); document.body.classList.toggle('lock', open); };
+document.getElementById('open').addEventListener('click', () => setMenu(true));
+document.getElementById('close').addEventListener('click', () => setMenu(false));
+mm.querySelectorAll('.mm-links button').forEach(b => b.addEventListener('click', () => setMenu(false)));
+
+// пятно 260 px за курсором (lerp 0.1) + сетка с параллаксом (±16 px, lerp 0.06); без мыши пятно гуляет по нижним 60 %
+const R = 260, hero = document.getElementById('hero'), spot = document.getElementById('spot'), grid = document.getElementById('grid'), stage = document.getElementById('stage');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const mouse = { x: 0, y: 0 }, smooth = { x: -1, y: -1 }, g = { x: 0, y: 0 }, sc = { x: 0, y: 0 };
+let manual = false, touchedAt = -1e9, rad = 0;
+const t0 = performance.now();
+addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; manual = true; });
+document.documentElement.addEventListener('mouseleave', () => { manual = false; });
+const onTouch = e => { const p = e.touches[0]; if (p) { mouse.x = p.clientX; mouse.y = p.clientY; touchedAt = performance.now(); } };
+addEventListener('touchstart', onTouch, { passive: true });
+addEventListener('touchmove', onTouch, { passive: true });
+
+function loop(now) {
+  const r = hero.getBoundingClientRect();
+  const touching = now - touchedAt < 1500;
+  const auto = !manual && !touching && !reduce && now - t0 > 600;
+  if (auto) {
+    const s = (now - t0) / 1000;
+    mouse.x = r.left + r.width * (0.5 + 0.3 * Math.sin(s * 0.6));
+    mouse.y = r.top + r.height * (0.7 + 0.13 * Math.sin(s * 0.95 + 1));
+  }
+  const on = manual || touching || auto;
+  if (smooth.x < 0) { smooth.x = mouse.x || r.width / 2; smooth.y = mouse.y || r.height * 0.7; }
+  smooth.x += (mouse.x - smooth.x) * 0.1;
+  smooth.y += (mouse.y - smooth.y) * 0.1;
+  rad += ((on ? R : 0) - rad) * 0.08;
+  const sr = spot.getBoundingClientRect(), x = smooth.x - sr.left, y = smooth.y - sr.top;
+  const m = 'radial-gradient(circle ' + rad.toFixed(1) + 'px at ' + x.toFixed(1) + 'px ' + y.toFixed(1) + 'px, #000 0%, #000 40%, rgba(0,0,0,.75) 60%, rgba(0,0,0,.4) 75%, rgba(0,0,0,.12) 88%, transparent 100%)';
+  spot.style.webkitMaskImage = m; spot.style.maskImage = m;
+  const tx = ((smooth.x - r.left) / r.width - 0.5) * 2 * 16, ty = ((smooth.y - r.top) / r.height - 0.5) * 2 * 16;
+  g.x += (tx - g.x) * 0.06; g.y += (ty - g.y) * 0.06;
+  grid.style.transform = 'translate(' + g.x.toFixed(2) + 'px,' + g.y.toFixed(2) + 'px)';
+  // сцена чуть едет за пятном (±12 px): ролик под пятном почти совпадает с картинкой, без этого кадр без мыши стоит
+  sc.x += (-tx * 0.75 - sc.x) * 0.06; sc.y += (-ty * 0.75 - sc.y) * 0.06;
+  stage.style.transform = 'translate(' + sc.x.toFixed(2) + 'px,' + sc.y.toFixed(2) + 'px)';
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Where dreams rise</title>
 <!-- Один файл вместо React + Vite + shadcn/ui. ?lang=ru — русская версия (у Instrument Serif нет кириллицы, по-русски заголовок набран Cormorant). -->
@@ -93,7 +94,7 @@ h1 em{font-style:normal;color:hsl(var(--muted-foreground))}
   </section>
 </div>
 <script>
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { home: 'Главная', studio: 'Студия', about: 'О нас', journal: 'Журнал', reach: 'Связаться', begin: 'Начать путь',
     h1: 'Там, где <em>мечты</em> восходят <em>сквозь тишину.</em>',
     sub: 'Мы делаем инструменты для глубоких мыслителей, смелых авторов и тихих бунтарей. Посреди хаоса мы строим цифровые пространства для ясного фокуса и работы с вдохновением.' };

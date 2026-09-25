@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>g.a.d. — Mostar city</title>
 <meta name="description" content="A cinematic three-screen scroll story for Mostar city." />
@@ -199,10 +200,7 @@ button { border: 0; font: inherit }
             <a href="#bazaar" data-t="n3">Bazaar</a>
             <a href="#routes" data-t="n4">Routes</a>
           </nav>
-          <button class="language-switcher" type="button" aria-label="Change language">
-            <span data-t="lang">EN</span>
-            <span aria-hidden="true">⌄</span>
-          </button>
+          <span class="language-switcher" aria-hidden="true"></span>
         </header>
         <div class="back-stack">
           <img class="scene-img back-img back-four" src="four.webp" alt="" />
@@ -279,7 +277,7 @@ button { border: 0; font: inherit }
 </main>
 <script>
 (() => {
-const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+const RU = false;
 if (RU) {
   const TR = { n1: 'Начало', n2: 'Мост', n3: 'Базар', n4: 'Маршруты', lang: 'RU', h1: 'МОСТАР',
     intro: 'Каменная арка, изумрудная вода и маленький старый город для неспешных утр, мягкого вечернего света и одного незабываемого перехода.',

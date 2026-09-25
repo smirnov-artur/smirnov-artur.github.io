@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Spotlight reveal</title>
 <!-- Один файл вместо React + Vite + Tailwind. ?lang=ru — русская версия (у Instrument Serif нет кириллицы, но крупное слово
@@ -131,7 +132,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 <script>
 (() => {
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { n1: 'Устройство', n2: 'Истории', n3: 'Наука', n4: 'Тарифы', n5: 'Связаться', cta: 'Забронировать' };
   document.documentElement.lang = 'ru';
   document.title = 'g.a.d. — проявка светом';

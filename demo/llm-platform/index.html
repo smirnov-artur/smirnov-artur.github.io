@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — One Unified System for LLMs</title>
 <!-- Один файл вместо React + Vite + Tailwind + lucide-react. ?lang=ru — русская версия (у Helvetica Neue Light нет кириллицы, по-русски — Inter 300).
@@ -172,7 +173,7 @@ h1 br{display:none}
 <script>
 (() => {
 const $ = id => document.getElementById(id);
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { sol: 'Решения', plans: 'Тарифы', news: 'Новости', try: 'Попробовать бесплатно',
     pill: 'Уже открыто для всех. Загляните внутрь', h1: 'Одна система, чтобы собирать,<br> тестировать и выпускать LLM',
     inside: 'Что внутри', m1: 'Промпты', m2: 'Тесты', m3: 'Агенты', m4: 'Логи', m5: 'Датасеты' };

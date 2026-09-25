@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>404 - Page Not Found</title>
 <!-- Один файл вместо React + Tailwind + lucide-react. ?lang=ru — русская версия (у Inter есть кириллица).
@@ -171,7 +172,7 @@ button{font:inherit;border:0;cursor:pointer}
 </div>
 <script>
 (() => {
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { n1: 'О нас', n2: 'Программы', n3: 'Отзывы', n4: 'Вопросы', n5: 'Контакты', menu: 'Меню',
     home: 'На главную', oops: 'Ой, что-то пошло не так!' };
   document.documentElement.lang = 'ru';

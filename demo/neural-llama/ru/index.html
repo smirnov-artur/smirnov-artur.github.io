@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. — Brain and Body</title>
+<!-- Один файл вместо React + Vite + Tailwind + Framer Motion: пружины и появление — CSS-переходы и requestAnimationFrame. ?lang=ru — русская версия
+     (у Space Mono и Anton SC нет кириллицы: по-русски JetBrains Mono и Oswald 700). Иконка Apple — та же из Bootstrap Icons, вставлена SVG.
+     hero.mp4 — тот же ролик первого экрана, пережатый с ключевым кадром каждые 4 кадра: он перематывается за курсором.
+     Пока курсора нет (телефон, мышь стоит), ролик сам медленно перематывается туда-обратно. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='19' fill='none' stroke='white' stroke-width='4'/%3E%3Ccircle cx='24' cy='5' r='4' fill='white'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Anton+SC&family=JetBrains+Mono:wght@400;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --font-sans: "Space Mono", monospace; --font-serif: "Space Mono", monospace; --font-mono: "Space Mono", monospace; }
+.ru { --font-sans: "JetBrains Mono", "Space Mono", monospace; --font-serif: var(--font-sans); --font-mono: var(--font-sans); }
+html, body { background: #000; color: #fff; overflow-x: hidden; overflow-y: auto; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body { font-family: var(--font-sans); }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+.bgv { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.gad-logo { display: block; width: auto; overflow: visible; }
+.gad-logo text { font-family: 'Unbounded', sans-serif; }
+.ring { animation: gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards; }
+.orb { opacity: 0; transform-box: view-box; transform-origin: 322px 30px; animation: gad-pop .3s ease 1.35s forwards, gad-orbit 7s linear 1.35s infinite; }
+@keyframes gad-draw { to { stroke-dashoffset: 0; } }
+@keyframes gad-pop { to { opacity: 1; } }
+@keyframes gad-orbit { to { transform: rotate(360deg); } }
+
+/* шапка */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px;
+  opacity: 0; transition: opacity .8s ease; }
+.nav.on { opacity: 1; }
+.lg { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.pill { height: 48px; border-radius: 14px; background: rgba(255,255,255,.15); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.logo-pill { display: flex; align-items: center; flex: none; padding: 0 20px; overflow: hidden; max-width: 200px;
+  transition: transform .2s ease, background-color .2s ease, max-width .55s cubic-bezier(.3,1.15,.5,1), padding .55s cubic-bezier(.3,1.15,.5,1), opacity .3s; }
+.logo-pill:hover { transform: scale(1.02); background: rgba(255,255,255,.22); }
+.logo-pill:active { transform: scale(.98); }
+.logo-pill .gad-logo { height: 20px; color: #fff; }
+.menu { display: flex; align-items: center; flex: none; width: 48px; overflow: hidden; transition: width .55s cubic-bezier(.3,1.15,.5,1); }
+.nav.open .menu { width: 290px; }
+.hb { flex: none; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px;
+  transition: width .35s ease, height .35s ease, border-radius .35s ease, margin .35s ease, background-color .2s ease; }
+.nav.open .hb { width: 36px; height: 36px; border-radius: 11px; margin-left: 6px; background: rgba(255,255,255,.1); }
+.nav.open .hb:hover { background: rgba(255,255,255,.2); }
+.sq { position: relative; display: block; width: 18px; height: 12px; }
+.sq i { position: absolute; left: 0; width: 100%; height: 1.5px; border-radius: 2px; background: #fff; transition: transform .45s cubic-bezier(.34,1.56,.64,1), opacity .25s ease; }
+.sq i:nth-child(1) { top: 0; } .sq i:nth-child(2) { top: calc(50% - .75px); } .sq i:nth-child(3) { bottom: 0; }
+.nav.open .sq i:nth-child(1) { transform: translateY(5.25px) rotate(45deg); }
+.nav.open .sq i:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav.open .sq i:nth-child(3) { transform: translateY(-5.25px) rotate(-45deg); }
+.links { display: flex; align-items: center; gap: 20px; padding: 0 18px; white-space: nowrap; }
+.links a { font-size: 16px; font-weight: 400; color: rgba(255,255,255,.85); opacity: 0; transform: translateX(15px); transition: opacity .3s ease, transform .3s ease, color .2s ease; }
+.links a:hover { color: #fff; }
+.nav.open .links a { opacity: 1; transform: none; transition-delay: .12s, .12s, 0s; }
+.nav.open .links a + a { transition-delay: .18s, .18s, 0s; }
+.dl { flex: none; display: flex; align-items: center; gap: 8px; height: 48px; padding: 0 24px; border-radius: 9999px; background: #fff; color: #000; font-size: 15px;
+  transition: transform .2s ease, background-color .2s ease; }
+.dl:hover { transform: scale(1.03); background: #e2e2e6; }
+.dl:active { transform: scale(.97); }
+.dl svg { width: 16px; height: 16px; flex: none; fill: currentColor; margin-top: -2px; }
+@media (min-width: 640px) { .nav { padding: 0 24px; } }
+@media (min-width: 640px) and (max-width: 767px) { .nav.open .logo-pill { display: none; } }
+@media (min-width: 768px) { .nav { padding: 0 32px; } }
+@media (max-width: 639px) {
+  .lg { flex: 1; margin-right: 8px; }
+  .pill { height: 36px; border-radius: 10px; }
+  .logo-pill { padding: 0 12px; max-width: 120px; }
+  .logo-pill .gad-logo { height: 15px; }
+  .nav.open .logo-pill { max-width: 0; padding: 0; opacity: 0; margin-right: -8px; }
+  .menu { width: 36px; }
+  .nav.open .menu { width: 100%; flex: 1; }
+  .hb { width: 36px; height: 36px; border-radius: 10px; }
+  .nav.open .hb { width: 28px; height: 28px; border-radius: 8px; margin-left: 4px; }
+  .sq { width: 15px; height: 10px; }
+  .sq i { height: 1.2px; } .sq i:nth-child(2) { top: calc(50% - .6px); }
+  .nav.open .sq i:nth-child(1) { transform: translateY(4.4px) rotate(45deg); }
+  .nav.open .sq i:nth-child(3) { transform: translateY(-4.4px) rotate(-45deg); }
+  .links { gap: 14px; padding: 0 12px; }
+  .links a { font-size: 13px; }
+  .dl { height: 36px; padding: 0 14px; gap: 6px; font-size: 13px; }
+  .dl svg { width: 13px; height: 13px; }
+}
+
+/* первый экран */
+.hero { position: relative; height: 100vh; height: 100svh; overflow: hidden; background: #000; }
+.dots { position: absolute; inset: 0; background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 24px 24px; opacity: .05; pointer-events: none; }
+.wm { position: absolute; left: 50%; top: calc(50% + 50px); transform: translate(-50%, -50%); font-family: 'Anton SC', sans-serif; font-size: clamp(120px, 30vw, 521px);
+  line-height: 1; letter-spacing: -4px; text-transform: uppercase; white-space: nowrap; opacity: .1; pointer-events: none; user-select: none;
+  background: radial-gradient(circle, rgba(142,127,148,0) 0%, #8E7F94 70%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ru .wm { font-family: 'Oswald', sans-serif; font-weight: 700; }
+.hin { position: relative; z-index: 10; height: 100%; display: flex; flex-direction: column; padding: 80px 16px 32px; opacity: 0; transition: opacity 1s ease; }
+.hin.on { opacity: 1; }
+.sp { flex: 1; }
+.row { display: flex; flex-direction: column; gap: 24px; }
+.col { display: flex; flex-direction: column; gap: 16px; }
+.big { font-weight: 300; line-height: .95; letter-spacing: -.03em; font-size: clamp(40px, 10vw, 100px); color: #fff; white-space: nowrap; }
+.desc { max-width: 384px; font-size: 13px; line-height: 1.625; color: rgba(255,255,255,.6);
+  opacity: 0; transform: translateY(25px); transition: opacity .9s cubic-bezier(.215,.61,.355,1) .2s, transform .9s cubic-bezier(.215,.61,.355,1) .2s; }
+.hin.on .desc { opacity: 1; transform: none; }
+@media (min-width: 640px) { .hin { padding: 96px 24px 48px; } .desc { font-size: 15px; } }
+@media (min-width: 768px) {
+  .hin { padding-left: 32px; padding-right: 32px; }
+  .row { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+  .big.r { text-align: right; }
+}
+
+/* 2: текст в перспективе */
+.cine { position: relative; height: 100vh; height: 100svh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.topg { position: absolute; left: 0; right: 0; top: 0; height: 180px; z-index: 10; background: linear-gradient(to bottom, #010103, transparent); pointer-events: none; }
+.persp { position: relative; z-index: 5; width: 100%; max-width: 1024px; perspective: 400px; }
+.cine p { font-family: var(--font-sans); font-weight: 400; font-size: 22px; line-height: 1.35; letter-spacing: -.02em; text-align: center; color: #fff; padding: 0 24px;
+  user-select: none; -webkit-user-select: none; opacity: 0; transform: rotateX(24deg) translateY(60px) translateZ(15px); will-change: transform, opacity; }
+@media (max-width: 639px) { .persp { transform: scale(.82); } }   /* на телефоне нижние строки в перспективе шире экрана — весь блок чуть мельче */
+@media (min-width: 640px) { .cine p { font-size: 30px; padding: 0 48px; } }
+@media (min-width: 768px) { .cine p { font-size: 36px; } }
+@media (min-width: 1024px) { .cine p { font-size: 42px; } }
+
+/* 3: цифры */
+.met { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.mi { position: relative; z-index: 5; width: 100%; max-width: 1152px; padding: 128px 24px; }
+.sub { color: rgba(255,255,255,.4); font-size: 13px; letter-spacing: .2em; text-transform: uppercase; text-align: center; }
+.met .sub { margin-bottom: 80px; }
+.mg { display: grid; grid-template-columns: 1fr; gap: 64px; text-align: center; }
+.mv { font-weight: 300; font-size: clamp(48px, 10vw, 96px); letter-spacing: -.04em; line-height: 1; white-space: nowrap; }
+.ml { margin-top: 16px; color: rgba(255,255,255,.4); font-size: 13px; letter-spacing: .025em; }
+@media (min-width: 640px) { .sub { font-size: 14px; } .ml { font-size: 15px; } }
+@media (min-width: 768px) { .mg { grid-template-columns: repeat(3, 1fr); gap: 32px; } }
+
+/* 4: технология */
+.tech { position: relative; min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; padding: 48px 32px; overflow: hidden; }
+.tt { position: relative; z-index: 5; display: flex; flex-direction: column; gap: 24px; }
+.th { font-weight: 300; font-size: clamp(36px, 8vw, 72px); line-height: .95; letter-spacing: -.03em; }
+.tp { max-width: 320px; color: rgba(255,255,255,.5); font-size: 13px; line-height: 1.625; }
+.tsp { flex: 1; min-height: 48px; }
+.tg { position: relative; z-index: 5; display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
+.tg h3 { font-weight: 400; font-size: 14px; margin-bottom: 8px; }
+.tg p { color: rgba(255,255,255,.4); font-size: 12px; line-height: 1.625; }
+@media (min-width: 640px) { .tech { padding: 64px 48px; } .tp { font-size: 15px; } .tg h3 { font-size: 16px; } .tg p { font-size: 14px; } }
+@media (min-width: 768px) {
+  .tech { padding-left: 64px; padding-right: 64px; }
+  .tt { flex-direction: row; justify-content: space-between; align-items: flex-start; }
+  .tp { text-align: right; padding-top: 8px; }
+  .tg { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+}
+
+/* 5: архитектура */
+.arch { min-height: 100vh; background: #000; display: flex; align-items: center; justify-content: center; }
+.ai { width: 100%; max-width: 768px; padding: 128px 24px; text-align: center; }
+.arch .sub { margin-bottom: 32px; }
+.ah { font-weight: 300; font-size: clamp(28px, 6vw, 56px); line-height: 1.15; letter-spacing: -.02em; margin-bottom: 40px; }
+.ad { max-width: 576px; margin: 0 auto; color: rgba(255,255,255,.45); font-size: 15px; line-height: 1.625; }
+.cards { margin-top: 80px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.card { width: 100%; max-width: 448px; height: 72px; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+.card span:first-child { color: rgba(255,255,255,.3); font-size: 12px; letter-spacing: .15em; text-transform: uppercase; }
+.card span:last-child { font-size: 16px; font-weight: 300; }
+@media (min-width: 640px) { .ad { font-size: 17px; } .card span:last-child { font-size: 18px; } }
+
+/* подвал */
+footer { background: #000; overflow: hidden; display: flex; flex-direction: column; min-height: 400px; }
+.fv { position: relative; width: 100%; height: 300px; }
+.ft { display: flex; flex-direction: column; justify-content: space-between; padding: 40px; }
+.flogo { display: flex; align-items: center; margin-bottom: 32px; color: rgba(255,255,255,.7); }
+.flogo .gad-logo { height: 18px; }
+.ftx { max-width: 384px; color: rgba(255,255,255,.4); font-size: 14px; line-height: 1.625; }
+.fc { margin-top: 48px; color: rgba(255,255,255,.25); font-size: 12px; }
+@media (min-width: 640px) { .ft { padding: 64px; } .ftx { font-size: 15px; } }
+@media (min-width: 768px) { footer { flex-direction: row; } .fv { width: 50%; height: auto; } .ft { width: 50%; } }
+
+/* появление при прокрутке */
+.fu, .fi { opacity: 0; transition: opacity var(--du, .8s) cubic-bezier(.25,.1,.25,1) var(--dl, 0s), transform var(--du, .8s) cubic-bezier(.25,.1,.25,1) var(--dl, 0s); }
+.fu { transform: translateY(var(--y, 30px)); }
+.fu.in, .fi.in, .in .fu, .in .fi { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ring { animation: none; stroke-dashoffset: 0; } .orb { animation: none; opacity: 1; }
+  .fu, .fi, .desc { transition: none; opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+<nav class="nav" id="nav">
+  <div class="lg">
+    <a class="pill logo-pill" href="#" aria-label="g.a.d.">
+      <svg class="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+        <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+        <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+        <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+      </svg>
+    </a>
+    <div class="pill menu">
+      <button class="hb" id="hb" type="button" aria-label="Menu" aria-expanded="false"><span class="sq"><i></i><i></i><i></i></span></button>
+      <div class="links">
+        <a href="#about" data-go="1"><span class="st" data-t="about">About</span></a>
+        <a href="#metrics" data-go="2"><span class="st" data-t="metrics">Metrics</span></a>
+      </div>
+    </div>
+  </div>
+  <a class="dl" href="#">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516s1.52.087 2.475-1.258.762-2.391.728-2.43m3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422s1.675-2.789 1.698-2.854-.597-.79-1.254-1.157a3.7 3.7 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56s.625 1.924 1.273 2.796c.576.984 1.34 1.667 1.659 1.899s1.219.386 1.843.067c.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758q.52-1.185.473-1.282"/></svg>
+    <span class="st" data-t="download">Download</span>
+  </a>
+</nav>
+
+<section class="hero" id="hero">
+  <video class="bgv" id="hv" src="../hero.mp4" muted playsinline preload="auto"></video>
+  <div class="dots"></div>
+  <div class="wm" data-t="wm">TRANSCENDENCE</div>
+  <div class="hin" id="hin">
+    <div class="sp"></div>
+    <div class="row">
+      <div class="col">
+        <h1 class="big"><span class="si" data-t="h1a" data-delay="200">Brain</span><br><span class="si" data-t="h1b" data-delay="500">And Body</span></h1>
+        <p class="desc" data-t="desc">Built at the intersection of neuroscience and artificial intelligence. g.a.d. continuously maps neural pathways, cognitive load, and physiological states into a single adaptive intelligence layer.</p>
+      </div>
+      <h2 class="big r"><span class="si" data-t="h1c" data-delay="700">One</span><br><span class="si" data-t="h1d" data-delay="1000">Network</span></h2>
+    </div>
+  </div>
+</section>
+
+<section class="cine" id="about">
+  <video class="bgv" autoplay muted loop playsinline src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_092455_089c54f8-3b03-4966-9df1-e9746063d0ef.mp4"></video>
+  <div class="topg"></div>
+  <div class="persp"><p id="cineText" data-t="cine">A neural-AI interface built on the architecture of the human nervous system. g.a.d. translates synaptic activity into computational intelligence. Every signal becomes measurable, structured, and visible. It continuously reconstructs internal state as a dynamic neural map. Biological noise is filtered into actionable cognitive patterns.</p></div>
+</section>
+
+<section class="met" id="metrics">
+  <video class="bgv" autoplay muted loop playsinline src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_095810_ecea3dd2-fc5e-4e41-8696-4219290b6589.mp4"></video>
+  <div class="mi">
+    <p class="sub fi iv" style="--du:1.2s" data-a=".3" data-t="perf">Performance Metrics</p>
+    <div class="mg">
+      <div class="fu iv" data-a=".3"><div class="mv" data-t="v1">2.4ms</div><div class="ml" data-t="l1">Synaptic Latency</div></div>
+      <div class="fu iv" style="--dl:.15s" data-a=".3"><div class="mv" data-t="v2">99.7%</div><div class="ml" data-t="l2">Signal Accuracy</div></div>
+      <div class="fu iv" style="--dl:.3s" data-a=".3"><div class="mv" data-t="v3">140B</div><div class="ml" data-t="l3">Neural Parameters</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="tech">
+  <video class="bgv" autoplay muted loop playsinline src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_095750_32a52ce0-2005-45c9-9093-41f03fde9530.mp4"></video>
+  <div class="tt">
+    <h2 class="th fu iv" style="--y:40px;--du:1s" data-a=".3" data-t="adapt">Adaptive<br>Intelligence</h2>
+    <p class="tp fu iv" style="--y:20px;--du:1s;--dl:.2s" data-a=".3" data-t="learn">The system learns your neural baseline within 72 hours. From there, every cognitive state is mapped, predicted, and optimized in real time.</p>
+  </div>
+  <div class="tsp"></div>
+  <div class="tg fi iv" style="--du:1s;--dl:.3s" data-a=".3">
+    <div class="fu" style="--y:20px;--du:.7s;--dl:.3s"><h3 data-t="c1">Cortical Mapping</h3><p data-t="c1d">Real-time spatial reconstruction of active neural regions.</p></div>
+    <div class="fu" style="--y:20px;--du:.7s;--dl:.4s"><h3 data-t="c2">Signal Isolation</h3><p data-t="c2d">Separates cognitive intent from biological noise.</p></div>
+    <div class="fu" style="--y:20px;--du:.7s;--dl:.5s"><h3 data-t="c3">State Prediction</h3><p data-t="c3d">Anticipates cognitive transitions before they occur.</p></div>
+    <div class="fu" style="--y:20px;--du:.7s;--dl:.6s"><h3 data-t="c4">Loop Feedback</h3><p data-t="c4d">Closed-loop adjustment based on outcome correlation.</p></div>
+  </div>
+</section>
+
+<section class="arch">
+  <div class="ai">
+    <div class="fu iv" style="--du:1s" data-a=".4">
+      <p class="sub" data-t="archs">Architecture</p>
+      <h2 class="ah" data-t="archh">Three layers. Zero friction.</h2>
+      <p class="ad" data-t="archd">Sensor layer captures raw bioelectric signals. Processing layer isolates intent. Interface layer delivers structured output to any connected system.</p>
+    </div>
+    <div class="cards fi iv" style="--du:1.2s;--dl:.4s" data-a=".4">
+      <div class="card"><span data-t="lay1">Layer 1</span><span data-t="cap">Capture</span></div>
+      <div class="card"><span data-t="lay2">Layer 2</span><span data-t="proc">Process</span></div>
+      <div class="card"><span data-t="lay3">Layer 3</span><span data-t="intf">Interface</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fv"><video class="bgv" autoplay muted loop playsinline src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_080203_fd7f4f85-3a86-4837-8192-85e7bfe68e75.mp4"></video></div>
+  <div class="ft">
+    <div>
+      <div class="flogo">
+        <svg class="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+          <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+          <circle cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6"/>
+          <circle cx="322" cy="8" r="5" fill="currentColor"/>
+        </svg>
+      </div>
+      <p class="ftx" data-t="ftx">The next evolution of human-machine interaction. Built for those who refuse to be limited by biology alone.</p>
+    </div>
+    <p class="fc" data-t="fc">© 2026 g.a.d. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+const RU = true;
+if (RU) {
+  const TR = {
+    about: 'О системе', metrics: 'Метрики', download: 'Скачать', wm: 'Трансценденция',
+    h1a: 'Мозг', h1b: 'и тело', h1c: 'Одна', h1d: 'сеть',
+    desc: 'Создан на стыке нейронауки и искусственного интеллекта. g.a.d. непрерывно сводит нейронные пути, когнитивную нагрузку и состояние тела в один адаптивный слой интеллекта.',
+    cine: 'Нейро-ИИ-интерфейс, устроенный как нервная система человека. g.a.d. переводит синаптическую активность в вычислительный интеллект. Каждый сигнал становится измеримым, упорядоченным и видимым. Система непрерывно восстанавливает внутреннее состояние в виде живой нейронной карты. Биологический шум отсеивается, остаются когнитивные паттерны, с которыми можно работать.',
+    perf: 'Показатели', v1: '2,4 мс', l1: 'Синаптическая задержка', v2: '99,7%', l2: 'Точность сигнала', v3: '140', l3: 'Млрд нейронных параметров',
+    adapt: 'Адаптивный<br>интеллект',
+    learn: 'Система изучает ваш нейронный фон за 72 часа. Дальше каждое когнитивное состояние отслеживается, предсказывается и настраивается в реальном времени.',
+    c1: 'Карта коры', c1d: 'Пространственная реконструкция активных зон мозга в реальном времени.',
+    c2: 'Выделение сигнала', c2d: 'Отделяет когнитивное намерение от биологического шума.',
+    c3: 'Прогноз состояния', c3d: 'Предугадывает смену когнитивных состояний до того, как она случится.',
+    c4: 'Обратная связь', c4d: 'Замкнутая подстройка по связи действий с результатом.',
+    archs: 'Архитектура', archh: 'Три слоя. Ноль трения.',
+    archd: 'Сенсорный слой снимает сырые биоэлектрические сигналы. Слой обработки выделяет намерение. Слой интерфейса отдаёт структурированный результат любой подключённой системе.',
+    lay1: 'Слой 1', lay2: 'Слой 2', lay3: 'Слой 3', cap: 'Захват', proc: 'Обработка', intf: 'Интерфейс',
+    ftx: 'Следующий шаг во взаимодействии человека и машины. Для тех, кто не согласен ограничиваться одной биологией.',
+    fc: '© 2026 g.a.d. Все права защищены.'
+  };
+  document.documentElement.lang = 'ru';
+  document.documentElement.classList.add('ru');
+  document.title = 'g.a.d. — Мозг и тело';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.innerHTML = t; });
+  document.getElementById('hb').setAttribute('aria-label', 'Меню');
+}
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+~|}{[]:;?><';
+const rnd = () => CHARS[Math.random() * CHARS.length | 0];
+
+// ScrambleIn: до старта — неразрывный пробел, потом каждые 25 мс открывается по полсимвола, впереди до трёх случайных
+const scrambleIn = el => {
+  const text = el.textContent;
+  el.innerHTML = '&nbsp;';
+  return () => setTimeout(() => {
+    let pos = 0;
+    const id = setInterval(() => {
+      pos += 0.5;
+      let out = '';
+      for (let i = 0; i < text.length; i++) out += text[i] === ' ' ? ' ' : i < pos ? text[i] : i < pos + 3 ? rnd() : '';
+      el.textContent = out || ' ';
+      if (pos >= text.length) { clearInterval(id); el.textContent = text; }
+    }, 25);
+  }, reduce ? 0 : +el.dataset.delay);
+};
+const starts = [...document.querySelectorAll('.si')].map(scrambleIn);
+
+// ScrambleText: при наведении всё перемешано, потом открывается слева направо по символу на 4 кадра
+document.querySelectorAll('.st').forEach(el => {
+  const host = el.closest('a, button') || el, text = el.textContent;
+  let id = 0;
+  host.addEventListener('mouseenter', () => {
+    clearInterval(id);
+    let f = 0;
+    id = setInterval(() => {
+      const shown = Math.floor(f++ / 4);
+      el.textContent = [...text].map((c, i) => c === ' ' || i < shown ? c : rnd()).join('');
+      if (shown >= text.length) { clearInterval(id); el.textContent = text; }
+    }, 25);
+  });
+  host.addEventListener('mouseleave', () => { clearInterval(id); el.textContent = text; });
+});
+
+// вход через 800 мс
+const nav = document.getElementById('nav'), hin = document.getElementById('hin');
+let entered = false;
+setTimeout(() => { entered = true; nav.classList.add('on'); hin.classList.add('on'); starts.forEach(s => s()); }, 800);
+
+// меню
+const hb = document.getElementById('hb');
+hb.addEventListener('click', () => { const o = nav.classList.toggle('open'); hb.setAttribute('aria-expanded', String(o)); });
+document.querySelectorAll('[data-go]').forEach(a => a.addEventListener('click', e => {
+  e.preventDefault(); scrollTo({ top: innerHeight * +a.dataset.go, behavior: 'smooth' });
+}));
+
+// появление при прокрутке: один раз, когда видна доля data-a
+document.querySelectorAll('.iv').forEach(el => {
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { el.classList.add('in'); io.disconnect(); } }), { threshold: +el.dataset.a || .3 });
+  io.observe(el);
+});
+
+// первый экран: ролик перематывается движением мыши по горизонтали (чувствительность 0.8), перемотки идут цепочкой через seeked
+const hv = document.getElementById('hv');
+let target = 0, lastX = null, manualAt = -1e9, dir = 1;
+hv.pause();
+const seek = () => {
+  if (hv.seeking || !hv.duration) return;
+  if (Math.abs(hv.currentTime - target) > 0.01) hv.currentTime = target;
+};
+hv.addEventListener('seeked', seek);
+addEventListener('mousemove', e => {
+  if (lastX !== null && hv.duration) {
+    target = Math.min(hv.duration - 0.05, Math.max(0, target + (e.clientX - lastX) / innerWidth * hv.duration * 0.8));
+    seek();
+  }
+  lastX = e.clientX; manualAt = performance.now();
+}, { passive: true });
+
+// второй экран: rotateX(24deg) translateY(60 → -120) по пружине от прокрутки, прозрачность 0 → 1 на 0.3–0.5
+const cine = document.getElementById('about'), cineText = document.getElementById('cineText');
+let sx = 0, sv = 0, last = performance.now();
+const K = 15, C = 32, M = 1.8;
+function frame(now) {
+  const dt = Math.min(1, (now - last) / 1000); last = now;   // реальное время: при редких кадрах пружина не замедляется
+  // автопилот: мышь не двигалась 2,5 с — ролик сам медленно ходит туда-обратно
+  if (entered && !reduce && hv.duration && now - manualAt > 2500 && scrollY < innerHeight) {
+    target += dir * dt * 0.45;
+    if (target > hv.duration - 0.1) { target = hv.duration - 0.1; dir = -1; }
+    else if (target < 0.05) { target = 0.05; dir = 1; }
+    seek();
+  }
+  const r = cine.getBoundingClientRect();
+  const p = Math.min(1, Math.max(0, (innerHeight - r.top) / (innerHeight + r.height)));
+  for (let rest = dt; rest > 0; rest -= 1 / 60) {   // пружина stiffness 15, damping 32, mass 1.8, шаг не больше 1/60 с
+    const h = Math.min(rest, 1 / 60), a = (K * (p - sx) - C * sv) / M;
+    sv += a * h; sx += sv * h;
+  }
+  if (r.bottom > -200 && r.top < innerHeight + 200) {
+    const y = 60 - 180 * sx, o = reduce ? 1 : Math.min(1, Math.max(0, (sx - 0.3) / 0.2));
+    cineText.style.transform = `rotateX(24deg) translateY(${y.toFixed(2)}px) translateZ(15px)`;
+    cineText.style.opacity = o.toFixed(3);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Energy</title>
 <!-- Один файл вместо React + Tailwind + lucide-react + mp4box. ?lang=ru — русская версия.
@@ -215,7 +216,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 <script>
 (() => {
-const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+const RU = false;
 if (RU) {
   // у Helvetica Neue ME нет кириллицы — Inter с теми же тонкими начертаниями
   const l = document.createElement('link'); l.rel = 'stylesheet';

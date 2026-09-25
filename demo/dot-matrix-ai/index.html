@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Intelligence Designed To Evolve</title>
 <!-- Один файл вместо index.html + styles.css + main.js. ?lang=ru — русская версия.
@@ -194,7 +195,7 @@ button{font:inherit}
 </div>
 <script>
 (() => {
-const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+const RU = false;
 if (RU) {
   const TR = { home: 'Главная', product: 'Продукт', cases: 'Кейсы', contact: 'Контакты', signin: 'Войти',
     trust: 'Одна платформа для ИИ-агентов', h1a: 'Интеллект,', h1b: 'который эволюционирует',

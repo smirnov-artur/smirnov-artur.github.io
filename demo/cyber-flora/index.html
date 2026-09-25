@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Cyber-botanical systems</title>
 <!-- Один файл, без библиотек. ?lang=ru — русская версия (Instrument Serif и Space Grotesk без кириллицы → Cormorant 500 и Manrope).
@@ -176,7 +177,7 @@ html[lang=ru] .serif{font-family:'Cormorant',serif;font-weight:500}
 
 <script>
 (function(){
-  var ru = new URLSearchParams(location.search).get('lang') === 'ru';
+  var ru = false;
   var SENT = ru ? 'ГОТОВО' : 'SUBMITTED';
   if (ru) {
     var TR = { lead:'Создаём кибер-ботанические системы нового поколения: они лечат экосистемы и двигают технологии людей вперёд.',

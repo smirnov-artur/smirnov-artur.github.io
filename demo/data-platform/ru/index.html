@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>g.a.d. — data platform</title>
+<!-- Один файл вместо Vite + React + Tailwind + lucide-react: классы Tailwind переписаны в CSS один к одному. ?lang=ru — русская версия.
+     Suisse Int'l не подключаем (перезалив коммерческого шрифта): под обоими его именами в конце <head> подставлен Inter 400 из Google Fonts, с кириллицей. -->
+
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;border:0 solid #e5e7eb}
+html{line-height:1.5;-webkit-text-size-adjust:100%}
+body{font-family:"Suisse Int'l",'Suisse Intl',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+button{font:inherit;line-height:inherit;color:inherit;background:transparent;cursor:pointer}
+a{color:inherit;text-decoration:inherit}
+svg,video{display:block}
+.i{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+@keyframes fade-up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fade-down{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fade-left{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fade-right{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fade-scale{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@keyframes bar-grow{from{transform:scaleY(0);opacity:0}to{transform:scaleY(1);opacity:1}}
+.o0{opacity:0}
+.animate-fade-up{animation:fade-up .8s cubic-bezier(.16,1,.3,1) forwards}
+.animate-fade-down{animation:fade-down .7s cubic-bezier(.16,1,.3,1) forwards}
+.animate-fade-left{animation:fade-left .8s cubic-bezier(.16,1,.3,1) forwards}
+.animate-fade-right{animation:fade-right .8s cubic-bezier(.16,1,.3,1) forwards}
+.animate-fade-scale{animation:fade-scale .9s cubic-bezier(.16,1,.3,1) forwards}
+.animate-bar-grow{animation:bar-grow .6s cubic-bezier(.16,1,.3,1) forwards;opacity:0}
+
+/* логотип g.a.d. */
+.gad{display:block;color:#fff}
+.gad svg{display:block;height:28px;width:auto;overflow:visible}
+.gad svg text{font-family:'Unbounded',sans-serif}
+.gad .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}
+.gad .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}
+@keyframes gad-draw{to{stroke-dashoffset:0}}
+@keyframes gad-pop{to{opacity:1}}
+@keyframes gad-orbit{to{transform:rotate(360deg)}}
+
+.hero{position:relative;width:100%;height:100vh;overflow:hidden;background:#080A19}
+.hero>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.wrap{position:relative;z-index:10;height:100%;display:flex;flex-direction:column}
+.px{padding-left:20px;padding-right:20px}
+.nav{width:100%;max-width:1800px;margin:0 auto;padding-top:20px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:50}
+.logo{display:flex;align-items:center;gap:10px}
+.lgb{display:none}
+
+.pill{height:52px;padding:0 24px;display:flex;align-items:center;gap:30px;background:rgba(10,7,7,.35);border-radius:11px;-webkit-backdrop-filter:blur(17px);backdrop-filter:blur(17px)}
+.pill .it{color:rgba(255,255,255,.8);font-size:14px;font-weight:450;line-height:14px;transition:color .15s cubic-bezier(.4,0,.2,1);cursor:pointer;white-space:nowrap}
+.pill .it:hover{color:#fff}
+.pill button.it{display:flex;align-items:center;gap:5px}
+.pill .chev{width:10px;height:10px;opacity:.8}
+.auth{height:52px;padding:3px;background:rgba(0,0,0,.35);border-radius:13px;-webkit-backdrop-filter:blur(17px);backdrop-filter:blur(17px);display:flex;align-items:center;gap:5px}
+.auth button{height:46px;padding:0 24px;border-radius:11px;font-size:14px;font-weight:450;line-height:14px;transition:background-color .15s cubic-bezier(.4,0,.2,1);white-space:nowrap}
+.auth .login{color:#fff}
+.auth .login:hover{background:rgba(255,255,255,.05)}
+.auth .demo{background:#E9E9E9;color:#0A0707}
+.auth .demo:hover{background:#fff}
+
+.burger{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:11px;background:rgba(10,7,7,.35);-webkit-backdrop-filter:blur(17px);backdrop-filter:blur(17px);transition:background-color .15s cubic-bezier(.4,0,.2,1)}
+.burger:hover{background:rgba(255,255,255,.1)}
+.burger .box{position:relative;width:20px;height:20px}
+.burger svg{position:absolute;inset:0;width:20px;height:20px;color:#fff;transition:all .3s cubic-bezier(0,0,.2,1)}
+.burger .m{opacity:1;transform:rotate(0) scale(1)}
+.burger .x{opacity:0;transform:rotate(-90deg) scale(.75)}
+.open .burger .m{opacity:0;transform:rotate(90deg) scale(.75)}
+.open .burger .x{opacity:1;transform:rotate(0) scale(1)}
+
+/* меню телефона: не снимается, а прячется visibility — закрытие тоже анимируется */
+.mm{position:fixed;inset:0;z-index:40;visibility:hidden;transition:all .5s cubic-bezier(.32,.72,0,1)}
+.open .mm{visibility:visible}
+.mm-bd{position:absolute;inset:0;background:rgba(8,10,25,.9);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);opacity:0;transition:opacity .5s cubic-bezier(.4,0,.2,1)}
+.open .mm-bd{opacity:1}
+.mm-p{position:absolute;top:76px;left:16px;right:16px;background:rgba(17,16,15,.6);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);border-radius:20px;border:1px solid rgba(255,255,255,.06);padding:24px;
+  transition:all .5s cubic-bezier(.32,.72,0,1);transform-origin:top;opacity:0;transform:translateY(-16px) scale(.97)}
+.open .mm-p{opacity:1;transform:translateY(0) scale(1)}
+.mm-l{display:flex;flex-direction:column;gap:4px}
+.mm-l a{display:flex;align-items:center;justify-content:space-between;padding:16px;border-radius:12px;color:rgba(255,255,255,.9);font-size:18px;font-weight:450;
+  transition:all .3s cubic-bezier(.4,0,.2,1);transition-delay:0ms;opacity:0;transform:translateX(-12px)}
+.mm-l a:hover{background:rgba(255,255,255,.06)}
+.open .mm-l a{opacity:1;transform:translateX(0);transition-delay:var(--d)}
+.mm-l .i{width:16px;height:16px;opacity:.5}
+.mm-hr{height:1px;background:rgba(255,255,255,.1);margin:20px 0}
+.mm-c{display:flex;flex-direction:column;gap:12px;transition:all .3s cubic-bezier(.4,0,.2,1);transition-delay:0ms;opacity:0;transform:translateY(8px)}
+.open .mm-c{opacity:1;transform:translateY(0);transition-delay:350ms}
+.mm-c button{width:100%;height:50px;border-radius:12px;font-size:15px;font-weight:450;transition:background-color .15s cubic-bezier(.4,0,.2,1)}
+.mm-c .demo{background:#E9E9E9;color:#0A0707}
+.mm-c .demo:hover{background:#fff}
+.mm-c .login{border:1px solid rgba(255,255,255,.3);color:#fff}
+.mm-c .login:hover{background:rgba(255,255,255,.05)}
+
+.main{flex:1;display:flex;align-items:center;padding:32px 0}
+.row{width:100%;max-width:1800px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
+.copy{max-width:593px}
+h1{color:#fff;font-size:36px;font-weight:400;line-height:.95;margin-bottom:20px}
+.sub{color:rgba(255,255,255,.8);font-size:16px;font-weight:450;line-height:1.3;max-width:370px;margin-bottom:28px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px}
+.cta{height:46px;padding:0 20px;border-radius:12px;font-size:14px;font-weight:450;line-height:15.5px;transition:opacity .15s cubic-bezier(.4,0,.2,1)}
+.cta.l{background:#E9E9E9;color:#0A0707}
+.cta.l:hover{opacity:.9}
+.cta.o{border:1px solid #fff;color:#fff}
+.cta.o:hover{opacity:.8}
+
+.cardw{width:100%;max-width:405px;margin:0 auto}
+.card{width:100%;border-radius:24px;background:rgba(17,16,15,.35);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);padding:20px}
+.lab{color:#fff;font-size:16px;font-weight:450;line-height:20px;margin-bottom:12px}
+.amt{margin-bottom:8px}
+.amt span{color:#fff;font-size:28px;font-weight:450;line-height:1}
+.amt .c{color:rgba(255,255,255,.2)}
+.delta{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.badge{padding:7px 6px;background:rgba(255,255,255,.2);border-radius:6px;color:#fff;font-size:12px;font-weight:450;line-height:14px}
+.cap{color:rgba(255,255,255,.8);font-size:12px;font-weight:450;line-height:14px;opacity:.7}
+.chart{position:relative}
+.bars{display:flex;align-items:flex-end;gap:1.5px;height:80px}
+.bar{flex:1;border-radius:.5px;transform-origin:bottom}
+.grid{position:absolute;inset:0;pointer-events:none}
+.grid i{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,.1)}
+.axis{display:flex;justify-content:space-between;margin-top:12px}
+.axis span{font-size:9px;font-weight:450;line-height:10px;color:rgba(255,255,255,.8)}
+
+@media (min-width:640px){
+  .px{padding-left:32px;padding-right:32px}
+  .nav{padding-top:30px}
+  .gad svg{height:32px}
+  .mm-p{top:86px;left:24px;right:24px;padding:32px}
+  h1{font-size:52px;margin-bottom:32px}
+  .sub{font-size:18px;margin-bottom:40px}
+  .ctas{gap:16px}
+  .cta{height:51px;padding:0 27px;font-size:15.5px}
+  .card{border-radius:33px;padding:32px 32px 24px}
+  .lab{font-size:20px;margin-bottom:16px}
+  .amt{margin-bottom:12px}
+  .amt span{font-size:46px}
+  .delta{margin-bottom:32px}
+  .badge,.cap{font-size:14px}
+  .bars{height:100px}
+  .axis span{font-size:10px}
+}
+@media (min-width:768px){
+  .px{padding-left:82px;padding-right:82px}
+  h1{font-size:64px}
+  .sub{font-size:20px}
+}
+@media (min-width:1024px){
+  .lgb{display:block}
+  .lgh,.mm{display:none}
+  .row{flex-direction:row;align-items:center;justify-content:space-between;gap:48px}
+  .cardw{margin:0}
+  h1{font-size:72px}
+}
+@media (prefers-reduced-motion:reduce){.gad .ring{animation:none;stroke-dashoffset:0}.gad .orb{animation:none;opacity:1}}
+</style>
+<link rel="stylesheet" href="https://db.onlinewebfonts.com/c/13ab13418f633c1b0516fed6e30bedbc?family=Suisse+Int%27l">
+<style id="cyr">/* русские буквы: исходный шрифт без кириллицы, глифы — у близкого с кириллицей */
+@font-face{font-family:'Suisse Int'l';font-style:normal;font-weight:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Suisse Int'l';font-style:normal;font-weight:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+</style>
+</head>
+<body>
+<section class="hero">
+  <video src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260813_092641_de52eb87-daf2-41db-92cb-7a56eae012a5.mp4" autoplay loop muted playsinline></video>
+  <div class="wrap" id="wrap">
+    <nav class="nav px">
+      <div class="o0 animate-fade-down" style="animation-delay:0ms">
+        <div class="logo">
+          <a class="gad" href="#" aria-label="g.a.d.">
+            <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+              <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+              <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+              <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="o0 animate-fade-down lgb" style="animation-delay:100ms">
+        <div class="pill">
+          <button class="it" type="button"><span data-t="n1">Platform</span><svg class="i chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+          <span class="it" data-t="n2">Pricing</span>
+          <span class="it" data-t="n3">Resources</span>
+          <span class="it" data-t="n4">Blog</span>
+        </div>
+      </div>
+      <div class="o0 animate-fade-down lgb" style="animation-delay:200ms">
+        <div class="auth">
+          <button class="login" type="button" data-t="login">Login</button>
+          <button class="demo" type="button" data-t="demo">Book a demo</button>
+        </div>
+      </div>
+      <div class="o0 animate-fade-down lgh" style="animation-delay:100ms">
+        <button class="burger" id="burger" type="button" aria-label="Toggle menu">
+          <div class="box">
+            <svg class="i m" viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M4 6h16"/><path d="M4 18h16"/></svg>
+            <svg class="i x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </div>
+        </button>
+      </div>
+    </nav>
+
+    <div class="mm">
+      <div class="mm-bd" id="bd"></div>
+      <div class="mm-p">
+        <div class="mm-l">
+          <a href="#" style="--d:100ms"><span data-t="n1">Platform</span><svg class="i" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></a>
+          <a href="#" style="--d:150ms" data-t="n2">Pricing</a>
+          <a href="#" style="--d:200ms" data-t="n3">Resources</a>
+          <a href="#" style="--d:250ms" data-t="n4">Blog</a>
+        </div>
+        <div class="mm-hr"></div>
+        <div class="mm-c">
+          <button class="demo" type="button" data-t="demo">Book a demo</button>
+          <button class="login" type="button" data-t="login">Login</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="row px">
+        <div class="copy">
+          <div class="o0 animate-fade-up" style="animation-delay:300ms">
+            <h1 data-t="h1">Elevate your essential data to new heights</h1>
+          </div>
+          <div class="o0 animate-fade-up" style="animation-delay:500ms">
+            <p class="sub" data-t="sub">Advanced reasoning systems and predictive models built for the unknown</p>
+          </div>
+          <div class="o0 animate-fade-up" style="animation-delay:700ms">
+            <div class="ctas">
+              <button class="cta l" type="button" data-t="demo">Book a demo</button>
+              <button class="cta o" type="button" data-t="talk">Talk with the team</button>
+            </div>
+          </div>
+        </div>
+        <div class="o0 animate-fade-scale cardw" style="animation-delay:900ms">
+          <div class="card">
+            <p class="lab" data-t="rev">Revenue Growth</p>
+            <p class="amt"><span>$14,205,890</span><span class="c">.00</span></p>
+            <div class="delta">
+              <span class="badge">+32.4%</span>
+              <span class="cap" data-t="vs">vs. previous period ($10.7M)</span>
+            </div>
+            <div class="chart">
+              <div class="bars" id="bars"></div>
+              <div class="grid" id="grid"></div>
+              <div class="axis" id="axis"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+(() => {
+const BAR_HEIGHTS = [
+  23, 40, 53, 40, 33, 14, 7, 17, 75, 65,
+  88, 75, 65, 47, 33, 88, 4, 7, 9, 14,
+  95, 65, 79, 37, 7, 40, 17, 20, 62, 47,
+  92, 72,
+];
+const maxHeight = Math.max(...BAR_HEIGHTS);
+const bars = document.getElementById('bars');
+BAR_HEIGHTS.forEach((h, i) => {
+  const isProjected = i >= 28;
+  const b = document.createElement('div');
+  b.className = 'bar animate-bar-grow';
+  b.style.height = (h / maxHeight) * 100 + '%';
+  b.style.backgroundColor = isProjected ? 'rgba(255,255,255,0.1)' : 'white';
+  b.style.animationDelay = (1100 + i * 30) + 'ms';
+  bars.appendChild(b);
+});
+const grid = document.getElementById('grid');
+[0, 1, 2, 3, 4].forEach(i => { const l = document.createElement('i'); l.style.left = ((i + 1) / 5) * 100 + '%'; grid.appendChild(l); });
+const axis = document.getElementById('axis');
+['10:00', '12:00', '14:00', '16:00', '16:00'].forEach((t, i) => { const s = document.createElement('span'); s.textContent = t; s.style.opacity = i >= 3 ? 0.4 : 1; axis.appendChild(s); });
+
+if (true) {
+  const TR = { n1: 'Платформа', n2: 'Цены', n3: 'Материалы', n4: 'Блог', login: 'Войти', demo: 'Заказать демо',
+    h1: 'Поднимите главные данные на новую высоту', sub: 'Системы рассуждений и прогнозные модели для задач, у которых ещё нет ответа',
+    talk: 'Написать нам', rev: 'Рост выручки', vs: 'к прошлому периоду ($10,7 млн)' };
+  document.documentElement.lang = 'ru';
+  document.title = 'g.a.d. — платформа данных';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.textContent = t; });
+}
+
+const wrap = document.getElementById('wrap');
+const set = open => { wrap.classList.toggle('open', open); document.body.style.overflow = open ? 'hidden' : ''; };
+document.getElementById('burger').addEventListener('click', () => set(!wrap.classList.contains('open')));
+document.getElementById('bd').addEventListener('click', () => set(false));
+document.querySelectorAll('.mm-l a').forEach(a => a.addEventListener('click', () => set(false)));
+})();
+</script>
+<a class="owf-credit" href="https://www.onlinewebfonts.com" target="_blank" rel="noopener" style="position:fixed;left:6px;bottom:4px;z-index:2147483000;font:9px/1.2 system-ui,sans-serif;color:#8a8a8a;opacity:.55;text-decoration:none">Fonts made from Web Fonts is licensed by CC BY 4.0</a>
+</body>
+</html>

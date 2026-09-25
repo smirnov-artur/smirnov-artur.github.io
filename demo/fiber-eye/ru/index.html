@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. — Today AI Aligns With Bold Dreams</title>
+<!-- Один файл вместо Vite + React + Tailwind + lucide-react: классы переписаны в CSS, иконки вставлены SVG. ?lang=ru — русская версия
+     (у Flexo Soft Medium нет кириллицы, по-русски Nunito). v.mp4 — тот же ролик, пережатый с ключевым кадром каждые 4 кадра:
+     он листается прокруткой. Кадры, как в исходнике, заранее снимаются в ImageBitmap (на телефоне шириной до 720 px вместо 1280 — меньше памяти).
+     Пока страницу не листают, первый экран сам медленно проигрывает начало ролика туда-обратно. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='19' fill='none' stroke='white' stroke-width='4'/%3E%3Ccircle cx='24' cy='5' r='4' fill='white'/%3E%3C/svg%3E">
+<link href="https://db.onlinewebfonts.com/c/4556933d6966c60eda45bebad34d9c90?family=Flexo+Soft+Medium" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&text=g.ad&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; font-family: 'Flexo Soft Medium', system-ui, sans-serif; background-color: #0a0a0a; color: #fff; -webkit-font-smoothing: antialiased; }
+.ru body { font-family: 'Nunito', system-ui, sans-serif; font-weight: 500; }
+::selection { background-color: rgba(255,255,255,.2); }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+h1, h2, p, ul { margin: 0; padding: 0; }
+.relative { position: relative; }
+ul { list-style: none; }
+.i { display: block; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ds-md { filter: drop-shadow(0 4px 3px rgba(0,0,0,.07)) drop-shadow(0 2px 2px rgba(0,0,0,.06)); }
+.ds-lg { filter: drop-shadow(0 10px 8px rgba(0,0,0,.04)) drop-shadow(0 4px 3px rgba(0,0,0,.1)); }
+.ital { text-transform: none; font-style: italic; font-weight: 300; }
+
+/* фон: ролик листается прокруткой */
+.sv { position: fixed; inset: 0; z-index: -10; background: #0a0a0a; }
+.sv canvas, .sv video { position: absolute; inset: 0; width: 100%; height: 100%; }
+.sv video { object-fit: cover; }
+.sv .ov { position: absolute; inset: 0; background: rgba(0,0,0,.2); }
+
+/* Reveal: появляется и прячется каждый раз, когда входит в экран и выходит из него */
+.rv { transition: all .7s cubic-bezier(0,0,.2,1); will-change: transform; transform: translateY(2rem); opacity: 0; }
+.rv.vis { transform: translateY(0); opacity: 1; }
+span.rv { display: inline-block; }
+span.rv.block { display: block; }
+
+/* углы */
+.tl { position: fixed; left: 20px; top: 20px; z-index: 50; }
+.brand { display: block; font-size: 18px; line-height: 1; color: #fff; }
+.brand svg { display: block; height: 1.15em; width: auto; overflow: visible; }
+.brand svg text { font-family: 'Unbounded', sans-serif; }
+.ring { animation: gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards; }
+.orb { opacity: 0; transform-box: view-box; transform-origin: 322px 30px; animation: gad-pop .3s ease 1.35s forwards, gad-orbit 7s linear 1.35s infinite; }
+@keyframes gad-draw { to { stroke-dashoffset: 0; } }
+@keyframes gad-pop { to { opacity: 1; } }
+@keyframes gad-orbit { to { transform: rotate(360deg); } }
+.ver { margin-top: 24px; font-size: 10px; color: rgba(255,255,255,.6); }
+.tr { position: fixed; right: 20px; top: 20px; z-index: 50; }
+.tr ul { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.tr a { display: flex; align-items: center; gap: 4px; font-size: 12px; line-height: 16px; color: rgba(255,255,255,.8); transition: color .3s; }
+.tr a:hover { color: #fff; }
+.tr a svg { width: 14px; height: 14px; transition: transform .3s; }
+.tr a:hover svg { transform: translate(2px, -2px); }
+
+/* первый экран */
+.s1, .s2 { position: relative; display: flex; flex-direction: column; min-height: 100vh; min-height: 100svh; }
+.s1 { justify-content: flex-end; }
+.row1 { position: relative; display: flex; flex-direction: column; gap: 40px; padding: 0 20px 64px; }
+.hl { max-width: 576px; font-size: 36px; font-weight: 500; text-transform: uppercase; line-height: 1.05; letter-spacing: -.025em; color: #fff; }
+.pl6 { padding-left: 24px; } .pl10 { padding-left: 40px; } .pl16 { padding-left: 64px; }
+.side { display: flex; flex-direction: column; align-items: flex-start; width: 100%; max-width: 320px; }
+.meta { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 24px; color: #fff; }
+.meta b { font-weight: inherit; font-size: 18px; line-height: 28px; }
+.meta small { font-size: 12px; line-height: 16px; color: rgba(255,255,255,.7); }
+.copy { margin-bottom: 24px; font-size: 14px; line-height: 1.625; color: rgba(255,255,255,.85); }
+.cta { display: block; width: 100%; border-radius: 9999px; border: 1px solid rgba(255,255,255,.6); padding: 12px 32px; text-align: center;
+  font-size: 12px; line-height: 16px; text-transform: uppercase; letter-spacing: .15em; color: #fff; transition: all .3s; }
+.cta:hover { background: #fff; color: #000; }
+.share { position: absolute; left: 20px; bottom: 20px; }
+.share button { display: block; color: rgba(255,255,255,.8); transition: color .15s; }
+.share button:hover { color: #fff; }
+.share svg, .down svg { width: 18px; height: 18px; }
+.down { position: absolute; left: 50%; bottom: 20px; }
+.rv.down { transform: translate(-50%, 2rem); }
+.rv.down.vis { transform: translate(-50%, 0); }
+.down svg { color: rgba(255,255,255,.8); animation: bounce 1s infinite; }
+@keyframes bounce { 0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(.8,0,1,1); } 50% { transform: none; animation-timing-function: cubic-bezier(0,0,.2,1); } }
+.gap { height: 80vh; }
+
+/* второй экран */
+.mid { position: relative; display: flex; flex: 1; flex-direction: column; justify-content: center; gap: 40px; padding: 96px 20px 0; }
+.h2 { max-width: 384px; font-size: 36px; font-weight: 500; text-transform: uppercase; line-height: 1.05; letter-spacing: -.025em; color: #fff; }
+.meta2 { display: flex; align-items: center; justify-content: space-between; color: #fff; }
+.meta2 b { font-weight: inherit; font-size: 18px; line-height: 28px; }
+.meta2 small { font-size: 12px; line-height: 16px; color: rgba(255,255,255,.7); }
+.bot { position: relative; display: flex; flex-direction: column; gap: 40px; padding: 0 20px 64px; }
+.bot p { max-width: 320px; font-size: 14px; line-height: 1.625; color: rgba(255,255,255,.85); }
+.demo { width: 100%; max-width: 320px; }
+.demo a { padding-left: 40px; padding-right: 40px; }
+
+@media (min-width: 640px) {
+  .tl { left: 32px; top: 28px; }
+  .brand { font-size: 20px; }
+  .ver { margin-top: 32px; font-size: 12px; }
+  .tr { right: 32px; top: 28px; }
+  .tr ul { gap: 8px; }
+  .tr a { font-size: 14px; line-height: 20px; }
+  .row1 { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 32px; padding: 0 32px 64px; }
+  .hl, .h2 { font-size: 48px; }
+  .pl6 { padding-left: 48px; } .pl10 { padding-left: 80px; } .pl16 { padding-left: 128px; }
+  .meta { margin-bottom: 32px; }
+  .copy { margin-bottom: 32px; }
+  .share { left: 32px; bottom: 24px; }
+  .down { bottom: 24px; }
+  .mid { flex-direction: row; align-items: center; justify-content: space-between; gap: 32px; padding: 0 32px; }
+  .meta2 { justify-content: flex-start; gap: 64px; }
+  .bot { padding: 0 32px 64px; }
+  .demo { position: absolute; bottom: 64px; left: 50%; width: auto; max-width: none; }
+  .rv.demo { transform: translate(-50%, 2rem); }
+  .rv.demo.vis { transform: translate(-50%, 0); }
+}
+@media (min-width: 768px) {
+  .tl { left: 48px; }
+  .brand { font-size: 24px; }
+  .tr { right: 48px; }
+  .row1 { padding: 0 48px 80px; }
+  .hl, .h2 { font-size: 60px; }
+  .share { left: 48px; }
+  .mid { padding: 0 48px; }
+  .meta2 { gap: 96px; }
+  .bot { padding: 0 48px 80px; }
+  .demo { bottom: 80px; }
+}
+@media (min-width: 1024px) { .hl { font-size: 72px; } }
+@media (prefers-reduced-motion: reduce) {
+  .rv { transition: none; }
+  .down svg { animation: none; }
+  .ring { animation: none; stroke-dashoffset: 0; } .orb { animation: none; opacity: 1; }
+}
+</style>
+</head>
+<body>
+<div class="relative">
+  <div class="sv" aria-hidden="true">
+    <canvas id="cv"></canvas>
+    <video id="fb" src="../v.mp4" muted playsinline preload="auto"></video>
+    <div class="ov"></div>
+  </div>
+
+  <div class="tl">
+    <div class="rv"><a class="brand ds-md" href="#" aria-label="g.a.d.">
+      <svg viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+        <text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text>
+        <circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+        <circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+      </svg>
+    </a></div>
+    <div class="rv" style="transition-delay:150ms"><p class="ver">[ v.01b ]</p></div>
+  </div>
+
+  <nav class="tr">
+    <ul>
+      <li><div class="rv" style="transition-delay:100ms"><a class="ds-md" href="#"><span data-t="n1">main</span><svg class="i" viewBox="0 0 24 24"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a></div></li>
+      <li><div class="rv" style="transition-delay:220ms"><a class="ds-md" href="#"><span data-t="n2">tiers</span><svg class="i" viewBox="0 0 24 24"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a></div></li>
+      <li><div class="rv" style="transition-delay:340ms"><a class="ds-md" href="#"><span data-t="n3">features</span><svg class="i" viewBox="0 0 24 24"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a></div></li>
+      <li><div class="rv" style="transition-delay:460ms"><a class="ds-md" href="#"><span data-t="n4">talk to us</span><svg class="i" viewBox="0 0 24 24"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a></div></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section class="s1">
+      <div class="row1">
+        <h1 class="hl ds-lg">
+          <span class="rv block pl6" style="transition-delay:100ms" data-t="h1">Today AI</span>
+          <span class="rv block" style="transition-delay:220ms" data-t="h2">Aligns <span class="ital">with</span></span>
+          <span class="rv block pl10" style="transition-delay:340ms" data-t="h3">// Bold</span>
+          <span class="rv block pl16" style="transition-delay:460ms" data-t="h4">Dreams</span>
+        </h1>
+        <div class="side">
+          <div class="rv meta" style="transition-delay:400ms"><b>( A )</b><small>[ 001 /004 ]</small></div>
+          <div class="rv" style="transition-delay:520ms"><p class="copy ds-md" data-t="copy">g.a.d. is where your bravest work finds its true expression. We hand you the means not only to form the future.</p></div>
+          <div class="rv" style="transition-delay:640ms;width:100%"><a class="cta" href="#" data-t="begin">Begin Today</a></div>
+        </div>
+      </div>
+      <div class="rv share" style="transition-delay:760ms"><button type="button" aria-label="Share" data-a="share"><svg class="i" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg></button></div>
+      <div class="rv down" style="transition-delay:760ms"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></div>
+    </section>
+
+    <div aria-hidden="true" class="gap"></div>
+
+    <section class="s2">
+      <div class="mid">
+        <h2 class="h2 ds-lg">
+          <span class="rv block" style="transition-delay:100ms" data-t="l1">Learn <span class="ital">to see</span></span>
+          <span class="rv block" style="transition-delay:220ms" data-t="l2">Brilliantly</span>
+        </h2>
+        <div class="rv meta2" style="transition-delay:340ms"><b>( B )</b><small>[ 002 /004 ]</small></div>
+      </div>
+      <div class="bot">
+        <div class="rv" style="transition-delay:460ms"><p class="ds-md" data-t="p2">Our AI doesn't just respond — it interprets, sharpens, and delivers. From outline to final render, it supplies the insight you want.</p></div>
+        <div class="rv demo" style="transition-delay:580ms"><a class="cta" href="#" data-t="demo">Run The Demo</a></div>
+      </div>
+      <div class="rv share" style="transition-delay:700ms"><button type="button" aria-label="Share" data-a="share"><svg class="i" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg></button></div>
+    </section>
+  </main>
+</div>
+
+<script>
+(() => {
+const RU = true;
+if (RU) {
+  const TR = {
+    n1: 'главная', n2: 'тарифы', n3: 'возможности', n4: 'написать нам',
+    h1: 'Сегодня ИИ', h2: 'в союзе <span class="ital">с</span>', h3: '// смелыми', h4: 'мечтами',
+    copy: 'g.a.d. — место, где самая смелая работа находит настоящее выражение. Мы даём инструменты, чтобы строить будущее.',
+    begin: 'Начать сегодня',
+    l1: 'Научитесь <span class="ital">видеть</span>', l2: 'ярче',
+    p2: 'Наш ИИ не просто отвечает — он понимает, уточняет и доводит до результата. От наброска до финального рендера он подсказывает именно то, что нужно.',
+    demo: 'Запустить демо'
+  };
+  document.documentElement.lang = 'ru';
+  document.documentElement.classList.add('ru');
+  document.title = 'g.a.d. — ИИ в союзе со смелыми мечтами';
+  document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.innerHTML = t; });
+  document.querySelectorAll('[data-a=share]').forEach(b => b.setAttribute('aria-label', 'Поделиться'));
+}
+
+// Reveal: порог 0.15, повторяется при каждом входе в экран
+const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('vis', e.isIntersecting)), { threshold: 0.15 });
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+// ScrollVideo
+const SRC = '../v.mp4';
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d'), fb = document.getElementById('fb');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let frames = null, smoothed = 0, lastIdx = -1, cancelled = false, objUrl = null;
+
+function resize() {
+  const d = Math.min(2, devicePixelRatio || 1);
+  cv.width = Math.round(cv.clientWidth * d); cv.height = Math.round(cv.clientHeight * d); lastIdx = -1;
+}
+resize();
+addEventListener('resize', resize);
+
+function draw(bm) {   // «cover»: масштаб по большей стороне, излишек поровну по краям
+  const s = Math.max(cv.width / bm.width, cv.height / bm.height), w = bm.width * s, h = bm.height * s;
+  ctx.drawImage(bm, (cv.width - w) / 2, (cv.height - h) / 2, w, h);
+}
+
+async function extract() {
+  let url = SRC;
+  try {   // как в исходнике: ролик целиком в blob; с диска (file://) fetch не работает — тогда берём файл напрямую
+    const r = await fetch(SRC);
+    if (!r.ok) throw new Error(r.status);
+    objUrl = URL.createObjectURL(await r.blob()); url = objUrl;
+  } catch (e) { /* файл напрямую */ }
+  const v = document.createElement('video');
+  v.muted = true; v.playsInline = true; v.preload = 'auto'; v.src = url;
+  await new Promise((ok, bad) => { v.addEventListener('loadedmetadata', ok, { once: true }); v.addEventListener('error', bad, { once: true }); });
+  const maxW = innerWidth < 768 ? 720 : 1280;   // ponytail: 120 кадров по 1280 px ≈ 440 МБ, на телефоне режем до 720
+  const k = Math.min(1, maxW / v.videoWidth), w = Math.round(v.videoWidth * k), h = Math.round(v.videoHeight * k);
+  const n = Math.min(120, Math.max(30, Math.round(v.duration * 24)));
+  const out = [];
+  for (let i = 0; i < n && !cancelled; i++) {
+    await new Promise(ok => { v.addEventListener('seeked', ok, { once: true }); v.currentTime = (v.duration - 0.05) * i / (n - 1); });
+    out.push(await createImageBitmap(v, { resizeWidth: w, resizeHeight: h, resizeQuality: 'high' }));
+  }
+  if (cancelled) { out.forEach(b => b.close()); return; }
+  frames = out; lastIdx = -1;
+  fb.remove();
+  v.removeAttribute('src'); v.load();
+  if (objUrl) { URL.revokeObjectURL(objUrl); objUrl = null; }
+}
+extract().catch(() => {});   // не вышло — остаётся перемотка обычного видео
+addEventListener('pagehide', () => {
+  cancelled = true;
+  if (frames) frames.forEach(b => b.close());
+  if (objUrl) URL.revokeObjectURL(objUrl);
+});
+
+// пока не листают: начало ролика медленно ходит туда-обратно
+let touchedAt = -1e9;
+const t0 = performance.now();
+['wheel', 'touchstart', 'keydown'].forEach(ev => addEventListener(ev, () => { touchedAt = performance.now(); }, { passive: true }));
+addEventListener('scroll', () => { touchedAt = performance.now(); }, { passive: true });
+
+function tick(now) {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  let target = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+  if (!reduce && scrollY < 2 && now - touchedAt > 2000) target = 0.08 * (1 - Math.cos((now - t0) / 1000 * 0.8));
+  smoothed += (target - smoothed) * 0.1;
+  if (frames) {
+    const idx = Math.min(frames.length - 1, Math.max(0, Math.round(smoothed * (frames.length - 1))));
+    if (idx !== lastIdx) { draw(frames[idx]); lastIdx = idx; }
+  } else if (fb.duration && !fb.seeking) {
+    const t = smoothed * (fb.duration - 0.05);
+    if (Math.abs(fb.currentTime - t) > 0.001) fb.currentTime = t;
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+})();
+</script>
+<a class="owf-credit" href="https://www.onlinewebfonts.com" target="_blank" rel="noopener" style="position:fixed;left:6px;bottom:4px;z-index:2147483000;font:9px/1.2 system-ui,sans-serif;color:#8a8a8a;opacity:.55;text-decoration:none">Fonts made from Web Fonts is licensed by CC BY 4.0</a>
+</body>
+</html>

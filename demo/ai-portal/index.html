@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>g.a.d. — The Next Layer of Intelligence</title>
 <!-- ?lang=ru — русская версия. Знак бренда заменён логотипом g.a.d.; полоса из четырёх «logoipsum» (чужие логотипы «нам доверяют») убрана. -->
@@ -199,7 +200,7 @@ button{font:inherit}
 </div>
 <script>
 (function(){
-  var ru = new URLSearchParams(location.search).get('lang') === 'ru';
+  var ru = false;
   var L = ru ? { open:'Открыть меню', close:'Закрыть меню' } : { open:'Open menu', close:'Close menu' };
   if (ru) {
     var TR = { n1:'О нас', n2:'Возможности', n3:'Вопросы', n4:'Контакты', go:'Начать', menu:'Меню', arch:'Смотреть архитектуру',

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="g.a.d. — strategy-led design studio crafting digital experiences for brands ready to dominate their category online.">
 <title>g.a.d. — Design Studio</title>
@@ -315,7 +316,7 @@ h1 br{display:none}
 
 <script>
 (() => {
-const RU = new URLSearchParams(location.search).get('lang') === 'ru';
+const RU = false;
 if (RU) {
   const TR = { l1: 'Проекты', l2: 'Студия', l3: 'Журнал', l4: 'Связь', taking: 'Беру проекты на IV квартал 2026',
     book: 'Записаться на созвон', start: 'Начать проект', ai: 'Студия на ИИ', intro: 'Знакомьтесь: g.a.d.',

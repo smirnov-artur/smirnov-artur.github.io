@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. AI — security done right</title>
 <!-- Один файл вместо React + Vite + Tailwind + shadcn/ui: классы переписаны в CSS, сцена Spline — через @splinetool/viewer. ?lang=ru — русская версия
@@ -134,7 +135,7 @@ h1 .ai { color: hsl(var(--primary)); }
 </div>
 <script>
 (() => {
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = {
     n1: 'Услуги', n2: 'О нас', n3: 'Проекты', n4: 'Команда', n5: 'Контакты', quote: 'Узнать цену',
     sub: 'Делаем безопасность правильно.',

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>g.a.d. — Space voyages</title>
 <!-- Один файл вместо React + Babel + Framer Motion + Tailwind CDN. ?lang=ru — русская версия
@@ -220,7 +221,7 @@ h2{margin:0;font-family:var(--fh);font-style:italic;font-weight:400;font-size:60
 <script>
 (() => {
 const h1 = document.getElementById('h1');
-if (new URLSearchParams(location.search).get('lang') === 'ru') {
+if (false) {
   const TR = { n1: 'Главная', n2: 'Полёты', n3: 'Миры', n4: 'Технологии', n5: 'План запуска', claim: 'Занять место',
     new: 'Новое', badge: 'Первый пилотируемый полёт к Марсу — уже в 2026',
     sub: 'Откройте Вселенную так, как раньше нельзя было и представить. Наши корабли и прорывная инженерия делают дальний космос доступным — надёжно и невероятно.',
