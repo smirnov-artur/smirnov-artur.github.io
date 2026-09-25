@@ -3266,5 +3266,35 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "travel-journal",
+  "v": "travel-journal",
+  "ve": "travel-journal-en",
+  "ru": [
+   "Дневник путешествий",
+   "В мокапе iPhone карточки Токио, Сеула, Бали и Рима одна за другой всплывают и проявляются на экране."
+  ],
+  "en": [
+   "Travel journal app",
+   "Inside an iPhone mockup, four destination cards fade and slide up one after another under glass badges."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "celestial-renewal",
+  "v": "celestial-renewal",
+  "ve": "celestial-renewal-en",
+  "ru": [
+   "Красота и велнес",
+   "Земля из космоса за заголовком, ниже — радуга и облака плывут при прокрутке рядом с цитатой."
+  ],
+  "en": [
+   "Beauty and wellness",
+   "Earth glows behind the hero text, then clouds and a rainbow drift in as you scroll past a quote."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
