@@ -2631,5 +2631,19 @@
    "A soft spotlight follows the cursor over a rock photo, unmasking a mossier, colorful image underneath."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "remit-race",
+  "v": "remit-race",
+  "ve": "remit-race-en",
+  "ru": [
+   "Эстафета доллара",
+   "Три экрана телефона: таймер, видео светящегося глобуса и колода карточек с правилами, которую можно листать."
+  ],
+  "en": [
+   "Dollar relay race",
+   "Three phone mockups show a live countdown, a glowing globe video, and a swipeable deck of rule cards."
+  ],
+  "cat": "web"
  }
 ]
