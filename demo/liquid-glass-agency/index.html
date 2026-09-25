@@ -150,13 +150,14 @@
         const Hero = () => {
             useEffect(() => { lucide.createIcons(); }, []);
             return (
-                <section className="relative w-full h-[1000px] overflow-visible flex flex-col items-center pt-[150px] text-center px-6">
+                <section className="relative isolate w-full h-[1000px] overflow-visible flex flex-col items-center pt-[150px] text-center px-6">
                     <video 
-                        src="https://assets.mixkit.co/videos/44818/44818-720.mp4"
+                        src="https://assets.mixkit.co/videos/30563/30563-720.mp4"
                         className="absolute top-[20%] left-0 w-full h-auto object-contain -z-10"
                         autoPlay loop muted playsInline
                     />
                     <div className="absolute inset-0 bg-black/5 -z-10"></div>
+                    <div className="absolute inset-x-0 top-[20%] h-24 md:h-40 bg-gradient-to-b from-black to-transparent -z-10"></div>
                     <div className="absolute bottom-0 left-0 right-0 h-[300px] bg-gradient-to-t from-black to-transparent z-[1]"></div>
                     
                     <motion.div 
@@ -210,7 +211,7 @@
         );
 
         const HowItWorks = () => (
-            <section className="relative min-h-[700px] py-32 px-8 lg:px-24 flex flex-col items-center text-center">
+            <section className="relative isolate min-h-[700px] py-32 px-8 lg:px-24 flex flex-col items-center text-center">
                 <HlsVideo 
                     src="https://assets.mixkit.co/videos/31497/31497-720.mp4"
                     className="absolute inset-0 w-full h-full object-cover -z-20"
@@ -255,7 +256,7 @@
         );
 
         const Stats = () => (
-            <section className="relative py-32 px-8 lg:px-24 flex flex-col items-center">
+            <section className="relative isolate py-32 px-8 lg:px-24 flex flex-col items-center">
                 <HlsVideo 
                     src="https://stream.mux.com/NcU3HlHeF7CUL86azTTzpy3Tlb00d6iF3BmCdFslMJYM.m3u8"
                     className="absolute inset-0 w-full h-full object-cover -z-20"
@@ -281,7 +282,7 @@
         );
 
         const Footer = () => (
-            <footer className="relative bg-black pt-48 pb-12 px-8 lg:px-24 text-center">
+            <footer className="relative isolate bg-black pt-48 pb-12 px-8 lg:px-24 text-center">
                 <HlsVideo 
                     src="https://assets.mixkit.co/videos/18142/18142-720.mp4"
                     className="absolute inset-0 w-full h-full object-cover -z-20 opacity-30"
