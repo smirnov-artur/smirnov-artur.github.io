@@ -3164,6 +3164,36 @@
   "rp": 1
  },
  {
+  "slug": "content-flow",
+  "v": "content-flow",
+  "ve": "content-flow-en",
+  "ru": [
+   "Управление контентом",
+   "Видео с цветами приближается при прокрутке: от стопки карточек до живого дашборда с графиком и кольцами прогресса."
+  ],
+  "en": [
+   "Content management",
+   "A flower-arch video zooms as you scroll, from a card stack into a live dashboard with an animated chart and progress rings."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "slate-hero",
+  "v": "slate-hero",
+  "ve": "slate-hero-en",
+  "ru": [
+   "Сервис для команд",
+   "Горы на видео, стеклянное меню и заголовок, который проявляется по буквам."
+  ],
+  "en": [
+   "Team workspace",
+   "Mountains on video, a liquid-glass menu and a headline that reveals letter by letter."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "seller",
   "cat": "ai",
   "ru": [
