@@ -2324,36 +2324,6 @@
   "rp": 1
  },
  {
-  "slug": "halo-benefits",
-  "v": "halo-benefits",
-  "ve": "halo-benefits-en",
-  "ru": [
-   "Преимущества стейблкоина",
-   "Карточки с преимуществами на пастельном фото, а ниже бегущей строкой прокручиваются имена партнёров."
-  ],
-  "en": [
-   "Stablecoin benefits",
-   "A benefit-card grid over a pastel photo, with partner names scrolling by in an endless marquee below."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "halo-use-case",
-  "v": "halo-use-case",
-  "ve": "halo-use-case-en",
-  "ru": [
-   "Сценарии использования стейблкоина",
-   "На фоне карточки зацикленно крутится видео с фиолетовым мраморным храмом среди цветов."
-  ],
-  "en": [
-   "Stablecoin use cases",
-   "A looping video of a purple marble temple among flowers plays behind the card's text."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
   "slug": "cleantech",
   "v": "cleantech",
   "ve": "cleantech-en",
@@ -2549,36 +2519,6 @@
   "rp": 1
  },
  {
-  "slug": "nimbus-ops",
-  "v": "nimbus-ops",
-  "ve": "nimbus-ops-en",
-  "ru": [
-   "Контроль операций",
-   "Золотой 3D-куб парит в воздухе и по клику разлетается на осколки, а затем собирается обратно."
-  ],
-  "en": [
-   "Operations control",
-   "A floating gold 3D cube bursts into orbiting particle shards on click, then reassembles on the next click."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "nimbus-security",
-  "v": "nimbus-security",
-  "ve": "nimbus-security-en",
-  "ru": [
-   "Безопасность и соответствие",
-   "Три карточки показывают окно терминала с логином, чек-лист соответствия и бинарный замок над таблицей показателей."
-  ],
-  "en": [
-   "Security compliance",
-   "Three cards show a terminal login, a compliance checklist, and a binary padlock over a usage table."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
   "slug": "organic-odyssey",
   "v": "organic-odyssey",
   "ve": "organic-odyssey-en",
@@ -2589,21 +2529,6 @@
   "en": [
    "Hidden forest world",
    "A looping video of a glass orb in mossy branches, with butterflies drifting past letter-by-letter text."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "nimbus-sticky-cards",
-  "v": "nimbus-sticky-cards",
-  "ve": "nimbus-sticky-cards-en",
-  "ru": [
-   "Облачная инфраструктура",
-   "При прокрутке четыре карточки наезжают друг на друга и складываются в стопку золотых панелей с кодом и метриками."
-  ],
-  "en": [
-   "Cloud infrastructure",
-   "Four cards slide up and stack into thin gold bars as you scroll, each revealing a code or metrics panel."
   ],
   "cat": "web",
   "rp": 1
