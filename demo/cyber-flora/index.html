@@ -210,9 +210,8 @@ html[lang=ru] .serif{font-family:'Cormorant',serif;font-weight:500}
   size(); addEventListener('resize', size);
 
   /* 1. кэш кадров: fetch → Blob URL → скрытое видео → перемотка по кадрам → createImageBitmap */
-  var SRC = ['https://res.cloudinary.com/dsdhxhhqh/video/upload/v1781506095/202606101700_hglz7q.mp4',
-             'https://res.cloudinary.com/dsdhxhhqh/video/upload/v1781506108/202606101702_sd50y0.mp4',
-             'https://res.cloudinary.com/dsdhxhhqh/video/upload/v1781506130/202606101703_jmidj2.mp4'];
+  // облако Cloudinary с тремя роликами отключено (401) — сразу цветок кодом (п. 2); вернутся ролики — впишите адреса сюда
+  var SRC = [];
   var FPS = 18, MAX_FRAMES = 144, MAX_W = 840;
   var vids = document.querySelectorAll('.srcv');
   var segs = SRC.map(function(){ return { frames:[], failed:false }; });
@@ -242,8 +241,7 @@ html[lang=ru] .serif{font-family:'Cormorant',serif;font-weight:500}
   }
   var framesOn = false;
   (async function(){
-    await cacheSeg(0);
-    await Promise.all([cacheSeg(1), cacheSeg(2)]);
+    if (SRC.length) { await cacheSeg(0); await Promise.all(SRC.slice(1).map(function(_, i){ return cacheSeg(i + 1); })); }
     framesOn = segs.some(function(s){ return s.frames.length; });
     loader.classList.add('done');
     setTimeout(function(){ loader.style.display = 'none'; }, 700);
