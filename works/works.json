@@ -3194,6 +3194,36 @@
   "rp": 1
  },
  {
+  "slug": "nimbus",
+  "v": "nimbus",
+  "ve": "nimbus-en",
+  "ru": [
+   "Облачная платформа данных",
+   "Миграции, программируемая инфраструктура и комплаенс проходят через единый контур управления — от 3D-куба операций до живых карточек с кодом."
+  ],
+  "en": [
+   "Cloud data platform",
+   "Storage migrations, programmable infrastructure and compliance run through one control layer — from an exploding 3D tile to live code cards."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "halo",
+  "v": "halo",
+  "ve": "halo-en",
+  "ru": [
+   "Стейблкоин",
+   "USD Halo — стейблкоин с привязкой к доллару: автоматическая доходность, мгновенная ликвидность и сценарии использования для вкладчиков и платформ."
+  ],
+  "en": [
+   "Stablecoin",
+   "USD Halo: a dollar-pegged stablecoin with automated yield, instant liquidity and use modes for savers, builders and platforms."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "seller",
   "cat": "ai",
   "ru": [
