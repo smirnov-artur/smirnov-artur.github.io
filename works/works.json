@@ -3506,5 +3506,20 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "ai-meeting-notes",
+  "v": "ai-meeting-notes",
+  "ve": "ai-meeting-notes-en",
+  "ru": [
+   "ИИ-заметки встреч",
+   "Заголовок проступает из размытия, а слайдер сценариев сам крутится по кольцевому таймеру."
+  ],
+  "en": [
+   "AI meeting notes",
+   "Headline words blur into view, then a use-case slider auto-advances on a circular countdown."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
