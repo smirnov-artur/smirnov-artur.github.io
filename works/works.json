@@ -687,8 +687,9 @@
    "Token hero",
    "Type a ticker — the coin's geometry and palette rebuild"
   ],
-  "href": "https://smirnov-artur.github.io/portfolio/cases/new1/",
-  "v": "pf-signal"
+  "v": "signal",
+  "ve": "signal-en",
+  "rp": 1
  },
  {
   "slug": "lichtenberg",
