@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atelier — Огранено временем | Ювелирные украшения</title>
+    <meta name="description" content="Кинематографичный скролл-опыт для ювелирного ателье: два видео растворяются друг в друге, а на экран выезжают украшения из оникса, сапфира и скульптурного серебра.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Instrument Serif"', 'serif'],
+                        sans: ['Manrope', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.469.0"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #020202; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(251,255,141,0.4); }
+
+        @keyframes scrollLine {
+            0%, 100% { transform: scaleY(0); opacity: 0; }
+            50% { transform: scaleY(1); opacity: 1; }
+        }
+        .scroll-cue-line { animation: scrollLine 1.8s ease-in-out infinite; transform-origin: top; }
+
+        @media (max-height: 780px) and (min-width: 1024px) {
+            #sculpted-title { margin-bottom: 1rem; }
+            #product-image-card { padding: 1rem; }
+        }
+    </style>
+<style id="cyr">/* русские буквы: исходный шрифт без кириллицы, глифы — у близкого с кириллицей */
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/cormorant/v24/H4cjBXOCl9bbnla_nHIq6quyoqOOag.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/cormorant/v24/H4cjBXOCl9bbnla_nHIq6qu7oqOOag.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/cormorant/v24/H4clBXOCl9bbnla_nHIq4pu9uqc.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/cormorant/v24/H4clBXOCl9bbnla_nHIq65u9uqc.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+</style>
+</head>
+<body class="bg-[#020202] text-white antialiased overflow-x-hidden" style="font-family:'Manrope',sans-serif">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const VIDEO1 = 'https://res.cloudinary.com/dbfd996z4/video/upload/q_auto/f_auto/v1781009724/11111111_gvewuj.mp4';
+        const VIDEO2 = 'https://res.cloudinary.com/dbfd996z4/video/upload/q_auto/f_auto/v1781009724/2222222_x4qpet.mp4';
+        const RING_PNG = 'https://res.cloudinary.com/dbfd996z4/image/upload/q_auto/f_auto/v1781009782/rng_awymkj.png';
+        const EARRINGS_JPG = 'https://res.cloudinary.com/dbfd996z4/image/upload/q_auto/f_auto/v1781017114/202606091756_msbh8b.jpg';
+        const RING2_JPG = 'https://res.cloudinary.com/dbfd996z4/image/upload/q_auto/f_auto/v1781019866/2606091843_kfonxp.jpg';
+
+        const scrollToFraction = (frac) => {
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            window.scrollTo({ top: max * frac, behavior: 'smooth' });
+        };
+
+        const App = () => {
+            const [progress, setProgress] = useState(0);
+            const [quantity, setQuantity] = useState(1);
+            const video1Ref = useRef(null);
+            const video2Ref = useRef(null);
+            const targetScrollFractionRef = useRef(0);
+            const currentScrollFractionRef = useRef(0);
+            const targetVideoRatioRef = useRef(0);
+            const currentVideoTimeRef = useRef(0);
+            const targetVideoSecondRatioRef = useRef(0);
+            const currentVideoSecondTimeRef = useRef(0);
+            const rafRef = useRef(null);
+
+            useEffect(() => { lucide.createIcons(); });
+
+            useEffect(() => {
+                const computeTarget = () => {
+                    const max = document.documentElement.scrollHeight - window.innerHeight;
+                    const frac = max > 0 ? window.scrollY / max : 0;
+                    targetScrollFractionRef.current = Math.min(1, Math.max(0, frac));
+                };
+                computeTarget();
+                const t = setTimeout(computeTarget, 500);
+                window.addEventListener('scroll', computeTarget, { passive: true });
+
+                const smoothUpdate = () => {
+                    const target = targetScrollFractionRef.current;
+                    const cur = currentScrollFractionRef.current;
+                    const diff = target - cur;
+                    const next = Math.abs(diff) < 0.0005 ? target : cur + diff * 0.05;
+                    currentScrollFractionRef.current = next;
+                    setProgress(next);
+
+                    let v1ratio, v2ratio;
+                    if (next <= 0.40) { v1ratio = next / 0.40; v2ratio = 0; }
+                    else if (next < 0.50) { v1ratio = 1; v2ratio = 0; }
+                    else if (next <= 0.90) { v1ratio = 1; v2ratio = (next - 0.50) / 0.40; }
+                    else { v1ratio = 1; v2ratio = 1; }
+                    targetVideoRatioRef.current = v1ratio;
+                    targetVideoSecondRatioRef.current = v2ratio;
+
+                    const v1 = video1Ref.current, v2 = video2Ref.current;
+                    if (v1 && Number.isFinite(v1.duration)) {
+                        const targetTime = targetVideoRatioRef.current * v1.duration;
+                        currentVideoTimeRef.current += (targetTime - currentVideoTimeRef.current) * 0.08;
+                        if (!v1.seeking) v1.currentTime = currentVideoTimeRef.current;
+                    }
+                    if (v2 && Number.isFinite(v2.duration)) {
+                        const targetTime2 = targetVideoSecondRatioRef.current * v2.duration;
+                        currentVideoSecondTimeRef.current += (targetTime2 - currentVideoSecondTimeRef.current) * 0.08;
+                        if (!v2.seeking) v2.currentTime = currentVideoSecondTimeRef.current;
+                    }
+
+                    rafRef.current = requestAnimationFrame(smoothUpdate);
+                };
+                rafRef.current = requestAnimationFrame(smoothUpdate);
+
+                return () => {
+                    clearTimeout(t);
+                    window.removeEventListener('scroll', computeTarget);
+                    cancelAnimationFrame(rafRef.current);
+                };
+            }, []);
+
+            const getStaggerStyle = (start, end) => {
+                const ratio = Math.min(1, Math.max(0, (progress - start) / (end - start)));
+                return {
+                    opacity: 1 - ratio,
+                    transform: `translateY(${-75 * ratio}px)`,
+                    filter: `blur(${ratio * 16}px)`,
+                    willChange: 'opacity, transform, filter',
+                    transition: 'all 0.35s cubic-bezier(0.16,1,0.3,1)',
+                    pointerEvents: ratio > 0.85 ? 'none' : 'auto',
+                };
+            };
+
+            const isSecondCard = progress >= 0.90;
+            const panelOpen = (progress >= 0.40 && progress < 0.50) || isSecondCard;
+            const product = isSecondCard ? {
+                category: 'Серия Atelier Core',
+                title: 'Скульптурное кольцо из стерлингового серебра',
+                price: 1350,
+                image: RING2_JPG,
+                description: 'Скульптурное кольцо из стерлингового серебра ручной полировки: плавные линии ловят свет под любым углом — клеймо серии Atelier Core, созданное для повседневной вечности.',
+            } : {
+                category: 'Изящные серьги Aura',
+                title: 'Белое золото 18К и розовый сапфир',
+                price: 1850,
+                image: EARRINGS_JPG,
+                description: 'Эксклюзивная пара мастерски выполненных серег-капель с исключительными сапфирами ступенчатой огранки в сияющем ореоле из вручную закреплённых микробриллиантов.',
+            };
+
+            useEffect(() => { setQuantity(1); }, [product.title]);
+
+            return (
+                <div className="relative h-[650vh] bg-[#020202] overflow-x-hidden antialiased font-sans text-white">
+
+                    {/* Fixed background video stage */}
+                    <div className="fixed inset-0 z-0 pointer-events-none">
+                        <video ref={video1Ref} src={VIDEO1} muted playsInline preload="auto" className="absolute inset-0 w-full h-full object-cover" style={{ opacity: progress < 0.48 ? 0.85 : 0, transition: 'opacity 700ms ease-in-out' }} />
+                        <video ref={video2Ref} src={VIDEO2} muted playsInline preload="auto" className="absolute inset-0 w-full h-full object-cover" style={{ opacity: progress >= 0.48 ? 0.85 : 0, transition: 'opacity 700ms ease-in-out' }} />
+                        <canvas className="hidden" width="1" height="1" />
+                        <div className="absolute top-0 inset-x-0 h-44" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.85), transparent)' }} />
+                        <div className="absolute bottom-0 inset-x-0 h-56" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.90), transparent)' }} />
+                        <div className="hidden lg:block absolute inset-y-0 left-0 w-1/2" style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.40), transparent)' }} />
+                    </div>
+
+                    {/* Top progress bar */}
+                    <div className="fixed top-0 left-0 h-[2.5px] bg-[#FBFF8D] z-50 pointer-events-none" style={{ width: `${progress * 100}%`, transition: 'width 75ms linear' }} />
+
+                    {/* Editorial overlay */}
+                    <div
+                        className="fixed inset-0 z-10 flex flex-col justify-between p-6 md:p-10 lg:p-12"
+                        style={{ pointerEvents: progress > 0.45 ? 'none' : 'auto', visibility: progress >= 0.45 ? 'hidden' : 'visible' }}
+                    >
+                        {/* Header */}
+                        <div className="flex justify-between items-start gap-6">
+                            <div className="flex flex-col gap-10">
+                                <div style={getStaggerStyle(0.00, 0.12)}>
+                                    <svg viewBox="0 0 48 48" className="w-12 h-12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        {[0, 72, 144, 216, 288].map((deg) => (
+                                            <path key={deg} d="M24 24 C 18.5 18 18.5 7.5 24 3.5 C 29.5 7.5 29.5 18 24 24 Z" fill="white" transform={`rotate(${deg} 24 24)`} />
+                                        ))}
+                                        <circle cx="24" cy="24" r="3" fill="white" />
+                                    </svg>
+                                </div>
+                                <div style={getStaggerStyle(0.06, 0.18)}>
+                                    <h3 className="font-semibold text-[13px] tracking-[-0.03em] leading-snug">Современная роскошь для<br />взыскательных минималистов</h3>
+                                    <p className="text-[11px] text-white/50 max-w-[260px] mt-2 leading-relaxed">Эксклюзивные украшения для истинных эстетов. Мы создаём не просто украшения — мы создаём осязаемые артефакты вашего наследия.</p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-5 lg:gap-8 text-[13px] text-white/70" style={getStaggerStyle(0.03, 0.15)}>
+                                <div className="hidden md:flex items-center gap-5 lg:gap-8">
+                                    {['Коллекции', 'Ателье', 'О нас', 'Контакты'].map((label) => (
+                                        <a key={label} href="#" className="relative inline-block py-1 transition-transform duration-300 hover:scale-105 after:absolute after:left-0 after:-bottom-0.5 after:h-px after:w-0 after:bg-white after:transition-all after:duration-300 hover:after:w-full">
+                                            {label}
+                                        </a>
+                                    ))}
+                                </div>
+                                <div className="hidden md:block h-4 w-px bg-white/20" />
+                                <a href="#" aria-label="Аккаунт" className="text-white/80 hover:text-white transition-transform duration-300 hover:scale-105">
+                                    <i data-lucide="user" className="w-[18px] h-[18px]"></i>
+                                </a>
+                                <button type="button" onClick={() => scrollToFraction(1)} aria-label="Сумка" className="relative text-white/80 hover:text-white transition-transform duration-300 hover:scale-105">
+                                    <i data-lucide="shopping-bag" className="w-[18px] h-[18px]"></i>
+                                    <span className="absolute -top-0.5 -right-0.5 w-[6.5px] h-[6.5px] rounded-full bg-[#FBFF8D] animate-pulse"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Scroll cue */}
+                        <div className="hidden lg:flex flex-col items-center gap-2 absolute bottom-10 left-1/2 -translate-x-1/2" style={getStaggerStyle(0.00, 0.08)}>
+                            <span className="text-[10px] uppercase tracking-[0.3em] text-white/40">Скролл</span>
+                            <span className="block w-px h-6 bg-white/40 scroll-cue-line"></span>
+                        </div>
+
+                        {/* Hero main */}
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-6 items-end">
+                            <div className="lg:col-span-7">
+                                <div id="sculpted-title" className="mb-8">
+                                    <div className="font-serif uppercase leading-[0.88] text-[#FBFF8D]" style={{ fontSize: 'clamp(2.5rem, 5.6vw, 7.5rem)', ...getStaggerStyle(0.09, 0.20) }}>
+                                        <span className="italic">&nbsp;&nbsp;&nbsp;&nbsp;ОГРАНЕНО</span>
+                                    </div>
+                                    <div className="font-serif uppercase leading-[0.88] text-[#FBFF8D]" style={{ fontSize: 'clamp(2.5rem, 5.6vw, 7.5rem)', ...getStaggerStyle(0.12, 0.23) }}>
+                                        ВРЕМЕНЕМ.
+                                    </div>
+                                    <div className="font-serif uppercase leading-[0.88] text-[#FBFF8D]" style={{ fontSize: 'clamp(2.5rem, 5.6vw, 7.5rem)', ...getStaggerStyle(0.15, 0.26) }}>
+                                        ТВОЁ <span className="italic">НАВСЕГДА</span>
+                                    </div>
+                                </div>
+                                <div className="max-w-[260px] space-y-4">
+                                    <p className="text-[11px] text-white/50 leading-relaxed" style={getStaggerStyle(0.18, 0.29)}>
+                                        Мы создаём современные украшения, которые говорят языком тишины: пусть форма, вес и свет скажут всё за нас.
+                                    </p>
+                                    <p className="text-[11px] text-white/50 leading-relaxed" style={getStaggerStyle(0.21, 0.32)}>
+                                        Каждое украшение — личный манифест: маленький, неизменный объект, созданный переживать тренды, которым он никогда не следовал.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="lg:col-span-5 max-w-[240px] lg:ml-auto group">
+                                <div style={getStaggerStyle(0.14, 0.25)}>
+                                    <span className="block text-[10px] uppercase tracking-[0.15em] text-white/50">Серебряное кольцо Abyssal</span>
+                                    <h2 className="font-serif text-xl mt-1">Белое золото 18К и необработанный оникс</h2>
+                                    <p className="text-[10.5px] text-white/50 mt-2 leading-relaxed">Скульптурный силуэт из белого золота 18К с необработанным ониксом, который поглощает свет целиком.</p>
+                                </div>
+                                <div className="aspect-[4/5] w-full mt-5 transition-transform duration-500 group-hover:scale-[1.04]" style={getStaggerStyle(0.18, 0.29)}>
+                                    <img src={RING_PNG} alt="Серебряное кольцо Abyssal" className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105" />
+                                </div>
+                                <p className="font-serif text-lg text-center mt-4 text-white group-hover:text-[#FBFF8D] transition-colors duration-500" style={getStaggerStyle(0.20, 0.31)}>$1,850</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Slide-in product sheet */}
+                    <div className={`fixed top-0 left-0 h-full w-full sm:w-[600px] lg:w-[648px] bg-[#FAF9F5] text-[#121212] z-30 overflow-y-auto flex flex-col shadow-[12px_0_45px_rgba(0,0,0,0.22)] transition-transform duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${panelOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+                        <div className="px-8 md:px-12 pt-8 md:pt-10">
+                            <button type="button" onClick={() => scrollToFraction(isSecondCard ? 0.82 : 0.35)} className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-[#121212]/70 hover:text-[#121212] transition-colors">
+                                <i data-lucide="arrow-left" className="w-3.5 h-3.5"></i>
+                                Назад к серии
+                            </button>
+                        </div>
+                        <div className="flex-1 flex flex-col items-center text-center px-8 md:px-12 py-8 md:py-10">
+                            <span className="text-[11px] uppercase tracking-[0.15em] text-[#8E8B84]">{product.category}</span>
+                            <h2 className="font-serif text-[28px] md:text-[32px] mt-3">{product.title}</h2>
+                            <p className="text-[12px] text-[#73716C] max-w-[360px] mt-3 leading-relaxed">{product.description}</p>
+                            <div id="product-image-card" className="mt-8 w-full max-w-[460px] aspect-square bg-[#F1F0EC] rounded-2xl flex items-center justify-center p-8">
+                                <img src={product.image} alt={product.title} className="max-w-full max-h-full object-contain" />
+                            </div>
+                        </div>
+                        <div className="border-t border-black/10 px-8 md:px-12 py-6 flex items-center gap-4">
+                            <button type="button" className="flex-1 h-[50px] bg-black text-white text-[12px] uppercase tracking-[0.15em] hover:bg-black/85 transition-colors">В сумку Atelier</button>
+                            <div className="flex items-center h-[50px] bg-[#E5E5E2] text-[#121212] shrink-0">
+                                <button type="button" onClick={() => setQuantity((q) => Math.max(1, q - 1))} aria-label="Уменьшить количество" className="w-9 h-full flex items-center justify-center hover:bg-black/5 transition-colors">−</button>
+                                <span className="w-8 text-center text-sm font-medium tabular-nums">{quantity}</span>
+                                <button type="button" onClick={() => setQuantity((q) => q + 1)} aria-label="Увеличить количество" className="w-9 h-full flex items-center justify-center hover:bg-black/5 transition-colors">+</button>
+                            </div>
+                            <span className="font-serif text-2xl whitespace-nowrap shrink-0">${(product.price * quantity).toLocaleString('en-US')}</span>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

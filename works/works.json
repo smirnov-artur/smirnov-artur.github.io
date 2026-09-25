@@ -2841,5 +2841,19 @@
    "Mossy debris glows behind bold text, then scroll splits a mossy globe apart between animated stat callouts."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "luxury-focus",
+  "v": "luxury-focus",
+  "ve": "luxury-focus-en",
+  "ru": [
+   "Ювелирная витрина",
+   "Скролл переключает два видео, пока жёлтый заголовок растворяется, а карточки украшений выезжают слева."
+  ],
+  "en": [
+   "Fine jewelry showcase",
+   "Scroll scrubs two videos while a pale-yellow headline dissolves and jewelry panels slide in from the left."
+  ],
+  "cat": "web"
  }
 ]
