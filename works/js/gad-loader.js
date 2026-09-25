@@ -43,9 +43,7 @@
     '.cur{position:absolute;inset:0;background:#0C0C0C;overflow:hidden;display:grid;place-items:center}' +
     '.light{position:absolute;left:50%;top:50%;width:140vmax;height:140vmax;margin:-70vmax 0 0 -70vmax;pointer-events:none;will-change:transform;' +
     'background:radial-gradient(closest-side,rgba(150,172,190,.17),rgba(150,172,190,.05) 42%,rgba(150,172,190,0) 70%)}' +
-    '.grain{position:absolute;inset:-60%;opacity:.075;pointer-events:none;animation:g .7s steps(7) infinite}' +
-    '@keyframes g{0%{transform:translate(0,0)}14%{transform:translate(-7%,4%)}28%{transform:translate(5%,-8%)}42%{transform:translate(-3%,9%)}' +
-    '57%{transform:translate(9%,2%)}71%{transform:translate(-9%,-5%)}85%{transform:translate(3%,7%)}}' +
+    '.grain{position:absolute;inset:0;opacity:.04;pointer-events:none}' +
     '.vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 100% at 50% 50%,rgba(0,0,0,0) 55%,rgba(0,0,0,.55))}' +
     '.wrap{position:relative;display:flex;flex-direction:column;align-items:center;will-change:transform}' +
     'svg{display:block;width:min(46vw,360px);height:auto;overflow:visible}' +
