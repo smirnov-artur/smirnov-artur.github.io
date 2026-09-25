@@ -471,21 +471,6 @@
   "rp": 1
  },
  {
-  "slug": "prompt-hero",
-  "v": "prompt-hero",
-  "ve": "prompt-hero-en",
-  "ru": [
-   "Архив модной коллекции",
-   "Курсор перематывает видео, а при скролле чёрная панель поднимается с фото, растущими и сжимающимися в кадре."
-  ],
-  "en": [
-   "Fashion archive drop",
-   "The cursor scrubs between two videos; scrolling lifts a black panel of photos that scale in and out."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
   "slug": "3d-story",
   "v": "3d-story",
   "ve": "3d-story-en",
