@@ -3161,5 +3161,35 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "travel-explorer",
+  "v": "travel-explorer",
+  "ve": "travel-explorer-en",
+  "ru": [
+   "Приложение для путешествий",
+   "Видео с горой за заголовком, а кнопка открывает тёмную ленту с карточками направлений."
+  ],
+  "en": [
+   "Travel discovery app",
+   "A mountain video plays behind the hero text, then destination cards scroll by in a dark feed."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "impact-spotlight",
+  "v": "impact-spotlight",
+  "ve": "impact-spotlight-en",
+  "ru": [
+   "Амортизация нового поколения",
+   "Курсор прожигает тёмную картинку светящимся пятном, открывая под ней видео с искрами."
+  ],
+  "en": [
+   "Next-gen cushioning",
+   "A cursor-trailing spotlight burns through a dark image to reveal a glowing ember video underneath."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
