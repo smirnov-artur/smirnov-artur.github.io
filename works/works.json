@@ -77,7 +77,8 @@
    "A glass sculpture with rainbow dispersion shatters and reassembles into the next form while orbit rings drift around it"
   ],
   "cat": "3d",
-  "rp": 1
+  "rp": 1,
+  "ve": "crystal-form-en"
  },
  {
   "slug": "private-jets",
@@ -123,7 +124,8 @@
   "cat": "3d",
   "rp": 1,
   "vh": "living-grass-hq",
-  "vhe": "living-grass-hq-en"
+  "vhe": "living-grass-hq-en",
+  "ve": "living-grass-en"
  },
  {
   "slug": "figurines",
