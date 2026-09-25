@@ -12,7 +12,9 @@
   ],
   "cat": "web",
   "ve": "jungle-train-en",
-  "rp": 1
+  "rp": 1,
+  "vh": "jungle-train-hq",
+  "vhe": "jungle-train-hq-en"
  },
  {
   "slug": "aurum",
@@ -25,8 +27,11 @@
    "Bronze in shaders",
    "The camera orbits the sculpture as you scroll; lighting per pixel"
   ],
-  "href": "https://smirnov-artur.github.io/portfolio/cases/aurum/",
-  "v": "pf-aurum"
+  "v": "aurum",
+  "ve": "aurum-en",
+  "rp": 1,
+  "vh": "aurum-hq",
+  "vhe": "aurum-hq-en"
  },
  {
   "slug": "fox-404",
@@ -41,7 +46,9 @@
   ],
   "cat": "web",
   "ve": "fox-404-en",
-  "rp": 1
+  "rp": 1,
+  "vh": "fox-404-hq",
+  "vhe": "fox-404-hq-en"
  },
  {
   "slug": "dreams",
@@ -114,7 +121,9 @@
    "A huge grass-covered arc sways in the wind, the cursor presses a trailing dent, clouds drift across the sky — all drawn live by code."
   ],
   "cat": "3d",
-  "rp": 1
+  "rp": 1,
+  "vh": "living-grass-hq",
+  "vhe": "living-grass-hq-en"
  },
  {
   "slug": "figurines",
@@ -3127,7 +3136,8 @@
    "Answers buyers in Avito chats and sends the tricky ones to the owner's Telegram"
   ],
   "v": "seller",
-  "href": "https://gad-production.ru/"
+  "href": "https://gad-production.ru/",
+  "vh": "seller-hq"
  },
  {
   "slug": "maket-kabinet",
