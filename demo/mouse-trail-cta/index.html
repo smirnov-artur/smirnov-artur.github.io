@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>g.a.d. — Partner With Us</title>
+<meta name="description" content="A CTA card with a giant serif headline and a chat button, where moving the cursor drops a trail of fading, rotated thumbnails.">
+<!-- 'PP Neue Montreal' and 'PP Mondwest' hotlinks from the prompt are dead (403/S3 error) -> close free alternatives: Inter (already the project's
+     stand-in for PP Neue Montreal) and Fraunces, a chunky display serif, standing in for the pixel-ish PP Mondwest. RU Cyrillic fallback for
+     Fraunces is added by cyr.py ("Fraunces=Lora:wght@600"); Inter already has full Cyrillic. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<style>
+@keyframes fadeInUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+.animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+</style>
+</head>
+<body class="bg-[#EFEEE8]">
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef, useEffect } = React;
+
+function useInViewAnimation(threshold = 0.1) {
+  const ref = useRef(null);
+  const [isInView, setIsInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) { setIsInView(true); obs.disconnect(); }
+    }, { threshold });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, isInView };
+}
+
+// Standalone section: any 8+ rectangular images work as the trail (prompt leaves the choice open).
+const TRAIL_IMAGES = [
+  'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop&q=60&auto=format',
+  'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop&q=60&auto=format',
+  'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop&q=60&auto=format',
+  'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop&q=60&auto=format',
+  'https://images.unsplash.com/photo-1500534623283-312aade485b7?w=400&h=300&fit=crop&q=60&auto=format',
+  'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400&h=300&fit=crop&q=60&auto=format',
+  'https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=400&h=300&fit=crop&q=60&auto=format',
+  'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&h=300&fit=crop&q=60&auto=format',
+  'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop&q=60&auto=format',
+  'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=400&h=300&fit=crop&q=60&auto=format',
+];
+const AVATAR = 'https://i.pravatar.cc/160?img=13';
+
+function PartnerSection({ images }) {
+  const [trailImages, setTrailImages] = useState([]);
+  const [isHovered, setIsHovered] = useState(false);
+  const sectionRef = useRef(null);
+  const lastSpawnTime = useRef(0);
+  const imageIdCounter = useRef(0);
+  const { ref: animationRef, isInView } = useInViewAnimation(0.1);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setTrailImages((prev) => prev.filter((img) => Date.now() - img.timestamp <= 1000));
+    }, 50);
+    return () => clearInterval(id);
+  }, []);
+
+  function handleMouseMove(e) {
+    if (!isHovered || !sectionRef.current) return;
+    const now = Date.now();
+    if (now - lastSpawnTime.current < 80) return;
+    lastSpawnTime.current = now;
+    const rect = sectionRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const src = images[Math.floor(Math.random() * images.length)];
+    const rotation = (Math.random() - 0.5) * 20;
+    imageIdCounter.current += 1;
+    setTrailImages((prev) => [...prev, { id: imageIdCounter.current, x, y, timestamp: now, src, rotation }]);
+  }
+
+  return (
+    <section
+      ref={animationRef}
+      className="min-h-screen w-full flex items-center justify-center px-4 md:px-8 py-12"
+    >
+      <div
+        ref={sectionRef}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onMouseMove={handleMouseMove}
+        className="w-full max-w-7xl mx-auto py-48 bg-white relative overflow-hidden shadow-[0_0_0_0.5px_rgba(0,0,0,0.05),0_4px_30px_rgba(0,0,0,0.08)] rounded-[40px]"
+      >
+        <div className="relative z-10 flex flex-col items-center justify-center text-center px-6">
+          <h2
+            className={`text-[48px] md:text-[64px] lg:text-[80px] leading-[1.1] text-[#0D212C] tracking-tight font-normal mb-12 ${isInView ? 'animate-fade-in-up' : 'opacity-0'}`}
+            style={{ fontFamily: "'Fraunces', serif", animationDelay: isInView ? '0.1s' : '0s' }}
+          >
+            Partner with us
+          </h2>
+          <button
+            type="button"
+            className={`mx-auto bg-[#051A24] text-white px-6 py-3.5 rounded-full flex items-center gap-3 shadow-[0_1px_2px_0_rgba(5,26,36,0.1),0_4px_4px_0_rgba(5,26,36,0.09),0_9px_6px_0_rgba(5,26,36,0.05),0_17px_7px_0_rgba(5,26,36,0.01),0_26px_7px_0_rgba(5,26,36,0),inset_0_2px_8px_0_rgba(255,255,255,0.5)] hover:bg-[#0D212C] transition-colors duration-200 ${isInView ? 'animate-fade-in-up' : 'opacity-0'}`}
+            style={{ animationDelay: '0.2s' }}
+          >
+            <img src={AVATAR} alt="Viktor Oddy" className="w-10 h-10 rounded-full object-cover" />
+            <span>Start chat with Viktor</span>
+          </button>
+        </div>
+
+        {trailImages.map((img) => {
+          const age = Date.now() - img.timestamp;
+          const progress = Math.min(age / 1000, 1);
+          const opacity = 1 - progress;
+          const scale = 1 - progress * 0.15;
+          return (
+            <div
+              key={img.id}
+              className="absolute w-24 aspect-[4/3] rounded-xl shadow-lg overflow-hidden pointer-events-none"
+              style={{ left: img.x - 50, top: img.y - 50, opacity, transform: `scale(${scale}) rotate(${img.rotation}deg)` }}
+            >
+              <img src={img.src} alt="" className="w-full h-full object-cover" />
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<PartnerSection images={TRAIL_IMAGES} />);
+</script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

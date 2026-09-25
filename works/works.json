@@ -3131,5 +3131,35 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "orbis-hello",
+  "v": "orbis-hello",
+  "ve": "orbis-hello-en",
+  "ru": [
+   "Игрушечный космонавт",
+   "Игрушечный космонавт стоит в освещённой витрине, вокруг в темноте другие космонавты. Видео идёт по кругу."
+  ],
+  "en": [
+   "Toy astronaut",
+   "A looping video of a toy astronaut glowing inside a lit case, ringed by more toy astronauts in the dark."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "mouse-trail-cta",
+  "v": "mouse-trail-cta",
+  "ve": "mouse-trail-cta-en",
+  "ru": [
+   "След за курсором",
+   "Курсор оставляет за собой шлейф тающих превью проектов позади заголовка и кнопки чата."
+  ],
+  "en": [
+   "Cursor trail CTA",
+   "Moving the cursor over the white card scatters fading, rotated project thumbnails behind the heading."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
