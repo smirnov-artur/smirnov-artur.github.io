@@ -1873,21 +1873,6 @@
   "rp": 1
  },
  {
-  "slug": "mindloop",
-  "v": "mindloop",
-  "ru": [
-   "Фокус среди шума",
-   "Девушка читает над облаками на видео, под крупной антиквой — стеклянная кнопка"
-  ],
-  "en": [
-   "Focus amid the noise",
-   "A girl reads above the clouds in the video, under big serif type and a glass button"
-  ],
-  "cat": "web",
-  "ve": "mindloop-en",
-  "rp": 1
- },
- {
   "slug": "mindloop-landing",
   "v": "mindloop-landing",
   "ru": [
@@ -2708,21 +2693,6 @@
   "en": [
    "Movie premiere app",
    "Movie posters stack inside a phone mockup; drag the front card down and it drops away, revealing the next."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "portfolio-about",
-  "v": "portfolio-about",
-  "ve": "portfolio-about-en",
-  "ru": [
-   "Раздел обо мне",
-   "Четыре 3D-иконки появляются по углам, а текст под заголовком загорается по буквам при скролле."
-  ],
-  "en": [
-   "About me section",
-   "Four drifting 3D icons frame a chrome headline while the paragraph lights up letter by letter on scroll."
   ],
   "cat": "web",
   "rp": 1
