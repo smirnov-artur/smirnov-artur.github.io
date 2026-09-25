@@ -3222,6 +3222,36 @@
   "rp": 1
  },
  {
+  "slug": "velorix-iic",
+  "v": "velorix-iic",
+  "ve": "velorix-iic-en",
+  "ru": [
+   "Светящийся кристалл",
+   "Видео в шапке: кристалл вращается и светится, а с боков тянутся две руки — механическая и человеческая."
+  ],
+  "en": [
+   "Glowing crystal",
+   "A looping hero video: a crystal rotates and glows while a robotic hand and a human hand reach in."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "bookedup",
+  "v": "bookedup",
+  "ve": "bookedup-en",
+  "ru": [
+   "Лента клиентов",
+   "Вертикальная лента карточек с консультациями бесконечно скроллится рядом со светящейся иконкой в заголовке."
+  ],
+  "en": [
+   "Client marquee",
+   "An endless vertical marquee of consultation cards scrolls beside a headline with a glowing neumorphic icon."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "seller",
   "cat": "ai",
   "ru": [
