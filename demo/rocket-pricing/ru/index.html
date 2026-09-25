@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="g.a.d. — блок тарифов с разовой оплатой и доступом навсегда: два плана, рамка со свечением под курсором и выделенный лучший тариф.">
+<title>g.a.d. — Тарифы, которые растут с вами</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { sans: ['Inter', 'sans-serif'] },
+      colors: {
+        landing: {
+          surface: 'rgba(255,255,255,0.10)',
+          'surface-hover': 'rgba(255,255,255,0.16)',
+          border: 'rgba(255,255,255,0.10)',
+        },
+      },
+    },
+  },
+};
+</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/framer-motion@11.18.2/dist/framer-motion.js"></script>
+</head>
+<body class="bg-black text-white antialiased overflow-x-hidden font-sans">
+<div id="root"></div>
+<script type="text/babel">
+const { useRef } = React;
+const { motion } = Motion;
+
+const cn = (...classes) => classes.filter(Boolean).join(' ');
+
+const MIcon = ({ name, size = 20, weight = 400, fill = 0, grade = 0, opticalSize = 24, className }) => (
+    <span
+        className={cn('material-symbols-outlined select-none leading-none', className)}
+        style={{
+            fontSize: size,
+            fontVariationSettings: `'FILL' ${fill}, 'wght' ${weight}, 'GRAD' ${grade}, 'opsz' ${opticalSize}`,
+        }}
+    >{name}</span>
+);
+
+const FadeUp = ({ children, delay = 0, className }) => (
+    <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+        className={className}
+    >{children}</motion.div>
+);
+
+const AnimatedText = ({ children }) => (
+    <span className="relative inline-block overflow-hidden leading-none">
+        <span className="block transition-transform duration-300 ease-out group-hover:-translate-y-full">{children}</span>
+        <span className="absolute left-0 top-full block transition-transform duration-300 ease-out group-hover:-translate-y-full">{children}</span>
+    </span>
+);
+
+const PrimaryButton = ({ href = '#', size = 'sm', children }) => (
+    <a
+        href={href}
+        onClick={(e) => e.preventDefault()}
+        className={cn(
+            'group inline-flex items-center justify-center rounded-full font-normal leading-none bg-white/80 hover:bg-white text-black transition-colors',
+            size === 'sm' && 'h-8 px-4 text-sm'
+        )}
+    ><AnimatedText>{children}</AnimatedText></a>
+);
+
+const SecondaryButton = ({ href = '#', size = 'sm', children }) => (
+    <a
+        href={href}
+        onClick={(e) => e.preventDefault()}
+        className={cn(
+            'group inline-flex items-center justify-center rounded-full font-medium leading-none bg-landing-surface hover:bg-landing-surface-hover border border-landing-border text-white backdrop-blur-[2.5px] transition-colors',
+            size === 'sm' && 'h-8 px-4 text-sm'
+        )}
+    ><AnimatedText>{children}</AnimatedText></a>
+);
+
+const SpotlightBorder = ({ children, className, size = 520, intensity = 0.5 }) => {
+    const ref = useRef(null);
+
+    const onMove = (e) => {
+        const el = ref.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        el.style.setProperty('--spot-x', `${e.clientX - rect.left}px`);
+        el.style.setProperty('--spot-y', `${e.clientY - rect.top}px`);
+    };
+    const onLeave = () => {
+        const el = ref.current;
+        if (!el) return;
+        el.style.setProperty('--spot-x', '-9999px');
+        el.style.setProperty('--spot-y', '-9999px');
+    };
+
+    return (
+        <div
+            ref={ref}
+            onPointerMove={onMove}
+            onPointerLeave={onLeave}
+            className={cn('relative rounded-2xl', className)}
+            style={{ '--spot-x': '-9999px', '--spot-y': '-9999px', '--size': `${size}px`, '--intensity': intensity }}
+        >
+            <div className="pointer-events-none absolute inset-0 rounded-2xl border border-white/10" />
+            <div
+                className="pointer-events-none absolute inset-0 rounded-2xl"
+                style={{
+                    padding: '1px',
+                    WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+                    mask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+                    WebkitMaskComposite: 'exclude',
+                    maskComposite: 'exclude',
+                    background: 'radial-gradient(circle var(--size) at var(--spot-x) var(--spot-y), rgba(255,255,255,var(--intensity)), transparent 60%)',
+                }}
+            />
+            <div className="relative h-full">{children}</div>
+        </div>
+    );
+};
+
+const plans = [
+    {
+        name: 'Курс',
+        price: '159',
+        originalPrice: '497',
+        description: 'Разово. Навсегда. Скидка 68%.',
+        bg: '#161616',
+        features: [
+            { text: 'Все курсы и видео', included: true },
+            { text: 'Все модули. Доступ навсегда.', included: true },
+            { text: 'AI Builder', included: true },
+            { text: 'Неограниченные шаблоны', included: false },
+            { text: 'Неограниченные motion-видео', included: false },
+        ],
+    },
+    {
+        name: 'Курс + шаблоны Lovable',
+        price: '239',
+        originalPrice: '697',
+        description: 'Разово. Навсегда. Лучшая цена.',
+        bg: '#252525',
+        features: [
+            { text: 'Все курсы и видео', included: true },
+            { text: 'Все модули. Доступ навсегда.', included: true },
+            { text: 'AI Builder', included: true },
+            { text: 'Неограниченные шаблоны', included: true },
+            { text: 'Неограниченные motion-видео', included: true },
+        ],
+        featured: true,
+        badge: 'Выгодно',
+    },
+];
+
+const PricingCard = ({ plan }) => (
+    <SpotlightBorder size={460} intensity={0.5} className="relative h-full p-2 sm:p-3">
+        <div
+            className="relative flex h-full flex-col rounded-2xl border border-white/10 p-7 sm:p-8"
+            style={{ backgroundColor: plan.bg }}
+        >
+            {plan.badge && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full border border-white/15 bg-white px-3 py-1 text-xs font-medium text-black">
+                    {plan.badge}
+                </div>
+            )}
+
+            <FadeUp delay={0}>
+                <div className="text-[11px] uppercase tracking-[0.2em] text-white/60">{plan.name}</div>
+            </FadeUp>
+            <div className="mt-3 border-t border-white/10" />
+
+            <FadeUp delay={0.1}>
+                <div className="mt-10 flex items-baseline gap-2">
+                    <span className="text-[2.75rem] leading-none font-normal tracking-tight text-white">${plan.price}</span>
+                    {plan.originalPrice && (
+                        <span className="text-lg text-white/40 line-through">${plan.originalPrice}</span>
+                    )}
+                </div>
+            </FadeUp>
+
+            <FadeUp delay={0.2}>
+                <p className="mt-4 text-sm leading-relaxed text-white/60">{plan.description}</p>
+            </FadeUp>
+
+            <FadeUp delay={0.3}>
+                <div className="mt-7">
+                    {plan.featured
+                        ? <PrimaryButton size="sm">Начать</PrimaryButton>
+                        : <SecondaryButton size="sm">Начать</SecondaryButton>}
+                </div>
+            </FadeUp>
+
+            <FadeUp delay={0.4}>
+                <ul className="mt-7 flex flex-1 flex-col gap-2">
+                    {plan.features.map((f, i) => (
+                        <li
+                            key={f.text}
+                            className={cn(
+                                'flex items-center gap-3 py-4 text-sm',
+                                i !== 0 && 'border-t border-white/10',
+                                f.included ? 'text-white/85' : 'text-white/40'
+                            )}
+                        >
+                            <span className={cn(
+                                'flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border',
+                                f.included ? 'border-white/20 bg-white/[0.06]' : 'border-white/10 bg-transparent'
+                            )}>
+                                {f.included
+                                    ? <MIcon name="check" size={12} className="text-white" />
+                                    : <MIcon name="close" size={12} className="text-white/50" />}
+                            </span>
+                            {f.text}
+                        </li>
+                    ))}
+                </ul>
+            </FadeUp>
+        </div>
+    </SpotlightBorder>
+);
+
+const PricingSection = () => (
+    <section id="pricing" className="relative w-full bg-black py-12 sm:py-16">
+        <div className="mx-auto max-w-[1080px] px-4 sm:px-6">
+            <div className="mb-14 flex flex-col items-start gap-10 lg:flex-row lg:items-end lg:justify-between">
+                <div className="max-w-2xl">
+                    <FadeUp>
+                        <span className="mb-6 inline-flex items-center gap-2 rounded-full bg-landing-surface border border-white/10 px-3 py-1 text-xs text-white/80 backdrop-blur">
+                            <span className="h-1.5 w-1.5 rounded-full bg-white/70" />
+                            Тарифы
+                        </span>
+                    </FadeUp>
+                    <FadeUp delay={0.1}>
+                        <h2 className="text-3xl sm:text-4xl font-normal tracking-[-0.02em] leading-[1.05] text-white">
+                            Прозрачные тарифы,
+                            <br className="hidden sm:block" /> которые растут с вами.
+                        </h2>
+                    </FadeUp>
+                </div>
+                <FadeUp delay={0.2}>
+                    <p className="max-w-sm text-sm sm:text-base text-white/60">
+                        Разовый платёж. Доступ навсегда. Выберите тариф, который подходит вашим целям.
+                    </p>
+                </FadeUp>
+            </div>
+
+            <div className="mx-auto grid max-w-3xl grid-cols-1 gap-6 md:grid-cols-2">
+                {plans.map((p) => <PricingCard key={p.name} plan={p} />)}
+            </div>
+        </div>
+    </section>
+);
+
+const App = () => (
+    <div className="flex min-h-screen w-full items-center justify-center bg-black">
+        <PricingSection />
+    </div>
+);
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

@@ -3613,5 +3613,35 @@
   ],
   "img": "gh/saga-orchestrator.jpg",
   "href": "https://github.com/smirnov-artur/saga-orchestrator"
+ },
+ {
+  "slug": "rocket-pricing",
+  "v": "rocket-pricing",
+  "ve": "rocket-pricing-en",
+  "ru": [
+   "Тарифные планы",
+   "Карточки тарифов плавно проявляются снизу вверх, а тонкая рамка светится под курсором."
+  ],
+  "en": [
+   "Pricing plans",
+   "Pricing cards fade up on load while a thin spotlight border glows and follows the cursor."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "scroll-marquee",
+  "v": "scroll-marquee",
+  "ve": "scroll-marquee-en",
+  "ru": [
+   "Витрина проектов",
+   "Два ряда превью проектов скользят в противоположные стороны по мере прокрутки страницы."
+  ],
+  "en": [
+   "Portfolio marquee",
+   "Two rows of project preview clips glide in opposite directions as the page scrolls."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
