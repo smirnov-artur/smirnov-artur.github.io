@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TerraElix — премиальные добавки</title>
+<meta name="description" content="Концепт мобильного магазина БАДов: карусель товаров прокручивается сама каждые 3 секунды, есть выдвижное меню и плавное появление блоков при загрузке.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@0.469.0"></script>
+<style>
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .font-dm { font-family: 'DM Sans', sans-serif; }
+  .font-inter { font-family: 'Inter', sans-serif; }
+</style>
+</head>
+<body class="antialiased" style="margin:0;font-family:'Inter',sans-serif">
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const CATEGORIES = ['Все', 'Капсулы', 'Таблетки', 'Порошки'];
+
+const PRODUCTS = [
+  { id: 1, name: 'Herbix 60', subtitle: 'Витаминный комплекс', dosage: '250 мг', price: 30.0, image: 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260706_182445_93ebd4ab-c1d7-447d-a033-c817f33efcd0.png&w=1280&q=85' },
+  { id: 2, name: 'Herbix 30', subtitle: 'Поддержка иммунитета', dosage: '500 мг', price: 25.0, image: 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260706_184200_daae953b-540b-48d5-8a1f-70323e53af56.png&w=1280&q=85' },
+  { id: 3, name: 'Herbix 90', subtitle: 'Поддержка суставов', dosage: '300 мг', price: 35.0, image: 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260706_184122_8a7d693e-37da-417d-804a-807ea67916af.png&w=1280&q=85' },
+];
+
+const ITEM_WIDTH = 105;
+const CENTER_WIDTH = 160;
+const GAP = 12;
+
+const SignalIcon = () => (
+  <svg width="16" height="11" viewBox="0 0 16 11" fill="black"><rect x="0" y="6.5" width="2.8" height="4.5" rx="0.6" /><rect x="4.4" y="4.5" width="2.8" height="6.5" rx="0.6" /><rect x="8.8" y="2.3" width="2.8" height="8.7" rx="0.6" /><rect x="13.2" y="0" width="2.8" height="11" rx="0.6" /></svg>
+);
+const WifiIcon = () => (
+  <svg width="15" height="11" viewBox="0 0 16 12" fill="black"><path d="M8 11.2a1.15 1.15 0 100-2.3 1.15 1.15 0 000 2.3z" /><path d="M4.3 7.6a5.2 5.2 0 017.4 0L10.4 9a3.4 3.4 0 00-4.8 0L4.3 7.6z" /><path d="M1.4 4.7a9.1 9.1 0 0113.2 0l-1.3 1.4a7.3 7.3 0 00-10.6 0L1.4 4.7z" /></svg>
+);
+const BatteryIcon = () => (
+  <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="20" height="10" rx="2.7" stroke="black" strokeOpacity="0.35" /><rect x="2.5" y="2.5" width="17" height="7" rx="1.6" fill="black" /><rect x="22.2" y="4" width="1.6" height="4" rx="0.8" fill="black" fillOpacity="0.4" /></svg>
+);
+
+const App = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeCat, setActiveCat] = useState(1);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [displayIndex, setDisplayIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [mounted, setMounted] = useState(false);
+  const firstRun = useRef(true);
+
+  useEffect(() => { lucide.createIcons(); });
+
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 30);
+    return () => clearTimeout(t);
+  }, []);
+
+  // auto-play: advance one product every 3s, loops forever
+  useEffect(() => {
+    const id = setInterval(() => {
+      setActiveIndex(i => (i + 1) % PRODUCTS.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, []);
+
+  // on transition end (0.45s after the index changes): swap the displayed
+  // product info and reset quantity. Skip on first mount (nothing to animate).
+  useEffect(() => {
+    if (firstRun.current) { firstRun.current = false; return; }
+    setIsAnimating(true);
+    const t = setTimeout(() => {
+      setDisplayIndex(activeIndex);
+      setQuantity(1);
+      setIsAnimating(false);
+    }, 450);
+    return () => clearTimeout(t);
+  }, [activeIndex]);
+
+  const goTo = dir => setActiveIndex(i => (i + dir + PRODUCTS.length) % PRODUCTS.length);
+  const product = PRODUCTS[displayIndex];
+
+  const reveal = (scale) => `transition-all duration-700 ease-out ${mounted ? `opacity-100 translate-y-0 ${scale ? 'scale-100' : ''}` : `opacity-0 translate-y-4 ${scale ? 'scale-95' : ''}`}`;
+
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center bg-neutral-100 overflow-x-hidden py-10">
+      <div className="relative w-[375px] h-[812px] bg-white border-[8px] border-neutral-900 rounded-[50px] flex flex-col overflow-hidden" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
+
+        {/* Status bar */}
+        <div className="relative h-11 shrink-0 flex items-center justify-between px-6 pt-1">
+          <span className="font-inter font-semibold text-[15px]">9:41</span>
+          <div className="absolute left-1/2 top-2 -translate-x-1/2 w-[120px] h-[32px] bg-black rounded-full"></div>
+          <div className="flex items-center gap-1.5">
+            <SignalIcon />
+            <WifiIcon />
+            <BatteryIcon />
+          </div>
+        </div>
+
+        {/* Content area (menu overlay lives inside this, below the status bar) */}
+        <div className="relative flex-1 overflow-hidden">
+
+          {/* Header */}
+          <div className={`flex items-center justify-between px-6 pt-2 ${reveal()}`} style={{ transitionDelay: '0ms' }}>
+            <button type="button" aria-label="Меню" onClick={() => setMenuOpen(true)}>
+              <i data-lucide="menu" style={{ width: 22, height: 22, strokeWidth: 1.5 }}></i>
+            </button>
+            <span className="font-dm font-medium text-[15px]" style={{ letterSpacing: '-0.03em' }}>TerraElix</span>
+            <button type="button" aria-label="Корзина" className="relative">
+              <i data-lucide="shopping-bag" style={{ width: 22, height: 22, strokeWidth: 1.5 }}></i>
+              <span className="absolute -top-1.5 -right-1.5 w-[18px] h-[18px] bg-black text-white rounded-full flex items-center justify-center" style={{ fontSize: '9px' }}>10</span>
+            </button>
+          </div>
+
+          {/* Title */}
+          <h1 className={`font-dm px-6 mt-4 leading-none ${reveal()}`} style={{ fontSize: '42px', transitionDelay: '100ms' }}>Добавки</h1>
+
+          {/* Category tabs */}
+          <div className={`flex items-center gap-5 px-6 mt-4 overflow-x-auto scrollbar-hide whitespace-nowrap ${reveal()}`} style={{ transitionDelay: '200ms' }}>
+            {CATEGORIES.map((cat, i) => (
+              <button type="button" key={cat} onClick={() => setActiveCat(i)}
+                className={`font-inter text-sm pb-2.5 ${activeCat === i ? 'text-black font-semibold border-b-2 border-black' : 'text-neutral-400'}`}
+                style={{ letterSpacing: '-0.01em' }}>{cat}</button>
+            ))}
+          </div>
+
+          {/* Carousel */}
+          <div className={`relative mt-6 h-[260px] ${reveal(true)}`} style={{ transitionDelay: '300ms' }}>
+            {PRODUCTS.map((p, i) => {
+              let diff = i - activeIndex;
+              if (diff > 1) diff -= PRODUCTS.length;
+              if (diff < -1) diff += PRODUCTS.length;
+              const abs = Math.abs(diff);
+              const width = abs === 0 ? CENTER_WIDTH : ITEM_WIDTH;
+              const height = abs === 0 ? 260 : 200;
+              const opacity = abs === 0 ? 1 : (abs === 1 ? 0.7 : 0.3);
+              const zIndex = abs === 0 ? 10 : 0;
+              let translateX = 0;
+              if (abs > 0) {
+                translateX = (CENTER_WIDTH / 2 + GAP + ITEM_WIDTH / 2) + (abs - 1) * (ITEM_WIDTH + GAP);
+                translateX *= Math.sign(diff);
+              }
+              return (
+                <div key={p.id}
+                  onClick={diff !== 0 ? () => goTo(diff > 0 ? 1 : -1) : undefined}
+                  className={`absolute top-1/2 left-1/2 ${diff !== 0 ? 'cursor-pointer' : ''}`}
+                  style={{
+                    width, height, opacity, zIndex,
+                    transform: `translate(-50%,-50%) translateX(${translateX}px)`,
+                    transition: 'width 0.45s cubic-bezier(0.25,0.1,0.25,1), height 0.45s cubic-bezier(0.25,0.1,0.25,1), transform 0.45s cubic-bezier(0.25,0.1,0.25,1), opacity 0.45s cubic-bezier(0.25,0.1,0.25,1)'
+                  }}>
+                  <img src={p.image} alt={p.name} draggable="false" className="w-full h-full object-contain select-none" />
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Product info */}
+          <div className={`text-center mt-5 px-6 ${reveal()}`} style={{ transitionDelay: '400ms' }}>
+            <h2 className={`font-dm text-2xl transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>{product.name}</h2>
+            <p className="font-inter text-sm text-neutral-500 mt-1">{product.subtitle}</p>
+            <p className="font-inter text-xs text-neutral-400 mt-1">{product.dosage}</p>
+          </div>
+
+          {/* Price + quantity */}
+          <div className={`flex items-center justify-between px-6 mt-5 ${reveal()}`} style={{ transitionDelay: '500ms' }}>
+            <p className={`font-dm font-medium text-2xl transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`} style={{ letterSpacing: '-0.02em' }}>
+              ${(product.price * quantity).toFixed(2)}
+            </p>
+            <div className="flex items-center gap-4">
+              <button type="button" aria-label="Уменьшить количество" onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                className="w-9 h-9 rounded-full border border-neutral-300 flex items-center justify-center">
+                <i data-lucide="minus" style={{ width: 16, height: 16 }}></i>
+              </button>
+              <span className="font-inter font-medium text-lg w-4 text-center">{quantity}</span>
+              <button type="button" aria-label="Увеличить количество" onClick={() => setQuantity(q => q + 1)}
+                className="w-9 h-9 rounded-full border border-neutral-300 flex items-center justify-center">
+                <i data-lucide="plus" style={{ width: 16, height: 16 }}></i>
+              </button>
+            </div>
+          </div>
+
+          {/* Buy button */}
+          <div className={`px-6 mt-5 ${reveal()}`} style={{ transitionDelay: '600ms' }}>
+            <button type="button" onClick={e => e.preventDefault()}
+              className="w-full h-14 bg-black text-white rounded-xl font-inter font-medium hover:bg-neutral-800 active:scale-[0.97] transition-transform">
+              Купить
+            </button>
+          </div>
+
+          {/* Slide-out menu */}
+          {menuOpen && (
+            <React.Fragment>
+              <div className="absolute inset-0 bg-black/40 z-20" onClick={() => setMenuOpen(false)}></div>
+              <div className="absolute top-0 left-0 h-full w-[260px] bg-white z-20 p-5 flex flex-col">
+                <div className="flex items-center justify-between mb-8">
+                  <span className="font-dm font-medium text-[15px]" style={{ letterSpacing: '-0.03em' }}>TerraElix</span>
+                  <button type="button" aria-label="Закрыть меню" onClick={() => setMenuOpen(false)}>
+                    <i data-lucide="x" style={{ width: 20, height: 20 }}></i>
+                  </button>
+                </div>
+                <nav className="flex flex-col gap-1">
+                  {['О нас', 'Товары', 'Акции', 'Контакты'].map(item => (
+                    <a key={item} href="#" onClick={e => { e.preventDefault(); setMenuOpen(false); }}
+                      className="font-inter text-[15px] px-3 py-2.5 rounded-lg hover:bg-neutral-100 transition-colors">{item}</a>
+                  ))}
+                </nav>
+              </div>
+            </React.Fragment>
+          )}
+        </div>
+
+        {/* Home indicator */}
+        <div className="shrink-0 flex justify-center pb-2 pt-1">
+          <div className="w-[134px] h-[5px] bg-black rounded-full"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>

@@ -2645,5 +2645,19 @@
    "Three phone mockups show a live countdown, a glowing globe video, and a swipeable deck of rule cards."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "supplement-shop",
+  "v": "supplement-shop",
+  "ve": "supplement-shop-en",
+  "ru": [
+   "Магазин добавок",
+   "Карусель БАДов сама прокручивается каждые 3 секунды, центральная банка увеличивается, а слева выезжает меню."
+  ],
+  "en": [
+   "Supplement shop",
+   "A supplement carousel auto-slides every 3 seconds, the center bottle scaling up as a side menu slides out."
+  ],
+  "cat": "web"
  }
 ]
