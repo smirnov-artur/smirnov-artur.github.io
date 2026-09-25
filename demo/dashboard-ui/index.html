@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>g.a.d. — Conference Dashboard</title>
+<meta name="description" content="g.a.d. — a liquid-glass video-call dashboard: a grass-and-sky video background, glass room cards, a live bar chart and a drag-to-scroll screen-share strip.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/lucide@0.469.0"></script>
+<style>
+:root{
+  --glass-bg: rgba(255,255,255,0.55);
+  --glass-border: rgba(255,255,255,0.6);
+  --glass-blur: 8px;
+  --text-main:#1a1a1a;
+  --text-muted:#6b7280;
+  --accent:#000000;
+  --card-radius:40px;
+  --transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+body.dark-mode{
+  --glass-bg: rgba(0,0,0,0.45);
+  --glass-border: rgba(255,255,255,0.08);
+  --text-main:#fff;
+  --text-muted:#b0b0b0;
+  --accent:#fff;
+}
+html,body{margin:0;background:#000}
+body{font-family:'Inter',sans-serif;height:100vh;padding:32px 40px;display:flex;flex-direction:column;overflow:hidden;color:var(--text-main);box-sizing:border-box;position:relative;isolation:isolate}
+*{box-sizing:border-box}
+.bg-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1}
+.glass{background:var(--glass-bg);backdrop-filter:blur(8px) saturate(1.8);-webkit-backdrop-filter:blur(8px) saturate(1.8);border-radius:40px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04),inset 0 1px 0 rgba(255,255,255,0.5);position:relative}
+.glass::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;filter:url(#noise-filter);opacity:0.06;mix-blend-mode:overlay}
+.solid-card{background:#fff;box-shadow:0 4px 20px rgba(0,0,0,0.03),0 1px 3px rgba(0,0,0,0.01);position:relative}
+body.dark-mode .solid-card{background:rgba(26,26,26,0.98);color:#fff}
+.nav-grid{display:grid;grid-template-columns:auto auto 1fr auto auto;gap:16px;align-items:center;margin-bottom:40px}
+.icon-btn{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--glass-bg);backdrop-filter:blur(8px);border:1px solid var(--glass-border);cursor:pointer;transition:var(--transition);color:var(--text-main);flex-shrink:0}
+.icon-btn:hover{transform:scale(1.05)}
+.icon-btn img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.toggle-container{display:flex;align-items:center;gap:8px;background:var(--glass-bg);backdrop-filter:blur(8px);border-radius:100px;padding:4px;border:1px solid var(--glass-border)}
+.mode-switch{width:88px;height:48px;background:#fff;border-radius:100px;position:relative;padding:4px;cursor:pointer;flex-shrink:0;border:none}
+.mode-track{width:76px;height:40px;background:#3b82f6;border-radius:100px;position:relative}
+.mode-handle{width:32px;height:32px;background:#fff;border-radius:50%;position:absolute;top:4px;right:4px;display:flex;align-items:center;justify-content:center;transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);color:#1a1a1a}
+.mode-switch.is-dark .mode-handle{transform:translateX(-36px)}
+.settings-btn{padding:10px 24px;border-radius:100px;background:rgba(0,0,0,0.04);backdrop-filter:blur(8px);color:var(--text-main);font-size:0.875rem;border:none;cursor:pointer;transition:var(--transition);white-space:nowrap}
+.settings-btn:hover{background:rgba(0,0,0,0.08)}
+.meeting-alert{justify-self:center;display:flex;align-items:center;gap:12px;background:#fff;border-radius:100px;padding:6px 6px 6px 16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);white-space:nowrap}
+.meeting-alert img{width:32px;height:32px;border-radius:50%}
+.meeting-alert .label{font-size:0.85rem;color:#1a1a1a}
+.time-tag{background:#f0f0f0;color:#1a1a1a;border-radius:100px;padding:4px 10px;font-size:0.75rem}
+.progress-close{width:32px;height:32px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border:none;color:#1a1a1a;flex-shrink:0}
+.progress-close svg.ring{position:absolute;inset:0;transform:rotate(-90deg)}
+.view-switcher{display:flex;background:rgba(0,0,0,0.04);border-radius:100px;padding:4px;gap:4px}
+.view-btn{padding:8px 20px;border-radius:100px;border:none;background:transparent;color:var(--text-main);font-size:0.875rem;cursor:pointer;transition:var(--transition);white-space:nowrap}
+.view-btn.active{background:#fff;color:#1a1a1a;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);gap:24px;max-width:1400px;width:100%;margin:0 auto;flex:1;min-height:0}
+.dash-card{padding:28px 20px;display:flex;flex-direction:column;border-radius:40px;transition:var(--transition);cursor:pointer;overflow:hidden;position:relative;color:var(--text-main)}
+.dash-card:hover{transform:translateY(-3px) scale(1.01);box-shadow:0 12px 32px rgba(0,0,0,0.1)}
+.card-glass-dark{background:rgba(0,0,0,0.18);color:#fff}
+body.dark-mode .card-glass-dark{background:rgba(255,255,255,0.08)}
+.card-alt{background:linear-gradient(to bottom,#f4f4f4 0%,#ffffff 50%,#ffffff 100%)}
+body.dark-mode .card-alt{background:linear-gradient(to bottom,#242424 0%,rgba(26,26,26,0.98) 50%,rgba(26,26,26,0.98) 100%)}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.card-title{font-size:1.35rem;font-weight:400;letter-spacing:-0.03em;margin:0}
+.card-sub{font-size:0.85rem;color:var(--text-muted);margin:4px 0 0}
+.avatar-stack{display:flex;align-items:center}
+.avatar-stack img{width:32px;height:32px;border-radius:50%;border:1.5px solid #fff;margin-left:-12px;object-fit:cover}
+.avatar-stack img:first-child{margin-left:0}
+.count-badge{width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:var(--text-main);margin-left:8px;flex-shrink:0}
+body.dark-mode .count-badge{background:rgba(255,255,255,0.12)}
+.card-footer{display:flex;align-items:center;margin-top:auto}
+.bars{display:flex;align-items:flex-end;gap:2px;height:60px}
+.bars .bar{width:6px;border-radius:2px 2px 0 0;flex-shrink:0}
+.markers-row{display:flex;justify-content:space-between;padding:0 20px;margin-bottom:24px}
+.markers-row .grp{display:flex}
+.markers-row img{width:18px;height:18px;border-radius:50%;border:1.5px solid #fff;object-fit:cover}
+.play-btn{width:54px;height:54px;border-radius:50%;background:rgba(245,245,245,0.85);display:flex;align-items:center;justify-content:center;margin-left:8px;flex-shrink:0}
+.screen-row{display:flex;gap:12px;overflow-x:auto;margin:20px -20px 0;padding:0 20px 16px;cursor:grab;scrollbar-width:none;-ms-overflow-style:none}
+.screen-row::-webkit-scrollbar{display:none}
+.screen-thumb-wrap{position:relative;flex-shrink:0}
+.screen-thumb{width:160px;height:100px;border-radius:16px;flex-shrink:0;object-fit:cover;display:block}
+.alice-tag{position:absolute;bottom:6px;right:6px;display:flex;align-items:center;gap:4px;background:#e05e36;border-radius:100px;padding:2px 8px 2px 2px;color:#fff;font-size:0.65rem;white-space:nowrap}
+.alice-tag img{width:24px;height:24px;border-radius:50%;object-fit:cover}
+.chip-row{display:flex;gap:8px}
+.chip{background:#fff;border-radius:100px;padding:6px 14px;font-size:0.75rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);color:#1a1a1a;white-space:nowrap}
+.indicators{display:flex;justify-content:center;gap:16px;margin:24px 0 120px;flex-shrink:0}
+.indicators .dot{width:12px;height:12px;border-radius:50%;background:#fff}
+.bottom-bar{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:100px;z-index:2}
+.participant{width:40px;height:40px;border-radius:50%;position:relative;flex-shrink:0;object-fit:cover}
+.participant.speaker{width:44px;height:44px}
+.voice-indicator{position:absolute;top:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;gap:1px}
+.voice-indicator .wave{width:2px;background:#4b5563;border-radius:1px;animation:voice-wave 1s ease-in-out infinite}
+@keyframes voice-wave{0%,100%{height:4px}50%{height:10px}}
+.plus-chip{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.25);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.75rem;flex-shrink:0}
+.components-btn{position:fixed;bottom:32px;left:32px;width:44px;height:44px;border-radius:14px;background:rgba(0,0,0,0.04);backdrop-filter:blur(8px);display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:4px;cursor:pointer;z-index:2}
+.components-btn img{width:100%;height:100%;border-radius:4px;object-fit:cover}
+.floating-controls{position:fixed;bottom:32px;right:32px;display:flex;gap:12px;background:rgba(0,0,0,0.04);backdrop-filter:blur(8px);border-radius:100px;padding:10px 14px;z-index:2}
+.control-btn{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.6);color:var(--text-main);border:none;cursor:pointer;transition:var(--transition)}
+.control-btn:hover{transform:scale(1.08)}
+.control-btn.off{background:#ff4545;color:#fff}
+body.dark-mode .control-btn{background:rgba(255,255,255,0.15)}
+@media (max-width:1200px){
+  body{height:auto;min-height:100vh;overflow:auto}
+  .dash-grid{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,280px)}
+}
+@media (max-width:768px){
+  body{padding:16px}
+  .dash-grid{grid-template-columns:1fr;grid-template-rows:repeat(8,auto)}
+  .meeting-alert{display:none}
+  .nav-grid{display:flex;flex-wrap:wrap;justify-content:space-between;row-gap:12px}
+  .view-switcher{order:5;flex:1 0 100%;justify-content:center}
+  .bottom-bar{bottom:80px;max-width:calc(100% - 32px)}
+  .floating-controls,.components-btn{bottom:80px}
+}
+</style>
+<style>.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}</style>
+</head>
+<body class="antialiased">
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef, useEffect } = React;
+
+const LIGHT_VIDEO = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260514_103318_2aa26b55-df1a-43a6-903d-941e718c9366.mp4';
+const DARK_VIDEO = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260514_102933_4e8f73b5-775a-4179-b2fb-472f59063dcd.mp4';
+
+const NoiseFilterDefs = () => (
+    <svg width="0" height="0" style={{ position: 'absolute' }}>
+        <defs>
+            <filter id="noise-filter">
+                <feTurbulence baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise" />
+                <feComposite operator="in" in2="SourceGraphic" />
+            </filter>
+        </defs>
+    </svg>
+);
+
+const VoiceIndicator = () => (
+    <span className="voice-indicator">
+        <span className="wave" style={{ animationDelay: '0s' }} />
+        <span className="wave" style={{ animationDelay: '0.2s' }} />
+        <span className="wave" style={{ animationDelay: '0.4s' }} />
+    </span>
+);
+
+const ModeSwitch = ({ isDark, onToggle }) => (
+    <button className={'mode-switch' + (isDark ? ' is-dark' : '')} onClick={onToggle} aria-label="toggle theme">
+        <div className="mode-track">
+            <div className="mode-handle">
+                <i data-lucide={isDark ? 'moon' : 'sun'} style={{ width: 14, height: 14 }}></i>
+            </div>
+        </div>
+    </button>
+);
+
+const MeetingAlert = () => (
+    <div className="meeting-alert">
+        <img src="https://i.pravatar.cc/100?u=meeting_host" alt="" />
+        <span className="label">Meeting is about to start</span>
+        <span className="time-tag">-5:23</span>
+        <button className="progress-close" onClick={pd}>
+            <svg className="ring" width="32" height="32" viewBox="0 0 32 32">
+                <circle cx="16" cy="16" r="14" fill="none" stroke="#e5e7eb" strokeWidth="2" />
+                <circle cx="16" cy="16" r="14" fill="none" stroke="#1a1a1a" strokeWidth="2" strokeDasharray="88" strokeDashoffset="25" strokeLinecap="round" />
+            </svg>
+            <i data-lucide="x" style={{ width: 12, height: 12, position: 'relative' }}></i>
+        </button>
+    </div>
+);
+
+const pd = e => e.preventDefault();
+
+const ViewSwitcher = ({ view, setView }) => (
+    <div className="view-switcher">
+        <button className={'view-btn' + (view === 'dashboard' ? ' active' : '')} onClick={() => setView('dashboard')}>Dashboard</button>
+        <button className={'view-btn' + (view === 'rooms' ? ' active' : '')} onClick={() => setView('rooms')}>Rooms</button>
+    </div>
+);
+
+const GadLogo = ({ className, style }) => (
+    <svg className={'gad-logo ' + (className || '')} style={style} viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+        <path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/>
+        <circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100"/>
+        <circle className="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+    </svg>
+);
+
+const TopNav = ({ isDark, setIsDark, view, setView }) => (
+    <div className="nav-grid">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <a href="#" onClick={pd} aria-label="g.a.d." style={{ color: 'var(--text-main)', fontSize: 24, lineHeight: 1, display: 'flex' }}><GadLogo /></a>
+            <button className="icon-btn" aria-label="profile">
+            <img src="https://i.pravatar.cc/100?u=current_user" alt="" />
+            </button>
+        </div>
+        <div className="toggle-container">
+            <ModeSwitch isDark={isDark} onToggle={() => setIsDark(v => !v)} />
+            <button className="settings-btn">Settings</button>
+        </div>
+        <MeetingAlert />
+        <ViewSwitcher view={view} setView={setView} />
+        <button className="icon-btn" aria-label="search">
+            <i data-lucide="search" style={{ width: 20, height: 20 }}></i>
+        </button>
+    </div>
+);
+
+const CardCreateRoom = () => (
+    <div className="dash-card glass card-glass-dark" style={{ alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+        <i data-lucide="plus" style={{ width: 32, height: 32 }}></i>
+        <span style={{ fontSize: '0.95rem' }}>Create a room</span>
+    </div>
+);
+
+const CardSubscription = () => (
+    <div className="dash-card solid-card">
+        <div className="card-head">
+            <div>
+                <h3 className="card-title">Subscription Growth Experiments</h3>
+                <p className="card-sub">Sprint Retrospective</p>
+            </div>
+            <i data-lucide="zap" style={{ width: 16, height: 16, opacity: 0.5, flexShrink: 0 }}></i>
+        </div>
+        <div className="card-footer">
+            <div className="avatar-stack">
+                <img src="https://i.pravatar.cc/100?u=1" alt="" />
+                <img src="https://i.pravatar.cc/100?u=2" alt="" />
+                <img src="https://i.pravatar.cc/100?u=3" alt="" />
+            </div>
+            <span className="count-badge">9</span>
+        </div>
+    </div>
+);
+
+const BLUE_BARS = [35, 45, 30, 55, 40, 65, 50, 75, 60, 85, 70, 80, 65, 55, 45, 70, 60, 75, 55, 65, 50, 75, 60, 55];
+const GREY_BARS = [45, 70, 60, 75, 55, 65, 50, 75, 60, 85, 70, 55, 45, 70, 60, 75, 55, 65, 50, 75, 60, 55, 45, 70, 60, 75, 55, 65, 50, 75, 60, 55, 45, 70, 60, 75];
+
+const CardWeeklyInsights = () => (
+    <div className="dash-card solid-card">
+        <h3 className="card-title" style={{ marginBottom: 16 }}>Weekly Insights</h3>
+        <div className="bars" style={{ marginBottom: 16 }}>
+            {BLUE_BARS.map((h, i) => <div key={'b' + i} className="bar" style={{ height: h, background: '#3b82f6' }} />)}
+            {GREY_BARS.map((h, i) => <div key={'g' + i} className="bar" style={{ height: h, background: '#e5e7eb' }} />)}
+        </div>
+        <div className="markers-row">
+            <img src="https://i.pravatar.cc/100?u=m1" alt="" />
+            <div className="grp"><img src="https://i.pravatar.cc/100?u=m2" style={{ marginRight: -8 }} alt="" /><img src="https://i.pravatar.cc/100?u=m3" alt="" /></div>
+            <div className="grp"><img src="https://i.pravatar.cc/100?u=m4" style={{ marginRight: -8 }} alt="" /><img src="https://i.pravatar.cc/100?u=m5" alt="" /></div>
+        </div>
+        <div className="card-footer">
+            <div className="avatar-stack">
+                <img src="https://i.pravatar.cc/100?u=large1" alt="" />
+                <img src="https://i.pravatar.cc/100?u=large2" alt="" />
+            </div>
+            <button className="play-btn" onClick={pd}><i data-lucide="play" style={{ width: 20, height: 20, fill: '#000' }}></i></button>
+        </div>
+    </div>
+);
+
+const CardProductStrategy = () => (
+    <div className="dash-card glass card-glass-dark">
+        <div className="card-head">
+            <div>
+                <h3 className="card-title">Product Strategy 2023</h3>
+                <p className="card-sub" style={{ color: 'rgba(255,255,255,0.6)' }}>No upcoming meetings</p>
+            </div>
+            <i data-lucide="more-horizontal" style={{ width: 16, height: 16, opacity: 0.5, flexShrink: 0 }}></i>
+        </div>
+        <div className="card-footer">
+            <div className="avatar-stack"><img src="https://i.pravatar.cc/100?u=6" alt="" /></div>
+            <span className="count-badge" style={{ background: 'rgba(255,255,255,0.15)' }}>32</span>
+        </div>
+    </div>
+);
+
+const CardOnboarding = () => (
+    <div className="dash-card solid-card">
+        <div className="card-head">
+            <div>
+                <h3 className="card-title">User Onboarding Team</h3>
+                <p className="card-sub">Sprint Planning</p>
+            </div>
+            <i data-lucide="bar-chart-2" style={{ width: 16, height: 16, opacity: 0.5, flexShrink: 0 }}></i>
+        </div>
+        <div className="card-footer">
+            <div className="avatar-stack">
+                <img src="https://i.pravatar.cc/100?u=7" alt="" />
+                <img src="https://i.pravatar.cc/100?u=8" alt="" />
+                <img src="https://i.pravatar.cc/100?u=9" alt="" />
+            </div>
+            <span className="count-badge">3</span>
+        </div>
+    </div>
+);
+
+const CardMarketResearch = () => (
+    <div className="dash-card glass card-glass-dark">
+        <div className="card-head">
+            <div>
+                <h3 className="card-title">User &amp; Market Research</h3>
+                <p className="card-sub" style={{ color: 'rgba(255,255,255,0.6)' }}>No upcoming meetings</p>
+            </div>
+            <i data-lucide="more-horizontal" style={{ width: 16, height: 16, opacity: 0.5, flexShrink: 0 }}></i>
+        </div>
+        <div className="card-footer">
+            <div className="avatar-stack"><img src="https://i.pravatar.cc/100?u=10" alt="" /></div>
+            <span className="count-badge" style={{ background: 'rgba(255,255,255,0.15)' }}>6</span>
+        </div>
+    </div>
+);
+
+const CardCoreProduct = () => (
+    <div className="dash-card solid-card">
+        <div className="card-head">
+            <div>
+                <h3 className="card-title">Core Product Team</h3>
+                <p className="card-sub">Core Product Team</p>
+            </div>
+            <i data-lucide="video" style={{ width: 16, height: 16, opacity: 0.5, flexShrink: 0 }}></i>
+        </div>
+        <div className="card-footer">
+            <div className="avatar-stack">
+                <img src="https://i.pravatar.cc/100?u=11" alt="" />
+                <img src="https://i.pravatar.cc/100?u=12" alt="" />
+            </div>
+            <span className="count-badge">2</span>
+        </div>
+    </div>
+);
+
+const CardScreenShare = () => {
+    const rowRef = useRef(null);
+    const drag = useRef({ down: false, x: 0, left: 0 });
+    const onDown = e => { drag.current = { down: true, x: e.clientX, left: rowRef.current.scrollLeft }; };
+    const onMove = e => { if (!drag.current.down) return; rowRef.current.scrollLeft = drag.current.left - (e.clientX - drag.current.x); };
+    const stop = () => { drag.current.down = false; };
+    return (
+        <div className="dash-card card-alt solid-card">
+            <div className="chip-row">
+                <span className="chip" style={{ color: '#3b82f6' }}>Screen Share</span>
+                <span className="chip">0:30</span>
+            </div>
+            <div className="screen-row" ref={rowRef} onMouseDown={onDown} onMouseMove={onMove} onMouseUp={stop} onMouseLeave={stop}>
+                {[1, 2, 3, 4].map(n => (
+                    <div className="screen-thumb-wrap" key={n}>
+                        <img className="screen-thumb" src={`https://picsum.photos/seed/screen${n}/300/200`} alt="" draggable="false" />
+                        {n === 2 && (
+                            <span className="alice-tag">
+                                <img src="https://i.pravatar.cc/100?u=alice_av" alt="" />
+                                Alice
+                            </span>
+                        )}
+                    </div>
+                ))}
+            </div>
+            <div className="card-footer">
+                <div className="avatar-stack">
+                    <img src="https://i.pravatar.cc/100?u=13" alt="" />
+                    <img src="https://i.pravatar.cc/100?u=14" alt="" />
+                </div>
+                <span className="count-badge" style={{ background: '#F3F3F3' }}>8</span>
+            </div>
+        </div>
+    );
+};
+
+const DashboardGrid = () => (
+    <div className="dash-grid">
+        <CardCreateRoom />
+        <CardSubscription />
+        <CardWeeklyInsights />
+        <CardProductStrategy />
+        <CardOnboarding />
+        <CardMarketResearch />
+        <CardCoreProduct />
+        <CardScreenShare />
+    </div>
+);
+
+const Indicators = () => (
+    <div className="indicators">
+        <span className="dot" style={{ opacity: 1 }} />
+        <span className="dot" style={{ opacity: 0.3 }} />
+        <span className="dot" style={{ opacity: 0.3 }} />
+    </div>
+);
+
+const BottomBar = () => (
+    <div className="bottom-bar glass">
+        <div style={{ position: 'relative' }}>
+            <img className="participant speaker" src="https://i.pravatar.cc/100?u=speaker" alt="" />
+            <VoiceIndicator />
+        </div>
+        <img className="participant" src="https://i.pravatar.cc/100?u=p1" style={{ opacity: 0.7 }} alt="" />
+        <div style={{ position: 'relative' }}>
+            <img className="participant" src="https://i.pravatar.cc/100?u=p2" alt="" />
+            <VoiceIndicator />
+        </div>
+        <img className="participant" src="https://i.pravatar.cc/100?u=p3" alt="" />
+        <span className="plus-chip">+17</span>
+    </div>
+);
+
+const ComponentsButton = () => (
+    <button className="components-btn" aria-label="components">
+        {[1, 2, 3, 4].map(n => <img key={n} src={`https://i.pravatar.cc/100?u=c${n}`} alt="" />)}
+    </button>
+);
+
+const FloatingControls = ({ videoOn, setVideoOn, micOn, setMicOn }) => (
+    <div className="floating-controls">
+        <button className={'control-btn' + (videoOn ? '' : ' off')} onClick={() => setVideoOn(v => !v)} aria-label="toggle video">
+            <i data-lucide={videoOn ? 'video' : 'video-off'} style={{ width: 20, height: 20 }}></i>
+        </button>
+        <button className={'control-btn' + (micOn ? '' : ' off')} onClick={() => setMicOn(v => !v)} aria-label="toggle mic">
+            <i data-lucide={micOn ? 'mic' : 'mic-off'} style={{ width: 20, height: 20 }}></i>
+        </button>
+    </div>
+);
+
+const App = () => {
+    const [isDark, setIsDark] = useState(false);
+    const [view, setView] = useState('rooms');
+    const [videoOn, setVideoOn] = useState(true);
+    const [micOn, setMicOn] = useState(true);
+
+    useEffect(() => { document.body.classList.toggle('dark-mode', isDark); }, [isDark]);
+    useEffect(() => { lucide.createIcons(); }, [isDark, view, videoOn, micOn]);
+
+    return (
+        <React.Fragment>
+            <NoiseFilterDefs />
+            <video key={isDark ? 'dark' : 'light'} className="bg-video" autoPlay muted loop playsInline src={isDark ? DARK_VIDEO : LIGHT_VIDEO} />
+            <TopNav isDark={isDark} setIsDark={setIsDark} view={view} setView={setView} />
+            <DashboardGrid />
+            <Indicators />
+            <BottomBar />
+            <ComponentsButton />
+            <FloatingControls videoOn={videoOn} setVideoOn={setVideoOn} micOn={micOn} setMicOn={setMicOn} />
+        </React.Fragment>
+    );
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

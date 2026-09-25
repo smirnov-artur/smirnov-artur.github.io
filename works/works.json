@@ -3058,6 +3058,96 @@
   "rp": 1
  },
  {
+  "slug": "reveal-hero",
+  "v": "reveal-hero",
+  "ve": "reveal-hero-en",
+  "ru": [
+   "Очиститель воздуха",
+   "Круговая подсветка следует за курсором и приоткрывает слой под фото маски."
+  ],
+  "en": [
+   "Air purifier",
+   "A circular spotlight follows the cursor, revealing a hidden layer beneath the mask photo."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "impressive-hero",
+  "v": "impressive-hero",
+  "ve": "impressive-hero-en",
+  "ru": [
+   "Венчурная студия",
+   "На фоне зацикленного видео со звёздами заголовок появляется по буквам, а стеклянные кнопки — следом."
+  ],
+  "en": [
+   "Venture studio",
+   "A looping starfield video backs a letter-by-letter animated headline and glassy buttons that fade in."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "luxury-editorial-ecommerce-design",
+  "v": "luxury-editorial-ecommerce-design",
+  "ve": "luxury-editorial-ecommerce-design-en",
+  "ru": [
+   "Магазин косметики",
+   "Видео в шапке сменяются по кругу, а карусель товаров едет боком на колесе мыши."
+  ],
+  "en": [
+   "Skincare shop",
+   "A hero video slideshow crossfades while a product carousel scrolls sideways on the mouse wheel."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "shamoni-hero",
+  "v": "shamoni-hero",
+  "ve": "shamoni-hero-en",
+  "ru": [
+   "Морская коллекция",
+   "Прокрутка раскрывает кадр овальной маской, вокруг кружат морские фото и в кульминации вырастают во весь экран."
+  ],
+  "en": [
+   "Sailing collection",
+   "Scrolling opens the frame through an oval mask while sea photos orbit around it and grow to full screen at the climax."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "dashboard-ui",
+  "v": "dashboard-ui",
+  "ve": "dashboard-ui-en",
+  "ru": [
+   "Дашборд видеозвонков",
+   "Видео с травой и небом за стеклянными карточками комнат, а лента демо экрана перетаскивается в сторону."
+  ],
+  "en": [
+   "Video call dashboard",
+   "A grass-and-sky video plays behind glass room cards, and the screen-share strip drags sideways."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "cinematic-landing-page",
+  "v": "cinematic-landing-page",
+  "ve": "cinematic-landing-page-en",
+  "ru": [
+   "Кинематографичный лендинг пекарни",
+   "Прокрутка сменяет одно видео другим через растущий круг, затем галерея проявляется из размытия, а внизу бежит лента логотипов партнёров."
+  ],
+  "en": [
+   "Cinematic bakery landing",
+   "Scrolling wipes one hero video into the next through a growing circle, then a photo gallery blurs into focus and partner logos scroll past."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "seller",
   "cat": "ai",
   "ru": [
