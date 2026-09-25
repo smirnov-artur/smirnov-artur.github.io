@@ -204,15 +204,16 @@
   "slug": "flux",
   "cat": "web",
   "ru": [
-   "Fluxwave",
+   "Неоновый цветок",
    "Неоновый первый экран с живым видео и физикой курсора"
   ],
   "en": [
-   "Fluxwave",
+   "Neon bloom",
    "A neon hero with live video and cursor physics"
   ],
-  "href": "https://smirnov-artur.github.io/portfolio/cases/flux/",
-  "v": "pf-flux"
+  "v": "flux",
+  "ve": "flux-en",
+  "rp": 1
  },
  {
   "slug": "viktor-portfolio",
