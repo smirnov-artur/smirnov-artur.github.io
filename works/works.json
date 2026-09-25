@@ -2687,5 +2687,19 @@
    "Soft curved lines pulse behind a bold headline while service tags and client logos scroll past."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "cross-border",
+  "v": "cross-border",
+  "ve": "cross-border-en",
+  "ru": [
+   "Карта грузовых маршрутов",
+   "Грузовик едет по трассе на закате, затем по карте маршрутов бегут жёлтые стрелки между точками."
+  ],
+  "en": [
+   "Freight route map",
+   "A truck drives down the highway at sunset, then yellow arrows animate along routes between glowing dots."
+  ],
+  "cat": "web"
  }
 ]
