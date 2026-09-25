@@ -840,8 +840,9 @@
    "Liquid-cursor studio",
    "The cursor reveals a second image right beneath it"
   ],
-  "href": "https://smirnov-artur.github.io/portfolio/cases/ferro/",
-  "v": "pf-ferro"
+  "v": "ferro",
+  "ve": "ferro-en",
+  "rp": 1
  },
  {
   "slug": "santeh-3d",
