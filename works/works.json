@@ -3158,6 +3158,36 @@
   "rp": 1
  },
  {
+  "slug": "fragrance-shop",
+  "v": "fragrance-shop",
+  "ve": "fragrance-shop-en",
+  "ru": [
+   "Подбор аромата",
+   "Заголовок проступает на фоне видео, а два экрана с флаконом и нотами аромата появляются при скролле."
+  ],
+  "en": [
+   "Personal scent finder",
+   "A hero video plays behind fading text, then two split-screen bottle-and-notes panels fade in as you scroll."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "football-scroll",
+  "v": "football-scroll",
+  "ve": "football-scroll-en",
+  "ru": [
+   "Футбольная академия",
+   "Видео на фоне перематывается кадр за кадром вместе с прокруткой, а абзац проступает из размытия слово за словом."
+  ],
+  "en": [
+   "Football academy",
+   "The background video scrubs frame by frame with the scroll, then a paragraph sharpens out of a blur one word at a time."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "seller",
   "cat": "ai",
   "ru": [
