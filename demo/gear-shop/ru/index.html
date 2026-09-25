@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>g.a.d. — магазин наушников и колонок</title>
+<meta name="description" content="Коралловое приложение для покупки наушников и колонок: три экрана iPhone — эффектная обложка, лента новинок и карточка товара с выбором цвета.">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#F6E2DE;}
+  body{
+    min-height:100vh;
+    overflow-x:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:56px 16px;
+    position:relative;
+    font-family:-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, sans-serif;
+  }
+  button{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  img{display:block;}
+
+  /* ---- decorative fixed backdrop ---- */
+  .bg-decor{position:fixed;top:50%;left:50%;width:560px;height:560px;transform:translate(-50%,-50%);z-index:0;pointer-events:none;}
+
+  /* ---- stage / phones ---- */
+  .stage{position:relative;z-index:1;display:flex;gap:28px;zoom:0.744;}
+  @media (max-width:1000px){ .stage{flex-direction:column;} }
+  .phone{position:relative;width:390px;height:844px;border-radius:44px;box-shadow:0 30px 60px rgba(190,120,110,.28);overflow:hidden;flex-shrink:0;display:flex;flex-direction:column;}
+
+  /* ---- shared iOS chrome ---- */
+  .island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:35px;border-radius:22px;background:#000;z-index:6;}
+  .status-bar{position:absolute;top:16px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:140px;z-index:6;font-size:16px;font-weight:600;}
+  .status-bar.light{color:#fff;}
+  .status-bar.dark{color:#111;}
+  .sb-icons{display:flex;align-items:center;gap:5px;}
+  .home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:100px;}
+  .home-indicator.light{background:rgba(255,255,255,.75);}
+  .home-indicator.dark{background:rgba(0,0,0,.28);}
+
+  /* ================= SCREEN 1 — HERO ================= */
+  .screen1{background:#F3B7AE;}
+  .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:dcKen 16s ease-out backwards, dcFade 1.4s ease-out backwards;}
+  .badge{position:absolute;top:62px;left:24px;background:#fff;border-radius:999px;padding:12px 20px;font-size:13px;font-weight:500;color:#111;display:inline-flex;align-items:center;gap:6px;box-shadow:0 8px 20px rgba(160,80,70,.18);z-index:5;}
+  .play-btn{position:absolute;top:268px;right:19px;width:120px;height:124px;z-index:5;}
+  .headline{position:absolute;left:28px;bottom:150px;z-index:5;}
+  .headline-sub{font-size:32px;font-weight:200;color:#d6837b;-webkit-text-stroke:1.5px #d6837b;}
+  .headline-main{margin-top:2px;max-width:340px;font-size:64px;line-height:1.02;font-weight:500;color:#fff;text-shadow:0 2px 18px rgba(120,40,30,.18);}
+
+  /* ================= SCREEN 2 — NEW ARRIVALS ================= */
+  .screen2{background:#fdbdb4;}
+  .topbar{display:flex;align-items:center;gap:12px;padding:62px 24px 20px 24px;z-index:5;position:relative;}
+  .search-pill{flex:1;height:52px;background:#fff;border-radius:999px;display:flex;align-items:center;gap:10px;padding:0 20px;color:rgba(17,17,17,.5);font-size:15px;}
+  .avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+  .sheet2{flex:1;margin-top:26px;background:#FBE7E2;border-radius:60px 60px 0 0;padding:56px 20px 0 20px;position:relative;z-index:2;}
+  .sheet2-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+  .arrivals-title{font-size:38px;font-weight:400;line-height:1.05;color:#111;-webkit-text-stroke:.6px #111;}
+  .sort-icon{margin-top:10px;flex-shrink:0;}
+  .filters{display:flex;gap:10px;margin-top:22px;}
+  .pill{font-size:16px;padding:15px 28px;border-radius:999px;border:none;background:transparent;}
+  .pill-solid{background:#111;color:#fff;}
+  .pill-outline{border:1.5px solid #111;color:#111;padding:15px 30px;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px;}
+  .card{background:#f2cfcb;border-radius:26px;padding:22px 12px 18px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;}
+  .card img{width:100%;max-width:118px;height:88px;object-fit:contain;}
+  .card-name{font-size:17px;font-weight:500;color:#111;}
+  .card-price{font-size:14px;font-weight:600;color:#7c6a66;font-family:-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;}
+  .cart-pill{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);background:#111;border-radius:999px;display:flex;align-items:center;gap:12px;padding:8px 8px 8px 22px;box-shadow:0 12px 28px rgba(60,20,15,.35);z-index:5;}
+  .cart-total{color:#fff;font-size:13px;font-weight:300;}
+  .cart-icon-wrap{position:relative;width:34px;height:34px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#111;}
+  .cart-dot{position:absolute;top:-2px;right:-2px;width:5px;height:5px;border-radius:50%;background:#e2574c;}
+
+  /* ================= SCREEN 3 — PRODUCT DETAIL ================= */
+  .screen3{background:#fdbdb4;}
+  .topbar3{display:flex;align-items:center;justify-content:space-between;padding:62px 28px 0 28px;color:#fff;}
+  .product-image{margin:40px auto 0;width:330px;height:330px;object-fit:contain;animation-name:dcScale;animation-duration:1s;animation-timing-function:cubic-bezier(.22,1,.36,1);animation-fill-mode:backwards;animation-delay:.2s;}
+  .swatches{display:flex;gap:14px;justify-content:center;margin:24px auto 0;}
+  .swatch{width:72px;height:72px;border-radius:22px;background:#FBDFD9;display:flex;align-items:center;justify-content:center;}
+  .swatch-dot{width:42px;height:42px;border-radius:50%;background:#FBDFD9;border:11px solid #000;box-sizing:border-box;}
+  .sheet3{flex:1;margin-top:28px;background:#FBE7E2;border-radius:60px 60px 0 0;padding:34px 26px 44px 26px;display:flex;flex-direction:column;}
+  .pd-title{font-size:45px;font-weight:400;line-height:1.05;color:#111;max-width:230px;-webkit-text-stroke:.5px #111;}
+  .pd-desc{margin-top:14px;font-size:18px;line-height:1.5;color:#b0a6a1;max-width:300px;}
+  .pd-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:20px;}
+  .pd-price{font-size:22px;font-weight:500;color:#111;font-family:-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;}
+  .add-cart-btn{display:flex;align-items:center;gap:8px;background:#F6C6BE;border:none;border-radius:999px;padding:14px 22px;font-size:15px;font-weight:500;color:#111;}
+
+  /* ================= animations ================= */
+  @keyframes dcRise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes dcRiseSm{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes dcFade{from{opacity:0}to{opacity:1}}
+  @keyframes dcInLeft{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes dcPop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+  @keyframes dcScale{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+  @keyframes dcRiseC{from{opacity:0;transform:translateX(-50%) translateY(18px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+  @keyframes dcKen{from{transform:scale(1.16)}to{transform:scale(1)}}
+
+  .dc-rise{animation-name:dcRise;animation-duration:.85s;animation-timing-function:cubic-bezier(.22,1,.36,1);animation-fill-mode:backwards;}
+  .dc-fade{animation-name:dcFade;animation-duration:.85s;animation-timing-function:ease;animation-fill-mode:backwards;}
+  .dc-inleft{animation-name:dcInLeft;animation-duration:.85s;animation-timing-function:cubic-bezier(.22,1,.36,1);animation-fill-mode:backwards;}
+  .dc-pop{animation-name:dcPop;animation-duration:.7s;animation-timing-function:cubic-bezier(.34,1.5,.5,1);animation-fill-mode:backwards;}
+  .dc-risec{animation-name:dcRiseC;animation-duration:.85s;animation-timing-function:cubic-bezier(.22,1,.36,1);animation-fill-mode:backwards;}
+
+  .dc-d1{animation-delay:.08s}
+  .dc-d2{animation-delay:.20s}
+  .dc-d3{animation-delay:.32s}
+  .dc-d4{animation-delay:.44s}
+  .dc-d5{animation-delay:.56s}
+  .dc-d6{animation-delay:.68s}
+  .dc-d7{animation-delay:.80s}
+  .dc-d8{animation-delay:.92s}
+  .dc-d9{animation-delay:1.04s}
+  .dc-d10{animation-delay:1.16s}
+
+  .dc-stagger > *{animation-name:dcRiseSm;animation-duration:.85s;animation-timing-function:cubic-bezier(.22,1,.36,1);animation-fill-mode:backwards;}
+  .dc-stagger > *:nth-child(1){animation-delay:.38s}
+  .dc-stagger > *:nth-child(2){animation-delay:.50s}
+  .dc-stagger > *:nth-child(3){animation-delay:.62s}
+  .dc-stagger > *:nth-child(4){animation-delay:.74s}
+  .dc-stagger > *:nth-child(5){animation-delay:.86s}
+  .dc-stagger > *:nth-child(6){animation-delay:.98s}
+
+  .dc-stagger2 > *{animation-name:dcRiseSm;animation-duration:.85s;animation-timing-function:cubic-bezier(.22,1,.36,1);animation-fill-mode:backwards;}
+  .dc-stagger2 > *:nth-child(1){animation-delay:.64s}
+  .dc-stagger2 > *:nth-child(2){animation-delay:.76s}
+  .dc-stagger2 > *:nth-child(3){animation-delay:.88s}
+  .dc-stagger2 > *:nth-child(4){animation-delay:1.00s}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="bg-decor" aria-hidden="true">
+    <svg viewBox="0 0 560 560" width="560" height="560">
+      <circle cx="280" cy="280" r="260" fill="none" stroke="#e2574c" stroke-width="1.5" opacity="0.5"/>
+      <circle cx="280" cy="280" r="180" fill="none" stroke="#e2574c" stroke-width="1.5" opacity="0.7"/>
+      <circle cx="280" cy="280" r="100" fill="#ffffff"/>
+      <circle cx="280" cy="280" r="26" fill="#e2574c"/>
+    </svg>
+  </div>
+
+  <div class="stage">
+
+    <!-- ================= SCREEN 1 — HERO ================= -->
+    <div class="phone screen1">
+      <img class="hero-img" src="https://order-twine-70493179.figma.site/_components/v2/1fb0bd10fd40f9a9e279e8076f3762dd0f7d9889/image-4.d020e935.png" alt="">
+
+      <div class="status-bar light">
+        <span class="time">9:41</span>
+        <span class="sb-icons">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx=".5" fill="currentColor"/><rect x="5" y="5" width="3" height="7" rx=".5" fill="currentColor"/><rect x="10" y="3" width="3" height="9" rx=".5" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx=".5" fill="currentColor"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1 4.5C4.5 1.2 11.5 1.2 15 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M3.3 7.2C5.9 4.9 10.1 4.9 12.7 7.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="10.2" r="1.3" fill="currentColor"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".5" y=".5" width="21" height="11" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="18" height="8" rx="2" fill="currentColor"/><rect x="22.5" y="4" width="1.8" height="4" rx=".9" fill="currentColor" opacity=".4"/></svg>
+        </span>
+      </div>
+      <div class="island"></div>
+
+      <div class="badge dc-inleft dc-d2">20 новинок <span>🔥</span></div>
+
+      <svg class="play-btn dc-pop dc-d4" viewBox="0 0 120 124" fill="none">
+        <defs>
+          <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".55"/>
+            <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="btn1" cx="35%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#FCB6AD"/>
+            <stop offset="100%" stop-color="#E5665B"/>
+          </radialGradient>
+          <filter id="playGlow1" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="3.2"/>
+          </filter>
+        </defs>
+        <circle cx="60" cy="62" r="64.4" stroke="#FFE8DD" stroke-width="1.2"/>
+        <circle cx="60" cy="62" r="44.4" stroke="#FFE8DD" stroke-width="1.2"/>
+        <circle cx="60" cy="62" r="40" fill="url(#glow1)"/>
+        <circle cx="60" cy="62" r="30.5" fill="url(#btn1)"/>
+        <path d="M53 49L74 62L53 75Z" fill="#fff" filter="url(#playGlow1)"/>
+        <path d="M53 49L74 62L53 75Z" fill="#fff"/>
+      </svg>
+
+      <div class="headline">
+        <div class="headline-sub dc-rise dc-d3">&middot; старые треки &middot;</div>
+        <div class="headline-main dc-rise dc-d4">С новым звучанием</div>
+      </div>
+
+      <div class="home-indicator light"></div>
+    </div>
+
+    <!-- ================= SCREEN 2 — NEW ARRIVALS ================= -->
+    <div class="phone screen2">
+      <div class="status-bar dark">
+        <span class="time">9:41</span>
+        <span class="sb-icons">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx=".5" fill="currentColor"/><rect x="5" y="5" width="3" height="7" rx=".5" fill="currentColor"/><rect x="10" y="3" width="3" height="9" rx=".5" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx=".5" fill="currentColor"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1 4.5C4.5 1.2 11.5 1.2 15 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M3.3 7.2C5.9 4.9 10.1 4.9 12.7 7.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="10.2" r="1.3" fill="currentColor"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".5" y=".5" width="21" height="11" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="18" height="8" rx="2" fill="currentColor"/><rect x="22.5" y="4" width="1.8" height="4" rx=".9" fill="currentColor" opacity=".4"/></svg>
+        </span>
+      </div>
+      <div class="island"></div>
+
+      <div class="topbar dc-stagger">
+        <div class="search-pill">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="8" cy="8" r="6" stroke="#111" stroke-width="2.5"/><line x1="12.6" y1="12.6" x2="16.5" y2="16.5" stroke="#111" stroke-width="2.5" stroke-linecap="round"/></svg>
+          <span>поиск</span>
+        </div>
+        <img class="avatar" src="https://images.unsplash.com/photo-1516726817505-f5ed825624d8?w=120&h=120&fit=crop&crop=faces" alt="">
+      </div>
+
+      <div class="sheet2">
+        <div class="sheet2-head dc-rise dc-d1">
+          <h2 class="arrivals-title">Новые<br>поступления</h2>
+          <span class="sort-icon">
+            <svg width="22" height="16" viewBox="0 0 22 16" fill="none"><line x1="0" y1="1.5" x2="22" y2="1.5" stroke="#111" stroke-width="2" stroke-linecap="round"/><line x1="0" y1="8" x2="15" y2="8" stroke="#111" stroke-width="2" stroke-linecap="round"/><line x1="0" y1="14.5" x2="8" y2="14.5" stroke="#111" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+        </div>
+
+        <div class="filters dc-stagger">
+          <button type="button" class="pill pill-solid">Все</button>
+          <button type="button" class="pill pill-outline">Наушники</button>
+          <button type="button" class="pill pill-outline">Колонки</button>
+        </div>
+
+        <div class="grid dc-stagger2">
+          <div class="card">
+            <img src="https://order-twine-70493179.figma.site/_components/v2/1fb0bd10fd40f9a9e279e8076f3762dd0f7d9889/image-3.82d4333a.png" alt="Airpods Pro">
+            <p class="card-name">Airpods Pro</p>
+            <p class="card-price">$499.00</p>
+          </div>
+          <div class="card">
+            <img src="https://order-twine-70493179.figma.site/_components/v2/1fb0bd10fd40f9a9e279e8076f3762dd0f7d9889/image-2.04df17d2.png" alt="Колонка">
+            <p class="card-name">Колонка</p>
+            <p class="card-price">$359.00</p>
+          </div>
+          <div class="card">
+            <img src="https://order-twine-70493179.figma.site/_components/v2/1fb0bd10fd40f9a9e279e8076f3762dd0f7d9889/image.a862e80a.png" alt="Наушники">
+            <p class="card-name">Наушники</p>
+            <p class="card-price">$650.00</p>
+          </div>
+          <div class="card">
+            <img src="https://order-twine-70493179.figma.site/_components/v2/1fb0bd10fd40f9a9e279e8076f3762dd0f7d9889/image-1.3ff69aba.png" alt="Вкладыши">
+            <p class="card-name">Вкладыши</p>
+            <p class="card-price">$60.00</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cart-pill dc-risec dc-d10">
+        <span class="cart-total">$1080.00</span>
+        <span class="cart-icon-wrap">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 5.5H12.5L12 14.5C11.96 15.06 11.49 15.5 10.93 15.5H5.07C4.51 15.5 4.04 15.06 4 14.5L3.5 5.5Z" stroke="currentColor" stroke-width="1.3"/><path d="M5.8 5.2V4.3C5.8 3.03 6.83 2 8.1 2C9.37 2 10.4 3.03 10.4 4.3V5.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span class="cart-dot"></span>
+        </span>
+      </div>
+
+      <div class="home-indicator dark"></div>
+    </div>
+
+    <!-- ================= SCREEN 3 — PRODUCT DETAIL ================= -->
+    <div class="phone screen3">
+      <div class="status-bar dark">
+        <span class="time">9:41</span>
+        <span class="sb-icons">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx=".5" fill="currentColor"/><rect x="5" y="5" width="3" height="7" rx=".5" fill="currentColor"/><rect x="10" y="3" width="3" height="9" rx=".5" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx=".5" fill="currentColor"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1 4.5C4.5 1.2 11.5 1.2 15 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M3.3 7.2C5.9 4.9 10.1 4.9 12.7 7.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="10.2" r="1.3" fill="currentColor"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".5" y=".5" width="21" height="11" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="18" height="8" rx="2" fill="currentColor"/><rect x="22.5" y="4" width="1.8" height="4" rx=".9" fill="currentColor" opacity=".4"/></svg>
+        </span>
+      </div>
+      <div class="island"></div>
+
+      <div class="topbar3">
+        <svg width="4" height="20" viewBox="0 0 4 20" fill="none"><circle cx="2" cy="2" r="2" fill="#fff"/><circle cx="2" cy="10" r="2" fill="#fff"/><circle cx="2" cy="18" r="2" fill="#fff"/></svg>
+        <svg width="22" height="16" viewBox="0 0 22 16" fill="none"><line x1="0" y1="1.5" x2="22" y2="1.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><line x1="0" y1="8" x2="22" y2="8" stroke="#fff" stroke-width="2" stroke-linecap="round"/><line x1="0" y1="14.5" x2="22" y2="14.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+
+      <img class="product-image" src="https://order-twine-70493179.figma.site/_components/v2/1fb0bd10fd40f9a9e279e8076f3762dd0f7d9889/image.a862e80a.png" alt="Apple Airpods">
+
+      <div class="swatches dc-stagger">
+        <div class="swatch"><span class="swatch-dot" style="border-color:#1e3a6e"></span></div>
+        <div class="swatch"><span class="swatch-dot" style="border-color:#9fd6a0"></span></div>
+        <div class="swatch"><span class="swatch-dot" style="border-color:#c9c2c0"></span></div>
+        <div class="swatch"><span class="swatch-dot" style="border-color:#ef8177"></span></div>
+      </div>
+
+      <div class="sheet3">
+        <h2 class="pd-title">Apple Airpods</h2>
+        <p class="pd-desc">Сетчатая ткань на амбушюрах — мягкость, как у подушки</p>
+        <div class="pd-footer">
+          <span class="pd-price">$499.00</span>
+          <button type="button" class="add-cart-btn">В корзину
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 5.5H12.5L12 14.5C11.96 15.06 11.49 15.5 10.93 15.5H5.07C4.51 15.5 4.04 15.06 4 14.5L3.5 5.5Z" stroke="#111" stroke-width="1.3"/><path d="M5.8 5.2V4.3C5.8 3.03 6.83 2 8.1 2C9.37 2 10.4 3.03 10.4 4.3V5.2" stroke="#111" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="home-indicator dark"></div>
+    </div>
+
+  </div>
+</body>
+</html>

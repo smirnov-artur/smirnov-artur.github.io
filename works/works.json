@@ -3017,5 +3017,50 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "luxury-escapes",
+  "v": "luxury-escapes",
+  "ve": "luxury-escapes-en",
+  "ru": [
+   "Роскошный отпуск",
+   "Два iPhone светятся на тёплом градиенте: зацикленное видео путешествия, заголовки и статистика выезжают построчно."
+  ],
+  "en": [
+   "Luxury getaway",
+   "Two iPhone mockups glow on a warm gradient, looping travel video behind headlines that rise in line by line."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "gear-shop",
+  "v": "gear-shop",
+  "ve": "gear-shop-en",
+  "ru": [
+   "Магазин наушников",
+   "Три экрана iPhone: фото плавно уменьшается, лента новинок и карточка товара с выбором цвета."
+  ],
+  "en": [
+   "Headphones shop",
+   "Three iPhone mockups: a zooming hero photo, a new-arrivals grid, and a product detail screen."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "wellness-companion",
+  "v": "wellness-companion",
+  "ve": "wellness-companion-en",
+  "ru": [
+   "Квиз о самочувствии",
+   "Стеклянные карточки проступают по очереди, а бегунок скользит по шкале, подтверждая выбор."
+  ],
+  "en": [
+   "Mobile wellness quiz",
+   "Inside a phone mockup, glass cards fade up in sequence and a thumb slides across a pill bar to confirm."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
