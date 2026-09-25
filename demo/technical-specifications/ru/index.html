@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — технические характеристики</title>
+    <meta name="description" content="g.a.d. — тёмная панель показателей с четырьмя вкладками: при переключении столбчатые диаграммы с диапазонами и вспышками точек анимируются заново.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Inter:wght@300..800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <style>
+        :root { --hero-max-width: 1820px; --hero-blue: #7191d0; --hero-blue-soft: #aab8d5; }
+        html, body { margin: 0; background: #111414; }
+
+        .stats {
+            position: relative;
+            z-index: 80;
+            min-height: 100vh;
+            padding: clamp(44px, 5vw, 86px) clamp(16px, 3.8vw, 72px) clamp(54px, 5vw, 90px);
+            color: #f7f8f8;
+            background:
+                radial-gradient(circle at 78% 18%, rgb(113 145 208 / 0.18), transparent 34%),
+                radial-gradient(circle at 18% 88%, rgb(170 184 213 / 0.11), transparent 28%),
+                linear-gradient(180deg, #111414 0%, #171a1a 100%);
+            font-family: "Geist", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: geometricPrecision;
+        }
+
+        .stats__header {
+            display: grid;
+            grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.72fr);
+            gap: clamp(32px, 6vw, 120px);
+            max-width: 1820px;
+            margin: 0 auto clamp(34px, 4.5vw, 72px);
+        }
+        .stats__title-wrap h2 {
+            max-width: 920px;
+            margin: 0;
+            color: #f7f8f8;
+            font-size: clamp(29px, 3.2vw, 54px);
+            font-weight: 300;
+            letter-spacing: 0;
+            line-height: 1.08;
+        }
+        .stats__summary {
+            align-self: start;
+            margin: 0;
+            color: rgb(247 248 248 / 0.8);
+            font-size: clamp(18px, 1.65vw, 28px);
+            font-weight: 360;
+            line-height: 1.34;
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 420ms ease, transform 420ms ease;
+        }
+        .stats__summary.is-visible { opacity: 1; transform: none; }
+
+        .stats__tabs {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0;
+            max-width: 1820px;
+            margin: 0 auto;
+            border-bottom: 1px solid rgb(255 255 255 / 0.14);
+        }
+        .statstab {
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            min-height: 58px;
+            padding: 0 20px 18px 0;
+            border: none;
+            background: transparent;
+            color: rgb(247 248 248 / 0.5);
+            font: inherit;
+            font-size: clamp(14px, 1.22vw, 22px);
+            font-weight: 430;
+            text-align: left;
+            cursor: pointer;
+            transition: color 220ms ease;
+        }
+        .statstab.is-active { color: #ffffff; }
+        .statstab::after {
+            content: '';
+            position: absolute;
+            right: 16px; bottom: -1px; left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #7191d0, #aab8d5);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .statstab.is-active::after { transform: scaleX(1); }
+
+        .statschart {
+            position: relative;
+            max-width: 1820px;
+            min-height: clamp(520px, 58vh, 680px);
+            margin: clamp(28px, 3vw, 48px) auto 0;
+            padding: 0 0 22px;
+            overflow: hidden;
+            border: 1px solid rgb(255 255 255 / 0.08);
+            border-radius: 20px;
+            background-color: rgb(255 255 255 / 0.025);
+            background-image: repeating-linear-gradient(to right, transparent 0, transparent calc(10% - 1px), rgb(255 255 255 / 0.07) calc(10% - 1px), rgb(255 255 255 / 0.07) 10%);
+            box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 24px 70px rgb(0 0 0 / 0.18);
+        }
+        .statschart-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            padding: clamp(18px, 2vw, 28px);
+            border-bottom: 1px solid rgb(255 255 255 / 0.08);
+            background: rgb(255 255 255 / 0.025);
+        }
+        .statschart-head > span:first-child {
+            color: #ffffff;
+            font-size: clamp(12px, 0.86vw, 14px);
+            font-weight: 760;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+        .statschart-head > span:last-child {
+            color: rgb(247 248 248 / 0.48);
+            font-size: clamp(12px, 0.86vw, 14px);
+            font-weight: 620;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .statsbars {
+            display: grid;
+            gap: clamp(16px, 2vh, 26px);
+            padding: clamp(26px, 3vw, 48px) clamp(24px, 2.4vw, 42px) 0;
+        }
+        .stats__bar-row {
+            display: grid;
+            grid-template-columns: minmax(180px, 0.27fr) minmax(0, 1fr);
+            align-items: center;
+            gap: clamp(18px, 2vw, 34px);
+            opacity: 0;
+            transform: translateY(18px);
+        }
+        .statschart.is-ready .stats__bar-row {
+            animation: stats-row-in 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: var(--bar-delay);
+        }
+
+        .statsbar-label > span:first-child {
+            display: block;
+            color: #ffffff;
+            font-size: clamp(15px, 1.1vw, 19px);
+            font-weight: 680;
+            line-height: 1.2;
+        }
+        .statsbar-label > span:last-child {
+            display: block;
+            margin-top: 5px;
+            color: rgb(247 248 248 / 0.48);
+            font-size: clamp(12px, 0.86vw, 14px);
+            line-height: 1.35;
+        }
+
+        .statstrack {
+            position: relative;
+            height: clamp(48px, 5.4vh, 64px);
+            overflow: hidden;
+            border-radius: 0;
+            background: rgb(255 255 255 / 0.055);
+            box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.075), 0 12px 32px rgb(0 0 0 / 0.16);
+        }
+        .statsrange {
+            position: absolute;
+            top: 9px; bottom: 9px;
+            left: var(--range-start);
+            width: var(--range-width);
+            border: 1px solid rgb(170 184 213 / 0.22);
+            background: linear-gradient(90deg, rgb(113 145 208 / 0.05), rgb(170 184 213 / 0.14), rgb(113 145 208 / 0.05));
+            opacity: 0;
+            transform: scaleX(0.6);
+            transform-origin: left;
+        }
+        .statschart.is-ready .statsrange {
+            animation: stats-range-in 620ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: calc(var(--bar-delay) + 60ms);
+        }
+        .statsbar {
+            position: relative;
+            z-index: 1;
+            width: var(--bar-value);
+            height: 100%;
+            background: linear-gradient(90deg, rgb(113 145 208 / 0.62) 0%, #8fb0ef 62%, #d6e3ff 100%);
+            box-shadow: 0 0 34px rgb(113 145 208 / 0.24);
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+        .statschart.is-ready .statsbar {
+            animation: stats-fill 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: calc(var(--bar-delay) + 110ms);
+        }
+        .statsvalue {
+            position: absolute;
+            z-index: 3;
+            top: 50%; right: 18px;
+            transform: translateY(-50%);
+            color: #ffffff;
+            font-size: clamp(14px, 1vw, 18px);
+            font-weight: 740;
+        }
+        .statstrace { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+        .statspoint {
+            position: absolute;
+            left: var(--point-x);
+            top: var(--point-y);
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgb(255 255 255 / 0.95) 0 8%, rgb(214 227 255 / 0.42) 9% 22%, transparent 58%);
+            filter: blur(0.1px);
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.2);
+            --spark-rotate: 0deg;
+        }
+        .statspoint--1 { width: 14px; height: 14px; --spark-rotate: 22deg; }
+        .statspoint--2 { width: 11px; height: 11px; --spark-rotate: -18deg; }
+        .statspoint::before {
+            content: '';
+            position: absolute; left: 50%; top: 50%;
+            width: 24px; height: 1px;
+            margin-left: -12px; margin-top: -0.5px;
+            background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.72), transparent);
+            transform: rotate(var(--spark-rotate));
+        }
+        .statspoint::after {
+            content: '';
+            position: absolute; left: 50%; top: 50%;
+            width: 1px; height: 18px;
+            margin-left: -0.5px; margin-top: -9px;
+            background: linear-gradient(180deg, transparent, rgb(170 184 213 / 0.62), transparent);
+            transform: rotate(var(--spark-rotate));
+        }
+        .statschart.is-ready .statspoint {
+            animation: stats-point-in 420ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: calc(var(--bar-delay) + 260ms + var(--point-delay));
+        }
+
+        .statsaxis {
+            display: grid;
+            grid-template-columns: minmax(180px, 0.27fr) minmax(0, 1fr);
+            gap: clamp(18px, 2vw, 34px);
+            padding: 14px clamp(24px, 2.4vw, 42px) 0;
+            color: rgb(247 248 248 / 0.42);
+            font-size: clamp(11px, 0.84vw, 14px);
+        }
+        .statsaxis-nums { display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); }
+        .statsaxis-nums span { text-align: center; }
+        .statsaxis-nums span:first-child { text-align: left; }
+        .statsaxis-nums span:last-child { text-align: right; }
+
+        @keyframes stats-row-in { to { opacity: 1; transform: none; } }
+        @keyframes stats-fill { to { transform: scaleX(1); } }
+        @keyframes stats-range-in { to { opacity: 1; transform: scaleX(1); } }
+        @keyframes stats-point-in { to { opacity: 0.86; transform: translate(-50%, -50%) scale(1); } }
+
+        @media (max-width: 980px) {
+            .stats__header { grid-template-columns: 1fr; }
+            .stats__tabs { display: flex; overflow-x: auto; }
+            .statstab { flex: 0 0 min(260px, 76vw); }
+            .stats__bar-row { grid-template-columns: 1fr; gap: 10px; }
+            .statsaxis { grid-template-columns: 1fr; }
+            .statsaxis > span:first-child { display: none; }
+        }
+        @media (max-width: 620px) {
+            .stats__title-wrap h2 { font-size: clamp(26px, 8vw, 42px); }
+            .statschart { min-height: auto; padding-bottom: 46px; }
+            .statsaxis-nums { grid-template-columns: repeat(6, 1fr); }
+            .statsaxis-nums span:nth-child(even) { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const DATA = {
+            cities: {
+                title: "Города и инфраструктура",
+                summary: "Распределённая аэрокосмическая инфраструктура требует двигателей, которые проходят испытания, повторно запускаются и восстанавливаются в плотных стартовых коридорах и на удалённых базах.",
+                bars: [
+                    { label: "Мобильные монтажные боксы", value: 82, target: 88, rangeStart: 58, rangeEnd: 91, unit: "%", note: "охват развёртывания", trace: [28, 42, 57, 63, 74, 82] },
+                    { label: "Сервисные ячейки у аэропортов", value: 68, target: 74, rangeStart: 44, rangeEnd: 79, unit: "%", note: "готовые процессы", trace: [18, 36, 41, 55, 61, 68] },
+                    { label: "Поддержка удалённых пусков", value: 54, target: 63, rangeStart: 30, rangeEnd: 70, unit: "%", note: "готовность на месте", trace: [14, 24, 39, 43, 48, 54] },
+                    { label: "Контуры тепловой рекуперации", value: 76, target: 81, rangeStart: 50, rangeEnd: 84, unit: "%", note: "потенциал повторного тепла", trace: [26, 38, 49, 66, 72, 76] },
+                ],
+            },
+            materials: {
+                title: "Материалы и производство",
+                summary: "g.a.d. объединяет жаропрочные сплавы, аддитивную оснастку и данные контроля, чтобы сократить путь от утверждённого проекта до сертифицированного изделия.",
+                bars: [
+                    { label: "Запас никелевых суперсплавов", value: 91, target: 94, rangeStart: 68, rangeEnd: 96, unit: "%", note: "запас по температуре", trace: [44, 61, 70, 79, 86, 91] },
+                    { label: "Аддитивная оснастка камер", value: 72, target: 80, rangeStart: 48, rangeEnd: 86, unit: "%", note: "сокращение сроков", trace: [19, 34, 48, 53, 67, 72] },
+                    { label: "Выход субмикронного контроля", value: 96, target: 97, rangeStart: 82, rangeEnd: 99, unit: "%", note: "принятые детали", trace: [71, 77, 84, 89, 94, 96] },
+                    { label: "Циклы многоразовых образцов", value: 84, target: 88, rangeStart: 62, rangeEnd: 91, unit: "%", note: "глубина квалификации", trace: [36, 52, 64, 71, 79, 84] },
+                ],
+            },
+            fuels: {
+                title: "Топливо и добыча",
+                summary: "Анализ топливного тракта увязывает доступность топлива, ограничения хранения и работу форсунок ещё до выбора архитектуры полёта.",
+                bars: [
+                    { label: "Совместимость с поставками метана", value: 78, target: 83, rangeStart: 52, rangeEnd: 88, unit: "%", note: "доступность по регионам", trace: [22, 31, 46, 58, 69, 78] },
+                    { label: "Готовность к переводу на керосин", value: 64, target: 70, rangeStart: 40, rangeEnd: 74, unit: "%", note: "существующие платформы", trace: [28, 35, 39, 52, 57, 64] },
+                    { label: "Стабильность криохранения", value: 88, target: 92, rangeStart: 66, rangeEnd: 95, unit: "%", note: "подтверждённые режимы", trace: [45, 56, 68, 74, 83, 88] },
+                    { label: "Надёжность отклика форсунок", value: 92, target: 94, rangeStart: 70, rangeEnd: 97, unit: "%", note: "данные горячих испытаний", trace: [48, 62, 73, 85, 89, 92] },
+                ],
+            },
+            hydrogen: {
+                title: "H2 Водород",
+                summary: "Водородные программы требуют слаженной работы баков, топливных систем, устойчивого зажигания и криогенных режимов при экстремально низких температурах.",
+                bars: [
+                    { label: "Турбонасосы под водород", value: 86, target: 90, rangeStart: 62, rangeEnd: 93, unit: "%", note: "зрелость конструкции", trace: [30, 46, 60, 71, 79, 86] },
+                    { label: "Подготовка магистралей LH2", value: 74, target: 82, rangeStart: 47, rangeEnd: 86, unit: "%", note: "наземные системы", trace: [18, 29, 44, 58, 66, 74] },
+                    { label: "Диапазон устойчивого зажигания", value: 93, target: 95, rangeStart: 72, rangeEnd: 98, unit: "%", note: "контроль переходных режимов", trace: [54, 68, 75, 84, 90, 93] },
+                    { label: "Безуглеродная траектория полёта", value: 81, target: 87, rangeStart: 56, rangeEnd: 90, unit: "%", note: "соответствие программе", trace: [24, 39, 55, 68, 76, 81] },
+                ],
+            },
+        };
+
+        const TABS = [
+            { key: "cities", label: "Города и инфраструктура" },
+            { key: "materials", label: "Материалы и производство" },
+            { key: "fuels", label: "Топливо и добыча" },
+            { key: "hydrogen", label: "H2 Водород" },
+        ];
+
+        const AXIS_NUMS = ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"];
+        const pointVariant = (i) => ["", "--1", "--2"][i % 3];
+
+        function Stats() {
+            const [active, setActive] = useState("cities");
+            const [visible, setVisible] = useState(false);
+            const [ready, setReady] = useState(false);
+
+            useEffect(() => {
+                const raf = requestAnimationFrame(() => { setVisible(true); setReady(true); });
+                return () => cancelAnimationFrame(raf);
+            }, []);
+
+            const selectTab = (key) => {
+                if (key === active) return;
+                setVisible(false);
+                setReady(false);
+                setTimeout(() => {
+                    setActive(key);
+                    requestAnimationFrame(() => { setVisible(true); setReady(true); });
+                }, 140);
+            };
+
+            const data = DATA[active];
+
+            return (
+                <section className="stats">
+                    <div className="stats__header">
+                        <div className="stats__title-wrap">
+                            <h2>Непревзойдённые данные о тяге на всех критичных этапах полёта.</h2>
+                        </div>
+                        <p className={`stats__summary${visible ? " is-visible" : ""}`}>{data.summary}</p>
+                    </div>
+
+                    <div className="stats__tabs" role="tablist">
+                        {TABS.map((t) => (
+                            <button
+                                key={t.key}
+                                type="button"
+                                role="tab"
+                                className={`statstab${active === t.key ? " is-active" : ""}`}
+                                data-stats-tab={t.key}
+                                aria-selected={active === t.key}
+                                onClick={() => selectTab(t.key)}
+                            >
+                                {t.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className={`statschart${ready ? " is-ready" : ""}`} aria-live="polite" data-stats-chart="true">
+                        <div className="statschart-head">
+                            <span>{data.title}</span>
+                            <span>Рабочий диапазон</span>
+                        </div>
+                        <div className="statsbars">
+                            {data.bars.map((bar, i) => (
+                                <div className="stats__bar-row" key={i} style={{ "--bar-delay": `${i * 90}ms` }}>
+                                    <div className="statsbar-label">
+                                        <span>{bar.label}</span>
+                                        <span>{bar.note}</span>
+                                    </div>
+                                    <div className="statstrack">
+                                        <div className="statsrange" style={{ "--range-start": `${bar.rangeStart}%`, "--range-width": `${bar.rangeEnd - bar.rangeStart}%` }} />
+                                        <div className="statsbar" style={{ "--bar-value": `${bar.value}%` }} />
+                                        <span className="statsvalue">{bar.value}{bar.unit}</span>
+                                        <div className="statstrace">
+                                            {bar.trace.map((x, pi) => (
+                                                <span
+                                                    key={pi}
+                                                    className={`statspoint ${pointVariant(pi) ? "statspoint" + pointVariant(pi) : ""}`.trim()}
+                                                    style={{ "--point-x": `${x}%`, "--point-y": pi % 2 === 0 ? "34%" : "62%", "--point-delay": `${pi * 70}ms` }}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="statsaxis">
+                            <span></span>
+                            <div className="statsaxis-nums">
+                                {AXIS_NUMS.map((n, i) => <span key={i}>{n}</span>)}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<Stats />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

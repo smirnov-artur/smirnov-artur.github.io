@@ -3401,5 +3401,35 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "technical-specifications",
+  "v": "technical-specifications",
+  "ve": "technical-specifications-en",
+  "ru": [
+   "Характеристики двигателей",
+   "Четыре вкладки переключают данные — диаграммы заново заполняются полосами диапазона и светящимися точками."
+  ],
+  "en": [
+   "Engine specifications",
+   "Four tabs switch datasets — bar charts refill with range bands and glowing spark-point traces."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "radial-diagram",
+  "v": "radial-diagram",
+  "ve": "radial-diagram-en",
+  "ru": [
+   "Радиальная диаграмма брендинга",
+   "Курсор на луче диаграммы утолщает линию и подпись, а рядом проступают портрет в глитч-блоках и цитата."
+  ],
+  "en": [
+   "Radial branding diagram",
+   "Hovering a circle-diagram spoke bolds it and its line, beside a glitch-block portrait and fading quote."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]

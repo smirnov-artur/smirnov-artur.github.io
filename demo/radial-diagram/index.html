@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — Comprehensive Branding Approach</title>
+    <meta name="description" content="g.a.d. — a branding-approach section: hover a spoke of the radial diagram to bold its line toward websites, brands or ui/ux design, beside a glitch-block portrait and a quote that fade into view.">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@11.18.2/dist/framer-motion.js"></script>
+    <style>
+        html, body { background: #0f0f0f; font-family: 'DM Sans', sans-serif; }
+    </style>
+</head>
+<body class="antialiased">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useRef, useState } = React;
+        const { motion, useInView } = Motion;
+
+        const EASE = [0.22, 1, 0.36, 1];
+
+        // (x%, y%, width px, height px) of each glitch chip around the portrait
+        const GLITCH_BLOCKS = [
+            [2, -3, 22, 22], [12, -5, 14, 10], [28, -2, 10, 10],
+            [82, 22, 8, 8], [-4, 75, 16, 12], [8, 82, 10, 10],
+            [-2, 88, 18, 16], [56, 82, 12, 14], [70, 90, 10, 10],
+            [42, 94, 8, 6],
+        ];
+
+        const SPOKES = [
+            { key: 'websites', label: 'websites', angle: 215 },
+            { key: 'brands', label: 'brands', angle: 335 },
+            { key: 'uiux', label: 'ui/ux design', angle: 110 },
+        ];
+
+        const point = (angle, r) => {
+            const rad = (angle * Math.PI) / 180;
+            return { x: 50 + r * Math.cos(rad), y: 50 + r * Math.sin(rad) };
+        };
+
+        const PlusIcon = () => (
+            <svg viewBox="0 0 12 12" width="12" height="12" fill="none">
+                <path d="M6 2V10M2 6H10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+            </svg>
+        );
+
+        const Header = ({ isInView }) => (
+            <div className="flex items-start gap-4 mb-20">
+                <div>
+                    <motion.p
+                        className="text-[#6e6e6e] font-light leading-[1.18] tracking-[-0.01em] text-[clamp(2rem,3.4vw,2.6rem)]"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={isInView ? { opacity: 1, y: 0 } : {}}
+                        transition={{ duration: 0.7, ease: EASE }}
+                    >
+                        Our Comprehensive
+                    </motion.p>
+                    <motion.p
+                        className="text-white font-light leading-[1.18] tracking-[-0.01em] text-[clamp(2rem,3.4vw,2.6rem)]"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={isInView ? { opacity: 1, y: 0 } : {}}
+                        transition={{ duration: 0.7, delay: 0.1, ease: EASE }}
+                    >
+                        Branding Approach
+                    </motion.p>
+                </div>
+                <motion.button
+                    type="button"
+                    aria-label="Expand"
+                    className="flex h-7 w-7 items-center justify-center rounded border border-white/20 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                    transition={{ duration: 0.7, delay: 0.25, ease: EASE }}
+                >
+                    <PlusIcon />
+                </motion.button>
+            </div>
+        );
+
+        const GlitchPortrait = ({ isInView }) => (
+            <motion.div
+                className="relative shrink-0"
+                style={{ width: 250, height: 310 }}
+                initial={{ opacity: 0, y: 24 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.2, ease: EASE }}
+            >
+                <img
+                    src="https://images.pexels.com/photos/3778212/pexels-photo-3778212.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    alt="Alex West, founder and creative director"
+                    className="h-full w-full object-cover"
+                />
+                {GLITCH_BLOCKS.map(([x, y, w, h], i) => (
+                    <motion.span
+                        key={i}
+                        className="absolute bg-white"
+                        style={{ left: `${x}%`, top: `${y}%`, width: w, height: h }}
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={isInView ? { scale: 1, opacity: [0, 1, 0.9] } : {}}
+                        transition={{ duration: 0.35, delay: 0.5 + i * 0.05, ease: EASE }}
+                    />
+                ))}
+            </motion.div>
+        );
+
+        const Testimonial = ({ isInView }) => (
+            <div className="min-w-0 max-w-[420px]">
+                <motion.span
+                    aria-hidden="true"
+                    className="block text-[#555] text-[3.2rem] leading-[0.7]"
+                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.7, delay: 0.3, ease: EASE }}
+                >
+                    &#8220;
+                </motion.span>
+                <motion.p
+                    className="text-white/90 font-normal leading-[1.58] text-[clamp(1.05rem,1.5vw,1.28rem)]"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.7, delay: 0.4, ease: EASE }}
+                >
+                    We kept seeing the same pattern &mdash; brands with potential lost between messy processes, scattered visuals, and forgettable websites. This studio exists to align it all into one clear, consistent story.
+                </motion.p>
+                <motion.div
+                    className="mt-10"
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
+                >
+                    <div className="text-[1.15rem] font-medium tracking-[0.01em] text-white">Alex West</div>
+                    <div className="mt-1 text-[0.85rem] tracking-wide text-[#6e6e6e]">Founder &amp; Creative Director</div>
+                </motion.div>
+            </div>
+        );
+
+        const CircleDiagram = ({ isInView }) => {
+            const [hovered, setHovered] = useState(null);
+            return (
+                <div className="flex w-full max-w-[360px] shrink-0 items-center justify-center self-center sm:max-w-[400px] lg:max-w-[440px]">
+                    <motion.div
+                        className="relative aspect-square w-full"
+                        initial={{ opacity: 0 }}
+                        animate={isInView ? { opacity: 1 } : {}}
+                        transition={{ duration: 0.8, delay: 0.4, ease: EASE }}
+                    >
+                        <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full">
+                            <circle cx="50" cy="50" r="30" stroke="white" strokeWidth="0.18" opacity="0.45" fill="none" />
+                            {SPOKES.map((s) => {
+                                const { x, y } = point(s.angle, 36);
+                                const active = hovered === s.key;
+                                return (
+                                    <line
+                                        key={s.key}
+                                        x1="50" y1="50" x2={x} y2={y}
+                                        stroke="white"
+                                        style={{
+                                            strokeWidth: active ? 0.6 : 0.18,
+                                            opacity: active ? 1 : 0.45,
+                                            transition: 'stroke-width 0.3s, opacity 0.3s',
+                                        }}
+                                    />
+                                );
+                            })}
+                        </svg>
+                        {SPOKES.map((s, i) => {
+                            const { x, y } = point(s.angle, 46);
+                            const active = hovered === s.key;
+                            return (
+                                <motion.div
+                                    key={s.key}
+                                    className="absolute whitespace-nowrap text-white text-[clamp(1.25rem,2.8vw,2.4rem)] tracking-[-0.01em]"
+                                    style={{
+                                        left: `${x}%`, top: `${y}%`,
+                                        transform: 'translate(-50%, -50%)',
+                                        fontWeight: active ? 700 : 300,
+                                        transition: 'font-weight 0.25s',
+                                    }}
+                                    initial={{ opacity: 0, y: 16 }}
+                                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                                    transition={{ duration: 0.7, delay: 0.6 + i * 0.15, ease: EASE }}
+                                    onMouseEnter={() => setHovered(s.key)}
+                                    onMouseLeave={() => setHovered(null)}
+                                >
+                                    {s.label}
+                                </motion.div>
+                            );
+                        })}
+                    </motion.div>
+                </div>
+            );
+        };
+
+        const BrandingApproach = () => {
+            const sectionRef = useRef(null);
+            const isInView = useInView(sectionRef, { once: true, margin: '-60px' });
+
+            return (
+                <section
+                    ref={sectionRef}
+                    className="overflow-x-hidden bg-[#0f0f0f] text-white"
+                    style={{ fontFamily: "'DM Sans', sans-serif" }}
+                >
+                    <div className="mx-auto max-w-7xl px-6 py-24 sm:px-10 lg:px-16 lg:py-32">
+                        <Header isInView={isInView} />
+                        <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-10">
+                            <div className="flex min-w-0 flex-1 flex-col gap-8 sm:flex-row sm:items-start sm:gap-10">
+                                <GlitchPortrait isInView={isInView} />
+                                <Testimonial isInView={isInView} />
+                            </div>
+                            <CircleDiagram isInView={isInView} />
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<BrandingApproach />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>
