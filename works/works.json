@@ -3132,6 +3132,81 @@
   "rp": 1
  },
  {
+  "slug": "rocket-pricing",
+  "v": "rocket-pricing",
+  "ve": "rocket-pricing-en",
+  "ru": [
+   "Тарифные планы",
+   "Карточки тарифов плавно проявляются снизу вверх, а тонкая рамка светится под курсором."
+  ],
+  "en": [
+   "Pricing plans",
+   "Pricing cards fade up on load while a thin spotlight border glows and follows the cursor."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "scroll-marquee",
+  "v": "scroll-marquee",
+  "ve": "scroll-marquee-en",
+  "ru": [
+   "Витрина проектов",
+   "Два ряда превью проектов скользят в противоположные стороны по мере прокрутки страницы."
+  ],
+  "en": [
+   "Portfolio marquee",
+   "Two rows of project preview clips glide in opposite directions as the page scrolls."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "gateway-portal",
+  "v": "gateway-portal",
+  "ve": "gateway-portal-en",
+  "ru": [
+   "Портал-иллюминатор",
+   "При скролле окно самолёта приближается в облачное небо, а следом веером раскрываются карточки отзывов."
+  ],
+  "en": [
+   "Portal window",
+   "Scrolling zooms through an airplane window into cloud sky, then testimonial cards fan out in an arc."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "guardnet-landing",
+  "v": "guardnet-landing",
+  "ve": "guardnet-landing-en",
+  "ru": [
+   "Защита данных",
+   "Дымно-огненное видео крутится за гигантскими буквами, а кнопки и ссылки светятся под курсором."
+  ],
+  "en": [
+   "Data protection",
+   "A fiery, smoke-like video loops behind giant type while nav links and buttons glow on hover."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "sneaker-premium",
+  "v": "sneaker-premium",
+  "ve": "sneaker-premium-en",
+  "ru": [
+   "Премиальные кроссовки",
+   "Курсор работает как фонарик и открывает видео под фото, а бабл-меню выпускает цветные таблетки."
+  ],
+  "en": [
+   "Premium sneakers",
+   "The cursor is a flashlight that reveals video under the photo, and a bubble menu pops colourful pills."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "seller",
   "cat": "ai",
   "ru": [
@@ -3613,35 +3688,5 @@
   ],
   "img": "gh/saga-orchestrator.jpg",
   "href": "https://github.com/smirnov-artur/saga-orchestrator"
- },
- {
-  "slug": "rocket-pricing",
-  "v": "rocket-pricing",
-  "ve": "rocket-pricing-en",
-  "ru": [
-   "Тарифные планы",
-   "Карточки тарифов плавно проявляются снизу вверх, а тонкая рамка светится под курсором."
-  ],
-  "en": [
-   "Pricing plans",
-   "Pricing cards fade up on load while a thin spotlight border glows and follows the cursor."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "scroll-marquee",
-  "v": "scroll-marquee",
-  "ve": "scroll-marquee-en",
-  "ru": [
-   "Витрина проектов",
-   "Два ряда превью проектов скользят в противоположные стороны по мере прокрутки страницы."
-  ],
-  "en": [
-   "Portfolio marquee",
-   "Two rows of project preview clips glide in opposite directions as the page scrolls."
-  ],
-  "cat": "web",
-  "rp": 1
  }
 ]
