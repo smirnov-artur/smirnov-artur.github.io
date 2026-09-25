@@ -2743,5 +2743,19 @@
    "A horizontal rail of autoplaying rocket launch and test videos that dim until you hover a card."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "pet-products",
+  "v": "pet-products",
+  "ve": "pet-products-en",
+  "ru": [
+   "Товары для питомцев",
+   "Три экрана телефона проявляются и сдвигаются вверх, видео распаковки подарка идёт по кругу, а карточки товаров появляются одна за другой."
+  ],
+  "en": [
+   "Pet products app",
+   "Three phone mockups fade in and slide up, a gift-unboxing video loops, and a product grid pops in card by card."
+  ],
+  "cat": "web"
  }
 ]
