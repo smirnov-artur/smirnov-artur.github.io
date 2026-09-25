@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — мгновенная аналитика платежей</title>
+    <meta name="description" content="Блок статистики для финтех-продукта: карточки с цифрами на фоне зацикленного видео-градиента проявляются из размытия и появляются по очереди при скролле.">
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@11.18.2/dist/framer-motion.js"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'helvetica-neue': ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            * {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+        }
+    </style>
+    <style>
+        @font-face{font-family:'Helvetica Neue';font-style:normal;font-weight:400;src:local('Helvetica Neue'),local('Arial')}
+        @font-face{font-family:'Helvetica Neue';font-style:normal;font-weight:500;src:local('Helvetica Neue'),local('Arial')}
+    </style>
+<style id="cyr">/* русские буквы: исходный шрифт без кириллицы, глифы — у близкого с кириллицей */
+@font-face{font-family:'Helvetica Neue';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/arimo/v36/P5sMzZCDf9_T_10UxCF8jA.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Helvetica Neue';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/arimo/v36/P5sMzZCDf9_T_10dxCF8jA.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Helvetica Neue';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/arimo/v36/P5sMzZCDf9_T_10UxCF8jA.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Helvetica Neue';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/arimo/v36/P5sMzZCDf9_T_10dxCF8jA.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+</style>
+</head>
+<body class="bg-white">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useRef } = React;
+        const { motion, useInView } = Motion;
+
+        function BlurIn({ children, className }) {
+            const ref = useRef(null);
+            const isInView = useInView(ref, { once: true });
+            return (
+                <motion.div
+                    ref={ref}
+                    initial={{ filter: 'blur(20px)', opacity: 0 }}
+                    animate={isInView ? { filter: 'blur(0px)', opacity: 1 } : { filter: 'blur(20px)', opacity: 0 }}
+                    transition={{ duration: 1.2 }}
+                    className={className}
+                >
+                    {children}
+                </motion.div>
+            );
+        }
+
+        const rowVariants = {
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
+        };
+        const cardVariants = {
+            hidden: { opacity: 0, y: 30 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
+        };
+
+        const CARDS = [
+            {
+                minH: 'min-h-[450px]',
+                video: 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_143605_bc7bd6c0-9c68-49ff-a9d3-073a10759fa4.mp4',
+                overlay: 'bg-[rgba(206,223,235,0.25)]',
+                stat: '1.6M',
+                desc: 'Активные пользователи доверяют нам простые и быстрые платежи',
+                descMaxW: 'max-w-[377px]',
+            },
+            {
+                minH: 'min-h-[350px]',
+                video: 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_145119_f4ec4d9f-3ecd-4116-baa3-26e8cf2df976.mp4',
+                overlay: 'bg-[rgba(247,236,233,0.6)]',
+                stat: '850K',
+                desc: 'Переводов в день — быстро и безопасно',
+                descMaxW: 'max-w-[351px]',
+            },
+            {
+                minH: 'min-h-[450px]',
+                video: 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_140728_ae719193-f10b-4105-82fc-c989610b3aa6.mp4',
+                overlay: 'bg-[rgba(218,218,218,0.2)]',
+                stat: '120+',
+                desc: 'Странам доступны мгновенная оплата и переводы по всему миру',
+                descMaxW: 'max-w-[351px]',
+            },
+        ];
+
+        function Card({ card }) {
+            return (
+                <motion.div variants={cardVariants} className={`flex-1 p-10 rounded-[40px] relative overflow-hidden flex flex-col justify-end ${card.minH}`}>
+                    <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover">
+                        <source src={card.video} type="video/mp4" />
+                    </video>
+                    <div className={`absolute inset-0 ${card.overlay}`}></div>
+                    <div className="relative z-10 max-w-[388px] flex flex-col gap-5">
+                        <p className="text-[#00041F] text-5xl md:text-[60px] font-helvetica-neue font-medium leading-[1] md:leading-[60px]">{card.stat}</p>
+                        <p className={`text-[#49484F] text-lg md:text-[22px] font-helvetica-neue opacity-80 ${card.descMaxW}`}>{card.desc}</p>
+                    </div>
+                </motion.div>
+            );
+        }
+
+        function InsightsSection() {
+            return (
+                <div className="px-6 md:px-12 lg:px-[60px] flex flex-col gap-[90px] py-20 bg-white">
+                    <div className="max-w-[517px] flex flex-col gap-10">
+                        <BlurIn className="text-[#00041F] text-4xl md:text-5xl lg:text-6xl font-helvetica-neue font-medium leading-[1] lg:leading-[60px] tracking-[-0.03em]">
+                            Каждый платёж как на ладони
+                        </BlurIn>
+                        <p className="text-[#49484F] text-base md:text-lg lg:text-xl font-helvetica-neue max-w-[361px]">
+                            Данные в реальном времени помогают тратить умнее каждый день
+                        </p>
+                    </div>
+                    <motion.div
+                        className="flex flex-col lg:flex-row items-stretch lg:items-end gap-5"
+                        variants={rowVariants}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.2 }}
+                    >
+                        {CARDS.map((card, i) => <Card key={i} card={card} />)}
+                    </motion.div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<InsightsSection />);
+    </script>
+</body>
+</html>

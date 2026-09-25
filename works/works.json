@@ -2987,5 +2987,35 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "innovation-studio",
+  "v": "innovation-studio",
+  "ve": "innovation-studio-en",
+  "ru": [
+   "Студия генеративного дизайна",
+   "Тёмное каркасное видео крутится в петле, а заголовки сменяются каждые 5 секунд рядом с вращающимся значком."
+  ],
+  "en": [
+   "Generative design studio",
+   "A dark wireframe mesh video loops as a headline carousel crossfades every 5 seconds beside a spinning badge."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "veloce-cards",
+  "v": "veloce-cards",
+  "ve": "veloce-cards-en",
+  "ru": [
+   "Платёжная статистика",
+   "Карточки со статистикой на фоне видео-градиента проступают из размытия и появляются одна за другой"
+  ],
+  "en": [
+   "Payment stats",
+   "Stat cards on a looping video gradient blur into focus, then rise into place one after another"
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
