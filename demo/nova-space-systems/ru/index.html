@@ -164,19 +164,19 @@
                     
                     <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_auto_1fr_auto] gap-y-16">
                         {/* Decorative V Divider */}
-                        <div className="v-divider h-full hidden lg:block"></div>
+                        <div className="v-divider hidden lg:block lg:col-start-1 lg:row-start-1 lg:row-span-3"></div>
                         
                         {/* Row 1 Content */}
-                        <div className="p-12 border-b border-nav-border lg:border-none">
+                        <div className="p-12 border-b border-nav-border lg:border-none lg:col-start-2 lg:row-start-1">
                             <h3 className="text-2xl md:text-3xl font-normal mb-6">Как мы попадаем в космос?</h3>
                             <p className="text-muted-foreground leading-relaxed text-lg font-light">
                                 Чтобы вывести полезную нагрузку на орбиту, нужно набрать орбитальную скорость. Наши системы используют многоступенчатые циклы сгорания и дают запас delta-v, нужный для сложных траекторий.
                             </p>
                         </div>
                         
-                        <div className="v-divider h-full hidden lg:block"></div>
+                        <div className="v-divider hidden lg:block lg:col-start-3 lg:row-start-1 lg:row-span-3"></div>
                         
-                        <div className="row-span-2 p-6 h-full border-b border-nav-border lg:border-none">
+                        <div className="p-6 h-full lg:min-h-[420px] border-b border-nav-border lg:border-none lg:col-start-4 lg:row-start-1 lg:row-span-2">
                             <video 
                                 src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260324_032431_5e054107-51c0-4162-9f0f-3a40054761ef.mp4"
                                 className="w-full h-full object-cover"
@@ -184,12 +184,11 @@
                             />
                         </div>
 
-                        <div className="v-divider h-full hidden lg:block"></div>
+                        <div className="v-divider hidden lg:block lg:col-start-5 lg:row-start-1 lg:row-span-3"></div>
 
                         {/* Row 2 Content (Staggered) */}
-                        <div className="v-divider h-full hidden lg:block"></div>
-                        
-                        <div className="row-span-2 p-6 h-full border-b border-nav-border lg:border-none lg:order-last">
+
+                        <div className="p-6 h-full lg:min-h-[420px] border-b border-nav-border lg:border-none lg:col-start-2 lg:row-start-2 lg:row-span-2">
                             <video 
                                 src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260324_032535_4ccc152e-0cc8-4ee5-a698-e1a98cea8a1e.mp4"
                                 className="w-full h-full object-cover"
@@ -197,16 +196,13 @@
                             />
                         </div>
 
-                        <div className="v-divider h-full hidden lg:block"></div>
-
-                        <div className="p-12">
+                        <div className="p-12 lg:col-start-4 lg:row-start-3">
                             <h3 className="text-2xl md:text-3xl font-normal mb-6">Ракеты-носители</h3>
                             <p className="text-muted-foreground leading-relaxed text-lg font-light">
                                 От доставки малых спутников до тяжёлых лунных миссий: наш флот модульных ракет рассчитан на частые пуски и быстрое повторное использование.
                             </p>
                         </div>
 
-                        <div className="v-divider h-full hidden lg:block"></div>
                     </div>
                 </div>
             </section>
