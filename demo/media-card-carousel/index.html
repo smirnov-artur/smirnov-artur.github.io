@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EngineTech | Program Stories From Flight-Ready Power</title>
+    <meta name="description" content="Video field notes from the integration leads, test engineers, and manufacturing teams building EngineTech's flight-ready propulsion systems.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <style>
+        :root { --hero-max-width: 1820px; }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; overflow-x: hidden; background: #f7f8f8; }
+        body {
+            font-family: "Geist", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: geometricPrecision;
+        }
+
+        .video-stories {
+            position: relative;
+            z-index: 90;
+            min-height: 100vh;
+            padding: clamp(46px, 5vw, 88px) 0 clamp(44px, 4vw, 74px);
+            overflow: hidden;
+            background: #f7f8f8;
+            color: #111111;
+        }
+
+        .video-stories__header {
+            width: min(100% - 96px, 900px);
+            margin: 0 auto clamp(38px, 4vw, 74px);
+        }
+        .video-stories__header h2 {
+            margin: 0;
+            color: #111111;
+            font-size: clamp(38px, 4.4vw, 76px);
+            font-weight: 300;
+            letter-spacing: 0;
+            line-height: 1.08;
+        }
+        .video-stories__header p {
+            max-width: 720px;
+            margin: 22px 0 0;
+            color: #697272;
+            font-size: clamp(16px, 1.25vw, 21px);
+            font-weight: 420;
+            line-height: 1.55;
+        }
+
+        .video-stories__rail {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: minmax(520px, 34vw);
+            gap: clamp(28px, 3vw, 54px);
+            overflow-x: auto;
+            overscroll-behavior-x: contain;
+            scroll-snap-type: x mandatory;
+            padding: 0 max(48px, calc((100vw - var(--hero-max-width)) / 2 + 48px)) 36px;
+            scrollbar-width: none;
+        }
+        .video-stories__rail::-webkit-scrollbar { display: none; }
+
+        .story-card {
+            scroll-snap-align: center;
+            min-width: 0;
+            opacity: 0.54;
+            transform: translateY(10px);
+            transition: opacity 260ms ease, transform 260ms ease;
+        }
+        .story-card:hover, .story-card:focus, .story-card:focus-within {
+            opacity: 1;
+            transform: none;
+        }
+
+        .story-card__media {
+            display: block;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            border-radius: 12px;
+            background: #dfe5e6;
+            object-fit: cover;
+            object-position: center;
+            box-shadow: 0 18px 48px rgb(21 34 34 / 0.1);
+        }
+
+        .story-card__content { padding: 24px 28px 0; }
+        .story-card__content p {
+            margin: 0 0 12px;
+            color: #111111;
+            font-size: 15px;
+            font-weight: 760;
+            line-height: 1;
+        }
+        .story-card__content h3 {
+            max-width: 680px;
+            margin: 0;
+            color: #252b2b;
+            font-size: clamp(18px, 1.22vw, 24px);
+            font-weight: 520;
+            letter-spacing: 0;
+            line-height: 1.38;
+        }
+        .story-card__content span {
+            display: block;
+            margin-top: 14px;
+            color: #858d8d;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .video-stories__footer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: min(100% - 96px, 900px);
+            margin: 28px auto 0;
+        }
+        .video-stories__footer span {
+            display: block;
+            width: 56px;
+            height: 4px;
+            border-radius: 999px;
+            background: #cfd4d4;
+        }
+        .video-stories__footer span.is-active {
+            width: 320px;
+            background: #111111;
+        }
+        .video-stories__footer strong {
+            margin-left: 18px;
+            color: #7a8282;
+            font-size: 14px;
+            font-weight: 650;
+            letter-spacing: 0.02em;
+        }
+
+        @media (max-width: 860px) {
+            .video-stories__header, .video-stories__footer { width: min(100% - 48px, 900px); }
+            .video-stories__rail {
+                grid-auto-columns: minmax(320px, 82vw);
+                padding: 0 24px 30px;
+            }
+            .story-card { opacity: 1; transform: none; }
+        }
+
+        @media (max-width: 560px) {
+            .video-stories__header, .video-stories__footer { width: min(100% - 32px, 900px); }
+            .story-card__content { padding: 18px 4px 0; }
+            .video-stories__footer span.is-active { width: 150px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const CARDS = [
+            {
+                video: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260324_032431_5e054107-51c0-4162-9f0f-3a40054761ef.mp4",
+                category: "Integration Review",
+                title: "How a reusable upper-stage program moved from thermal risk to stable qualification.",
+                meta: "Reusable systems · 04:20",
+            },
+            {
+                video: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260324_032535_4ccc152e-0cc8-4ee5-a698-e1a98cea8a1e.mp4",
+                category: "Hot-Fire Campaign",
+                title: "Inside the test cell where telemetry, vibration, and injector response converge.",
+                meta: "Validation · 03:45",
+            },
+            {
+                video: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260324_033707_b842a2ea-f223-4804-96d0-737ab67510fc.mp4",
+                category: "Manufacturing Floor",
+                title: "Why sub-micron inspection changes the way aerospace teams plan reliability.",
+                meta: "Precision build · 05:10",
+            },
+            {
+                video: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260324_032431_5e054107-51c0-4162-9f0f-3a40054761ef.mp4",
+                category: "Hydrogen Pathway",
+                title: "Designing feed systems and ignition envelopes for hydrogen-ready propulsion.",
+                meta: "H2 systems · 04:55",
+            },
+            {
+                video: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260324_032535_4ccc152e-0cc8-4ee5-a698-e1a98cea8a1e.mp4",
+                category: "Mission Support",
+                title: "The operational cadence behind launch-window support and post-test analysis.",
+                meta: "Field readiness · 03:30",
+            },
+        ];
+
+        const App = () => (
+            <section className="video-stories">
+                <div className="video-stories__header">
+                    <h2>Program stories from the people building flight-ready power.</h2>
+                    <p>Short field notes from integration leads, test engineers, and manufacturing teams moving advanced propulsion systems from requirement reviews to repeatable flight hardware.</p>
+                </div>
+
+                <div className="video-stories__rail" aria-label="EngineTech video previews">
+                    {CARDS.map((card, i) => (
+                        <article className="story-card" tabIndex={0} key={i}>
+                            <video
+                                className="story-card__media"
+                                src={card.video}
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                            />
+                            <div className="story-card__content">
+                                <p>{card.category}</p>
+                                <h3>{card.title}</h3>
+                                <span>{card.meta}</span>
+                            </div>
+                        </article>
+                    ))}
+                </div>
+
+                <div className="video-stories__footer" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <span className="is-active"></span>
+                    <strong>05 / 05</strong>
+                </div>
+            </section>
+        );
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

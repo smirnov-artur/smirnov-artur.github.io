@@ -2729,5 +2729,19 @@
    "A heading, a button and four cards fade up out of a blur one by one, revealing a donut chart and three photos."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "media-card-carousel",
+  "v": "media-card-carousel",
+  "ve": "media-card-carousel-en",
+  "ru": [
+   "Истории ракетных запусков",
+   "Лента видео о запусках и испытаниях ракет: карточка оживает, когда на неё наводишь курсор."
+  ],
+  "en": [
+   "Rocket launch stories",
+   "A horizontal rail of autoplaying rocket launch and test videos that dim until you hover a card."
+  ],
+  "cat": "web"
  }
 ]
