@@ -2659,5 +2659,19 @@
    "A supplement carousel auto-slides every 3 seconds, the center bottle scaling up as a side menu slides out."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "luxury-hero",
+  "v": "luxury-hero",
+  "ve": "luxury-hero-en",
+  "ru": [
+   "Вилла на скале",
+   "При загрузке вокруг логотипа зажигаются кольца, а при скролле закатное видео сменяется съёмкой интерьера."
+  ],
+  "en": [
+   "Cliffside villa",
+   "Rings bloom around the logo on load, then the sunset video crossfades to an interior scene on scroll."
+  ],
+  "cat": "web"
  }
 ]
