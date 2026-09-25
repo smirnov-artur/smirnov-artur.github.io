@@ -77,11 +77,11 @@ const NAVIGATION_ITEMS = [
 ];
 
 const PARTNER_LOGOS = [
-  { name: 'Voiceflow', src: 'https://raw.githubusercontent.com/dsMagnatov/Acreage-landing-assets/refs/heads/main/voiceflow-logo-svg-150px.svg' },
-  { name: 'Zendesk', src: 'https://raw.githubusercontent.com/dsMagnatov/Acreage-landing-assets/refs/heads/main/zendesk-logo-svg-150px.svg' },
-  { name: 'Pendo', src: 'https://raw.githubusercontent.com/dsMagnatov/Acreage-landing-assets/refs/heads/main/pendo-logo-svg-150px.svg' },
-  { name: 'Glide', src: 'https://raw.githubusercontent.com/dsMagnatov/Acreage-landing-assets/refs/heads/main/glide-logo-svg-150px.svg' },
-  { name: 'Canva', src: 'https://raw.githubusercontent.com/dsMagnatov/Acreage-landing-assets/refs/heads/main/canva-logo-svg-150px.svg' },
+  { name: 'Ondrium' },
+  { name: 'Basiscore' },
+  { name: 'Deepgrid' },
+  { name: 'Cognivault' },
+  { name: 'Anchorwell' },
 ];
 
 // Manifesto drum lines. Bracketed words render bold/full-opacity; index 15 is a deliberate blank spacer.
@@ -162,16 +162,16 @@ function IconX({ className }) {
 function GoogleWordmark({ size = 100 }) {
   const w = size, h = size * 30 / 115;
   return (
-    <svg width={w} height={h} viewBox="0 0 115 30" className="opacity-80 hover:opacity-100 transition-opacity flex-shrink-0" aria-label="Google">
-      <text x="0" y="22" fontFamily="Arial, sans-serif" fontSize="24" fontWeight="700" fill="#ffffff">Google</text>
+    <svg width={w} height={h} viewBox="0 0 115 30" className="opacity-80 hover:opacity-100 transition-opacity flex-shrink-0" aria-label="Keystonewave">
+      <text x="0" y="21" fontFamily="Arial, sans-serif" fontSize="13" fontWeight="700" fill="#ffffff">Keystonewave</text>
     </svg>
   );
 }
 function GithubWordmark({ size = 100 }) {
   const w = size, h = size * 30 / 110;
   return (
-    <svg width={w} height={h} viewBox="0 0 110 30" className="opacity-80 hover:opacity-100 transition-opacity flex-shrink-0" aria-label="GitHub">
-      <text x="0" y="22" fontFamily="Arial, sans-serif" fontSize="22" fontWeight="700" fill="#ffffff">GitHub</text>
+    <svg width={w} height={h} viewBox="0 0 110 30" className="opacity-80 hover:opacity-100 transition-opacity flex-shrink-0" aria-label="Formlyst">
+      <text x="0" y="21" fontFamily="Arial, sans-serif" fontSize="17" fontWeight="700" fill="#ffffff">Formlyst</text>
     </svg>
   );
 }
@@ -556,7 +556,7 @@ function App() {
                 <GoogleWordmark size={100} />
                 <GithubWordmark size={100} />
                 {PARTNER_LOGOS.map((p) => (
-                  <img key={p.name} src={p.src} alt={p.name} className="h-6 w-auto object-contain brightness-0 invert opacity-80 hover:opacity-100 transition-opacity flex-shrink-0" referrerPolicy="no-referrer"/>
+                  <span key={p.name} className="text-white text-lg font-bold opacity-80 hover:opacity-100 transition-opacity flex-shrink-0" style={{ fontFamily: 'Arial, sans-serif' }}>{p.name}</span>
                 ))}
               </Marquee>
             </div>
