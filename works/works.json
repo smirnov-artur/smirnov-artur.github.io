@@ -1650,7 +1650,8 @@
    "A video frame unfolds to full screen, titles fly in word by word, cards tilt after the cursor"
   ],
   "cat": "web",
-  "ve": "zentry-premium-en"
+  "ve": "zentry-premium-en",
+  "rp": 1
  },
  {
   "slug": "gta-vi-landing",
@@ -1664,7 +1665,8 @@
    "Scrolling shrinks the art into the VI logo and scrubs the character clips frame by frame"
   ],
   "cat": "web",
-  "ve": "gta-vi-landing-en"
+  "ve": "gta-vi-landing-en",
+  "rp": 1
  },
  {
   "slug": "iron-man-stark",
@@ -1678,7 +1680,8 @@
    "Scrolling assembles the Iron Man suit frame by frame while Tony Stark quotes pop up"
   ],
   "cat": "web",
-  "ve": "iron-man-stark-en"
+  "ve": "iron-man-stark-en",
+  "rp": 1
  },
  {
   "slug": "big-bang-origin",
@@ -1692,7 +1695,8 @@
    "Scrolling plays the Big Bang frame by frame into an opening eye, then nebula cards drift by"
   ],
   "cat": "web",
-  "ve": "big-bang-origin-en"
+  "ve": "big-bang-origin-en",
+  "rp": 1
  },
  {
   "slug": "valorant-gaming-landing",
@@ -1706,7 +1710,8 @@
    "Gameplay video behind the logo, then a news strip and agent pages over a looping video"
   ],
   "cat": "web",
-  "ve": "valorant-gaming-landing-en"
+  "ve": "valorant-gaming-landing-en",
+  "rp": 1
  },
  {
   "slug": "league-of-legends-hero",
@@ -1720,7 +1725,8 @@
    "Champion art melts from one hero to the next as the mouse wheel flips full-screen slides"
   ],
   "cat": "web",
-  "ve": "league-of-legends-hero-en"
+  "ve": "league-of-legends-hero-en",
+  "rp": 1
  },
  {
   "slug": "aethera-studio",
@@ -1734,7 +1740,8 @@
    "A serif headline rises in above a fairytale river-valley video that fades in and out"
   ],
   "cat": "web",
-  "ve": "aethera-studio-en"
+  "ve": "aethera-studio-en",
+  "rp": 1
  },
  {
   "slug": "ai-automation-hero",
@@ -1748,7 +1755,8 @@
    "Headline words rise one by one over a video of flickering grey bands of light"
   ],
   "cat": "web",
-  "ve": "ai-automation-hero-en"
+  "ve": "ai-automation-hero-en",
+  "rp": 1
  },
  {
   "slug": "ai-designer-agency",
@@ -1762,7 +1770,8 @@
    "A pink grassland video, and the manifesto lights up word by word as you scroll"
   ],
   "cat": "web",
-  "ve": "ai-designer-agency-en"
+  "ve": "ai-designer-agency-en",
+  "rp": 1
  },
  {
   "slug": "ai-designer-portfolio",
@@ -1776,7 +1785,8 @@
    "Headings fade up, an endless strip of animated site previews scrolls, testimonials slide by themselves"
   ],
   "cat": "web",
-  "ve": "ai-designer-portfolio-en"
+  "ve": "ai-designer-portfolio-en",
+  "rp": 1
  },
  {
   "slug": "akor-security",
@@ -1790,7 +1800,8 @@
    "The headline and buttons fade up one after another, then service cards and a looping video"
   ],
   "cat": "web",
-  "ve": "akor-security-en"
+  "ve": "akor-security-en",
+  "rp": 1
  },
  {
   "slug": "apex-saas",
@@ -1804,7 +1815,8 @@
    "A glossy blue wave video fades in under the headline while a client logo marquee scrolls below"
   ],
   "cat": "web",
-  "ve": "apex-saas-en"
+  "ve": "apex-saas-en",
+  "rp": 1
  },
  {
   "slug": "asme",
@@ -1818,7 +1830,8 @@
    "A girl at a laptop inside swirling rings of light, under serif type and a glass signup field"
   ],
   "cat": "web",
-  "ve": "asme-en"
+  "ve": "asme-en",
+  "rp": 1
  },
  {
   "slug": "automation-machines",
@@ -1832,7 +1845,8 @@
    "An interactive Spline 3D scene in the background, the headline slides in from the left, specs rise up"
   ],
   "cat": "web",
-  "ve": "automation-machines-en"
+  "ve": "automation-machines-en",
+  "rp": 1
  },
  {
   "slug": "bionova-biotech",
@@ -1846,7 +1860,8 @@
    "Glassy 3D blobs float in three video cards next to a headline with an inline photo and button"
   ],
   "cat": "web",
-  "ve": "bionova-biotech-en"
+  "ve": "bionova-biotech-en",
+  "rp": 1
  },
  {
   "slug": "bloom-ai",
@@ -1860,7 +1875,8 @@
    "A glowing green planet video behind frosted glass panels"
   ],
   "cat": "web",
-  "ve": "bloom-ai-en"
+  "ve": "bloom-ai-en",
+  "rp": 1
  },
  {
   "slug": "bold-portfolio-hero",
@@ -1874,7 +1890,8 @@
    "A portrait in a blob-shaped mask overlaps a huge headline on a red-orange gradient"
   ],
   "cat": "web",
-  "ve": "bold-portfolio-hero-en"
+  "ve": "bold-portfolio-hero-en",
+  "rp": 1
  },
  {
   "slug": "buzzentic-agency",
@@ -1888,7 +1905,8 @@
    "Orange and blue light rays glow in a video behind a headline framed by four corner dots"
   ],
   "cat": "web",
-  "ve": "buzzentic-agency-en"
+  "ve": "buzzentic-agency-en",
+  "rp": 1
  },
  {
   "slug": "clearinvoice-saas-hero",
@@ -1902,7 +1920,8 @@
    "A looping video background, a rainbow top bar, headline and buttons fading up in sequence"
   ],
   "cat": "web",
-  "ve": "clearinvoice-saas-hero-en"
+  "ve": "clearinvoice-saas-hero-en",
+  "rp": 1
  },
  {
   "slug": "clubx-investors",
@@ -1916,7 +1935,8 @@
    "A sunny lakeside gathering on full-screen video; the headline and a glass stats bar rise in"
   ],
   "cat": "web",
-  "ve": "clubx-investors-en"
+  "ve": "clubx-investors-en",
+  "rp": 1
  },
  {
   "slug": "codenest-coding-platform",
@@ -1930,7 +1950,8 @@
    "A glass card floats up over a blurred video of glowing code streaks"
   ],
   "cat": "web",
-  "ve": "codenest-coding-platform-en"
+  "ve": "codenest-coding-platform-en",
+  "rp": 1
  },
  {
   "slug": "dark-portfolio-hero",
@@ -1944,7 +1965,8 @@
    "A 0–100 loader with flipping words, then a blue silk video and a rotating role under the name"
   ],
   "cat": "web",
-  "ve": "dark-portfolio-hero-en"
+  "ve": "dark-portfolio-hero-en",
+  "rp": 1
  },
  {
   "slug": "datacore-booking",
@@ -1958,7 +1980,8 @@
    "Violet light streaks sweep across a video background behind a big serif headline"
   ],
   "cat": "web",
-  "ve": "datacore-booking-en"
+  "ve": "datacore-booking-en",
+  "rp": 1
  },
  {
   "slug": "datacore-saas-hero",
@@ -1972,7 +1995,8 @@
    "Violet glass ribbons drift in a dimmed video behind a headline with an italic serif accent"
   ],
   "cat": "web",
-  "ve": "datacore-saas-hero-en"
+  "ve": "datacore-saas-hero-en",
+  "rp": 1
  },
  {
   "slug": "designpro-academy",
@@ -1986,7 +2010,8 @@
    "A glassy ribbon video bends behind the headline while a shine sweeps across the blue words"
   ],
   "cat": "web",
-  "ve": "designpro-academy-en"
+  "ve": "designpro-academy-en",
+  "rp": 1
  },
  {
   "slug": "digitwist-ai-builder",
@@ -2000,7 +2025,8 @@
    "Blue light streaks shimmer in a blurred video as a huge gradient headline scales into view"
   ],
   "cat": "web",
-  "ve": "digitwist-ai-builder-en"
+  "ve": "digitwist-ai-builder-en",
+  "rp": 1
  },
  {
   "slug": "e-commerce-website",
@@ -2014,7 +2040,8 @@
    "Two columns of wellness photos scroll endlessly in opposite directions beside the headline"
   ],
   "cat": "web",
-  "ve": "e-commerce-website-en"
+  "ve": "e-commerce-website-en",
+  "rp": 1
  },
  {
   "slug": "evr-ventures",
@@ -2028,7 +2055,8 @@
    "A glass cube spins in rainbow light, a progress ring fills up and partner logos scroll past"
   ],
   "cat": "web",
-  "ve": "evr-ventures-en"
+  "ve": "evr-ventures-en",
+  "rp": 1
  },
  {
   "slug": "finlytic-ai-agent",
@@ -2042,7 +2070,8 @@
    "A glowing dotted globe video behind the headline, with a dashboard in a glass frame below"
   ],
   "cat": "web",
-  "ve": "finlytic-ai-agent-en"
+  "ve": "finlytic-ai-agent-en",
+  "rp": 1
  },
  {
   "slug": "framelix-3d-studios",
@@ -2056,7 +2085,8 @@
    "Glowing blue dragonflies flap their wings on video; a lilac ticker scrolls and a clip loops below"
   ],
   "cat": "web",
-  "ve": "framelix-3d-studios-en"
+  "ve": "framelix-3d-studios-en",
+  "rp": 1
  },
  {
   "slug": "glassmorphism-agency-hero",
@@ -2070,7 +2100,8 @@
    "A gradient headline over a screen-blended video, with client logos in a scrolling marquee"
   ],
   "cat": "web",
-  "ve": "glassmorphism-agency-hero-en"
+  "ve": "glassmorphism-agency-hero-en",
+  "rp": 1
  },
  {
   "slug": "grow-ai-talent-platform",
@@ -2084,7 +2115,8 @@
    "A huge gradient wordmark, a fading blue glass-wave video and a scrolling logo strip"
   ],
   "cat": "web",
-  "ve": "grow-ai-talent-platform-en"
+  "ve": "grow-ai-talent-platform-en",
+  "rp": 1
  },
  {
   "slug": "hr-saas-hero",
@@ -2098,7 +2130,8 @@
    "Glassy tiles shimmer in the video above a headline with a handwritten italic"
   ],
   "cat": "web",
-  "ve": "hr-saas-hero-en"
+  "ve": "hr-saas-hero-en",
+  "rp": 1
  },
  {
   "slug": "investor-deck",
@@ -2112,7 +2145,8 @@
    "Five video-backed slides switch with arrow keys while headlines rise word by word"
   ],
   "cat": "web",
-  "ve": "investor-deck-en"
+  "ve": "investor-deck-en",
+  "rp": 1
  },
  {
   "slug": "liquid-glass-agency",
@@ -2126,7 +2160,8 @@
    "Headline words sharpen out of a blur, followed by glass cards and video sections"
   ],
   "cat": "web",
-  "ve": "liquid-glass-agency-en"
+  "ve": "liquid-glass-agency-en",
+  "rp": 1
  },
  {
   "slug": "loader-animation",
@@ -2140,7 +2175,8 @@
    "A 000–100 counter runs with a gradient bar while words swap, then the page fades in"
   ],
   "cat": "web",
-  "ve": "loader-animation-en"
+  "ve": "loader-animation-en",
+  "rp": 1
  },
  {
   "slug": "logoisum-video-agency",
@@ -2154,7 +2190,8 @@
    "Petals drift over a video of flowering hills and a lake, beneath a floating white navbar"
   ],
   "cat": "web",
-  "ve": "logoisum-video-agency-en"
+  "ve": "logoisum-video-agency-en",
+  "rp": 1
  },
  {
   "slug": "mindloop",
@@ -2168,7 +2205,8 @@
    "A girl reads above the clouds in the video, under big serif type and a glass button"
   ],
   "cat": "web",
-  "ve": "mindloop-en"
+  "ve": "mindloop-en",
+  "rp": 1
  },
  {
   "slug": "mindloop-landing",
@@ -2182,7 +2220,8 @@
    "A dreamy 3D video with an astronaut; on scroll, the manifesto lights up word by word"
   ],
   "cat": "web",
-  "ve": "mindloop-landing-en"
+  "ve": "mindloop-landing-en",
+  "rp": 1
  },
  {
   "slug": "neovision",
@@ -2196,7 +2235,8 @@
    "A man in a VR headset on video, thin headline, and tabs below swap animated previews"
   ],
   "cat": "web",
-  "ve": "neovision-en"
+  "ve": "neovision-en",
+  "rp": 1
  },
  {
   "slug": "neuralyn",
@@ -2210,7 +2250,8 @@
    "Night flowers on video under a floating dashboard; on scroll the quote lights up word by word"
   ],
   "cat": "web",
-  "ve": "neuralyn-en"
+  "ve": "neuralyn-en",
+  "rp": 1
  },
  {
   "slug": "new-era-automotive-hero",
@@ -2224,7 +2265,8 @@
    "A video of an orange Porsche under giant NEW ERA lettering, headline in the corner"
   ],
   "cat": "web",
-  "ve": "new-era-automotive-hero-en"
+  "ve": "new-era-automotive-hero-en",
+  "rp": 1
  },
  {
   "slug": "new-era-bold-hero",
@@ -2238,7 +2280,8 @@
    "A 3D video of a camera, a drone and a winding track behind a huge three-line headline"
   ],
   "cat": "web",
-  "ve": "new-era-bold-hero-en"
+  "ve": "new-era-bold-hero-en",
+  "rp": 1
  },
  {
   "slug": "nexora-automation",
@@ -2252,7 +2295,8 @@
    "An illustrated forest video behind a serif headline while a finance dashboard mockup slides up"
   ],
   "cat": "web",
-  "ve": "nexora-automation-en"
+  "ve": "nexora-automation-en",
+  "rp": 1
  },
  {
   "slug": "nexus-it-solutions",
@@ -2266,7 +2310,8 @@
    "A video of glowing blue portal rings on both sides of the headline"
   ],
   "cat": "web",
-  "ve": "nexus-it-solutions-en"
+  "ve": "nexus-it-solutions-en",
+  "rp": 1
  },
  {
   "slug": "nickel-payments",
@@ -2280,7 +2325,8 @@
    "An orange 3D retro computer comes alive on video next to a big headline"
   ],
   "cat": "web",
-  "ve": "nickel-payments-en"
+  "ve": "nickel-payments-en",
+  "rp": 1
  },
  {
   "slug": "nova-space-systems",
@@ -2294,7 +2340,8 @@
    "Giant ROCKETS type over a video, then a strict grid with looping rocket clips"
   ],
   "cat": "web",
-  "ve": "nova-space-systems-en"
+  "ve": "nova-space-systems-en",
+  "rp": 1
  },
  {
   "slug": "orbis-nft",
@@ -2308,7 +2355,8 @@
    "A cartoon astronaut on an alien planet in the video, with NFT cards below playing their own clips"
   ],
   "cat": "web",
-  "ve": "orbis-nft-en"
+  "ve": "orbis-nft-en",
+  "rp": 1
  },
  {
   "slug": "orbit-engineers",
@@ -2322,7 +2370,8 @@
    "Three videos swap with blur transitions, from a sunset valley to a starship window"
   ],
   "cat": "web",
-  "ve": "orbit-engineers-en"
+  "ve": "orbit-engineers-en",
+  "rp": 1
  },
  {
   "slug": "orbit-web3",
@@ -2336,7 +2385,8 @@
    "Gold coins tumble through a teal beam of light while a logo strip scrolls below"
   ],
   "cat": "web",
-  "ve": "orbit-web3-en"
+  "ve": "orbit-web3-en",
+  "rp": 1
  },
  {
   "slug": "planet-orbit",
@@ -2350,7 +2400,8 @@
    "A video of Earth from orbit behind the headline and a scrolling strip of client logos"
   ],
   "cat": "web",
-  "ve": "planet-orbit-en"
+  "ve": "planet-orbit-en",
+  "rp": 1
  },
  {
   "slug": "portfolio-cosmic",
@@ -2364,7 +2415,8 @@
    "A 000–100 loader cycles words, then a cosmic vortex video and a rotating role line in the hero"
   ],
   "cat": "web",
-  "ve": "portfolio-cosmic-en"
+  "ve": "portfolio-cosmic-en",
+  "rp": 1
  },
  {
   "slug": "power-ai",
@@ -2378,7 +2430,8 @@
    "Glossy purple tubes coil in a looping video while a strip of client logos scrolls below"
   ],
   "cat": "web",
-  "ve": "power-ai-en"
+  "ve": "power-ai-en",
+  "rp": 1
  },
  {
   "slug": "price-calculator",
@@ -2392,7 +2445,8 @@
    "A slider and checkboxes recalculate the price live, next to agency and freelancer quotes"
   ],
   "cat": "web",
-  "ve": "price-calculator-en"
+  "ve": "price-calculator-en",
+  "rp": 1
  },
  {
   "slug": "railroad-ai",
@@ -2406,7 +2460,8 @@
    "A view from a train window on video; the headline sharpens out of a blur word by word"
   ],
   "cat": "web",
-  "ve": "railroad-ai-en"
+  "ve": "railroad-ai-en",
+  "rp": 1
  },
  {
   "slug": "stellar-ai",
@@ -2420,7 +2475,8 @@
    "Tabs switch on their own, popping up step cards over a fantasy landscape video"
   ],
   "cat": "web",
-  "ve": "stellar-ai-en"
+  "ve": "stellar-ai-en",
+  "rp": 1
  },
  {
   "slug": "synapse-dark-hero",
@@ -2434,7 +2490,8 @@
    "Black chrome waves ripple behind the headline as the text and buttons gently fade up"
   ],
   "cat": "web",
-  "ve": "synapse-dark-hero-en"
+  "ve": "synapse-dark-hero-en",
+  "rp": 1
  },
  {
   "slug": "sync-ai",
@@ -2448,7 +2505,8 @@
    "The headline and buttons fade up over a video of green hills full of wildflowers"
   ],
   "cat": "web",
-  "ve": "sync-ai-en"
+  "ve": "sync-ai-en",
+  "rp": 1
  },
  {
   "slug": "targo-logistics-hero",
@@ -2462,7 +2520,8 @@
    "A red race car speeds through fiery sparks on video behind a bold uppercase headline"
   ],
   "cat": "web",
-  "ve": "targo-logistics-hero-en"
+  "ve": "targo-logistics-hero-en",
+  "rp": 1
  },
  {
   "slug": "taskly",
@@ -2476,7 +2535,8 @@
    "A glossy blue blob shimmers and morphs beside the headline under a floating glass navbar"
   ],
   "cat": "web",
-  "ve": "taskly-en"
+  "ve": "taskly-en",
+  "rp": 1
  },
  {
   "slug": "taskora-saas-hero",
@@ -2490,7 +2550,8 @@
    "A dark abstract video behind the hero, text fades up and a dashboard preview slides in"
   ],
   "cat": "web",
-  "ve": "taskora-saas-hero-en"
+  "ve": "taskora-saas-hero-en",
+  "rp": 1
  },
  {
   "slug": "terra-geo-map",
@@ -2504,7 +2565,8 @@
    "A globe spins in the video below a headline with one word in a dashed selection frame"
   ],
   "cat": "web",
-  "ve": "terra-geo-map-en"
+  "ve": "terra-geo-map-en",
+  "rp": 1
  },
  {
   "slug": "transform-data",
@@ -2518,7 +2580,8 @@
    "A green-hills video fades out and loops behind a frosted AI prompt box"
   ],
   "cat": "web",
-  "ve": "transform-data-en"
+  "ve": "transform-data-en",
+  "rp": 1
  },
  {
   "slug": "viktor-portfolio",
@@ -2532,7 +2595,8 @@
    "A man in a glowing visor on video; Next Project fades into a second video screen"
   ],
   "cat": "web",
-  "ve": "viktor-portfolio-en"
+  "ve": "viktor-portfolio-en",
+  "rp": 1
  },
  {
   "slug": "wealth-video-hero",
@@ -2546,7 +2610,8 @@
    "Neon light ribbons sweep through the video behind a huge headline and a four-step panel"
   ],
   "cat": "web",
-  "ve": "wealth-video-hero-en"
+  "ve": "wealth-video-hero-en",
+  "rp": 1
  },
  {
   "slug": "web3-eos-hero",
@@ -2560,7 +2625,8 @@
    "A cosmic vortex slowly swirls above a headline that dissolves into a gradient"
   ],
   "cat": "web",
-  "ve": "web3-eos-hero-en"
+  "ve": "web3-eos-hero-en",
+  "rp": 1
  },
  {
   "slug": "weblex-dark-hero",
@@ -2574,7 +2640,8 @@
    "A black-and-white video of an asteroid breaking into debris fades out and back in on each loop"
   ],
   "cat": "web",
-  "ve": "weblex-dark-hero-en"
+  "ve": "weblex-dark-hero-en",
+  "rp": 1
  },
  {
   "slug": "xportfolio-hero",
@@ -2588,7 +2655,8 @@
    "A man in an orange-visor helmet turns his head on video behind bold condensed type"
   ],
   "cat": "web",
-  "ve": "xportfolio-hero-en"
+  "ve": "xportfolio-hero-en",
+  "rp": 1
  },
  {
   "slug": "ai-interface",
@@ -2602,7 +2670,8 @@
    "Neural interface",
    "A glowing eye video fills the hero, then scroll reveals a temple-glow portrait with blurred headline swaps."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "bold-studio",
@@ -2616,7 +2685,8 @@
    "Creative collective",
    "A red-lit video of a ninja turtle and an armored warrior plays behind fade-up headlines and stats."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "interactive-discovery",
@@ -2630,7 +2700,8 @@
    "Geology course",
    "A soft spotlight follows the cursor over a rock photo, unmasking a mossier, colorful image underneath."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "remit-race",
@@ -2644,7 +2715,8 @@
    "Dollar relay race",
    "Three phone mockups show a live countdown, a glowing globe video, and a swipeable deck of rule cards."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "supplement-shop",
@@ -2658,7 +2730,8 @@
    "Supplement shop",
    "A supplement carousel auto-slides every 3 seconds, the center bottle scaling up as a side menu slides out."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "luxury-hero",
@@ -2672,7 +2745,8 @@
    "Cliffside villa",
    "Rings bloom around the logo on load, then the sunset video crossfades to an interior scene on scroll."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "subscription-agency",
@@ -2686,7 +2760,8 @@
    "On-demand creative",
    "Soft curved lines pulse behind a bold headline while service tags and client logos scroll past."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "cross-border",
@@ -2700,7 +2775,8 @@
    "Freight route map",
    "A truck drives down the highway at sunset, then yellow arrows animate along routes between glowing dots."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "wellbeing-os",
@@ -2714,7 +2790,8 @@
    "Wellness platform",
    "A looping video of yellow blossoms fills the screen behind a bold headline and glass nav dropdowns."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "kova-features",
@@ -2728,7 +2805,8 @@
    "Fintech app features",
    "A heading, a button and four cards fade up out of a blur one by one, revealing a donut chart and three photos."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "media-card-carousel",
@@ -2742,7 +2820,8 @@
    "Rocket launch stories",
    "A horizontal rail of autoplaying rocket launch and test videos that dim until you hover a card."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "pet-products",
@@ -2756,7 +2835,8 @@
    "Pet products app",
    "Three phone mockups fade in and slide up, a gift-unboxing video loops, and a product grid pops in card by card."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "contact-cybernetic",
@@ -2770,7 +2850,8 @@
    "Cybernetic contact form",
    "A glossy chrome android scrubs frame by frame as the cursor moves, beside a typewriter headline."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "cargox-mobile",
@@ -2784,7 +2865,8 @@
    "Global freight logistics",
    "Three phone screens: a truck hero video, a sliding headline, an animated shipping map, and a contact form."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "halo-benefits",
@@ -2798,7 +2880,8 @@
    "Stablecoin benefits",
    "A benefit-card grid over a pastel photo, with partner names scrolling by in an endless marquee below."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "halo-use-case",
@@ -2812,7 +2895,8 @@
    "Stablecoin use cases",
    "A looping video of a purple marble temple among flowers plays behind the card's text."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "impact-ventures",
@@ -2826,7 +2910,8 @@
    "Crop-spraying robot",
    "A robot with spray arms rolls through a crop field on loop behind a bold serif agency headline."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "cleantech",
@@ -2840,7 +2925,8 @@
    "Circular waste tech",
    "Mossy debris glows behind bold text, then scroll splits a mossy globe apart between animated stat callouts."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "luxury-focus",
@@ -2854,7 +2940,8 @@
    "Fine jewelry showcase",
    "Scroll scrubs two videos while a pale-yellow headline dissolves and jewelry panels slide in from the left."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "health-portal",
@@ -2868,7 +2955,8 @@
    "Dental clinic",
    "A number counts to 100 on load, then dentistry cards fade up, each cropping a slice of one shared photo."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "innovation-summit",
@@ -2882,7 +2970,8 @@
    "Event app screens",
    "Three phone mockups fade and rise in over purple: a looping video hero, a speaker grid, and an FAQ list."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "integration-saas",
@@ -2896,6 +2985,7 @@
    "Integration hub",
    "A looping video of a glowing stone portal drifts through pink clouds behind the bold hero text."
   ],
-  "cat": "web"
+  "cat": "web",
+  "rp": 1
  }
 ]
