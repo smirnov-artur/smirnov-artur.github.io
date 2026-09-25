@@ -452,8 +452,9 @@
    "Sand draws the note",
    "A Chladni plate: the frequency draws a sand pattern"
   ],
-  "href": "/demo/nodal/",
-  "v": "pf-nodal"
+  "v": "nodal",
+  "rp": 1,
+  "ve": "nodal-en"
  },
  {
   "slug": "oyla",
@@ -496,8 +497,9 @@
    "Lo-fi rooftop",
    "Painted planes, real light and parallax"
   ],
-  "href": "/demo/rooftop/",
-  "v": "pf-rooftop"
+  "v": "rooftop",
+  "rp": 1,
+  "ve": "rooftop-en"
  },
  {
   "slug": "bubble-orb",
@@ -601,8 +603,9 @@
    "Hot ice",
    "Touch the liquid — it crystallises into stone"
   ],
-  "href": "/demo/hot-ice/",
-  "v": "pf-hot-ice"
+  "v": "hot-ice",
+  "rp": 1,
+  "ve": "hot-ice-en"
  },
  {
   "slug": "archive",
@@ -677,8 +680,9 @@
    "Lightning in acrylic",
    "A Lichtenberg figure grows in the block, with a calculator and price"
   ],
-  "href": "/demo/lichtenberg/",
-  "v": "pf-lichtenberg"
+  "v": "lichtenberg",
+  "rp": 1,
+  "ve": "lichtenberg-en"
  },
  {
   "slug": "lab",
@@ -705,11 +709,12 @@
    "Particle swarm",
    "A million particles on a compute shader"
   ],
-  "href": "/demo/roy/",
-  "v": "pf-roy"
+  "v": "roy",
+  "rp": 1,
+  "ve": "roy-en"
  },
  {
-  "slug": "zhidkost",
+  "slug": "zhidkost-razrushenie",
   "cat": "3d",
   "ru": [
    "Жидкость и разрушение",
@@ -719,8 +724,9 @@
    "Fluid and fracture",
    "Fluid and fracture simulated on the GPU"
   ],
-  "href": "/demo/zhidkost-razrushenie/",
-  "v": "pf-zhidkost-razrushenie"
+  "v": "zhidkost-razrushenie",
+  "rp": 1,
+  "ve": "zhidkost-razrushenie-en"
  },
  {
   "slug": "survival",
@@ -733,8 +739,9 @@
    "Game prototype",
    "A robot, a hub and survival right in the browser"
   ],
-  "href": "/demo/survival/",
-  "v": "pf-survival"
+  "v": "survival",
+  "rp": 1,
+  "ve": "survival-en"
  },
  {
   "slug": "glb-optimize",
@@ -747,8 +754,9 @@
    "3D scene optimisation",
    "The same scene, several times lighter: before and after"
   ],
-  "href": "/demo/glb-optimize/",
-  "v": "pf-glb-optimize"
+  "v": "glb-optimize",
+  "rp": 1,
+  "ve": "glb-optimize-en"
  },
  {
   "slug": "orb",

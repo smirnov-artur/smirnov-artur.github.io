@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 <!-- vau-stranitsa · силуэт: лабораторный стенд, прибор + 5 секций · предмет: стеклянная плошка с переохлаждённым расплавом · система: расчёт теплового аккумулятора на фазовом переходе — энергия, пик, длительность, цена партии · техника: фазовое поле на GPGPU со скрытой теплотой + per-fragment transmission через onBeforeCompile -->
 <meta charset="utf-8">
 <script src="/works/js/gad-loader.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Hot Ice — touch the liquid, it becomes stone, and the stone is hot</title>
-<meta name="description" content="A supercooled sodium-acetate melt held 36 K below its freezing point. One click seeds a crystal, the front runs at 6 mm/s, and every frozen cell hands back 264 J/g of latent heat — the dish climbs to 58 degrees while it turns solid. Phase field solved live on the GPU.">
+<title>Hot Ice — тронь жидкость, она станет камнем, и камень будет горячим</title>
+<meta name="description" content="Переохлаждённый расплав ацетата натрия — на 36 К ниже точки замерзания, и всё ещё жидкий. Один клик даёт зародыш кристалла, фронт идёт со скоростью 6 мм/с, а каждая замёрзшая клетка отдаёт 264 Дж/г скрытой теплоты — плошка нагревается до 58 градусов, застывая. Фазовое поле считается живьём на GPU.">
 <meta name="theme-color" content="#04060a">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2304060a'/%3E%3Cpath d='M16 5v22M6.5 10.5l19 11M25.5 10.5l-19 11' stroke='%2349bdff' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -322,19 +322,33 @@ section.pane.in .rv{animation:rise .8s cubic-bezier(.16,1,.3,1) both;animation-d
 .gad-hdr{font-size:17px;color:var(--dim);display:inline-flex;align-items:center;transition:color .34s cubic-bezier(.16,1,.3,1)}
 .gad-hdr:hover{color:var(--cold)}
 </style>
+<style id="cyr">/* русские буквы: исходный шрифт без кириллицы, глифы — у близкого с кириллицей */
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/manrope/v20/xn7gYHE41ni1AdIRggqxSuXd.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/manrope/v20/xn7gYHE41ni1AdIRggOxSuXd.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/manrope/v20/xn7gYHE41ni1AdIRggqxSuXd.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/manrope/v20/xn7gYHE41ni1AdIRggOxSuXd.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:800;font-display:swap;src:url(https://fonts.gstatic.com/s/manrope/v20/xn7gYHE41ni1AdIRggqxSuXd.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:800;font-display:swap;src:url(https://fonts.gstatic.com/s/manrope/v20/xn7gYHE41ni1AdIRggOxSuXd.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Schibsted Grotesk';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Schibsted Grotesk';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Schibsted Grotesk';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Schibsted Grotesk';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Schibsted Grotesk';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Schibsted Grotesk';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+</style>
 </head>
 <body>
 
 <div id="loader">
-  <div id="lrow" class="mono"><span>SUPERCOOLING THE MELT</span><span id="lnum">000</span></div>
+  <div id="lrow" class="mono"><span>ПЕРЕОХЛАЖДАЕМ РАСПЛАВ</span><span id="lnum">000</span></div>
   <div id="ltrack"><div id="lbar"></div></div>
 </div>
 
 <div id="stage">
   <canvas id="gl"></canvas>
-  <canvas id="flat" width="1280" height="800" aria-label="Crystallised dish, static fallback"></canvas>
-  <div id="noglnote">WebGL 2 is off in this browser, so the phase field is drawn once on the CPU instead. Every number below still computes.</div>
-  <div id="lost">The graphics context was dropped by the system. Reload to bring the melt back.</div>
+  <canvas id="flat" width="1280" height="800" aria-label="Застывшая плошка, статичная заглушка"></canvas>
+  <div id="noglnote">В этом браузере отключён WebGL 2, поэтому фазовое поле один раз рисуется на CPU. Все цифры ниже всё равно считаются.</div>
+  <div id="lost">Графический контекст сбросила система. Обновите страницу, чтобы вернуть расплав.</div>
 </div>
 <div class="frame" aria-hidden="true">
   <span class="cor tl"></span><span class="cor tr"></span><span class="cor bl"></span><span class="cor br"></span>
@@ -343,13 +357,13 @@ section.pane.in .rv{animation:rise .8s cubic-bezier(.16,1,.3,1) both;animation-d
 
 <header>
   <div class="wrap hin">
-    <a class="gad-hdr rv" style="--d:10ms" href="https://smirnov-artur.github.io/works/en" aria-label="g.a.d."><svg class="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d."><path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/><circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/><circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/></svg></a>
+    <a class="gad-hdr rv" style="--d:10ms" href="https://smirnov-artur.github.io/works/" aria-label="g.a.d."><svg class="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d."><path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/><circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/><circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/></svg></a>
     <a class="brand rv" style="--d:40ms" href="#hero">HOT<span>·</span>ICE</a>
     <nav>
-      <a class="rv" style="--d:110ms" href="#front">Front</a>
-      <a class="rv" style="--d:160ms" href="#curve">Curve</a>
-      <a class="rv" style="--d:210ms" href="#calc">Calculator</a>
-      <a class="rv" style="--d:260ms" href="#pcm">Materials</a>
+      <a class="rv" style="--d:110ms" href="#front">Фронт</a>
+      <a class="rv" style="--d:160ms" href="#curve">Кривая</a>
+      <a class="rv" style="--d:210ms" href="#calc">Калькулятор</a>
+      <a class="rv" style="--d:260ms" href="#pcm">Материалы</a>
     </nav>
     <div class="now rv" style="--d:310ms"><span class="dot"></span><span class="mono" id="clock">00:00</span></div>
   </div>
@@ -358,24 +372,24 @@ section.pane.in .rv{animation:rise .8s cubic-bezier(.16,1,.3,1) both;animation-d
 <main>
 <section id="hero">
   <div class="wrap">
-    <p class="kicker rv" style="--d:70ms">Phase change · sodium acetate trihydrate · 58 °C</p>
+    <p class="kicker rv" style="--d:70ms">Фазовый переход · тригидрат ацетата натрия · 58 °C</p>
     <h1>
-      <span class="ln"><span class="wd" style="--d:150ms">Touch the</span></span>
-      <span class="ln"><span class="wd" style="--d:235ms"><em>liquid.</em></span></span>
-      <span class="ln"><span class="wd" style="--d:320ms">It becomes</span></span>
-      <span class="ln"><span class="wd" style="--d:405ms"><i>stone.</i></span></span>
+      <span class="ln"><span class="wd" style="--d:150ms">Тронь</span></span>
+      <span class="ln"><span class="wd" style="--d:235ms"><em>жидкость.</em></span></span>
+      <span class="ln"><span class="wd" style="--d:320ms">Она станет</span></span>
+      <span class="ln"><span class="wd" style="--d:405ms"><i>камнем.</i></span></span>
     </h1>
-    <p class="lede rv" style="--d:520ms">This melt is sitting <b>36 kelvin below its own freezing point</b> and it is still liquid, because nothing has told it where to start. A single seed does. The front then runs outward, and every cell that freezes hands back <b>264 joules per gram</b> — which is why the dish gets <b>hot</b> while it turns to stone.</p>
-    <p class="hint fd" style="--d:960ms"><span class="cue"></span> Click anywhere in the dish to drop a seed. Two seeds make two grains, and you will see the boundary where they meet.</p>
+    <p class="lede rv" style="--d:520ms">Этот расплав держится <b>на 36 кельвинов ниже своей точки замерзания</b> и всё ещё жидкий, потому что никто не сказал ему, откуда начинать. Один зародыш — и фронт побежит наружу, а каждая замёрзшая клетка отдаёт <b>264 джоуля на грамм</b> — вот почему плошка становится <b>горячей</b>, застывая в камень.</p>
+    <p class="hint fd" style="--d:960ms"><span class="cue"></span> Кликни в любом месте плошки, чтобы бросить зародыш. Два зародыша дадут два зерна, и ты увидишь границу, где они встретятся.</p>
   </div>
 
   <div class="wrap deck">
     <dl class="gauges">
-      <div class="g rv" style="--d:640ms"><dt>Temperature</dt><dd id="gTemp">22.0<s>°C</s></dd></div>
-      <div class="g rv" style="--d:700ms"><dt>Solidified</dt><dd id="gSolid">0.0<s>%</s></dd></div>
-      <div class="g rv" style="--d:760ms"><dt>Front speed</dt><dd id="gFront">0.00<s>mm/s</s></dd></div>
-      <div class="g rv" style="--d:820ms"><dt>Grains</dt><dd id="gGrain">0</dd></div>
-      <div class="g rv" style="--d:880ms"><dt>Undercooling</dt><dd id="gDT">36<s>K</s></dd></div>
+      <div class="g rv" style="--d:640ms"><dt>Температура</dt><dd id="gTemp">22.0<s>°C</s></dd></div>
+      <div class="g rv" style="--d:700ms"><dt>Затвердело</dt><dd id="gSolid">0.0<s>%</s></dd></div>
+      <div class="g rv" style="--d:760ms"><dt>Скорость фронта</dt><dd id="gFront">0.00<s>mm/s</s></dd></div>
+      <div class="g rv" style="--d:820ms"><dt>Зёрен</dt><dd id="gGrain">0</dd></div>
+      <div class="g rv" style="--d:880ms"><dt>Переохлаждение</dt><dd id="gDT">36<s>K</s></dd></div>
     </dl>
 
     <div class="ctl">
@@ -384,11 +398,11 @@ section.pane.in .rv{animation:rise .8s cubic-bezier(.16,1,.3,1) both;animation-d
         <div class="tlab"><div id="thi">58 °C</div><div id="tlo">6 °C</div></div>
       </div>
       <label class="slab rv" style="--d:950ms">
-        <span>Melt temperature · <b class="mono" id="t0lab">22 °C</b></span>
-        <input id="t0" type="range" min="6" max="50" step="1" value="22" aria-label="Temperature of the supercooled melt in degrees Celsius">
+        <span>Температура расплава · <b class="mono" id="t0lab">22 °C</b></span>
+        <input id="t0" type="range" min="6" max="50" step="1" value="22" aria-label="Температура переохлаждённого расплава в градусах Цельсия">
       </label>
-      <button class="btn solid rv" style="--d:1010ms" id="seedBtn" type="button"><i>Seed the centre</i></button>
-      <button class="btn rv" style="--d:1070ms" id="meltBtn" type="button"><i>Melt it back</i></button>
+      <button class="btn solid rv" style="--d:1010ms" id="seedBtn" type="button"><i>Зародыш в центр</i></button>
+      <button class="btn rv" style="--d:1070ms" id="meltBtn" type="button"><i>Растопить обратно</i></button>
     </div>
   </div>
 </section>
@@ -398,28 +412,28 @@ section.pane.in .rv{animation:rise .8s cubic-bezier(.16,1,.3,1) both;animation-d
     <div class="head">
       <span class="num rv" style="--d:0ms">01</span>
       <div>
-        <h2 class="rv" style="--d:60ms">Three rules, and none of them is noise</h2>
-        <p class="sub rv" style="--d:120ms">The branching you see is not a fractal texture pasted over a circle. It falls out of a phase field solved live on the GPU at <span id="gridA" class="mono">384²</span> — one cell is <span id="cellA" class="mono">0.23</span> mm of real dish — where the only inputs are a neighbour test, a growth law and a heat balance.</p>
+        <h2 class="rv" style="--d:60ms">Три правила, и ни одно из них — шум</h2>
+        <p class="sub rv" style="--d:120ms">Ветвление, которое ты видишь, — не фрактальная текстура, наклеенная на круг. Оно получается из фазового поля, которое считается живьём на GPU в сетке <span id="gridA" class="mono">384²</span> — одна клетка это <span id="cellA" class="mono">0.23</span> мм настоящей плошки — а входных данных всего три: проверка соседей, закон роста и тепловой баланс.</p>
       </div>
     </div>
     <div class="cards">
       <article class="card rv" style="--d:180ms">
-        <h3>The front</h3>
-        <p>A cell can only freeze if a neighbouring cell is already solid and its own temperature is below the melting point. The deeper the undercooling, the faster it goes — this is the whole reason the slider changes the speed.</p>
+        <h3>Фронт</h3>
+        <p>Клетка может замёрзнуть только если соседняя клетка уже твёрдая и собственная температура ниже точки плавления. Чем глубже переохлаждение, тем быстрее идёт фронт — именно поэтому слайдер меняет скорость.</p>
         <div class="f mono">v = k · (Tm − T)^1.5 · a(θ)</div>
-        <p class="live">now: <b id="lFront">0.00 mm/s</b> at <b id="lDT">36 K</b> undercooling</p>
+        <p class="live">сейчас: <b id="lFront">0.00 mm/s</b> при <b id="lDT">36 K</b> переохлаждения</p>
       </article>
       <article class="card rv" style="--d:250ms">
-        <h3>Latent heat</h3>
-        <p>Freezing releases energy. Each cell that solidifies dumps L/c = 94 K worth of heat into its own texel, which pushes the local temperature back up towards Tm and stops the front there. The tip that happens to stick out finds cold liquid, runs faster, and the arm is born. That instability is the dendrite — it is not painted on.</p>
+        <h3>Скрытая теплота</h3>
+        <p>Замерзание высвобождает энергию. Каждая застывшая клетка сбрасывает в свой текселе L/c = 94 K тепла, которое толкает локальную температуру обратно к Tm и там останавливает фронт. Кончик, который случайно выступил вперёд, находит холодную жидкость, бежит быстрее — так рождается луч. Эта неустойчивость и есть дендрит, он не нарисован.</p>
         <div class="f mono">ΔT_local = (L / c) · Δφ = 94.3 K · Δφ</div>
-        <p class="live">instant adiabatic share: <b id="lAdi">38.2 %</b> of the dish</p>
+        <p class="live">мгновенная адиабатическая доля: <b id="lAdi">38.2 %</b> плошки</p>
       </article>
       <article class="card rv" style="--d:320ms">
-        <h3>Grains</h3>
-        <p>Every seed carries a lattice orientation drawn at random. Growth is 6-fold anisotropic around that orientation, and a freezing cell inherits it from whichever neighbour reached it first. Two seeds therefore grow two lattices, and where they meet the mismatch stays in the surface forever — the grain boundary.</p>
+        <h3>Зёрна</h3>
+        <p>Каждый зародыш несёт случайно выбранную ориентацию решётки. Рост шестилучево анизотропен вокруг этой ориентации, и замерзающая клетка наследует её от того соседа, который добрался первым. Поэтому два зародыша растят две решётки, и там, где они встречаются, несовпадение остаётся в поверхности навсегда — это и есть граница зёрен.</p>
         <div class="f mono">a(θ) = 1 + 0.45 · cos 6(ψ − θ_grain)</div>
-        <p class="live">seeds dropped: <b id="lGrain">0</b> · boundaries are drawn live in the dish</p>
+        <p class="live">брошено зародышей: <b id="lGrain">0</b> · границы рисуются в плошке живьём</p>
       </article>
     </div>
   </div>
@@ -430,20 +444,20 @@ section.pane.in .rv{animation:rise .8s cubic-bezier(.16,1,.3,1) both;animation-d
     <div class="head">
       <span class="num rv" style="--d:0ms">02</span>
       <div>
-        <h2 class="rv" style="--d:60ms">Recalescence: the thing gets hotter while it freezes</h2>
-        <p class="sub rv" style="--d:120ms">This is the claim worth checking. The blue line is the solid fraction, the orange line is the mean temperature of the dish. Both are read back off the GPU field — the <span id="gridC" class="mono">384²</span> texture is reduced to 32² on the card and pulled to the CPU eight times a second, so the plot is a measurement of the simulation, not a replay of a script.</p>
+        <h2 class="rv" style="--d:60ms">Рекалесценция: штука греется, пока замерзает</h2>
+        <p class="sub rv" style="--d:120ms">Это утверждение стоит проверить. Синяя линия — твёрдая доля, оранжевая — средняя температура плошки. Обе считаны прямо с поля на GPU — текстура <span id="gridC" class="mono">384²</span> уменьшается до 32² на карте и забирается на CPU восемь раз в секунду, так что график — это измерение симуляции, а не проигрывание сценария.</p>
       </div>
     </div>
     <div class="plot rv" style="--d:190ms">
       <canvas id="chart" width="1600" height="560"></canvas>
       <div class="legend">
-        <span><i style="background:#ff8b46"></i>mean temperature, °C</span>
-        <span><i style="background:#49bdff"></i>solid fraction, %</span>
-        <span id="cnote">waiting for the first seed</span>
+        <span><i style="background:#ff8b46"></i>средняя температура, °C</span>
+        <span><i style="background:#49bdff"></i>твёрдая доля, %</span>
+        <span id="cnote">ждём первый зародыш</span>
       </div>
     </div>
-    <p class="note rv" style="--d:230ms"><b>One honest caveat, because it changes what you are looking at.</b> In sodium acetate the thermal length D/v is 0.018 mm — fifty times finer than a cell of this field, so a literal simulation would draw a smooth wall and no arms at all. The field is therefore solved in the standard dimensionless phase-field units, scaled so the thermal length lands on three cells. Everything physical stays physical — °C, the 264 J/g of latent heat, the energy balance that caps how much can freeze at once — and the price is time: the dish runs at <span id="kap" class="mono">0.75</span>× of real speed, and every mm/s on the gauges is divided back out.</p>
-    <p class="note rv" style="--d:280ms">The temperature cannot pass Tm: at the melting point the driving force is zero and growth stops. So the curve climbs steeply, flattens on a plateau, and the rest of the dish can only freeze as fast as the glass and the air carry the heat away. That plateau is the entire product below.</p>
+    <p class="note rv" style="--d:230ms"><b>Одна честная оговорка, потому что она меняет то, на что ты смотришь.</b> У ацетата натрия тепловая длина D/v равна 0.018 мм — в пятьдесят раз тоньше клетки этого поля, так что буквальная симуляция нарисовала бы гладкую стену и вообще без лучей. Поэтому поле решается в стандартных безразмерных единицах фазового поля, масштабированных так, чтобы тепловая длина легла на три клетки. Вся физика остаётся настоящей — °C, 264 Дж/г скрытой теплоты, энергетический баланс, который ограничивает, сколько может замёрзнуть за раз — а платит за это время: плошка идёт на <span id="kap" class="mono">0.75</span>× от настоящей скорости, и каждый mm/s на приборах пересчитан обратно.</p>
+    <p class="note rv" style="--d:280ms">Температура не может пройти Tm: в точке плавления движущая сила равна нулю и рост останавливается. Поэтому кривая резко идёт вверх, выходит на плато, а остальная плошка может замерзать только с той скоростью, с которой стекло и воздух уносят тепло. Это плато — и есть весь продукт ниже.</p>
   </div>
 </section>
 
@@ -452,39 +466,39 @@ section.pane.in .rv{animation:rise .8s cubic-bezier(.16,1,.3,1) both;animation-d
     <div class="head">
       <span class="num rv" style="--d:0ms">03</span>
       <div>
-        <h2 class="rv" style="--d:60ms">What the plateau is worth: a heat pack, costed</h2>
-        <p class="sub rv" style="--d:120ms">Reusable hand warmers, transport boxes for vaccines, seat pads, engine pre-heaters — all of them are this dish in a pouch. Set the pouch and the duty, get the energy, the hold time and the unit cost of a batch. Every formula is written next to the number it produced.</p>
+        <h2 class="rv" style="--d:60ms">Сколько стоит плато: тепловой пакет, посчитанный</h2>
+        <p class="sub rv" style="--d:120ms">Многоразовые грелки, транспортные боксы для вакцин, подкладки на сиденья, предподогреватели двигателя — все они и есть эта плошка в пакетике. Задай объём и режим — получи энергию, время удержания и цену партии за штуку. Каждая формула написана рядом с числом, которое она дала.</p>
       </div>
     </div>
 
     <div class="calc rv" style="--d:190ms">
       <div class="side">
         <div class="field" id="fVol">
-          <label for="vol">Charge volume <b><span id="volLab">180</span> ml</span></b></label>
+          <label for="vol">Объём заряда <b><span id="volLab">180</span> мл</span></b></label>
           <input id="vol" type="number" min="20" max="900" step="10" value="180" inputmode="numeric">
-          <p class="err">Between 20 and 900 ml — outside that a flat pouch stops behaving like a flat pouch.</p>
+          <p class="err">От 20 до 900 мл — за этими пределами плоский пакетик перестаёт вести себя как плоский пакетик.</p>
         </div>
         <div class="field" id="fThk">
-          <label for="thk">Pillow thickness <b><span id="thkLab">16</span> mm</b></label>
+          <label for="thk">Толщина подушки <b><span id="thkLab">16</span> мм</b></label>
           <input id="thk" type="number" min="6" max="60" step="1" value="16" inputmode="numeric">
-          <p class="err">Between 6 and 60 mm.</p>
+          <p class="err">От 6 до 60 мм.</p>
         </div>
         <div class="field" id="fAmb">
-          <label for="amb">Working ambient <b><span id="ambLab">5</span> °C</b></label>
+          <label for="amb">Рабочая температура среды <b><span id="ambLab">5</span> °C</b></label>
           <input id="amb" type="number" min="-25" max="35" step="1" value="5" inputmode="numeric">
-          <p class="err">Between −25 and 35 °C.</p>
+          <p class="err">От −25 до 35 °C.</p>
         </div>
         <div class="field">
-          <label for="shell">Shell and contact</label>
+          <label for="shell">Оболочка и контакт</label>
           <select id="shell">
-            <option value="3.2">Inside a jacket pocket — U 3.2 W/m²K</option>
-            <option value="5.5" selected>Fabric sleeve, still air — U 5.5</option>
-            <option value="9">Bare TPU pouch, still air — U 9</option>
-            <option value="22">Held in the hand — U 22</option>
+            <option value="3.2">В кармане куртки — U 3.2 Вт/м²K</option>
+            <option value="5.5" selected>Тканевый чехол, спокойный воздух — U 5.5</option>
+            <option value="9">Голый TPU-пакет, спокойный воздух — U 9</option>
+            <option value="22">Держат в руке — U 22</option>
           </select>
         </div>
         <div class="field">
-          <label>Batch</label>
+          <label>Партия</label>
           <div class="chips" id="qty">
             <button class="chip" type="button" data-q="100" aria-pressed="false">100</button>
             <button class="chip" type="button" data-q="500" aria-pressed="true">500</button>
@@ -496,19 +510,19 @@ section.pane.in .rv{animation:rise .8s cubic-bezier(.16,1,.3,1) both;animation-d
 
       <div>
         <dl class="out">
-          <div class="o big"><dt>Heat released</dt><dd id="oE">0<s>kJ</s></dd><small id="oEf">m · L, latent only</small></div>
-          <div class="o"><dt>Plateau hold</dt><dd id="oT">0<s>min</s></dd><small id="oTf">E / (U · A · ΔT)</small></div>
-          <div class="o"><dt>Surface at hold</dt><dd id="oS">58<s>°C</s></dd><small>melting point of the charge</small></div>
-          <div class="o pay"><dt>Unit cost</dt><dd id="oC">0<s>$</s></dd><small id="oCf">charge + shell + trigger + fill</small></div>
+          <div class="o big"><dt>Выделено тепла</dt><dd id="oE">0<s>kJ</s></dd><small id="oEf">m · L, только скрытая</small></div>
+          <div class="o"><dt>Держит плато</dt><dd id="oT">0<s>min</s></dd><small id="oTf">E / (U · A · ΔT)</small></div>
+          <div class="o"><dt>Поверхность на плато</dt><dd id="oS">58<s>°C</s></dd><small>точка плавления заряда</small></div>
+          <div class="o pay"><dt>Цена за штуку</dt><dd id="oC">0<s>$</s></dd><small id="oCf">заряд + оболочка + триггер + заливка</small></div>
         </dl>
         <div class="spec">
           <pre id="specOut">—</pre>
           <div class="acts">
-            <button class="btn solid" type="button" id="dl"><i>Download the spec</i></button>
-            <button class="btn" type="button" id="send"><i>Send it to us</i></button>
-            <button class="btn" type="button" id="copyLink"><i>Copy the link to this configuration</i></button>
+            <button class="btn solid" type="button" id="dl"><i>Скачать спецификацию</i></button>
+            <button class="btn" type="button" id="send"><i>Отправить нам</i></button>
+            <button class="btn" type="button" id="copyLink"><i>Скопировать ссылку на эту конфигурацию</i></button>
           </div>
-          <p class="note" id="sendNote">Engineering and the first production run: $200 for the entry study, $65/h direct, $45/h as a subcontractor, 50 % up front. Crypto or Freedom Bank.</p>
+          <p class="note" id="sendNote">Инжиниринг и первая производственная партия: $200 за входное исследование, $65/ч напрямую, $45/ч как субподрядчик, 50 % вперёд. Крипта или Freedom Bank.</p>
         </div>
       </div>
     </div>
@@ -520,24 +534,24 @@ section.pane.in .rv{animation:rise .8s cubic-bezier(.16,1,.3,1) both;animation-d
     <div class="head">
       <span class="num rv" style="--d:0ms">04</span>
       <div>
-        <h2 class="rv" style="--d:60ms">Four charges, one dish</h2>
-        <p class="sub rv" style="--d:120ms">Pick a row and both the dish and the calculator switch to that substance: melting point, latent heat, specific heat and density all go into the same phase field. Water is in the table because it is the one everybody has a feeling for — and because it is the worst heat store of the four per unit of volume.</p>
+        <h2 class="rv" style="--d:60ms">Четыре заряда, одна плошка</h2>
+        <p class="sub rv" style="--d:120ms">Выбери строку — и плошка, и калькулятор переключатся на это вещество: точка плавления, скрытая теплота, теплоёмкость и плотность уходят в одно и то же фазовое поле. Вода в таблице потому, что её чувствует каждый, — и потому, что из четырёх она худший накопитель тепла на единицу объёма.</p>
       </div>
     </div>
     <div class="tblwrap rv" style="--d:190ms">
       <table class="tbl">
         <thead><tr>
-          <th>Charge</th><th>Tm, °C</th><th>L, J/g</th><th>c, J/gK</th><th>ρ, g/cm³</th><th>L·ρ, MJ/m³</th><th>$/kg</th>
+          <th>Заряд</th><th>Tm, °C</th><th>L, Дж/г</th><th>c, Дж/гK</th><th>ρ, г/см³</th><th>L·ρ, МДж/м³</th><th>$/кг</th>
         </tr></thead>
         <tbody id="pcmBody">
-          <tr class="row on" data-m="acetate"><td>Sodium acetate trihydrate</td><td>58</td><td>264</td><td>2.80</td><td>1.45</td><td>383</td><td>4.20</td></tr>
-          <tr class="row" data-m="calcium"><td>Calcium chloride hexahydrate</td><td>29</td><td>190</td><td>2.20</td><td>1.71</td><td>325</td><td>0.95</td></tr>
-          <tr class="row" data-m="erythritol"><td>Erythritol</td><td>118</td><td>340</td><td>2.76</td><td>1.30</td><td>442</td><td>3.40</td></tr>
-          <tr class="row" data-m="water"><td>Water</td><td>0</td><td>334</td><td>4.18</td><td>1.00</td><td>334</td><td>0.01</td></tr>
+          <tr class="row on" data-m="acetate"><td>Ацетат натрия тригидрат</td><td>58</td><td>264</td><td>2.80</td><td>1.45</td><td>383</td><td>4.20</td></tr>
+          <tr class="row" data-m="calcium"><td>Хлорид кальция гексагидрат</td><td>29</td><td>190</td><td>2.20</td><td>1.71</td><td>325</td><td>0.95</td></tr>
+          <tr class="row" data-m="erythritol"><td>Эритритол</td><td>118</td><td>340</td><td>2.76</td><td>1.30</td><td>442</td><td>3.40</td></tr>
+          <tr class="row" data-m="water"><td>Вода</td><td>0</td><td>334</td><td>4.18</td><td>1.00</td><td>334</td><td>0.01</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="note rv" style="--d:250ms">Undercooling is a property of the charge, not a setting: sodium acetate holds 30–40 K of it for months in a sealed pouch, which is exactly why it is the one that ships. Water in a clean vessel manages 10–15 K and loses it to the first speck of dust. The dish above will still let you run water — the front simply goes somewhere else.</p>
+    <p class="note rv" style="--d:250ms">Переохлаждение — свойство заряда, а не настройка: ацетат натрия держит его 30–40 К месяцами в запечатанном пакетике, именно поэтому он и идёт в серию. Вода в чистом сосуде выдерживает 10–15 К и теряет их от первой пылинки. Плошка выше всё равно даст запустить воду — фронт просто пойдёт по-другому.</p>
   </div>
 </section>
 </main>
@@ -546,23 +560,23 @@ section.pane.in .rv{animation:rise .8s cubic-bezier(.16,1,.3,1) both;animation-d
   <div class="wrap pad">
     <div class="fgrid">
       <div>
-        <h3 class="rv" style="--d:0ms">Engineering configurators that carry their own physics</h3>
-        <p class="rv" style="--d:70ms">This page is a working sample: a phase field on the GPU, a heat balance, a bill of materials and a spec that leaves the browser. Same pipeline for ducting, glazing, racking, packaging — anything where the customer needs a number before they need a picture.</p>
+        <h3 class="rv" style="--d:0ms">Инженерные конфигураторы, которые несут свою физику</h3>
+        <p class="rv" style="--d:70ms">Эта страница — рабочий образец: фазовое поле на GPU, тепловой баланс, спецификация материалов и спецификация, которая уходит из браузера. Тот же конвейер для воздуховодов, стеклопакетов, стеллажей, упаковки — везде, где заказчику нужно число раньше, чем картинка.</p>
       </div>
       <ul class="flist rv" style="--d:130ms">
         <li><a href="https://t.me/smirnovarturr">Telegram — @smirnovarturr</a></li>
         <li><a href="mailto:paladei702@gmail.com">paladei702@gmail.com</a></li>
-        <li><a href="https://smirnov-artur.github.io/portfolio">Portfolio</a></li>
+        <li><a href="https://smirnov-artur.github.io/portfolio">Портфолио</a></li>
       </ul>
       <ul class="flist rv" style="--d:190ms">
-        <li>$65/h direct · $45/h subcontract</li>
-        <li>$200 entry study, credited back</li>
-        <li>50 % up front · crypto, Freedom Bank</li>
+        <li>$65/ч напрямую · $45/ч субподряд</li>
+        <li>$200 входное исследование, засчитывается</li>
+        <li>50 % вперёд · крипта, Freedom Bank</li>
       </ul>
     </div>
     <div class="fend">
-      <span>Belgrade, UTC+2 · <span id="clock2">00:00</span></span>
-      <span id="gridB">Phase field 384², 9-point Laplacian, 6-fold anisotropy</span>
+      <span>Белград, UTC+2 · <span id="clock2">00:00</span></span>
+      <span id="gridB">Фазовое поле 384², лапласиан по 9 точкам, шестилучевая анизотропия</span>
       <span id="fps">— fps</span>
     </div>
   </div>
@@ -576,10 +590,10 @@ const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
    dif — температуропроводность, мм²/с. Обе величины в физических единицах,
    в клетки поля они переводятся делением на размер клетки, а не наоборот */
 const MATS = {
-  acetate:   {name:'Sodium acetate trihydrate', Tm:58,  L:264, c:2.80, rho:1.45, price:4.20, dif:0.11, grow:0.028, dtMax:50},
-  calcium:   {name:'Calcium chloride hexahydrate', Tm:29, L:190, c:2.20, rho:1.71, price:0.95, dif:0.13, grow:0.045, dtMax:26},
-  erythritol:{name:'Erythritol',               Tm:118, L:340, c:2.76, rho:1.30, price:3.40, dif:0.10, grow:0.010, dtMax:95},
-  water:     {name:'Water',                    Tm:0,   L:334, c:4.18, rho:1.00, price:0.01, dif:0.13, grow:0.140, dtMax:14},
+  acetate:   {name:'Ацетат натрия тригидрат', Tm:58,  L:264, c:2.80, rho:1.45, price:4.20, dif:0.11, grow:0.028, dtMax:50},
+  calcium:   {name:'Хлорид кальция гексагидрат', Tm:29, L:190, c:2.20, rho:1.71, price:0.95, dif:0.13, grow:0.045, dtMax:26},
+  erythritol:{name:'Эритритол',               Tm:118, L:340, c:2.76, rho:1.30, price:3.40, dif:0.10, grow:0.010, dtMax:95},
+  water:     {name:'Вода',                    Tm:0,   L:334, c:4.18, rho:1.00, price:0.01, dif:0.13, grow:0.140, dtMax:14},
 };
 let MAT = MATS.acetate;
 const DISH_MM = 90;                       /* диаметр плошки — 90 мм */
@@ -742,39 +756,39 @@ function recalc(){
   const unit = (cCharge + cShell + cTrig + cFill) * disc;
 
   $('oE').innerHTML = nf(Elat, 0) + '<s>kJ</s>';
-  $('oEf').textContent = nf(m,0)+' g · '+MAT.L+' J/g = '+nf(Elat,0)+' kJ latent, +'+nf(Esen,0)+' kJ sensible';
+  $('oEf').textContent = nf(m,0)+' г · '+MAT.L+' Дж/г = '+nf(Elat,0)+' кДж скрытой, +'+nf(Esen,0)+' кДж ощутимой';
   $('oT').innerHTML = nf(tPlat, 0) + '<s>min</s>';
-  $('oTf').textContent = nf(Pw,1)+' W over '+nf(A*10000,0)+' cm², then '+nf(tTail,0)+' min of tail';
+  $('oTf').textContent = nf(Pw,1)+' Вт на '+nf(A*10000,0)+' см², затем '+nf(tTail,0)+' мин хвоста';
   $('oS').innerHTML = MAT.Tm + '<s>°C</s>';
   $('oC').innerHTML = nf(unit, 2) + '<s>$</s>';
-  $('oCf').textContent = '×'+nf(CFG.qty,0)+' = $'+nf(unit*CFG.qty,0)+' per batch, charge is $'+nf(cCharge,2);
+  $('oCf').textContent = '×'+nf(CFG.qty,0)+' = $'+nf(unit*CFG.qty,0)+' за партию, заряд — $'+nf(cCharge,2);
 
   SPEC =
-`HOT ICE — LATENT HEAT PACK, SPECIFICATION
-charge .................. ${MAT.name}
-melting point ........... ${MAT.Tm} °C
-latent heat ............. ${MAT.L} J/g
-specific heat ........... ${MAT.c} J/gK
+`HOT ICE — ТЕПЛОВОЙ ПАКЕТ НА СКРЫТОЙ ТЕПЛОТЕ, СПЕЦИФИКАЦИЯ
+заряд .................... ${MAT.name}
+точка плавления .......... ${MAT.Tm} °C
+скрытая теплота .......... ${MAT.L} Дж/г
+теплоёмкость .............. ${MAT.c} Дж/гK
 --
-charge volume ........... ${CFG.vol} ml
-charge mass ............. ${nf(m,0)} g
-pillow thickness ........ ${CFG.thk} mm
-exchange area ........... ${nf(A*10000,0)} cm2
-working ambient ......... ${CFG.amb} °C
-shell coefficient U ..... ${CFG.U} W/m2K
+объём заряда .............. ${CFG.vol} мл
+масса заряда .............. ${nf(m,0)} г
+толщина подушки ........... ${CFG.thk} мм
+площадь обмена ............ ${nf(A*10000,0)} см2
+рабочая среда .............. ${CFG.amb} °C
+коэффициент оболочки U .... ${CFG.U} Вт/м2K
 --
-latent energy ........... ${nf(Elat,0)} kJ
-sensible energy ......... ${nf(Esen,0)} kJ
-plateau power ........... ${nf(Pw,1)} W
-plateau hold ............ ${nf(tPlat,0)} min
-tail to ambient+5K ...... ${nf(tTail,0)} min
-storage undercooling .... ${Math.round(MAT.Tm - S.t0)} K
-instant frozen share .... ${nf(Math.min(100, 100*MAT.c*(MAT.Tm - S.t0)/MAT.L),1)} %
+скрытая энергия ........... ${nf(Elat,0)} кДж
+ощутимая энергия .......... ${nf(Esen,0)} кДж
+мощность на плато .......... ${nf(Pw,1)} Вт
+держит плато ............... ${nf(tPlat,0)} мин
+хвост до среды+5K .......... ${nf(tTail,0)} мин
+переохлаждение хранения .... ${Math.round(MAT.Tm - S.t0)} K
+мгновенная замёрзшая доля .. ${nf(Math.min(100, 100*MAT.c*(MAT.Tm - S.t0)/MAT.L),1)} %
 --
-batch ................... ${nf(CFG.qty,0)} pcs
-unit cost ............... $${nf(unit,2)}
-batch cost .............. $${nf(unit*CFG.qty,0)}
-engineering ............. $200 entry study, $65/h direct
+партия ..................... ${nf(CFG.qty,0)} шт
+цена за штуку ............... $${nf(unit,2)}
+цена партии .................. $${nf(unit*CFG.qty,0)}
+инжиниринг .................... $200 входное исследование, $65/ч напрямую
 `;
   $('specOut').textContent = SPEC;
 }
@@ -788,12 +802,12 @@ $('dl').addEventListener('click', ()=>{
 $('send').addEventListener('click', ()=>{
   const body = encodeURIComponent(SPEC + '\nconfiguration: ' + location.href + '\n');
   location.href = 'mailto:paladei702@gmail.com?subject=' +
-    encodeURIComponent('Latent heat pack — ' + CFG.vol + ' ml, batch ' + CFG.qty) + '&body=' + body;
+    encodeURIComponent('Тепловой пакет — ' + CFG.vol + ' мл, партия ' + CFG.qty) + '&body=' + body;
 });
 $('copyLink').addEventListener('click', async ()=>{
   try { await navigator.clipboard.writeText(location.href);
-        $('sendNote').textContent = 'Link copied — it carries the whole configuration.'; }
-  catch(e){ $('sendNote').textContent = 'Copy blocked by the browser — the address bar already holds the configuration.'; }
+        $('sendNote').textContent = 'Ссылка скопирована — в ней вся конфигурация.'; }
+  catch(e){ $('sendNote').textContent = 'Браузер заблокировал копирование — конфигурация уже в адресной строке.'; }
 });
 
 /* ── показания приборов ────────────────────────────────────────────── */
@@ -808,9 +822,9 @@ function readouts(){
   const f = Math.max(0.02, Math.min(1, (S.temp - lo)/(hi - lo)));
   $('merc').style.height = (f*100).toFixed(1)+'%';
   $('tmark').style.bottom = (Math.max(0,Math.min(1,(MAT.Tm - lo)/(hi - lo)))*100).toFixed(1)+'%';
-  $('cnote').textContent = S.grains === 0 ? 'waiting for the first seed'
-    : S.phi > 0.985 ? 'solid — the dish is holding at the plateau'
-    : 'front running · ' + nf(S.phi*100,1) + ' % solid';
+  $('cnote').textContent = S.grains === 0 ? 'ждём первый зародыш'
+    : S.phi > 0.985 ? 'застыло — плошка держит плато'
+    : 'фронт идёт · ' + nf(S.phi*100,1) + ' % твёрдого';
 }
 
 /* ── график ────────────────────────────────────────────────────────── */
@@ -918,7 +932,7 @@ function gridNote(){
   $('gridA').textContent = SIZE + '²';
   $('cellA').textContent = nf(cellMM(), 2);
   $('kap').textContent = nf(SIM.kappa, 2);
-  $('gridB').textContent = 'Phase field ' + SIZE + '², 9-point Laplacian, 6-fold anisotropy';
+  $('gridB').textContent = 'Фазовое поле ' + SIZE + '², лапласиан по 9 точкам, шестилучевая анизотропия';
   $('gridC').textContent = SIZE + '²';
 }
 
@@ -931,7 +945,7 @@ async function boot(){
   if (booted) return; booted = true;
   syncSlider(); recalc(); readouts(); drawChart(); gridNote();
   if (!hasGL2()){ flatFallback(); return; }
-  try { THREE = await import('./assets/three-scene.js'); } catch(e){ THREE = null; }
+  try { THREE = await import('../assets/three-scene.js'); } catch(e){ THREE = null; }
   if (!THREE){ flatFallback(); return; }
   try { sceneApi = await build(); }
   catch(e){ console.warn('scene', e); sceneApi = null; flatFallback(); return; }
@@ -978,7 +992,7 @@ async function build(){
   const pmrem = new THREE.PMREMGenerator(renderer);
   pmrem.compileEquirectangularShader();
   try {
-    const hdr = await new THREE.RGBELoader().loadAsync('./assets/brown_photostudio_02_256.hdr');
+    const hdr = await new THREE.RGBELoader().loadAsync('../assets/brown_photostudio_02_256.hdr');
     scene.environment = pmrem.fromEquirectangular(hdr).texture;
     scene.environmentIntensity = 1.05;
     scene.environmentRotation = new THREE.Euler(0, -Math.PI/2.4, 0);

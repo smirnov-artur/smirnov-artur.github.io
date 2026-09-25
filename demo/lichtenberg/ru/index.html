@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 <!-- vau-stranitsa · силуэт: многосекционная, 5 секций · предмет: акриловый брусок с фигурой Лихтенберга · система: расчёт облучения, глубины залегания и цены блока со спецификацией и заявкой · техника: Poisson-DBM на GPU (48³, GPUComputationRenderer) + MeshPhysicalMaterial transmission + InstancedMesh-каналы -->
 <meta charset="utf-8">
 <script src="/works/js/gad-loader.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lichtenberg bench — lightning caught in a block of acrylic</title>
-<meta name="description" content="Electron-beam Lichtenberg figures in cast acrylic. Live growth on a 48³ potential lattice, beam-range calculator, price and specification.">
+<title>Lichtenberg bench — молния, пойманная в брусок акрила</title>
+<meta name="description" content="Фигуры Лихтенберга от электронного пучка в литом акриле. Живой рост на решётке потенциала 48³, калькулятор глубины пробега, цена и спецификация.">
 <meta name="theme-color" content="#05070b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23070a10'/%3E%3Cpath d='M17 4 L10 17 h5 l-3 11 9-14h-5z' fill='%237b5cff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="modulepreload" href="./_obshchee/assets/three-scene.js">
+<link rel="modulepreload" href="../_obshchee/assets/three-scene.js">
 <style>
 :root{
   --ink:#05070b;
@@ -330,16 +330,20 @@ tbody tr.on td:first-child{box-shadow:inset 2px 0 0 var(--volt)}
 .top__gad{font-size:16px;color:var(--dim);display:inline-flex;align-items:center;transition:color 260ms cubic-bezier(.22,.61,.24,1)}
 .top__gad:hover{color:var(--ice)}
 </style>
+<style id="cyr">/* русские буквы: исходный шрифт без кириллицы, глифы — у близкого с кириллицей */
+@font-face{font-family:'Archivo';font-style:normal;font-weight:300 800;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:300 800;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+</style>
 </head>
 <body>
 
 <header class="top">
-  <a class="top__gad" href="https://smirnov-artur.github.io/works/en" aria-label="g.a.d."><svg class="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d."><path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/><circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/><circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/></svg></a>
+  <a class="top__gad" href="https://smirnov-artur.github.io/works/" aria-label="g.a.d."><svg class="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d."><path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/><circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/><circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/></svg></a>
   <div class="top__id mono"><span class="ni">LICHTENBERG BENCH ·</span> <b>PMMA-04</b></div>
   <nav class="nav">
-    <a href="#protocol">Protocol</a>
-    <a href="#physics">Physics</a>
-    <a href="#order">Order</a>
+    <a href="#protocol">Протокол</a>
+    <a href="#physics">Физика</a>
+    <a href="#order">Заказ</a>
   </nav>
   <div class="live mono"><i class="dot"></i><span id="clock">--:--:--</span><i class="u">UTC+2</i></div>
 </header>
@@ -349,59 +353,59 @@ tbody tr.on td:first-child{box-shadow:inset 2px 0 0 var(--volt)}
 <!-- ─── СТЕНД ─────────────────────────────────────────────────────────── -->
 <section class="bench" id="bench">
   <div>
-    <div class="kick mono a" style="--d:60ms">CAPTURED LIGHTNING · CAST ACRYLIC</div>
+    <div class="kick mono a" style="--d:60ms">ПОЙМАННАЯ МОЛНИЯ · ЛИТОЙ АКРИЛ</div>
     <h1 class="aw">
-      <span class="ln" style="--d:140ms"><span>Lightning,</span></span>
-      <span class="ln" style="--d:230ms"><span>caught in</span></span>
-      <span class="ln" style="--d:320ms"><span>a <em>block</em>.</span></span>
+      <span class="ln" style="--d:140ms"><span>Молния,</span></span>
+      <span class="ln" style="--d:230ms"><span>пойманная</span></span>
+      <span class="ln" style="--d:320ms"><span>в <em>брусок</em>.</span></span>
     </h1>
     <p class="lead a" style="--d:420ms">
-      A 3 MeV electron beam parks a sheet of charge 12.4 mm under the surface of a cast acrylic
-      blank. One grounded pin at the face opens it. The channel that drains that sheet spreads
-      through the block in under 100 µs, cools in place, and stays there.
+      Электронный пучок 3 МэВ укладывает слой заряда на 12,4 мм под поверхностью литой
+      акриловой заготовки. Один заземлённый штырь у грани открывает его. Канал, по которому
+      сливается этот слой, расходится по бруску быстрее чем за 100 мкс, застывает на месте и остаётся там.
     </p>
 
     <div class="facts">
-      <div class="fact a" style="--d:500ms"><b>3 000 kV</b><span>BEAM POTENTIAL</span></div>
-      <div class="fact a" style="--d:560ms"><b id="f-depth">12.4 mm</b><span>CHARGE DEPTH</span></div>
-      <div class="fact a" style="--d:620ms"><b>20 MV·m⁻¹</b><span>PMMA BREAKDOWN</span></div>
+      <div class="fact a" style="--d:500ms"><b>3 000 kV</b><span>ПОТЕНЦИАЛ ПУЧКА</span></div>
+      <div class="fact a" style="--d:560ms"><b id="f-depth">12.4 mm</b><span>ГЛУБИНА ЗАРЯДА</span></div>
+      <div class="fact a" style="--d:620ms"><b>20 MV·m⁻¹</b><span>ПРОБОЙ PMMA</span></div>
     </div>
 
     <div class="ctl a" style="--d:680ms">
-      <div class="ctl__row a" style="--d:740ms"><span>BEAM POTENTIAL</span><span class="ctl__val mono" id="kv-out">3 000 kV</span></div>
-      <input type="range" id="kv" min="800" max="5000" step="100" value="3000" aria-label="Beam potential, kilovolts">
+      <div class="ctl__row a" style="--d:740ms"><span>ПОТЕНЦИАЛ ПУЧКА</span><span class="ctl__val mono" id="kv-out">3 000 kV</span></div>
+      <input type="range" id="kv" min="800" max="5000" step="100" value="3000" aria-label="Потенциал пучка, киловольты">
       <div class="scale a" style="--d:800ms"><span>800</span><span>2 900</span><span>5 000</span></div>
       <div class="btns">
-        <button class="btn a" style="--d:860ms" id="fire">FIRE DISCHARGE</button>
-        <button class="btn btn--ghost a" style="--d:900ms" id="clear">CLEAR BLANK</button>
+        <button class="btn a" style="--d:860ms" id="fire">ЗАПУСТИТЬ РАЗРЯД</button>
+        <button class="btn btn--ghost a" style="--d:900ms" id="clear">ОЧИСТИТЬ ЗАГОТОВКУ</button>
       </div>
-      <p class="hint a" style="--d:960ms">Higher potential drives the charge deeper and splits it into finer channels.
-        Click any face of the block to place the pin yourself — <kbd>click</kbd> the stage.</p>
+      <p class="hint a" style="--d:960ms">Выше потенциал — глубже заряд, и он делится на более тонкие каналы.
+        Кликни по любой грани блока, чтобы поставить штырь самому — <kbd>клик</kbd> по стенду.</p>
     </div>
   </div>
 
   <div class="stage a" style="--d:260ms">
     <div class="stage__bar mono a" style="--d:360ms">
-      <span>STAGE</span><b>100 × 80 × 50 mm</b>
-      <span class="stage__aim" id="aim">PIN — · —</span>
+      <span>СТЕНД</span><b>100 × 80 × 50 мм</b>
+      <span class="stage__aim" id="aim">ШТЫРЬ — · —</span>
     </div>
     <div class="canvasbox">
       <canvas id="c"></canvas>
       <i class="corner corner--tl a" style="--d:1400ms"></i><i class="corner corner--tr"></i>
       <i class="corner corner--bl"></i><i class="corner corner--br a" style="--d:1460ms"></i>
       <i class="scanline"></i>
-      <div class="nogl"><b>The bench needs WebGL 2</b>
-        Everything below still works: the range table, the price and the specification are plain arithmetic.</div>
+      <div class="nogl"><b>Стенду нужен WebGL 2</b>
+        Всё остальное ниже всё равно работает: таблица дальности, цена и спецификация — это обычная арифметика.</div>
     </div>
     <div class="readouts">
-      <div class="ro ro--hot a" style="--d:1020ms"><b id="r-ch">0</b><span>CHANNELS</span></div>
-      <div class="ro a" style="--d:1070ms"><b id="r-tip">0</b><span>TIPS</span></div>
-      <div class="ro a" style="--d:1120ms"><b id="r-fork">0</b><span>FORKS</span></div>
-      <div class="ro ro--ice a" style="--d:1170ms"><b id="r-depth">12.4</b><span>DEPTH mm</span></div>
-      <div class="ro a" style="--d:1220ms"><b id="r-charge">100</b><span>CHARGE %</span></div>
-      <div class="ro a" style="--d:1270ms"><b id="r-state">IDLE</b><span>STATE</span></div>
+      <div class="ro ro--hot a" style="--d:1020ms"><b id="r-ch">0</b><span>КАНАЛОВ</span></div>
+      <div class="ro a" style="--d:1070ms"><b id="r-tip">0</b><span>КОНЧИКОВ</span></div>
+      <div class="ro a" style="--d:1120ms"><b id="r-fork">0</b><span>ВЕТВЛЕНИЙ</span></div>
+      <div class="ro ro--ice a" style="--d:1170ms"><b id="r-depth">12.4</b><span>ГЛУБИНА mm</span></div>
+      <div class="ro a" style="--d:1220ms"><b id="r-charge">100</b><span>ЗАРЯД %</span></div>
+      <div class="ro a" style="--d:1270ms"><b id="r-state">ПОКОЙ</b><span>СТАТУС</span></div>
     </div>
-    <div class="log a" id="log" style="--d:1330ms"><div class="log__empty">No discharge on this blank yet. The bench fires a self-test shot on power-up.</div></div>
+    <div class="log a" id="log" style="--d:1330ms"><div class="log__empty">На этой заготовке разряда ещё не было. Стенд делает самотест-выстрел при запуске.</div></div>
   </div>
 </section>
 
@@ -409,55 +413,55 @@ tbody tr.on td:first-child{box-shadow:inset 2px 0 0 var(--volt)}
 <section id="protocol">
   <div class="head">
     <span class="head__n mono">01</span>
-    <h2 class="rv">Four steps. The third one is irreversible.</h2>
-    <p class="head__note rv rv--d1">Every figure below was grown by the same four operations, in the same order,
-      on the same bench.</p>
+    <h2 class="rv">Четыре шага. Третий необратим.</h2>
+    <p class="head__note rv rv--d1">Каждая фигура ниже выращена теми же четырьмя операциями, в том же
+      порядке, на том же стенде.</p>
   </div>
   <div class="steps">
     <article class="step rv">
-      <div class="step__n">01 — BLANK</div>
+      <div class="step__n">01 — ЗАГОТОВКА</div>
       <svg viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
         <path d="M14 44 L14 20 L52 8 L106 8 L106 34 L68 56 L14 44Z"/>
         <path d="M14 20 L68 30 L106 8M68 30 L68 56"/>
       </svg>
-      <h3>Cast blank</h3>
-      <p>Cast PMMA, not extruded — extruded sheet carries flow lines that read as haze around the figure.
-        Six faces milled, then flame-polished.</p>
-      <dl><dt>density</dt><dd>1.19 g·cm⁻³</dd></dl>
+      <h3>Литая заготовка</h3>
+      <p>Литой ПММА, не экструдированный — экструдированный лист несёт линии течения, которые
+        читаются как дымка вокруг фигуры. Шесть граней фрезерованы, затем оплавлены пламенем.</p>
+      <dl><dt>плотность</dt><dd>1.19 g·cm⁻³</dd></dl>
     </article>
     <article class="step rv rv--d1">
-      <div class="step__n">02 — CHARGE</div>
+      <div class="step__n">02 — ЗАРЯД</div>
       <svg viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
         <path d="M10 46 H110M10 46 L10 30M110 46 L110 30"/>
         <path d="M22 4 V30M38 4 V30M54 4 V30M70 4 V30M86 4 V30M102 4 V30" stroke-dasharray="3 4"/>
         <path d="M10 34 H110" stroke-dasharray="1 3"/>
       </svg>
-      <h3>Charge injection</h3>
-      <p>Scanned electron beam, fluence 3.0·10¹³ e·cm⁻². Electrons stop at their CSDA range and stay
-        there as a trapped sheet — a flat capacitor built inside solid plastic.</p>
-      <dl><dt>exposure</dt><dd id="s-exp">2.1 s</dd></dl>
+      <h3>Инжекция заряда</h3>
+      <p>Сканирующий электронный пучок, флюенс 3.0·10¹³ e·cm⁻². Электроны останавливаются на своём
+        пробеге CSDA и остаются там ловушкой — плоским конденсатором внутри твёрдой пластмассы.</p>
+      <dl><dt>экспозиция</dt><dd id="s-exp">2.1 s</dd></dl>
     </article>
     <article class="step rv rv--d2">
-      <div class="step__n">03 — TRIGGER</div>
+      <div class="step__n">03 — ТРИГГЕР</div>
       <svg viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
         <path d="M60 2 V18"/><path d="M52 18 H68 L60 26 Z" fill="currentColor" fill-opacity=".25"/>
         <path d="M60 26 L54 38 L66 40 L48 60M60 26 L72 40 L58 44 L84 58M60 26 L44 42 L30 56"/>
       </svg>
-      <h3>Pin trigger</h3>
-      <p>A grounded pin touches the face. Local field passes 20 MV·m⁻¹, PMMA breaks down, and the whole
-        sheet drains through one growing channel. There is no second attempt.</p>
-      <dl><dt>duration</dt><dd>&lt; 100 µs</dd></dl>
+      <h3>Штырь-триггер</h3>
+      <p>Заземлённый штырь касается грани. Локальное поле проходит 20 MV·m⁻¹, PMMA пробивается, и весь
+        слой сливается через один растущий канал. Второй попытки не будет.</p>
+      <dl><dt>длительность</dt><dd>&lt; 100 µs</dd></dl>
     </article>
     <article class="step rv rv--d3">
-      <div class="step__n">04 — ANNEAL</div>
+      <div class="step__n">04 — ОТПУСК</div>
       <svg viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
         <path d="M16 56 H104"/><path d="M16 56 V26 A44 44 0 0 1 104 26 V56"/>
         <path d="M40 40 C46 32 54 34 60 26 C66 34 74 32 80 40" stroke-dasharray="2 3"/>
       </svg>
-      <h3>Anneal</h3>
-      <p>45 °C for six hours. Releases the stress the discharge left behind, so the block does not
-        craze along the channel a month later.</p>
-      <dl><dt>hold</dt><dd>6 h</dd></dl>
+      <h3>Отпуск</h3>
+      <p>45 °C на шесть часов. Снимает напряжение, оставленное разрядом, чтобы блок не покрылся
+        трещинами вдоль канала месяц спустя.</p>
+      <dl><dt>выдержка</dt><dd>6 h</dd></dl>
     </article>
   </div>
 </section>
@@ -466,46 +470,46 @@ tbody tr.on td:first-child{box-shadow:inset 2px 0 0 var(--volt)}
 <section id="physics">
   <div class="head">
     <span class="head__n mono">02</span>
-    <h2 class="rv">Depth is not a setting. It is the electron range.</h2>
-    <p class="head__note rv rv--d1">Move the bench slider — the row that lights up is the one you are firing.</p>
+    <h2 class="rv">Глубина — не настройка. Это пробег электрона.</h2>
+    <p class="head__note rv rv--d1">Подвигай слайдер стенда — строка, которая загорится, и есть та, что ты запускаешь.</p>
   </div>
   <div class="phys">
     <div class="formula rv">
-      <div><em>R</em>(<i>E</i>) = 0.412 · <i>E</i><sup>1.265 − 0.0954 ln<i>E</i></sup> &nbsp;g·cm⁻² &nbsp;— <i>E</i> ≤ 2.5 MeV</div>
-      <div><em>R</em>(<i>E</i>) = 0.530 <i>E</i> − 0.106 &nbsp;g·cm⁻² &nbsp;— <i>E</i> &gt; 2.5 MeV</div>
-      <div><em>d</em> = 10 · <em>R</em> / ρ &nbsp;mm, &nbsp;ρ = 1.19 g·cm⁻³</div>
-      <p>Katz–Penfold empirical range for electrons. It is the only number on this page that decides
-        where the figure ends up: the beam does not choose a depth, it runs out of energy at one.
-        Everything else — spread, branching, thickness — follows from the field the sheet leaves behind.</p>
+      <div><em>R</em>(<i>E</i>) = 0.412 · <i>E</i><sup>1.265 − 0.0954 ln<i>E</i></sup> &nbsp;g·cm⁻² &nbsp;— <i>E</i> ≤ 2.5 МэВ</div>
+      <div><em>R</em>(<i>E</i>) = 0.530 <i>E</i> − 0.106 &nbsp;g·cm⁻² &nbsp;— <i>E</i> &gt; 2.5 МэВ</div>
+      <div><em>d</em> = 10 · <em>R</em> / ρ &nbsp;мм, &nbsp;ρ = 1.19 g·cm⁻³</div>
+      <p>Эмпирический пробег Катца — Пенфолда для электронов. Это единственное число на странице,
+        которое решает, где окажется фигура: пучок не выбирает глубину, он просто кончает энергию
+        на какой-то. Всё остальное — разброс, ветвление, толщина — следует из поля, которое оставляет слой.</p>
     </div>
     <div class="tablebox rv rv--d1">
       <table>
-        <thead><tr><th>E, MeV</th><th>kV</th><th>R, g·cm⁻²</th><th>depth, mm</th><th>figure</th></tr></thead>
+        <thead><tr><th>E, МэВ</th><th>kV</th><th>R, g·cm⁻²</th><th>глубина, мм</th><th>фигура</th></tr></thead>
         <tbody id="tb"></tbody>
       </table>
     </div>
   </div>
   <div class="why">
-    <div class="rv"><h3>Why it branches on its own</h3>
+    <div class="rv"><h3>Почему оно ветвится само</h3>
       <dl class="spec2">
-        <div><dt>LATTICE</dt><dd>48³ · 110 592 cells</dd></div>
-        <div><dt>SOLVER</dt><dd>Poisson relaxation, 4 passes a frame</dd></div>
-        <div><dt>EXPONENT η</dt><dd><b id="w-eta">5.85</b></dd></div>
-        <div><dt>SHEET BAND</dt><dd>±3 cells around the range depth</dd></div>
-        <div><dt>STOP</dt><dd>tip field below 16 % of peak</dd></div>
+        <div><dt>РЕШЁТКА</dt><dd>48³ · 110 592 клеток</dd></div>
+        <div><dt>РЕШАТЕЛЬ</dt><dd>релаксация Пуассона, 4 прохода за кадр</dd></div>
+        <div><dt>ПОКАЗАТЕЛЬ η</dt><dd><b id="w-eta">5.85</b></dd></div>
+        <div><dt>ПОЛОСА СЛОЯ</dt><dd>±3 клетки вокруг глубины пробега</dd></div>
+        <div><dt>ОСТАНОВКА</dt><dd>поле на кончике ниже 16 % от пика</dd></div>
       </dl>
     </div>
     <div class="rv rv--d1">
-      <p>Nothing on the bench draws a tree. The block is a 48³ lattice; the trapped sheet is a charge
-        source; the channel already grown is a grounded conductor at zero potential. Every frame the
-        GPU relaxes ∇²φ = −ρ/ε over the whole lattice, and every growth step the empty cells touching
-        the channel are polled for their potential.</p>
-      <p>A cell joins the channel with probability p ∝ φ<sup>η</sup>. That single exponent is what the
-        slider moves: η ≈ 3.4 at 800 kV gives few thick channels, η ≈ 1.3 at 5 000 kV gives a dense
-        fern. Branching is not a rule in the code — it is what happens when two neighbouring cells
-        happen to win the same draw and the field splits between them.</p>
-      <p>Charge is consumed where the channel passes, so a second discharge fired into the same blank
-        has to find its own room. That is why real blocks with several strikes never repeat a shape.</p>
+      <p>Ничто на стенде не рисует дерево. Блок — решётка 48³; захваченный слой — источник заряда;
+        уже выросший канал — заземлённый проводник с нулевым потенциалом. Каждый кадр GPU релаксирует
+        ∇²φ = −ρ/ε по всей решётке, и на каждом шаге роста у пустых клеток, касающихся канала,
+        опрашивается их потенциал.</p>
+      <p>Клетка присоединяется к каналу с вероятностью p ∝ φ<sup>η</sup>. Именно этот показатель двигает
+        слайдер: η ≈ 3.4 при 800 kV даёт немного толстых каналов, η ≈ 1.3 при 5 000 kV даёт густой
+        папоротник. Ветвление — не правило в коде, а то, что происходит, когда две соседние клетки
+        случайно выигрывают один и тот же жребий и поле делится между ними.</p>
+      <p>Заряд расходуется там, где прошёл канал, поэтому второй разряд в ту же заготовку должен искать
+        себе новое место. Вот почему настоящие блоки с несколькими ударами никогда не повторяют форму.</p>
     </div>
   </div>
 </section>
@@ -514,63 +518,63 @@ tbody tr.on td:first-child{box-shadow:inset 2px 0 0 var(--volt)}
 <section id="order">
   <div class="head">
     <span class="head__n mono">03</span>
-    <h2 class="rv">Configure a block.</h2>
-    <p class="head__note rv rv--d1">Price is arithmetic on this page, not a quote form. The link in your
-      address bar carries the configuration.</p>
+    <h2 class="rv">Настрой блок.</h2>
+    <p class="head__note rv rv--d1">Цена на этой странице — арифметика, не форма запроса. Ссылка в
+      адресной строке несёт конфигурацию.</p>
   </div>
   <div class="order">
     <div class="rv">
       <div class="fields">
-        <div class="f"><label for="i-l">LENGTH, mm</label><input type="number" id="i-l" min="40" max="300" step="5" value="100"></div>
-        <div class="f"><label for="i-w">WIDTH, mm</label><input type="number" id="i-w" min="40" max="220" step="5" value="80"></div>
-        <div class="f" id="f-h"><label for="i-h">HEIGHT, mm</label><input type="number" id="i-h" min="12" max="120" step="2" value="50">
-          <div class="f__err" id="e-h">Charge would sit deeper than the blank is thick.</div></div>
-        <div class="f"><label for="i-n">DISCHARGES</label>
+        <div class="f"><label for="i-l">ДЛИНА, мм</label><input type="number" id="i-l" min="40" max="300" step="5" value="100"></div>
+        <div class="f"><label for="i-w">ШИРИНА, мм</label><input type="number" id="i-w" min="40" max="220" step="5" value="80"></div>
+        <div class="f" id="f-h"><label for="i-h">ВЫСОТА, мм</label><input type="number" id="i-h" min="12" max="120" step="2" value="50">
+          <div class="f__err" id="e-h">Заряд оказался бы глубже, чем толщина заготовки.</div></div>
+        <div class="f"><label for="i-n">РАЗРЯДОВ</label>
           <select id="i-n"><option>1</option><option>2</option><option>3</option><option>4</option><option>6</option></select></div>
-        <div class="f"><label for="i-p">FINISH</label>
-          <select id="i-p"><option value="six">All six faces polished</option><option value="top">Top and sides</option></select></div>
-        <div class="f"><label for="i-q">QUANTITY</label><input type="number" id="i-q" min="1" max="250" step="1" value="1"></div>
-        <div class="f f--wide"><label for="i-e">BEAM POTENTIAL, kV — <span id="e-mirror" class="mono">3 000</span></label>
-          <input type="range" id="i-e" min="800" max="5000" step="100" value="3000" aria-label="Beam potential in the order form">
+        <div class="f"><label for="i-p">ОТДЕЛКА</label>
+          <select id="i-p"><option value="six">Все шесть граней полированы</option><option value="top">Верх и боковые</option></select></div>
+        <div class="f"><label for="i-q">КОЛИЧЕСТВО</label><input type="number" id="i-q" min="1" max="250" step="1" value="1"></div>
+        <div class="f f--wide"><label for="i-e">ПОТЕНЦИАЛ ПУЧКА, kV — <span id="e-mirror" class="mono">3 000</span></label>
+          <input type="range" id="i-e" min="800" max="5000" step="100" value="3000" aria-label="Потенциал пучка в форме заказа">
         </div>
       </div>
       <p class="note" id="note"></p>
 
       <form class="form" id="req" novalidate>
-        <div class="f" id="f-name"><label for="i-name">NAME</label><input type="text" id="i-name" placeholder="Ada Ross" autocomplete="name">
-          <div class="f__err">Two characters at least.</div></div>
-        <div class="f" id="f-mail"><label for="i-mail">EMAIL</label><input type="email" id="i-mail" placeholder="ada@studio.com" autocomplete="email">
-          <div class="f__err">That address will not reach anybody.</div></div>
-        <div class="f f--wide"><label for="i-msg">WHAT IS IT FOR</label><input type="text" id="i-msg" placeholder="Award series for a power utility, 40 pcs"></div>
-        <div class="f f--wide"><button class="btn" type="submit" style="width:100%">SEND THE SPECIFICATION</button></div>
+        <div class="f" id="f-name"><label for="i-name">ИМЯ</label><input type="text" id="i-name" placeholder="Иван Петров" autocomplete="name">
+          <div class="f__err">Хотя бы два символа.</div></div>
+        <div class="f" id="f-mail"><label for="i-mail">EMAIL</label><input type="email" id="i-mail" placeholder="ivan@studio.com" autocomplete="email">
+          <div class="f__err">По этому адресу ничего не дойдёт.</div></div>
+        <div class="f f--wide"><label for="i-msg">ДЛЯ ЧЕГО ЭТО</label><input type="text" id="i-msg" placeholder="Серия наград для энергокомпании, 40 шт"></div>
+        <div class="f f--wide"><button class="btn" type="submit" style="width:100%">ОТПРАВИТЬ СПЕЦИФИКАЦИЮ</button></div>
       </form>
       <div class="ok" id="ok"><b id="ok-ref">—</b>
-        <p>Specification copied to your clipboard and queued under this reference. Fastest reply is
-          Telegram — <a href="https://t.me/smirnovarturr" rel="noopener">@smirnovarturr</a>. 50 % upfront,
-          the rest on the photo of the finished batch.</p></div>
+        <p>Спецификация скопирована в буфер обмена и поставлена в очередь под этим номером. Быстрее всего
+          ответит Telegram — <a href="https://t.me/smirnovarturr" rel="noopener">@smirnovarturr</a>. 50 % вперёд,
+          остальное — по фото готовой партии.</p></div>
     </div>
 
     <div class="rv rv--d2">
       <div class="bill">
-        <div class="bill__t"><span>Cast blank, <i class="mono" id="b-mass">0.48</i> kg</span><span class="mono" id="b-blank">$9</span></div>
-        <div class="bill__t"><span>Milling and flame polish, <i class="mono" id="b-area">3.4</i> dm²</span><span class="mono" id="b-pol">$22</span></div>
-        <div class="bill__t"><span>Accelerator time, <i class="mono" id="b-mach">1.5</i> min</span><span class="mono" id="b-beam">$5</span></div>
-        <div class="bill__t"><span>Trigger operation, per discharge</span><span class="mono" id="b-trig">$12</span></div>
-        <div class="bill__t"><span>Anneal and stress check</span><span class="mono">$16</span></div>
-        <div class="bill__t"><span>Inspection, photo, passport</span><span class="mono">$28</span></div>
-        <div class="bill__t"><span>Setup, split over the batch</span><span class="mono" id="b-set">$95</span></div>
+        <div class="bill__t"><span>Литая заготовка, <i class="mono" id="b-mass">0.48</i> kg</span><span class="mono" id="b-blank">$9</span></div>
+        <div class="bill__t"><span>Фрезеровка и оплавление пламенем, <i class="mono" id="b-area">3.4</i> dm²</span><span class="mono" id="b-pol">$22</span></div>
+        <div class="bill__t"><span>Время ускорителя, <i class="mono" id="b-mach">1.5</i> min</span><span class="mono" id="b-beam">$5</span></div>
+        <div class="bill__t"><span>Операция триггера, за разряд</span><span class="mono" id="b-trig">$12</span></div>
+        <div class="bill__t"><span>Отпуск и проверка напряжений</span><span class="mono">$16</span></div>
+        <div class="bill__t"><span>Инспекция, фото, паспорт</span><span class="mono">$28</span></div>
+        <div class="bill__t"><span>Наладка, поделена на партию</span><span class="mono" id="b-set">$95</span></div>
         <div class="bill__sum">
-          <div>PER BLOCK<br><u id="b-lead">lead time 9 working days</u></div>
+          <div>ЗА БЛОК<br><u id="b-lead">срок 9 рабочих дней</u></div>
           <b id="b-total">$0</b>
         </div>
         <div class="spec" id="spec">
-          <div class="spec__empty">No figure recorded yet. Fire a discharge on the bench and the
-            specification will carry its real channel count.</div>
+          <div class="spec__empty">Фигура ещё не записана. Запусти разряд на стенде, и спецификация
+            получит настоящее число каналов.</div>
           <pre id="spec-body"></pre>
         </div>
         <div class="bill__t" style="border-top:1px solid rgba(22,32,44,.7);border-bottom:0">
-          <span><button class="btn btn--ghost" id="dl" type="button">DOWNLOAD SPEC .TXT</button></span>
-          <span class="mono" id="b-batch">batch $0</span>
+          <span><button class="btn btn--ghost" id="dl" type="button">СКАЧАТЬ СПЕЦИФИКАЦИЮ .TXT</button></span>
+          <span class="mono" id="b-batch">партия $0</span>
         </div>
       </div>
     </div>
@@ -581,30 +585,30 @@ tbody tr.on td:first-child{box-shadow:inset 2px 0 0 var(--volt)}
 <section id="terms">
   <div class="head">
     <span class="head__n mono">04</span>
-    <h2 class="rv">Terms, and what is actually on this page.</h2>
+    <h2 class="rv">Условия и что на самом деле на этой странице.</h2>
   </div>
   <div class="foot">
     <div class="rv">
-      <h3>WORK</h3>
+      <h3>РАБОТА</h3>
       <ul>
-        <li>Blocks from 40 to 300 mm on the long side, up to 120 mm thick.</li>
-        <li>Batches from one. Setup is charged once and split over the batch.</li>
-        <li>Engineering and one-off tooling — $65 per hour, agreed before it starts.</li>
+        <li>Блоки от 40 до 300 мм по длинной стороне, толщиной до 120 мм.</li>
+        <li>Партии от одной штуки. Наладка списывается раз и делится на партию.</li>
+        <li>Инжиниринг и разовая оснастка — $65 в час, по договорённости до начала.</li>
       </ul>
     </div>
     <div class="rv rv--d1">
-      <h3>MONEY</h3>
+      <h3>ДЕНЬГИ</h3>
       <ul>
-        <li>50 % upfront, the rest against photographs of the finished batch.</li>
-        <li>Crypto or Freedom bank transfer.</li>
-        <li>A failed blank is ours, not yours — the trigger step has a real reject rate.</li>
+        <li>50 % вперёд, остальное — по фотографиям готовой партии.</li>
+        <li>Крипта или перевод Freedom Bank.</li>
+        <li>Неудачная заготовка — наш риск, не ваш: у шага триггера реальный процент брака.</li>
       </ul>
     </div>
     <div class="rv rv--d2">
-      <h3>THE BENCH ABOVE</h3>
+      <h3>СТЕНД ВЫШЕ</h3>
       <ul>
-        <li>Growth is a Poisson–DBM solve on the GPU: 48³ lattice, 6 relaxation passes a frame.</li>
-        <li>The block is one mesh with transmission, IOR 1.49 — the figure is refracted, not drawn on top.</li>
+        <li>Рост — это решение Poisson–DBM на GPU: решётка 48³, 6 проходов релаксации за кадр.</li>
+        <li>Блок — один мэш с transmission, IOR 1.49 — фигура преломляется, а не нарисована сверху.</li>
         <li><a href="https://github.com/smirnov-artur" rel="noopener">github.com/smirnov-artur</a> ·
             <a href="https://t.me/smirnovarturr" rel="noopener">@smirnovarturr</a></li>
       </ul>
@@ -612,14 +616,14 @@ tbody tr.on td:first-child{box-shadow:inset 2px 0 0 var(--volt)}
   </div>
   <div class="rule">
     <span>LICHTENBERG BENCH · PMMA-04</span>
-    <span id="uptime">bench uptime 00:00</span>
+    <span id="uptime">наработка стенда 00:00</span>
   </div>
 </section>
 
 </main>
 
 <script type="module">
-import * as THREE from './_obshchee/assets/three-scene.js';
+import * as THREE from '../_obshchee/assets/three-scene.js';
 
 /* ══ 0. состояние и арифметика ═══════════════════════════════════════════ */
 const RHO_PMMA = 1.19;                       /* г/см³, литой ПММА            */
@@ -663,7 +667,7 @@ const usd = (x) => '$' + fmt(Math.round(x));
 
 /* ══ 1. таблица дальности ════════════════════════════════════════════════ */
 const ROWS = [0.8, 1.2, 1.8, 2.5, 3.0, 4.0, 5.0];
-const LABEL = ['surface fern','shallow spread','mid-body','half-thickness','deep plane','deep, wide','maximum reach'];
+const LABEL = ['папоротник у поверхности','неглубокий разброс','средина блока','половина толщины','глубокая плоскость','глубоко и широко','максимальный пробег'];
 $('#tb').innerHTML = ROWS.map((E,i) => {
   const R = rangeKP(E);
   return `<tr data-e="${E}"><td>${E.toFixed(1)}</td><td>${fmt(E*1000)}</td>` +
@@ -696,19 +700,19 @@ function paint(){
   $('#b-trig').textContent = usd(b.trig);
   $('#b-set').textContent = usd(b.setup);
   $('#b-total').textContent = usd(b.unit);
-  $('#b-batch').textContent = 'batch ' + usd(b.total);
-  $('#b-lead').textContent = 'lead time ' + b.lead + ' working days';
+  $('#b-batch').textContent = 'партия ' + usd(b.total);
+  $('#b-lead').textContent = 'срок ' + b.lead + ' рабочих дней';
 
   const deep = d > (S.H - 3);
   $('#f-h').classList.toggle('bad', deep);
   const note = $('#note');
   if (deep){
-    note.textContent = `At ${fmt(S.kv)} kV the charge sits ${d.toFixed(1)} mm down, and the blank is only ` +
-      `${S.H} mm thick. The sheet would vent through the base face instead of branching. Thicker blank, or less beam.`;
+    note.textContent = `При ${fmt(S.kv)} kV заряд ложится на ${d.toFixed(1)} мм вглубь, а заготовка толщиной всего ` +
+      `${S.H} мм. Слой прорвался бы через нижнюю грань вместо ветвления. Толще заготовку — или меньше пучка.`;
     note.classList.add('on');
   } else if (S.qty >= 20){
-    note.textContent = `Batch of ${S.qty}: setup is down to ${usd(b.setup)} a block and the margin step drops. ` +
-      `Above 60 pieces the accelerator is booked by the shift and the beam line gets cheaper again — ask.`;
+    note.textContent = `Партия ${S.qty}: наладка падает до ${usd(b.setup)} за блок, и шаг наценки снижается. ` +
+      `Свыше 60 штук ускоритель бронируется на смену, и луч снова дешевеет — спросите.`;
     note.classList.add('on');
   } else note.classList.remove('on');
 
@@ -720,16 +724,16 @@ function writeSpec(b, d){
   const sp = $('#spec');
   sp.classList.add('on');
   $('#spec-body').textContent =
-`BLOCK          ${S.L} × ${S.W} × ${S.H} mm, cast PMMA
-MASS           ${b.m.toFixed(2)} kg          VOLUME ${fmt(b.V)} cm³
-FINISH         ${S.polish === 'six' ? 'six faces flame-polished' : 'top and sides polished'}
-BEAM           ${fmt(S.kv)} kV (${MeV().toFixed(1)} MeV), fluence 3.0e13 e/cm2
-CHARGE DEPTH   ${d.toFixed(1)} mm below the top face (Katz-Penfold)
-EXPOSURE       ${b.t1.toFixed(1)} s per cycle, ${S.n} discharge(s)
-FIGURE         ${FIG.ch} channels, ${FIG.tip} tips, ${FIG.fork} forks (grown on this page)
-MACHINE TIME   ${b.mach.toFixed(1)} min
-UNIT PRICE     ${usd(b.unit)}          BATCH ${S.qty} × = ${usd(b.total)}
-LEAD TIME      ${b.lead} working days, 50% upfront`;
+`БЛОК            ${S.L} × ${S.W} × ${S.H} мм, литой PMMA
+МАССА            ${b.m.toFixed(2)} kg          ОБЪЁМ ${fmt(b.V)} cm³
+ОТДЕЛКА          ${S.polish === 'six' ? 'шесть граней оплавлены пламенем' : 'верх и боковые'}
+ПУЧОК            ${fmt(S.kv)} kV (${MeV().toFixed(1)} МэВ), флюенс 3.0e13 e/cm2
+ГЛУБИНА ЗАРЯДА   ${d.toFixed(1)} мм от верхней грани (Катц-Пенфолд)
+ЭКСПОЗИЦИЯ       ${b.t1.toFixed(1)} s за цикл, ${S.n} разряд(ов)
+ФИГУРА           ${FIG.ch} каналов, ${FIG.tip} кончиков, ${FIG.fork} ветвлений (выращено на этой странице)
+МАШИННОЕ ВРЕМЯ   ${b.mach.toFixed(1)} min
+ЦЕНА ЗА ШТУКУ    ${usd(b.unit)}          ПАРТИЯ ${S.qty} × = ${usd(b.total)}
+СРОК             ${b.lead} рабочих дней, 50% вперёд`;
 }
 
 /* ── состояние в адресе ── */
@@ -766,8 +770,8 @@ $('#i-p').addEventListener('change', e => { S.polish = e.target.value; paint(); 
 
 /* ── выгрузка и заявка ── */
 $('#dl').addEventListener('click', () => {
-  const txt = 'LICHTENBERG BENCH — SPECIFICATION\n\n' +
-    ($('#spec-body').textContent || 'no figure recorded') + '\n\nsmirnov-artur · t.me/smirnovarturr\n';
+  const txt = 'LICHTENBERG BENCH — СПЕЦИФИКАЦИЯ\n\n' +
+    ($('#spec-body').textContent || 'фигура не записана') + '\n\nsmirnov-artur · t.me/smirnovarturr\n';
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([txt], { type:'text/plain' }));
   a.download = 'lichtenberg-spec.txt'; a.click();
@@ -795,7 +799,7 @@ function tick(){
   const d = new Date(Date.now() + 2 * 3600e3);
   $('#clock').textContent = d.toISOString().slice(11,19);
   const s = Math.floor((Date.now() - t0) / 1000);
-  $('#uptime').textContent = 'bench uptime ' +
+  $('#uptime').textContent = 'наработка стенда ' +
     String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
 }
 tick(); setInterval(tick, 1000);
@@ -806,7 +810,7 @@ const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting
 document.querySelectorAll('.rv').forEach(e => io.observe(e));
 
 /* ══ 3. СТЕНД: Poisson-DBM на решётке 48³ ════════════════════════════════ */
-const FIG = { ch:0, tip:0, fork:0, charge:100, state:'IDLE' };
+const FIG = { ch:0, tip:0, fork:0, charge:100, state:'ПОКОЙ' };
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let bench = null;
 
@@ -844,7 +848,7 @@ function boot(){
   /* ── окружение: ночной город очень приглушённо ── */
   const pmrem = new THREE.PMREMGenerator(renderer);
   pmrem.compileEquirectangularShader();
-  new THREE.RGBELoader().load('./_obshchee/assets/shanghai_bund_256.hdr', hdr => {
+  new THREE.RGBELoader().load('../_obshchee/assets/shanghai_bund_256.hdr', hdr => {
     scene.environment = pmrem.fromEquirectangular(hdr).texture;
     scene.environmentIntensity = 0.46;
     scene.environmentRotation = new THREE.Euler(0, -Math.PI * 0.78, 0);
@@ -1274,7 +1278,7 @@ function boot(){
     chargeSheet();
     activate(cell, now);
     stale = 0; growing = true; shotSeg = 0; shotT0 = now; shot++;
-    FIG.state = 'GROWING';
+    FIG.state = 'РОСТ';
     stateTex.needsUpdate = true;
     chan.instanceMatrix.needsUpdate = true;
     for (let k = 0; k < (SOFT ? 24 : 70); k++) gpu.compute();
@@ -1356,7 +1360,7 @@ function boot(){
   }
 
   function finish(now){
-    growing = false; FIG.state = 'SETTLED';
+    growing = false; FIG.state = 'ЗАСТЫЛО';
     const d = depthMm(MeV());
     const row = document.createElement('div');
     row.className = 'log__row';
@@ -1382,12 +1386,12 @@ function boot(){
     const p = pick(ev);
     aimPoint = p;
     $('#aim').textContent = p
-      ? 'PIN ' + fmt((p.x / BX + 0.5) * S.L, 0) + ' · ' + fmt((p.z / BZ + 0.5) * S.W, 0) + ' mm'
-      : 'PIN — · —';
+      ? 'ШТЫРЬ ' + fmt((p.x / BX + 0.5) * S.L, 0) + ' · ' + fmt((p.z / BZ + 0.5) * S.W, 0) + ' mm'
+      : 'ШТЫРЬ — · —';
     mouse.tx = ((ev.clientX - canvas.getBoundingClientRect().left) / canvas.clientWidth - 0.5);
     mouse.ty = ((ev.clientY - canvas.getBoundingClientRect().top) / canvas.clientHeight - 0.5);
   });
-  canvas.addEventListener('pointerleave', () => { $('#aim').textContent = 'PIN — · —'; mouse.tx = mouse.ty = 0; });
+  canvas.addEventListener('pointerleave', () => { $('#aim').textContent = 'ШТЫРЬ — · —'; mouse.tx = mouse.ty = 0; });
   canvas.addEventListener('click', ev => {
     const p = pick(ev); if (!p) return;
     seedAt(p.x, p.y, p.z);
@@ -1411,9 +1415,9 @@ function boot(){
   $('#clear').addEventListener('click', () => {
     solid.fill(0); rho.fill(0); fmask.fill(0); kids.fill(0); parent.fill(-1);
     front = []; chan.count = 0; growing = false; shot = 0;
-    FIG.ch = FIG.tip = FIG.fork = 0; FIG.state = 'IDLE'; specReady = false;
+    FIG.ch = FIG.tip = FIG.fork = 0; FIG.state = 'ПОКОЙ'; specReady = false;
     $('#spec').classList.remove('on');
-    $('#log').innerHTML = '<div class="log__empty">Blank cleared. Fire again, or click a face.</div>';
+    $('#log').innerHTML = '<div class="log__empty">Заготовка очищена. Запусти снова или кликни по грани.</div>';
     for (let i = 0; i < NN; i++) pushState(i);
     stateTex.needsUpdate = true;
     gpu.renderTexture(phi0, gpu.getCurrentRenderTarget(phiVar));
