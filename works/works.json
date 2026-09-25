@@ -3252,6 +3252,36 @@
   "rp": 1
  },
  {
+  "slug": "learnly",
+  "v": "learnly",
+  "ve": "learnly-en",
+  "ru": [
+   "Обучающая платформа",
+   "Карточки наставников раскрываются гармошкой при наведении курсора, а кнопка поиска перекрашивается сама."
+  ],
+  "en": [
+   "Learning platform",
+   "Mentor photo cards fan open like an accordion on hover while the search button repaints itself from below."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "acreage-farming-hero",
+  "v": "acreage-farming-hero",
+  "ve": "acreage-farming-hero-en",
+  "ru": [
+   "Сельское хозяйство",
+   "Видео с дрона в шапке, цифры статистики отсчитываются на глазах, а карточки услуг оживают при наведении."
+  ],
+  "en": [
+   "Agricultural landing",
+   "A drone-video hero, stats that count up on scroll, and cards that zoom and reveal captions on hover."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "seller",
   "cat": "ai",
   "ru": [

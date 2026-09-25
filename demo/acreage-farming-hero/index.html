@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — Sustainable Agriculture, Rooted in Tomorrow</title>
+    <meta name="description" content="g.a.d. — a full agricultural landing page: a looping drone video hero, count-up stats, and scroll reveals across a dozen sections.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#f5f0e8',
+                        forest: '#0d1f0e',
+                        midgreen: '#2d5a30',
+                        accent: '#7dc47f',
+                        gold: '#c9a84c',
+                        muted: '#5a6b5c',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"DM Sans"', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.469.0"></script>
+    <style>.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}</style>
+    <style>
+        html { scroll-behavior: smooth; overflow-x: hidden; }
+        body { font-family: 'DM Sans', sans-serif; background: #f5f0e8; overflow-x: hidden; }
+        h1, h2, h3, .font-serif { font-family: 'Playfair Display', serif; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .hero-fade-1 { opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards; }
+        .hero-fade-2 { opacity: 0; animation: fadeUp 0.8s ease 0.4s forwards; }
+        .hero-fade-3 { opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards; }
+        .hero-fade-4 { opacity: 0; animation: fadeUp 0.8s ease 0.8s forwards; }
+
+        .fade-up { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+        .fade-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .fade-left.visible { opacity: 1; transform: translateX(0); }
+        .fade-right { opacity: 0; transform: translateX(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .fade-right.visible { opacity: 1; transform: translateX(0); }
+        .scale-in { opacity: 0; transform: scale(0.95); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .scale-in.visible { opacity: 1; transform: scale(1); }
+
+        @keyframes pulseLine { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+        .scroll-line { animation: pulseLine 2s ease-in-out infinite; }
+
+        @keyframes leafFloat {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.7; }
+            100% { transform: translateY(-140px) rotate(30deg); opacity: 0; }
+        }
+        .leaf-particle { position: absolute; bottom: 0; animation: leafFloat linear infinite; }
+
+        .service-card:hover img { transform: scale(1.05); }
+        .service-card img { transition: transform 0.6s ease; }
+        .service-card .reveal-desc { opacity: 0; transition: opacity 0.4s ease; }
+        .service-card:hover .reveal-desc { opacity: 1; }
+
+        .portfolio-item:hover img { transform: scale(1.03); }
+        .portfolio-item img { transition: transform 0.6s ease; }
+        .portfolio-item .caption { opacity: 0; transition: opacity 0.4s ease; }
+        .portfolio-item:hover .caption { opacity: 1; }
+
+        .why-card { transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; }
+        .why-card:hover { transform: translateY(-6px); border-color: rgba(125,196,127,0.6); box-shadow: 0 20px 40px rgba(13,31,14,0.25); }
+
+        .blog-card { transition: transform 0.4s ease, box-shadow 0.4s ease; }
+        .blog-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(13,31,14,0.12); }
+    </style>
+</head>
+<body class="bg-cream text-forest antialiased overflow-x-hidden">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const GAD_LOGO_PATH = "M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z";
+
+        const GadLogo = ({ className = '' }) => (
+            <svg className={`gad-logo ${className}`} viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+                <path fill="currentColor" d={GAD_LOGO_PATH} />
+                <circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100" />
+                <circle className="orb" cx="322" cy="8" r="5" fill="currentColor" />
+            </svg>
+        );
+
+        const HERO_VIDEO = 'https://cdn.pixabay.com/video/2025/01/22/254016_large.mp4';
+
+        function Reveal({ as: Tag = 'div', variant = 'up', className = '', children, ...rest }) {
+            const ref = useRef(null);
+            const [visible, setVisible] = useState(false);
+            useEffect(() => {
+                const el = ref.current;
+                if (!el) return;
+                const obs = new IntersectionObserver(([entry]) => {
+                    if (entry.isIntersecting) { setVisible(true); obs.disconnect(); }
+                }, { threshold: 0.15 });
+                obs.observe(el);
+                return () => obs.disconnect();
+            }, []);
+            const cls = variant === 'left' ? 'fade-left' : variant === 'right' ? 'fade-right' : variant === 'scale' ? 'scale-in' : 'fade-up';
+            return <Tag ref={ref} className={`${cls} ${visible ? 'visible' : ''} ${className}`} {...rest}>{children}</Tag>;
+        }
+
+        function CountUp({ to, suffix = '', prefix = '', duration = 1600 }) {
+            const ref = useRef(null);
+            const [val, setVal] = useState(0);
+            useEffect(() => {
+                const el = ref.current;
+                if (!el) return;
+                const obs = new IntersectionObserver(([entry]) => {
+                    if (!entry.isIntersecting) return;
+                    const start = performance.now();
+                    const tick = (now) => {
+                        const p = Math.min(1, (now - start) / duration);
+                        setVal(Math.round(to * (1 - Math.pow(1 - p, 3))));
+                        if (p < 1) requestAnimationFrame(tick);
+                    };
+                    requestAnimationFrame(tick);
+                    obs.disconnect();
+                }, { threshold: 0.4 });
+                obs.observe(el);
+                return () => obs.disconnect();
+            }, [to, duration]);
+            return <span ref={ref}>{prefix}{val.toLocaleString('en-US')}{suffix}</span>;
+        }
+
+        function Nav() {
+            const [scrolled, setScrolled] = useState(false);
+            const [open, setOpen] = useState(false);
+            useEffect(() => {
+                const onScroll = () => setScrolled(window.scrollY > 40);
+                window.addEventListener('scroll', onScroll);
+                return () => window.removeEventListener('scroll', onScroll);
+            }, []);
+            useEffect(() => { lucide.createIcons(); }, [open]);
+            const links = ['About', 'Services', 'Portfolio', 'Events', 'Blog'];
+            return (
+                <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 backdrop-blur-md ${scrolled ? 'bg-forest/90 py-4' : 'bg-transparent py-6'}`}>
+                    <div className="max-w-7xl mx-auto px-6 md:px-10 flex items-center justify-between">
+                        <div className="text-white"><GadLogo className="h-8" /></div>
+                        <div className="hidden md:flex items-center gap-10">
+                            {links.map(l => (
+                                <a key={l} href="#" className="text-white/85 hover:text-accent text-sm font-medium transition-colors">{l}</a>
+                            ))}
+                        </div>
+                        <a href="#" className="hidden md:inline-block bg-accent text-forest text-sm font-semibold px-6 py-3 rounded-full hover:bg-white transition-colors">Get Started</a>
+                        <button className="md:hidden text-white" onClick={() => setOpen(v => !v)} aria-label="Toggle menu">
+                            <i data-lucide={open ? 'x' : 'menu'} className="w-6 h-6"></i>
+                        </button>
+                    </div>
+                    {open && (
+                        <div className="md:hidden bg-forest px-6 pb-6 pt-2 flex flex-col gap-4">
+                            {links.map(l => <a key={l} href="#" className="text-white/85 text-sm font-medium">{l}</a>)}
+                            <a href="#" className="bg-accent text-forest text-sm font-semibold px-6 py-3 rounded-full text-center">Get Started</a>
+                        </div>
+                    )}
+                </nav>
+            );
+        }
+
+        function Hero() {
+            return (
+                <section style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
+                    <video autoPlay muted loop playsInline
+                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}>
+                        <source src={HERO_VIDEO} type="video/mp4" />
+                    </video>
+                    <div className="overlay" style={{ position: 'absolute', inset: 0, zIndex: 1,
+                        background: 'linear-gradient(to top, rgba(13,31,14,0.95) 0%, rgba(13,31,14,0.35) 60%, transparent 100%)' }} />
+                    <div className="relative z-[2] h-full max-w-7xl mx-auto px-6 md:px-10 flex flex-col md:flex-row items-start md:items-center justify-end md:justify-between gap-6 md:gap-10 pb-24 md:pb-0">
+                        <div className="max-w-xl">
+                            <p className="hero-fade-1 text-accent text-sm font-medium tracking-[0.2em] uppercase mb-5">// Roots in Sustainability</p>
+                            <h1 className="hero-fade-2 font-serif font-black text-white leading-[0.95]" style={{ fontSize: 'clamp(5rem, 10vw, 9rem)' }}>g.a.d.</h1>
+                        </div>
+                        <div className="max-w-sm md:pb-4">
+                            <p className="hero-fade-3 text-white/75 text-base md:text-lg leading-relaxed mb-6">
+                                For over four decades we've partnered with growers across every terrain to farm smarter, waste less, and leave the land richer than we found it.
+                            </p>
+                            <div className="hero-fade-4 flex flex-wrap gap-3">
+                                <span className="bg-gold text-forest text-sm font-semibold px-5 py-2.5 rounded-full">$14 Billion</span>
+                                <span className="text-white text-sm font-semibold px-5 py-2.5 rounded-full border border-white/20" style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>126,000+</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[2] scroll-line w-px h-10" style={{ background: 'linear-gradient(to bottom, #7dc47f, transparent)' }} />
+                </section>
+            );
+        }
+
+        function Stats() {
+            const stats = [
+                { to: 40, suffix: '+', label: 'Harvesting Legacy' },
+                { to: 190, suffix: '+', label: 'Topographies' },
+                { to: 126000, suffix: '+', label: 'Farmer Partners' },
+                { to: 14, prefix: '$', suffix: ' Billion', label: 'Agricultural Output' },
+            ];
+            return (
+                <section className="bg-forest py-16 md:py-20">
+                    <div className="max-w-7xl mx-auto px-6 md:px-10 grid grid-cols-2 md:grid-cols-4">
+                        {stats.map((s, i) => (
+                            <Reveal key={s.label} className={`text-center px-4 py-6 ${i > 0 ? 'md:border-l border-white/10' : ''}`} style={{ transitionDelay: `${i * 0.1}s` }}>
+                                <div className="font-serif text-accent text-4xl md:text-5xl font-bold mb-2"><CountUp to={s.to} prefix={s.prefix} suffix={s.suffix} /></div>
+                                <div className="text-white/70 text-xs md:text-sm uppercase tracking-widest">{s.label}</div>
+                            </Reveal>
+                        ))}
+                    </div>
+                </section>
+            );
+        }
+
+        function About() {
+            return (
+                <section className="bg-cream py-24 md:py-32">
+                    <div className="max-w-7xl mx-auto px-6 md:px-10 grid md:grid-cols-2 gap-16 items-center">
+                        <Reveal variant="left" className="relative h-[420px] md:h-[520px]">
+                            <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=800&q=80" alt="Terraced fields at sunrise" className="absolute inset-0 w-full h-full object-cover rounded-2xl" />
+                            <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&q=80" alt="Farmer inspecting crops" className="absolute -bottom-8 -right-8 w-48 h-56 object-cover rounded-xl hidden sm:block" style={{ border: '6px solid #f5f0e8' }} />
+                        </Reveal>
+                        <Reveal variant="right">
+                            <p className="text-midgreen text-sm font-medium tracking-[0.2em] uppercase mb-4">// Harvesting Legacy</p>
+                            <h2 className="font-serif font-semibold text-4xl md:text-5xl leading-tight mb-6">Rooted in Tradition, Growing for the Future</h2>
+                            <p className="text-muted text-base md:text-lg leading-relaxed mb-8">
+                                From wind-swept plains to terraced hillsides, our teams work alongside farmers to modernize every stage of the harvest — without losing the patience and care that sustainable growing demands.
+                            </p>
+                            <a href="#" className="inline-block bg-forest text-white text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-midgreen transition-colors">Explore Our Story →</a>
+                        </Reveal>
+                    </div>
+                </section>
+            );
+        }
+
+        function Services() {
+            const services = [
+                { title: 'Crop Consulting', img: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=600&q=80', desc: 'Soil-first planning that matches every seed to its ground.' },
+                { title: 'Field Management', img: 'https://images.unsplash.com/photo-1592982537447-7440770cbfc9?w=600&q=80', desc: 'Season-long oversight, from planting to the last row harvested.' },
+                { title: 'Yield Analysis', img: 'https://images.unsplash.com/photo-1721594489446-7fd9d30a3d71?w=600&q=80', desc: 'Aerial and ground data turned into decisions you can act on.' },
+            ];
+            return (
+                <section className="bg-white py-24 md:py-32">
+                    <div className="max-w-7xl mx-auto px-6 md:px-10">
+                        <div className="flex items-end justify-between mb-12 gap-6">
+                            <h2 className="font-serif font-semibold text-4xl md:text-5xl">What We Do</h2>
+                            <a href="#" className="text-midgreen font-semibold hover:text-forest transition-colors whitespace-nowrap">All Services →</a>
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-6">
+                            {services.map((s, i) => (
+                                <Reveal key={s.title} variant="scale" as="div" className="service-card relative rounded-2xl overflow-hidden" style={{ aspectRatio: '3/4', transitionDelay: `${i * 0.1}s` }}>
+                                    <img src={s.img} alt={s.title} className="absolute inset-0 w-full h-full object-cover" />
+                                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(13,31,14,0.85) 0%, transparent 55%)' }} />
+                                    <div className="absolute bottom-0 left-0 right-0 p-6">
+                                        <span className="text-accent text-xs uppercase tracking-widest font-semibold">Service</span>
+                                        <h3 className="font-serif text-white text-2xl font-semibold mt-1">{s.title}</h3>
+                                        <p className="reveal-desc text-white/80 text-sm mt-2 leading-relaxed">{s.desc}</p>
+                                    </div>
+                                </Reveal>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        function VideoBreak() {
+            return (
+                <section className="relative" style={{ height: '60vh', overflow: 'hidden' }}>
+                    <video autoPlay muted loop playsInline
+                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}>
+                        <source src={HERO_VIDEO} type="video/mp4" />
+                    </video>
+                    <div className="absolute inset-0" style={{ background: 'rgba(13,31,14,0.65)' }} />
+                    <Reveal className="relative z-[2] h-full flex flex-col items-center justify-center text-center px-6" style={{ transitionDuration: '1.2s' }}>
+                        <p className="font-serif italic text-white text-2xl md:text-4xl max-w-3xl leading-relaxed">"Farming is not just work — it is a way of life."</p>
+                        <p className="text-accent text-sm uppercase tracking-[0.2em] mt-6">// g.a.d. Philosophy</p>
+                    </Reveal>
+                </section>
+            );
+        }
+
+        function Portfolio() {
+            return (
+                <section style={{ background: '#e8e0d0' }} className="py-24 md:py-32">
+                    <div className="max-w-7xl mx-auto px-6 md:px-10">
+                        <div className="flex items-end justify-between mb-12 gap-6">
+                            <div>
+                                <p className="text-midgreen text-sm font-medium tracking-[0.2em] uppercase mb-3">// Our Work</p>
+                                <h2 className="font-serif font-semibold text-4xl md:text-5xl">Portfolio</h2>
+                            </div>
+                            <span className="font-serif text-forest/10 text-6xl md:text-8xl font-bold select-none hidden md:block">//2023</span>
+                        </div>
+                        <div className="flex flex-col md:grid md:grid-cols-3 md:grid-rows-2 gap-4 md:h-[460px]">
+                            <Reveal variant="scale" as="div" className="portfolio-item relative rounded-2xl overflow-hidden h-56 md:h-auto md:row-span-2">
+                                <img src="https://images.unsplash.com/photo-1560493676-04071c5f467b?w=800&q=80" alt="Sonoma Valley vineyard terraces" className="absolute inset-0 w-full h-full object-cover" />
+                                <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(13,31,14,0.75) 0%, transparent 50%)' }} />
+                                <div className="caption absolute bottom-5 left-5 text-white font-medium">Sonoma Valley — Vineyard Terraces</div>
+                            </Reveal>
+                            <Reveal variant="scale" as="div" className="portfolio-item relative rounded-2xl overflow-hidden h-56 md:h-auto" style={{ transitionDelay: '0.1s' }}>
+                                <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80" alt="Central Plains grain cooperative" className="absolute inset-0 w-full h-full object-cover" />
+                                <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(13,31,14,0.75) 0%, transparent 50%)' }} />
+                                <div className="caption absolute bottom-5 left-5 text-white font-medium">Central Plains — Grain Cooperative</div>
+                            </Reveal>
+                            <Reveal variant="scale" as="div" className="portfolio-item relative rounded-2xl overflow-hidden h-56 md:h-auto" style={{ transitionDelay: '0.2s' }}>
+                                <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=600&q=80" alt="Highland Ridge orchard renewal" className="absolute inset-0 w-full h-full object-cover" />
+                                <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(13,31,14,0.75) 0%, transparent 50%)' }} />
+                                <div className="caption absolute bottom-5 left-5 text-white font-medium">Highland Ridge — Orchard Renewal</div>
+                            </Reveal>
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        function EventCard() {
+            return (
+                <section className="bg-white py-24 md:py-32">
+                    <div className="max-w-7xl mx-auto px-6 md:px-10">
+                        <Reveal as="div" className="grid md:grid-cols-2 rounded-xl overflow-hidden" style={{ boxShadow: '0 25px 60px rgba(13,31,14,0.12)' }}>
+                            <div className="h-72 md:h-auto">
+                                <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&q=80" alt="Agricultural symposium hall" className="w-full h-full object-cover" />
+                            </div>
+                            <div className="bg-forest p-10 md:p-14 flex flex-col justify-center">
+                                <p className="text-accent text-sm font-medium tracking-[0.2em] uppercase mb-4">// Event</p>
+                                <span className="inline-block bg-gold text-forest text-xs font-bold px-4 py-1.5 rounded-full mb-5 w-max">Jan 2024</span>
+                                <h3 className="font-serif text-white text-2xl md:text-3xl font-semibold leading-tight mb-4">The Sustainable Agriculture Innovation and Practices Symposium</h3>
+                                <p className="text-white/60 text-sm mb-8">San Francisco, CA · 400 seats</p>
+                                <a href="#" className="bg-accent text-forest text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-white transition-colors w-max">Register Now →</a>
+                            </div>
+                        </Reveal>
+                    </div>
+                </section>
+            );
+        }
+
+        function Blog() {
+            const posts = [
+                { img: 'https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?w=600&q=80', title: 'Nurturing the Land for Future Generations', excerpt: "Why soil health, not just yield, is the real measure of a farm's future.", date: 'Mar 2024', cat: 'Soil Health' },
+                { img: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=600&q=80', title: "The Journey to Organic: A Farmer's Perspective", excerpt: "Three seasons, one certification, and everything we'd do differently.", date: 'Feb 2024', cat: 'Organic' },
+                { img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&q=80', title: 'AgroTech Innovations Revolutionizing Modern Farming', excerpt: 'Sensors, drones and data are changing what a working farm looks like.', date: 'Jan 2024', cat: 'AgroTech' },
+                { img: 'https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=600&q=80', title: 'Breaking Stereotypes, Cultivating Success', excerpt: 'Meet the growers rewriting who gets to lead in agriculture.', date: 'Dec 2023', cat: 'Community' },
+            ];
+            return (
+                <section className="bg-cream py-24 md:py-32">
+                    <div className="max-w-7xl mx-auto px-6 md:px-10">
+                        <div className="flex items-end justify-between mb-12 gap-6">
+                            <h2 className="font-serif font-semibold text-4xl md:text-5xl">Our Blog</h2>
+                            <a href="#" className="text-midgreen font-semibold hover:text-forest transition-colors whitespace-nowrap">View All →</a>
+                        </div>
+                        <div className="grid sm:grid-cols-2 gap-6">
+                            {posts.map((p, i) => (
+                                <Reveal key={p.title} variant="scale" as="div" className="blog-card bg-white rounded-2xl overflow-hidden" style={{ transitionDelay: `${i * 0.1}s` }}>
+                                    <img src={p.img} alt={p.title} className="w-full h-52 object-cover" />
+                                    <div className="p-6">
+                                        <span className="text-midgreen text-xs font-semibold uppercase tracking-widest">{p.cat}</span>
+                                        <h3 className="font-serif text-xl font-semibold mt-2 mb-2 leading-snug">{p.title}</h3>
+                                        <p className="text-muted text-sm leading-relaxed mb-4">{p.excerpt}</p>
+                                        <div className="flex items-center justify-between text-sm">
+                                            <span className="text-muted">{p.date}</span>
+                                            <a href="#" className="text-midgreen font-semibold hover:text-forest transition-colors">Learn More →</a>
+                                        </div>
+                                    </div>
+                                </Reveal>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        function WhyUs() {
+            const items = [
+                { icon: '🌿', title: 'Quality Assurance', desc: 'ISO certified, rigorous quality checks' },
+                { icon: '♻️', title: 'Sustainability Focus', desc: 'Carbon neutral by 2030, eco-friendly methods' },
+                { icon: '👤', title: 'Expert Guidance', desc: '40+ years of agricultural expertise' },
+            ];
+            return (
+                <section className="bg-forest py-24 md:py-32">
+                    <div className="max-w-7xl mx-auto px-6 md:px-10">
+                        <Reveal as="h2" className="font-serif text-white text-4xl md:text-5xl font-semibold text-center max-w-3xl mx-auto mb-16 leading-tight">
+                            Why Choose g.a.d. for Your Agricultural Journey?
+                        </Reveal>
+                        <div className="grid md:grid-cols-3 gap-6">
+                            {items.map((it, i) => (
+                                <Reveal key={it.title} variant="scale" as="div" className="why-card rounded-2xl p-8 border" style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(125,196,127,0.25)', transitionDelay: `${i * 0.1}s` }}>
+                                    <div className="text-4xl mb-5">{it.icon}</div>
+                                    <h3 className="font-serif text-white text-xl font-semibold mb-2">{it.title}</h3>
+                                    <p className="text-white/60 text-sm leading-relaxed">{it.desc}</p>
+                                </Reveal>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        function CTA() {
+            const leaves = Array.from({ length: 8 }, (_, i) => ({
+                left: `${8 + i * 12}%`,
+                delay: `${i * 0.9}s`,
+                duration: `${8 + (i % 3) * 2}s`,
+            }));
+            return (
+                <section className="relative py-28 md:py-36 overflow-hidden" style={{ background: '#0d1f0e' }}>
+                    <div className="absolute inset-0" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&q=80)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.2 }} />
+                    {leaves.map((l, i) => (
+                        <span key={i} className="leaf-particle text-2xl" style={{ left: l.left, animationDelay: l.delay, animationDuration: l.duration }}>🌿</span>
+                    ))}
+                    <Reveal variant="scale" className="relative z-[2] max-w-3xl mx-auto text-center px-6">
+                        <h2 className="font-serif text-white text-4xl md:text-6xl font-semibold leading-tight mb-6">
+                            Join the Agricultural <span className="italic text-accent">Revolution</span>
+                        </h2>
+                        <p className="text-white/70 text-base md:text-lg leading-relaxed mb-10 max-w-xl mx-auto">
+                            Join thousands of farmers already growing smarter, more sustainable harvests with our team by their side.
+                        </p>
+                        <div className="flex flex-wrap items-center justify-center gap-4">
+                            <a href="#" className="bg-accent text-forest text-sm font-semibold px-8 py-4 rounded-full hover:bg-white transition-colors">Get Started</a>
+                            <a href="#" className="text-white text-sm font-semibold px-8 py-4 rounded-full border border-white/30 hover:bg-white/10 transition-colors">Learn More</a>
+                        </div>
+                    </Reveal>
+                </section>
+            );
+        }
+
+        function Footer() {
+            useEffect(() => { lucide.createIcons(); }, []);
+            const social = ['facebook', 'instagram', 'twitter', 'linkedin'];
+            return (
+                <footer className="bg-forest text-white pt-16 pb-8" style={{ borderTop: '1px solid rgba(125,196,127,0.3)' }}>
+                    <div className="max-w-7xl mx-auto px-6 md:px-10">
+                        <div className="grid md:grid-cols-5 gap-10 pb-14">
+                            <div className="md:col-span-2">
+                                <div className="mb-4"><GadLogo className="h-8" /></div>
+                                <p className="text-white/60 text-sm max-w-xs mb-6">Sustainable farming, rooted in tomorrow.</p>
+                                <div className="flex gap-3">
+                                    {social.map(s => (
+                                        <a key={s} href="#" aria-label={s} className="w-9 h-9 rounded-full flex items-center justify-center border border-white/15 hover:border-accent hover:text-accent transition-colors">
+                                            <i data-lucide={s} className="w-4 h-4"></i>
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-sm uppercase tracking-widest text-white/50 mb-4">Company</h4>
+                                <ul className="space-y-3 text-sm text-white/75">
+                                    <li><a href="#" className="hover:text-accent transition-colors">About</a></li>
+                                    <li><a href="#" className="hover:text-accent transition-colors">Services</a></li>
+                                    <li><a href="#" className="hover:text-accent transition-colors">Portfolio</a></li>
+                                    <li><a href="#" className="hover:text-accent transition-colors">Careers</a></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-sm uppercase tracking-widest text-white/50 mb-4">Resources</h4>
+                                <ul className="space-y-3 text-sm text-white/75">
+                                    <li><a href="#" className="hover:text-accent transition-colors">Blog</a></li>
+                                    <li><a href="#" className="hover:text-accent transition-colors">Events</a></li>
+                                    <li><a href="#" className="hover:text-accent transition-colors">Case Studies</a></li>
+                                    <li><a href="#" className="hover:text-accent transition-colors">FAQ</a></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-sm uppercase tracking-widest text-white/50 mb-4">Contact</h4>
+                                <ul className="space-y-3 text-sm text-white/75">
+                                    <li>Central Valley, CA</li>
+                                    <li>+1 (555) 019-2842</li>
+                                    <li>hello@example.com</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                            <p className="text-white/40 text-xs">© 2026 g.a.d. All rights reserved.</p>
+                        </div>
+                        <div className="overflow-hidden select-none pointer-events-none mt-2" aria-hidden="true">
+                            <span className="font-serif font-bold text-white block text-center" style={{ fontSize: 'clamp(3rem, 14vw, 11rem)', lineHeight: 1, opacity: 0.05 }}>g.a.d.</span>
+                        </div>
+                    </div>
+                </footer>
+            );
+        }
+
+        function App() {
+            return (
+                <div className="w-full">
+                    <Nav />
+                    <Hero />
+                    <Stats />
+                    <About />
+                    <Services />
+                    <VideoBreak />
+                    <Portfolio />
+                    <EventCard />
+                    <Blog />
+                    <WhyUs />
+                    <CTA />
+                    <Footer />
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>
