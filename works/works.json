@@ -612,8 +612,9 @@
    "Live tokenomics",
    "Drag the month — the emission curve and the particle sphere recompute"
   ],
-  "href": "https://smirnov-artur.github.io/portfolio/cases/new2/",
-  "v": "pf-vault"
+  "v": "vault",
+  "ve": "vault-en",
+  "rp": 1
  },
  {
   "slug": "hot-ice",
