@@ -3191,5 +3191,35 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "nimbus-ops",
+  "v": "nimbus-ops",
+  "ve": "nimbus-ops-en",
+  "ru": [
+   "Контроль операций",
+   "Золотой 3D-куб парит в воздухе и по клику разлетается на осколки, а затем собирается обратно."
+  ],
+  "en": [
+   "Operations control",
+   "A floating gold 3D cube bursts into orbiting particle shards on click, then reassembles on the next click."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "nimbus-security",
+  "v": "nimbus-security",
+  "ve": "nimbus-security-en",
+  "ru": [
+   "Безопасность и соответствие",
+   "Три карточки показывают окно терминала с логином, чек-лист соответствия и бинарный замок над таблицей показателей."
+  ],
+  "en": [
+   "Security compliance",
+   "Three cards show a terminal login, a compliance checklist, and a binary padlock over a usage table."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
