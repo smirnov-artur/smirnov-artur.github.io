@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mainframe&reg; | Get in Touch</title>
+<meta name="description" content="A cybernetic studio contact hero: a glossy chrome android scrubs with the cursor behind a typewriter headline and an animated service picker." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/framer-motion@11.18.2/dist/framer-motion.js"></script>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  .animate-blink { animation: blink 1s step-end infinite; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+const { motion, AnimatePresence } = Motion;
+
+const VIDEO_SRC = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260601_110537_3a579fa0-7bbc-4d94-9d25-0e816c7840f5.mp4";
+const NAV_LINKS = ["Labs", "Studio", "Openings", "Shop"];
+const SERVICE_OPTIONS = ["Brand", "Digital", "Campaign", "Other"];
+
+function useTypewriter(text, speed = 38, startDelay = 600) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    let i = 0;
+    let interval;
+    setDisplayed("");
+    setDone(false);
+    const startTimeout = setTimeout(() => {
+      interval = setInterval(() => {
+        i += 1;
+        setDisplayed(text.slice(0, i));
+        if (i >= text.length) {
+          clearInterval(interval);
+          setDone(true);
+        }
+      }, speed);
+    }, startDelay);
+    return () => { clearTimeout(startTimeout); clearInterval(interval); };
+  }, [text, speed, startDelay]);
+  return { displayed, done };
+}
+
+function CheckIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  );
+}
+
+function ArrowIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </svg>
+  );
+}
+
+function BackgroundVideo() {
+  const videoRef = useRef(null);
+
+  // Desktop mouse scrubbing hook
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    let prevX = null;
+    let targetTime = 0;
+    const onMouseMove = (e) => {
+      if (window.innerWidth < 1024) return;
+      if (prevX === null) { prevX = e.clientX; return; }
+      const delta = e.clientX - prevX;
+      prevX = e.clientX;
+      const duration = video.duration;
+      if (!duration) return;
+      targetTime += (delta / window.innerWidth) * 0.8 * duration;
+      targetTime = Math.max(0, Math.min(duration, targetTime));
+      video.currentTime = targetTime;
+    };
+    const onSeeked = () => {};
+    window.addEventListener("mousemove", onMouseMove);
+    video.addEventListener("seeked", onSeeked);
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      video.removeEventListener("seeked", onSeeked);
+    };
+  }, []);
+
+  // Mobile autoplay hook
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const applyMobilePlayback = () => {
+      if (window.innerWidth < 1024) {
+        video.autoplay = true;
+        video.play().catch(() => {});
+      }
+    };
+    applyMobilePlayback();
+    window.addEventListener("resize", applyMobilePlayback);
+    return () => window.removeEventListener("resize", applyMobilePlayback);
+  }, []);
+
+  return (
+    <div className="order-last lg:order-none relative lg:absolute lg:inset-0 lg:z-0 overflow-hidden pointer-events-none w-full aspect-square md:aspect-video lg:aspect-auto lg:h-full bg-neutral-50 lg:bg-transparent">
+      <video ref={videoRef} src={VIDEO_SRC} muted playsInline preload="auto" className="w-full h-full object-cover object-right lg:object-right-bottom" />
+    </div>
+  );
+}
+
+function Navbar() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  return (
+    <React.Fragment>
+      <header className="fixed top-0 inset-x-0 z-10 px-5 sm:px-8 py-4 sm:py-5 flex flex-row justify-between items-center bg-transparent">
+        <div className="flex items-center gap-3">
+          <span className="text-[21px] sm:text-[26px] tracking-tight text-black font-medium select-none">Mainframe&reg;</span>
+          <span className="text-[25px] sm:text-[30px] text-black select-none tracking-[-0.02em] font-medium leading-none mb-1">&#10033;</span>
+        </div>
+        <nav className="hidden md:flex flex-row text-[23px] text-black">
+          {NAV_LINKS.map((link, i) => (
+            <React.Fragment key={link}>
+              <a href="#" className="hover:opacity-60 transition-opacity">{link}</a>
+              {i < NAV_LINKS.length - 1 && <span className="opacity-40">,&nbsp;</span>}
+            </React.Fragment>
+          ))}
+        </nav>
+        <a href="#" className="hidden md:block text-[23px] text-black underline underline-offset-2 hover:opacity-60 transition-opacity">Get in touch</a>
+        <button className="md:hidden flex flex-col justify-center items-center gap-[5px] w-6 h-6" onClick={() => setIsMobileMenuOpen((v) => !v)} aria-label="Menu">
+          <span className={`w-6 h-[2px] bg-black transition-all duration-300 ${isMobileMenuOpen ? "rotate-45 translate-y-[7px]" : ""}`}></span>
+          <span className={`w-6 h-[2px] bg-black transition-all duration-300 ${isMobileMenuOpen ? "opacity-0" : ""}`}></span>
+          <span className={`w-6 h-[2px] bg-black transition-all duration-300 ${isMobileMenuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`}></span>
+        </button>
+      </header>
+      <div className={`md:hidden fixed inset-0 z-[9] bg-white/95 backdrop-blur-sm flex flex-col items-center justify-center gap-8 transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+        {NAV_LINKS.map((link) => (
+          <a key={link} href="#" className="text-3xl text-black" onClick={() => setIsMobileMenuOpen(false)}>{link}</a>
+        ))}
+        <a href="#" className="text-3xl text-black underline underline-offset-2" onClick={() => setIsMobileMenuOpen(false)}>Get in touch</a>
+      </div>
+    </React.Fragment>
+  );
+}
+
+function Headline() {
+  const { displayed, done } = useTypewriter("we'd love to\nhear from you!", 38, 600);
+  return (
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+      <h1 className="text-5xl md:text-6xl lg:text-[76px] font-normal tracking-tight text-black leading-[1.08] mb-8 select-none w-full whitespace-pre-wrap">
+        {displayed}
+        {!done && <span className="inline-block w-[2px] h-[1.1em] bg-black align-middle ml-[2px] animate-blink" />}
+      </h1>
+    </motion.div>
+  );
+}
+
+function Description() {
+  return (
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
+      <p className="text-lg md:text-xl text-[#5A635A] leading-relaxed font-normal mb-14 max-w-2xl">
+        Whether you have questions, feedback, <br /> drop us a message and we'll get back to you as soon as possible.
+      </p>
+    </motion.div>
+  );
+}
+
+function ServicePills() {
+  const [services, setServices] = useState([]);
+  const toggle = (opt) => {
+    setServices((prev) => (prev.includes(opt) ? prev.filter((x) => x !== opt) : [...prev, opt]));
+  };
+  return (
+    <div>
+      <h2 className="text-2xl font-medium tracking-tight mb-2">What sort of service?</h2>
+      <p className="opacity-85 text-[#738273] mb-8">Select all that apply</p>
+      <div className="flex flex-wrap gap-3">
+        {SERVICE_OPTIONS.map((opt) => {
+          const active = services.includes(opt);
+          return (
+            <motion.button
+              key={opt}
+              onClick={() => toggle(opt)}
+              whileTap={{ scale: 0.96 }}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-base transition-colors ${active ? "bg-[#1C2E1E] text-white shadow-md shadow-emerald-950/5 transform" : "bg-white text-[#1C2E1E] border border-[#F1F3F1] hover:bg-[#F1F3F1]/55"}`}
+            >
+              {opt}
+              <AnimatePresence>
+                {active && (
+                  <motion.span
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0, opacity: 0 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    className="inline-flex"
+                  >
+                    <CheckIcon />
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </motion.button>
+          );
+        })}
+      </div>
+      <AnimatePresence mode="wait">
+        {services.length === 0 ? (
+          <motion.p key="empty" initial={{ opacity: 0 }} animate={{ opacity: 0.5 }} exit={{ opacity: 0 }} className="italic text-xs mt-6">
+            Please click to select services above.
+          </motion.p>
+        ) : (
+          <motion.div key="active" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ type: "spring", stiffness: 300, damping: 30 }} className="overflow-hidden mt-6">
+            <div className="bg-[#FAFBF9] border border-[#F1F3F1] rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
+              <span className="text-sm text-[#1C2E1E]">Ready to inquire about: {services.join(", ")}</span>
+              <button className="flex items-center gap-1 text-[#4D6D47] uppercase text-xs font-medium shrink-0 hover:opacity-70 transition-opacity">
+                Let's Go <ArrowIcon />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <div className="relative bg-white text-neutral-900 font-sans selection:bg-[#EAECE9] selection:text-[#1C2E1E] antialiased overflow-x-hidden flex flex-col lg:block lg:min-h-screen">
+      <BackgroundVideo />
+      <Navbar />
+      <div className="relative z-10 flex flex-col order-first lg:order-none w-full bg-white lg:bg-transparent pb-8 lg:pb-0 lg:min-h-screen">
+        <main id="spade-hero" className="w-full max-w-7xl mx-auto px-6 py-12 flex-1 flex flex-col justify-center">
+          <Headline />
+          <Description />
+          <ServicePills />
+        </main>
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

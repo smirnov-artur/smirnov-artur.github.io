@@ -2757,5 +2757,19 @@
    "Three phone mockups fade in and slide up, a gift-unboxing video loops, and a product grid pops in card by card."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "contact-cybernetic",
+  "v": "contact-cybernetic",
+  "ve": "contact-cybernetic-en",
+  "ru": [
+   "Кибернетическая контактная форма",
+   "Хромированный андроид прокручивается кадр за кадром вслед за курсором, рядом — печатающийся заголовок."
+  ],
+  "en": [
+   "Cybernetic contact form",
+   "A glossy chrome android scrubs frame by frame as the cursor moves, beside a typewriter headline."
+  ],
+  "cat": "web"
  }
 ]
