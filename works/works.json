@@ -3356,5 +3356,35 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "oyla",
+  "v": "oyla",
+  "ve": "oyla-en",
+  "ru": [
+   "Украшения ручной работы",
+   "Видео в шапке перематывается скроллом, затем горизонтальная карусель колец раскрывается во второе видео."
+  ],
+  "en": [
+   "Handcrafted rings",
+   "A scroll-scrubbed hero video gives way to a horizontal ring carousel that expands into a second video."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "portfolio-about",
+  "v": "portfolio-about",
+  "ve": "portfolio-about-en",
+  "ru": [
+   "Раздел обо мне",
+   "Четыре 3D-иконки появляются по углам, а текст под заголовком загорается по буквам при скролле."
+  ],
+  "en": [
+   "About me section",
+   "Four drifting 3D icons frame a chrome headline while the paragraph lights up letter by letter on scroll."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
