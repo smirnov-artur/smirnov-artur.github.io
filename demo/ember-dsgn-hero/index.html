@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — Bold Contrasts, Meaningful Motion</title>
+    <meta name="description" content="g.a.d. — a digital design studio. A mirrored, slow-motion video shows through a cutout wordmark beside a bold STUDIO mark.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] } } } }</script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@11.18.2/dist/framer-motion.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
+    <style>.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}</style>
+    <style>
+        body{overflow:hidden;background:#000}
+        .scrollbar-hide{scrollbar-width:none}
+        .scrollbar-hide::-webkit-scrollbar{display:none}
+    </style>
+</head>
+<body class="antialiased">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useEffect, useRef, useState } = React;
+        const { motion, AnimatePresence } = Motion;
+
+        const HLS_SRC = 'https://stream.mux.com/Q3hYHAcLU82ceOUgwDeO4HiwOc3WZn9JD02PugwzxHOI.m3u8';
+        const NAV_LINKS = ['Works', 'Services', 'About', 'Team'];
+        const ORANGE = '#FF5C35';
+
+        // маска-вырез "g.a.d." (замена EMBER) — стретчится textLength=100% под ширину/высоту панели.
+        // CSS mask-image на элементе-картинке (не <mask>-элементе) сравнивает по alpha, не по яркости,
+        // поэтому дырку под буквами выпекаем во внутреннем svg-<mask> заранее (сплошной чёрный со
+        // прозрачными буквами), а не рисуем "белый фон + чёрный текст" напрямую.
+        const maskUri = (fontSize, y) => {
+            const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='1000' viewBox='0 0 1000 1000' preserveAspectRatio='none'><mask id='m'><rect width='1000' height='1000' fill='white'/><text x='0' y='${y}' textLength='1000' lengthAdjust='spacingAndGlyphs' font-family='Inter, sans-serif' font-weight='900' letter-spacing='-8' font-size='${fontSize}' fill='black'>g.a.d.</text></mask><rect width='1000' height='1000' fill='black' mask='url(#m)'/></svg>`;
+            return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+        };
+        const MASK_MOBILE = maskUri(150, 185);
+        const MASK_DESKTOP = maskUri(190, 230);
+
+        const Menu = (p) => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" {...p}><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg>;
+        const XIcon = (p) => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" {...p}><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>;
+        const ArrowUpRight = (p) => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>;
+
+        const GadMark = ({ className }) => (
+            <svg className={"gad-logo " + (className || '')} viewBox="293 1 58 58" role="img" aria-label="g.a.d.">
+                <circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100" />
+                <circle className="orb" cx="322" cy="8" r="5" fill="currentColor" />
+            </svg>
+        );
+
+        const Logo = ({ big }) => (
+            <div className="flex items-center gap-2">
+                <span style={{ color: ORANGE }}><GadMark className={big ? 'h-[22px]' : 'h-[18px] md:h-[22px]'} /></span>
+                <span className={"font-black tracking-tighter text-white " + (big ? 'text-lg' : 'text-lg md:text-xl')}>g.a.d.</span>
+            </div>
+        );
+
+        const NavLinks = ({ className }) => (
+            <div className={className}>
+                {NAV_LINKS.map(l => (
+                    <a key={l} href="#" className="flex items-center gap-1.5 hover:text-white transition-colors">
+                        <span className="w-1 h-1 bg-white rounded-full opacity-50" />{l}
+                    </a>
+                ))}
+            </div>
+        );
+
+        const App = () => {
+            const videoRef = useRef(null);
+            const [menuOpen, setMenuOpen] = useState(false);
+
+            useEffect(() => {
+                const video = videoRef.current; if (!video) return;
+                let hls;
+                if (window.Hls && window.Hls.isSupported()) {
+                    hls = new window.Hls();
+                    hls.loadSource(HLS_SRC);
+                    hls.attachMedia(video);
+                    hls.on(window.Hls.Events.MANIFEST_PARSED, () => { video.playbackRate = 0.7; video.play().catch(() => {}); });
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    video.src = HLS_SRC;
+                    video.addEventListener('loadedmetadata', () => { video.playbackRate = 0.7; video.play().catch(() => {}); });
+                }
+                return () => { if (hls) hls.destroy(); };
+            }, []);
+
+            return (
+                <div className="relative h-screen w-full font-sans text-white selection:bg-white/20 overflow-hidden bg-black">
+                    <video ref={videoRef} muted loop playsInline autoPlay className="absolute inset-0 w-full h-full object-cover scale-x-[-1]" />
+
+                    <div className="absolute inset-0 flex flex-col lg:flex-row z-10 pointer-events-none overflow-y-auto lg:overflow-hidden scrollbar-hide">
+                        {/* левая панель — вырез "g.a.d." */}
+                        <div className="relative w-full lg:w-1/2 min-h-screen lg:h-full flex flex-col pointer-events-auto overflow-hidden border-b lg:border-b-0 lg:border-r border-white/5">
+                            <div className="absolute inset-0 block lg:hidden" style={{ backgroundColor: 'rgba(131,131,131,0.3)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', WebkitMaskImage: MASK_MOBILE, maskImage: MASK_MOBILE, WebkitMaskSize: '100% 100%', maskSize: '100% 100%', WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat' }} />
+                            <div className="absolute inset-0 hidden lg:block" style={{ backgroundColor: 'rgba(131,131,131,0.3)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', WebkitMaskImage: MASK_DESKTOP, maskImage: MASK_DESKTOP, WebkitMaskSize: '100% 100%', maskSize: '100% 100%', WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat' }} />
+
+                            <div className="relative z-20 flex-1 flex flex-col pt-[12vh] lg:pt-[8vh] px-6 md:px-12">
+                                <div className="h-[20vh] lg:h-[25vh]" />
+                                <div className="flex-grow flex flex-col pt-4 min-h-[100px]">
+                                    <div className="w-[1px] h-full bg-white/20" />
+                                </div>
+                                <div className="pb-12 flex flex-col gap-6 pt-4">
+                                    <div>
+                                        <span className="text-[9px] font-bold tracking-[0.3em] uppercase text-white/40">About</span>
+                                        <p className="text-xl md:text-2xl font-normal leading-[1.3] text-white/90 mt-2">
+                                            We shape striking digital identities through bold contrasts and meaningful motion.<br />
+                                            Our design process transforms the primal into the powerful.
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end border-t border-white/10 pt-8 w-full gap-8">
+                                        <div className="flex flex-col gap-1">
+                                            <span className="text-[9px] font-bold uppercase tracking-widest text-white/40">Double click and</span>
+                                            <a href="#" className="explore-link flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-white hover:text-[#FF5C35] transition-colors">
+                                                Explore Our Work <ArrowUpRight />
+                                            </a>
+                                        </div>
+                                        <div className="flex flex-col gap-2 text-[10px] font-bold uppercase tracking-widest text-white/70">
+                                            {['Instagram', 'Telegram'].map(s => (
+                                                <a key={s} href="#" className="flex items-center gap-2 hover:text-white transition-colors">
+                                                    <span className="w-1 h-1 bg-white rounded-full opacity-50" />{s}
+                                                </a>
+                                            ))}
+                                        </div>
+                                        <div className="hidden sm:block text-[10px] font-bold uppercase tracking-widest text-white/40">
+                                            23 Industrial Lane, Unit 5<br />London, UK, E2 8AA
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* правая панель — STUDIO */}
+                        <div className="relative w-full lg:w-1/2 min-h-[50vh] lg:h-full flex flex-col justify-end pb-8 lg:pb-2 pointer-events-auto overflow-hidden">
+                            <div className="absolute inset-0 z-0 pointer-events-none flex justify-center">
+                                <div className="relative h-full aspect-square flex flex-col items-center">
+                                    <div className="absolute top-[-10vh] lg:top-[-25vh] w-[40vh] lg:w-[60vh] h-[40vh] lg:h-[60vh] border border-white/20 lg:border-white/35 rounded-full" />
+                                    <div className="absolute top-[30vh] lg:top-[18vh] w-[40vh] lg:w-[60vh] h-[40vh] lg:h-[60vh] border border-white/20 lg:border-white/35 rounded-full" />
+                                </div>
+                            </div>
+                            <div className="relative z-10 w-full mb-1 px-6 md:px-[5%]">
+                                <svg viewBox="0 0 1000 220" preserveAspectRatio="none" className="w-full block" style={{ height: 'auto' }}>
+                                    <text x="0" y="175" textLength="1000" lengthAdjust="spacingAndGlyphs" fontFamily="Inter, sans-serif" fontWeight="900" letterSpacing="-8" fontSize="190" fill="white">STUDIO</text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-12 py-6 lg:py-8 pointer-events-none">
+                        <div className="flex items-center gap-8 pointer-events-auto">
+                            <Logo />
+                            <NavLinks className="hidden lg:flex items-center gap-6 text-[10.5px] uppercase font-medium tracking-[0.2em] text-white/70" />
+                        </div>
+                        <div className="flex items-center gap-4 pointer-events-auto">
+                            <div className="hidden sm:flex border border-white/20 rounded-full px-4 py-1.5 text-[10.5px] font-medium tracking-widest uppercase items-center gap-3 bg-white/5 backdrop-blur-sm">
+                                <span>EN</span><span className="text-white/20">|</span><span>RU</span>
+                            </div>
+                            <button onClick={() => setMenuOpen(true)} aria-label="Menu" className="lg:hidden p-2">
+                                <Menu />
+                            </button>
+                            <a href="#" className="hidden sm:block border border-white/20 rounded-full px-6 py-2 text-[10.5px] font-medium tracking-widest uppercase hover:bg-white hover:text-black transition-all bg-white/5 backdrop-blur-sm">
+                                <span className="w-1 h-1 bg-white rounded-full opacity-50 inline-block mr-2" />CONTACTS
+                            </a>
+                        </div>
+                    </nav>
+
+                    <AnimatePresence>
+                        {menuOpen && (
+                            <motion.div initial={{ opacity: 0, x: '100%' }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: '100%' }}
+                                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                                className="fixed inset-0 z-[100] bg-black pointer-events-auto lg:hidden flex flex-col">
+                                <div className="flex items-center justify-between px-6 py-6">
+                                    <Logo big />
+                                    <button onClick={() => setMenuOpen(false)} aria-label="Close" className="p-2 text-white"><XIcon /></button>
+                                </div>
+                                <div className="flex-grow flex flex-col justify-center px-12 gap-8">
+                                    {[...NAV_LINKS, 'Contacts'].map((l, i) => (
+                                        <motion.a key={l} href="#" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.05 }}
+                                            className="text-4xl font-bold tracking-tighter hover:text-[#FF5C35] transition-colors">{l}</motion.a>
+                                    ))}
+                                </div>
+                                <div className="p-12 border-t border-white/10 flex justify-between items-center text-[10.5px] uppercase tracking-widest text-white/60">
+                                    <div className="flex items-center gap-3"><span>EN</span><span className="text-white/20">|</span><span>RU</span></div>
+                                    <span>Ukraine / London</span>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

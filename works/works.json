@@ -3207,6 +3207,21 @@
   "rp": 1
  },
  {
+  "slug": "ember-dsgn-hero",
+  "v": "ember-dsgn-hero",
+  "ve": "ember-dsgn-hero-en",
+  "ru": [
+   "Сплит-герой с вырезом",
+   "Зеркальное видео с лавовым камнем проступает через вырез в виде текста, а справа — крупная надпись STUDIO."
+  ],
+  "en": [
+   "Cutout hero split",
+   "A mirrored lava-rock video plays through a text-shaped cutout on one side, a bold STUDIO mark on the other."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "seller",
   "cat": "ai",
   "ru": [
