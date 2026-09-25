@@ -3221,5 +3221,35 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "organic-odyssey",
+  "v": "organic-odyssey",
+  "ve": "organic-odyssey-en",
+  "ru": [
+   "Скрытый лесной мир",
+   "Стеклянный шар среди мха и коряг, вокруг порхают бабочки, а заголовок проявляется буква за буквой."
+  ],
+  "en": [
+   "Hidden forest world",
+   "A looping video of a glass orb in mossy branches, with butterflies drifting past letter-by-letter text."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "nimbus-sticky-cards",
+  "v": "nimbus-sticky-cards",
+  "ve": "nimbus-sticky-cards-en",
+  "ru": [
+   "Облачная инфраструктура",
+   "При прокрутке четыре карточки наезжают друг на друга и складываются в стопку золотых панелей с кодом и метриками."
+  ],
+  "en": [
+   "Cloud infrastructure",
+   "Four cards slide up and stack into thin gold bars as you scroll, each revealing a code or metrics panel."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
