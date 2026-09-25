@@ -2799,5 +2799,19 @@
    "A benefit-card grid over a pastel photo, with partner names scrolling by in an endless marquee below."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "halo-use-case",
+  "v": "halo-use-case",
+  "ve": "halo-use-case-en",
+  "ru": [
+   "Сценарии использования стейблкоина",
+   "На фоне карточки зацикленно крутится видео с фиолетовым мраморным храмом среди цветов."
+  ],
+  "en": [
+   "Stablecoin use cases",
+   "A looping video of a purple marble temple among flowers plays behind the card's text."
+  ],
+  "cat": "web"
  }
 ]
