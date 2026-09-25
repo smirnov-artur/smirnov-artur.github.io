@@ -2589,5 +2589,19 @@
   ],
   "cat": "web",
   "ve": "xportfolio-hero-en"
+ },
+ {
+  "slug": "ai-interface",
+  "v": "ai-interface",
+  "ve": "ai-interface-en",
+  "ru": [
+   "Нейронный интерфейс",
+   "Светящееся кольцо на видео сменяется портретом с сиянием у виска, а заголовки при скролле проступают из размытия."
+  ],
+  "en": [
+   "Neural interface",
+   "A glowing eye video fills the hero, then scroll reveals a temple-glow portrait with blurred headline swaps."
+  ],
+  "cat": "web"
  }
 ]
