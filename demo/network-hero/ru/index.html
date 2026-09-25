@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. | Топовые маркетологи в один клик</title>
+    <meta name="description" content="Герой-блок g.a.d. о маркетинговых специалистах: печатающийся заголовок с фиолетовым курсором, аватары, вращающиеся вокруг живого счётчика, и бегущая строка логотипов партнёров.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Urbanist:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <style>.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}</style>
+    <style>
+        *{box-sizing:border-box}
+        html,body{margin:0}
+        body{font-family:'Inter',sans-serif}
+        .app{min-height:100vh;display:flex;flex-direction:column;background-color:#0a0a0a;position:relative;overflow:hidden}
+
+        @property --border-angle{syntax:'<angle>';inherits:false;initial-value:0deg}
+        @keyframes border-spin{to{--border-angle:360deg}}
+        @keyframes fade-down{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fade-up{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes scale-in{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+        @keyframes rise-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes blink{0%,50%{opacity:1}50.01%,100%{opacity:0}}
+        @keyframes spin-cw{to{transform:rotate(360deg)}}
+        @keyframes spin-ccw{to{transform:rotate(-360deg)}}
+        @keyframes fly-in{from{opacity:0;transform:scale(.3) rotate(-180deg);filter:blur(8px)}to{opacity:1;transform:scale(1) rotate(0deg);filter:blur(0)}}
+        @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+        .header-wrap{position:relative;z-index:20;animation:fade-down .8s cubic-bezier(.22,1,.36,1) both}
+        .header-inner{display:flex;align-items:center;justify-content:space-between;max-width:1920px;margin:0 auto;width:100%;padding:24px 64px}
+        .header-left{display:flex;align-items:center;gap:40px}
+        .nav-links{display:flex;align-items:center;gap:32px}
+        .nav-link{position:relative;color:#000;font-size:15px;font-weight:400;text-decoration:none;padding-bottom:4px;display:inline-block}
+        .nav-link--white{color:#fff;font-weight:500}
+        .nav-link::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
+        .nav-link:hover::after{transform:scaleX(1)}
+        .header-right{display:flex;align-items:center;gap:24px}
+
+        .btn-border-wrap{position:relative;display:inline-block;border-radius:50px}
+        .btn-border-wrap::before{content:'';position:absolute;inset:-3px;border-radius:inherit;padding:3px;background:conic-gradient(from var(--border-angle),#A068FF,#070319,#A068FF,#070319,#A068FF);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:border-spin 3s linear infinite;pointer-events:none}
+
+        .pill-btn{position:relative;display:inline-flex;align-items:center;gap:8px;overflow:hidden;isolation:isolate;border:none;cursor:pointer;border-radius:50px;color:#fff;font-size:15px;font-weight:500;padding:12px 26px;font-family:'Inter',sans-serif}
+        .pill-btn>*{position:relative;z-index:1}
+        .pill-btn::after{content:'';position:absolute;inset:0;background:#A068FF;z-index:0;transition:transform .4s cubic-bezier(.22,1,.36,1)}
+        .pill-btn--left{background:#000}
+        .pill-btn--left::after{transform:translateX(-100%)}
+        .pill-btn--left:hover::after{transform:translateX(0)}
+        .pill-btn--right{background:#060218}
+        .pill-btn--right::after{transform:translateX(100%)}
+        .pill-btn--right:hover::after{transform:translateX(0)}
+        .start-btn{font-size:16px;padding:14px 28px}
+
+        .hero-main{flex:1;display:flex;align-items:center;justify-content:space-between;max-width:1920px;margin:0 auto;width:100%;padding:0 64px;gap:24px;position:relative;z-index:10}
+        .hero-left{flex:0 1 600px;padding-top:40px;animation:fade-up 1s cubic-bezier(.22,1,.36,1) both}
+        .headline{font-family:'Urbanist',sans-serif;font-weight:600;font-size:56px;line-height:1.05;letter-spacing:-1.5px;margin:0 0 32px}
+        .type-cursor{display:inline-block;width:3px;height:.9em;background:#A068FF;margin-left:2px;vertical-align:middle;animation:blink 1s step-end infinite}
+        .start-project-wrap{opacity:0;animation:rise-in .6s cubic-bezier(.22,1,.36,1) 3.2s both}
+        .cursor-badge{display:flex;align-items:center;gap:8px;margin-left:290px;margin-top:40px;opacity:0;animation:rise-in .6s cubic-bezier(.22,1,.36,1) 3.6s both}
+        .david-pill{background:#A068FF;color:#fff;font-size:16px;font-weight:500;padding:8px 16px;border-radius:20px;font-family:'Inter',sans-serif}
+
+        .hero-right{display:flex;align-items:center;justify-content:center}
+        .circles-outer{width:calc(720px*var(--circle-scale,1));height:calc(720px*var(--circle-scale,1));position:relative;opacity:0;animation:scale-in 1.2s cubic-bezier(.22,1,.36,1) .3s both}
+        .circles-stage{width:720px;height:720px;position:relative;transform:scale(var(--circle-scale,1));transform-origin:top left}
+        .orbit-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+        .orbit-spin{position:absolute;inset:0;border-radius:50%;animation-timing-function:linear;animation-iteration-count:infinite}
+        .orbit-spin--cw{animation-name:spin-cw}
+        .orbit-spin--ccw{animation-name:spin-ccw}
+        .orbit-ring{position:absolute;inset:0;border-radius:50%;background:linear-gradient(180deg,rgba(217,161,255,0) 0%,rgba(217,161,255,1) 43%,rgba(217,161,255,0) 100%);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 1px),#000 calc(100% - 1px));mask:radial-gradient(farthest-side,transparent calc(100% - 1px),#000 calc(100% - 1px))}
+        .avatar-pos{position:absolute;top:50%;left:50%}
+        .avatar-counter{animation-timing-function:linear;animation-iteration-count:infinite}
+        .avatar-counter--cw{animation-name:spin-cw}
+        .avatar-counter--ccw{animation-name:spin-ccw}
+        .avatar-flyin{opacity:0;animation:fly-in .6s cubic-bezier(.22,1,.36,1) both}
+        .avatar-img{display:block;object-fit:cover}
+        .orbit-counter-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:5;width:200px}
+        .counter-num{font-family:'Urbanist',sans-serif;font-size:64px;font-weight:500;color:#fff;line-height:1}
+        .counter-label{font-family:'Urbanist',sans-serif;font-size:16px;font-weight:600;color:#fff;margin-top:4px}
+
+        .logo-ticker{position:relative;z-index:10;padding:24px 0;overflow:hidden;-webkit-mask:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);opacity:0;animation:fade-up 1s cubic-bezier(.22,1,.36,1) .6s both}
+        .ticker-track{display:flex;align-items:center;gap:64px;width:max-content;animation:marquee 20s linear infinite}
+        .ticker-logo{width:137px;height:40px;object-fit:contain;flex-shrink:0}
+
+        :root{--circle-scale:1}
+        @media (max-width:1280px){:root{--circle-scale:.85}}
+        @media (max-width:1024px){
+          :root{--circle-scale:.7}
+          .hero-main{flex-direction:column;justify-content:center;gap:40px;padding-top:32px}
+          .hero-left{flex:0 1 auto;padding-top:0}
+          .headline{font-size:48px}
+          .header-left{gap:24px}
+          .cursor-badge{margin-left:0}
+        }
+        @media (max-width:768px){
+          :root{--circle-scale:.5}
+          .nav-links{display:none}
+          .headline{font-size:36px}
+          .header-inner{padding:20px 24px}
+          .hero-main{padding:0 24px}
+        }
+        @media (max-width:480px){
+          :root{--circle-scale:.4}
+          .headline{font-size:28px}
+          .pill-btn{padding:10px 20px;font-size:14px}
+          .start-btn{padding:12px 22px;font-size:14px}
+          .ticker-logo{width:96px;height:28px}
+          .ticker-track{gap:36px}
+          .header-inner{padding:16px}
+          .hero-main{padding:0 16px}
+          .cursor-badge{margin-top:24px}
+        }
+    </style>
+<style id="cyr">/* русские буквы: исходный шрифт без кириллицы, глифы — у близкого с кириллицей */
+@font-face{font-family:'Urbanist';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/jost/v20/92zPtBhPNqw79Ij1E865zBUv7myjJTVFNIg8mg.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Urbanist';font-style:normal;font-weight:600;font-display:swap;src:url(https://fonts.gstatic.com/s/jost/v20/92zPtBhPNqw79Ij1E865zBUv7myjJTVFNIg8mg.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Urbanist';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/jost/v20/92zPtBhPNqw79Ij1E865zBUv7myjJTVFNIg8mg.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const BG_URL = "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260624_111401_56af5012-2263-45d3-849a-8688084d7c2a.png&w=1280&q=85";
+const HEADLINE = "Лучшие маркетологи, которые казались недосягаемыми, — теперь в один клик!";
+const BLACK_LEN = 60;
+const NAV_LINKS = ["Ваша команда", "Решения", "Блог", "Цены"];
+
+const GLOW = {
+    purple: 'rgba(160,104,255,.6)',
+    yellow: 'rgba(255,209,102,.6)',
+    pink: 'rgba(255,120,200,.6)',
+    blue: 'rgba(110,168,254,.6)',
+    orange: 'rgba(255,161,76,.6)',
+};
+
+const ORBITS = [
+    { id: 1, size: 353, dir: 'ccw', dur: 30 },
+    { id: 2, size: 501, dir: 'cw', dur: 40 },
+    { id: 3, size: 649, dir: 'cw', dur: 50 },
+    { id: 4, size: 797, dir: 'ccw', dur: 60 },
+];
+
+const AVATARS = [
+    { orbit: 1, angle: 270, r: 177, size: 58, shape: 'square', radius: 20, glow: 'purple', delay: 0.60, src: 'https://polo-pecan-73837341.figma.site/_assets/v11/aa51718fb3af3637e6d666b6543fc27a175fada6.png' },
+    { orbit: 2, angle: 60, r: 251, size: 58, shape: 'round', radius: 50, glow: 'yellow', delay: 0.81, src: 'https://polo-pecan-73837341.figma.site/_assets/v11/ca755f7f93c1126fb8bdbf99ab364a33aa9ab272.png' },
+    { orbit: 2, angle: 180, r: 251, size: 78, shape: 'round', radius: 50, glow: 'pink', delay: 1.03, src: 'https://polo-pecan-73837341.figma.site/_assets/v11/dc01064c7093dcc32674876ee3cf5e41c4a485c6.png' },
+    { orbit: 2, angle: 300, r: 251, size: 58, shape: 'square', radius: 20, glow: 'blue', delay: 1.24, src: 'https://polo-pecan-73837341.figma.site/_assets/v11/d5470a58b02388336141575048720f19a50de832.png' },
+    { orbit: 3, angle: 130, r: 325, size: 88, shape: 'round', radius: 50, glow: 'pink', delay: 1.45, src: 'https://polo-pecan-73837341.figma.site/_assets/v11/018736aa5d0275c4ce56cfebaf2ae3007d81ca1e.png' },
+    { orbit: 4, angle: 30, r: 399, size: 58, shape: 'round', radius: 50, glow: 'purple', delay: 1.66, src: 'https://polo-pecan-73837341.figma.site/_assets/v11/c76d8a0b99676de31c014344bfaf75bad090758d.png' },
+    { orbit: 4, angle: 95, r: 399, size: 88, shape: 'square', radius: 24, glow: 'orange', delay: 1.88, src: 'https://polo-pecan-73837341.figma.site/_assets/v11/7b1b5f039de7b54cc9913e96c1923c3b15a157fa.png' },
+    { orbit: 4, angle: 220, r: 399, size: 88, shape: 'square', radius: 24, glow: 'pink', delay: 2.09, src: 'https://polo-pecan-73837341.figma.site/_assets/v11/9ae171d8895199349755c43fbff00e122221a027.png' },
+    { orbit: 4, angle: 320, r: 399, size: 58, shape: 'round', radius: 50, glow: 'purple', delay: 2.30, src: 'https://polo-pecan-73837341.figma.site/_assets/v11/926c9eb7b4bc1df846fa0e39f0b0dc3fefd80671.png' },
+];
+
+const LOGOS = [
+    'https://polo-pecan-73837341.figma.site/_assets/v11/1e7b0e6fcc016cd28aec5c68990118b8c54c35a5.svg',
+    'https://polo-pecan-73837341.figma.site/_assets/v11/3eac03c183db2ae080d910159211c14843398b61.svg',
+    'https://polo-pecan-73837341.figma.site/_assets/v11/17705a4c0023a0e5a99154dfb10582adbbf4260b.svg',
+    'https://polo-pecan-73837341.figma.site/_assets/v11/0e5f442b09dc5c248e3e60d40a65505fb1887228.svg',
+    'https://polo-pecan-73837341.figma.site/_assets/v11/63f99030ceb459e3c9ab9e429cfa2353491d3816.svg',
+];
+const TICKER_LOGOS = Array.from({ length: 8 }).flatMap(() => LOGOS);
+
+function useTypewriter(text, speed, startDelay) {
+    const [n, setN] = useState(0);
+    useEffect(() => {
+        let cancelled = false, startId, stepId;
+        startId = setTimeout(function tick(i) {
+            if (cancelled) return;
+            const next = (i || 0) + 1;
+            setN(next);
+            if (next < text.length) stepId = setTimeout(() => tick(next), speed);
+        }, startDelay);
+        return () => { cancelled = true; clearTimeout(startId); clearTimeout(stepId); };
+    }, [text, speed, startDelay]);
+    return n;
+}
+
+function useCountUp(to, duration, delay) {
+    const [n, setN] = useState(0);
+    useEffect(() => {
+        let raf, startId;
+        const ease = t => 1 - Math.pow(1 - t, 3);
+        const frame = (ts, start) => {
+            const s = start === undefined ? ts : start;
+            const p = Math.min(1, (ts - s) / duration);
+            setN(Math.round(to * ease(p)));
+            if (p < 1) raf = requestAnimationFrame(t => frame(t, s));
+        };
+        startId = setTimeout(() => { raf = requestAnimationFrame(t => frame(t, undefined)); }, delay);
+        return () => { clearTimeout(startId); if (raf) cancelAnimationFrame(raf); };
+    }, [to, duration, delay]);
+    return n;
+}
+
+const GadLogo = ({ height }) => (
+    <svg className="gad-logo" style={{ height: height || '32px' }} viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+        <path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z" />
+        <circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100" />
+        <circle className="orb" cx="322" cy="8" r="5" fill="currentColor" />
+    </svg>
+);
+
+const ChevronIcon = () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+);
+
+const CursorIcon = () => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="#A068FF"><path d="M4.037 4.688a.495.495 0 0 1 .651-.651l16 6.5a.5.5 0 0 1-.063.947l-6.124 1.58a2 2 0 0 0-1.438 1.435l-1.579 6.126a.5.5 0 0 1-.947.063z" /></svg>
+);
+
+const Avatar = ({ a }) => (
+    <div className="avatar-pos" style={{ transform: `translate(-50%,-50%) rotate(${a.angle}deg) translate(${a.r}px) rotate(${-a.angle}deg)` }}>
+        <div className={`avatar-counter avatar-counter--${a.counterDir}`} style={{ animationDuration: `${a.dur}s` }}>
+            <div className="avatar-flyin" style={{ animationDelay: `${a.delay}s` }}>
+                <img src={a.src} className="avatar-img" style={{ width: a.size, height: a.size, borderRadius: a.shape === 'square' ? a.radius : '50%', boxShadow: `0 0 30px 8px ${GLOW[a.glow]}` }} />
+            </div>
+        </div>
+    </div>
+);
+
+const CirclesVisualization = ({ count }) => (
+    <div className="circles-outer">
+        <div className="circles-stage">
+            {ORBITS.map(o => (
+                <div key={o.id} className="orbit-center" style={{ width: o.size, height: o.size }}>
+                    <div className={`orbit-spin orbit-spin--${o.dir}`} style={{ animationDuration: `${o.dur}s` }}>
+                        <div className="orbit-ring" />
+                        {AVATARS.filter(a => a.orbit === o.id).map((a, i) => (
+                            <Avatar key={i} a={{ ...a, dur: o.dur, counterDir: o.dir === 'ccw' ? 'cw' : 'ccw' }} />
+                        ))}
+                    </div>
+                </div>
+            ))}
+            <div className="orbit-counter-center">
+                <div className="counter-num">{count}k+</div>
+                <div className="counter-label">Специалистов</div>
+            </div>
+        </div>
+    </div>
+);
+
+const App = () => {
+    const typed = useTypewriter(HEADLINE, 35, 400);
+    const count = useCountUp(20, 2000, 1200);
+    const isTyping = typed < HEADLINE.length;
+    const shown = HEADLINE.slice(0, typed);
+
+    return (
+        <div className="app" style={{ background: `url(${BG_URL}) center center / cover no-repeat` }}>
+            <div className="header-wrap">
+                <div className="header-inner">
+                    <div className="header-left">
+                        <a href="#" style={{ color: '#000' }}><GadLogo height="32px" /></a>
+                        <nav className="nav-links">
+                            {NAV_LINKS.map(l => (<a key={l} href="#" className="nav-link">{l}</a>))}
+                        </nav>
+                    </div>
+                    <div className="header-right">
+                        <a href="#" className="nav-link nav-link--white">Войти</a>
+                        <div className="btn-border-wrap">
+                            <button className="pill-btn pill-btn--left"><span>Присоединиться</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <main className="hero-main">
+                <section className="hero-left">
+                    <h1 className="headline">
+                        <span style={{ color: '#000' }}>{shown.slice(0, Math.min(typed, BLACK_LEN))}</span>
+                        <span style={{ color: '#fff' }}>{shown.slice(BLACK_LEN)}</span>
+                        {isTyping && <span className="type-cursor" />}
+                    </h1>
+                    <div className="btn-border-wrap start-project-wrap">
+                        <button className="pill-btn pill-btn--right start-btn"><span>Начать проект</span><ChevronIcon /></button>
+                    </div>
+                    <div className="cursor-badge">
+                        <CursorIcon />
+                        <span className="david-pill">David</span>
+                    </div>
+                </section>
+                <section className="hero-right">
+                    <CirclesVisualization count={count} />
+                </section>
+            </main>
+
+            <footer className="logo-ticker">
+                <div className="ticker-track">
+                    {TICKER_LOGOS.map((src, i) => (<img key={i} src={src} className="ticker-logo" alt="" />))}
+                </div>
+            </footer>
+        </div>
+    );
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>

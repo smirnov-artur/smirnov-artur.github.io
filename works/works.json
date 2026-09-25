@@ -3296,5 +3296,50 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "mood-tracker",
+  "v": "mood-tracker",
+  "ve": "mood-tracker-en",
+  "ru": [
+   "Трекер настроения",
+   "Три экрана iPhone на видеофоне: отметка настроения, что на него влияет и шкала энергии."
+  ],
+  "en": [
+   "Mood tracker",
+   "Three iPhone mockups with looping video backdrops for a mood check-in, insights and an energy slider."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "network-hero",
+  "v": "network-hero",
+  "ve": "network-hero-en",
+  "ru": [
+   "Маркетинговые таланты",
+   "Заголовок печатается по буквам, аватары кружат по орбитам вокруг счётчика, внизу бежит строка логотипов."
+  ],
+  "en": [
+   "Marketing talent hero",
+   "A typewriter headline types out as avatars orbit a rising counter and partner logos scroll below."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "place-saver",
+  "v": "place-saver",
+  "ve": "place-saver-en",
+  "ru": [
+   "Гид по местам",
+   "Видео играет на двух айфонах, а следом с анимацией появляются заголовок, кнопки и тарифы Pro."
+  ],
+  "en": [
+   "Travel places app",
+   "Two iPhone mockups auto-play hero video while headline, buttons and Pro pricing cards animate in."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
