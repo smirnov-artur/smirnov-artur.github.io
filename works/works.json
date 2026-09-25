@@ -2813,5 +2813,33 @@
    "A looping video of a purple marble temple among flowers plays behind the card's text."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "impact-ventures",
+  "v": "impact-ventures",
+  "ve": "impact-ventures-en",
+  "ru": [
+   "Робот-опрыскиватель",
+   "Робот с распылителями едет по полю на видео-петле за крупным серифным заголовком студии."
+  ],
+  "en": [
+   "Crop-spraying robot",
+   "A robot with spray arms rolls through a crop field on loop behind a bold serif agency headline."
+  ],
+  "cat": "web"
+ },
+ {
+  "slug": "cleantech",
+  "v": "cleantech",
+  "ve": "cleantech-en",
+  "ru": [
+   "Переработка отходов",
+   "Заросшая мхом глыба висит за текстом, а дальше скролл раскалывает мшистый глобус между блоками статистики."
+  ],
+  "en": [
+   "Circular waste tech",
+   "Mossy debris glows behind bold text, then scroll splits a mossy globe apart between animated stat callouts."
+  ],
+  "cat": "web"
  }
 ]

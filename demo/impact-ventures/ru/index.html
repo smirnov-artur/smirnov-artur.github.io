@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atelier | UX и дизайн приложений для смелых проектов</title>
+    <meta name="description" content="Atelier — студия дизайна: продукты, которые формируют бренды и обеспечивают взрывной рост для смелых проектов.">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'instrument-serif': ['"Instrument Serif"', 'serif'],
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body, #root { height: 100%; width: 100%; overflow-x: hidden; }
+    </style>
+<style id="cyr">/* русские буквы: исходный шрифт без кириллицы, глифы — у близкого с кириллицей */
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/cormorant/v24/H4cjBXOCl9bbnla_nHIq6quyoqOOag.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/cormorant/v24/H4cjBXOCl9bbnla_nHIq6qu7oqOOag.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/cormorant/v24/H4clBXOCl9bbnla_nHIq4pu9uqc.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/cormorant/v24/H4clBXOCl9bbnla_nHIq65u9uqc.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+</style>
+</head>
+<body class="bg-black text-white antialiased overflow-x-hidden" style="font-family:'Inter',sans-serif">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+
+        const NAV_LINKS = ['Проекты', 'Услуги', 'Студия', 'Блог'];
+        const NAV_PAD = 'px-6 md:px-12 lg:px-16 py-5 md:py-6';
+        const EASE = 'ease-[cubic-bezier(0.76,0,0.24,1)]';
+
+        function HamburgerButton({ open, onClick }) {
+            return (
+                <button onClick={onClick} className="md:hidden relative w-6 h-4" aria-label="Открыть меню">
+                    <span className={`absolute left-0 w-6 h-0.5 bg-white rounded-full transition-all duration-500 ${EASE} ${open ? 'top-[7px] rotate-45' : 'top-0 rotate-0'}`}></span>
+                    <span className={`absolute left-1 top-[7px] w-4 h-0.5 bg-white rounded-full transition-all duration-500 ${EASE} ${open ? 'opacity-0' : 'opacity-100'}`}></span>
+                    <span className={`absolute left-0 w-6 h-0.5 bg-white rounded-full transition-all duration-500 ${EASE} ${open ? 'top-[7px] -rotate-45' : 'top-[14px] rotate-0'}`}></span>
+                </button>
+            );
+        }
+
+        function CloseButton({ onClick }) {
+            return (
+                <button onClick={onClick} className="relative w-6 h-6" aria-label="Закрыть меню">
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-0.5 bg-white rounded-full rotate-45"></span>
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-0.5 bg-white rounded-full -rotate-45"></span>
+                </button>
+            );
+        }
+
+        function App() {
+            const [open, setOpen] = useState(false);
+            const mobileLinks = [...NAV_LINKS, 'Связаться'];
+
+            return (
+                <section className="w-full h-screen overflow-hidden relative bg-black">
+                    <video
+                        className="absolute inset-0 w-full h-full object-cover"
+                        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_204103_f607742e-09da-4cf5-bb06-4e67b0a531de.mp4"
+                        autoPlay muted loop playsInline
+                    />
+
+                    <div className="relative z-10 flex flex-col h-full">
+                        {/* Navbar */}
+                        <nav className={`flex items-center justify-between ${NAV_PAD}`}>
+                            <div className="flex items-center gap-10">
+                                <span className="text-white font-semibold text-lg tracking-tight font-sans">Atelier</span>
+                                <div className="hidden md:flex items-center gap-8">
+                                    {NAV_LINKS.map(l => (
+                                        <a key={l} href="#" className="text-white/80 hover:text-white text-sm font-light transition-colors duration-200">{l}</a>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <a href="#" className="hidden md:inline text-white/80 hover:text-white text-sm font-light transition-colors duration-200">Связаться</a>
+                                <button className="hidden md:inline-block bg-white text-black rounded-full px-5 py-2 text-sm font-medium">Поговорим</button>
+                                <HamburgerButton open={open} onClick={() => setOpen(true)} />
+                            </div>
+                        </nav>
+
+                        {/* Hero content */}
+                        <div className="flex-1 flex flex-col items-center justify-start pt-4 sm:pt-6 md:pt-8 lg:pt-10 px-6 text-center">
+                            <h1 className="font-instrument-serif text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-[1.1] max-w-5xl">
+                                UX <span className="italic font-instrument-serif">и</span> APP<br />
+                                ДИЗАЙН <span className="italic font-instrument-serif">для</span> СМЕЛЫХ<br />
+                                ПРОЕКТОВ
+                            </h1>
+                            <p className="mt-4 md:mt-5 text-white/70 text-sm md:text-base font-light max-w-md leading-relaxed">
+                                Создаём продукты, которые формируют бренды<br className="hidden sm:block" /> и обеспечивают взрывной рост.
+                            </p>
+                            <div className="mt-5 md:mt-6 flex flex-col sm:flex-row items-center gap-4">
+                                <a href="#" className="group inline-flex items-center gap-2 bg-white text-black rounded-full px-7 py-3 text-sm font-medium">
+                                    Смотреть кейсы
+                                    <svg className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                                </a>
+                                <a href="#" className="inline-flex items-center gap-2 border border-white/40 text-white rounded-full px-7 py-3 text-sm font-medium hover:bg-white/10 hover:border-white/60 transition-colors duration-200">
+                                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="6 3 20 12 6 21 6 3" /></svg>
+                                    Смотреть шоурил
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Mobile menu overlay */}
+                    <div
+                        aria-hidden={!open}
+                        className={`fixed inset-0 z-50 md:hidden bg-black/90 backdrop-blur-xl transition-opacity duration-700 ${EASE} flex flex-col ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                    >
+                        <div className={`flex items-center justify-between ${NAV_PAD}`}>
+                            <span className="text-white font-semibold text-lg tracking-tight font-sans">Atelier</span>
+                            <CloseButton onClick={() => setOpen(false)} />
+                        </div>
+                        <nav className="flex-1 flex flex-col items-center justify-center px-6">
+                            {mobileLinks.map((l, i) => (
+                                <div
+                                    key={l}
+                                    className="w-full max-w-sm"
+                                    style={{
+                                        transitionProperty: 'transform, opacity',
+                                        transitionDuration: '500ms',
+                                        transitionTimingFunction: 'cubic-bezier(0.76,0,0.24,1)',
+                                        transitionDelay: open ? `${150 + i * 80}ms` : '0ms',
+                                        transform: open ? 'translateY(0)' : 'translateY(2rem)',
+                                        opacity: open ? 1 : 0,
+                                    }}
+                                >
+                                    <a href="#" onClick={() => setOpen(false)} className="block text-center text-4xl sm:text-5xl font-instrument-serif text-white border-b border-white/10 py-4 transition-all duration-300 hover:pl-4">{l}</a>
+                                </div>
+                            ))}
+                        </nav>
+                        <div className="px-6 pb-10">
+                            <button
+                                className="w-full bg-white text-black rounded-full py-4 text-sm font-medium"
+                                style={{
+                                    transitionProperty: 'opacity',
+                                    transitionDuration: '500ms',
+                                    transitionDelay: open ? '550ms' : '0ms',
+                                    opacity: open ? 1 : 0,
+                                }}
+                            >Поговорим</button>
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>
