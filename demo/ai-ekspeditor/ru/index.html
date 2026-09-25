@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ai-ekspeditor — телеграм-бот экспедитора с жёсткой минимальной ставкой (Python)</title>
+    <meta name="description" content="LLM только читает сообщение клиента. Цену она не называет — это решает обычный поиск по rates.csv, и заниженное предложение получает в ответ минимальную ставку, а не скидку.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = { theme: { extend: { fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        } } } };
+    </script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <style>.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}</style>
+    <style>
+        html,body{overflow-x:hidden;background:#020617}
+        ::selection{background:#134e4a;color:#ccfbf1}
+        .bg-grid{background-image:linear-gradient(rgba(148,163,184,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.14) 1px,transparent 1px);background-size:36px 36px}
+    </style>
+</head>
+<body class="antialiased bg-slate-950 text-slate-200 font-sans">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useRef, useEffect } = React;
+
+        const GITHUB_URL = 'https://github.com/smirnov-artur/ai-ekspeditor';
+        const PORTFOLIO_URL = 'https://smirnov-artur.github.io/works/';
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+        const GadLogo = ({ className, style }) => (
+            <svg className={'gad-logo ' + (className || '')} style={style} viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+                <path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/>
+                <circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100"/>
+                <circle className="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+            </svg>
+        );
+
+        const ICON_PATHS = {
+            chat: <><path d="M4 5.5h16v10.5H10.5L6 20v-4H4z"/></>,
+            shield: <><path d="M12 3l7 3.2v5.3c0 4.8-3 7.9-7 9.5-4-1.6-7-4.7-7-9.5V6.2z"/></>,
+            cpu: <><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M9 3v3M12 3v3M15 3v3M9 18v3M12 18v3M15 18v3M3 9h3M3 12h3M3 15h3M18 9h3M18 12h3M18 15h3"/></>,
+            truck: <><path d="M3 7h10v8H3z"/><path d="M13 10h4l3.5 3.5V15H13z"/><circle cx="7.5" cy="17.3" r="1.7"/><circle cx="17" cy="17.3" r="1.7"/></>,
+            book: <><path d="M4 5.3A1.8 1.8 0 0 1 5.8 3.5H12v17H5.8A1.8 1.8 0 0 1 4 18.7z"/><path d="M20 5.3a1.8 1.8 0 0 0-1.8-1.8H12v17h6.2a1.8 1.8 0 0 0 1.8-1.8z"/></>,
+        };
+        const Icon = ({ name, className }) => (
+            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{ICON_PATHS[name]}</svg>
+        );
+
+        const Nav = () => (
+            <nav className="max-w-[1360px] mx-auto flex items-center justify-between px-5 sm:px-6 py-5">
+                <a href={PORTFOLIO_URL} className="flex items-center gap-2 text-slate-100 opacity-90 hover:opacity-100 transition-opacity" aria-label="портфолио g.a.d.">
+                    <GadLogo style={{ height: 22 }} />
+                </a>
+                <a href={GITHUB_URL} target="_blank" rel="noopener" className="hidden sm:flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-100 transition-colors font-mono">
+                    github.com/smirnov-artur/ai-ekspeditor
+                </a>
+            </nav>
+        );
+
+        const TONE_RING = { teal: 'rgba(45,212,191,0.55)', amber: 'rgba(251,191,36,0.55)' };
+        const TONE_TEXT = { teal: 'text-teal-300', amber: 'text-amber-300' };
+        const TONE_BORDER = { teal: 'border-teal-400 bg-teal-400/10', amber: 'border-amber-400 bg-amber-400/10' };
+
+        const StepBox = React.forwardRef(({ icon, label, sub, active, tone = 'teal', done, children }, ref) => (
+            <div
+                ref={ref}
+                className={
+                    'relative flex-1 rounded-2xl border-2 px-4 py-5 sm:px-5 sm:py-6 transition-all duration-300 ' +
+                    (active ? TONE_BORDER[tone] + ' shadow-[0_0_36px_-6px_' + TONE_RING[tone] + ']' : done ? 'border-slate-700 bg-slate-900/70' : 'border-slate-800 bg-slate-900/70')
+                }
+            >
+                <div className="mb-3">
+                    <Icon name={icon} className={'w-5 h-5 sm:w-6 sm:h-6 transition-colors ' + (active ? TONE_TEXT[tone] : done ? 'text-teal-400' : 'text-slate-500')} />
+                </div>
+                <p className="font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-500 mb-1.5">{label}</p>
+                <p className="text-slate-100 font-semibold text-sm sm:text-base leading-snug">{children}</p>
+                <p className={'font-mono text-[11px] sm:text-xs mt-2.5 min-h-[2.4em] leading-snug ' + (active ? TONE_TEXT[tone] : 'text-slate-400')}>{sub || ' '}</p>
+            </div>
+        ));
+
+        const LogLine = ({ entry }) => {
+            const tone = entry.tone === 'amber' ? 'text-amber-300' : entry.tone === 'teal' ? 'text-teal-300' : 'text-slate-300';
+            return (
+                <div className="font-mono text-[12px] sm:text-[13px] leading-relaxed">
+                    <span className={entry.dir === 'req' ? 'text-slate-500' : tone}>{entry.dir === 'req' ? '→ ' : '← '}</span>
+                    <span className={entry.dir === 'req' ? 'text-slate-300' : tone}>{entry.text}</span>
+                    {entry.note && <div className="text-slate-500 pl-4">// {entry.note}</div>}
+                </div>
+            );
+        };
+
+        const HOP = 340, CHECK = 260, LEAD = 110;
+
+        const Diagram = () => {
+            const wrapRef = useRef(null), clientRef = useRef(null), maskRef = useRef(null), extractRef = useRef(null), routeRef = useRef(null);
+            const busyRef = useRef(false), manualRef = useRef(false);
+
+            const [lines, setLines] = useState(null);
+            const [ready, setReady] = useState(false);
+            const readyRef = useRef(false);
+            const [busy, setBusy] = useState(false);
+            const [tokens, setTokens] = useState(0);
+            const [dots, setDots] = useState(Array.from({ length: 4 }, () => ({ x: 0, y: 0, show: false, tone: 'teal' })));
+            const [step, setStep] = useState({ client: {}, mask: {}, extract: {}, route: { icon: 'truck', label: 'quote() / answer()' } });
+            const [badge, setBadge] = useState(null);
+            const [log, setLog] = useState([]);
+
+            useEffect(() => {
+                const measure = () => {
+                    if (!wrapRef.current || !clientRef.current || !maskRef.current || !extractRef.current || !routeRef.current) return;
+                    const c = wrapRef.current.getBoundingClientRect();
+                    const rel = ref => { const b = ref.current.getBoundingClientRect(); return { x: b.left - c.left + b.width / 2, y: b.top - c.top + b.height / 2 }; };
+                    setLines({ client: rel(clientRef), mask: rel(maskRef), extract: rel(extractRef), route: rel(routeRef) });
+                    if (!readyRef.current) { readyRef.current = true; setReady(true); }
+                };
+                measure();
+                const ro = new ResizeObserver(measure);
+                ro.observe(wrapRef.current);
+                window.addEventListener('resize', measure);
+                return () => { ro.disconnect(); window.removeEventListener('resize', measure); };
+            }, []);
+
+            const setBusyBoth = v => { busyRef.current = v; setBusy(v); };
+            const appendLog = (...entries) => setLog(l => [...l, ...entries].slice(-4));
+            const hideDots = () => setDots(d => d.map(x => ({ ...x, show: false })));
+            const setActive = (key, tone) => setStep(s => ({ ...s, [key]: { ...s[key], active: true, tone } }));
+            const clearActive = key => setStep(s => ({ ...s, [key]: { ...s[key], active: false } }));
+            const setDone = (key, v) => setStep(s => ({ ...s, [key]: { ...s[key], done: v } }));
+            const setSub = (key, sub) => setStep(s => ({ ...s, [key]: { ...s[key], sub } }));
+            const setRoute = patch => setStep(s => ({ ...s, route: { ...s.route, ...patch } }));
+            const moveTo = async (key, tone) => {
+                const p = lines[key];
+                setDots(d => { const n = [...d]; n[0] = { ...p, show: true, tone }; return n; });
+                [1, 2, 3].forEach(i => setTimeout(() => setDots(d => { const n = [...d]; n[i] = { ...p, show: true, tone }; return n; }), i * 90));
+                await sleep(HOP);
+            };
+
+            const runQuote = async () => {
+                setBadge(null); setTokens(0);
+                setDots(d => [{ ...lines.client, show: true, tone: 'teal' }, ...d.slice(1).map(x => ({ ...x, show: false }))]);
+                await sleep(LEAD);
+                setActive('client', 'teal'); setSub('client', '«…даю 40к, тел 8 926 123-45-67»');
+                appendLog({ dir: 'req', text: '"Мск — Казань, 4 т, 30 кубов, даю 40к, тел 8 926 123-45-67"', note: 'реальная реплика клиента из README + приписанный для примера телефон' });
+                await sleep(CHECK);
+                clearActive('client');
+
+                await moveTo('mask', 'teal');
+                setActive('mask', 'teal'); setSub('mask', '1 совпадение → [телефон]');
+                appendLog({ dir: 'req', text: 'mask_pii(text)' }, { dir: 'res', text: '1 совпадение → [телефон]', tone: 'teal', note: 'телефоны, карты, паспорта, ИНН и реквизиты вырезаются до того, как текст увидит LLM' });
+                await sleep(CHECK);
+                clearActive('mask'); setDone('mask', true);
+
+                await moveTo('extract', 'teal');
+                setActive('extract', 'teal'); setSub('extract', 'intent: request');
+                setTokens(140);
+                appendLog({ dir: 'req', text: 'extract(masked)' }, { dir: 'res', text: 'from:Москва to:Казань 4т/30м³ 40 000₽', tone: 'teal', note: 'модель только заполняет эти поля — цену она не назначает' });
+                await sleep(CHECK);
+                clearActive('extract'); setDone('extract', true);
+
+                setRoute({ icon: 'truck', label: 'quote() · rates.csv' });
+                await moveTo('route', 'amber');
+                setActive('route', 'amber'); setSub('route', '40 000 < min_rate → 55 000');
+                appendLog({ dir: 'req', text: "quote('Москва','Казань', 4, 30, 40000)" }, { dir: 'res', text: '«…можем взять за 55 000 ₽. Согласны?»', tone: 'amber', note: 'минимальная ставка — из csv, ни модель, ни клиент не опустят её ниже' });
+                await sleep(CHECK);
+                clearActive('route'); setDone('route', true);
+                setBadge({ text: 'op: request · status: ok', tone: 'teal' });
+                hideDots();
+            };
+
+            const runQuestion = async () => {
+                setBadge(null); setTokens(0);
+                setDots(d => [{ ...lines.client, show: true, tone: 'teal' }, ...d.slice(1).map(x => ({ ...x, show: false }))]);
+                await sleep(LEAD);
+                setActive('client', 'teal'); setSub('client', '«Сколько стоит авиадоставка в Минск?»');
+                appendLog({ dir: 'req', text: '"Сколько стоит авиадоставка в Минск?"', note: 'реальный пример из README — такого направления нет ни в таблице, ни в регламенте' });
+                await sleep(CHECK);
+                clearActive('client');
+
+                await moveTo('mask', 'teal');
+                setActive('mask', 'teal'); setSub('mask', '0 совпадений');
+                appendLog({ dir: 'req', text: 'mask_pii(text)' }, { dir: 'res', text: '0 совпадений', tone: 'teal' });
+                await sleep(CHECK);
+                clearActive('mask'); setDone('mask', true);
+
+                await moveTo('extract', 'teal');
+                setActive('extract', 'teal'); setSub('extract', 'intent: question');
+                setTokens(140);
+                appendLog({ dir: 'req', text: 'extract(masked)' }, { dir: 'res', text: 'intent: question', tone: 'teal' });
+                await sleep(CHECK);
+                clearActive('extract'); setDone('extract', true);
+
+                setRoute({ icon: 'book', label: 'answer() · RAG' });
+                await moveTo('route', 'amber');
+                setActive('route', 'amber'); setSub('route', 'retrieve() → НЕТ_ОТВЕТА');
+                setTokens(390);
+                appendLog({ dir: 'req', text: 'answer(masked)' }, { dir: 'res', text: '«Не нашёл точного ответа в регламенте — передал вопрос менеджеру, скоро ответим.»', tone: 'amber', note: 'число или НЕТ_ОТВЕТА, не подтверждённое найденными фрагментами, отбрасывается, а не отправляется как есть' });
+                await sleep(CHECK);
+                clearActive('route'); setDone('route', true);
+                setBadge({ text: 'op: question · status: handoff', tone: 'amber' });
+                hideDots();
+            };
+
+            const doReset = () => {
+                setTokens(0); setLog([]); setBadge(null); hideDots();
+                setStep({ client: {}, mask: {}, extract: {}, route: { icon: 'truck', label: 'quote() / answer()' } });
+            };
+
+            const guardedRun = async fn => {
+                if (busyRef.current || !lines) return;
+                setBusyBoth(true);
+                await fn();
+                setBusyBoth(false);
+            };
+
+            const onQuote = () => { manualRef.current = true; guardedRun(runQuote); };
+            const onQuestion = () => { manualRef.current = true; guardedRun(runQuestion); };
+            const onReset = () => { manualRef.current = true; if (!busyRef.current) doReset(); };
+
+            useEffect(() => {
+                if (!ready) return;
+                let stopped = false;
+                (async () => {
+                    await sleep(300);
+                    while (!stopped && !manualRef.current) {
+                        await guardedRun(runQuote);
+                        if (stopped || manualRef.current) break;
+                        await sleep(1700);
+                        doReset();
+                        await sleep(500);
+                        await guardedRun(runQuestion);
+                        if (stopped || manualRef.current) break;
+                        await sleep(1700);
+                        doReset();
+                        await sleep(600);
+                    }
+                })();
+                return () => { stopped = true; };
+            }, [ready]);
+
+            const primaryBtn = 'font-mono text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed ' +
+                'bg-teal-400 text-slate-950 hover:bg-teal-300 disabled:hover:bg-teal-400';
+            const secondaryBtn = 'font-mono text-xs sm:text-sm font-medium px-4 py-2.5 rounded-lg border-2 transition-colors disabled:opacity-30 disabled:cursor-not-allowed ' +
+                'border-slate-600 text-slate-100 hover:border-teal-400 hover:text-teal-300 disabled:hover:border-slate-600 disabled:hover:text-slate-100';
+            const ghostBtn = 'font-mono text-xs sm:text-sm px-4 py-2.5 rounded-lg text-slate-500 hover:text-slate-200 transition-colors disabled:opacity-30';
+
+            return (
+                <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-5 sm:p-8 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-grid opacity-40 pointer-events-none" />
+
+                    <div className="relative z-10 flex flex-wrap items-end justify-between gap-4 mb-7 sm:mb-9">
+                        <div>
+                            <p className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-slate-500 mb-1">токенов потрачено</p>
+                            <p className="font-mono text-4xl sm:text-6xl font-bold text-teal-300 tabular-nums leading-none">{tokens}</p>
+                        </div>
+                        <div className="min-h-[46px] sm:min-h-[56px] flex items-center">
+                            {badge && (
+                                <span className={'font-mono text-[13px] sm:text-lg font-bold px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl border-2 ' +
+                                    (badge.tone === 'amber' ? 'text-amber-300 border-amber-400 bg-amber-400/10' : 'text-teal-300 border-teal-400 bg-teal-400/10')}>
+                                    {badge.text}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+
+                    <div ref={wrapRef} className="relative z-10">
+                        {lines && (
+                            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
+                                <line x1={lines.client.x} y1={lines.client.y} x2={lines.mask.x} y2={lines.mask.y} stroke="#334155" strokeWidth="2" />
+                                <line x1={lines.mask.x} y1={lines.mask.y} x2={lines.extract.x} y2={lines.extract.y} stroke="#334155" strokeWidth="2" />
+                                <line x1={lines.extract.x} y1={lines.extract.y} x2={lines.route.x} y2={lines.route.y} stroke="#334155" strokeWidth="2" />
+                            </svg>
+                        )}
+
+                        <div className="relative flex flex-col sm:flex-row gap-3 sm:gap-4" style={{ zIndex: 1 }}>
+                            <StepBox ref={clientRef} icon="chat" label="telegram" active={step.client.active} tone={step.client.tone} sub={step.client.sub}>входящее сообщение</StepBox>
+                            <StepBox ref={maskRef} icon="shield" label="mask_pii()" active={step.mask.active} tone={step.mask.tone} done={step.mask.done} sub={step.mask.sub}>маскирует ПДн до LLM</StepBox>
+                            <StepBox ref={extractRef} icon="cpu" label="extract() · LLM" active={step.extract.active} tone={step.extract.tone} done={step.extract.done} sub={step.extract.sub}>маршрут, вес, объём</StepBox>
+                            <StepBox ref={routeRef} icon={step.route.icon} label={step.route.label} active={step.route.active} tone={step.route.tone} done={step.route.done} sub={step.route.sub}>цена или ответ по регламенту</StepBox>
+                        </div>
+
+                        {[3, 2, 1, 0].map(i => {
+                            const dot = dots[i];
+                            const size = [11, 8, 6, 4][i];
+                            const op = [1, 0.55, 0.3, 0.15][i];
+                            const color = dot.tone === 'amber' ? '#fbbf24' : '#2dd4bf';
+                            return (
+                                <div key={i} className="absolute rounded-full pointer-events-none" style={{
+                                    width: size, height: size, left: dot.x, top: dot.y, transform: 'translate(-50%,-50%)',
+                                    zIndex: 2, opacity: dot.show ? op : 0, background: color,
+                                    boxShadow: i === 0 ? `0 0 18px 5px ${dot.tone === 'amber' ? 'rgba(251,191,36,.85)' : 'rgba(45,212,191,.85)'}` : 'none',
+                                    transition: 'left 340ms ease, top 340ms ease, opacity 250ms ease',
+                                }} />
+                            );
+                        })}
+                    </div>
+
+                    <div className="relative z-10 rounded-lg border border-slate-800 bg-black/40 px-4 py-3 min-h-[92px] mt-7 sm:mt-9">
+                        {log.length === 0 && <p className="font-mono text-[12px] text-slate-600">// автовоспроизведение — или нажмите кнопку ниже</p>}
+                        {log.map((entry, i) => <LogLine key={i} entry={entry} />)}
+                    </div>
+
+                    <div className="demo-actions relative z-10 flex flex-wrap items-center gap-2.5 mt-5">
+                        <button onClick={onQuote} disabled={busy} className={primaryBtn}>ставка ниже минимума</button>
+                        <button onClick={onQuestion} disabled={busy} className={secondaryBtn}>вопрос не по регламенту</button>
+                        <button onClick={onReset} disabled={busy} className={ghostBtn}>сбросить</button>
+                        <span className="font-mono text-[11px] text-slate-600 ml-auto">демо-данные — ООО «Тестовая Логистика»</span>
+                    </div>
+                </div>
+            );
+        };
+
+        const HeroDiagram = () => (
+            <section className="max-w-[1360px] mx-auto px-5 sm:px-6 pt-6 sm:pt-10 pb-10 sm:pb-16">
+                <div className="grid lg:grid-cols-[520px_1fr] gap-8 lg:gap-14 items-start">
+                    <div className="lg:pt-6">
+                        <p className="font-mono text-xs sm:text-sm text-teal-400 tracking-wide mb-3">python · telegram-бот</p>
+                        <h1 className="font-mono text-5xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight mb-5 leading-[1.02]">ai-ekspeditor</h1>
+                        <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-7">
+                            LLM читает сообщение клиента. Цену она не назначает — это решает обычный поиск по <code className="font-mono text-teal-300">rates.csv</code>, и ниже минимума он не опустится.
+                        </p>
+                        <div className="flex flex-wrap gap-3">
+                            <a href={GITHUB_URL} target="_blank" rel="noopener" className="inline-flex items-center gap-2 bg-teal-400 text-slate-950 font-semibold text-sm px-6 py-3 rounded-lg hover:bg-teal-300 transition-colors">
+                                Код на GitHub
+                            </a>
+                        </div>
+                    </div>
+                    <Diagram />
+                </div>
+            </section>
+        );
+
+        const Code = () => (
+            <section className="max-w-[1360px] mx-auto px-5 sm:px-6 py-8 sm:py-10">
+                <p className="font-mono text-xs uppercase tracking-wider text-slate-500 mb-3">модель предлагает, csv решает</p>
+                <pre className="rounded-xl border border-slate-800 bg-black/40 p-4 sm:p-5 overflow-x-auto font-mono text-[12.5px] sm:text-sm leading-relaxed max-w-2xl">
+                    <code>
+<span className="text-violet-300">def</span> <span className="text-sky-300">quote</span><span className="text-slate-400">(frm, to, weight_t, volume_m3, offer_rub=</span><span className="text-violet-300">None</span><span className="text-slate-400">):</span>{"\n"}    <span className="text-slate-400">rows = [r </span><span className="text-violet-300">for</span> <span className="text-slate-400">r </span><span className="text-violet-300">in</span> <span className="text-slate-400">csv.DictReader(f) </span><span className="text-violet-300">if</span> <span className="text-slate-400">_norm(r[</span><span className="text-amber-300">"from"</span><span className="text-slate-400">]) == _norm(frm) </span><span className="text-violet-300">and</span> <span className="text-slate-400">...]</span>{"\n"}    <span className="text-slate-400">v = </span><span className="text-sky-300">next</span><span className="text-slate-400">((r </span><span className="text-violet-300">for</span> <span className="text-slate-400">r </span><span className="text-violet-300">in</span> <span className="text-slate-400">rows </span><span className="text-violet-300">if</span> <span className="text-slate-400">weight_t {'<='} </span><span className="text-sky-300">float</span><span className="text-slate-400">(r[</span><span className="text-amber-300">"max_weight_t"</span><span className="text-slate-400">]) </span><span className="text-violet-300">and</span> <span className="text-slate-400">...), </span><span className="text-violet-300">None</span><span className="text-slate-400">)</span>{"\n"}    <span className="text-slate-400">lo, hi = </span><span className="text-sky-300">float</span><span className="text-slate-400">(v[</span><span className="text-amber-300">"min_rate"</span><span className="text-slate-400">]), </span><span className="text-sky-300">float</span><span className="text-slate-400">(v[</span><span className="text-amber-300">"max_rate"</span><span className="text-slate-400">])</span>{"\n"}    <span className="text-violet-300">if</span> <span className="text-slate-400">offer_rub </span><span className="text-violet-300">is</span> <span className="text-violet-300">None</span><span className="text-slate-400">: </span><span className="text-violet-300">return</span> <span className="text-slate-400">f</span><span className="text-amber-300">"...ставка {"{"}_rub(hi){"}"} ₽. Подтверждаете?"</span>{"\n"}    <span className="text-violet-300">if</span> <span className="text-slate-400">offer_rub >= lo: </span><span className="text-violet-300">return</span> <span className="text-slate-400">f</span><span className="text-amber-300">"...ваша ставка {"{"}_rub(offer_rub){"}"} ₽ подходит..."</span>{"\n"}    <span className="text-violet-300">return</span> <span className="text-slate-400">f</span><span className="text-amber-300">"...можем взять за {"{"}_rub(lo){"}"} ₽. Согласны?"</span>
+                    </code>
+                </pre>
+            </section>
+        );
+
+        const GUARANTEES = [
+            'Цена всегда берётся из rates.csv, а не от модели или клиента — предложение ниже min_rate получает в ответ минимальную ставку как встречное, а не скидку.',
+            'Телефоны, карты, паспорта, ИНН и реквизиты вырезаются регулярками до того, как текст попадёт в LLM — ФИО, компании и адреса не маскируются, так что для настоящей изоляции всё равно нужна локальная модель.',
+            'Ответ по регламенту по построению опирается только на найденные документы: если в нём НЕТ_ОТВЕТА или число, которого нет во фрагментах, ответ отбрасывается и уходит менеджеру.',
+            'Подтвердить можно только ту заявку, по которой бот сам назвал цену, а смена маршрута сбрасывает прежнее предложение клиента — ставка не переносится на направление, по которому её не называли.',
+        ];
+
+        const Guarantees = () => (
+            <section className="max-w-[1360px] mx-auto px-5 sm:px-6 py-8 sm:py-10">
+                <p className="font-mono text-xs uppercase tracking-wider text-slate-500 mb-4">гарантии</p>
+                <ul className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {GUARANTEES.map((g, i) => (
+                        <li key={i} className="rounded-xl border border-slate-800 bg-slate-900/40 p-4 text-sm text-slate-300 leading-relaxed">{g}</li>
+                    ))}
+                </ul>
+                <div className="flex flex-wrap gap-2 mt-6">
+                    {['Python', 'Ollama / OpenRouter', 'ChromaDB + RAG', '658 мутантов, пойманы 99,8%'].map(t => (
+                        <span key={t} className="font-mono text-xs text-slate-400 border border-slate-800 rounded-full px-3 py-1">{t}</span>
+                    ))}
+                </div>
+            </section>
+        );
+
+        const Footer = () => (
+            <footer className="max-w-[1360px] mx-auto px-5 sm:px-6 py-10 flex flex-wrap items-center justify-between gap-4 border-t border-slate-900">
+                <a href={PORTFOLIO_URL} className="flex items-center gap-2 text-slate-500 hover:text-slate-200 transition-colors">
+                    <GadLogo style={{ height: 16 }} />
+                </a>
+                <a href={GITHUB_URL} target="_blank" rel="noopener" className="font-mono text-xs text-slate-500 hover:text-teal-300 transition-colors">лицензия MIT · исходники на GitHub</a>
+            </footer>
+        );
+
+        const App = () => (
+            <div className="min-h-screen relative">
+                <div className="fixed inset-0 bg-grid opacity-[0.35] pointer-events-none" style={{ maskImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, black, transparent)' }} />
+                <div className="relative">
+                    <Nav />
+                    <HeroDiagram />
+                    <Code />
+                    <Guarantees />
+                    <Footer />
+                </div>
+            </div>
+        );
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

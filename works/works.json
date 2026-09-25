@@ -3204,15 +3204,17 @@
   "slug": "ai-ekspeditor",
   "cat": "ai",
   "ru": [
-   "ИИ-экспедитор",
-   "Telegram-бот для экспедитора грузов"
+   "Экспедитор с минимальной ставкой",
+   "Анимированная диаграмма показывает, как LLM достаёт из сообщения маршрут и цену, а минимальную ставку решает не модель, а обычный поиск по rates.csv."
   ],
   "en": [
-   "AI freight forwarder",
-   "A Telegram bot for a freight forwarder"
+   "Freight bot with a rate floor",
+   "An animated diagram shows the LLM extract a route and price from a chat message while a plain rates.csv lookup — not the model — enforces the minimum rate."
   ],
   "img": "gh/ai-ekspeditor.jpg",
-  "href": "https://github.com/smirnov-artur/ai-ekspeditor"
+  "rp": 1,
+  "v": "ai-ekspeditor",
+  "ve": "ai-ekspeditor-en"
  },
  {
   "slug": "vino",
@@ -3465,70 +3467,80 @@
   "slug": "ozon-finance",
   "cat": "tools",
   "ru": [
-   "Начисления Ozon — в Google Таблицу",
-   "Выгрузка финансов Ozon через новые методы API"
+   "Миграция начислений Ozon",
+   "Анимированная диаграмма проводит начисление через отключённый метод Ozon, а затем через три новых запроса с листанием — прямо в Google Таблицу."
   ],
   "en": [
-   "Ozon accruals to Google Sheets",
-   "Ozon finance export through the new API methods"
+   "Ozon accrual migration",
+   "An animated diagram walks a real accrual through Ozon's retired endpoint, then the three paginated calls that replaced it, straight into a Google Sheet."
   ],
   "img": "gh/ozon-finance-accrual-sheets.jpg",
-  "href": "https://github.com/smirnov-artur/ozon-finance-accrual-sheets"
+  "rp": 1,
+  "v": "ozon-finance",
+  "ve": "ozon-finance-en"
  },
  {
   "slug": "ledger",
   "cat": "tools",
   "ru": [
-   "Двойная запись на Go",
-   "Учёт денег проводками: дебет и кредит всегда сходятся"
+   "Двойная запись",
+   "Сбалансированные проводки дебет/кредит меняют балансы счетов, а оборотная ведомость всегда остаётся нулём."
   ],
   "en": [
-   "Double-entry ledger in Go",
-   "Money kept as postings: debit and credit always balance"
+   "Double-entry ledger",
+   "Balanced debit/credit postings update two accounts live while the trial balance stays pinned at zero."
   ],
   "img": "gh/ledger.jpg",
-  "href": "https://github.com/smirnov-artur/ledger"
+  "rp": 1,
+  "v": "ledger",
+  "ve": "ledger-en"
  },
  {
   "slug": "idempotency",
   "cat": "tools",
   "ru": [
-   "Идемпотентность платёжных запросов",
-   "Повтор запроса не спишет деньги дважды"
+   "Идемпотентные платежи",
+   "Анимированная диаграмма запросов показывает, как повторный платёж получает сохранённый ответ вместо повторного списания."
   ],
   "en": [
-   "Idempotent payment requests",
-   "A retried request never charges twice"
+   "Idempotent payments",
+   "An animated request/response diagram shows a retried payment replay the stored response instead of charging twice."
   ],
   "img": "gh/idempotency.jpg",
-  "href": "https://github.com/smirnov-artur/idempotency"
+  "rp": 1,
+  "v": "idempotency",
+  "ve": "idempotency-en"
  },
  {
   "slug": "outbox",
   "cat": "tools",
   "ru": [
-   "Надёжная отправка событий в Kafka",
-   "Событие уйдёт, даже если сервис упадёт посреди операции"
+   "Транзакционный outbox",
+   "Строка outbox коммитится с изменением состояния; убейте брокер — она ждёт, а потом доставляется."
   ],
   "en": [
-   "Reliable event publishing to Kafka",
-   "The event goes out even if the service dies mid-operation"
+   "Transactional outbox",
+   "A commit writes the outbox row with the state change; kill the broker and the row waits, then still delivers."
   ],
   "img": "gh/outbox.jpg",
-  "href": "https://github.com/smirnov-artur/outbox"
+  "rp": 1,
+  "v": "outbox",
+  "ve": "outbox-en"
  },
  {
   "slug": "saga",
   "cat": "tools",
   "ru": [
-   "Сага для платёжных сценариев",
-   "Распределённая операция с откатом шагов без двухфазной фиксации"
+   "Компенсирующая сага",
+   "Выплата из трёх шагов идёт вперёд, а при сбое одного из них оркестратор откатывает уже выполненные шаги в обратном порядке, а не зависает."
   ],
   "en": [
-   "Saga for payment flows",
-   "A distributed operation with step compensation, no two-phase commit"
+   "Compensating saga",
+   "A three-step payout runs forward until a step fails, then the orchestrator undoes each finished step in reverse order instead of getting stuck."
   ],
   "img": "gh/saga-orchestrator.jpg",
-  "href": "https://github.com/smirnov-artur/saga-orchestrator"
+  "rp": 1,
+  "v": "saga",
+  "ve": "saga-en"
  }
 ]
