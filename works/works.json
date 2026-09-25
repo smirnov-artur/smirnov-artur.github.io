@@ -3431,5 +3431,20 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "stark-minimal-footer",
+  "v": "stark-minimal-footer",
+  "ve": "stark-minimal-footer-en",
+  "ru": [
+   "Чёрный подвал сайта",
+   "Точки на верхней кромке ползут в сторону, ниже — колонки навигации и гигантский g.a.d. на чёрном фоне."
+  ],
+  "en": [
+   "Minimal dark footer",
+   "A dotted top border drifts sideways above nav columns and an oversized g.a.d. wordmark on black."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
