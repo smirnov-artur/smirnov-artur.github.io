@@ -3341,5 +3341,20 @@
   ],
   "cat": "web",
   "rp": 1
+ },
+ {
+  "slug": "movie-premiere",
+  "v": "movie-premiere",
+  "ve": "movie-premiere-en",
+  "ru": [
+   "Афиша премьер",
+   "Стопка киноафиш внутри макета телефона: смахните карточку вниз — она улетает, и открывается следующая."
+  ],
+  "en": [
+   "Movie premiere app",
+   "Movie posters stack inside a phone mockup; drag the front card down and it drops away, revealing the next."
+  ],
+  "cat": "web",
+  "rp": 1
  }
 ]
