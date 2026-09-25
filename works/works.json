@@ -541,7 +541,8 @@
    "A glass bubble with an iridescent film floats over a rippled floor; the cursor pulls and dents it, scrolling floods the screen with rainbow light"
   ],
   "cat": "3d",
-  "rp": 1
+  "rp": 1,
+  "ve": "bubble-orb-en"
  },
  {
   "slug": "raspad",
