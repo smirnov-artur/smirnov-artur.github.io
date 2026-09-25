@@ -2855,5 +2855,19 @@
    "Scroll scrubs two videos while a pale-yellow headline dissolves and jewelry panels slide in from the left."
   ],
   "cat": "web"
+ },
+ {
+  "slug": "health-portal",
+  "v": "health-portal",
+  "ve": "health-portal-en",
+  "ru": [
+   "Стоматологическая клиника",
+   "Счётчик считает до 100 при загрузке, затем карточки плавно всплывают, показывая срез одного общего фото."
+  ],
+  "en": [
+   "Dental clinic",
+   "A number counts to 100 on load, then dentistry cards fade up, each cropping a slice of one shared photo."
+  ],
+  "cat": "web"
  }
 ]
