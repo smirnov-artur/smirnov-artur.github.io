@@ -93,6 +93,7 @@
             const videoRef = useRef(null);
             useEffect(() => {
                 const video = videoRef.current;
+                if (!src.endsWith('.m3u8')) { video.src = src; return; }
                 if (Hls.isSupported()) {
                     const hls = new Hls();
                     hls.loadSource(src);
@@ -151,7 +152,7 @@
             return (
                 <section className="relative w-full h-[1000px] overflow-visible flex flex-col items-center pt-[150px] text-center px-6">
                     <video 
-                        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260307_083826_e938b29f-a43a-41ec-a153-3d4730578ab8.mp4"
+                        src="https://assets.mixkit.co/videos/44818/44818-720.mp4"
                         className="absolute top-[20%] left-0 w-full h-auto object-contain -z-10"
                         autoPlay loop muted playsInline
                     />
@@ -211,7 +212,7 @@
         const HowItWorks = () => (
             <section className="relative min-h-[700px] py-32 px-8 lg:px-24 flex flex-col items-center text-center">
                 <HlsVideo 
-                    src="https://stream.mux.com/9JXDljEVWYwWu01PUkAemafDugK89o01BR6zqJ3aS9u00A.m3u8"
+                    src="https://assets.mixkit.co/videos/31497/31497-720.mp4"
                     className="absolute inset-0 w-full h-full object-cover -z-20"
                 />
                 <div className="absolute inset-x-0 top-0 h-[200px] bg-gradient-to-b from-black to-transparent -z-10"></div>
@@ -282,7 +283,7 @@
         const Footer = () => (
             <footer className="relative bg-black pt-48 pb-12 px-8 lg:px-24 text-center">
                 <HlsVideo 
-                    src="https://stream.mux.com/8wrHPCX2dC3msyYU9ObwqNdm00u3ViXvOSHUMRYSEe5Q.m3u8"
+                    src="https://assets.mixkit.co/videos/18142/18142-720.mp4"
                     className="absolute inset-0 w-full h-full object-cover -z-20 opacity-30"
                 />
                 <div className="absolute inset-x-0 top-0 h-[200px] bg-gradient-to-b from-black to-transparent -z-10"></div>

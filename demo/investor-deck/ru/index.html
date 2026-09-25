@@ -38,6 +38,7 @@
             const ref = useRef(null);
             useEffect(() => {
                 const v = ref.current; if (!v) return;
+                if (!src.endsWith('.m3u8')) { v.src = src; v.play().catch(() => {}); return; }
                 if (Hls.isSupported()) { const h = new Hls({ autoStartLoad: true }); h.loadSource(src); h.attachMedia(v); h.on(Hls.Events.MANIFEST_PARSED, () => v.play().catch(() => {})); return () => h.destroy(); }
                 else if (v.canPlayType('application/vnd.apple.mpegurl')) { v.src = src; v.addEventListener('loadedmetadata', () => v.play().catch(() => {})); }
             }, [src]);
@@ -46,8 +47,8 @@
 
         const slides = [
             { url: 'https://stream.mux.com/Aa02T7oM1wH5Mk5EEVDYhbZ1ChcdhRsS2m1NYyx4Ua1g.m3u8', num: '01', vStyle: {} },
-            { url: 'https://stream.mux.com/s8pMcOvMQXc4GD6AX4e1o01xFogFxipmuKltNfSYza0200.m3u8', num: '02', vStyle: {} },
-            { url: 'https://stream.mux.com/Gs3wZfrtz6ZfqZqQ02c02Z7lugV00FGZvRpcqFTel66r3g.m3u8', num: '03', vStyle: { transform: 'scale(-1,-1)', opacity: 0.5 } },
+            { url: 'https://assets.mixkit.co/videos/31562/31562-720.mp4', num: '02', vStyle: {} },
+            { url: 'https://assets.mixkit.co/videos/47282/47282-720.mp4', num: '03', vStyle: { transform: 'scale(-1,-1)', opacity: 0.5 } },
             { url: 'https://stream.mux.com/PkFsoKeakRLgL01gjf02CRcSbsJ600Z00NvLr9eRZ92pLbA.m3u8', num: '04', vStyle: { left: '400px' } },
             { url: 'https://stream.mux.com/BuGGTsiXq1T00WUb8qfURrHkTCbhrkfFLSv4uAOZzdhw.m3u8', num: '05', vStyle: { width: '200%', height: '200%', bottom: 0, left: 0, top: 'auto' } },
         ];
