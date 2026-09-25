@@ -526,7 +526,8 @@
    "A concrete monolith assembles from dust, cracks, collapses, melts and evaporates"
   ],
   "href": "https://smirnov-artur.github.io/raspad/",
-  "v": "pf-raspad"
+  "v": "pf-raspad",
+  "hre": "https://smirnov-artur.github.io/raspad/en/"
  },
  {
   "slug": "srez",
@@ -3294,7 +3295,8 @@
    "Sections snap together; the spec and price update live"
   ],
   "href": "https://smirnov-artur.github.io/standes/",
-  "v": "pf-standes-3d"
+  "v": "pf-standes-3d",
+  "hre": "https://smirnov-artur.github.io/standes/en/"
  },
  {
   "slug": "ventprom-tools",
@@ -3308,7 +3310,8 @@
    "Aerodynamics, heat and moisture, acoustics and selection, all in the browser"
   ],
   "href": "https://smirnov-artur.github.io/ventprom-tools/",
-  "v": "pf-ventprom-tools"
+  "v": "pf-ventprom-tools",
+  "hre": "https://smirnov-artur.github.io/ventprom-tools/en/"
  },
  {
   "slug": "kredit",
@@ -3336,7 +3339,8 @@
    "The packing algorithm lays out the load in 3D right in the browser"
   ],
   "href": "https://smirnov-artur.github.io/ventprom-packer/",
-  "v": "pf-ventprom-packer"
+  "v": "pf-ventprom-packer",
+  "hre": "https://smirnov-artur.github.io/ventprom-packer/en/"
  },
  {
   "slug": "ventprom",
