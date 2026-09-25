@@ -471,21 +471,6 @@
   "rp": 1
  },
  {
-  "slug": "3d-story",
-  "v": "3d-story",
-  "ve": "3d-story-en",
-  "ru": [
-   "Цветение в космосе",
-   "Прозрачный 3D-цветок раскрывается на звёздном фоне при скролле, а затем карточки проявляются волной."
-  ],
-  "en": [
-   "3D flower bloom",
-   "A translucent 3D flower blooms across a starfield as you scroll, then cards wipe in over it."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
   "slug": "cinematic-studio",
   "v": "cinematic-studio",
   "ru": [
@@ -1573,21 +1558,6 @@
   "rp": 1
  },
  {
-  "slug": "apex-saas",
-  "v": "apex-saas",
-  "ru": [
-   "SaaS для роста продаж",
-   "Под заголовком проявляется видео с синей глянцевой волной, ниже бежит лента логотипов клиентов"
-  ],
-  "en": [
-   "Sales growth SaaS",
-   "A glossy blue wave video fades in under the headline while a client logo marquee scrolls below"
-  ],
-  "cat": "web",
-  "ve": "apex-saas-en",
-  "rp": 1
- },
- {
   "slug": "asme",
   "v": "asme",
   "ru": [
@@ -1738,21 +1708,6 @@
   "rp": 1
  },
  {
-  "slug": "datacore-saas-hero",
-  "v": "datacore-saas-hero",
-  "ru": [
-   "Управление сетями",
-   "Фиолетовые стеклянные ленты плывут на затемнённом видео за заголовком с курсивным акцентом"
-  ],
-  "en": [
-   "Network management",
-   "Violet glass ribbons drift in a dimmed video behind a headline with an italic serif accent"
-  ],
-  "cat": "web",
-  "ve": "datacore-saas-hero-en",
-  "rp": 1
- },
- {
   "slug": "designpro-academy",
   "v": "designpro-academy",
   "ru": [
@@ -1858,21 +1813,6 @@
   "rp": 1
  },
  {
-  "slug": "grow-ai-talent-platform",
-  "v": "grow-ai-talent-platform",
-  "ru": [
-   "ИИ для найма",
-   "Огромный градиентный логотип, видео с синими стеклянными волнами и бегущая лента логотипов"
-  ],
-  "en": [
-   "AI recruiting",
-   "A huge gradient wordmark, a fading blue glass-wave video and a scrolling logo strip"
-  ],
-  "cat": "web",
-  "ve": "grow-ai-talent-platform-en",
-  "rp": 1
- },
- {
   "slug": "hr-saas-hero",
   "v": "hr-saas-hero",
   "ru": [
@@ -1915,21 +1855,6 @@
   ],
   "cat": "web",
   "ve": "liquid-glass-agency-en",
-  "rp": 1
- },
- {
-  "slug": "loader-animation",
-  "v": "loader-animation",
-  "ru": [
-   "Экран загрузки",
-   "Счётчик бежит от 000 до 100 с градиентной полосой, слова сменяются, затем проявляется страница"
-  ],
-  "en": [
-   "Loading screen",
-   "A 000–100 counter runs with a gradient bar while words swap, then the page fades in"
-  ],
-  "cat": "web",
-  "ve": "loader-animation-en",
   "rp": 1
  },
  {
@@ -2098,36 +2023,6 @@
   "rp": 1
  },
  {
-  "slug": "planet-orbit",
-  "v": "planet-orbit",
-  "ru": [
-   "Рост продаж",
-   "Видео с Землёй с орбиты за заголовком и бегущая лента логотипов клиентов"
-  ],
-  "en": [
-   "Sales growth",
-   "A video of Earth from orbit behind the headline and a scrolling strip of client logos"
-  ],
-  "cat": "web",
-  "ve": "planet-orbit-en",
-  "rp": 1
- },
- {
-  "slug": "portfolio-cosmic",
-  "v": "portfolio-cosmic",
-  "ru": [
-   "Космическое портфолио",
-   "Счётчик загрузки до 100 со сменой слов, затем космический вихрь на видео и меняющаяся роль автора"
-  ],
-  "en": [
-   "Cosmic portfolio",
-   "A 000–100 loader cycles words, then a cosmic vortex video and a rotating role line in the hero"
-  ],
-  "cat": "web",
-  "ve": "portfolio-cosmic-en",
-  "rp": 1
- },
- {
   "slug": "power-ai",
   "v": "power-ai",
   "ru": [
@@ -2170,21 +2065,6 @@
   ],
   "cat": "web",
   "ve": "railroad-ai-en",
-  "rp": 1
- },
- {
-  "slug": "stellar-ai",
-  "v": "stellar-ai",
-  "ru": [
-   "ИИ-процессы по шагам",
-   "Вкладки сами переключаются, и поверх видео с фэнтези-пейзажем всплывают карточки этапов"
-  ],
-  "en": [
-   "AI workflows step by step",
-   "Tabs switch on their own, popping up step cards over a fantasy landscape video"
-  ],
-  "cat": "web",
-  "ve": "stellar-ai-en",
   "rp": 1
  },
  {
@@ -2353,21 +2233,6 @@
   "rp": 1
  },
  {
-  "slug": "interactive-discovery",
-  "v": "interactive-discovery",
-  "ve": "interactive-discovery-en",
-  "ru": [
-   "Курс геологии",
-   "Мягкое пятно света следует за курсором по фото скалы, открывая под ним мшистое цветное изображение."
-  ],
-  "en": [
-   "Geology course",
-   "A soft spotlight follows the cursor over a rock photo, unmasking a mossier, colorful image underneath."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
   "slug": "remit-race",
   "v": "remit-race",
   "ve": "remit-race-en",
@@ -2413,21 +2278,6 @@
   "rp": 1
  },
  {
-  "slug": "cross-border",
-  "v": "cross-border",
-  "ve": "cross-border-en",
-  "ru": [
-   "Карта грузовых маршрутов",
-   "Грузовик едет по трассе на закате, затем по карте маршрутов бегут жёлтые стрелки между точками."
-  ],
-  "en": [
-   "Freight route map",
-   "A truck drives down the highway at sunset, then yellow arrows animate along routes between glowing dots."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
   "slug": "wellbeing-os",
   "v": "wellbeing-os",
   "ve": "wellbeing-os-en",
@@ -2453,36 +2303,6 @@
   "en": [
    "Fintech app features",
    "A heading, a button and four cards fade up out of a blur one by one, revealing a donut chart and three photos."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "media-card-carousel",
-  "v": "media-card-carousel",
-  "ve": "media-card-carousel-en",
-  "ru": [
-   "Истории ракетных запусков",
-   "Лента видео о запусках и испытаниях ракет: карточка оживает, когда на неё наводишь курсор."
-  ],
-  "en": [
-   "Rocket launch stories",
-   "A horizontal rail of autoplaying rocket launch and test videos that dim until you hover a card."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "pet-products",
-  "v": "pet-products",
-  "ve": "pet-products-en",
-  "ru": [
-   "Товары для питомцев",
-   "Три экрана телефона проявляются и сдвигаются вверх, видео распаковки подарка идёт по кругу, а карточки товаров появляются одна за другой."
-  ],
-  "en": [
-   "Pet products app",
-   "Three phone mockups fade in and slide up, a gift-unboxing video loops, and a product grid pops in card by card."
   ],
   "cat": "web",
   "rp": 1
@@ -2543,21 +2363,6 @@
   "en": [
    "Stablecoin use cases",
    "A looping video of a purple marble temple among flowers plays behind the card's text."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "impact-ventures",
-  "v": "impact-ventures",
-  "ve": "impact-ventures-en",
-  "ru": [
-   "Робот-опрыскиватель",
-   "Робот с распылителями едет по полю на видео-петле за крупным серифным заголовком студии."
-  ],
-  "en": [
-   "Crop-spraying robot",
-   "A robot with spray arms rolls through a crop field on loop behind a bold serif agency headline."
   ],
   "cat": "web",
   "rp": 1
@@ -2728,21 +2533,6 @@
   "rp": 1
  },
  {
-  "slug": "orbis-hello",
-  "v": "orbis-hello",
-  "ve": "orbis-hello-en",
-  "ru": [
-   "Игрушечный космонавт",
-   "Игрушечный космонавт стоит в освещённой витрине, вокруг в темноте другие космонавты. Видео идёт по кругу."
-  ],
-  "en": [
-   "Toy astronaut",
-   "A looping video of a toy astronaut glowing inside a lit case, ringed by more toy astronauts in the dark."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
   "slug": "mouse-trail-cta",
   "v": "mouse-trail-cta",
   "ve": "mouse-trail-cta-en",
@@ -2768,21 +2558,6 @@
   "en": [
    "Travel discovery app",
    "A mountain video plays behind the hero text, then destination cards scroll by in a dark feed."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "impact-spotlight",
-  "v": "impact-spotlight",
-  "ve": "impact-spotlight-en",
-  "ru": [
-   "Амортизация нового поколения",
-   "Курсор прожигает тёмную картинку светящимся пятном, открывая под ней видео с искрами."
-  ],
-  "en": [
-   "Next-gen cushioning",
-   "A cursor-trailing spotlight burns through a dark image to reveal a glowing ember video underneath."
   ],
   "cat": "web",
   "rp": 1
@@ -2873,21 +2648,6 @@
   "en": [
    "Travel journal app",
    "Inside an iPhone mockup, four destination cards fade and slide up one after another under glass badges."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "celestial-renewal",
-  "v": "celestial-renewal",
-  "ve": "celestial-renewal-en",
-  "ru": [
-   "Красота и велнес",
-   "Земля из космоса за заголовком, ниже — радуга и облака плывут при прокрутке рядом с цитатой."
-  ],
-  "en": [
-   "Beauty and wellness",
-   "Earth glows behind the hero text, then clouds and a rainbow drift in as you scroll past a quote."
   ],
   "cat": "web",
   "rp": 1
@@ -3023,21 +2783,6 @@
   "en": [
    "Minimal dark footer",
    "A dotted top border drifts sideways above nav columns and an oversized g.a.d. wordmark on black."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "rocket-cta",
-  "v": "rocket-cta",
-  "ve": "rocket-cta-en",
-  "ru": [
-   "Курс сайтов на AI",
-   "Чат-панель и зацикленное ночное видео плывут в панели параллакса, а трава наплывает на них при скролле."
-  ],
-  "en": [
-   "AI website course",
-   "A chat panel and a looping night-time video float in a parallax dashboard as grass slides over them on scroll."
   ],
   "cat": "web",
   "rp": 1
