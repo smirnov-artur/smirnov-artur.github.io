@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — Problem With Creative?</title>
+    <meta name="description" content="g.a.d.'s brutalist scroll experience: a scroll-scrubbed video, a typewriter headline that deletes itself, a rolling manifesto, mouse-trail stickers and a pop-up feedback form.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
+    <style>
+        html, body { margin: 0; background: #020617; overflow-x: hidden; }
+        body { font-family: 'Press Start 2P', system-ui, sans-serif; }
+        ::selection { background: rgba(16,185,129,.2); }
+        .brand-mark { font-family: 'Press Start 2P', system-ui, sans-serif; }
+
+        @keyframes marquee { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-50%,0,0); } }
+        .animate-marquee { display: flex; width: max-content; animation: marquee 10s linear infinite; }
+
+        @keyframes sticker-fade-out {
+            0% { opacity: 0; transform: translate(-50%,-50%) rotate(var(--rot)) scale(0); }
+            20% { opacity: 1; transform: translate(-50%,-50%) rotate(var(--rot)) scale(1.05); }
+            30% { opacity: 1; transform: translate(-50%,-50%) rotate(var(--rot)) scale(1.0); }
+            85% { opacity: 1; transform: translate(-50%,-50%) rotate(var(--rot)) scale(1.0); }
+            100% { opacity: 0; transform: translate(-50%,-50%) rotate(var(--rot)) scale(.8); }
+        }
+        .trail-sticker { animation: sticker-fade-out 2.2s forwards cubic-bezier(.16,1,.3,1); }
+
+        @keyframes caret { 0%, 100% { opacity: 1 } 50% { opacity: 0 } }
+        .caret { animation: caret 1s step-end infinite; }
+
+        input::placeholder, textarea::placeholder { color: #475569; }
+    </style>
+</head>
+<body class="bg-slate-950 overflow-x-hidden m-0 p-0">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback } = React;
+
+        const VIDEO_URL_1 = 'https://stream.mux.com/W2NRcV6MrewS7QyWWqAWZvJR9jrnPU5rxymlPg01gRzk.m3u8';
+        const VIDEO_URL_2 = 'https://stream.mux.com/aypDi1exkKgYKEbWme9Csi47zxIim0101hw3ghmSzQIyw.m3u8';
+        const STICKER1 = 'img/sticker-figure.webp';
+        const STICKER2 = 'img/sticker-no-substitute.webp';
+        const STICKER3 = 'img/sticker-earth.webp';
+        const STICKER4 = 'img/sticker-flower.webp';
+        const TRAIL = [
+            'img/trail-1.webp',
+            'img/trail-2.webp',
+            'img/trail-3.webp',
+            'img/trail-4.webp',
+            'img/trail-5.webp',
+        ];
+        const NAV = ['Projects', 'Expertise', 'About', 'Contact'];
+        const MANIFESTO = `LIMITLESS IDEAS,
+NOT TEMPLATES FOR
+MASS CONSUMPTION.
+THIS IS A HIGHLY
+SELECTIVE
+ENVIRONMENT
+ENGINEERED FOR
+HYPER-PRODUCTIVE
+CREATORS, UI/UX
+VISIONARIES, AND
+AI PROMPT
+ARCHITECTS WHO
+OPERATE AT THE
+ABSOLUTE LIMITS OF
+DIGITAL PRODUCT
+CREATION.
+
+---
+
+WHY CHOOSE US?
+1. ZERO MOCKUPS,
+ONLY REAL CODE.
+2. SPEED RUNS —
+ZERO WASTED TIME.
+3. DIGITAL EDGE —
+AESTHETIC
+DOMINANCE.
+4. SYSTEM STATE —
+INTELLIGENT
+INTERACTION.
+
+---
+
+WE REJECT
+THE BORING.
+WE REJECT
+THE STANDARD.
+
+CHOOSE ABSOLUTE
+CREATIVE EDGE.
+
+THE FUTURE IS
+NOW SECURED.`;
+
+        const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+        const lerp = (a, b, t) => a + (b - a) * t;
+
+        // 22-slot typewriter sequence: chars carry {line}, sticker slots carry {sticker}
+        const TYPE_ITEMS = [
+            ...'PROBLEM'.split('').map(ch => ({ line: 0, ch })),
+            ...'WITH'.split('').map(ch => ({ line: 1, ch })),
+            { line: 1, sticker: STICKER4, rot: -8 },
+            { line: 1, sticker: STICKER3, rot: 6 },
+            ...'CREATIVE?'.split('').map(ch => ({ line: 2, ch })),
+        ];
+
+        function useHlsVideo(ref, src) {
+            useEffect(() => {
+                const video = ref.current;
+                if (!video) return;
+                let hls;
+                const warm = () => { video.play().then(() => video.pause()).catch(() => {}); };
+                if (window.Hls && window.Hls.isSupported()) {
+                    hls = new window.Hls({ maxBufferLength: 60 });
+                    hls.loadSource(src);
+                    hls.attachMedia(video);
+                    hls.on(window.Hls.Events.MANIFEST_PARSED, warm);
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    video.src = src;
+                    video.addEventListener('loadedmetadata', warm);
+                }
+                return () => { if (hls) hls.destroy(); };
+            }, [ref, src]);
+        }
+
+        const VideoBackground = () => {
+            const v1 = useRef(null), v2 = useRef(null);
+            const [op2, setOp2] = useState(0);
+            useHlsVideo(v1, VIDEO_URL_1);
+            useHlsVideo(v2, VIDEO_URL_2);
+            useEffect(() => {
+                let raf;
+                const tick = () => {
+                    const max = document.documentElement.scrollHeight - window.innerHeight;
+                    const progress = max > 0 ? clamp(window.scrollY / max, 0, 1) : 0;
+                    const a = v1.current, b = v2.current;
+                    if (a && b && a.duration && b.duration) {
+                        let target1 = a.currentTime, target2 = b.currentTime;
+                        if (progress <= 0.5) target1 = clamp(progress / 0.5, 0, 1) * a.duration;
+                        if (progress >= 0.5) target2 = clamp((progress - 0.5) / 0.5, 0, 1) * b.duration;
+                        if (window.scrollY <= 10) target1 = 0;
+                        if (progress >= 1) target2 = b.duration;
+                        if (!a.seeking) a.currentTime = lerp(a.currentTime, target1, 0.3);
+                        if (!b.seeking) b.currentTime = lerp(b.currentTime, target2, 0.3);
+                        setOp2(o => {
+                            const n = progress < 0.45 ? 0 : progress > 0.5 ? 1 : (progress - 0.45) / 0.05;
+                            return Math.abs(o - n) > 0.005 ? n : o;
+                        });
+                    }
+                    raf = requestAnimationFrame(tick);
+                };
+                raf = requestAnimationFrame(tick);
+                return () => cancelAnimationFrame(raf);
+            }, []);
+            return (
+                <div className="fixed inset-0 w-full h-full overflow-hidden">
+                    <video ref={v1} muted playsInline preload="auto" crossOrigin="anonymous"
+                        className="absolute inset-0 w-full h-full object-cover object-[65%_50%] pointer-events-none transition-opacity duration-300"
+                        style={{ opacity: op2 >= 1 ? 0 : 1 }} />
+                    <video ref={v2} muted playsInline preload="auto" crossOrigin="anonymous"
+                        className="absolute inset-0 w-full h-full object-cover object-[65%_50%] pointer-events-none transition-opacity duration-300"
+                        style={{ opacity: op2 }} />
+                </div>
+            );
+        };
+
+        const Marquee = () => (
+            <div className="fixed top-14 left-[-170px] w-[650px] -rotate-[30deg] z-50 bg-[#0033FF] py-[18px] overflow-hidden select-none pointer-events-none shadow-2xl">
+                <div className="animate-marquee flex whitespace-nowrap">
+                    {[0, 1].map(i => (
+                        <span key={i} className="brand-mark text-[16px] text-[#85D743] tracking-widest px-4">
+                            {'WARNING! '.repeat(8)}&nbsp;
+                        </span>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const Nav = () => (
+            <React.Fragment>
+                <a href="#" className="brand-mark fixed top-24 sm:top-10 left-4 sm:left-8 md:left-16 z-50 text-[10px] sm:text-xs md:text-sm text-[#85D743]">g.a.d.</a>
+                <nav className="fixed top-16 lg:top-10 right-4 sm:right-8 md:right-16 z-50 flex flex-col items-end gap-1.5 lg:flex-row lg:gap-10 brand-mark text-[10px] sm:text-xs md:text-sm text-white select-auto">
+                    {NAV.map((l, i) => (
+                        <a key={l} href="#" id={'nav-' + i} className="hover:text-[#85D743] transition-colors duration-200"
+                            onClick={e => { if (i === 3) { e.preventDefault(); window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' }); } }}>
+                            {l}
+                        </a>
+                    ))}
+                </nav>
+            </React.Fragment>
+        );
+
+        const HeroTypewriter = ({ progress }) => {
+            const activeProgress = Math.min(progress, 0.25) / 0.25;
+            const visibleCount = Math.round((1 - activeProgress) * TYPE_ITEMS.length);
+            const lines = [[], [], []];
+            TYPE_ITEMS.forEach((item, i) => { if (i < visibleCount) lines[item.line].push(item); });
+            const showCursor = visibleCount > 0;
+            const lastLine = lines[2].length ? 2 : lines[1].length ? 1 : 0;
+            const cursor = <span className="inline-block w-[0.14em] h-[0.8em] bg-[#85D743] ml-1 select-none caret align-middle" />;
+            const glyph = (item, ii) => item.sticker
+                ? <img key={ii} src={item.sticker} alt="" className="h-[0.85em] w-auto object-contain inline-block" style={{ transform: `rotate(${item.rot}deg)` }} />
+                : <span key={ii} className="inline-block relative">{item.ch}</span>;
+            return (
+                <div className="fixed top-0 left-0 w-full h-screen z-30 pointer-events-none flex flex-col justify-end p-8 md:p-16 pb-28 sm:pb-24">
+                    <h1 className="brand-mark text-[#85D743] text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.2] tracking-tight uppercase select-none max-w-5xl">
+                        {lines.map((line, li) => {
+                            const caret = showCursor && li === lastLine;
+                            if (li !== 1) return <div key={li}>{line.map(glyph)}{caret && cursor}</div>;
+                            // строка 2: буквы — во вложенном flex с узким зазором, наклейки — через широкий (как в спецификации)
+                            const letters = line.filter(it => !it.sticker), stickers = line.filter(it => it.sticker);
+                            return (
+                                <div key={li} className="inline-flex items-center gap-3 sm:gap-5 md:gap-7 align-middle">
+                                    {letters.length > 0 && <span className="inline-flex items-center gap-[0.06em] sm:gap-[0.08em] md:gap-[0.1em]">{letters.map(glyph)}{caret && !stickers.length && cursor}</span>}
+                                    {stickers.map((it, ii) => glyph(it, 's' + ii))}
+                                    {caret && stickers.length > 0 && cursor}
+                                </div>
+                            );
+                        })}
+                    </h1>
+                </div>
+            );
+        };
+
+        const Manifesto = ({ progress, maxScroll }) => {
+            const startProgress = 0.25 + (maxScroll > 0 ? 200 / maxScroll : 0);
+            const alpha = clamp((progress - startProgress) / (1 - startProgress), 0, 1);
+            const opacity = Math.min(1, alpha / 0.05);
+            const translateY = 100 - alpha * 450;
+            return (
+                <div className="fixed top-0 left-0 w-full md:w-[70%] h-screen z-25 pointer-events-none flex flex-col justify-start p-8 md:p-16 select-none"
+                    style={{ paddingTop: '12vh', opacity, transform: `translateY(${translateY}vh)` }}>
+                    <div className="brand-mark text-[#85D743] text-[clamp(12px,calc((100vw_-_64px)/17.5),20px)] sm:text-[26px] md:text-[32px] leading-[1.35] tracking-tight uppercase text-left" style={{ whiteSpace: 'pre-line' }}>
+                        {MANIFESTO}
+                    </div>
+                </div>
+            );
+        };
+
+        const MouseTrail = () => {
+            const [stickers, setStickers] = useState([]);
+            const last = useRef(null);
+            const counter = useRef(0);
+            useEffect(() => {
+                const onMove = e => {
+                    const p = last.current;
+                    if (p && Math.hypot(e.clientX - p.x, e.clientY - p.y) < 150) return;
+                    last.current = { x: e.clientX, y: e.clientY };
+                    const id = Date.now() + Math.random();
+                    const src = TRAIL[counter.current % 5];
+                    counter.current += 1;
+                    const rot = Math.random() * 40 - 20;
+                    setStickers(prev => [...prev.slice(-3), { id, x: e.clientX, y: e.clientY, src, rot }]);
+                    setTimeout(() => setStickers(prev => prev.filter(s => s.id !== id)), 2200);
+                };
+                window.addEventListener('mousemove', onMove, { passive: true });
+                return () => window.removeEventListener('mousemove', onMove);
+            }, []);
+            return (
+                <div className="fixed inset-0 pointer-events-none z-[60] overflow-hidden">
+                    {stickers.map(s => (
+                        <div key={s.id} className="trail-sticker absolute select-none pointer-events-none flex items-center justify-center -translate-x-1/2 -translate-y-1/2"
+                            style={{ left: s.x, top: s.y, '--rot': s.rot + 'deg' }}>
+                            <img src={s.src} alt="" referrerPolicy="no-referrer" className="w-[110px] sm:w-[150px] md:w-[180px] h-auto object-contain" />
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const FeedbackForm = ({ visible }) => {
+            const [done, setDone] = useState(false);
+            const submit = e => { e.preventDefault(); setDone(true); };
+            return (
+                <div className="fixed left-1/2 z-[55] w-[92%] max-w-[460px] p-6 sm:p-8 bg-slate-950/95 border-4 border-[#0033FF] shadow-[10px_10px_0px_#85D743] select-auto pointer-events-auto"
+                    style={{ bottom: '50%', transitionProperty: 'all', transitionDuration: '900ms', transitionTimingFunction: 'cubic-bezier(0.16,1,0.3,1)',
+                        transform: visible ? 'translate(-50%, 50%) rotate(0deg)' : 'translate(-50%, 150vh) rotate(15deg)' }}>
+                    <button id="form-close" onClick={() => setDone(false)} className="absolute top-4 right-4 brand-mark text-[14px] text-slate-500 hover:text-red-500 hover:scale-110 active:scale-95 transition-all cursor-pointer select-none border-none bg-transparent">[X]</button>
+                    {!done ? (
+                        <form onSubmit={submit} className="flex flex-col gap-4 sm:gap-5">
+                            <div className="brand-mark text-xs sm:text-sm text-[#85D743] tracking-widest uppercase text-center mb-1 px-8">FEEDBACK SYSTEM</div>
+                            <input type="text" required placeholder="YOUR NAME" className="font-mono text-xs text-white bg-slate-900 border-2 border-slate-700 focus:border-[#85D743] hover:border-slate-500 focus:outline-none p-2.5 w-full uppercase transition-all" />
+                            <input type="email" required placeholder="NAME@DOMAIN.COM" className="font-mono text-xs text-white bg-slate-900 border-2 border-slate-700 focus:border-[#85D743] hover:border-slate-500 focus:outline-none p-2.5 w-full transition-all" />
+                            <textarea required rows="3" placeholder="FEEDBACK / ARCHITECTURE IDEAS..." className="font-mono text-xs text-white bg-slate-900 border-2 border-slate-700 focus:border-[#85D743] hover:border-slate-500 focus:outline-none p-2.5 w-full resize-none transition-all" />
+                            <button id="form-submit" type="submit" className="brand-mark text-[8px] sm:text-[9px] text-black bg-[#85D743] hover:bg-[#9bfb4e] active:translate-y-0.5 active:shadow-none border-2 border-black py-3 px-6 shadow-[4px_4px_0px_#0033FF] w-full font-bold uppercase tracking-widest cursor-pointer select-none transition-all mt-1">LAUNCH TRANSMISSION</button>
+                        </form>
+                    ) : (
+                        <div className="flex flex-col items-center text-center">
+                            <div className="brand-mark text-[32px] text-[#85D743] mb-4 animate-bounce">&#10022;</div>
+                            <div className="brand-mark text-xs sm:text-sm text-[#85D743] mb-3 tracking-widest uppercase">TRANSMISSION SUCCESS</div>
+                            <div className="font-mono text-[10px] sm:text-xs text-slate-400 max-w-sm mb-6 uppercase leading-relaxed">Your feedback is secured in our neural network database.</div>
+                            <button id="form-reset" onClick={() => setDone(false)} className="brand-mark text-[8px] sm:text-[10px] text-black bg-[#85D743] hover:bg-[#9eff5c] border-2 border-black py-2.5 px-5 font-bold uppercase tracking-wider shadow-[3px_3px_0px_#0033FF] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer">[ NEW TRANSMISSION ]</button>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [progress, setProgress] = useState(0);
+            const [maxScroll, setMaxScroll] = useState(1);
+            useEffect(() => {
+                const onScroll = () => {
+                    const max = document.documentElement.scrollHeight - window.innerHeight;
+                    setMaxScroll(max);
+                    setProgress(max > 0 ? clamp(window.scrollY / max, 0, 1) : 0);
+                };
+                onScroll();
+                window.addEventListener('scroll', onScroll, { passive: true });
+                window.addEventListener('resize', onScroll);
+                return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); };
+            }, []);
+            return (
+                <div className="relative w-full bg-slate-950 select-none" style={{ minHeight: '1200vh' }}>
+                    <VideoBackground />
+                    <Marquee />
+                    <div className="fixed z-40 select-none pointer-events-none transition-transform duration-300" style={{ top: 232, left: 120, transform: 'rotate(32deg)' }}>
+                        <img src={STICKER1} alt="" referrerPolicy="no-referrer" className="w-[100px] h-auto object-contain" />
+                    </div>
+                    <div className="fixed bottom-8 right-8 z-40 select-none pointer-events-none transition-transform duration-300">
+                        <img src={STICKER2} alt="" referrerPolicy="no-referrer" className="w-[110px] sm:w-[150px] h-auto object-contain" />
+                    </div>
+                    <Nav />
+                    <HeroTypewriter progress={progress} />
+                    <Manifesto progress={progress} maxScroll={maxScroll} />
+                    <MouseTrail />
+                    <FeedbackForm visible={progress >= 0.95} />
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

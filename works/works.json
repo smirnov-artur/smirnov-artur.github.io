@@ -851,6 +851,21 @@
   "rp": 1
  },
  {
+  "slug": "glitch-pulse",
+  "v": "glitch-pulse",
+  "ve": "glitch-pulse-en",
+  "ru": [
+   "Бруталистский манифест студии",
+   "Прокрутка листает видео покадрово и стирает заголовок буква за буквой, за курсором разлетаются наклейки, а в конце выезжает форма обратной связи"
+  ],
+  "en": [
+   "Brutalist studio manifesto",
+   "Scrolling scrubs the video frame by frame and deletes the headline letter by letter, stickers trail the cursor, and a feedback form slides in at the end"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
