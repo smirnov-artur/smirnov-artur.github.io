@@ -8,8 +8,8 @@
 <title>g.a.d. — Urban jungle</title>
 <!-- Один файл вместо React + Vite + Tailwind + hls.js. GSAP с ScrollTrigger и ScrollToPlugin — с jsdelivr. ?lang=ru — русская версия.
      v.mp4 — тот же ролик из потока Mux (1080p), пережатый с ключевым кадром каждые 4 кадра: перематывается прокруткой без рывков и без hls.js.
-     Бегущая строка чужих брендов заменена направлениями студии. Пока страницу не трогают, ролик сам «дышит» у начала,
-     а кадр плавает, как от мыши. -->
+     Бегущая строка чужих брендов заменена направлениями студии. В покое ролик играет по кругу;
+     прокрутка подхватывает его с текущего кадра: вниз — вперёд по вагону, вверх — назад. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -193,25 +193,40 @@ gsap.fromTo(float.querySelectorAll('.char'),
 gsap.fromTo($('pwrap'), { y: '100%' }, { y: '0%', ease: 'none',
   scrollTrigger: { trigger: $('root'), start: 'top bottom', end: 'bottom bottom', scrub: 1.5 } });
 
-// ScrollVideo: прокрутка → кадр, перемотка не чаще, чем браузер дорисовывает прошлую
+// ScrollVideo: в покое ролик просто играет по кругу (без перемотки — плавно). Прокрутка подхватывает его
+// с текущего кадра: вниз — вперёд по вагону, вверх — назад; через секунду после остановки ролик играет дальше
 const video = $('v'), loading = $('loading'), pct = $('pct');
-let duration = 0, currentTarget = 0, seekPending = false, scrollP = 0, drift = 0;
+video.loop = true;
+let duration = 0, target = 0, off = 0, seekPending = false, playing = false, lastScroll = -1e9;
+const progress = () => { const max = document.documentElement.scrollHeight - innerHeight; return max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0; };
 const doSeek = () => {
   if (!duration) return;
   if (video.seeking) { seekPending = true; return; }
-  if (Math.abs(video.currentTime - currentTarget) > 0.005) video.currentTime = currentTarget;
+  if (Math.abs(video.currentTime - target) > 0.005) video.currentTime = target;
 };
 video.addEventListener('seeked', () => { if (seekPending) { seekPending = false; doSeek(); } });
-const onMeta = () => { duration = video.duration || 0; doSeek(); };
+const onMeta = () => { duration = video.duration || 0; };
 if (video.readyState >= 1) onMeta(); else video.addEventListener('loadedmetadata', onMeta);
 video.addEventListener('progress', () => {
   if (!video.duration || !video.buffered.length) return;
   pct.textContent = Math.round(video.buffered.end(video.buffered.length - 1) / video.duration * 100);
 });
-const hideLoading = () => loading.classList.add('off');
+const play = () => { if (reduce || playing || !duration) return; playing = true; video.play().catch(() => { playing = false; }); };
+const hideLoading = () => { loading.classList.add('off'); play(); };
 if (video.readyState >= 3) hideLoading(); else video.addEventListener('canplay', hideLoading, { once: true });
-ScrollTrigger.create({ trigger: document.documentElement, start: 'top top', end: 'bottom bottom', scrub: true,
-  onUpdate: self => { scrollP = self.progress; currentTarget = Math.min(duration, scrollP * duration + drift); doSeek(); } });
+let lastP = progress();
+addEventListener('scroll', () => {
+  const p = progress();
+  lastScroll = performance.now();
+  if (duration) {
+    // с того кадра, где ролик был, — без скачка
+    if (playing) { video.pause(); playing = false; off = video.currentTime - lastP * duration; }
+    target = ((off + p * duration) % duration + duration) % duration;
+    doSeek();
+  }
+  lastP = p;
+}, { passive: true });
+setInterval(() => { if (!playing && !video.seeking && performance.now() - lastScroll > 1200) play(); }, 200);
 
 // параллакс: ролик от мыши, панель — в 3D
 const wrap = $('vwrap'), panel = $('panel');
@@ -219,31 +234,9 @@ gsap.set(wrap, { scale: 1.05 });
 const qx = gsap.quickTo(wrap, 'x', { duration: 1.5, ease: 'power2.out' }), qy = gsap.quickTo(wrap, 'y', { duration: 1.5, ease: 'power2.out' });
 const px = gsap.quickTo(panel, 'x', { duration: 1, ease: 'power3.out' }), py = gsap.quickTo(panel, 'y', { duration: 1, ease: 'power3.out' });
 const ry = gsap.quickTo(panel, 'rotationY', { duration: 1, ease: 'power3.out' }), rx = gsap.quickTo(panel, 'rotationX', { duration: 1, ease: 'power3.out' });
-const move = (mx, my) => { qx(mx * -30); qy(my * -30); px(mx * 20); py(my * 20); ry(mx * 4); rx(-my * 4); };
-let lastMouse = -1e9, lastScroll = -1e9;
-addEventListener('mousemove', e => {
-  lastMouse = performance.now();
-  move((e.clientX / innerWidth - 0.5) * 2, (e.clientY / innerHeight - 0.5) * 2);
-});
-addEventListener('scroll', () => { lastScroll = performance.now(); }, { passive: true });
-
-// автопилот, пока страницу не трогают: кадр плавает, а вверху ролик «дышит» на 1,2 с вперёд и назад
-const AMP = 1.2, PERIOD = 10;
-let idleFrom = 0, wasIdle = false;
-gsap.ticker.add(() => {
-  if (reduce) return;
-  const now = performance.now(), t = now / 1000;
-  if (now - lastMouse > 3000) move(0.6 * Math.sin(t * 0.45), 0.45 * Math.sin(t * 0.63 + 1));
-  const idle = scrollP < 0.01 && now - lastScroll > 2500;
-  if (idle && !wasIdle) idleFrom = now;
-  wasIdle = idle;
-  const want = idle ? AMP * (1 - Math.cos((now - idleFrom) / 1000 * 2 * Math.PI / PERIOD)) / 2 : 0;
-  const next = drift + (want - drift) * 0.04;
-  if (Math.abs(next - drift) > 1e-4 || (want === 0 && drift !== 0)) {
-    drift = Math.abs(next) < 1e-3 && want === 0 ? 0 : next;
-    currentTarget = Math.min(duration, scrollP * duration + drift);
-    doSeek();
-  }
+if (!reduce) addEventListener('mousemove', e => {
+  const mx = (e.clientX / innerWidth - 0.5) * 2, my = (e.clientY / innerHeight - 0.5) * 2;
+  qx(mx * -30); qy(my * -30); px(mx * 20); py(my * 20); ry(mx * 4); rx(-my * 4);
 });
 
 // PillNav: логотип и ряд пилюль появляются, заливка пилюль кругом
