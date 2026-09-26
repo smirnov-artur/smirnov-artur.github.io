@@ -596,6 +596,36 @@
   "rp": 1
  },
  {
+  "slug": "futuristic-cinematic",
+  "v": "futuristic-cinematic",
+  "ve": "futuristic-cinematic-en",
+  "ru": [
+   "ИИ-платформа защиты",
+   "Фиолетово-чёрное свечение медленно дрожит на фоне, а мягкий блик следует за курсором."
+  ],
+  "en": [
+   "AI defense platform",
+   "A slow purple-black glow drifts behind the headline while a soft light trails the cursor."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "nex-max-upgrade",
+  "v": "nex-max-upgrade",
+  "ve": "nex-max-upgrade-en",
+  "ru": [
+   "Тарифы браузерного ИИ",
+   "Два тарифа на фоне Земли из космоса, видео плавно едет вперёд-назад"
+  ],
+  "en": [
+   "Browser AI plans",
+   "Two plan cards over Earth-from-space footage that scrubs gently back and forth"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
