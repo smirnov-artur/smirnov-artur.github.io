@@ -3188,6 +3188,21 @@
   "rp": 1
  },
  {
+  "slug": "stellar-launch",
+  "v": "stellar-launch",
+  "ve": "stellar-launch-en",
+  "ru": [
+   "Премия для стартапов",
+   "Видео-заставка и карточки наград со скошенными углами, градиентные цифры статистики — всё внутри одной большой скруглённой карточки."
+  ],
+  "en": [
+   "Startup awards",
+   "A looping video hero and chamfered award cards, with gradient stat numbers, framed inside one big rounded card."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "seller",
   "cat": "ai",
   "ru": [
