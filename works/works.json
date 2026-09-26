@@ -671,6 +671,21 @@
   "rp": 1
  },
  {
+  "slug": "vertex-ai-hero",
+  "v": "vertex-ai-hero",
+  "ve": "vertex-ai-hero-en",
+  "ru": [
+   "ИИ-дизайн интерьера",
+   "Бетонный павильон на видеофоне, заголовок с курсивным акцентом, стеклянное меню и тег-кнопки."
+  ],
+  "en": [
+   "AI interior design",
+   "A concrete-pavilion video behind a headline with an italic-serif accent, a glass navbar and outlined tag buttons."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
