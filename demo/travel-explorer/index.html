@@ -185,7 +185,7 @@
             useEffect(() => { lucide.createIcons(); }, [screen]);
 
             return (
-                <div className="h-screen w-screen bg-white flex items-center justify-center overflow-hidden">
+                <div className="h-screen w-screen flex items-center justify-center overflow-hidden" style={{ background: 'radial-gradient(30% 36% at 50% 60%, rgba(255,183,110,0.55) 0%, rgba(255,183,110,0) 72%), radial-gradient(26% 30% at 26% 26%, rgba(210,232,255,0.6) 0%, rgba(210,232,255,0) 70%), radial-gradient(95% 125% at 50% 40%, #a9c9e8 0%, #c6d7e3 38%, #e0dbcd 72%, #f5f0e8 100%)' }}>
                     <div className="phone-frame relative" style={{ width: 340, height: 740, borderRadius: 52, overflow: 'hidden' }}>
                         <div className="absolute top-[12px] left-1/2 -translate-x-1/2 w-[126px] h-[37px] bg-black rounded-full z-50"></div>
                         {screen === 'home'

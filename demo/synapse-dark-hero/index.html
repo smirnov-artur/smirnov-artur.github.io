@@ -27,7 +27,7 @@
                 if (Hls.isSupported()) { const h = new Hls(); h.loadSource(url); h.attachMedia(v); h.on(Hls.Events.MANIFEST_PARSED, () => v.play().catch(() => {})); return () => h.destroy(); }
                 else if (v.canPlayType('application/vnd.apple.mpegurl')) { v.src = url; v.play().catch(() => {}); }
             }, []);
-            const logos = ['Cognivault','Deepgrid','Gridspire','Beaconly','Pathgrid'];
+            const logos = ['Cognivault','Deepgrid','Vectorlane','Nightframe','Quorion'];
             return (
                 <div className="min-h-screen bg-black relative overflow-hidden">
                     {/* Video - floating behind */}
