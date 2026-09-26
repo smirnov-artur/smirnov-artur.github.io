@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — Discover Space You Truly Belong In</title>
+    <meta name="description" content="g.a.d.'s luxury real-estate landing: a video hero, a property grid that zooms on hover, a service picker and three animated growth charts.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@11.18.2/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/lucide@0.469.0"></script>
+    <style>.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}</style>
+    <style> body { font-family: 'Lato', sans-serif; } </style>
+</head>
+<body class="overflow-x-hidden bg-[#F8F8F8] text-[#141414]">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { motion, AnimatePresence } = Motion;
+
+        const GadLogo = ({ className = '', color = '#141414' }) => (
+            <svg className={"gad-logo " + className} viewBox="0 0 355 110" role="img" aria-label="g.a.d." style={{ color }}>
+                <path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z" />
+                <circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100" />
+                <circle className="orb" cx="322" cy="8" r="5" fill="currentColor" />
+            </svg>
+        );
+
+        const NAV = ['Properties', 'Mortgage', 'Company', 'Careers', 'Blog'];
+
+        const PROPERTIES = [
+            { title: 'Aether Heights', price: '$345,000', location: 'USA/California/Malibu', area: '300 m²', floors: '1 floor', beds: '6 beds', baths: '2 baths',
+              img: 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260503_145701_de344c15-5eac-4c64-8bd6-19a2811bba4a.png&w=1280&q=85' },
+            { title: 'Azure Sanctuary', price: '$225,000', location: 'Caribbean/Bahamas/Bimini', area: '250 m²', floors: '1 floor', beds: '4 beds', baths: '1 bath',
+              img: 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260503_145923_c1a9880c-0fab-4a76-8289-bd650d5e5dce.png&w=1280&q=85' },
+            { title: 'Summit Pavilion', price: '$510,000', location: 'USA/Colorado/Vail', area: '400 m²', floors: '3 floors', beds: '6 beds', baths: '3 baths',
+              img: 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260503_150022_cdda0eaa-1c17-4f59-8188-4f98b328619f.png&w=1280&q=85' },
+        ];
+
+        const HIW = ['Market Analysis', 'Exclusive collection', 'Policy Support', 'Closing Deal'];
+
+        const CHARTS = [
+            { title: 'Annual growth', value: '19%', data: [35, 60, 45, 40, 55, 75, 60, 80, 55, 30] },
+            { title: 'Aggregate yield profit', value: '$820,000', data: [8, 12, 18, 28, 32, 38, 55, 70, 85] },
+            { title: 'Median returns', value: '14%', data: [10, 75, 20, 35, 30, 65, 55, 25, 40] },
+        ];
+
+        const MiniBars = ({ data }) => {
+            const max = Math.max(...data);
+            return (
+                <div className="h-24 flex items-end gap-1">
+                    {data.map((v, i) => (
+                        <div key={i} className="relative flex-1 h-full">
+                            <div className="absolute inset-0 bg-[#141414]/5" />
+                            <div className="absolute left-0 right-0 h-[2px] bg-[#141414]" style={{ bottom: (v / max * 88) + '%' }} />
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const Stat = ({ icon, children }) => (
+            <span className="flex items-center gap-1.5 text-[#141414] text-[11px] font-medium">
+                <i data-lucide={icon} className="text-[#A5A5A5]" style={{ width: 13, height: 13, strokeWidth: 2.5 }}></i>{children}
+            </span>
+        );
+
+        const Navbar = ({ open, setOpen }) => (
+            <nav className="relative z-20 flex items-center justify-between px-6 md:px-12 lg:px-16 py-6">
+                <a href="#" className="flex items-center"><GadLogo className="h-8" /></a>
+                <div className="hidden md:flex items-center gap-7">
+                    {NAV.map((l, i) => (
+                        <a key={l} href="#" id={'nav-' + i} className="flex items-center gap-1 text-[13px] font-medium tracking-tight text-[#141414] hover:opacity-60 transition-opacity">
+                            {l}
+                            {l === 'Mortgage' && <span className="bg-black text-white text-[9px] px-1.5 py-0.5 rounded-sm leading-none">New</span>}
+                            {(l === 'Properties' || l === 'Careers') && <i data-lucide="chevron-down" style={{ width: 14, height: 14 }}></i>}
+                        </a>
+                    ))}
+                </div>
+                <button id="post-property" className="hidden md:flex items-center gap-2 border border-black/10 bg-white/80 backdrop-blur-md px-6 py-2.5 text-[13px] font-medium hover:bg-white transition-colors">
+                    <i data-lucide="home" style={{ width: 14, height: 14 }}></i>Post a property
+                </button>
+                <button className="md:hidden" id="hamburger" aria-label="Menu" onClick={() => setOpen(true)}><i data-lucide="menu"></i></button>
+
+                <AnimatePresence>
+                    {open && (
+                        <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ duration: 0.4, ease: 'easeInOut' }}
+                            className="fixed inset-0 z-50 bg-white flex flex-col">
+                            <div className="flex items-center justify-between px-6 py-6">
+                                <GadLogo className="h-8" />
+                                <button id="menu-close" aria-label="Close" onClick={() => setOpen(false)}><i data-lucide="x"></i></button>
+                            </div>
+                            <div className="flex-1 flex flex-col gap-6 px-8 pt-4">
+                                {NAV.map(l => <a key={l} href="#" className="text-2xl font-medium text-[#141414]" onClick={() => setOpen(false)}>{l}</a>)}
+                            </div>
+                            <div className="p-8">
+                                <button className="w-full flex items-center justify-center gap-2 bg-[#141414] text-white px-6 py-4 text-[13px] font-medium">
+                                    <i data-lucide="home" style={{ width: 14, height: 14 }}></i>Post a property
+                                </button>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </nav>
+        );
+
+        const Hero = ({ open, setOpen }) => (
+            <section className="relative h-screen overflow-hidden bg-white">
+                <video className="absolute bottom-0 left-0 w-full h-[58%] md:h-full object-cover z-0" autoPlay muted loop playsInline
+                    src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260503_144509_89e2d612-8af2-45c3-90f4-4831bc60715d.mp4" />
+                <div className="relative z-10 h-full flex flex-col bg-white/10">
+                    <Navbar open={open} setOpen={setOpen} />
+                    <div className="flex-1 grid grid-cols-1 md:grid-cols-12 items-start content-start px-6 md:px-12 lg:px-16 pt-8 md:pt-12 lg:pt-14 gap-6 md:gap-8">
+                        <div className="md:col-span-8">
+                            <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9 }}
+                                className="text-4xl md:text-5xl lg:text-7xl font-medium tracking-tight leading-[1.05] text-[#141414]">
+                                Discover space you truly belong in
+                            </motion.h1>
+                            <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.6 }} id="book-call"
+                                className="mt-8 bg-[#141414] text-white px-9 py-4 text-[13px] font-medium uppercase tracking-wider shadow-2xl">
+                                Book a call
+                            </motion.button>
+                        </div>
+                        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.4 }}
+                            className="md:col-span-4 md:col-start-9 text-[#A5A5A5] text-[15px] md:text-[18px] leading-[1.4]">
+                            Experience more than a house; find a sanctuary where your journey unfolds, rich with comfort and endless opportunities.
+                        </motion.p>
+                    </div>
+                </div>
+            </section>
+        );
+
+        const SectionHeader = ({ title, subtext, subtext2 }) => (
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-12 md:mb-16">
+                <h2 className="md:col-span-8 text-3xl md:text-5xl font-medium tracking-tight leading-[1.1] text-[#141414]">{title}</h2>
+                <div className="md:col-span-4 md:col-start-9">
+                    <p className="text-[#A5A5A5] text-[14px] leading-relaxed">{subtext}</p>
+                    {subtext2 && <p className="text-[#A5A5A5] text-[14px] leading-relaxed mt-4">{subtext2}</p>}
+                </div>
+            </div>
+        );
+
+        const Properties = () => (
+            <section className="px-6 md:px-12 lg:px-16 py-20 md:py-28">
+                <SectionHeader title="Guiding you toward the residence of your dreams"
+                    subtext="Our vision bridges balance, design, and attention so that every client resides in a space reflecting their values." />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {PROPERTIES.map((p, i) => (
+                        <motion.div key={p.title} id={'card-' + i} className="bg-white group"
+                            initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: i * 0.15 }}>
+                            <div className="aspect-[4/3] md:aspect-square overflow-hidden">
+                                <img src={p.img} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                            </div>
+                            <div className="p-5">
+                                <div className="flex items-center justify-between gap-2">
+                                    <h3 className="text-lg font-medium tracking-tight">{p.title}</h3>
+                                    <span className="text-lg font-medium whitespace-nowrap">{p.price}</span>
+                                </div>
+                                <p className="text-[13px] text-[#A5A5A5] mt-1">{p.location}</p>
+                                <div className="flex flex-wrap gap-4 mt-4">
+                                    <Stat icon="square">{p.area}</Stat>
+                                    <Stat icon="layers">{p.floors}</Stat>
+                                    <Stat icon="bed">{p.beds}</Stat>
+                                    <Stat icon="bath">{p.baths}</Stat>
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </section>
+        );
+
+        const HowItWorks = () => (
+            <section className="px-6 md:px-12 lg:px-16 py-20 md:py-28">
+                <SectionHeader title="Explore our service and the process"
+                    subtext="Digital walk-throughs, select portfolios, and professional insight — all the tools to search and secure with ease." />
+                <div className="grid grid-cols-1 md:grid-cols-12">
+                    <div className="md:col-span-4 bg-white p-8 md:p-16 flex flex-col justify-between">
+                        <div>
+                            <h3 className="text-2xl font-medium tracking-tight">Exclusive collection</h3>
+                            <p className="text-[#A5A5A5] text-[14px] leading-relaxed mt-4">Consultants curate custom lists of vetted homes. Featuring media, VR walk-ins, and private physical tours.</p>
+                            <button id="free-consult" className="mt-8 border border-black/10 bg-transparent px-6 py-2.5 text-[13px] font-medium hover:bg-gray-50 transition-colors">Free consult</button>
+                        </div>
+                        <div className="flex flex-col gap-4 mt-16">
+                            {HIW.map((l, i) => (
+                                <button key={l} id={'hiw-' + i} className={"text-left text-[13px] font-medium transition-colors " + (l === 'Exclusive collection' ? 'text-[#141414]' : 'text-[#A5A5A5] hover:text-[#141414]')}>{l}</button>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="md:col-span-8 aspect-video md:aspect-square">
+                        <img className="w-full h-full object-cover"
+                            src="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260503_150112_2b0e700f-7af4-4459-b326-7d9e2f468daa.png&w=1280&q=85" alt="Exclusive collection" />
+                    </div>
+                </div>
+            </section>
+        );
+
+        const Investment = () => (
+            <section className="px-6 md:px-12 lg:px-16 py-20 md:py-28">
+                <SectionHeader title="Trusted frameworks for secure growth"
+                    subtext="Our holdings go beyond floor plans; they represent a vehicle for your wealth to thrive consistently."
+                    subtext2="We meticulously vet the premier market offerings for our valued partners." />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {CHARTS.map((c, i) => (
+                        <div key={c.title} id={"chart-" + i} className="bg-white p-6 flex flex-col justify-between aspect-video md:aspect-[1.8/1]">
+                            <div>
+                                <p className="text-[#141414]/40 text-[12px] font-medium tracking-tight uppercase">{c.title}</p>
+                                <p className="text-4xl font-medium text-[#141414] mt-2">{c.value}</p>
+                            </div>
+                            <MiniBars data={c.data} />
+                        </div>
+                    ))}
+                </div>
+            </section>
+        );
+
+        const App = () => {
+            const [open, setOpen] = useState(false);
+            useEffect(() => { lucide.createIcons(); }, [open]);
+            return (
+                <div className="font-sans">
+                    <Hero open={open} setOpen={setOpen} />
+                    <Properties />
+                    <HowItWorks />
+                    <Investment />
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

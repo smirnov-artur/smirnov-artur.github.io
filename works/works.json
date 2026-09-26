@@ -686,6 +686,21 @@
   "rp": 1
  },
  {
+  "slug": "zenith-realty-landing",
+  "v": "zenith-realty-landing",
+  "ve": "zenith-realty-landing-en",
+  "ru": [
+   "Элитная недвижимость",
+   "Видео с домом под заголовком, карточки объектов всплывают при прокрутке и приближают фото при наведении, ниже — три графика доходности."
+  ],
+  "en": [
+   "Luxury real estate",
+   "A house video under the headline, listing cards that rise in on scroll and zoom their photos on hover, then three yield charts."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
