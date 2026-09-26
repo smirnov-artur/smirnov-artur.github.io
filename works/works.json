@@ -127,6 +127,21 @@
   "rp": 1
  },
  {
+  "slug": "apex-pulse",
+  "v": "apex-pulse",
+  "ve": "apex-pulse-en",
+  "ru": [
+   "Технологии дронов",
+   "Кинематографичное видео покадрово прокручивается по canvas вместе со скроллом, а два блока со статистикой проявляются заголовками и цифрами при попадании в кадр."
+  ],
+  "en": [
+   "Drone technology",
+   "A cinematic video is scrubbed frame by frame on a canvas as you scroll, while two stat-heavy sections fade their headlines and numbers up into view."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "dreams",
   "v": "dreams",
   "ru": [
@@ -217,6 +232,21 @@
   "rp": 1
  },
  {
+  "slug": "cinematic-brand",
+  "v": "cinematic-brand",
+  "ve": "cinematic-brand-en",
+  "ru": [
+   "Кинематографичный бренд",
+   "Видео-фон из бушующего кольца плазмы на звёздном небе, заголовок печатается по букве, кнопки «Начать» и «Смотреть историю»"
+  ],
+  "en": [
+   "Cinematic brand intro",
+   "A looping video backdrop of a swirling plasma ring against a starfield, a character-by-character typing headline, and \"Begin Now\" / \"Watch the story\" buttons"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "crystal-form",
   "v": "crystal-form",
   "ru": [
@@ -242,6 +272,21 @@
   "en": [
    "Design economy platform",
    "A click swaps the hero film in a circular wipe, scroll expands a layer full-screen, cards tilt with the cursor, a token spins in 3D"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "cyberpunk-reveal",
+  "v": "cyberpunk-reveal",
+  "ve": "cyberpunk-reveal-en",
+  "ru": [
+   "Клиника аугментаций",
+   "Ведите курсором по портрету — под кожей мягким кругом проступает кибернетическое лицо, вокруг дорисовываются дуги показателей"
+  ],
+  "en": [
+   "Human augmentation clinic",
+   "Move the cursor across the portrait and a cybernetic face bleeds through the skin in a soft circle, as stat arcs draw themselves around it"
   ],
   "cat": "web",
   "rp": 1
@@ -337,6 +382,21 @@
   "rp": 1
  },
  {
+  "slug": "intelligent-operations",
+  "v": "intelligent-operations",
+  "ve": "intelligent-operations-en",
+  "ru": [
+   "ИИ-консалтинг и автоматизация",
+   "Видео прокручивается вместе со скроллом: пучок проводов раскрывается в светящееся кольцо и сворачивается в коралл, поверх — стеклянные плашки и панель возможностей."
+  ],
+  "en": [
+   "AI consulting and automation",
+   "The video scrubs with the scroll: a bundle of cables blooms into a glowing ring and folds into a coral beneath glass chips and a frosted capability panel."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "zhidkost-razrushenie",
   "cat": "3d",
   "ru": [
@@ -379,6 +439,21 @@
   ],
   "cat": "web",
   "ve": "cinematic-404-en",
+  "rp": 1
+ },
+ {
+  "slug": "cosmic",
+  "v": "cosmic",
+  "ve": "cosmic-en",
+  "ru": [
+   "Экспедиция к астероиду",
+   "Ролик с кувыркающимся астероидом доигрывает до конца — и заголовок проявляется по буквам, камень наплывает поверх, вокруг пульсируют кольца"
+  ],
+  "en": [
+   "Asteroid expedition",
+   "A tumbling-asteroid clip plays to its end, then the headline rises letter by letter as the rock fades in and rings pulse around it"
+  ],
+  "cat": "web",
   "rp": 1
  },
  {
@@ -458,6 +533,21 @@
   "rp": 1
  },
  {
+  "slug": "audio-showcase",
+  "v": "audio-showcase",
+  "ve": "audio-showcase-en",
+  "ru": [
+   "Лейбл виниловых пластинок",
+   "Бумеранг-видео, покадрово захваченное на canvas, играет за панелями из «жидкого стекла», элементы всплывают волной"
+  ],
+  "en": [
+   "Vinyl record label",
+   "A boomerang video loop captured frame by frame to canvas plays behind liquid-glass panels, elements rise in a staggered wave"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "space-voyages",
   "v": "space-voyages",
   "ru": [
@@ -513,6 +603,21 @@
   "en": [
    "Jewelry store",
    "Grid lines grow in, a giant logo draws itself behind a floating model shot, and cards fade up around her."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "innovation-lab",
+  "v": "innovation-lab",
+  "ve": "innovation-lab-en",
+  "ru": [
+   "Иммерсивная техностудия",
+   "Сказочное видео с цветами и светящейся луной на фоне, элементы всплывают волной, кнопки — со срезанными углами."
+  ],
+  "en": [
+   "Immersive tech studio",
+   "A dreamy flower-and-glowing-moon video plays behind a staggered fade-up entrance and octagon-cut glass buttons."
   ],
   "cat": "web",
   "rp": 1
@@ -578,6 +683,21 @@
   "v": "lab",
   "ve": "lab-en",
   "hre": "https://smirnov-artur.github.io/webgl/lab/"
+ },
+ {
+  "slug": "vertex-sci",
+  "v": "vertex-sci",
+  "ve": "vertex-sci-en",
+  "ru": [
+   "Лаборатория материаловедения",
+   "Чёрно-белое видео плавно проявляется на весь экран, а следом каскадом всплывают заголовок и показатели."
+  ],
+  "en": [
+   "Materials science lab",
+   "A black-and-white video scales into view, then the headline and stats cascade in one after another."
+  ],
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "new-era-automotive-hero",
@@ -686,6 +806,21 @@
   "rp": 1
  },
  {
+  "slug": "f1-racing-hub",
+  "v": "f1-racing-hub",
+  "ve": "f1-racing-hub-en",
+  "ru": [
+   "Гоночное мобильное приложение",
+   "Три экрана показывают профиль гонщика, трассу со счётчиком очков сезона и карточки команды под меню с алым градиентом и шахматными ссылками."
+  ],
+  "en": [
+   "Racing team mobile app",
+   "Three phone screens track a driver profile, a circuit with count-up season points, and team cards under a red-gradient menu with staggered links."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "bio-age-dashboard",
   "v": "bio-age-dashboard",
   "ve": "bio-age-dashboard-en",
@@ -758,6 +893,21 @@
   ],
   "cat": "web",
   "ve": "aquarium-studio-en",
+  "rp": 1
+ },
+ {
+  "slug": "solace-sign-in",
+  "v": "solace-sign-in",
+  "ve": "solace-sign-in-en",
+  "ru": [
+   "Экран входа из жидкого стекла",
+   "Стеклянная карточка попиксельно преломляет в реальном времени видео с лавандовым полем позади неё."
+  ],
+  "en": [
+   "Liquid-glass sign-in screen",
+   "A glass card over a lavender-field video bends and refracts the scene behind it pixel by pixel in real time."
+  ],
+  "cat": "web",
   "rp": 1
  },
  {
@@ -898,6 +1048,21 @@
   "rp": 1
  },
  {
+  "slug": "ai-workflow-agents",
+  "v": "ai-workflow-agents",
+  "ve": "ai-workflow-agents-en",
+  "ru": [
+   "ИИ-агенты для браузера",
+   "Видео долины на весь экран за заголовком с засечками, стеклянной навигацией и кнопкой раннего доступа."
+  ],
+  "en": [
+   "Browser task agents",
+   "A looping valley video fills the screen behind a serif headline, glass nav and an early-access button."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "bubble-orb",
   "v": "bubble-orb",
   "ru": [
@@ -938,6 +1103,21 @@
   "en": [
    "Wellness platform",
    "A looping video of yellow blossoms fills the screen behind a bold headline and glass nav dropdowns."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "pet-diagnostics",
+  "v": "pet-diagnostics",
+  "ve": "pet-diagnostics-en",
+  "ru": [
+   "Диагностика здоровья питомцев",
+   "Видео с собакой и хозяином на фоне, а поверх него парит таблица цен с кремовой колонкой бренда."
+  ],
+  "en": [
+   "Pet health diagnostics",
+   "A looping video of a dog and owner plays behind a floating comparison table with a cream brand column."
   ],
   "cat": "web",
   "rp": 1
@@ -1018,6 +1198,21 @@
   "ve": "hot-ice-en"
  },
  {
+  "slug": "eco-intelligence",
+  "v": "eco-intelligence",
+  "ve": "eco-intelligence-en",
+  "ru": [
+   "Исследования экосистем",
+   "Парящий камень с цветком в зацикленном видео за призрачным логотипом и стеклянными плитками; меню выезжает слева с каскадом ссылок."
+  ],
+  "en": [
+   "Ecosystem research collective",
+   "A floating rock with a flower loops behind a ghost wordmark and glass tiles; the menu slides in from the left with staggered links."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "new-era-bold-hero",
   "v": "new-era-bold-hero",
   "ru": [
@@ -1088,6 +1283,21 @@
   "en": [
    "Data protection",
    "A fiery, smoke-like video loops behind giant type while nav links and buttons glow on hover."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "cyber-layer",
+  "v": "cyber-layer",
+  "ve": "cyber-layer-en",
+  "ru": [
+   "Лендинг кибербезопасности",
+   "Два цветокоррированных видеослоя за фиксированной сценой; заголовок, кнопки и показатели появляются по выверенному таймлайну"
+  ],
+  "en": [
+   "Cybersecurity landing",
+   "Two color-graded video plates behind a fixed stage; the headline, buttons and stats arrive on a precisely timed entrance"
   ],
   "cat": "web",
   "rp": 1
@@ -3097,6 +3307,96 @@
   "rp": 1
  },
  {
+  "slug": "church-community",
+  "v": "church-community",
+  "ve": "church-community-en",
+  "ru": [
+   "Приложение церковной общины",
+   "Три экрана iPhone — отзыв, главная и проповеди — с эффектом печатной машинки на заголовках и общим полноэкранным меню"
+  ],
+  "en": [
+   "Church community app",
+   "Three iPhone mockups — testimonial, hero and sermons — with typewriter-effect headlines and a shared full-screen menu"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "bio-digital",
+  "v": "bio-digital",
+  "ve": "bio-digital-en",
+  "ru": [
+   "Кибернетика и биология",
+   "Размытое призматическое кольцо плавно проявляется во весь экран, а заголовок и пилюли навигации всплывают следом."
+  ],
+  "en": [
+   "Cybernetics meets biology",
+   "A blurred prismatic ring scales gently into full screen while the headline and nav pills fade up after it."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "coffee-rewards",
+  "v": "coffee-rewards",
+  "ve": "coffee-rewards-en",
+  "ru": [
+   "Кофейная программа лояльности",
+   "Профиль лояльности в макете телефона со стеклянными кнопками поверх зацикленного видео; карточки статистики и любимого напитка появляются по очереди при загрузке."
+  ],
+  "en": [
+   "Coffee loyalty app",
+   "A phone-mockup loyalty profile with glass buttons over a looping video hero; stat cards and a favorite-drink card stagger into view on load."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "finflow",
+  "v": "finflow",
+  "ve": "finflow-en",
+  "ru": [
+   "Финтех-платформа",
+   "За главным экраном вращается обесцвеченное видео глобуса, внизу — карточка способов оплаты, а на телефоне пилюля-навигация сворачивается в выпадающее меню"
+  ],
+  "en": [
+   "Fintech platform",
+   "A desaturated globe video spins behind the hero, a payment-methods card sits at the bottom, and the pill navbar folds into a mobile dropdown"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "quantum-lucid",
+  "v": "quantum-lucid",
+  "ve": "quantum-lucid-en",
+  "ru": [
+   "Итоги встреч по записи экрана",
+   "На голубой видеополосе лежит карточка протокола встречи: вкладки, участники и итоги — вся сцена масштабируется под окно"
+  ],
+  "en": [
+   "Meeting notes from screen recordings",
+   "A cyan video band holds a meeting-notes card with tabs, attendees and outcomes; the whole stage scales to the window"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "autonomous-ops",
+  "v": "autonomous-ops",
+  "ve": "autonomous-ops-en",
+  "ru": [
+   "Карточки преимуществ ИИ-платформы",
+   "Три карточки с графиком, запросом к ИИ-ассистенту и сходящимися путями решений: средняя поднимается первой, крайние подтягиваются к ней, панели раскрываются шторкой."
+  ],
+  "en": [
+   "AI platform benefit cards",
+   "Three cards with a bar chart, an AI-assistant prompt and converging decision paths: the middle one rises first, the outer ones drift in, panels wipe open."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "santeh-diler",
   "cat": "web",
   "ru": [
@@ -3739,306 +4039,6 @@
   "en": [
    "Football academy",
    "The background video scrubs frame by frame with the scroll, then a paragraph sharpens out of a blur one word at a time."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "cinematic-brand",
-  "v": "cinematic-brand",
-  "ve": "cinematic-brand-en",
-  "ru": [
-   "Кинематографичный бренд",
-   "Видео-фон из бушующего кольца плазмы на звёздном небе, заголовок печатается по букве, кнопки «Начать» и «Смотреть историю»"
-  ],
-  "en": [
-   "Cinematic brand intro",
-   "A looping video backdrop of a swirling plasma ring against a starfield, a character-by-character typing headline, and \"Begin Now\" / \"Watch the story\" buttons"
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "cosmic",
-  "v": "cosmic",
-  "ve": "cosmic-en",
-  "ru": [
-   "Экспедиция к астероиду",
-   "Ролик с кувыркающимся астероидом доигрывает до конца — и заголовок проявляется по буквам, камень наплывает поверх, вокруг пульсируют кольца"
-  ],
-  "en": [
-   "Asteroid expedition",
-   "A tumbling-asteroid clip plays to its end, then the headline rises letter by letter as the rock fades in and rings pulse around it"
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "audio-showcase",
-  "v": "audio-showcase",
-  "ve": "audio-showcase-en",
-  "ru": [
-   "Лейбл виниловых пластинок",
-   "Бумеранг-видео, покадрово захваченное на canvas, играет за панелями из «жидкого стекла», элементы всплывают волной"
-  ],
-  "en": [
-   "Vinyl record label",
-   "A boomerang video loop captured frame by frame to canvas plays behind liquid-glass panels, elements rise in a staggered wave"
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "church-community",
-  "v": "church-community",
-  "ve": "church-community-en",
-  "ru": [
-   "Приложение церковной общины",
-   "Три экрана iPhone — отзыв, главная и проповеди — с эффектом печатной машинки на заголовках и общим полноэкранным меню"
-  ],
-  "en": [
-   "Church community app",
-   "Three iPhone mockups — testimonial, hero and sermons — with typewriter-effect headlines and a shared full-screen menu"
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "cyberpunk-reveal",
-  "v": "cyberpunk-reveal",
-  "ve": "cyberpunk-reveal-en",
-  "ru": [
-   "Клиника аугментаций",
-   "Ведите курсором по портрету — под кожей мягким кругом проступает кибернетическое лицо, вокруг дорисовываются дуги показателей"
-  ],
-  "en": [
-   "Human augmentation clinic",
-   "Move the cursor across the portrait and a cybernetic face bleeds through the skin in a soft circle, as stat arcs draw themselves around it"
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "solace-sign-in",
-  "v": "solace-sign-in",
-  "ve": "solace-sign-in-en",
-  "ru": [
-   "Экран входа из жидкого стекла",
-   "Стеклянная карточка попиксельно преломляет в реальном времени видео с лавандовым полем позади неё."
-  ],
-  "en": [
-   "Liquid-glass sign-in screen",
-   "A glass card over a lavender-field video bends and refracts the scene behind it pixel by pixel in real time."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "f1-racing-hub",
-  "v": "f1-racing-hub",
-  "ve": "f1-racing-hub-en",
-  "ru": [
-   "Гоночное мобильное приложение",
-   "Три экрана показывают профиль гонщика, трассу со счётчиком очков сезона и карточки команды под меню с алым градиентом и шахматными ссылками."
-  ],
-  "en": [
-   "Racing team mobile app",
-   "Three phone screens track a driver profile, a circuit with count-up season points, and team cards under a red-gradient menu with staggered links."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "vertex-sci",
-  "v": "vertex-sci",
-  "ve": "vertex-sci-en",
-  "ru": [
-   "Лаборатория материаловедения",
-   "Чёрно-белое видео плавно проявляется на весь экран, а следом каскадом всплывают заголовок и показатели."
-  ],
-  "en": [
-   "Materials science lab",
-   "A black-and-white video scales into view, then the headline and stats cascade in one after another."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "bio-digital",
-  "v": "bio-digital",
-  "ve": "bio-digital-en",
-  "ru": [
-   "Кибернетика и биология",
-   "Размытое призматическое кольцо плавно проявляется во весь экран, а заголовок и пилюли навигации всплывают следом."
-  ],
-  "en": [
-   "Cybernetics meets biology",
-   "A blurred prismatic ring scales gently into full screen while the headline and nav pills fade up after it."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "quantum-lucid",
-  "v": "quantum-lucid",
-  "ve": "quantum-lucid-en",
-  "ru": [
-   "Итоги встреч по записи экрана",
-   "На голубой видеополосе лежит карточка протокола встречи: вкладки, участники и итоги — вся сцена масштабируется под окно"
-  ],
-  "en": [
-   "Meeting notes from screen recordings",
-   "A cyan video band holds a meeting-notes card with tabs, attendees and outcomes; the whole stage scales to the window"
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "cyber-layer",
-  "v": "cyber-layer",
-  "ve": "cyber-layer-en",
-  "ru": [
-   "Лендинг кибербезопасности",
-   "Два цветокоррированных видеослоя за фиксированной сценой; заголовок, кнопки и показатели появляются по выверенному таймлайну"
-  ],
-  "en": [
-   "Cybersecurity landing",
-   "Two color-graded video plates behind a fixed stage; the headline, buttons and stats arrive on a precisely timed entrance"
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "coffee-rewards",
-  "v": "coffee-rewards",
-  "ve": "coffee-rewards-en",
-  "ru": [
-   "Кофейная программа лояльности",
-   "Профиль лояльности в макете телефона со стеклянными кнопками поверх зацикленного видео; карточки статистики и любимого напитка появляются по очереди при загрузке."
-  ],
-  "en": [
-   "Coffee loyalty app",
-   "A phone-mockup loyalty profile with glass buttons over a looping video hero; stat cards and a favorite-drink card stagger into view on load."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "finflow",
-  "v": "finflow",
-  "ve": "finflow-en",
-  "ru": [
-   "Финтех-платформа",
-   "За главным экраном вращается обесцвеченное видео глобуса, внизу — карточка способов оплаты, а на телефоне пилюля-навигация сворачивается в выпадающее меню"
-  ],
-  "en": [
-   "Fintech platform",
-   "A desaturated globe video spins behind the hero, a payment-methods card sits at the bottom, and the pill navbar folds into a mobile dropdown"
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "ai-workflow-agents",
-  "v": "ai-workflow-agents",
-  "ve": "ai-workflow-agents-en",
-  "ru": [
-   "ИИ-агенты для браузера",
-   "Видео долины на весь экран за заголовком с засечками, стеклянной навигацией и кнопкой раннего доступа."
-  ],
-  "en": [
-   "Browser task agents",
-   "A looping valley video fills the screen behind a serif headline, glass nav and an early-access button."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "pet-diagnostics",
-  "v": "pet-diagnostics",
-  "ve": "pet-diagnostics-en",
-  "ru": [
-   "Диагностика здоровья питомцев",
-   "Видео с собакой и хозяином на фоне, а поверх него парит таблица цен с кремовой колонкой бренда."
-  ],
-  "en": [
-   "Pet health diagnostics",
-   "A looping video of a dog and owner plays behind a floating comparison table with a cream brand column."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "innovation-lab",
-  "v": "innovation-lab",
-  "ve": "innovation-lab-en",
-  "ru": [
-   "Иммерсивная техностудия",
-   "Сказочное видео с цветами и светящейся луной на фоне, элементы всплывают волной, кнопки — со срезанными углами."
-  ],
-  "en": [
-   "Immersive tech studio",
-   "A dreamy flower-and-glowing-moon video plays behind a staggered fade-up entrance and octagon-cut glass buttons."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "apex-pulse",
-  "v": "apex-pulse",
-  "ve": "apex-pulse-en",
-  "ru": [
-   "Технологии дронов",
-   "Кинематографичное видео покадрово прокручивается по canvas вместе со скроллом, а два блока со статистикой проявляются заголовками и цифрами при попадании в кадр."
-  ],
-  "en": [
-   "Drone technology",
-   "A cinematic video is scrubbed frame by frame on a canvas as you scroll, while two stat-heavy sections fade their headlines and numbers up into view."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "eco-intelligence",
-  "v": "eco-intelligence",
-  "ve": "eco-intelligence-en",
-  "ru": [
-   "Исследования экосистем",
-   "Парящий камень с цветком в зацикленном видео за призрачным логотипом и стеклянными плитками; меню выезжает слева с каскадом ссылок."
-  ],
-  "en": [
-   "Ecosystem research collective",
-   "A floating rock with a flower loops behind a ghost wordmark and glass tiles; the menu slides in from the left with staggered links."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "autonomous-ops",
-  "v": "autonomous-ops",
-  "ve": "autonomous-ops-en",
-  "ru": [
-   "Карточки преимуществ ИИ-платформы",
-   "Три карточки с графиком, запросом к ИИ-ассистенту и сходящимися путями решений: средняя поднимается первой, крайние подтягиваются к ней, панели раскрываются шторкой."
-  ],
-  "en": [
-   "AI platform benefit cards",
-   "Three cards with a bar chart, an AI-assistant prompt and converging decision paths: the middle one rises first, the outer ones drift in, panels wipe open."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "intelligent-operations",
-  "v": "intelligent-operations",
-  "ve": "intelligent-operations-en",
-  "ru": [
-   "ИИ-консалтинг и автоматизация",
-   "Видео прокручивается вместе со скроллом: пучок проводов раскрывается в светящееся кольцо и сворачивается в коралл, поверх — стеклянные плашки и панель возможностей."
-  ],
-  "en": [
-   "AI consulting and automation",
-   "The video scrubs with the scroll: a bundle of cables blooms into a glowing ring and folds into a coral beneath glass chips and a frosted capability panel."
   ],
   "cat": "web",
   "rp": 1
