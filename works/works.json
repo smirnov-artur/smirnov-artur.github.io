@@ -806,6 +806,21 @@
   "rp": 1
  },
  {
+  "slug": "product-plans",
+  "v": "product-plans",
+  "ve": "product-plans-en",
+  "ru": [
+   "Спортклуб и дизайн-студия",
+   "Вкладки привилегий, счётчик на фото теннисного корта и тарифы, где переключатели пересчитывают цену."
+  ],
+  "en": [
+   "Athletic club & design studio",
+   "Benefit tabs, a counter over a tennis-court photo, and pricing cards whose toggles recalculate the price."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
