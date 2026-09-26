@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>g.a.d. — Вход</title>
+<meta name="description" content="Карточка входа с эффектом жидкого стекла: преломление фона в реальном времени, покадрово, поверх зацикленного ночного видео лавандового поля.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@0.469.0"></script>
+<style>.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}</style>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useEffect, useRef, useState } = React;
+
+/* ---- verbatim per-pixel canvas refraction engine (do not simplify the math) ---- */
+class LiquidGlass {
+    constructor(bgEl, options = {}) {
+        this.bg = bgEl;
+        this.opt = Object.assign({
+            size: 120, shape: 'circle', rx: null,
+            distort: 0.06, edgeCurl: 0.04, brightness: 0.06,
+            specular: 0.20, border: 0.18, borderWidth: 1,
+            sceneW: null, sceneH: null,
+        }, options);
+        this._lut = null;
+        this._lutKey = '';
+    }
+
+    _getLUT(D) {
+        const key = `${D}:${this.opt.distort}:${this.opt.edgeCurl}`;
+        if (this._lut && this._lutKey === key) return this._lut;
+        this._lutKey = key;
+        const lut = new Float32Array(256);
+        for (let i = 0; i < 256; i++) {
+            const r = i / 255;
+            if (r < 0.7) {
+                lut[i] = r * (1.0 - this.opt.distort * (1 - r));
+            } else {
+                const t = (r - 0.7) / 0.3;
+                lut[i] = Math.min(0.985, r * (1 - this.opt.distort * (1 - r)) + t * t * this.opt.edgeCurl);
+            }
+        }
+        return (this._lut = lut);
+    }
+
+    _inShape(nx, ny, D) {
+        const { shape, rx, size } = this.opt;
+        if (shape === 'circle') return nx * nx + ny * ny < 1.0;
+        const r = (rx != null ? rx : size * 0.3) / (size / 2);
+        const ax = Math.abs(nx), ay = Math.abs(ny), lim = 1 - r;
+        if (ax > 1 || ay > 1) return false;
+        if (ax <= lim || ay <= lim) return true;
+        return (ax - lim) ** 2 + (ay - lim) ** 2 <= r * r;
+    }
+
+    _normR(nx, ny, D) {
+        const { shape, rx, size } = this.opt;
+        if (shape === 'circle') return Math.sqrt(nx * nx + ny * ny);
+        const r = (rx != null ? rx : size * 0.3) / (size / 2);
+        const ax = Math.abs(nx), ay = Math.abs(ny), lim = 1 - r;
+        const dx = Math.max(0, ax - lim), dy = Math.max(0, ay - lim);
+        const dr = Math.sqrt(dx * dx + dy * dy);
+        return (dr > 0 ? (lim + dr) : Math.max(ax, ay));
+    }
+
+    _cropBackground(cx, cy, D, sW, sH) {
+        if (!this.bg) return null;
+        const bw = this.bg.naturalWidth || this.bg.videoWidth;
+        const bh = this.bg.naturalHeight || this.bg.videoHeight;
+        if (!bw || !bh) return null;
+        const R = D / 2;
+        const off = document.createElement('canvas');
+        off.width = D; off.height = D;
+        const octx = off.getContext('2d');
+        octx.drawImage(this.bg,
+            Math.max(0, (cx - R) * (bw / sW)), Math.max(0, (cy - R) * (bh / sH)),
+            D * (bw / sW), D * (bh / sH),
+            0, 0, D, D
+        );
+        return octx.getImageData(0, 0, D, D).data;
+    }
+
+    _bilinear(sd, x, y, D) {
+        const x0 = Math.floor(x), y0 = Math.floor(y);
+        const x1 = Math.min(D - 1, x0 + 1), y1 = Math.min(D - 1, y0 + 1);
+        const fx = x - x0, fy = y - y0;
+        const w00 = (1 - fx) * (1 - fy), w10 = fx * (1 - fy), w01 = (1 - fx) * fy, w11 = fx * fy;
+        const a = (y0 * D + x0) * 4, b = (y0 * D + x1) * 4, c = (y1 * D + x0) * 4, d = (y1 * D + x1) * 4;
+        return [
+            sd[a] * w00 + sd[b] * w10 + sd[c] * w01 + sd[d] * w11,
+            sd[a + 1] * w00 + sd[b + 1] * w10 + sd[c + 1] * w01 + sd[d + 1] * w11,
+            sd[a + 2] * w00 + sd[b + 2] * w10 + sd[c + 2] * w01 + sd[d + 2] * w11,
+        ];
+    }
+
+    _drawOverlays(ctx, D, R) {
+        const { shape, rx, size, specular, border, borderWidth } = this.opt;
+        const RX = rx != null ? rx : size * 0.3;
+        ctx.save();
+        ctx.beginPath();
+        shape === 'circle' ? ctx.arc(R, R, R, 0, Math.PI * 2) : ctx.roundRect(0, 0, D, D, RX);
+        ctx.clip();
+        if (specular > 0) {
+            const grd = ctx.createRadialGradient(R * 0.5, R * 0.28, 0, R * 0.5, R * 0.38, R * 0.45);
+            grd.addColorStop(0, `rgba(255,255,255,${specular})`);
+            grd.addColorStop(0.6, `rgba(255,255,255,${+(specular * 0.2).toFixed(3)})`);
+            grd.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = grd; ctx.fillRect(0, 0, D, D);
+        }
+        ctx.restore();
+        if (border > 0) {
+            const h = borderWidth / 2;
+            ctx.save();
+            ctx.strokeStyle = `rgba(255,255,255,${border})`;
+            ctx.lineWidth = borderWidth;
+            ctx.beginPath();
+            shape === 'circle' ? ctx.arc(R, R, R - h, 0, Math.PI * 2)
+                : ctx.roundRect(h, h, D - borderWidth, D - borderWidth, RX);
+            ctx.stroke(); ctx.restore();
+        }
+    }
+
+    render(canvas, cx, cy, sW, sH) {
+        const D = this.opt.size, R = D / 2;
+        if (canvas.width !== D || canvas.height !== D) {
+            canvas.width = D; canvas.height = D;
+        }
+        const sd = this._cropBackground(cx, cy, D, sW, sH);
+        if (!sd) return false;
+        const lut = this._getLUT(D);
+        const ctx = canvas.getContext('2d');
+        const out = ctx.createImageData(D, D);
+        const od = out.data;
+        const boost = this.opt.brightness;
+        for (let py = 0; py < D; py++) {
+            for (let px = 0; px < D; px++) {
+                const nx = (px / R) - 1, ny = (py / R) - 1;
+                if (!this._inShape(nx, ny, D)) {
+                    const i = (py * D + px) * 4; od[i] = od[i + 1] = od[i + 2] = od[i + 3] = 0; continue;
+                }
+                const normR = this._normR(nx, ny, D);
+                const alpha = normR > 0.93 ? Math.max(0, (1 - normR) / 0.07) : 1.0;
+                const theta = Math.atan2(ny, nx);
+                const bend = lut[Math.min(255, Math.round(normR * 255))];
+                const sx = Math.min(D - 1.001, Math.max(0, bend * Math.cos(theta) * R + R));
+                const sy = Math.min(D - 1.001, Math.max(0, bend * Math.sin(theta) * R + R));
+                const [rv, gv, bv] = this._bilinear(sd, sx, sy, D);
+                const b = (1 + boost * Math.max(0, 1 - normR * 1.6)) * 0.75;
+                const oi = (py * D + px) * 4;
+                od[oi] = Math.min(255, rv * b); od[oi + 1] = Math.min(255, gv * b);
+                od[oi + 2] = Math.min(255, bv * b); od[oi + 3] = Math.round(alpha * 255);
+            }
+        }
+        ctx.clearRect(0, 0, D, D);
+        ctx.putImageData(out, 0, 0);
+        this._drawOverlays(ctx, D, R);
+        return true;
+    }
+}
+
+const GLASS_OPTIONS = {
+    shape: 'roundedrect',
+    rx: 16,
+    distort: 0.06,
+    edgeCurl: 0.04,
+    brightness: 0.06,
+    specular: 0.20,
+    border: 0.18,
+    borderWidth: 1,
+};
+
+function LiquidGlassCanvas({ videoRef, sceneRef, cardRef }) {
+    const canvasRef = useRef(null);
+
+    useEffect(() => {
+        let glass = null;
+        let rafId = null;
+        let isRunning = false;
+
+        const BG_VIDEO = videoRef.current;
+        const SCENE_EL = sceneRef.current;
+        const CARD_EL = cardRef.current;
+        const GLASS_CV = canvasRef.current;
+
+        if (!BG_VIDEO || !SCENE_EL || !CARD_EL || !GLASS_CV) return;
+
+        function setupGlass() {
+            const sceneR = SCENE_EL.getBoundingClientRect();
+            const cardR = CARD_EL.getBoundingClientRect();
+            const W = Math.round(cardR.width);
+            const H = Math.round(cardR.height);
+            const isMobile = W < 640;
+            const D = isMobile ? W : Math.max(W, H);
+
+            GLASS_CV.width = D;
+            GLASS_CV.height = D;
+
+            glass = new LiquidGlass(BG_VIDEO, Object.assign({}, GLASS_OPTIONS, {
+                size: D,
+                sceneW: sceneR.width,
+                sceneH: sceneR.height,
+            }));
+        }
+
+        function renderLoop() {
+            if (!glass) return;
+            const sceneR = SCENE_EL.getBoundingClientRect();
+            const cardR = CARD_EL.getBoundingClientRect();
+            const cx = cardR.left - sceneR.left + cardR.width / 2;
+            const cy = cardR.top - sceneR.top + cardR.height / 2;
+            glass.opt.sceneW = sceneR.width;
+            glass.opt.sceneH = sceneR.height;
+            glass.render(GLASS_CV, cx, cy, sceneR.width, sceneR.height);
+            rafId = requestAnimationFrame(renderLoop);
+        }
+
+        function startGlass() {
+            if (isRunning) return;
+            isRunning = true;
+            setupGlass();
+            renderLoop();
+        }
+
+        function stopGlass() {
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = null;
+            isRunning = false;
+        }
+
+        function handleResize() {
+            stopGlass();
+            setupGlass();
+            renderLoop();
+            isRunning = true;
+        }
+
+        BG_VIDEO.addEventListener('canplay', startGlass);
+        BG_VIDEO.addEventListener('playing', startGlass);
+
+        if (BG_VIDEO.readyState >= 3) startGlass();
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            stopGlass();
+            BG_VIDEO.removeEventListener('canplay', startGlass);
+            BG_VIDEO.removeEventListener('playing', startGlass);
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [videoRef, sceneRef, cardRef]);
+
+    return (
+        <canvas
+            ref={canvasRef}
+            style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                display: 'block',
+                zIndex: 0,
+            }}
+        />
+    );
+}
+/* ---- end verbatim engine ---- */
+
+function FadeUp({ children, delay = 0, duration = 700, className = '' }) {
+    const [visible, setVisible] = useState(false);
+    useEffect(() => {
+        const timer = setTimeout(() => setVisible(true), delay);
+        return () => clearTimeout(timer);
+    }, [delay]);
+    return (
+        <div
+            className={className}
+            style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? 'translateY(0)' : 'translateY(20px)',
+                transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
+                transitionDelay: '0ms',
+            }}
+        >
+            {children}
+        </div>
+    );
+}
+
+const GadLogo = ({ style }) => (
+    <svg style={style} viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+        <path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/>
+        <circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100"/>
+        <circle className="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+    </svg>
+);
+
+function App() {
+    const sceneRef = useRef(null);
+    const videoRef = useRef(null);
+    const cardRef = useRef(null);
+    const [showPassword, setShowPassword] = useState(false);
+    const [remember, setRemember] = useState(true);
+
+    useEffect(() => { lucide.createIcons(); });
+
+    return (
+        <div ref={sceneRef} className="relative min-h-screen w-full overflow-hidden">
+            <video
+                ref={videoRef}
+                className="absolute inset-0 h-full w-full object-cover"
+                autoPlay muted loop playsInline crossOrigin="anonymous"
+                src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260606_135315_5f9e8a4c-09bc-4a97-9f75-8a387d4258ee.mp4"
+            />
+            <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-8">
+                <div ref={cardRef} className="relative w-full max-w-lg overflow-hidden rounded-2xl p-6 shadow-2xl sm:p-10 md:p-14">
+                    <LiquidGlassCanvas videoRef={videoRef} sceneRef={sceneRef} cardRef={cardRef} />
+                    <div className="relative z-[1]">
+                        <form className="space-y-5" onSubmit={e => e.preventDefault()}>
+                            <FadeUp delay={0}>
+                                <div className="mb-6 flex justify-center">
+                                    <GadLogo style={{ height: '48px', color: '#fff' }} />
+                                </div>
+                            </FadeUp>
+
+                            <FadeUp delay={100}>
+                                <h1 className="mb-2 bg-gradient-to-r from-white to-purple-300 bg-clip-text text-center text-3xl font-medium tracking-tight text-transparent sm:text-4xl md:text-5xl">
+                                    Рады видеть снова!
+                                </h1>
+                            </FadeUp>
+
+                            <FadeUp delay={200}>
+                                <p className="mb-6 text-center text-xs leading-relaxed text-white/60 sm:mb-8 sm:text-sm md:text-base">
+                                    Войдите, чтобы продолжить практики осознанности, спокойные ритуалы и путь к благополучию
+                                </p>
+                            </FadeUp>
+
+                            <FadeUp delay={300}>
+                                <div>
+                                    <label className="mb-1.5 block text-sm font-medium text-white/70">Почта</label>
+                                    <input type="email" className="email-input w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3.5 text-sm text-white placeholder-white/30 outline-none transition-colors focus:border-white/30 focus:bg-white/10" placeholder="Ваш адрес электронной почты" />
+                                </div>
+                            </FadeUp>
+
+                            <FadeUp delay={400}>
+                                <div>
+                                    <label className="mb-1.5 block text-sm font-medium text-white/70">Пароль</label>
+                                    <div className="relative">
+                                        <input type={showPassword ? 'text' : 'password'} className="password-input w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3.5 text-sm text-white placeholder-white/30 outline-none transition-colors focus:border-white/30 focus:bg-white/10" placeholder="Введите пароль" />
+                                        <button type="button" onClick={() => setShowPassword(s => !s)} className="eye-btn absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70" aria-label="Показать или скрыть пароль">
+                                            <i data-lucide="eye" style={{ width: 20, height: 20, display: showPassword ? 'none' : 'block' }}></i>
+                                            <i data-lucide="eye-off" style={{ width: 20, height: 20, display: showPassword ? 'block' : 'none' }}></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </FadeUp>
+
+                            <FadeUp delay={500}>
+                                <div className="flex items-center justify-between">
+                                    <label className="flex cursor-pointer items-center gap-2">
+                                        <div className="relative h-5 w-5">
+                                            <input type="checkbox" className="remember-check peer absolute inset-0 z-10 h-5 w-5 cursor-pointer opacity-0" checked={remember} onChange={() => setRemember(r => !r)} />
+                                            <div className="h-5 w-5 rounded border border-white/20 bg-white/5 peer-checked:border-purple-400 peer-checked:bg-purple-500"></div>
+                                            <svg className="absolute left-0.5 top-0.5 hidden h-4 w-4 peer-checked:block" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 13l4 4L19 7" /></svg>
+                                        </div>
+                                        <span className="text-sm text-white/70">Запомнить меня</span>
+                                    </label>
+                                    <button type="button" className="reset-btn text-sm text-white/70 hover:text-white">Забыли пароль?</button>
+                                </div>
+                            </FadeUp>
+
+                            <FadeUp delay={600}>
+                                <button type="submit" className="signin-btn w-full rounded-full bg-white py-3.5 text-base font-semibold text-gray-900 hover:bg-white/90 active:scale-[0.98]">Войти</button>
+                            </FadeUp>
+
+                            <FadeUp delay={700}>
+                                <div className="my-6 flex items-center gap-4">
+                                    <div className="h-px flex-1 bg-white/15"></div>
+                                    <span className="text-sm text-white/40">Или</span>
+                                    <div className="h-px flex-1 bg-white/15"></div>
+                                </div>
+                            </FadeUp>
+
+                            <FadeUp delay={800}>
+                                <button type="button" className="google-btn flex w-full items-center justify-center gap-3 rounded-full border border-white/15 bg-white/5 py-3.5 text-sm font-medium text-white hover:bg-white/10 active:scale-[0.98]">
+                                    <svg width="20" height="20" viewBox="0 0 20 20">
+                                        <path fill="#4285F4" d="M19.6 10.23c0-.68-.06-1.36-.17-2H10v3.79h5.38a4.6 4.6 0 01-2 3.02v2.5h3.22c1.89-1.74 2.98-4.3 2.98-7.31z"/>
+                                        <path fill="#34A853" d="M10 20c2.7 0 4.96-.89 6.62-2.42l-3.22-2.5c-.9.6-2.04.95-3.4.95-2.62 0-4.84-1.77-5.63-4.15H1.06v2.6A10 10 0 0010 20z"/>
+                                        <path fill="#FBBC05" d="M4.37 11.88A5.99 5.99 0 014.05 10c0-.65.11-1.28.32-1.88v-2.6H1.06A10 10 0 000 10c0 1.61.39 3.14 1.06 4.48l3.31-2.6z"/>
+                                        <path fill="#EA4335" d="M10 3.96c1.47 0 2.79.5 3.82 1.5l2.86-2.86C14.95.99 12.7 0 10 0 6.09 0 2.7 2.24 1.06 5.52l3.31 2.6C5.16 5.73 7.38 3.96 10 3.96z"/>
+                                    </svg>
+                                    Продолжить через Google
+                                </button>
+                            </FadeUp>
+
+                            <FadeUp delay={900}>
+                                <p className="mt-6 text-center text-sm text-white/50">
+                                    Впервые на платформе? <button type="button" className="join-btn font-medium text-white hover:text-purple-300">Присоединиться</button>
+                                </p>
+                            </FadeUp>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

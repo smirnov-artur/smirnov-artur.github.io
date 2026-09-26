@@ -3804,6 +3804,36 @@
   "rp": 1
  },
  {
+  "slug": "cyberpunk-reveal",
+  "v": "cyberpunk-reveal",
+  "ve": "cyberpunk-reveal-en",
+  "ru": [
+   "Клиника аугментаций",
+   "Ведите курсором по портрету — под кожей мягким кругом проступает кибернетическое лицо, вокруг дорисовываются дуги показателей"
+  ],
+  "en": [
+   "Human augmentation clinic",
+   "Move the cursor across the portrait and a cybernetic face bleeds through the skin in a soft circle, as stat arcs draw themselves around it"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "solace-sign-in",
+  "v": "solace-sign-in",
+  "ve": "solace-sign-in-en",
+  "ru": [
+   "Экран входа из жидкого стекла",
+   "Стеклянная карточка попиксельно преломляет в реальном времени видео с лавандовым полем позади неё."
+  ],
+  "en": [
+   "Liquid-glass sign-in screen",
+   "A glass card over a lavender-field video bends and refracts the scene behind it pixel by pixel in real time."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
