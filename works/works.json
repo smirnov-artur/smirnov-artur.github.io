@@ -3879,6 +3879,36 @@
   "rp": 1
  },
  {
+  "slug": "quantum-lucid",
+  "v": "quantum-lucid",
+  "ve": "quantum-lucid-en",
+  "ru": [
+   "Итоги встреч по записи экрана",
+   "На голубой видеополосе лежит карточка протокола встречи: вкладки, участники и итоги — вся сцена масштабируется под окно"
+  ],
+  "en": [
+   "Meeting notes from screen recordings",
+   "A cyan video band holds a meeting-notes card with tabs, attendees and outcomes; the whole stage scales to the window"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "cyber-layer",
+  "v": "cyber-layer",
+  "ve": "cyber-layer-en",
+  "ru": [
+   "Лендинг кибербезопасности",
+   "Два цветокоррированных видеослоя за фиксированной сценой; заголовок, кнопки и показатели появляются по выверенному таймлайну"
+  ],
+  "en": [
+   "Cybersecurity landing",
+   "Two color-graded video plates behind a fixed stage; the headline, buttons and stats arrive on a precisely timed entrance"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
