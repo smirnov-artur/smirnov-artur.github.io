@@ -269,6 +269,10 @@
                 const fit = () => {
                     const el = stageRef.current;
                     if (!el) return;
+                    // narrow viewports: stack the two phones instead of shrinking them side by side to a sliver
+                    const stacked = window.innerWidth < 700;
+                    el.style.flexDirection = stacked ? 'column' : 'row';
+                    el.style.gap = stacked ? '40px' : '70px';
                     const w = el.offsetWidth, h = el.offsetHeight;
                     const pad = 40;
                     const fitRatio = Math.min((window.innerWidth - pad * 2) / w, (window.innerHeight - pad * 2) / h);
@@ -281,7 +285,7 @@
 
             return (
                 <div className={ready ? 'ze-ready' : ''} style={{ width:'100vw', height:'100vh', overflow:'hidden', display:'flex', alignItems:'center', justifyContent:'center', background:'#F4F4F4' }}>
-                    <div ref={stageRef} style={{ display:'flex', gap:70 }}>
+                    <div ref={stageRef} style={{ display:'flex' }}>
                         <Screen1 videoRef={v1} />
                         <Screen2 videoRef={v2} />
                     </div>
