@@ -851,6 +851,21 @@
   "rp": 1
  },
  {
+  "slug": "intelligentx",
+  "v": "intelligentx",
+  "ve": "intelligentx-en",
+  "ru": [
+   "ИИ-ассистент здоровья",
+   "Двухцветный заголовок и поисковая капсула — поверх зацикленного видео с механической ИИ-головой."
+  ],
+  "en": [
+   "AI wellness assistant",
+   "A two-tone headline and search pill sit over a looping video of a mechanical AI head."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
