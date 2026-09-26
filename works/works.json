@@ -731,6 +731,21 @@
   "rp": 1
  },
  {
+  "slug": "community-hub",
+  "v": "community-hub",
+  "ve": "community-hub-en",
+  "ru": [
+   "Платформа сообщества",
+   "Три светящиеся карточки приподнимаются при наведении, а за формой подписки на видео плывут облака."
+  ],
+  "en": [
+   "Community platform",
+   "Three glowing gradient cards lift on hover, and a cloud video plays behind the email signup card."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
