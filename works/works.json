@@ -588,8 +588,10 @@
    "Slowlight — a photon's biography",
    "An interactive essay drawn by a single shader"
   ],
-  "href": "https://smirnov-artur.github.io/slowlight/",
-  "v": "pf-slowlight"
+  "href": "https://smirnov-artur.github.io/slowlight/ru/",
+  "v": "slowlight",
+  "ve": "slowlight-en",
+  "hre": "https://smirnov-artur.github.io/slowlight/"
  },
  {
   "slug": "viktor-portfolio",
@@ -798,8 +800,9 @@
    "A concrete monolith assembles from dust, cracks, collapses, melts and evaporates"
   ],
   "href": "https://smirnov-artur.github.io/raspad/",
-  "v": "pf-raspad",
-  "hre": "https://smirnov-artur.github.io/raspad/en/"
+  "v": "raspad",
+  "hre": "https://smirnov-artur.github.io/raspad/en/",
+  "ve": "raspad-en"
  },
  {
   "slug": "srez",
@@ -935,8 +938,10 @@
    "Drift — GPU particles",
    "A particle cloud flows through a flow field, all computed on the GPU"
   ],
-  "href": "https://smirnov-artur.github.io/webgl/lab/",
-  "v": "pf-lab"
+  "href": "https://smirnov-artur.github.io/webgl/lab/ru/",
+  "v": "lab",
+  "ve": "lab-en",
+  "hre": "https://smirnov-artur.github.io/webgl/lab/"
  },
  {
   "slug": "roy",
@@ -1079,14 +1084,16 @@
   "cat": "web",
   "ru": [
    "Витрина 3D-разработки",
-   "Англоязычный сайт: конфигураторы и шейдеры, фон — живой шейдер"
+   "Конфигураторы и шейдеры в браузере; фон — живой шейдер"
   ],
   "en": [
    "Real-time 3D showcase",
-   "An English site on configurators and shaders; the background is a live shader"
+   "Configurators and shaders in the browser; the background is a live shader"
   ],
-  "href": "https://smirnov-artur.github.io/webgl/",
-  "v": "pf-webgl"
+  "href": "https://smirnov-artur.github.io/webgl/ru/",
+  "v": "webgl-site",
+  "ve": "webgl-site-en",
+  "hre": "https://smirnov-artur.github.io/webgl/"
  },
  {
   "slug": "kalk",
@@ -3397,9 +3404,10 @@
    "Duct fitting configurator",
    "Dimensions in — a preview with dimension lines — a costed spec"
   ],
-  "img": "old/a3.jpg",
-  "vid": "old/a3.mp4",
-  "href": "https://smirnov-artur.github.io/webgl/case/ventprom/"
+  "href": "https://smirnov-artur.github.io/webgl/case/ventprom/ru/",
+  "v": "ventprom",
+  "ve": "ventprom-en",
+  "hre": "https://smirnov-artur.github.io/webgl/case/ventprom/"
  },
  {
   "slug": "vertro",
@@ -3511,8 +3519,10 @@
    "Solana network telemetry",
    "Network health, validators and economy drawn like a chart recorder"
   ],
-  "href": "https://smirnov-artur.github.io/solana-tape/",
-  "v": "pf-solana-tape"
+  "href": "https://smirnov-artur.github.io/solana-tape/ru/",
+  "v": "solana-tape",
+  "ve": "solana-tape-en",
+  "hre": "https://smirnov-artur.github.io/solana-tape/"
  },
  {
   "slug": "ozon-finance",
