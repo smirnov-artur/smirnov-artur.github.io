@@ -776,6 +776,21 @@
   "rp": 1
  },
  {
+  "slug": "synth-mode",
+  "v": "synth-mode",
+  "ve": "synth-mode-en",
+  "ru": [
+   "Футуристичный магазин моды",
+   "Курсор открывает второй портрет мягким световым пятном, а боковые панели раскрывают магазин и журнал."
+  ],
+  "en": [
+   "Futuristic fashion store",
+   "The cursor sweeps a soft spotlight that reveals a second portrait, while side drawers open the shop and journal."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
