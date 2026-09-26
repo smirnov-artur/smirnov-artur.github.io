@@ -776,6 +776,21 @@
   "rp": 1
  },
  {
+  "slug": "modern-hr-dashboard",
+  "v": "modern-hr-dashboard",
+  "ve": "modern-hr-dashboard-en",
+  "ru": [
+   "HR-дашборд",
+   "График часов по дням, кольцо таймера на 60 делений и календарь со встречами на фоне мягкого жёлтого пятна."
+  ],
+  "en": [
+   "HR dashboard",
+   "A weekly bar chart, a 60-tick focus-timer ring, and a calendar with meeting cards over a soft yellow glow."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [

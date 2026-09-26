@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — HR Dashboard</title>
+    <meta name="description" content="An HR dashboard: a weekly-hours bar chart, a 60-tick focus-timer ring, an accordion and a calendar with positioned events over a soft yellow-blurred background.">
+    <link href="https://db.onlinewebfonts.com/c/060e116a70e3096c52db16f61aaab194?family=Sofia+Pro+Regular" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: {
+        borderRadius: { '3xl': '24px', '4xl': '32px' },
+        colors: { yellow: { DEFAULT: '#FFD85F' }, 'dark-gray': '#303030', 'light-gray': '#898989' },
+    } } };</script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.469.0"></script>
+    <style>.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}</style>
+    <style>
+        * { font-family: "Sofia Pro Regular", sans-serif; -webkit-font-smoothing: antialiased; }
+        :root { scrollbar-width: thin; scrollbar-color: #e5e5e5 transparent; }
+        .hatched { background-image: repeating-linear-gradient(-45deg, #e5e5e5 0px, #e5e5e5 2px, #f5f5f5 2px, #f5f5f5 10px); border: 1px solid #ddd; }
+    </style>
+</head>
+<body class="bg-[#E3E5E6]">
+    <div id="root" style="font-family:'Sofia Pro Regular',sans-serif"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const GadLogo = ({ className, style }) => (
+            <svg className={className} style={style} height="16" viewBox="0 0 355 110" role="img" aria-label="g.a.d.">
+                <path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/>
+                <circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100"/>
+                <circle className="orb" cx="322" cy="8" r="5" fill="currentColor"/>
+            </svg>
+        );
+
+        const NAV_LINKS = ['Dashboard', 'People', 'Hiring', 'Devices', 'Apps', 'Salary', 'Calendar', 'Reviews'];
+
+        function Background(){
+            return (
+                <svg className="fixed inset-0 w-full h-full -z-10" viewBox="0 0 1280 832" preserveAspectRatio="xMidYMid slice">
+                    <rect width="1280" height="832" fill="#E3E5E6" />
+                    <path d="M904 404C942.8 189.6 1234.83 123.333 1376 117V1093.5H-227V792.5C-161.5 706.167 0.5 556.6 124.5 649C248.5 741.4 473.833 727.5 571 709C665.833 696.667 865.2 618.4 904 404Z" fill="#FFD85F" filter="url(#hr-blur)" />
+                    <defs>
+                        <filter id="hr-blur" x="-727" y="-383" width="2603" height="1976.5" filterUnits="userSpaceOnUse">
+                            <feFlood floodOpacity="0" result="bg" />
+                            <feBlend mode="normal" in="SourceGraphic" in2="bg" result="shape" />
+                            <feGaussianBlur stdDeviation="250" result="effect1" />
+                        </filter>
+                    </defs>
+                </svg>
+            );
+        }
+
+        function Navbar(){
+            const [active, setActive] = useState('Dashboard');
+            const [open, setOpen] = useState(false);
+            return (
+                <nav className="w-full mb-4 flex items-center justify-between relative">
+                    <div className="border border-[#898989]/30 rounded-full px-5 py-2 text-[#303030] text-base select-none flex items-center">
+                        <GadLogo className="gad-logo" style={{ color: '#303030' }} />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <div className="nav-links hidden lg:flex bg-white/60 border border-[#898989]/20 rounded-full px-1 py-1 shadow-sm">
+                            {NAV_LINKS.map(l => (
+                                <button key={l} onClick={() => setActive(l)} className={"px-4 py-2 rounded-full text-sm transition-all duration-200 " + (active === l ? 'bg-[#303030] text-white' : 'text-[#898989] hover:text-[#303030]')}>{l}</button>
+                            ))}
+                        </div>
+                        <button className="configs-btn hidden sm:flex items-center gap-2 bg-white/60 border border-[#898989]/20 rounded-full px-4 py-2.5 text-sm text-[#303030] shadow-sm hover:bg-white/80 transition-colors">
+                            <i data-lucide="settings" style={{ width: 14, height: 14 }}></i> Configs
+                        </button>
+                        <button className="bell-btn relative bg-white/60 border border-[#898989]/20 rounded-full px-3.5 py-2.5 shadow-sm hover:bg-white/80 transition-colors" aria-label="Notifications">
+                            <i data-lucide="bell" style={{ width: 15, height: 15 }}></i>
+                            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FFD85F] rounded-full"></span>
+                        </button>
+                        <button className="avatar-btn w-10 h-10 rounded-full overflow-hidden shadow-sm" aria-label="Profile">
+                            <img src="https://images.pexels.com/photos/32064778/pexels-photo-32064778.jpeg?auto=compress&cs=tinysrgb&w=80" className="w-full h-full object-cover" alt="" />
+                        </button>
+                        <button className="lg:hidden w-10 h-10 flex items-center justify-center bg-white/60 border border-[#898989]/20 rounded-full shadow-sm" aria-label="Menu" onClick={() => setOpen(o => !o)}>
+                            <i data-lucide="menu" style={{ width: 16, height: 16, display: open ? 'none' : 'block' }}></i>
+                            <i data-lucide="x" style={{ width: 16, height: 16, display: open ? 'block' : 'none' }}></i>
+                        </button>
+                    </div>
+                    {open && (
+                        <div className="lg:hidden absolute right-0 top-full mt-2 bg-white/80 backdrop-blur-xl border border-[#898989]/20 rounded-2xl p-2 shadow-md flex flex-wrap gap-1 z-20 max-w-xs">
+                            {NAV_LINKS.map(l => (
+                                <button key={l} onClick={() => { setActive(l); setOpen(false); }} className={"px-4 py-2 rounded-full text-sm transition-all duration-200 " + (active === l ? 'bg-[#303030] text-white' : 'text-[#898989] hover:text-[#303030]')}>{l}</button>
+                            ))}
+                        </div>
+                    )}
+                </nav>
+            );
+        }
+
+        function WelcomeRow(){
+            const segments = [
+                { label: 'Screenings', flex: 15, cls: 'bg-[#303030] text-white' },
+                { label: 'Placed', flex: 15, cls: 'bg-[#FFD85F] text-[#303030]' },
+                { label: 'Sprint cycle', flex: 60, cls: 'hatched text-[#303030]' },
+                { label: 'Return', flex: 10, cls: 'border border-[#898989]/40 bg-white/60 text-[#303030]' },
+            ];
+            const stats = [
+                { icon: 'users', num: '78', label: 'Members' },
+                { icon: 'users', num: '56', label: 'Openings' },
+                { icon: 'monitor', num: '203', label: 'Launches' },
+            ];
+            return (
+                <div className="w-full mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:gap-8">
+                    <div className="flex-[3]">
+                        <h1 className="text-3xl sm:text-4xl lg:text-5xl tracking-tight text-[#303030] leading-tight mb-3">Good morning, Kasven</h1>
+                        <div className="flex w-full gap-1">
+                            {segments.map(s => (
+                                <div key={s.label} style={{ flex: s.flex }} className="min-w-0">
+                                    <div className="text-xs text-[#303030] mb-1 truncate">{s.label}</div>
+                                    <div className={"rounded-full px-3 py-2 text-xs sm:text-sm " + s.cls}>&nbsp;</div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="flex-[2] flex gap-6 sm:justify-end">
+                        {stats.map(s => (
+                            <div key={s.label}>
+                                <div className="bg-[#898989]/15 rounded-lg p-1.5 mb-1 inline-flex"><i data-lucide={s.icon} style={{ width: 14, height: 14 }} className="text-[#898989]"></i></div>
+                                <div className="text-3xl sm:text-4xl lg:text-5xl text-[#303030] leading-none">{s.num}</div>
+                                <div className="text-xs text-[#303030]">{s.label}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        function ProfilePhotoCard(){
+            return (
+                <div className="rounded-3xl overflow-hidden relative aspect-[4/3] lg:aspect-auto lg:h-full min-h-[200px]" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.10)' }}>
+                    <img src="https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=600" className="w-full h-full object-cover object-top absolute inset-0" alt="Nora Elliston" />
+                    <div className="absolute left-0 right-0 bottom-0" style={{ height: '35%', backdropFilter: 'blur(18px) saturate(140%)', WebkitBackdropFilter: 'blur(18px) saturate(140%)', maskImage: 'linear-gradient(to top, black 40%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to top, black 40%, transparent 100%)', background: 'linear-gradient(to top, rgba(0,0,0,0.28) 0%, transparent 100%)' }}></div>
+                    <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end px-4 py-3 rounded-2xl">
+                        <div>
+                            <div className="text-white text-sm font-medium">Nora Elliston</div>
+                            <div className="text-white/70 text-xs">UI/UX Architect</div>
+                        </div>
+                        <div className="text-white text-xs font-medium rounded-full px-3 py-1" style={{ border: '1px solid rgba(255,255,255,0.35)' }}>$1,200</div>
+                    </div>
+                </div>
+            );
+        }
+
+        function ActivityChart(){
+            const data = [3.5, 5.0, 4.2, 6.0, 4.8, 7.2, 2.0];
+            const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+            const max = Math.max(...data);
+            return (
+                <div className="h-48 lg:flex-1 lg:h-auto min-h-0 flex items-end gap-[8%] px-1">
+                    {data.map((v, i) => (
+                        <div key={i} className="flex-1 h-full flex flex-col justify-end items-center group relative">
+                            {i === 5 && (
+                                <div className="mb-1 bg-[#FFD85F] text-[#303030] text-xs rounded-full px-3 py-1 shadow-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">5h 23m</div>
+                            )}
+                            <div className="w-full rounded-[6px]" style={{ height: (v / max * 100) + '%', background: i === 5 ? '#FFD85F' : '#303030' }}></div>
+                            <div className="text-[11px] mt-2" style={{ color: '#898989' }}>{days[i]}</div>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        function ProgressCard(){
+            return (
+                <div className="bg-white/60 backdrop-blur-3xl rounded-3xl p-5 flex flex-col gap-3 lg:h-full" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)' }}>
+                    <div className="flex items-center justify-between">
+                        <span className="text-lg text-[#303030]">Activity</span>
+                        <button className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:shadow transition-shadow" aria-label="Open">
+                            <i data-lucide="arrow-up-right" style={{ width: 14, height: 14 }} className="text-[#303030]"></i>
+                        </button>
+                    </div>
+                    <div>
+                        <div className="text-4xl text-[#303030]">6.1 h</div>
+                        <div className="text-xs text-[#898989]">Logged hrs<br />this week</div>
+                    </div>
+                    <ActivityChart />
+                </div>
+            );
+        }
+
+        function FocusRing(){
+            const size = 180, cx = 90, cy = 90, r = 68;
+            const C = 2 * Math.PI * r;
+            const progress = 0.70;
+            const ticks = [];
+            for (let i = 0; i < 60; i++) {
+                const frac = i / 60;
+                if (frac < progress) continue;
+                const angle = frac * 360 - 90;
+                const rad = angle * Math.PI / 180;
+                const x1 = cx + (r - 4) * Math.cos(rad), y1 = cy + (r - 4) * Math.sin(rad);
+                const x2 = cx + (r + 4) * Math.cos(rad), y2 = cy + (r + 4) * Math.sin(rad);
+                ticks.push(<line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#898989" strokeOpacity="0.9" strokeWidth="1.2" strokeLinecap="round" />);
+            }
+            return (
+                <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="mx-auto">
+                    {ticks}
+                    <circle cx={cx} cy={cy} r={r} fill="none" stroke="#FFD85F" strokeWidth="10" strokeLinecap="round"
+                        strokeDasharray={`${C * progress} ${C}`} transform={`rotate(-90 ${cx} ${cy})`} />
+                    <text x={cx} y={cy - 2} textAnchor="middle" fontSize="22" fill="#303030">02:35</text>
+                    <text x={cx} y={cy + 16} textAnchor="middle" fontSize="10" fill="#898989">Deep Focus</text>
+                </svg>
+            );
+        }
+
+        function TimeTrackerCard(){
+            return (
+                <div className="bg-white/60 backdrop-blur-3xl rounded-3xl p-5 flex flex-col gap-3 lg:h-full items-center justify-center" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)' }}>
+                    <div className="w-full text-lg text-[#303030]">Focus timer</div>
+                    <FocusRing />
+                    <div className="w-full flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm hover:shadow transition-shadow" aria-label="Play">
+                                <i data-lucide="play" style={{ width: 14, height: 14 }} className="text-[#303030]"></i>
+                            </button>
+                            <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm hover:shadow transition-shadow" aria-label="Pause">
+                                <i data-lucide="pause" style={{ width: 14, height: 14 }} className="text-[#303030]"></i>
+                            </button>
+                        </div>
+                        <button className="w-10 h-10 rounded-full bg-[#303030] flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="Reset">
+                            <i data-lucide="rotate-ccw" style={{ width: 14, height: 14 }} className="text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        const TASKS = [
+            { title: 'Screening', time: 'Sep 13 · 08:30', done: true, icon: 'monitor' },
+            { title: 'Sync Session', time: 'Sep 13 · 10:30', done: true, icon: 'users' },
+            { title: 'Sprint Recap', time: 'Sep 13 · 13:00', done: false, icon: 'message-square' },
+            { title: 'Set Q3 Targets', time: 'Sep 13 · 14:45', done: false, icon: 'pencil' },
+            { title: 'Policy Walkthru', time: 'Sep 13 · 16:30', done: false, icon: 'link' },
+        ];
+
+        function OnboardingColumn(){
+            const segs = [
+                { pct: 30, label: '30%', cls: 'bg-[#FFD85F] text-[#303030]', text: 'Task' },
+                { pct: 25, label: '25%', cls: 'bg-[#303030] text-white', text: '' },
+                { pct: 20, label: '20%', cls: 'bg-[#898989] text-white', text: '' },
+            ];
+            return (
+                <div className="flex flex-col gap-4 lg:h-full">
+                    <div className="bg-white/60 backdrop-blur-3xl rounded-3xl p-5" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)' }}>
+                        <div className="flex items-center justify-between mb-3">
+                            <span className="text-lg text-[#303030]">Induction</span>
+                            <span className="text-4xl text-[#303030]">18%</span>
+                        </div>
+                        <div className="flex gap-1">
+                            {segs.map((s, i) => (
+                                <div key={i} style={{ flex: s.pct }}>
+                                    <div className="text-xs text-[#898989] mb-1">{s.label}</div>
+                                    <div className={"rounded-xl h-10 flex items-center justify-center text-xs " + s.cls}>{s.text}</div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="bg-[#303030] rounded-3xl p-5 flex flex-col gap-2 flex-1">
+                        <div className="flex items-center justify-between mb-1">
+                            <span className="text-lg text-white">Pending Actions</span>
+                            <span className="text-base text-[#898989]">2/8</span>
+                        </div>
+                        {TASKS.map((t, i) => (
+                            <div key={i} className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
+                                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                                    <i data-lucide={t.icon} style={{ width: 13, height: 13 }} className="text-white/60"></i>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <div className={"text-sm truncate " + (t.done ? 'line-through text-white/30' : 'text-white')}>{t.title}</div>
+                                    <div className="text-xs text-white/30">{t.time}</div>
+                                </div>
+                                {t.done ? (
+                                    <div className="w-5 h-5 rounded-full bg-[#FFD85F] flex items-center justify-center shrink-0"><i data-lucide="check" style={{ width: 10, height: 10 }} className="text-[#303030]"></i></div>
+                                ) : (
+                                    <div className="w-5 h-5 rounded-full border border-white/20 shrink-0"></div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        const ACCORDION = [
+            { title: 'Retirement savings' },
+            { title: 'Hardware' },
+            { title: 'Earnings breakdown' },
+            { title: 'Perks & Benefits' },
+        ];
+
+        function AccordionCard(){
+            const [openIdx, setOpenIdx] = useState(1);
+            return (
+                <div className="bg-white/60 backdrop-blur-3xl rounded-3xl overflow-hidden lg:h-full">
+                    {ACCORDION.map((item, i) => {
+                        const isOpen = openIdx === i;
+                        return (
+                            <div key={item.title} className={'accordion-item ' + (i > 0 ? 'border-t border-[#898989]/15' : '')}>
+                                <button className="w-full flex items-center justify-between px-5 py-4 hover:bg-[#898989]/8 transition-colors" onClick={() => setOpenIdx(isOpen ? -1 : i)}>
+                                    <span className="text-sm text-[#303030]">{item.title}</span>
+                                    <i data-lucide="chevron-down" style={{ width: 15, height: 15, display: isOpen ? 'none' : 'block' }} className="text-[#898989]"></i>
+                                    <i data-lucide="chevron-up" style={{ width: 15, height: 15, display: isOpen ? 'block' : 'none' }} className="text-[#898989]"></i>
+                                </button>
+                                {i === 1 && (
+                                    <div style={{ display: isOpen ? 'flex' : 'none' }} className="px-5 pb-4 items-center gap-3 border-t border-[#898989]/15 pt-4">
+                                        <img src="https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=120" className="w-12 h-10 rounded-lg object-cover" alt="" />
+                                        <div className="flex-1">
+                                            <div className="text-sm text-[#303030]">Ridgeline 14</div>
+                                            <div className="text-xs text-[#898989]">Edition X1</div>
+                                        </div>
+                                        <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#898989]/10 transition-colors" aria-label="More">
+                                            <i data-lucide="more-vertical" style={{ width: 15, height: 15 }} className="text-[#898989]"></i>
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        }
+
+        function AvatarGroup({ urls }){
+            return (
+                <div className="flex">
+                    {urls.map((u, i) => (
+                        <img key={u} src={u} className="w-6 h-6 rounded-full object-cover border-2 border-white" style={i > 0 ? { marginLeft: -6 } : {}} alt="" />
+                    ))}
+                </div>
+            );
+        }
+
+        function CalendarCard(){
+            const times = ['8:00am', '9:00am', '10:00am', '11:00am'];
+            const days = [['Mon', 22], ['Tue', 23], ['Wed', 24], ['Thu', 25], ['Fri', 26], ['Sat', 27]];
+            return (
+                <div className="bg-white/60 backdrop-blur-3xl rounded-3xl p-5 lg:h-full flex flex-col" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)' }}>
+                    <div className="flex items-center justify-between mb-3">
+                        <span className="text-sm text-[#898989]">July</span>
+                        <span className="text-base text-[#303030]">August 2024</span>
+                        <span className="border border-[#898989]/25 rounded-full px-4 py-1 text-sm text-[#303030]">September</span>
+                    </div>
+                    <div className="flex ml-14 sm:ml-16 mb-2 gap-0">
+                        {days.map(([d, n]) => (
+                            <div key={n} className={"flex-1 text-xs " + (n === 24 ? 'text-[#303030]' : 'text-[#898989]')}>{d} {n}</div>
+                        ))}
+                    </div>
+                    <div className="h-40 lg:flex-1 flex">
+                        <div className="w-14 sm:w-16 flex flex-col justify-between text-xs text-[#898989] py-1 shrink-0">
+                            {times.map(t => <div key={t}>{t}</div>)}
+                        </div>
+                        <div className="flex-1 relative">
+                            <div className="absolute inset-0 flex">
+                                {[0, 1, 2, 3, 4, 5].map(i => <div key={i} className="flex-1 border-l border-dashed border-[#898989]/20"></div>)}
+                            </div>
+                            <div className="absolute bg-[#303030] rounded-2xl p-2.5 flex flex-col justify-between" style={{ left: '16.66%', right: '33%', top: 4, height: 58 }}>
+                                <div>
+                                    <div className="text-white text-xs font-medium truncate">Monthly All-Hands</div>
+                                    <div className="text-white/50 text-[10px] hidden sm:block truncate">Recap milestones across squads</div>
+                                </div>
+                                <AvatarGroup urls={[
+                                    'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=60',
+                                    'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=60',
+                                    'https://images.pexels.com/photos/10025071/pexels-photo-10025071.jpeg?auto=compress&cs=tinysrgb&w=60',
+                                ]} />
+                            </div>
+                            <div className="absolute bg-white border border-[#898989]/25 rounded-2xl p-2.5 flex flex-col justify-between" style={{ left: '55%', right: '0%', top: 84, height: 56 }}>
+                                <div>
+                                    <div className="text-[#303030] text-xs font-medium truncate">Induction Briefing</div>
+                                    <div className="text-[#898989] text-[10px] hidden sm:block truncate">Orientation for new joiners</div>
+                                </div>
+                                <AvatarGroup urls={[
+                                    'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=60',
+                                    'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=60',
+                                ]} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function DesktopGrid(){
+            return (
+                <div className="grid gap-1 h-full" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gridTemplateRows: '1fr 1fr' }}>
+                    <div className="h-full min-h-0" style={{ gridColumn: '1', gridRow: '1' }}><ProfilePhotoCard /></div>
+                    <div className="h-full min-h-0" style={{ gridColumn: '2', gridRow: '1' }}><ProgressCard /></div>
+                    <div className="h-full min-h-0" style={{ gridColumn: '3', gridRow: '1' }}><TimeTrackerCard /></div>
+                    <div className="h-full min-h-0" style={{ gridColumn: '4', gridRow: '1 / span 2' }}><OnboardingColumn /></div>
+                    <div className="h-full min-h-0" style={{ gridColumn: '1', gridRow: '2' }}><AccordionCard /></div>
+                    <div className="h-full min-h-0" style={{ gridColumn: '2 / span 2', gridRow: '2' }}><CalendarCard /></div>
+                </div>
+            );
+        }
+
+        function MobileTabletGrid(){
+            return (
+                <React.Fragment>
+                    <div className="flex md:hidden flex-col gap-3">
+                        <ProfilePhotoCard /><ProgressCard /><TimeTrackerCard /><OnboardingColumn /><AccordionCard /><CalendarCard />
+                    </div>
+                    <div className="hidden md:grid lg:hidden gap-3" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
+                        <ProfilePhotoCard /><ProgressCard /><TimeTrackerCard /><AccordionCard />
+                        <div className="col-span-2"><CalendarCard /></div>
+                        <div className="col-span-2"><OnboardingColumn /></div>
+                    </div>
+                </React.Fragment>
+            );
+        }
+
+        function App(){
+            useEffect(() => { lucide.createIcons(); });
+            return (
+                <React.Fragment>
+                    <Background />
+                    <div className="hidden lg:flex relative z-10 max-w-[1400px] mx-auto h-screen px-6 py-6 flex-col overflow-hidden">
+                        <Navbar />
+                        <WelcomeRow />
+                        <div className="flex-1 min-h-0">
+                            <DesktopGrid />
+                        </div>
+                    </div>
+                    <div className="lg:hidden relative z-10 max-w-[1400px] mx-auto min-h-screen px-4 sm:px-6 py-6 flex flex-col gap-0 overflow-y-auto">
+                        <Navbar />
+                        <WelcomeRow />
+                        <MobileTabletGrid />
+                        <div className="h-6"></div>
+                    </div>
+                </React.Fragment>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>
