@@ -397,21 +397,6 @@
   "rp": 1
  },
  {
-  "slug": "zhidkost-razrushenie",
-  "cat": "3d",
-  "ru": [
-   "Жидкость и разрушение",
-   "Симуляция жидкости и разрушения на видеокарте"
-  ],
-  "en": [
-   "Fluid and fracture",
-   "Fluid and fracture simulated on the GPU"
-  ],
-  "v": "zhidkost-razrushenie",
-  "rp": 1,
-  "ve": "zhidkost-razrushenie-en"
- },
- {
   "slug": "orbit-flora",
   "v": "orbit-flora",
   "ve": "orbit-flora-en",
