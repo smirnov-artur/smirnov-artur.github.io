@@ -836,6 +836,21 @@
   "rp": 1
  },
  {
+  "slug": "obsidian-hero",
+  "v": "obsidian-hero",
+  "ve": "obsidian-hero-en",
+  "ru": [
+   "Архитектурная студия",
+   "Тёмная дымчатая скульптура извивается в кадре за парой карточек с проектами."
+  ],
+  "en": [
+   "Architecture studio",
+   "A dark smoky sculpture coils across the frame behind a pair of staggered project cards."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
