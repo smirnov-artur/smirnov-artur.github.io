@@ -551,6 +551,36 @@
   "rp": 1
  },
  {
+  "slug": "creative-agency",
+  "v": "creative-agency",
+  "ve": "creative-agency-en",
+  "ru": [
+   "Креативная студия",
+   "Гигантский заголовок поверх зацикленного видео, стеклянные карточки статистики на красном"
+  ],
+  "en": [
+   "Creative studio",
+   "A giant headline over a looping video, glass stat cards floating on red"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "solar-energy-hero",
+  "v": "solar-energy-hero",
+  "ve": "solar-energy-hero-en",
+  "ru": [
+   "Счета за $0",
+   "Клик по «Утро» или «Ночь» — фото крыши уезжает вниз и сменяется дневным или ночным видом дома."
+  ],
+  "en": [
+   "Zero electricity bills",
+   "Click Morning or Night: the roof photo pulls down and swaps between a sunlit and a night view of the house."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
