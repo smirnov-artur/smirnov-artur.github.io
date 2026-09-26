@@ -716,6 +716,21 @@
   "rp": 1
  },
  {
+  "slug": "flowmate-landing",
+  "v": "flowmate-landing",
+  "ve": "flowmate-landing-en",
+  "ru": [
+   "ИИ-ассистент рабочих процессов",
+   "Боковое меню следит за прокруткой, сообщение в чате печатается само, а карусель с живописными карточками листается автоматически."
+  ],
+  "en": [
+   "AI workflow assistant",
+   "The sidebar tracks your scroll, a chat message types itself out, and a carousel of painted cards advances on its own."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
