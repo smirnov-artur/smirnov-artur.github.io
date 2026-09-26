@@ -3849,6 +3849,36 @@
   "rp": 1
  },
  {
+  "slug": "vertex-sci",
+  "v": "vertex-sci",
+  "ve": "vertex-sci-en",
+  "ru": [
+   "Лаборатория материаловедения",
+   "Чёрно-белое видео плавно проявляется на весь экран, а следом каскадом всплывают заголовок и показатели."
+  ],
+  "en": [
+   "Materials science lab",
+   "A black-and-white video scales into view, then the headline and stats cascade in one after another."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "bio-digital",
+  "v": "bio-digital",
+  "ve": "bio-digital-en",
+  "ru": [
+   "Кибернетика и биология",
+   "Размытое призматическое кольцо плавно проявляется во весь экран, а заголовок и пилюли навигации всплывают следом."
+  ],
+  "en": [
+   "Cybernetics meets biology",
+   "A blurred prismatic ring scales gently into full screen while the headline and nav pills fade up after it."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
