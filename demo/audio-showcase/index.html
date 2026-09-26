@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — records cut for the calm listener</title>
+    <meta name="description" content="g.a.d.'s vinyl-label hero: a boomerang video loop captured frame-by-frame to canvas, liquid-glass UI panels and a staggered fade-up entrance.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.469.0"></script>
+    <style>
+        html { font-family: 'Arimo', Helvetica, Arial, sans-serif; }
+        body { margin: 0; background: #000; }
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.01);
+            background-blend-mode: luminosity;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: none;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1.4px;
+            background: linear-gradient(180deg,
+                rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 20%,
+                rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
+                rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: none; }
+        }
+        .animate-fade-up { animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.25s; }
+        .delay-3 { animation-delay: 0.4s; }
+        .delay-4 { animation-delay: 0.55s; }
+        .delay-5 { animation-delay: 0.75s; }
+        @media (prefers-reduced-motion: reduce) { .animate-fade-up { animation: none; } }
+        .gad-mark{display:inline-block;overflow:visible}.gad-mark .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-mark .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const GadMark = ({ size = 20, className = '' }) => (
+            <svg className={"gad-mark " + className} viewBox="293 1 58 58" width={size} height={size} role="img" aria-label="g.a.d.">
+                <circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="white" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100" />
+                <circle className="orb" cx="322" cy="8" r="5" fill="white" />
+            </svg>
+        );
+        const MenuIcon = ({ size = 18 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg>);
+        const XIcon = ({ size = 18 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" /></svg>);
+        const HeartIcon = ({ size = 16, filled = false }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 21s-6.7-4.35-9.3-8.2C1.1 10.5 1.5 7 4.3 5.4c2.2-1.25 4.6-.6 6 1.1l1.7 2 1.7-2c1.4-1.7 3.8-2.35 6-1.1 2.8 1.6 3.2 5.1 1.6 7.4C18.7 16.65 12 21 12 21Z" />
+            </svg>
+        );
+
+        // Plays the source video once, capturing every frame to an offscreen canvas (<=960px wide).
+        // When it ends, swaps to a visible canvas that ping-pongs through the captured frames at 30fps.
+        const BoomerangVideoBg = ({ src }) => {
+            const videoRef = useRef(null);
+            const canvasRef = useRef(null);
+            const framesRef = useRef([]);
+            const [playing, setPlaying] = useState(true);
+
+            useEffect(() => {
+                const video = videoRef.current;
+                if (!video) return;
+                let raf;
+                const capture = () => {
+                    if (video.videoWidth) {
+                        const scale = Math.min(1, 960 / video.videoWidth);
+                        const w = Math.round(video.videoWidth * scale);
+                        const h = Math.round(video.videoHeight * scale);
+                        const c = document.createElement('canvas');
+                        c.width = w; c.height = h;
+                        c.getContext('2d').drawImage(video, 0, 0, w, h);
+                        framesRef.current.push(c);
+                    }
+                    if (!video.ended) {
+                        if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(capture);
+                        else raf = requestAnimationFrame(capture);
+                    }
+                };
+                const onEnded = () => setPlaying(false);
+                video.addEventListener('ended', onEnded);
+                video.muted = true;
+                video.play().catch(() => {});
+                if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(capture);
+                else raf = requestAnimationFrame(capture);
+                return () => { video.removeEventListener('ended', onEnded); if (raf) cancelAnimationFrame(raf); };
+            }, []);
+
+            useEffect(() => {
+                if (playing) return;
+                const frames = framesRef.current;
+                if (!frames.length) return;
+                const canvas = canvasRef.current;
+                canvas.width = frames[0].width;
+                canvas.height = frames[0].height;
+                const ctx = canvas.getContext('2d');
+                let i = 0, dir = 1, id;
+                const tick = () => {
+                    ctx.drawImage(frames[i], 0, 0);
+                    i += dir;
+                    if (i >= frames.length - 1) { i = frames.length - 1; dir = -1; }
+                    else if (i <= 0) { i = 0; dir = 1; }
+                    id = setTimeout(tick, 1000 / 30);
+                };
+                tick();
+                return () => clearTimeout(id);
+            }, [playing]);
+
+            return (
+                <div className="absolute inset-0 z-0 scale-[1.08] origin-center overflow-hidden">
+                    <video ref={videoRef} src={src} muted playsInline crossOrigin="anonymous"
+                        className="w-full h-full object-cover" style={{ display: playing ? 'block' : 'none' }} />
+                    <canvas ref={canvasRef} className="w-full h-full object-cover" style={{ display: playing ? 'none' : 'block' }} />
+                </div>
+            );
+        };
+
+        const NAV = ['Anthology', 'Talents', 'Sound diary', 'Playback salon'];
+
+        const Header = () => {
+            const [open, setOpen] = useState(false);
+            return (
+                <header className="absolute inset-x-0 top-0 z-20">
+                    <div className="flex items-center justify-between px-4 sm:px-6 py-4">
+                        <div className="flex items-center gap-2 animate-fade-up">
+                            <GadMark size={20} />
+                            <span className="text-base tracking-tight text-white">g.a.d.</span>
+                        </div>
+                        <nav className="hidden md:flex items-center gap-8">
+                            {NAV.map((l, i) => <a key={l} id={i === 0 ? 'nav-anthology' : undefined} href="#" className="text-sm text-white/90 hover:text-white">{l}</a>)}
+                        </nav>
+                        <div className="flex items-center gap-3">
+                            <button id="cart-btn" className="flex items-center rounded-xl bg-white p-1 pr-3 sm:pr-4 transition-transform duration-200 hover:scale-105 active:scale-95">
+                                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-700 text-white">
+                                    <i data-lucide="shopping-cart" style={{ width: 14, height: 14, strokeWidth: 2 }}></i>
+                                </span>
+                                <span className="ml-2 text-sm text-gray-900"><span className="hidden sm:inline">Cart </span>(0)</span>
+                            </button>
+                            <button id="menu-toggle" onClick={() => setOpen(o => !o)} className="liquid-glass flex h-9 w-9 items-center justify-center rounded-xl text-white transition-transform duration-200 md:hidden">
+                                {open ? <XIcon size={18} /> : <MenuIcon size={18} />}
+                            </button>
+                        </div>
+                    </div>
+                    {open && (
+                        <div className="liquid-glass mx-4 rounded-2xl p-2 md:hidden">
+                            {NAV.map(l => <a key={l} href="#" className="block rounded-xl px-4 py-3 text-sm text-white/90 hover:bg-white/10">{l}</a>)}
+                        </div>
+                    )}
+                </header>
+            );
+        };
+
+        const Hero = () => (
+            <div className="relative z-10 pt-28 sm:pt-36 md:pt-44 px-4 sm:px-6">
+                <div className="liquid-glass animate-fade-up delay-1 mb-5 sm:mb-6 inline-block rounded-lg px-4 py-1.5 text-xs sm:text-sm text-white" style={{ background: 'rgba(255, 255, 255, 0.16)' }}>
+                    Press 04 . Vernal woods
+                </div>
+                <h1 className="animate-fade-up delay-2 max-w-3xl text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] text-white">
+                    records cut for the<br />calm listener.
+                </h1>
+                <p className="animate-fade-up delay-3 mt-5 sm:mt-6 max-w-md text-sm sm:text-base md:text-lg leading-relaxed text-white/90">
+                    Drone, roots, and nature-captured sound on wax LPs. Every disc cut just once, snag it or miss.
+                </p>
+                <div className="animate-fade-up delay-4 mt-8 flex flex-col sm:flex-row gap-3">
+                    <button id="browse-shelves" className="rounded-xl bg-white px-7 py-2.5 text-sm text-gray-900 transition-transform duration-200 hover:scale-105 active:scale-95">Browse the shelves</button>
+                    <button id="newest-arrivals" className="liquid-glass rounded-xl px-7 py-2.5 text-sm text-white transition-transform duration-200 hover:scale-105 active:scale-95">Newest arrivals</button>
+                </div>
+            </div>
+        );
+
+        const NowPlaying = () => {
+            const [liked, setLiked] = useState(false);
+            return (
+                <div className="animate-fade-up delay-5 absolute bottom-4 right-4 sm:bottom-6 sm:right-6 md:bottom-8 md:right-10 z-20 w-full sm:w-72" style={{ maxWidth: 270 }}>
+                    <div className="flex items-center gap-3 rounded-2xl bg-white p-2.5 pr-4 shadow-lg">
+                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-700 text-white">
+                            <i data-lucide="bar-chart-3" style={{ width: 20, height: 20, strokeWidth: 2.5 }}></i>
+                        </span>
+                        <div className="min-w-0 flex-1">
+                            <div className="truncate text-sm text-gray-900">Helia Marsh — Fern Light</div>
+                            <div className="mt-1.5 h-1 rounded-full bg-gray-200"><div className="h-1 w-[30%] rounded-full bg-blue-700" /></div>
+                            <div className="mt-1 flex justify-between text-[10px] text-gray-500"><span>0:33</span><span>-1:21</span></div>
+                        </div>
+                    </div>
+                    <div className="mt-2 flex items-center gap-2">
+                        <button id="np-prev" className="flex-1 rounded-2xl bg-white py-2 text-sm text-gray-900 shadow-lg transition-transform duration-200 hover:scale-105 active:scale-95">Prev</button>
+                        <button id="np-heart" onClick={() => setLiked(v => !v)} className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-blue-700 shadow-lg transition-transform duration-200 hover:scale-110 active:scale-95">
+                            <HeartIcon size={16} filled={liked} />
+                        </button>
+                        <button id="np-next" className="flex-1 rounded-2xl bg-white py-2 text-sm text-gray-900 shadow-lg transition-transform duration-200 hover:scale-105 active:scale-95">Next</button>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            useEffect(() => { lucide.createIcons(); }, []);
+            return (
+                <div className="relative h-screen w-full overflow-hidden bg-black">
+                    <BoomerangVideoBg src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260611_183632_c311af08-e4b7-458f-81e7-79847a49b3d3.mp4" />
+                    <Header />
+                    <Hero />
+                    <NowPlaying />
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

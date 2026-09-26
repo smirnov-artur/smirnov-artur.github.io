@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — Приложение церковной общины</title>
+    <meta name="description" content="Витрина мобильного приложения церкви от g.a.d.: три экрана iPhone — отзыв, главная и проповеди — с эффектом печатной машинки и общим полноэкранным меню.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <style>
+        body { font-family: 'Manrope', sans-serif; background-color: #5A4C41; margin: 0; }
+        .phones-wrap { display:flex; justify-content:center; align-items:flex-start; gap:48px; padding:56px 40px; flex-wrap:wrap; min-height:100vh; box-sizing:border-box; }
+        .phone-outer { width:375px; height:812px; }
+        .phone-frame { position:relative; width:375px; height:812px; background:#000; border-radius:50px; border:2px solid #2a2a2a; box-shadow:0 12px 24px rgba(0,0,0,.3); overflow:hidden; opacity:0; animation: phoneIn .6s cubic-bezier(.16,1,.3,1) forwards; }
+        .phone-screen { position:absolute; inset:2px; border-radius:48px; overflow:hidden; }
+        .notch { position:absolute; top:11px; left:50%; transform:translateX(-50%); width:126px; height:36px; background:#000; border-radius:18px; z-index:60; }
+        .home-bar { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:134px; height:5px; border-radius:3px; background:rgba(255,255,255,.3); z-index:60; }
+        @keyframes phoneIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes menuIn { from { opacity:0; } to { opacity:1; } }
+        .menu-overlay { animation: menuIn .2s ease forwards; }
+        @media (max-width:899px) {
+            .phones-wrap { flex-direction:column; align-items:center; gap:32px; padding:32px 20px; }
+            .phone-outer { width:350px; height:759px; }
+            .phone-scale { transform:scale(0.9333); transform-origin:top left; }
+        }
+        .gad-mark{display:inline-block;overflow:visible}.gad-mark .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-mark .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const GadMark = ({ size = 46, className = '' }) => (
+            <svg className={"gad-mark " + className} viewBox="293 1 58 58" width={size} height={size} role="img" aria-label="g.a.d.">
+                <circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="white" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100" />
+                <circle className="orb" cx="322" cy="8" r="5" fill="white" />
+            </svg>
+        );
+
+        const ArrowIcon = ({ size = 14, color = '#1a1a1a' }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="19" x2="19" y2="5" /><polyline points="8 5 19 5 19 16" /></svg>
+        );
+
+        // Typewriter: reveals text one character at a time. Cleans up every pending timeout on unmount/retrigger.
+        const Typewriter = ({ text, tag: Tag = 'span', style, speed = 30, startDelay = 0, active = true }) => {
+            const [n, setN] = useState(0);
+            useEffect(() => {
+                if (!active) { setN(text.length); return; }
+                setN(0);
+                let i = 0, id;
+                const step = () => { i++; setN(i); if (i < text.length) id = setTimeout(step, speed); };
+                const startId = setTimeout(step, startDelay);
+                return () => { clearTimeout(startId); clearTimeout(id); };
+            }, [text, active]);
+            return <Tag style={style}>{text.slice(0, n)}</Tag>;
+        };
+
+        const PhoneFrame = ({ children, delay = 0 }) => (
+            <div className="phone-outer">
+                <div className="phone-scale">
+                    <div className="phone-frame" style={{ animationDelay: delay + 's' }}>
+                        <div className="phone-screen">{children}</div>
+                        <div className="notch" />
+                        <div className="home-bar" />
+                    </div>
+                </div>
+            </div>
+        );
+
+        const Header = ({ id, onMenu }) => (
+            <div style={{ position: 'absolute', top: 48, left: 19, right: 19, display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 20 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <GadMark size={30} />
+                    <span style={{ color: '#fff', fontSize: 17, fontWeight: 400, lineHeight: '20px' }}>g.a.d.</span>
+                </div>
+                <button id={id} onClick={onMenu} aria-label="Открыть меню" style={{ display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'flex-end', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
+                    <span style={{ width: 22, height: 2, background: '#fff', display: 'block' }} />
+                    <span style={{ width: 22, height: 2, background: '#fff', display: 'block' }} />
+                    <span style={{ width: 12, height: 2, background: '#fff', display: 'block' }} />
+                </button>
+            </div>
+        );
+
+        const MenuOverlay = ({ closeId, onClose }) => (
+            <div className="menu-overlay" style={{ position: 'absolute', inset: 0, background: 'rgb(29,25,26)', zIndex: 100, display: 'flex', flexDirection: 'column' }}>
+                <div style={{ position: 'absolute', top: 48, left: 19, right: 19, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <GadMark size={30} />
+                        <span style={{ color: '#fff', fontSize: 17 }}>g.a.d.</span>
+                    </div>
+                    <button id={closeId} onClick={onClose} aria-label="Закрыть меню" style={{ width: 24, height: 24, position: 'relative', background: 'none', border: 'none', cursor: 'pointer' }}>
+                        <span style={{ position: 'absolute', top: 11, left: 0, width: 24, height: 2, background: '#fff', transform: 'rotate(45deg)' }} />
+                        <span style={{ position: 'absolute', top: 11, left: 0, width: 24, height: 2, background: '#fff', transform: 'rotate(-45deg)' }} />
+                    </button>
+                </div>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingLeft: 19, gap: 22 }}>
+                    {['Главная', 'О нас', 'События', 'Проповеди', 'Контакты'].map(l => (
+                        <a key={l} href="#" style={{ color: '#fff', fontSize: 30, fontWeight: 300, letterSpacing: -0.8, textDecoration: 'none', textWrap: 'balance' }}>{l}</a>
+                    ))}
+                </div>
+                <button style={{ position: 'absolute', bottom: 36, left: 19, right: 19, height: 52, background: '#F1E5C6', border: 'none', borderRadius: 8, fontSize: 19, fontWeight: 500, color: '#1a1a1a', cursor: 'pointer' }}>Присоединяйтесь</button>
+            </div>
+        );
+
+        const Screen1 = ({ menuId, onMenu, active }) => (
+            <div style={{ position: 'relative', width: 375, height: 812, background: 'rgb(29,25,26)' }}>
+                <Header id={menuId} onMenu={onMenu} />
+                <div style={{ position: 'absolute', left: 14, top: 108, writingMode: 'vertical-rl', transform: 'rotate(180deg)', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <span style={{ color: 'rgba(255,255,255,.5)', fontSize: 14, fontWeight: 500, letterSpacing: 1.2 }}>Анна Миллер</span>
+                    <span style={{ color: 'rgba(255,255,255,.5)', fontSize: 14, fontWeight: 400, letterSpacing: 1.2 }}>Прихожанка</span>
+                </div>
+                <img src="../img/portrait.png" alt="Портрет прихожанки" style={{ position: 'absolute', top: 120, left: 125, width: 231, height: 300, objectFit: 'cover', borderRadius: 12 }} />
+                <img src="../img/quote.png" alt="" style={{ position: 'absolute', left: 19, top: 395, width: 28, height: 24 }} />
+                <p style={{ position: 'absolute', left: 19, top: 440, width: 336, margin: 0, color: 'rgba(255,255,255,.77)', fontSize: 19, lineHeight: '26px', fontWeight: 400 }}>
+                    <Typewriter active={active} startDelay={300} speed={18} text="Мы хотим быть семьёй, в которой люди сближаются и находят дружбу во Христе." />
+                </p>
+                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 245, background: '#F5F0E8', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: '28px 19px 0' }}>
+                    <div style={{ fontSize: 30, fontWeight: 500, letterSpacing: -0.5, color: '#1a1a1a', lineHeight: '34px', textWrap: 'balance' }}>Воскресное богослужение</div>
+                    <div style={{ fontSize: 16, color: '#888', marginTop: 6 }}>7 декабря, 10:00–11:30</div>
+                    <div style={{ position: 'absolute', left: 19, bottom: 28, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span id="learn-more" style={{ fontSize: 14, fontWeight: 600, color: '#1a1a1a', letterSpacing: 1, textTransform: 'uppercase' }}>Подробнее</span>
+                        <ArrowIcon size={13} />
+                    </div>
+                    <img src="../img/star.png" alt="" style={{ position: 'absolute', right: 19, bottom: 19, width: 40, height: 40 }} />
+                </div>
+            </div>
+        );
+
+        const Screen2 = ({ menuId, onMenu, active }) => (
+            <div style={{ position: 'relative', width: 375, height: 812, background: '#0f0e0d' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, width: 375, height: 472, overflow: 'hidden' }}>
+                    <img src="../img/hero-worship.png" alt="Прихожане с поднятыми руками во время богослужения" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,.15)' }} />
+                </div>
+                <Header id={menuId} onMenu={onMenu} />
+                <img src="../img/avatars.png" alt="Участники общины" style={{ position: 'absolute', left: 19, top: 442, width: 149, height: 53, objectFit: 'contain' }} />
+                <div style={{ position: 'absolute', left: 19, top: 520, right: 19 }}>
+                    <Typewriter tag="h1" active={active} startDelay={200} speed={45} text="Сделайте шаг к свету" style={{ display: 'block', color: '#F1E5C6', fontSize: 42, fontWeight: 300, lineHeight: '46px', letterSpacing: -1.5, margin: 0, minHeight: 92, textWrap: 'balance' }} />
+                    <p style={{ color: 'rgba(255,255,255,.6)', fontSize: 17, lineHeight: '24px', marginTop: 16 }}>Откройте для себя веру, надежду и дом для своей души</p>
+                </div>
+                <button id="join-cta" style={{ position: 'absolute', left: 19, right: 19, bottom: 32, height: 52, background: '#F1E5C6', border: 'none', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: 19, fontWeight: 500, color: '#1a1a1a', cursor: 'pointer' }}>
+                    Присоединяйтесь <ArrowIcon size={16} />
+                </button>
+            </div>
+        );
+
+        const EVENTS = [
+            { day: '14', mon: 'дек', title: 'Лк. 1 | История Захарии', time: '18:30–20:00', card: '#fff' },
+            { day: '21', mon: 'дек', title: 'Рим. 15 | Жить только для Христа', time: '8:30–10:00', card: '#F1E5C6' },
+            { day: '28', mon: 'дек', title: 'Рим. 9 | Владычество Бога', time: '17:30–19:00', card: '#F1E5C6' },
+            { day: '4', mon: 'янв', title: 'Ин. 3 | Рождение свыше', time: '', card: '#F1E5C6', faded: true },
+        ];
+
+        const Screen3 = ({ menuId, onMenu, active }) => (
+            <div style={{ position: 'relative', width: 375, height: 812, background: '#F5F0E8' }}>
+                <div style={{ position: 'absolute', top: 0, left: -20, width: 415, height: 345, overflow: 'hidden' }}>
+                    <img src="../img/preacher.png" alt="Руки на раскрытых книгах" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,.3)' }} />
+                </div>
+                <Header id={menuId} onMenu={onMenu} />
+                <button id="play-btn" aria-label="Смотреть" style={{ position: 'absolute', top: 175, left: '50%', transform: 'translateX(-50%)', width: 65, height: 65, borderRadius: '50%', background: '#F1E5C6', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                    <img src="../img/play.png" alt="" style={{ width: 20, height: 20 }} />
+                </button>
+                <div style={{ position: 'absolute', top: 343, left: 0, right: 0, bottom: 0, background: '#F5F0E8', borderTopLeftRadius: 24, borderTopRightRadius: 24, overflow: 'hidden' }}>
+                    <div style={{ height: 220, background: 'rgb(29,25,26)', display: 'flex', alignItems: 'flex-end', padding: '0 19px 24px' }}>
+                        <Typewriter tag="h2" active={active} startDelay={250} speed={45} text="Ближайшие" style={{ display: 'block', color: '#fff', fontSize: 34, fontWeight: 400, letterSpacing: -0.8, margin: 0, minHeight: 42 }} />
+                    </div>
+                    <div style={{ padding: '22px 19px', display: 'flex', flexDirection: 'column', gap: 22 }}>
+                        {EVENTS.map((e, i) => (
+                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, opacity: e.faded ? 0.5 : 1 }}>
+                                <div style={{ width: 68, height: 90, borderRadius: 12, background: e.card, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                    <span style={{ fontSize: 30, fontWeight: 500, color: '#1a1a1a', lineHeight: 1 }}>{e.day}</span>
+                                    <span style={{ fontSize: 16, color: '#1a1a1a', marginTop: 4 }}>{e.mon}</span>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: 17, lineHeight: '22px', color: '#1a1a1a', textWrap: 'balance' }}>{e.title}</div>
+                                    {e.time && <div style={{ fontSize: 15, color: '#999', marginTop: 4 }}>{e.time}</div>}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+
+        const App = () => {
+            const [m1, setM1] = useState(false);
+            const [m2, setM2] = useState(false);
+            const [m3, setM3] = useState(false);
+            const [active, setActive] = useState(true);
+            return (
+                <div className="phones-wrap">
+                    <PhoneFrame delay={0}>
+                        <Screen1 menuId="menu-1" onMenu={() => setM1(true)} active={active} />
+                        {m1 && <MenuOverlay closeId="close-1" onClose={() => setM1(false)} />}
+                    </PhoneFrame>
+                    <PhoneFrame delay={0.15}>
+                        <Screen2 menuId="menu-2" onMenu={() => setM2(true)} active={active} />
+                        {m2 && <MenuOverlay closeId="close-2" onClose={() => setM2(false)} />}
+                    </PhoneFrame>
+                    <PhoneFrame delay={0.3}>
+                        <Screen3 menuId="menu-3" onMenu={() => setM3(true)} active={active} />
+                        {m3 && <MenuOverlay closeId="close-3" onClose={() => setM3(false)} />}
+                    </PhoneFrame>
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

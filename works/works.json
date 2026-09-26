@@ -3774,6 +3774,36 @@
   "rp": 1
  },
  {
+  "slug": "audio-showcase",
+  "v": "audio-showcase",
+  "ve": "audio-showcase-en",
+  "ru": [
+   "Лейбл виниловых пластинок",
+   "Бумеранг-видео, покадрово захваченное на canvas, играет за панелями из «жидкого стекла», элементы всплывают волной"
+  ],
+  "en": [
+   "Vinyl record label",
+   "A boomerang video loop captured frame by frame to canvas plays behind liquid-glass panels, elements rise in a staggered wave"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "church-community",
+  "v": "church-community",
+  "ve": "church-community-en",
+  "ru": [
+   "Приложение церковной общины",
+   "Три экрана iPhone — отзыв, главная и проповеди — с эффектом печатной машинки на заголовках и общим полноэкранным меню"
+  ],
+  "en": [
+   "Church community app",
+   "Three iPhone mockups — testimonial, hero and sermons — with typewriter-effect headlines and a shared full-screen menu"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
