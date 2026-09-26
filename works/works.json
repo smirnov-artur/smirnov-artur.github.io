@@ -896,6 +896,21 @@
   "rp": 1
  },
  {
+  "slug": "outdoor-apparel",
+  "v": "outdoor-apparel",
+  "ve": "outdoor-apparel-en",
+  "ru": [
+   "Бренд походного снаряжения",
+   "Прокрутка перематывает видео с горой, над манифестом плывут фото снаряжения, а затем раскрывается слайдер товаров."
+  ],
+  "en": [
+   "Outdoor gear brand",
+   "Scrolling scrubs a mountain video, gear photos drift over the manifesto, then a product slider unfolds."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
