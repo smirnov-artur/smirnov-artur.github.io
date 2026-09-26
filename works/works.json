@@ -821,6 +821,21 @@
   "rp": 1
  },
  {
+  "slug": "yoga-coach",
+  "v": "yoga-coach",
+  "ve": "yoga-coach-en",
+  "ru": [
+   "Йога-тренер",
+   "Нажмите «Начать» — сыграет параллакс-видео, а потом три карточки оживают при наведении на экране коллекции."
+  ],
+  "en": [
+   "Yoga coaching",
+   "Click Let's Start for a parallax video, then hover three cards in the collection screen that slides up."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [

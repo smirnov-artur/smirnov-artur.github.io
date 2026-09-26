@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — Yoga With Jessica</title>
+    <meta name="description" content="A no-scroll yoga landing: click Let's Start, a parallax hero video plays out, then a pastel collection screen slides up with three hover-to-play video cards.">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { fontFamily: { anton: ['Anton', 'sans-serif'] } } } };</script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@11.18.2/dist/framer-motion.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
+</head>
+<body class="bg-black">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const { motion, AnimatePresence } = Motion;
+
+        const POSTER = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260624_053103_a6c6fd5c-8f43-4942-a487-e81c8f3cd0c1.png&w=1920&q=85';
+        const MAIN_HLS = 'https://stream.mux.com/YyFgoUXUTVMiVMMLeQoq49tP00joMyEzoRmnEnk02H5rA.m3u8';
+        const CARD1 = 'https://stream.mux.com/S9BmS8DLYYowz7jr1BkN2PbAQm4bjEwijllpwmEB4xA.m3u8';
+        const CARD2 = 'https://stream.mux.com/83kMTSKA4Xy01RTddNwDdt7OjCocQTCdKHY7AsD02Dlgc.m3u8';
+        const CARD3 = 'https://stream.mux.com/c4KUkE6NHGljcc4M8458iMEdHAbUvsG5MTpqefzBYvo.m3u8';
+        const EASE = [0.16, 1, 0.3, 1];
+
+        function useHls(src, deps){
+            const ref = useRef(null);
+            useEffect(() => {
+                const v = ref.current; if (!v) return;
+                let hls;
+                if (window.Hls && Hls.isSupported()) {
+                    hls = new Hls({ enableWorker: false });
+                    hls.loadSource(src);
+                    hls.attachMedia(v);
+                    if (deps && deps.onParsed) hls.on(Hls.Events.MANIFEST_PARSED, deps.onParsed);
+                } else if (v.canPlayType('application/vnd.apple.mpegurl')) {
+                    v.src = src;
+                    if (deps && deps.onParsed) v.addEventListener('loadedmetadata', deps.onParsed, { once: true });
+                }
+                return () => { if (hls) hls.destroy(); };
+                // eslint-disable-next-line
+            }, [src]);
+            return ref;
+        }
+
+        function YogaCard({ src, initialRotation, hoverOffset, z, className }){
+            const videoRef = useHls(src);
+            return (
+                <motion.div
+                    className={`relative rounded-3xl overflow-hidden aspect-[9/16] w-72 sm:w-[21rem] md:w-[24rem] bg-white border-[6px] sm:border-[8px] border-white shadow-[0_15px_40px_rgba(0,0,0,0.22)] cursor-pointer origin-bottom select-none ${z} ${className}`}
+                    initial={{ rotate: initialRotation, x: 0, y: 0, scale: 1 }}
+                    whileHover={{ ...hoverOffset, transition: { type: 'spring', stiffness: 200, damping: 20 } }}
+                    onMouseEnter={() => videoRef.current && videoRef.current.play().catch(() => {})}
+                    onMouseLeave={() => { const v = videoRef.current; if (v) { v.pause(); v.currentTime = 0; } }}
+                >
+                    <video ref={videoRef} className="w-full h-full object-cover rounded-2xl pointer-events-none" muted loop playsInline preload="auto"></video>
+                    <div className="absolute inset-0 rounded-2xl ring-1 ring-black/10 pointer-events-none"></div>
+                </motion.div>
+            );
+        }
+
+        function App(){
+            const [isPlaying, setIsPlaying] = useState(false);
+            const [showSecond, setShowSecond] = useState(false);
+            const [isLoaded, setIsLoaded] = useState(false);
+            const [parallax, setParallax] = useState({ x: 0, y: 0 });
+            const videoRef = useHls(MAIN_HLS, { onParsed: () => setIsLoaded(true) });
+
+            function onMove(e){
+                const x = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
+                const y = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
+                setParallax({ x: x * 20, y: y * 20 });
+            }
+            function start(){ videoRef.current.play().catch(() => {}); setIsPlaying(true); }
+            function onEnded(){ setIsPlaying(false); setShowSecond(true); }
+            function back(){ const v = videoRef.current; v.pause(); v.currentTime = 0; setShowSecond(false); setIsPlaying(false); }
+
+            return (
+                <div className="w-screen h-screen bg-black overflow-hidden select-none relative" onMouseMove={onMove}>
+                    <video ref={videoRef} poster={POSTER} muted playsInline preload="auto" onEnded={onEnded}
+                        className={"w-full h-full object-cover transition-opacity duration-1000 ease-in-out origin-center " + (isLoaded ? 'opacity-100' : 'opacity-0')}
+                        style={{ transform: `scale(1.08) translate(${parallax.x}px, ${parallax.y}px)` }}></video>
+                    <div className="absolute inset-0 bg-black/10 pointer-events-none"></div>
+
+                    <div className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-6 sm:p-12 md:p-16">
+                        <motion.div className="max-w-xs sm:max-w-sm md:max-w-md pointer-events-auto overflow-hidden"
+                            animate={isPlaying ? { y: 250, opacity: 0 } : { y: 0, opacity: 1 }}
+                            transition={{ duration: 1, ease: EASE }}>
+                            <p className="font-anton text-white text-xl sm:text-2xl md:text-3xl lg:text-[2.2rem] leading-[0.95] tracking-wide uppercase" style={{ textWrap: 'balance' }}>
+                                Find your focus, arrange private yoga sessions, and live the mindful way
+                            </p>
+                        </motion.div>
+
+                        <div className="w-full flex flex-col items-start md:flex-row md:items-end justify-between gap-4">
+                            <motion.div className="pointer-events-auto overflow-hidden"
+                                animate={isPlaying ? { y: '150%', opacity: 0 } : { y: 0, opacity: 1 }}
+                                transition={{ duration: 1.1, ease: EASE }}>
+                                <h1 className="font-anton text-white text-5xl sm:text-7xl md:text-7xl lg:text-[8rem] xl:text-[10rem] 2xl:text-[11rem] leading-none tracking-tight uppercase">Hey, I am<br/>Jessica</h1>
+                            </motion.div>
+                            <motion.div className="text-left md:text-right pointer-events-auto overflow-hidden"
+                                animate={isPlaying ? { y: '150%', opacity: 0 } : { y: 0, opacity: 1 }}
+                                transition={{ duration: 1.1, ease: EASE }}>
+                                <h2 className="font-anton text-white text-5xl sm:text-7xl md:text-7xl lg:text-[8rem] xl:text-[10rem] 2xl:text-[11rem] leading-none tracking-tight uppercase">Yoga<br/>Coach</h2>
+                            </motion.div>
+                        </div>
+                    </div>
+
+                    <div className="absolute left-1/2 bottom-[29%] md:bottom-2 -translate-x-1/2 z-20 pointer-events-auto">
+                        <AnimatePresence>
+                            {!isPlaying && (
+                                <motion.button key="start" onClick={start}
+                                    exit={{ scale: 0, opacity: 0 }} transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
+                                    className="w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full bg-black/90 hover:bg-black text-white font-anton text-xs sm:text-sm tracking-widest flex flex-col items-center justify-center gap-1 cursor-pointer transition-all duration-300 border border-white/20 hover:border-white/40 shadow-[0_0_50px_rgba(0,0,0,0.8)] backdrop-blur-sm relative overflow-hidden group">
+                                    <span className="absolute inset-0 opacity-60 group-hover:opacity-100 transition-opacity duration-300" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.1), transparent)' }}></span>
+                                    <span className="relative z-10 font-bold tracking-wider">Let's start</span>
+                                </motion.button>
+                            )}
+                        </AnimatePresence>
+                    </div>
+
+                    <motion.div className="absolute inset-0 w-full h-full z-30 flex flex-col items-center justify-start p-6 pt-24 sm:p-12 md:p-16"
+                        initial={{ y: '100%' }} animate={{ y: showSecond ? 0 : '100%' }} transition={{ type: 'spring', damping: 32, stiffness: 220 }}
+                        style={{ background: 'linear-gradient(to bottom, #d5effd, #aedcf9, #8cd0f7)' }}>
+                        <button onClick={back} className="absolute top-[56px] left-1/2 -translate-x-1/2 z-40 flex items-center font-anton text-black hover:text-black/70 text-lg sm:text-xl border border-black/20 hover:border-black/40 px-8 py-3 rounded-full bg-white/40 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer">Back to start</button>
+
+                        <div className="w-full flex-1 flex flex-col items-center justify-center relative select-none mt-20 sm:mt-16">
+                            <div className="font-anton select-none pointer-events-none uppercase text-[13.5vw] sm:text-[16.9vw] leading-none text-center w-full absolute z-10 whitespace-nowrap"
+                                style={{ backgroundImage: 'linear-gradient(to bottom, white, rgba(255,255,255,.7), rgba(255,255,255,0))', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent', transform: 'translateY(1rem)', filter: 'drop-shadow(0 2px 15px rgba(255,255,255,.1))' }}>
+                                Collection #451
+                            </div>
+                            <div className="flex items-center justify-center relative z-20 w-full max-w-5xl mt-6">
+                                <YogaCard src={CARD1} initialRotation={-8} hoverOffset={{ x: -60, y: -25, rotate: -12, scale: 1.04 }} z="z-20 hover:z-40" className="-mr-14 sm:-mr-22 md:-mr-28 lg:-mr-32" />
+                                <YogaCard src={CARD2} initialRotation={0} hoverOffset={{ x: 0, y: -15, rotate: 0, scale: 1.08 }} z="z-30 hover:z-40" className="scale-105" />
+                                <YogaCard src={CARD3} initialRotation={8} hoverOffset={{ x: 60, y: -25, rotate: 12, scale: 1.04 }} z="z-20 hover:z-40" className="-ml-14 sm:-ml-22 md:-ml-28 lg:-ml-32" />
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>
