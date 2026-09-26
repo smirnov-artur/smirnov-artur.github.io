@@ -821,6 +821,21 @@
   "rp": 1
  },
  {
+  "slug": "sky-estate",
+  "v": "sky-estate",
+  "ve": "sky-estate-en",
+  "ru": [
+   "Космическая недвижимость",
+   "Слои неба и гор плывут за градиентным заголовком, а текст ниже загорается буква за буквой при прокрутке."
+  ],
+  "en": [
+   "Cosmic real estate",
+   "Sky and mountain layers drift behind a gradient headline while the paragraph below lights up as you scroll."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
