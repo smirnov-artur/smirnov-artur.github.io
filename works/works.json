@@ -3939,6 +3939,66 @@
   "rp": 1
  },
  {
+  "slug": "ai-workflow-agents",
+  "v": "ai-workflow-agents",
+  "ve": "ai-workflow-agents-en",
+  "ru": [
+   "ИИ-агенты для браузера",
+   "Видео долины на весь экран за заголовком с засечками, стеклянной навигацией и кнопкой раннего доступа."
+  ],
+  "en": [
+   "Browser task agents",
+   "A looping valley video fills the screen behind a serif headline, glass nav and an early-access button."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "pet-diagnostics",
+  "v": "pet-diagnostics",
+  "ve": "pet-diagnostics-en",
+  "ru": [
+   "Диагностика здоровья питомцев",
+   "Видео с собакой и хозяином на фоне, а поверх него парит таблица цен с кремовой колонкой бренда."
+  ],
+  "en": [
+   "Pet health diagnostics",
+   "A looping video of a dog and owner plays behind a floating comparison table with a cream brand column."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "innovation-lab",
+  "v": "innovation-lab",
+  "ve": "innovation-lab-en",
+  "ru": [
+   "Иммерсивная техностудия",
+   "Сказочное видео с цветами и светящейся луной на фоне, элементы всплывают волной, кнопки — со срезанными углами."
+  ],
+  "en": [
+   "Immersive tech studio",
+   "A dreamy flower-and-glowing-moon video plays behind a staggered fade-up entrance and octagon-cut glass buttons."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "apex-pulse",
+  "v": "apex-pulse",
+  "ve": "apex-pulse-en",
+  "ru": [
+   "Технологии дронов",
+   "Кинематографичное видео покадрово прокручивается по canvas вместе со скроллом, а два блока со статистикой проявляются заголовками и цифрами при попадании в кадр."
+  ],
+  "en": [
+   "Drone technology",
+   "A cinematic video is scrubbed frame by frame on a canvas as you scroll, while two stat-heavy sections fade their headlines and numbers up into view."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
