@@ -3834,6 +3834,21 @@
   "rp": 1
  },
  {
+  "slug": "f1-racing-hub",
+  "v": "f1-racing-hub",
+  "ve": "f1-racing-hub-en",
+  "ru": [
+   "Гоночное мобильное приложение",
+   "Три экрана показывают профиль гонщика, трассу со счётчиком очков сезона и карточки команды под меню с алым градиентом и шахматными ссылками."
+  ],
+  "en": [
+   "Racing team mobile app",
+   "Three phone screens track a driver profile, a circuit with count-up season points, and team cards under a red-gradient menu with staggered links."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [

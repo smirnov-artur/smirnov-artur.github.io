@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>g.a.d. — Racing Hub</title>
+<meta name="description" content="A mobile racing companion app shown across three phone mockups: a driver profile, a circuit with count-up season stats, and a team roster.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { overflow-x: hidden; }
+  body { background: #0a0e1c; font-family: "Albert Sans", sans-serif; -webkit-font-smoothing: antialiased; }
+
+  .phone-frame { aspect-ratio: 390/844; width: clamp(200px, 75vw, 340px); min-height: 0; } /* иначе телефон растягивается под немасштабированные 844px экрана, и внизу пустая полоса */
+  @media (min-width:768px) { .phone-frame { width: min(25vw, 42vh); } }
+  @media (min-width:1280px) { .phone-frame { width: min(28vw, 48vh, 430px); } }
+
+  @keyframes fadeSlideUp { from { opacity:0; transform:translateY(30px);} to { opacity:1; transform:translateY(0);} }
+  @keyframes fadeSlideDown { from { opacity:0; transform:translateY(-20px);} to { opacity:1; transform:translateY(0);} }
+  @keyframes fadeSlideLeft { from { opacity:0; transform:translateX(40px);} to { opacity:1; transform:translateX(0);} }
+  @keyframes fadeSlideRight { from { opacity:0; transform:translateX(-40px);} to { opacity:1; transform:translateX(0);} }
+  @keyframes scaleIn { from { opacity:0; transform:scale(0.92);} to { opacity:1; transform:scale(1);} }
+  @keyframes fadeIn { from { opacity:0;} to { opacity:1;} }
+  @keyframes speedReveal {
+    0% { opacity:0; transform:translateX(-100%) skewX(-8deg); filter:blur(8px); }
+    60% { opacity:1; transform:translateX(4%) skewX(-2deg); filter:blur(0); }
+    100% { opacity:1; transform:translateX(0) skewX(0); filter:blur(0); }
+  }
+  @keyframes raceLineLeft { from { transform:scaleX(0); } 60% { transform:scaleX(1.1); } to { transform:scaleX(1); } }
+
+  .animate-fade-slide-up { animation: fadeSlideUp 0.9s cubic-bezier(0.16,1,0.3,1) both; }
+  .animate-fade-slide-down { animation: fadeSlideDown 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+  .animate-fade-slide-left { animation: fadeSlideLeft 0.9s cubic-bezier(0.16,1,0.3,1) both; }
+  .animate-fade-slide-right { animation: fadeSlideRight 0.9s cubic-bezier(0.16,1,0.3,1) both; }
+  .animate-scale-in { animation: scaleIn 1s cubic-bezier(0.16,1,0.3,1) both; }
+  .animate-fade-in { animation: fadeIn 0.8s ease-out both; }
+  .animate-speed-reveal { animation: speedReveal 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+  .animate-race-line { animation: raceLineLeft 0.8s cubic-bezier(0.16,1,0.3,1) both; transform-origin: left; }
+
+  .gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}
+  .gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}
+  .gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}
+  @keyframes gad-draw{to{stroke-dashoffset:0}}
+  @keyframes gad-pop{to{opacity:1}}
+  @keyframes gad-orbit{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}
+</style>
+</head>
+<body class="bg-[#0a0e1c] antialiased">
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useId } = React;
+
+for (let i = 1; i <= 16; i++) {
+  const s = document.createElement('style');
+  s.textContent = `.delay-${i * 100}{animation-delay:${i / 10}s}`;
+  document.head.appendChild(s);
+}
+
+const GAD_LOGO_SVG = '<svg class="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d."><path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/><circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/><circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/></svg>';
+
+// ---- fictional content (no real people, teams or sponsors) ----
+const BG_IMAGE = 'img/bg.jpg';
+const CAR_IMAGE = 'img/car.jpg';
+const PROFILE_ICON = 'img/profile-icon.png';
+const MEDAL_ICON = 'img/medal-icon.png';
+const CHASSIS_ICON = 'img/chassis-icon.png';
+const CIRCUIT_IMAGE = 'img/circuit.png';
+
+const NATION = 'Kortessa';
+const CIRCUIT_NAME = 'Solvara';
+const REGION = 'Kortessa';
+const DRIVER_FIRST = 'Noah';
+const DRIVER_LAST = 'Kessler';
+const TEAM_LINE1 = 'KARBEX';
+const TEAM_LINE2 = 'RACING';
+const CHASSIS_CODE = 'KX-26';
+
+// ---- small inline icons (no hotlinked brand marks) ----
+const TeamEmblem = ({ className }) => (
+  <svg viewBox="0 0 24 24" className={className}>
+    <path d="M12 2 L21 6 V12 C21 17 17 20.5 12 22 C7 20.5 3 17 3 12 V6 Z" fill="#8B0000" stroke="#EDB40B" strokeWidth="0.75" />
+    <path d="M12 7 L16.5 15 H7.5 Z" fill="#EDB40B" opacity="0.9" />
+  </svg>
+);
+const StatsSpark = ({ className }) => (
+  <svg viewBox="0 0 60 20" className={className} fill="none">
+    <path d="M2,16 L12,10 L22,13 L32,6 L42,9 L52,3 L58,5" stroke="#EDB40B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.9" />
+    <circle cx="58" cy="5" r="2.5" fill="#EDB40B" />
+  </svg>
+);
+const PinIcon = ({ className }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
+    <path d="M12 21s7-7.5 7-12A7 7 0 1 0 5 9c0 4.5 7 12 7 12Z" />
+    <circle cx="12" cy="9" r="2.5" fill="currentColor" stroke="none" />
+  </svg>
+);
+const XIcon = ({ className }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className={className}><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+);
+
+// large stylized helmet illustration standing in for the driver photo — no real person, no team livery
+const HelmetHero = ({ className, style }) => {
+  // ids must be unique per instance: the mobile/desktop layouts mount Screen1 (and this svg) twice at once,
+  // and duplicate SVG gradient ids silently fail to paint when the first-in-document copy is display:none
+  const uid = useId();
+  const dome = `dome-${uid}`, rim = `rim-${uid}`, visor = `visor-${uid}`;
+  return (
+    <svg viewBox="0 0 400 480" className={className} style={{ filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.5))', ...style }}>
+      <defs>
+        <radialGradient id={dome} cx="35%" cy="28%" r="75%">
+          <stop offset="0%" stopColor="#3a3f4e" />
+          <stop offset="55%" stopColor="#1c2030" />
+          <stop offset="100%" stopColor="#0a0e1c" />
+        </radialGradient>
+        <linearGradient id={rim} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#EDB40B" stopOpacity="0" />
+          <stop offset="50%" stopColor="#EDB40B" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="#EDB40B" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id={visor} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#05070d" />
+          <stop offset="42%" stopColor="#1a2540" />
+          <stop offset="55%" stopColor="#3a4a70" />
+          <stop offset="100%" stopColor="#05070d" />
+        </linearGradient>
+      </defs>
+      <path d="M200,18 C305,18 366,98 366,220 C366,342 320,462 200,462 C80,462 34,342 34,220 C34,98 95,18 200,18 Z" fill={`url(#${dome})`} />
+      <path d="M200,18 C305,18 366,98 366,220" fill="none" stroke={`url(#${rim})`} strokeWidth="7" strokeLinecap="round" />
+      <path d="M340,55 C356,108 366,162 366,220" fill="none" stroke="#E10600" strokeWidth="4" strokeLinecap="round" opacity="0.65" />
+      <rect x="182" y="30" width="36" height="9" rx="4.5" fill="#05070d" opacity="0.7" />
+      <path d="M38,238 C38,312 110,344 200,344 C290,344 362,312 362,238 L362,300 C362,364 290,396 200,396 C110,396 38,364 38,300 Z" fill={`url(#${visor})`} />
+      <path d="M58,254 L342,254" stroke="#EDB40B" strokeWidth="2" strokeOpacity="0.45" />
+    </svg>
+  );
+};
+
+const AvatarStrip = () => (
+  <div className="flex items-center h-12">
+    <div className="h-full aspect-square rounded-full flex items-center justify-center text-[11px] font-semibold text-white ring-2 ring-[#0a0e1c]" style={{ background: '#EDB40B', color: '#141420' }}>NK</div>
+    <div className="h-full aspect-square rounded-full flex items-center justify-center text-[11px] font-semibold text-white ring-2 ring-[#0a0e1c] -ml-2.5" style={{ background: '#8B0000' }}>MR</div>
+    <div className="h-full aspect-square rounded-full flex items-center justify-center text-[10px] font-medium text-white/80 ring-2 ring-[#0a0e1c] -ml-2.5" style={{ background: '#2a2f45' }}>+2</div>
+    <div className="h-full px-3.5 rounded-full bg-white/10 flex items-center justify-center text-[11px] font-medium text-white/80 ml-2">All</div>
+  </div>
+);
+
+function useCountUp(target, delayMs) {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    let raf, start;
+    const to = setTimeout(() => {
+      const tick = now => {
+        if (!start) start = now;
+        const t = Math.min(1, (now - start) / 2200);
+        const eased = 1 - Math.pow(1 - t, 3);
+        setValue(Math.round(target * eased));
+        if (t < 1) raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+    }, delayMs);
+    return () => { clearTimeout(to); cancelAnimationFrame(raf); };
+  }, [target, delayMs]);
+  return value;
+}
+
+const ScreenBackground = () => (
+  <div className="absolute inset-0 z-0">
+    <img src={BG_IMAGE} alt="" className="absolute inset-0 w-full h-full object-cover" />
+    <div className="absolute inset-0 bg-black/60" />
+  </div>
+);
+
+const NavGlassButton = ({ menuOpen, onClick }) => (
+  <button onClick={onClick} className="menu-btn h-14 w-14 flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }} aria-label="Menu">
+    {menuOpen ? <XIcon className="w-5 h-5 text-white" /> : (
+      <span className="flex flex-col items-center" style={{ gap: 5 }}>
+        <span className="bg-white rounded-full" style={{ width: 21, height: 2 }} />
+        <span className="bg-white rounded-full" style={{ width: 10, height: 2 }} />
+      </span>
+    )}
+  </button>
+);
+
+const PhoneNav = ({ menuOpen, setMenuOpen }) => (
+  <div className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-5 h-14" style={{ marginTop: 20 }}>
+    <span className="h-7 flex items-center text-white" dangerouslySetInnerHTML={{ __html: GAD_LOGO_SVG }} />
+    <div className="flex items-center">
+      <button className="h-14 w-14 bg-white flex items-center justify-center" aria-label="Profile">
+        <img src={PROFILE_ICON} className="w-5 h-5" alt="" />
+      </button>
+      <NavGlassButton menuOpen={menuOpen} onClick={() => setMenuOpen(o => !o)} />
+    </div>
+  </div>
+);
+
+const MENU_LINKS = ['Biography', 'Statistics', 'Career'];
+const MenuOverlay = ({ open, onClose }) => (
+  <div className={`absolute inset-0 z-50 flex flex-col justify-between p-8 transition-opacity duration-400 ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+    style={{ background: 'linear-gradient(160deg, #1a0000 0%, #8B0000 40%, #E10600 100%)' }}>
+    <div className="flex justify-end">
+      <button onClick={onClose} className="menu-close text-white" aria-label="Close menu"><XIcon className="w-6 h-6" /></button>
+    </div>
+    <nav className="flex flex-col gap-6">
+      {MENU_LINKS.map((l, i) => (
+        <a key={l} href="#" className="text-3xl font-bold tracking-tight text-white hover:text-[#EDB40B] transition-colors"
+          style={open ? { animation: `fadeSlideRight 0.6s cubic-bezier(0.16,1,0.3,1) both`, animationDelay: `${0.1 + i * 0.08}s` } : { opacity: 0 }}>{l}</a>
+      ))}
+    </nav>
+    <button className="w-full bg-white text-black rounded-md py-3 font-semibold">Sign in</button>
+  </div>
+);
+
+const LocationBlock = ({ delayTop, delayTitle, mb = 'mb-2' }) => (
+  <div className={`relative z-10 mt-4 ${mb}`}>
+    <div className={`flex items-center gap-1.5 text-white/60 text-[16px] animate-fade-slide-up ${delayTop}`}>
+      <PinIcon className="w-4 h-4" />
+      <span>{NATION}</span>
+    </div>
+    <h2 className={`text-white font-normal leading-[0.95] tracking-[-0.05em] text-[48px] animate-fade-slide-up ${delayTitle}`}>
+      {CIRCUIT_NAME}<br />{REGION}
+    </h2>
+  </div>
+);
+
+function Screen1() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  return (
+    <div className="relative w-full h-[844px] flex flex-col px-5 pb-0 pt-[76px] overflow-hidden">
+      <ScreenBackground />
+      <PhoneNav menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <LocationBlock delayTop="delay-300" delayTitle="delay-300" />
+      <div className="z-[5] absolute inset-0 flex items-end justify-center">
+        <HelmetHero className="w-[calc(140%-5px)] max-w-none h-auto animate-scale-in delay-500" style={{ transformOrigin: 'bottom' }} />
+        <div className="absolute bottom-0 left-0 right-0 h-[50%] pointer-events-none" style={{
+          backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)',
+          mask: 'linear-gradient(to bottom, transparent 0%, black 50%)', WebkitMask: 'linear-gradient(to bottom, transparent 0%, black 50%)'
+        }} />
+      </div>
+      <div className="z-10 absolute bottom-0 left-0 right-0 px-5 pb-5">
+        <div className="mb-3 animate-fade-slide-up delay-700"><AvatarStrip /></div>
+        <h1 className="text-white font-semibold leading-[0.82] tracking-[-0.05em] text-[64px] animate-speed-reveal delay-800">
+          {DRIVER_FIRST}<br />{DRIVER_LAST}
+        </h1>
+      </div>
+      <MenuOverlay open={menuOpen} onClose={() => setMenuOpen(false)} />
+    </div>
+  );
+}
+
+function Screen2() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const v1 = useCountUp(227, 800), v2 = useCountUp(374, 1000), v3 = useCountUp(4987, 1200);
+  return (
+    <div className="relative w-full h-[844px] flex flex-col px-5 pb-8 pt-[76px] overflow-hidden">
+      <ScreenBackground />
+      <PhoneNav menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <LocationBlock delayTop="delay-400" delayTitle="delay-400" mb="mb-4" />
+      <div className="z-10 flex-1 flex items-center justify-center -mx-5 px-2 min-h-0 animate-scale-in delay-600">
+        <img src={CIRCUIT_IMAGE} alt="Circuit layout" className="w-full h-full object-contain" />
+      </div>
+      <div className="z-10 mt-auto pt-4 animate-fade-slide-up delay-800">
+        <div className="flex items-center gap-1.5 text-white/60 text-[15px] mb-1">
+          <img src={MEDAL_ICON} className="w-6 h-6" alt="" />
+          <span>Season Points</span>
+        </div>
+        <div className="text-white font-semibold tracking-[-0.06em]" style={{ fontSize: 110, lineHeight: 0.72, backgroundImage: 'linear-gradient(to bottom, white 0%, rgba(255,255,255,0.4) 50%, transparent 85%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{v1}</div>
+        <div className="font-semibold tracking-[-0.06em]" style={{ fontSize: 110, lineHeight: 0.72, backgroundImage: 'linear-gradient(to bottom, white 0%, rgba(255,255,255,0.4) 50%, transparent 85%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{v2}</div>
+        <div className="font-semibold tracking-[-0.06em]" style={{ fontSize: 110, lineHeight: 0.72, color: '#EDB40B' }}>{v3}</div>
+      </div>
+      <MenuOverlay open={menuOpen} onClose={() => setMenuOpen(false)} />
+    </div>
+  );
+}
+
+const DRIVER_CARDS = [
+  { name: 'Mateo Reyes', number: '23', statSpark: true },
+  { name: DRIVER_FIRST + ' ' + DRIVER_LAST, number: '9', statSpark: true },
+];
+
+function Screen3() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  return (
+    <div className="relative w-full h-[844px] overflow-hidden">
+      <ScreenBackground />
+      <PhoneNav menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <div className="absolute top-[100px] left-5 z-10 animate-fade-slide-up delay-300">
+        <div className="flex items-center gap-1.5 text-white/60 text-[15px]">
+          <TeamEmblem className="w-5 h-5" />
+          <span>Team Name</span>
+        </div>
+        <h2 className="text-white font-normal leading-[0.83] text-[52px]" style={{ letterSpacing: '-0.08em' }}>{TEAM_LINE1}<br />{TEAM_LINE2}</h2>
+        <div className="h-[3px] w-16 rounded-full mt-2 animate-race-line delay-500" style={{ background: '#EDB40B' }} />
+      </div>
+      <div className="absolute top-[245px] left-5 z-10 animate-fade-slide-up delay-500">
+        <div className="flex items-center gap-1.5 text-white/60 text-[15px]">
+          <img src={CHASSIS_ICON} className="w-5 h-5" alt="" />
+          <span>Chassis</span>
+        </div>
+        <div className="text-[#EDB40B] font-semibold leading-[0.79] text-[120px]" style={{ letterSpacing: '-0.08em' }}>{CHASSIS_CODE}</div>
+      </div>
+      <img src={CAR_IMAGE} alt="Team race car" className="absolute top-[390px] left-3 right-3 z-10 w-[calc(100%-24px)] h-auto object-contain rounded-lg animate-fade-slide-left delay-700" />
+      <div className="absolute bottom-0 left-0 right-0 flex z-10 animate-fade-slide-up delay-900">
+        {DRIVER_CARDS.map((d, i) => (
+          <div key={i} className="w-1/2 p-3 rounded-t-2xl" style={{ height: 200, background: 'rgba(20,20,30,0.8)', border: '1px solid rgba(255,255,255,0.1)', borderBottom: 'none', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
+            <div className="flex items-center gap-1.5 text-white/60 text-[13px]">
+              <img src={PROFILE_ICON} className="w-4 h-4 opacity-60" alt="" />
+              <span>{d.name}</span>
+            </div>
+            <StatsSpark className="h-5 w-auto mt-1" />
+            <div className="text-white font-semibold leading-[0.79] text-[110px]" style={{ letterSpacing: '-0.08em' }}>{d.number}</div>
+          </div>
+        ))}
+      </div>
+      <MenuOverlay open={menuOpen} onClose={() => setMenuOpen(false)} />
+    </div>
+  );
+}
+
+function PhoneMockup({ children, delayClass, extraClass = '' }) {
+  const screenRef = useRef(null);
+  const contentRef = useRef(null);
+  const [scale, setScale] = useState(1);
+  const [contentH, setContentH] = useState(844);
+
+  useEffect(() => {
+    const measure = () => { if (screenRef.current) setScale(screenRef.current.clientWidth / 390); };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (screenRef.current) ro.observe(screenRef.current);
+    window.addEventListener('resize', measure);
+    return () => { ro.disconnect(); window.removeEventListener('resize', measure); };
+  }, []);
+
+  useEffect(() => {
+    if (!contentRef.current) return;
+    const ro = new ResizeObserver(entries => setContentH(entries[0].contentRect.height));
+    ro.observe(contentRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  return (
+    <div className={`flex flex-col items-center ${extraClass}`}>
+      <div className={`phone-frame relative rounded-[clamp(30px,4vw,54px)] bg-black shadow-2xl shadow-black/60 animate-fade-slide-up ${delayClass}`} style={{ padding: 'clamp(6px,1vw,12px)' }}>
+        <div className="absolute inset-0 rounded-[clamp(30px,4vw,54px)] ring-1 ring-white/15 pointer-events-none z-40" />
+        <div className="absolute bg-neutral-700 rounded-l" style={{ left: -2, top: '19%', height: '4.5%', width: 3 }} />
+        <div className="absolute bg-neutral-700 rounded-l" style={{ left: -2, top: '26%', height: '7.3%', width: 3 }} />
+        <div className="absolute bg-neutral-700 rounded-l" style={{ left: -2, top: '35.5%', height: '7.3%', width: 3 }} />
+        <div className="absolute bg-neutral-700 rounded-r" style={{ right: -2, top: '30.8%', height: '11.4%', width: 3 }} />
+        <div ref={screenRef} className="relative w-full h-full rounded-[clamp(24px,3.2vw,44px)] overflow-hidden bg-[#0a0e1c]">
+          <div className="absolute top-[3%] left-1/2 -translate-x-1/2 bg-black rounded-full z-50" style={{ width: '30%', height: '4%' }} />
+          <div style={{ width: 390, height: contentH, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
+            <div ref={contentRef}>{children}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const App = () => (
+  <div className="relative w-full overflow-hidden font-sans" style={{ minHeight: '100vh' }}>
+    <img src={BG_IMAGE} alt="" className="absolute inset-0 w-full h-full object-cover z-0" />
+    <div className="absolute inset-0 bg-black/70 z-[1]" />
+
+    <div className="hidden md:flex relative z-[2] w-full h-screen items-center justify-center py-6">
+      <div className="flex items-end justify-center" style={{ gap: '2vw' }}>
+        <PhoneMockup delayClass="delay-300" extraClass="phone-1"><Screen1 /></PhoneMockup>
+        <PhoneMockup delayClass="delay-500" extraClass="-mb-6 phone-2"><Screen2 /></PhoneMockup>
+        <PhoneMockup delayClass="delay-700" extraClass="phone-3"><Screen3 /></PhoneMockup>
+      </div>
+    </div>
+
+    <div className="md:hidden relative z-[2] flex flex-col items-center py-[20px] px-[20px]" style={{ gap: 50 }}>
+      <PhoneMockup delayClass="delay-300" extraClass="phone-1"><Screen1 /></PhoneMockup>
+      <PhoneMockup delayClass="delay-500" extraClass="phone-2"><Screen2 /></PhoneMockup>
+      <PhoneMockup delayClass="delay-700" extraClass="phone-3"><Screen3 /></PhoneMockup>
+    </div>
+  </div>
+);
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
