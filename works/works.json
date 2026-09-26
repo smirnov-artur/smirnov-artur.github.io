@@ -1165,8 +1165,10 @@
    "Obsidian Orb",
    "An orb that reacts to sound"
   ],
-  "href": "https://smirnov-artur.github.io/webgl/orb/",
-  "v": "pf-orb"
+  "href": "https://smirnov-artur.github.io/webgl/orb/ru/",
+  "v": "orb",
+  "ve": "orb-en",
+  "hre": "https://smirnov-artur.github.io/webgl/orb/"
  },
  {
   "slug": "sunvalley-pokaz",
