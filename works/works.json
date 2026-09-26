@@ -746,6 +746,21 @@
   "rp": 1
  },
  {
+  "slug": "nexar-hero",
+  "v": "nexar-hero",
+  "ve": "nexar-hero-en",
+  "ru": [
+   "Спринт-дашборд",
+   "Карточки задач появляются каскадом поверх зацикленного видео, рядом — показатель продуктивности и голосовая панель."
+  ],
+  "en": [
+   "Sprint task dashboard",
+   "Task cards fade up in a staggered stack over a looping video, with a live score and a voice-input panel."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
