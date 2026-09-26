@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — Живите в незаменимом</title>
+    <meta name="description" content="Лендинг g.a.d. для элитной недвижимости: прелоадер-печатная машинка сменяется парящим центральным видео, тёмным блоком статистики и видео-галереей с раскрытием при наведении.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+        html, body { margin: 0; background: #f5f0ea; overflow-x: clip; }
+        body { font-family: 'Inter', sans-serif; }
+        .brand { font-family: 'Syne', sans-serif; }
+
+        .type-cursor { display: inline-block; width: 3px; height: 1.1em; background: #fff; margin-left: 3px; vertical-align: middle; animation: blink .7s step-end infinite; border-radius: 1px; }
+        @keyframes blink { 50%, 100% { opacity: 0 } }
+
+        .hero-text-block { opacity: 0; transform: translateY(-28px); transition: opacity .7s cubic-bezier(.22,1,.36,1) .1s, transform .7s cubic-bezier(.22,1,.36,1) .1s; }
+        .hero-text-block.visible { opacity: 1; transform: translateY(0); }
+        .hero-own-the, .hero-extraordinary { text-shadow: 0 2px 30px rgba(245,240,234,.9), 0 1px 4px rgba(245,240,234,.7); }
+
+        .centerpiece-wrap { position: fixed; z-index: 8; pointer-events: none; will-change: transform, bottom; bottom: 0; left: 50%; display: flex; justify-content: center; transform-origin: 50% 100%; transform: translate(-50%, 102vh); }
+        .centerpiece-wrap.rise { transition: transform 1.5s cubic-bezier(.45,0,.15,1) .4s; transform: translate(-50%, 0); }
+        .centerpiece-inner { height: min(40vh, 440px); aspect-ratio: 16/10; border-radius: 20px; overflow: hidden; box-shadow: 0 50px 90px rgba(20,20,15,.35); }
+        .centerpiece-inner video { width: 100%; height: 100%; object-fit: cover; }
+        @media (max-width: 767px) { .centerpiece-inner { height: min(26vh, 260px); aspect-ratio: 3/4; } }
+
+        .burger-line { display: block; width: 28px; height: 1px; background: currentColor; transition: width .25s ease; }
+        .burger-line + .burger-line { margin-top: 7px; }
+        .burger:hover .burger-line:first-child { width: 20px; }
+
+        .mobile-menu-overlay a { font-family: 'Syne', sans-serif; font-weight: 300; letter-spacing: .15em; text-transform: uppercase; color: #111; text-decoration: none; }
+        .mobile-menu-overlay a:hover { color: #737373; }
+
+        @keyframes countdummy { from { opacity: 1 } to { opacity: 1 } }
+
+        .gallery-expand-item { flex: 1 1 0%; height: 100%; border-radius: 12px; overflow: hidden; cursor: pointer; transition: flex .5s cubic-bezier(.4,0,.2,1); position: relative; }
+        .gallery-expand-item video { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-expand-row:hover .gallery-expand-item { flex: 1 1 0%; }
+        .gallery-expand-row .gallery-expand-item:hover { flex: 4 1 0%; }
+
+        @media (max-width: 639px) {
+            .hero-subtitle-desktop { display: none !important; }
+            .hero-subtitle-mobile { display: block !important; }
+            .hero-text-block { padding-top: 90px !important; }
+            .hero-heading-top { justify-content: flex-start !important; }
+            .hero-own-the { font-size: 7.5vw !important; }
+            .hero-extraordinary { font-size: 9.8vw !important; white-space: normal !important; word-break: break-word !important; line-height: .92 !important; }
+        }
+        @media (min-width: 640px) and (max-width: 1023px) {
+            .hero-subtitle-desktop { display: none !important; }
+            .hero-subtitle-mobile { display: block !important; }
+            .hero-text-block { padding-top: 110px !important; }
+            .hero-heading-top { justify-content: flex-start !important; }
+            .hero-own-the { font-size: 5.5vw !important; }
+            .hero-extraordinary { font-size: 11vw !important; white-space: normal !important; word-break: break-word !important; line-height: .9 !important; }
+        }
+        @media (min-width: 1024px) {
+            .hero-subtitle-desktop { display: block !important; }
+            .hero-subtitle-mobile { display: none !important; }
+            .hero-text-block { padding-top: calc(28vh - 50px) !important; }
+            .hero-heading-top { justify-content: space-between !important; }
+            .hero-own-the { font-size: 3vw !important; }
+            .hero-extraordinary { font-size: clamp(52px, 6.5vw, 9vw) !important; white-space: nowrap !important; line-height: .88 !important; }
+        }
+
+        .s2-statement { font-family: 'Inter', sans-serif; font-weight: 300; color: #e8e4df; letter-spacing: -0.02em; line-height: 1.4; font-size: clamp(20px, 2.4vw, 40px); max-width: 900px; text-wrap: balance; }
+        .s2-stats-row { max-width: 1200px; }
+        @media (min-width: 768px) { .s2-statement, .s2-stats-row { padding-left: 15%; } }
+        @media (min-width: 1024px) { .s2-statement, .s2-stats-row { padding-left: 25%; } }
+
+        .s3-ticker span { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(90px, 13vw, 200px); color: #fff; opacity: .07; white-space: nowrap; letter-spacing: -0.02em; padding-right: .3em; user-select: none; }
+
+        @media (max-width: 1023px) {
+            .gallery-expand-row { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; height: auto !important; width: 100%; max-width: 700px; }
+            .gallery-expand-item { flex: none !important; height: auto !important; aspect-ratio: 4/5; border-radius: 10px; }
+            .gallery-expand-row .gallery-expand-item:hover { flex: none !important; transform: scale(1.02); }
+            .gallery-expand-item:last-child:nth-child(odd) { grid-column: 1 / -1; max-width: calc(50% - 4px); justify-self: center; }
+        }
+    </style>
+<style id="cyr">/* русские буквы: исходный шрифт без кириллицы, глифы — у близкого с кириллицей */
+@font-face{font-family:'Syne';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459WRhyzbi.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Syne';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459W1hyzbi.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Syne';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459WRhyzbi.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Syne';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459W1hyzbi.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Syne';font-style:normal;font-weight:800;font-display:swap;src:url(https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459WRhyzbi.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Syne';font-style:normal;font-weight:800;font-display:swap;src:url(https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459W1hyzbi.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+</style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback } = React;
+
+        const BRAND = 'g.a.d.'.split('');
+        const CENTERPIECE_VIDEO = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260528_154737_eba7900c-0313-483c-a30a-632c747ccc42.mp4';
+        const GALLERY = [
+            'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260528_154759_4cdc8175-8261-497c-b688-9477c76545d4.mp4',
+            'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260528_154751_39b1b9bb-2708-4211-b6a2-d39f93309e52.mp4',
+            'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260528_154737_eba7900c-0313-483c-a30a-632c747ccc42.mp4',
+            'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260602_144009_4348fe33-f885-4345-8e92-3fe1c2625d32.mp4',
+            'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260602_145337_e44eaa8c-6bb1-4a6e-a70f-ed0231cbaccb.mp4',
+        ];
+        const BG_IMG = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260603_073200_7082add5-f1f8-4873-8696-d6f78a44089b.png&w=1920&q=85';
+        const LINKS = ['Резиденции', 'История', 'Объекты', 'Заявка'];
+
+        const XIcon = () => (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><line x1="5" y1="5" x2="19" y2="19" /><line x1="19" y1="5" x2="5" y2="19" /></svg>
+        );
+
+        const smoothstep = t => t * t * (3 - 2 * t);
+        const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+        const CountUp = ({ end, suffix = '' }) => {
+            const ref = useRef(null);
+            const [val, setVal] = useState(0);
+            const done = useRef(false);
+            useEffect(() => {
+                const el = ref.current;
+                if (!el) return;
+                const io = new IntersectionObserver(entries => {
+                    entries.forEach(e => {
+                        if (e.isIntersecting && e.intersectionRatio >= 0.3 && !done.current) {
+                            done.current = true;
+                            const start = performance.now();
+                            const tick = now => {
+                                const t = clamp((now - start) / 2000, 0, 1);
+                                const eased = 1 - Math.pow(1 - t, 3);
+                                setVal(Math.round(eased * end));
+                                if (t < 1) requestAnimationFrame(tick);
+                            };
+                            requestAnimationFrame(tick);
+                        }
+                    });
+                }, { threshold: 0.3 });
+                io.observe(el);
+                return () => io.disconnect();
+            }, [end]);
+            return <span ref={ref}>{val}{suffix}</span>;
+        };
+
+        const App = () => {
+            const [typedCount, setTypedCount] = useState(0);
+            const [cursorOn, setCursorOn] = useState(true);
+            const [lifting, setLifting] = useState(false);
+            const [liftNoTransition, setLiftNoTransition] = useState(false);
+            const [heroVisible, setHeroVisible] = useState(false);
+            const [liftDone, setLiftDone] = useState(false);
+            const [menuOpen, setMenuOpen] = useState(false);
+            const [navOnDark, setNavOnDark] = useState(false);
+
+            const heroRef = useRef(null);
+            const darkRef = useRef(null);
+            const gapRef = useRef(null);
+            const wrapRef = useRef(null);
+
+            useEffect(() => {
+                const TYPE_START = 600, CHAR_INTERVAL = 140;
+                const timers = BRAND.map((_, i) => setTimeout(() => setTypedCount(i + 1), TYPE_START + i * CHAR_INTERVAL));
+                const LIFT_AT = TYPE_START + 6 * CHAR_INTERVAL + 700;
+                timers.push(setTimeout(() => setCursorOn(false), LIFT_AT - 150));
+                timers.push(setTimeout(() => setLifting(true), LIFT_AT));
+                timers.push(setTimeout(() => setHeroVisible(true), LIFT_AT + 1300));
+                timers.push(setTimeout(() => { setLiftDone(true); setLiftNoTransition(true); }, LIFT_AT + 2100));
+                return () => timers.forEach(clearTimeout);
+            }, []);
+
+            useEffect(() => {
+                const update = () => {
+                    const heroEl = heroRef.current, darkEl = darkRef.current;
+                    if (!heroEl || !darkEl) { setNavOnDark(false); return; }
+                    const dr = darkEl.getBoundingClientRect();
+                    setNavOnDark(dr.top <= 0 && dr.bottom > 0);
+                };
+                update();
+                window.addEventListener('scroll', update, { passive: true });
+                window.addEventListener('resize', update);
+                return () => { window.removeEventListener('scroll', update); window.removeEventListener('resize', update); };
+            }, []);
+
+            useEffect(() => {
+                if (!liftDone) return;
+                let raf = null;
+                const update = () => {
+                    raf = null;
+                    const heroEl = heroRef.current, darkEl = darkRef.current, wrap = wrapRef.current;
+                    if (!heroEl || !darkEl || !wrap) return;
+                    const heroRect = heroEl.getBoundingClientRect();
+                    const darkRect = darkEl.getBoundingClientRect();
+                    const vh = window.innerHeight;
+                    const heroH = heroEl.offsetHeight;
+                    const trigger = heroH * 0.3, span = heroH * 0.9;
+                    const progress = clamp((-heroRect.top - trigger) / span, 0, 1);
+                    const eased = smoothstep(smoothstep(progress));
+                    const scale = 1 + 0.45 * eased;
+                    const finalBottom = Math.max(0, vh - Math.max(darkRect.top, 0) - 60);
+                    const bottomOffset = eased * finalBottom;
+                    wrap.style.transform = `translate(-50%, 0) scale(${scale})`;
+                    wrap.style.bottom = bottomOffset + 'px';
+                };
+                const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+                update();
+                window.addEventListener('scroll', onScroll, { passive: true });
+                window.addEventListener('resize', onScroll);
+                return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); cancelAnimationFrame(raf); };
+            }, [liftDone]);
+
+            const navColor = navOnDark ? '#ffffff' : '#213138';
+
+            return (
+                <div>
+                    <div className={'fixed inset-0 flex items-center justify-center' + (lifting ? '' : '')}
+                        style={{ zIndex: 100, background: '#213138', transform: lifting ? 'translateY(-100%)' : 'translateY(0)', transition: liftNoTransition ? 'none' : 'transform 1.5s cubic-bezier(.45,0,.15,1)' }}>
+                        <div className="brand" style={{ fontSize: '2.6rem', color: '#fff', letterSpacing: '-0.02em', display: 'flex' }}>
+                            {BRAND.map((ch, i) => (
+                                <span key={i} style={{ fontWeight: ch === '.' ? 900 : 700, opacity: i < typedCount ? 1 : 0 }}>{ch}</span>
+                            ))}
+                            {cursorOn && <span className="type-cursor" />}
+                        </div>
+                    </div>
+
+                    <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 24px', color: navColor, transition: 'color .35s ease' }}>
+                        <a href="#" className="brand" style={{ fontSize: '1.15rem', color: 'inherit', textDecoration: 'none' }}>
+                            {BRAND.map((ch, i) => <span key={i} style={{ fontWeight: ch === '.' ? 900 : 700 }}>{ch}</span>)}
+                        </a>
+                        <button id="hamburger" className="burger" aria-label={menuOpen ? 'Закрыть' : 'Меню'} onClick={() => setMenuOpen(o => !o)} style={{ color: 'inherit', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
+                            {menuOpen ? <XIcon /> : <React.Fragment><span className="burger-line" /><span className="burger-line" /></React.Fragment>}
+                        </button>
+                    </nav>
+
+                    {menuOpen && (
+                        <div className="mobile-menu-overlay" style={{ position: 'fixed', inset: 0, zIndex: 40, background: '#f5f0ea', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28 }}>
+                            {LINKS.map((l, i) => <a key={l} href="#" id={'menu-link-' + i} style={{ fontSize: '2.2rem' }} onClick={() => setMenuOpen(false)}>{l}</a>)}
+                        </div>
+                    )}
+
+                    <section ref={heroRef} style={{ position: 'relative', minHeight: '100vh', overflow: 'visible', backgroundImage: `url(${BG_IMG})`, backgroundSize: 'cover', backgroundPosition: 'center center', backgroundRepeat: 'no-repeat' }}>
+                        <div className={'hero-text-block' + (heroVisible ? ' visible' : '')} style={{ position: 'relative', zIndex: 10 }}>
+                            <div className="hero-heading-top" style={{ display: 'flex', alignItems: 'flex-end', padding: '0 24px', marginBottom: '-0.04em' }}>
+                                <div className="brand hero-own-the" style={{ fontWeight: 800, textTransform: 'uppercase', color: '#141210', letterSpacing: '-0.03em', lineHeight: 1 }}>Живите в</div>
+                                <div className="hero-subtitle-desktop brand" style={{ fontWeight: 700, fontSize: 'clamp(10px,.95vw,14px)', maxWidth: 300, opacity: .7, lineHeight: 1.6, marginBottom: '.2em', letterSpacing: '.02em', color: '#141210' }}>
+                                    Резиденции, созданные с видением, масштабом и архитектурным изяществом.
+                                </div>
+                            </div>
+                            <div style={{ overflow: 'hidden' }}>
+                                <h1 className="brand hero-extraordinary" style={{ fontWeight: 800, textTransform: 'uppercase', color: '#141210', letterSpacing: '-0.03em', padding: '0 24px', margin: 0 }}>Незаменимом</h1>
+                            </div>
+                            <div className="hero-subtitle-mobile brand" style={{ display: 'none', fontWeight: 600, fontSize: 'clamp(12px,3vw,15px)', opacity: .65, marginTop: '.9em', padding: '0 24px', color: '#141210' }}>
+                                Элитная недвижимость с видением, глубиной и архитектурной ясностью.
+                            </div>
+                        </div>
+                    </section>
+
+                    <div className={'centerpiece-wrap' + (lifting ? ' rise' : '')} ref={wrapRef}>
+                        <div className="centerpiece-inner"><video autoPlay muted loop playsInline src={CENTERPIECE_VIDEO} /></div>
+                    </div>
+
+                    <div style={{ position: 'relative', height: '200vh', zIndex: 3 }}>
+                        <div style={{ height: '4vh', background: '#1a1a1a' }} />
+                        <div ref={darkRef} style={{ position: 'sticky', top: 0, height: '100vh', background: '#1a1a1a', overflow: 'hidden' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', padding: '0 24px', paddingTop: 'clamp(30px,4vw,60px)', paddingBottom: 'clamp(60px,8vw,120px)', height: '100%', justifyContent: 'center' }}>
+                                <p className="s2-statement">Каждое поместье в нашей подборке отобрано вручную — по критериям долговечности, безупречности и вневременной детали. Стандарты для нас — не украшение, а дисциплина.</p>
+                                <div className="s2-stats-row" style={{ display: 'flex', marginTop: 'clamp(48px,6vw,80px)' }}>
+                                    {[['120+', 'Объектов в портфеле'], ['12', 'Стран присутствия'], ['98%', 'Лояльность клиентов']].map(([n, label], i) => (
+                                        <div key={label} style={{ flex: 1, paddingLeft: i > 0 ? 'clamp(20px,2.5vw,40px)' : 0, borderLeft: i > 0 ? '1px solid rgba(255,255,255,.2)' : 'none' }}>
+                                            <div style={{ color: '#fff', fontWeight: 300, fontSize: 'clamp(36px,4.5vw,72px)', lineHeight: 1.1 }}>
+                                                {n.endsWith('%') ? <CountUp end={parseInt(n)} suffix="%" /> : n.endsWith('+') ? <CountUp end={parseInt(n)} suffix="+" /> : <CountUp end={parseInt(n)} />}
+                                            </div>
+                                            <div style={{ color: 'rgba(255,255,255,.6)', fontWeight: 400, fontSize: 'clamp(12px,1.1vw,16px)', marginTop: 'clamp(4px,.5vw,8px)', letterSpacing: '.01em' }}>{label}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={{ position: 'relative', zIndex: 25, marginTop: '-100vh', background: '#1a1a1a', height: '100vh', overflow: 'hidden' }}>
+                        <div className="s3-ticker" style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', zIndex: 0, pointerEvents: 'none' }}>
+                            <span>{Array(6).fill(0).map((_, i) => <span key={i}>{'g.a.d. '}</span>)}</span>
+                        </div>
+                        <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', padding: 'clamp(24px,4vw,60px)' }}>
+                            <div className="gallery-expand-row" style={{ display: 'flex', gap: 6, height: '70%', maxWidth: 1200, width: '100%' }}>
+                                {GALLERY.map((src, i) => (
+                                    <div key={i} className="gallery-expand-item" id={'gallery-' + i}>
+                                        <video autoPlay muted loop playsInline src={src} />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

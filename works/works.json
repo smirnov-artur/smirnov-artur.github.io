@@ -881,6 +881,21 @@
   "rp": 1
  },
  {
+  "slug": "luxury-real-estate",
+  "v": "luxury-real-estate",
+  "ve": "luxury-real-estate-en",
+  "ru": [
+   "Архитектурные резиденции",
+   "Из-за горизонта поднимается окно с видео дома, счётчики растут на тёмном экране, а галерея раскрывается под курсором."
+  ],
+  "en": [
+   "Architectural residences",
+   "A house-video window rises over the horizon, stats count up on a dark screen, and the gallery expands under the cursor."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
