@@ -701,6 +701,21 @@
   "rp": 1
  },
  {
+  "slug": "cybersecurity-hero-v2",
+  "v": "cybersecurity-hero-v2",
+  "ve": "cybersecurity-hero-v2-en",
+  "ru": [
+   "Сервис шифрования данных",
+   "Тёмная страница с дышащей розовой дугой света, а по цепочке из трёх иконок бежит луч шифрования."
+  ],
+  "en": [
+   "Data encryption service",
+   "A dark page with a breathing pink arc of light, and a beam that runs along a chain of three encryption icons."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
