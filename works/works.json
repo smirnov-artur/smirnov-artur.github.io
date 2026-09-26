@@ -881,6 +881,21 @@
   "rp": 1
  },
  {
+  "slug": "motionz-premium-landing-page",
+  "v": "motionz-premium-landing-page",
+  "ve": "motionz-premium-landing-page-en",
+  "ru": [
+   "Дизайн-экономика",
+   "Клик меняет фоновый ролик разворотом по кругу, скролл раскрывает слой на весь экран, карточки наклоняются за курсором, токен крутится в 3D"
+  ],
+  "en": [
+   "Design economy platform",
+   "A click swaps the hero film in a circular wipe, scroll expands a layer full-screen, cards tilt with the cursor, a token spins in 3D"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
