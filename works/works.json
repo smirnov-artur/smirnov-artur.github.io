@@ -806,6 +806,21 @@
   "rp": 1
  },
  {
+  "slug": "orbit-flora",
+  "v": "orbit-flora",
+  "ve": "orbit-flora-en",
+  "ru": [
+   "Постер сервиса автоматизации",
+   "Гигантский двухцветный леттеринг за пиксельной лилией; след мыши прожигает цветок и открывает под ним второй."
+  ],
+  "en": [
+   "Automation service poster",
+   "A giant two-tone wordmark behind a pixel-art lily; the mouse trail burns through the bloom and reveals a second one beneath."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
