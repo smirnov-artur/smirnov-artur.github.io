@@ -96,6 +96,21 @@
   "rp": 1
  },
  {
+  "slug": "golden-portal",
+  "v": "golden-portal",
+  "ve": "golden-portal-en",
+  "ru": [
+   "Витрина арт-галереи",
+   "Голуби летят сквозь золотые облака, которые перетекают в интервью галереи на бордовом фоне с параллаксом."
+  ],
+  "en": [
+   "Art gallery showcase",
+   "Doves fly through golden clouds that flow into a gallery interview on a maroon parallax background."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "slowlight",
   "cat": "3d",
   "ru": [
@@ -189,6 +204,21 @@
   "rp": 1
  },
  {
+  "slug": "synthesis",
+  "v": "synthesis",
+  "ve": "synthesis-en",
+  "ru": [
+   "Сайт инвестора в долголетие",
+   "Прокрутка перематывает видео с ДНК, затем оно гаснет, и по одной проявляются три строки о миссии."
+  ],
+  "en": [
+   "Longevity investor site",
+   "Scrolling scrubs a DNA video frame by frame, then it fades out and three mission lines appear one by one."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "orbit-engineers",
   "v": "orbit-engineers",
   "ru": [
@@ -218,6 +248,21 @@
   "v": "lab",
   "ve": "lab-en",
   "hre": "https://smirnov-artur.github.io/webgl/lab/"
+ },
+ {
+  "slug": "dreamcore-landing",
+  "v": "dreamcore-landing",
+  "ve": "dreamcore-landing-en",
+  "ru": [
+   "Портал в грёзы",
+   "Прокрутка уносит сквозь проём морской пещеры в розовые облака, к дуге карточек-миров."
+  ],
+  "en": [
+   "Dream portal",
+   "Scrolling carries you through a sea-cave arch into pink clouds and an arc of world cards."
+  ],
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "pulse-3d",
@@ -275,6 +320,21 @@
   "en": [
    "Cybernetic contact form",
    "A glossy chrome android scrubs frame by frame as the cursor moves, beside a typewriter headline."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "cursor-follow",
+  "v": "cursor-follow",
+  "ve": "cursor-follow-en",
+  "ru": [
+   "NFT-коллекция с йети",
+   "Пушистый йети машет из-за крупного заголовка, а движение мыши влево-вправо перематывает видео."
+  ],
+  "en": [
+   "Yeti NFT collection",
+   "A fluffy yeti waves from behind a bold headline, and moving the mouse left and right scrubs the video."
   ],
   "cat": "web",
   "rp": 1
@@ -355,6 +415,21 @@
   "rp": 1
  },
  {
+  "slug": "waitlist-hero",
+  "v": "waitlist-hero",
+  "ve": "waitlist-hero-en",
+  "ru": [
+   "Лист ожидания сервиса",
+   "Закатная панорама, разрезанная на три панели, едет вперёд-назад как бумеранг, а по центру — тёмная капсула."
+  ],
+  "en": [
+   "Productivity app waitlist",
+   "A sunset panorama sliced across three panels scrubs back and forth like a boomerang around a dark capsule."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "flux",
   "cat": "web",
   "ru": [
@@ -382,6 +457,21 @@
   ],
   "cat": "web",
   "ve": "neovision-en",
+  "rp": 1
+ },
+ {
+  "slug": "bio-age-dashboard",
+  "v": "bio-age-dashboard",
+  "ve": "bio-age-dashboard-en",
+  "ru": [
+   "Панель биологического возраста",
+   "Число возраста растёт на фоне светящейся ДНК, а карточка «Сводка здоровья» раскрывается по наведению."
+  ],
+  "en": [
+   "Biological age dashboard",
+   "The age counts up over a glowing DNA video while the health-snapshot card expands on hover."
+  ],
+  "cat": "web",
   "rp": 1
  },
  {
@@ -442,6 +532,21 @@
   ],
   "cat": "web",
   "ve": "train-window-en",
+  "rp": 1
+ },
+ {
+  "slug": "yoga-coach",
+  "v": "yoga-coach",
+  "ve": "yoga-coach-en",
+  "ru": [
+   "Йога-тренер",
+   "Нажмите «Начать» — сыграет параллакс-видео, а потом три карточки оживают при наведении на экране коллекции."
+  ],
+  "en": [
+   "Yoga coaching",
+   "Click Let's Start for a parallax video, then hover three cards in the collection screen that slides up."
+  ],
+  "cat": "web",
   "rp": 1
  },
  {
@@ -521,6 +626,21 @@
   "rp": 1
  },
  {
+  "slug": "obsidian-hero",
+  "v": "obsidian-hero",
+  "ve": "obsidian-hero-en",
+  "ru": [
+   "Архитектурная студия",
+   "Тёмная дымчатая скульптура извивается в кадре за парой карточек с проектами."
+  ],
+  "en": [
+   "Architecture studio",
+   "A dark smoky sculpture coils across the frame behind a pair of staggered project cards."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "ai-driving-assistant",
   "v": "ai-driving-assistant",
   "ve": "ai-driving-assistant-en",
@@ -561,6 +681,21 @@
   "en": [
    "Startup awards",
    "A looping video hero and chamfered award cards, with gradient stat numbers, framed inside one big rounded card."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "luxury-real-estate",
+  "v": "luxury-real-estate",
+  "ve": "luxury-real-estate-en",
+  "ru": [
+   "Архитектурные резиденции",
+   "Из-за горизонта поднимается окно с видео дома, счётчики растут на тёмном экране, а галерея раскрывается под курсором."
+  ],
+  "en": [
+   "Architectural residences",
+   "A house-video window rises over the horizon, stats count up on a dark screen, and the gallery expands under the cursor."
   ],
   "cat": "web",
   "rp": 1
@@ -636,306 +771,6 @@
   "en": [
    "Creative studio",
    "A giant headline over a looping video, glass stat cards floating on red"
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "cursor-follow",
-  "v": "cursor-follow",
-  "ve": "cursor-follow-en",
-  "ru": [
-   "NFT-коллекция с йети",
-   "Пушистый йети машет из-за крупного заголовка, а движение мыши влево-вправо перематывает видео."
-  ],
-  "en": [
-   "Yeti NFT collection",
-   "A fluffy yeti waves from behind a bold headline, and moving the mouse left and right scrubs the video."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "vitara-hero",
-  "v": "vitara-hero",
-  "ve": "vitara-hero-en",
-  "ru": [
-   "ИИ-ассистент здоровья",
-   "Заголовок собирается слово за словом над белым видео с россыпью частиц, а в чат-боксе — вопрос ассистенту и быстрые действия."
-  ],
-  "en": [
-   "AI health assistant",
-   "The headline builds word by word over a white video with a particle horizon, and the chat box takes a question plus quick actions."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "vertex-ai-hero",
-  "v": "vertex-ai-hero",
-  "ve": "vertex-ai-hero-en",
-  "ru": [
-   "ИИ-дизайн интерьера",
-   "Бетонный павильон на видеофоне, заголовок с курсивным акцентом, стеклянное меню и тег-кнопки."
-  ],
-  "en": [
-   "AI interior design",
-   "A concrete-pavilion video behind a headline with an italic-serif accent, a glass navbar and outlined tag buttons."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "zenith-realty-landing",
-  "v": "zenith-realty-landing",
-  "ve": "zenith-realty-landing-en",
-  "ru": [
-   "Элитная недвижимость",
-   "Видео с домом под заголовком, карточки объектов всплывают при прокрутке и приближают фото при наведении, ниже — три графика доходности."
-  ],
-  "en": [
-   "Luxury real estate",
-   "A house video under the headline, listing cards that rise in on scroll and zoom their photos on hover, then three yield charts."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "cybersecurity-hero-v2",
-  "v": "cybersecurity-hero-v2",
-  "ve": "cybersecurity-hero-v2-en",
-  "ru": [
-   "Сервис шифрования данных",
-   "Тёмная страница с дышащей розовой дугой света, а по цепочке из трёх иконок бежит луч шифрования."
-  ],
-  "en": [
-   "Data encryption service",
-   "A dark page with a breathing pink arc of light, and a beam that runs along a chain of three encryption icons."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "flowmate-landing",
-  "v": "flowmate-landing",
-  "ve": "flowmate-landing-en",
-  "ru": [
-   "ИИ-ассистент рабочих процессов",
-   "Боковое меню следит за прокруткой, сообщение в чате печатается само, а карусель с живописными карточками листается автоматически."
-  ],
-  "en": [
-   "AI workflow assistant",
-   "The sidebar tracks your scroll, a chat message types itself out, and a carousel of painted cards advances on its own."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "community-hub",
-  "v": "community-hub",
-  "ve": "community-hub-en",
-  "ru": [
-   "Платформа сообщества",
-   "Три светящиеся карточки приподнимаются при наведении, а за формой подписки на видео плывут облака."
-  ],
-  "en": [
-   "Community platform",
-   "Three glowing gradient cards lift on hover, and a cloud video plays behind the email signup card."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "nexar-hero",
-  "v": "nexar-hero",
-  "ve": "nexar-hero-en",
-  "ru": [
-   "Спринт-дашборд",
-   "Карточки задач появляются каскадом поверх зацикленного видео, рядом — показатель продуктивности и голосовая панель."
-  ],
-  "en": [
-   "Sprint task dashboard",
-   "Task cards fade up in a staggered stack over a looping video, with a live score and a voice-input panel."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "dreamcore-landing",
-  "v": "dreamcore-landing",
-  "ve": "dreamcore-landing-en",
-  "ru": [
-   "Портал в грёзы",
-   "Прокрутка уносит сквозь проём морской пещеры в розовые облака, к дуге карточек-миров."
-  ],
-  "en": [
-   "Dream portal",
-   "Scrolling carries you through a sea-cave arch into pink clouds and an arc of world cards."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "modern-hr-dashboard",
-  "v": "modern-hr-dashboard",
-  "ve": "modern-hr-dashboard-en",
-  "ru": [
-   "HR-дашборд",
-   "График часов по дням, кольцо таймера на 60 делений и календарь со встречами на фоне мягкого жёлтого пятна."
-  ],
-  "en": [
-   "HR dashboard",
-   "A weekly bar chart, a 60-tick focus-timer ring, and a calendar with meeting cards over a soft yellow glow."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "waitlist-hero",
-  "v": "waitlist-hero",
-  "ve": "waitlist-hero-en",
-  "ru": [
-   "Лист ожидания сервиса",
-   "Закатная панорама, разрезанная на три панели, едет вперёд-назад как бумеранг, а по центру — тёмная капсула."
-  ],
-  "en": [
-   "Productivity app waitlist",
-   "A sunset panorama sliced across three panels scrubs back and forth like a boomerang around a dark capsule."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "product-plans",
-  "v": "product-plans",
-  "ve": "product-plans-en",
-  "ru": [
-   "Спортклуб и дизайн-студия",
-   "Вкладки привилегий, счётчик на фото теннисного корта и тарифы, где переключатели пересчитывают цену."
-  ],
-  "en": [
-   "Athletic club & design studio",
-   "Benefit tabs, a counter over a tennis-court photo, and pricing cards whose toggles recalculate the price."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "yoga-coach",
-  "v": "yoga-coach",
-  "ve": "yoga-coach-en",
-  "ru": [
-   "Йога-тренер",
-   "Нажмите «Начать» — сыграет параллакс-видео, а потом три карточки оживают при наведении на экране коллекции."
-  ],
-  "en": [
-   "Yoga coaching",
-   "Click Let's Start for a parallax video, then hover three cards in the collection screen that slides up."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "obsidian-hero",
-  "v": "obsidian-hero",
-  "ve": "obsidian-hero-en",
-  "ru": [
-   "Архитектурная студия",
-   "Тёмная дымчатая скульптура извивается в кадре за парой карточек с проектами."
-  ],
-  "en": [
-   "Architecture studio",
-   "A dark smoky sculpture coils across the frame behind a pair of staggered project cards."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "intelligentx",
-  "v": "intelligentx",
-  "ve": "intelligentx-en",
-  "ru": [
-   "ИИ для ментального здоровья",
-   "Двухцветный заголовок и поисковая капсула — поверх зацикленного видео с механической ИИ-головой."
-  ],
-  "en": [
-   "AI mental-health companion",
-   "A two-tone headline and search pill sit over a looping video of a mechanical AI head."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "bio-age-dashboard",
-  "v": "bio-age-dashboard",
-  "ve": "bio-age-dashboard-en",
-  "ru": [
-   "Панель биологического возраста",
-   "Число возраста растёт на фоне светящейся ДНК, а карточка «Сводка здоровья» раскрывается по наведению."
-  ],
-  "en": [
-   "Biological age dashboard",
-   "The age counts up over a glowing DNA video while the health-snapshot card expands on hover."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "luxury-real-estate",
-  "v": "luxury-real-estate",
-  "ve": "luxury-real-estate-en",
-  "ru": [
-   "Архитектурные резиденции",
-   "Из-за горизонта поднимается окно с видео дома, счётчики растут на тёмном экране, а галерея раскрывается под курсором."
-  ],
-  "en": [
-   "Architectural residences",
-   "A house-video window rises over the horizon, stats count up on a dark screen, and the gallery expands under the cursor."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "outdoor-apparel",
-  "v": "outdoor-apparel",
-  "ve": "outdoor-apparel-en",
-  "ru": [
-   "Бренд походного снаряжения",
-   "Прокрутка перематывает видео с горой, над манифестом плывут фото снаряжения, а затем раскрывается слайдер товаров."
-  ],
-  "en": [
-   "Outdoor gear brand",
-   "Scrolling scrubs a mountain video, gear photos drift over the manifesto, then a product slider unfolds."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "golden-portal",
-  "v": "golden-portal",
-  "ve": "golden-portal-en",
-  "ru": [
-   "Витрина арт-галереи",
-   "Голуби летят сквозь золотые облака, которые перетекают в интервью галереи на бордовом фоне с параллаксом."
-  ],
-  "en": [
-   "Art gallery showcase",
-   "Doves fly through golden clouds that flow into a gallery interview on a maroon parallax background."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
-  "slug": "synthesis",
-  "v": "synthesis",
-  "ve": "synthesis-en",
-  "ru": [
-   "Сайт инвестора в долголетие",
-   "Прокрутка перематывает видео с ДНК, затем оно гаснет, и по одной проявляются три строки о миссии."
-  ],
-  "en": [
-   "Longevity investor site",
-   "Scrolling scrubs a DNA video frame by frame, then it fades out and three mission lines appear one by one."
   ],
   "cat": "web",
   "rp": 1
@@ -1300,6 +1135,171 @@
   "v": "ventprom-packer",
   "hre": "https://smirnov-artur.github.io/ventprom-packer/en/",
   "ve": "ventprom-packer-en"
+ },
+ {
+  "slug": "vitara-hero",
+  "v": "vitara-hero",
+  "ve": "vitara-hero-en",
+  "ru": [
+   "ИИ-ассистент здоровья",
+   "Заголовок собирается слово за словом над белым видео с россыпью частиц, а в чат-боксе — вопрос ассистенту и быстрые действия."
+  ],
+  "en": [
+   "AI health assistant",
+   "The headline builds word by word over a white video with a particle horizon, and the chat box takes a question plus quick actions."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "vertex-ai-hero",
+  "v": "vertex-ai-hero",
+  "ve": "vertex-ai-hero-en",
+  "ru": [
+   "ИИ-дизайн интерьера",
+   "Бетонный павильон на видеофоне, заголовок с курсивным акцентом, стеклянное меню и тег-кнопки."
+  ],
+  "en": [
+   "AI interior design",
+   "A concrete-pavilion video behind a headline with an italic-serif accent, a glass navbar and outlined tag buttons."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "zenith-realty-landing",
+  "v": "zenith-realty-landing",
+  "ve": "zenith-realty-landing-en",
+  "ru": [
+   "Элитная недвижимость",
+   "Видео с домом под заголовком, карточки объектов всплывают при прокрутке и приближают фото при наведении, ниже — три графика доходности."
+  ],
+  "en": [
+   "Luxury real estate",
+   "A house video under the headline, listing cards that rise in on scroll and zoom their photos on hover, then three yield charts."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "cybersecurity-hero-v2",
+  "v": "cybersecurity-hero-v2",
+  "ve": "cybersecurity-hero-v2-en",
+  "ru": [
+   "Сервис шифрования данных",
+   "Тёмная страница с дышащей розовой дугой света, а по цепочке из трёх иконок бежит луч шифрования."
+  ],
+  "en": [
+   "Data encryption service",
+   "A dark page with a breathing pink arc of light, and a beam that runs along a chain of three encryption icons."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "flowmate-landing",
+  "v": "flowmate-landing",
+  "ve": "flowmate-landing-en",
+  "ru": [
+   "ИИ-ассистент рабочих процессов",
+   "Боковое меню следит за прокруткой, сообщение в чате печатается само, а карусель с живописными карточками листается автоматически."
+  ],
+  "en": [
+   "AI workflow assistant",
+   "The sidebar tracks your scroll, a chat message types itself out, and a carousel of painted cards advances on its own."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "community-hub",
+  "v": "community-hub",
+  "ve": "community-hub-en",
+  "ru": [
+   "Платформа сообщества",
+   "Три светящиеся карточки приподнимаются при наведении, а за формой подписки на видео плывут облака."
+  ],
+  "en": [
+   "Community platform",
+   "Three glowing gradient cards lift on hover, and a cloud video plays behind the email signup card."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "nexar-hero",
+  "v": "nexar-hero",
+  "ve": "nexar-hero-en",
+  "ru": [
+   "Спринт-дашборд",
+   "Карточки задач появляются каскадом поверх зацикленного видео, рядом — показатель продуктивности и голосовая панель."
+  ],
+  "en": [
+   "Sprint task dashboard",
+   "Task cards fade up in a staggered stack over a looping video, with a live score and a voice-input panel."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "modern-hr-dashboard",
+  "v": "modern-hr-dashboard",
+  "ve": "modern-hr-dashboard-en",
+  "ru": [
+   "HR-дашборд",
+   "График часов по дням, кольцо таймера на 60 делений и календарь со встречами на фоне мягкого жёлтого пятна."
+  ],
+  "en": [
+   "HR dashboard",
+   "A weekly bar chart, a 60-tick focus-timer ring, and a calendar with meeting cards over a soft yellow glow."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "product-plans",
+  "v": "product-plans",
+  "ve": "product-plans-en",
+  "ru": [
+   "Спортклуб и дизайн-студия",
+   "Вкладки привилегий, счётчик на фото теннисного корта и тарифы, где переключатели пересчитывают цену."
+  ],
+  "en": [
+   "Athletic club & design studio",
+   "Benefit tabs, a counter over a tennis-court photo, and pricing cards whose toggles recalculate the price."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "intelligentx",
+  "v": "intelligentx",
+  "ve": "intelligentx-en",
+  "ru": [
+   "ИИ для ментального здоровья",
+   "Двухцветный заголовок и поисковая капсула — поверх зацикленного видео с механической ИИ-головой."
+  ],
+  "en": [
+   "AI mental-health companion",
+   "A two-tone headline and search pill sit over a looping video of a mechanical AI head."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "outdoor-apparel",
+  "v": "outdoor-apparel",
+  "ve": "outdoor-apparel-en",
+  "ru": [
+   "Бренд походного снаряжения",
+   "Прокрутка перематывает видео с горой, над манифестом плывут фото снаряжения, а затем раскрывается слайдер товаров."
+  ],
+  "en": [
+   "Outdoor gear brand",
+   "Scrolling scrubs a mountain video, gear photos drift over the manifesto, then a product slider unfolds."
+  ],
+  "cat": "web",
+  "rp": 1
  },
  {
   "slug": "minimal-workflow-saas",
