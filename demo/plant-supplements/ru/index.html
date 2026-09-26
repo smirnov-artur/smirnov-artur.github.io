@@ -190,7 +190,7 @@ html[lang=ru] .head{letter-spacing:-.06em}
       <a class="ib" href="#" aria-label="Search"><svg class="i" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></a>
       <a class="ib" href="#" aria-label="Bag"><svg class="i" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></a>
       <a class="ib" href="#" aria-label="Return"><svg class="i" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></a>
-      <img class="ava" src="https://polo-pecan-73837341.figma.site/_assets/v11/ca8093996e970200cbcf8bde8744175e52da5a79.png" alt="Profile">
+      <img class="ava" src="../img/ca8093996e970200cbcf8bde8744175e52da5a79.webp" alt="Profile">
       <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false">
         <svg class="i m" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
         <svg class="i x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -215,7 +215,7 @@ html[lang=ru] .head{letter-spacing:-.06em}
     <div class="p1 animate-fade-up delay-900">
       <h3 class="dm" data-t="p1">Start your personalized path to natural balance</h3>
       <a href="#" data-t="p1a">Personal Assessment</a>
-      <img class="deco" src="https://polo-pecan-73837341.figma.site/_assets/v11/6736cbe6e26afa2cd7c04a91892a79f7640785b5.png" alt="">
+      <img class="deco" src="../img/6736cbe6e26afa2cd7c04a91892a79f7640785b5.webp" alt="">
     </div>
     <div class="p2 animate-fade-up delay-1000">
       <div class="car" id="car">
@@ -227,7 +227,7 @@ html[lang=ru] .head{letter-spacing:-.06em}
       <div class="bars" id="bars"><span class="on"></span><span></span><span></span><span></span></div>
     </div>
     <div class="p3 animate-fade-up delay-1100">
-      <img src="https://polo-pecan-73837341.figma.site/_assets/v11/6736cbe6e26afa2cd7c04a91892a79f7640785b5.png" alt="Green plant capsules">
+      <img src="../img/6736cbe6e26afa2cd7c04a91892a79f7640785b5.webp" alt="Green plant capsules">
       <div><div class="num">100%</div><p data-t="p3">Plant-based ingredients in every capsule</p></div>
     </div>
   </div>
@@ -244,7 +244,7 @@ const LINES = ru
 let n = 0;
 document.getElementById('head').innerHTML = LINES.map((line, li) => '<span class="line">' + line.map(([w, dim]) =>
   `<span class="w animate-word-reveal delay-${300 + 100 * n++}"><span${dim ? ' class="dim"' : ''}>${w}</span></span>`).join(' ') +
-  (li === 2 ? '<img class="cap animate-scale-in delay-1000" src="https://polo-pecan-73837341.figma.site/_assets/v11/6a7de4fbe9c9e2315040607320a9ff5e93117bf4.png" alt="">' : '') + '</span>').join('');
+  (li === 2 ? '<img class="cap animate-scale-in delay-1000" src="../img/6a7de4fbe9c9e2315040607320a9ff5e93117bf4.webp" alt="">' : '') + '</span>').join('');
 if (ru) {
   const TR = { n1: 'О нас', n2: 'Продукты', n3: 'Акции', n4: 'Контакты', go: 'Открыть каталог',
     lead: 'Новые растительные добавки для баланса и чистой энергии на каждый день.',
