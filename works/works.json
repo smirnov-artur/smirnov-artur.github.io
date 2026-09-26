@@ -926,6 +926,21 @@
   "rp": 1
  },
  {
+  "slug": "synthesis",
+  "v": "synthesis",
+  "ve": "synthesis-en",
+  "ru": [
+   "Сайт инвестора в долголетие",
+   "Прокрутка перематывает видео с ДНК, затем оно гаснет, и по одной проявляются три строки о миссии."
+  ],
+  "en": [
+   "Longevity investor site",
+   "Scrolling scrubs a DNA video frame by frame, then it fades out and three mission lines appear one by one."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
