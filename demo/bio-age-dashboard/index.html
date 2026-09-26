@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — Estimated Biological Age</title>
+    <meta name="description" content="g.a.d. estimates your biological age and gives you a personalized health snapshot and action plan.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config = { theme: { extend: { colors: { surface: { 900: '#0a0a0a', 800: '#1a1a1a', 700: '#2a2a2a', 600: '#3a3a3a' }, gold: { 400: '#c9a96e', 500: '#b8944d', 600: '#a07d3a' } } } } };</script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <style>
+        .gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .animate-ticker { animation: ticker 12s linear infinite; }
+        @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .animate-spin-bg { animation: spin-slow 30s linear infinite; }
+    </style>
+</head>
+<body class="antialiased bg-surface-900" style="font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const GAD_D = "M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z";
+        const GadLogo = ({ height = 28 }) => (
+            <svg className="gad-logo" height={height} viewBox="0 0 355 110" role="img" aria-label="g.a.d." style={{ color: '#fff' }}>
+                <path fill="currentColor" d={GAD_D} />
+                <circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100" />
+                <circle className="orb" cx="322" cy="8" r="5" fill="currentColor" />
+            </svg>
+        );
+        const HelpIcon = () => (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg>);
+        const ArrowRight = ({ className }) => (<svg className={className} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>);
+        const ArrowUp = ({ className }) => (<svg className={className} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V5M5 12l7-7 7 7" /></svg>);
+        const ArrowDown = ({ className }) => (<svg className={className} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M19 12l-7 7-7-7" /></svg>);
+
+        const VIDEO_SRC = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_044635_8daabe05-1a5c-491c-920f-4b0bd8f04812.mp4';
+
+        // draws a live, continuously updated cover-fit crop of the shared bg video into its own canvas —
+        // used for the age card's rotating disc and the two card backgrounds, so nothing hotlinks a second
+        // asset or opens a second competing request for the same video file
+        const VideoCanvas = ({ videoRef, zoom = 1, className, style }) => {
+            const canvasRef = useRef(null);
+            useEffect(() => {
+                let raf;
+                const draw = () => {
+                    const video = videoRef.current, canvas = canvasRef.current;
+                    if (video && canvas && video.videoWidth) {
+                        const cw = canvas.clientWidth || 1, ch = canvas.clientHeight || 1;
+                        if (canvas.width !== cw) canvas.width = cw;
+                        if (canvas.height !== ch) canvas.height = ch;
+                        const vw = video.videoWidth, vh = video.videoHeight;
+                        const scale = Math.max(cw / vw, ch / vh) * zoom;
+                        const sw = cw / scale, sh = ch / scale;
+                        const sx = (vw - sw) / 2, sy = (vh - sh) / 2;
+                        canvas.getContext('2d').drawImage(video, sx, sy, sw, sh, 0, 0, cw, ch);
+                    }
+                    raf = requestAnimationFrame(draw);
+                };
+                raf = requestAnimationFrame(draw);
+                return () => cancelAnimationFrame(raf);
+            }, []);
+            return <canvas ref={canvasRef} className={className} style={style} />;
+        };
+
+        const AnimatedElement = ({ children, direction = 'up', delay = 0, className }) => {
+            const ref = useRef(null);
+            const [visible, setVisible] = useState(false);
+            useEffect(() => {
+                const el = ref.current;
+                if (!el) return;
+                const obs = new IntersectionObserver(([entry]) => {
+                    if (entry.isIntersecting) { setVisible(true); obs.disconnect(); }
+                }, { threshold: 0.1 });
+                obs.observe(el);
+                return () => obs.disconnect();
+            }, []);
+            const offsets = { up: 'translateY(40px)', down: 'translateY(-40px)', left: 'translateX(40px)', right: 'translateX(-40px)', scale: 'scale(0.9)' };
+            return (
+                <div ref={ref} className={className} style={{
+                    transform: visible ? 'none' : offsets[direction],
+                    opacity: visible ? 1 : 0,
+                    transition: `transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}ms, opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
+                }}>
+                    {children}
+                </div>
+            );
+        };
+
+        const useCountUp = target => {
+            const [n, setN] = useState(0);
+            useEffect(() => {
+                let step = 0;
+                const steps = 40, stepMs = 1800 / steps;
+                const growRef = { current: null };
+                const iv = setInterval(() => {
+                    step++;
+                    setN(Math.round((target * step) / steps));
+                    if (step >= steps) {
+                        clearInterval(iv);
+                        setN(target);
+                        growRef.current = setInterval(() => setN(v => v + 1), 6000);
+                    }
+                }, stepMs);
+                return () => { clearInterval(iv); if (growRef.current) clearInterval(growRef.current); };
+            }, [target]);
+            return n;
+        };
+
+        const RulerTicker = () => {
+            const N = 61;
+            const ticks = Array.from({ length: N }, (_, i) => i);
+            const renderSet = key => (
+                <div key={key} className="flex items-end shrink-0">
+                    {ticks.map(i => (
+                        <div key={i} className="w-[10px] flex justify-center">
+                            <div style={{ width: 1, height: i % 5 === 0 ? 26 : 18, background: 'rgba(239,206,150,0.5)', borderRadius: 1 }} />
+                        </div>
+                    ))}
+                </div>
+            );
+            return (
+                <div className="relative max-w-[620px] h-[40px] mt-2 overflow-hidden" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)', maskImage: 'linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)' }}>
+                    <div className="flex items-end absolute left-0 top-0 h-full animate-ticker">
+                        {renderSet('a')}
+                        {renderSet('b')}
+                    </div>
+                    <div className="absolute left-1/2 top-0 -translate-x-1/2" style={{ width: 2, height: 40, background: '#EFCE96' }} />
+                </div>
+            );
+        };
+
+        const InfoCard = ({ className, style, children }) => (
+            <div style={style} className={"w-full xl:w-[260px] h-[130px] sm:h-[144px] rounded-[16px] sm:rounded-[20px] p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden transition-all duration-300 " + (className || '')}>
+                {children}
+            </div>
+        );
+        const PillArrow = ({ dark }) => (
+            <div className={"w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0 " + (dark ? 'bg-black text-white' : 'bg-white text-black')}>
+                <ArrowRight />
+            </div>
+        );
+
+        const App = () => {
+            const videoRef = useRef(null);
+            const [videoReady, setVideoReady] = useState(false);
+            const [snapshotOpen, setSnapshotOpen] = useState(false);
+            const age = useCountUp(28);
+
+            return (
+                <div className="relative min-h-screen xl:h-screen w-full overflow-hidden bg-surface-900">
+                    <video
+                        ref={videoRef} autoPlay muted loop playsInline
+                        onCanPlay={() => setVideoReady(true)}
+                        className="absolute inset-0 w-full h-full object-cover z-0 transition-opacity"
+                        style={{ opacity: videoReady ? 1 : 0, transitionDuration: '1500ms' }}
+                        src={VIDEO_SRC}
+                    />
+
+                    <nav className="relative z-10 flex items-start justify-between px-5 sm:px-8 lg:px-12 pt-6 sm:pt-8">
+                        <AnimatedElement direction="left" delay={100}>
+                            <GadLogo height={30} />
+                        </AnimatedElement>
+
+                        <div className="hidden sm:block absolute left-1/2 top-8 sm:top-10" style={{ transform: 'translateX(-50%)' }}>
+                            <AnimatedElement direction="down" delay={150}>
+                                <button aria-label="Help" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/20 text-white/80 flex items-center justify-center hover:text-white transition-colors">
+                                    <HelpIcon />
+                                </button>
+                            </AnimatedElement>
+                        </div>
+
+                        <AnimatedElement direction="right" delay={200} className="flex items-center gap-3 sm:gap-4">
+                            <div className="hidden md:block text-white font-bold text-right text-xl sm:text-3xl lg:text-[42px] leading-tight">Benjamin Carter</div>
+                            <div className="w-11 h-11 sm:w-16 sm:h-16 lg:w-[72px] lg:h-[72px] rounded-full flex items-center justify-center text-surface-900 font-semibold shrink-0" style={{ background: 'linear-gradient(135deg,#EFCE96,#c9a96e)' }}>
+                                BC
+                            </div>
+                        </AnimatedElement>
+                    </nav>
+
+                    <div className="relative z-10 xl:absolute xl:bottom-0 xl:left-0 xl:right-0 flex flex-col xl:flex-row xl:items-end xl:justify-between px-5 sm:px-8 lg:px-12 pb-6 sm:pb-8 lg:pb-12 gap-8 xl:gap-4 mt-10 xl:mt-0">
+
+                        <div>
+                            <AnimatedElement direction="scale" delay={300}>
+                                <div className="rounded-[24px] sm:rounded-[32px] lg:rounded-[40px] w-full sm:w-[520px] lg:w-[620px] h-[420px] sm:h-[500px] lg:h-[550px] relative overflow-hidden flex items-center justify-center">
+                                    <div className="absolute inset-[-35%] animate-spin-bg">
+                                        <VideoCanvas videoRef={videoRef} zoom={2} className="w-full h-full" />
+                                    </div>
+                                    <div className="relative z-10 flex flex-col items-center text-center px-10 py-8" style={{ background: 'radial-gradient(closest-side, rgba(12,7,4,.82) 35%, rgba(12,7,4,0))', textShadow: '0 1px 12px rgba(0,0,0,.55)' }}>
+                                        <AnimatedElement direction="up" delay={600}>
+                                            <div className="text-gray-200 text-base sm:text-lg md:text-[22px] font-medium">
+                                                <div>Estimated</div>
+                                                <div>Biological Age</div>
+                                            </div>
+                                        </AnimatedElement>
+                                        <AnimatedElement direction="up" delay={800}>
+                                            <div className="text-[72px] sm:text-[100px] lg:text-[132px] font-semibold leading-[0.85] tracking-tight tabular-nums text-white" style={{ fontFamily: "'Inter'" }}>
+                                                {age}
+                                            </div>
+                                        </AnimatedElement>
+                                    </div>
+                                </div>
+                            </AnimatedElement>
+
+                            <AnimatedElement direction="up" delay={1000}>
+                                <div className="mt-4 sm:mt-5 flex flex-col items-center">
+                                    <div className="border border-[#EFCE96]/50 bg-[#EFCE96]/20 text-white text-xs sm:text-sm font-medium tracking-wide px-4 sm:px-6 py-2 rounded-full">
+                                        3 Years Younger
+                                    </div>
+                                    <RulerTicker />
+                                </div>
+                            </AnimatedElement>
+                        </div>
+
+                        <div className="flex flex-col gap-4 sm:gap-5">
+                            <div className="flex flex-col sm:flex-row gap-4 sm:gap-5">
+                                <AnimatedElement direction="right" delay={500}>
+                                    <InfoCard className="bg-[#2F2F2F]/60 hover:bg-[#2F2F2F]/70" style={{ backdropFilter: 'blur(52px)' }}>
+                                        <div className="text-white text-base sm:text-lg font-semibold">Upcoming Activities</div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-white/55 text-[11px] sm:text-[12px]">4 events</span>
+                                            <PillArrow dark />
+                                        </div>
+                                    </InfoCard>
+                                </AnimatedElement>
+
+                                <AnimatedElement direction="right" delay={650}>
+                                    <InfoCard className="card-insights hover:brightness-110">
+                                        <VideoCanvas videoRef={videoRef} zoom={2.2} className="absolute inset-0 w-full h-full" style={{ filter: 'blur(10px) brightness(0.85)' }} />
+                                        <div className="relative z-10 text-white text-base sm:text-lg font-semibold">Your Insights</div>
+                                        <div className="relative z-10 flex items-center justify-between">
+                                            <span className="bg-white text-black rounded-full px-3 h-6 sm:h-7 flex items-center text-[12px] sm:text-[14px]">8 Risks</span>
+                                            <PillArrow />
+                                        </div>
+                                    </InfoCard>
+                                </AnimatedElement>
+                            </div>
+
+                            <div className="flex flex-col sm:flex-row gap-4 sm:gap-5">
+                                <AnimatedElement direction="right" delay={800} className="w-full xl:w-[260px]">
+                                    <div
+                                        onMouseEnter={() => setSnapshotOpen(true)}
+                                        onMouseLeave={() => setSnapshotOpen(false)}
+                                        onClick={() => setSnapshotOpen(v => !v)}
+                                        className={"card-snapshot w-full rounded-[16px] sm:rounded-[20px] p-4 sm:p-5 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-in-out " + (snapshotOpen ? 'bg-white text-black h-auto xl:h-[280px]' : 'bg-[#2F2F2F]/60 text-white h-[130px] sm:h-[144px]')}
+                                        style={{ backdropFilter: snapshotOpen ? 'none' : 'blur(52px)' }}
+                                    >
+                                        <div>
+                                            <div className="text-base sm:text-lg font-semibold">Your Health Snapshot</div>
+                                            {snapshotOpen && (
+                                                <p className="mt-3 text-sm leading-relaxed">
+                                                    With a biological age of 28, your body is performing like a young, energetic you. Keep fueling it with movement, nourishing food, quality rest, and a calm mind - so you can stay strong, sharp, and unstoppable.
+                                                </p>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            {!snapshotOpen && <span className="text-white/55 text-[11px] sm:text-[12px]">Recommendations</span>}
+                                            <div className={"w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0 ml-auto " + (snapshotOpen ? 'bg-[#F0F0F0] text-black' : 'bg-black text-white')}>
+                                                {snapshotOpen ? <ArrowDown /> : <ArrowUp />}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </AnimatedElement>
+
+                                <AnimatedElement direction="right" delay={950}>
+                                    <InfoCard className="card-plan hover:brightness-110">
+                                        <VideoCanvas videoRef={videoRef} zoom={2.2} className="absolute inset-0 w-full h-full" style={{ filter: 'blur(10px) brightness(0.85)', transform: 'scaleX(-1)' }} />
+                                        <div className="relative z-10 text-white text-base sm:text-lg font-semibold">Action Plan</div>
+                                        <div className="relative z-10 flex items-center justify-between">
+                                            <span className="bg-white text-black rounded-full px-3 h-6 sm:h-7 flex items-center text-[12px] sm:text-[14px]">Details</span>
+                                            <PillArrow />
+                                        </div>
+                                    </InfoCard>
+                                </AnimatedElement>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

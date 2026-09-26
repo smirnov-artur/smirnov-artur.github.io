@@ -866,6 +866,21 @@
   "rp": 1
  },
  {
+  "slug": "bio-age-dashboard",
+  "v": "bio-age-dashboard",
+  "ve": "bio-age-dashboard-en",
+  "ru": [
+   "Панель биологического возраста",
+   "Число возраста растёт на фоне светящейся ДНК, а карточка «Сводка здоровья» раскрывается по наведению."
+  ],
+  "en": [
+   "Biological age dashboard",
+   "The age counts up over a glowing DNA video while the health-snapshot card expands on hover."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
