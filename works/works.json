@@ -761,6 +761,21 @@
   "rp": 1
  },
  {
+  "slug": "dreamcore-landing",
+  "v": "dreamcore-landing",
+  "ve": "dreamcore-landing-en",
+  "ru": [
+   "Портал в грёзы",
+   "Прокрутка уносит сквозь проём морской пещеры в розовые облака, к дуге карточек-миров."
+  ],
+  "en": [
+   "Dream portal",
+   "Scrolling carries you through a sea-cave arch into pink clouds and an arc of world cards."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
