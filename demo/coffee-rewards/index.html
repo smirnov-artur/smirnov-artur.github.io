@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+<script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>g.a.d. — Coffee Rewards Profile</title>
+<meta name="description" content="A dark, glassmorphic iOS-style loyalty profile inside a phone mockup: a looping video hero fades into a scrollable stack of stat cards and a favorite-drink card, all glass buttons and staggered entrance animations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #180a06;
+  --card: rgba(255, 255, 255, 0.06);
+  --text: #ede4d8;
+  --muted: rgba(235, 220, 205, 0.55);
+  --radius-card: 24px;
+}
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  background: #070402;
+  background-image:
+    radial-gradient(ellipse 65% 55% at 15% 52%, rgba(168, 78, 10, 0.22), transparent),
+    radial-gradient(ellipse 52% 48% at 83% 26%, rgba(122, 52, 8, 0.17), transparent),
+    radial-gradient(ellipse 44% 52% at 56% 92%, rgba(98, 36, 5, 0.14), transparent),
+    radial-gradient(ellipse 30% 30% at 72% 75%, rgba(60, 20, 5, 0.10), transparent);
+  font-family: 'Inter', -apple-system, 'SF Pro Display', Inter, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+.phone {
+  width: 390px;
+  height: 844px;
+  zoom: 0.78;
+  background: #000;
+  border-radius: 44px;
+  overflow: hidden;
+  box-shadow: 0 40px 90px rgba(0,0,0,.65), 0 12px 32px rgba(0,0,0,.45);
+  position: relative;
+}
+.screen {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+.screen::-webkit-scrollbar { display: none; }
+
+/* ---- glass buttons ---- */
+.glass {
+  border: none;
+  background: rgba(255,255,255,0.03);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(0,0,0,.18), inset 1px 0 0 rgba(255,255,255,.06), inset -1px 0 0 rgba(255,255,255,.06);
+  backdrop-filter: blur(2px) saturate(1.3);
+  -webkit-backdrop-filter: blur(2px) saturate(1.3);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform .15s ease;
+}
+.glass:active { transform: scale(0.94); }
+.glass.circle { width: 58px; height: 44px; border-radius: 22px; }
+.glass.pill { height: 54px; border-radius: 27px; gap: 8px; }
+
+/* ---- hero ---- */
+.hero { position: relative; width: 100%; height: 430px; overflow: hidden; }
+.hero video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.hero-gradient { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 52%, var(--bg) 100%); }
+.hero-topbar { position: absolute; top: 18px; left: 18px; right: 18px; display: flex; align-items: center; justify-content: space-between; z-index: 2; }
+
+/* ---- identity ---- */
+.identity { position: relative; z-index: 2; margin-top: -112px; text-align: center; padding: 0 16px; }
+.identity h1 { font-size: 28px; font-weight: 500; }
+.identity .subtitle { margin-top: 4px; font-size: 15px; color: var(--muted); }
+.laurel { position: absolute; top: 14px; width: auto; height: 73px; opacity: 0.6; }
+.laurel-left { right: calc(50% + 66px); }
+.laurel-right { left: calc(50% + 66px); transform: scaleX(-1); }
+
+/* ---- achievements ---- */
+.achievements { position: relative; z-index: 2; margin: 30px auto 0; width: 225px; font-size: 18px; font-weight: 500; }
+
+/* ---- stats grid ---- */
+.stats { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 26px 16px 0; }
+.stat-card { background: var(--card); border-radius: var(--radius-card); display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 8px; }
+.stat-card img { width: 84px; height: 84px; object-fit: contain; }
+.stat-card .num { font-size: 25px; font-weight: 500; }
+.stat-card .label { font-size: 13px; color: rgba(236, 220, 205, 0.68); text-align: center; }
+
+/* ---- favorite card ---- */
+.favorite-card { position: relative; z-index: 2; margin: 12px 16px 0; background: var(--card); border-radius: var(--radius-card); height: 110px; display: flex; align-items: center; gap: 16px; padding: 0 16px; }
+.favorite-card img { width: 108px; height: 108px; object-fit: contain; flex-shrink: 0; }
+.fav-text { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.fav-text .fav-label { font-size: 13px; font-weight: 500; }
+.fav-text .fav-name { font-size: 19px; font-weight: 500; }
+.fav-text .fav-sub { font-size: 13px; color: #BAAA9A8C; }
+
+/* ---- teaser ---- */
+.next-card { position: relative; z-index: 2; margin: 12px 16px 40px; height: 34px; background: var(--card); border-radius: var(--radius-card) var(--radius-card) 0 0; }
+
+/* ---- entry animations ---- */
+@keyframes heroReveal { from { opacity: 0; transform: scale(1.01); } to { opacity: 1; transform: scale(1); } }
+@keyframes dropIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+.hero { animation: heroReveal 1.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.hero-topbar .glass:nth-child(1) { animation: dropIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: .35s; }
+.hero-topbar .glass:nth-child(2) { animation: dropIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: .42s; }
+.laurel { animation: fadeIn 0.8s ease-out both; animation-delay: .5s; }
+.identity h1 { animation: fadeRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: .5s; }
+.identity .subtitle { animation: fadeRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: .58s; }
+.achievements { animation: fadeRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: .66s; }
+.stat-card:nth-child(1) { animation: fadeRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: .74s; }
+.stat-card:nth-child(2) { animation: fadeRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: .80s; }
+.stat-card:nth-child(3) { animation: fadeRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: .86s; }
+.favorite-card { animation: fadeRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: .94s; }
+.next-card { animation: fadeIn 0.7s ease-out both; animation-delay: 1.02s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero, .hero-topbar .glass, .laurel, .identity h1, .identity .subtitle, .achievements, .stat-card, .favorite-card, .next-card {
+    animation: none !important; opacity: 1 !important; transform: none !important;
+  }
+}
+
+/* ---- responsive ---- */
+@media (max-width: 440px) {
+  .phone { zoom: 0.6; }
+}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="screen">
+    <section class="hero">
+      <video autoplay muted loop playsinline src="video/hero.mp4"></video>
+      <div class="hero-gradient"></div>
+      <div class="hero-topbar">
+        <button class="glass circle" type="button" aria-label="Edit">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </button>
+        <button class="glass circle" type="button" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <div class="identity">
+      <svg class="laurel laurel-left" viewBox="0 0 40 73" fill="currentColor"><path d="M32 4C24 10 18 20 16 32C14 44 16 58 24 70" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><ellipse cx="28" cy="10" rx="5" ry="2.5" transform="rotate(-30 28 10)"/><ellipse cx="20" cy="18" rx="5" ry="2.5" transform="rotate(-55 20 18)"/><ellipse cx="16" cy="28" rx="5" ry="2.5" transform="rotate(-80 16 28)"/><ellipse cx="15" cy="38" rx="5" ry="2.5" transform="rotate(-100 15 38)"/><ellipse cx="17" cy="48" rx="5" ry="2.5" transform="rotate(-120 17 48)"/><ellipse cx="21" cy="58" rx="5" ry="2.5" transform="rotate(-140 21 58)"/><ellipse cx="24" cy="68" rx="4" ry="2" transform="rotate(-160 24 68)"/></svg>
+      <h1>Dasha</h1>
+      <svg class="laurel laurel-right" viewBox="0 0 40 73" fill="currentColor"><path d="M32 4C24 10 18 20 16 32C14 44 16 58 24 70" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><ellipse cx="28" cy="10" rx="5" ry="2.5" transform="rotate(-30 28 10)"/><ellipse cx="20" cy="18" rx="5" ry="2.5" transform="rotate(-55 20 18)"/><ellipse cx="16" cy="28" rx="5" ry="2.5" transform="rotate(-80 16 28)"/><ellipse cx="15" cy="38" rx="5" ry="2.5" transform="rotate(-100 15 38)"/><ellipse cx="17" cy="48" rx="5" ry="2.5" transform="rotate(-120 17 48)"/><ellipse cx="21" cy="58" rx="5" ry="2.5" transform="rotate(-140 21 58)"/><ellipse cx="24" cy="68" rx="4" ry="2" transform="rotate(-160 24 68)"/></svg>
+      <p class="subtitle">Plum Parfait Latte</p>
+    </div>
+
+    <button class="achievements glass pill" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+      <span>12 achievements</span>
+    </button>
+
+    <div class="stats">
+      <div class="stat-card">
+        <img src="img/coffee.webp" alt="Coffee">
+        <div class="num">154</div>
+        <div class="label">drinks consumed</div>
+      </div>
+      <div class="stat-card">
+        <img src="img/sandwich.webp" alt="Sandwich">
+        <div class="num">36</div>
+        <div class="label">sandwiches eaten</div>
+      </div>
+      <div class="stat-card">
+        <img src="img/cafe.webp" alt="Cafe">
+        <div class="num">12</div>
+        <div class="label">cafes visited</div>
+      </div>
+    </div>
+
+    <div class="favorite-card">
+      <img src="img/latte.webp" alt="Latte">
+      <div class="fav-text">
+        <div class="fav-label">Favorite</div>
+        <div class="fav-name">Latte</div>
+        <div class="fav-sub">Ordered 73 times</div>
+      </div>
+      <button class="glass circle" type="button" aria-label="Shuffle">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"/><path d="M2 6h1.972a4 4 0 0 1 3.6 2.2"/><path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"/></svg>
+      </button>
+    </div>
+
+    <div class="next-card"></div>
+  </div>
+</div>
+</body>
+</html>

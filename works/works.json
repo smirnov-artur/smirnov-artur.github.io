@@ -3909,6 +3909,36 @@
   "rp": 1
  },
  {
+  "slug": "coffee-rewards",
+  "v": "coffee-rewards",
+  "ve": "coffee-rewards-en",
+  "ru": [
+   "Кофейная программа лояльности",
+   "Профиль лояльности в макете телефона со стеклянными кнопками поверх зацикленного видео; карточки статистики и любимого напитка появляются по очереди при загрузке."
+  ],
+  "en": [
+   "Coffee loyalty app",
+   "A phone-mockup loyalty profile with glass buttons over a looping video hero; stat cards and a favorite-drink card stagger into view on load."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "finflow",
+  "v": "finflow",
+  "ve": "finflow-en",
+  "ru": [
+   "Финтех-платформа",
+   "За главным экраном вращается обесцвеченное видео глобуса, внизу — карточка способов оплаты, а на телефоне пилюля-навигация сворачивается в выпадающее меню"
+  ],
+  "en": [
+   "Fintech platform",
+   "A desaturated globe video spins behind the hero, a payment-methods card sits at the bottom, and the pill navbar folds into a mobile dropdown"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
