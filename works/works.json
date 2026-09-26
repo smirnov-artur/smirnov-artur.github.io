@@ -791,6 +791,21 @@
   "rp": 1
  },
  {
+  "slug": "waitlist-hero",
+  "v": "waitlist-hero",
+  "ve": "waitlist-hero-en",
+  "ru": [
+   "Лист ожидания сервиса",
+   "Закатная панорама, разрезанная на три панели, едет вперёд-назад как бумеранг, а по центру — тёмная капсула."
+  ],
+  "en": [
+   "Productivity app waitlist",
+   "A sunset panorama sliced across three panels scrubs back and forth like a boomerang around a dark capsule."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
