@@ -3241,7 +3241,6 @@
    "Freight bot with a rate floor",
    "An animated diagram shows the LLM extract a route and price from a chat message while a plain rates.csv lookup — not the model — enforces the minimum rate."
   ],
-  "img": "gh/ai-ekspeditor.jpg",
   "rp": 1,
   "v": "ai-ekspeditor",
   "ve": "ai-ekspeditor-en"
@@ -3504,7 +3503,6 @@
    "Ozon accrual migration",
    "An animated diagram walks a real accrual through Ozon's retired endpoint, then the three paginated calls that replaced it, straight into a Google Sheet."
   ],
-  "img": "gh/ozon-finance-accrual-sheets.jpg",
   "rp": 1,
   "v": "ozon-finance",
   "ve": "ozon-finance-en"
@@ -3520,7 +3518,6 @@
    "Double-entry ledger",
    "Balanced debit/credit postings update two accounts live while the trial balance stays pinned at zero."
   ],
-  "img": "gh/ledger.jpg",
   "rp": 1,
   "v": "ledger",
   "ve": "ledger-en"
@@ -3536,7 +3533,6 @@
    "Idempotent payments",
    "An animated request/response diagram shows a retried payment replay the stored response instead of charging twice."
   ],
-  "img": "gh/idempotency.jpg",
   "rp": 1,
   "v": "idempotency",
   "ve": "idempotency-en"
@@ -3552,7 +3548,6 @@
    "Transactional outbox",
    "A commit writes the outbox row with the state change; kill the broker and the row waits, then still delivers."
   ],
-  "img": "gh/outbox.jpg",
   "rp": 1,
   "v": "outbox",
   "ve": "outbox-en"
@@ -3568,7 +3563,6 @@
    "Compensating saga",
    "A three-step payout runs forward until a step fails, then the orchestrator undoes each finished step in reverse order instead of getting stuck."
   ],
-  "img": "gh/saga-orchestrator.jpg",
   "rp": 1,
   "v": "saga",
   "ve": "saga-en"
