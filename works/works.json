@@ -626,6 +626,21 @@
   "rp": 1
  },
  {
+  "slug": "speakup-venture-hero",
+  "v": "speakup-venture-hero",
+  "ve": "speakup-venture-hero-en",
+  "ru": [
+   "Венчурная студия",
+   "Видео ростка на цветущем холме крутится фоном за гигантским зелёным заголовком на сериф-шрифте"
+  ],
+  "en": [
+   "Venture studio",
+   "A looping video of a sprout on a wildflower hill plays behind a giant green serif headline"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
