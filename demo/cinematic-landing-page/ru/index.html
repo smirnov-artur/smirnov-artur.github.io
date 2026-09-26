@@ -294,7 +294,7 @@ const Gallery = () => (
 
 const ABOUT_TEXT = "В 1976 ГОДУ MR LOUIS LE DUFF ОТКРЫЛ ПЕРВЫЙ ФРАНЦУЗСКИЙ РЕСТОРАН ПОВСЕДНЕВНОЙ КУХНИ, УБЕЖДЁННЫЙ, ЧТО ЕЖЕДНЕВНАЯ ВЫПЕЧКА ЗАСЛУЖИВАЕТ ТОГО ЖЕ МАСТЕРСТВА, ЧТО И ВЫСОКАЯ КУХНЯ. ПЯТЬ ДЕСЯТИЛЕТИЙ СПУСТЯ ЭТО УБЕЖДЕНИЕ ВСЁ ЕЩЁ ОПРЕДЕЛЯЕТ КАЖДЫЙ ПРОДУКТ, КОТОРЫЙ МЫ ДАРИМ ПРОФЕССИОНАЛАМ, КОРМЯЩИМ ВЕСЬ МИР.";
 
-const PARTNERS = ['Bridor de France', 'Traiteur de Paris', 'Panidor', 'Boncolac', 'Mademoiselle Desserts', 'Mountry', 'Pfalzgraf', 'Dolceria Alba', 'St Michel', 'Poppies Bakeries', 'Alysse Food', 'Les Delices du Chef'];
+const PARTNERS = ['Verrier Freres', 'Fournil du Nord', 'Belletoile', 'Coeur de Ble', 'Le Petit Fournil', 'Griotte & Co', 'Patisserie Loriel', 'Boulangerie Vasseur', 'Douce Vallee', 'Farine Doree', 'Miellerie du Chef', 'Delice Nordique'];
 
 const AboutSection = () => {
     const containerRef = useRef(null);
@@ -378,18 +378,17 @@ const PartneringSection = () => {
 };
 
 const OFFICES = [
-    { region: 'Головной офис', city: 'Гонконг', name: 'g.a.d. Limited', address: '12/F, Bakery Tower, 88 Queensway, Hong Kong', phone: '+852 2407 8840', email: 'hk@gad.studio' },
-    { region: 'Материковый Китай', city: 'Шанхай', name: 'g.a.d. (Shanghai) Co., Ltd.', address: '8/F, Xintiandi Business Centre, Huangpu District, Shanghai', phone: '+86 21 6288 0032', email: 'cn@gad.studio' },
-    { region: 'Тайвань', city: 'Новый Тайбэй', name: 'g.a.d. Taiwan Ltd.', address: '5F, No. 88 Zhongxiao Rd, Banqiao Dist, New Taipei City', phone: '+886 2 8969 1234', email: 'tw@gad.studio' },
-    { region: 'Макао', city: 'Макао', name: 'g.a.d. Macau Ltd.', address: 'Alameda Dr. Carlos d’Assumpção, Macau', phone: '+853 2872 5566', email: 'mo@gad.studio' },
+    { region: 'Головной офис', city: 'Гонконг', name: 'g.a.d. Limited', address: '12/F, Bakery Tower, 88 Queensway, Hong Kong', email: 'hk@gad.studio' },
+    { region: 'Материковый Китай', city: 'Шанхай', name: 'g.a.d. (Shanghai) Co., Ltd.', address: '8/F, Xintiandi Business Centre, Huangpu District, Shanghai', email: 'cn@gad.studio' },
+    { region: 'Тайвань', city: 'Новый Тайбэй', name: 'g.a.d. Taiwan Ltd.', address: '5F, No. 88 Zhongxiao Rd, Banqiao Dist, New Taipei City', email: 'tw@gad.studio' },
+    { region: 'Макао', city: 'Макао', name: 'g.a.d. Macau Ltd.', address: 'Alameda Dr. Carlos d’Assumpção, Macau', email: 'mo@gad.studio' },
 ];
 
 const Footer = () => (
     <footer className="bg-white text-black">
         <div className="px-6 md:px-10 lg:px-16 pt-12 md:pt-20 pb-10 md:pb-16 flex flex-col md:flex-row md:justify-between gap-10">
             <div>
-                <p className="text-[13px] text-black/40 uppercase tracking-wider">Телефон</p>
-                <p className="text-[15px] mb-4">+852 2407 8840</p>
+                <p className="text-[13px] text-black/40 uppercase tracking-wider mb-2">Заказы</p>
                 <a href="mailto:orders@gad.studio" className="text-[14px] font-bold hover:text-[#CB9D06] transition-colors">orders@gad.studio</a>
             </div>
             <div className="flex gap-16">
@@ -413,8 +412,7 @@ const Footer = () => (
                     <p className="text-[12px] uppercase tracking-wider text-black/40">{o.region} &middot; {o.city}</p>
                     <p className="text-[13px] font-semibold mt-1">{o.name}</p>
                     <p className="text-[12px] text-black/60 mt-1">{o.address}</p>
-                    <p className="text-[12px] text-black/60 mt-2">{o.phone}</p>
-                    <p className="text-[12px] text-black/60">{o.email}</p>
+                    <p className="text-[12px] text-black/60 mt-2">{o.email}</p>
                 </div>
             ))}
         </div>

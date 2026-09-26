@@ -12,6 +12,7 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 <style>.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}</style>
+<style>.gad-orb{position:relative;width:380px;height:380px;max-width:80vw;max-height:80vw;border-radius:50%;background:radial-gradient(circle at 32% 28%,#f3ebff 0%,#c9a4ff 16%,#9b5cf6 42%,#6d28d9 68%,#3b0f7a 100%);box-shadow:0 30px 140px 20px rgba(124,58,237,.45),inset -22px -22px 60px rgba(30,10,60,.55),inset 20px 20px 46px rgba(255,255,255,.3);overflow:hidden;animation:gad-orb-float 7s ease-in-out infinite}.gad-orb-swirl{position:absolute;inset:-25%;background:conic-gradient(from 0deg,transparent 0deg,rgba(255,255,255,.35) 40deg,transparent 100deg,transparent 210deg,rgba(196,155,255,.45) 260deg,transparent 320deg);mix-blend-mode:soft-light;animation:gad-orb-spin 9s linear infinite}.gad-orb-glint{position:absolute;top:15%;left:22%;width:32%;height:20%;border-radius:50%;background:rgba(255,255,255,.8);filter:blur(9px)}@keyframes gad-orb-float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-16px) scale(1.03)}}@keyframes gad-orb-spin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-orb,.gad-orb-swirl{animation:none}}</style>
 </head>
 <body class="bg-white text-black antialiased" style="font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased">
     <div id="root"></div>
@@ -58,7 +59,10 @@
                             </button>
                         </div>
                         <div className="hidden lg:flex justify-center">
-                            <video src="https://future.co/images/homepage/glassy-orb/orb-purple.webm" className="scale-125" style={{ mixBlendMode: 'screen', filter: 'hue-rotate(-55deg) saturate(250%) brightness(1.2) contrast(1.1)' }} autoPlay loop muted playsInline />
+                            <div className="gad-orb" aria-hidden="true">
+                                <span className="gad-orb-swirl"></span>
+                                <span className="gad-orb-glint"></span>
+                            </div>
                         </div>
                     </div>
 
