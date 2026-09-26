@@ -536,6 +536,21 @@
   "rp": 1
  },
  {
+  "slug": "minimal-workflow-saas",
+  "v": "minimal-workflow-saas",
+  "ve": "minimal-workflow-saas-en",
+  "ru": [
+   "Список рабочих шагов",
+   "Стеклянная карточка сама пролистывает шаги инструкций на фоне видео с портретом"
+  ],
+  "en": [
+   "Workflow task list",
+   "A glass card auto-scrolls through team how-to steps over a soft portrait video background"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
