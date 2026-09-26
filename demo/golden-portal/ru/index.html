@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — витрина мастеров и провидцев</title>
+    <meta name="description" content="g.a.d. — витрина в честь мастеров, провидцев и творцов, превративших тяжёлый сезон в нечто редкое.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.469.0"></script>
+    <style>
+        :root { --font-serif: 'Cormorant Garamond', serif; --font-sans: 'Inter', sans-serif; }
+        body { font-family: var(--font-sans); background: #000; }
+        .font-arsenica { font-family: var(--font-serif); }
+        .font-inter { font-family: var(--font-sans); }
+        .gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}
+        .liquid-glass { background: rgba(255, 255, 255, 0.01); background-blend-mode: luminosity; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border: none; box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1); position: relative; overflow: hidden; }
+        .liquid-glass::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1.4px; background: linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 20%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+        @keyframes hero-fade-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .hero-fade-up { opacity: 0; animation: hero-fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        @keyframes reveal-up { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes reveal-scale { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+        .reveal { opacity: 0; }
+        .reveal.revealed { animation: reveal-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        .reveal-scale { opacity: 0; }
+        .reveal-scale.revealed { animation: reveal-scale 1s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    </style>
+</head>
+<body class="antialiased">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const GAD_D = "M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z";
+        const GadMark = ({ className }) => (
+            <svg className={"gad-logo " + (className || '')} viewBox="293 1 58 58" role="img" aria-label="g.a.d." fill="white">
+                <circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="white" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100" />
+                <circle className="orb" cx="322" cy="8" r="5" fill="white" />
+            </svg>
+        );
+
+        const Dove = ({ className }) => (
+            <svg viewBox="0 0 100 44" className={className} style={{ filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.25))' }}>
+                <path fill="#fdfdf9" d="M50 26 C40 10 22 4 2 10 C14 12 24 18 29 26 C19 25 10 28 3 35 C15 32 25 35 30 41 C33 33 39 28 47 27 C50 33 56 37 63 37 C58 31 57 24 61 18 C68 21 76 19 80 13 C71 14 64 10 61 3 C68 -1 78 0 85 6 C76 -3 60 -5 47 4 C53 12 53 20 46 25 Z" />
+            </svg>
+        );
+
+        const CloudBand = ({ innerRef, className, style, base }) => (
+            <div ref={innerRef} className={"pointer-events-none " + (className || '')} style={{
+                // warm, lumpy cloud bank; with `base` it dissolves into that colour at the bottom
+                background: [
+                    'radial-gradient(34% 58% at 10% 72%, rgba(246,222,188,0.92), transparent 70%)',
+                    'radial-gradient(28% 52% at 30% 58%, rgba(232,194,150,0.88), transparent 70%)',
+                    'radial-gradient(32% 60% at 52% 70%, rgba(248,228,198,0.92), transparent 70%)',
+                    'radial-gradient(26% 50% at 72% 56%, rgba(226,186,142,0.86), transparent 70%)',
+                    'radial-gradient(34% 58% at 92% 70%, rgba(244,218,182,0.9), transparent 70%)',
+                    base ? `linear-gradient(to bottom, transparent 38%, ${base} 90%)` : 'linear-gradient(transparent, transparent)',
+                ].join(', '),
+                filter: 'blur(12px)',
+                ...style,
+            }} />
+        );
+
+        const useScrollReveal = () => {
+            useEffect(() => {
+                const els = document.querySelectorAll('.reveal, .reveal-scale');
+                const obs = new IntersectionObserver(entries => {
+                    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); } });
+                }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+                els.forEach(el => obs.observe(el));
+                return () => obs.disconnect();
+            }, []);
+        };
+
+        const useParallax = ref => {
+            const [progress, setProgress] = useState(0);
+            useEffect(() => {
+                const onScroll = () => {
+                    const el = ref.current;
+                    if (!el) return;
+                    const rect = el.getBoundingClientRect();
+                    const vh = window.innerHeight;
+                    const p = 1 - rect.bottom / (vh + rect.height);
+                    setProgress(Math.max(0, Math.min(1, p)));
+                };
+                onScroll();
+                window.addEventListener('scroll', onScroll, { passive: true });
+                window.addEventListener('resize', onScroll);
+                return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); };
+            }, []);
+            return progress;
+        };
+
+        const Navbar = () => (
+            <nav className="fixed left-1/2 -translate-x-1/2 top-4 sm:top-6 z-50 liquid-glass rounded-full px-4 py-2.5 sm:px-10 sm:py-3">
+                <div className="flex items-center gap-4 sm:gap-12">
+                    <a href="#" className="text-[10px] sm:text-xs uppercase font-medium tracking-[0.15em] sm:tracking-[0.2em] text-white/85 hover:text-white transition-colors">Галерея</a>
+                    <a href="#" className="text-[10px] sm:text-xs uppercase font-medium tracking-[0.15em] sm:tracking-[0.2em] text-white/85 hover:text-white transition-colors">Таланты</a>
+                    <GadMark className="h-5 w-5 sm:h-7 sm:w-7 hover:scale-110 transition-transform" />
+                    <a href="#" className="text-[10px] sm:text-xs uppercase font-medium tracking-[0.15em] sm:tracking-[0.2em] text-white/85 hover:text-white transition-colors">Журнал</a>
+                    <a href="#" className="text-[10px] sm:text-xs uppercase font-medium tracking-[0.15em] sm:tracking-[0.2em] text-white/85 hover:text-white transition-colors">История</a>
+                </div>
+            </nav>
+        );
+
+        const Hero = () => (
+            <section className="relative h-screen w-full overflow-hidden">
+                <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260611_130946_e6793cc7-6b6f-4035-9852-44290b781ae6.mp4" />
+                <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
+                    <div className="hero-fade-up" style={{ animationDelay: '0.1s' }}>
+                        <div className="text-xs sm:text-sm font-medium uppercase tracking-[0.35em] text-white/90">Студия</div>
+                        <div className="text-[10px] sm:text-xs font-light uppercase tracking-[0.4em] text-white/70 mt-1">Экспозиции</div>
+                    </div>
+                    <div className="hero-fade-up mt-4" style={{ animationDelay: '0.25s' }}>
+                        <h1 className="font-arsenica text-5xl sm:text-7xl md:text-[7rem] tracking-wide leading-[1.05] text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.25)]">
+                            g.a.d.
+                        </h1>
+                    </div>
+                    <p className="hero-fade-up font-arsenica text-sm sm:text-lg md:text-xl max-w-xl text-white mt-6 [text-shadow:0_1px_14px_rgba(70,30,0,0.6)]" style={{ animationDelay: '0.4s' }}>
+                        Витрина в честь мастеров, провидцев и творцов, превративших тяжёлый сезон в нечто редкое.
+                    </p>
+                    <div className="hero-fade-up mt-8" style={{ animationDelay: '0.55s' }}>
+                        <a href="#showcase" className="liquid-glass inline-block rounded-[50%] px-10 py-5 sm:px-12 sm:py-6 text-[10px] sm:text-xs uppercase tracking-[0.25em] font-inter text-white transition-all hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(255,255,255,0.15)] active:scale-[0.98]">
+                            Войти в галерею
+                        </a>
+                    </div>
+                </div>
+            </section>
+        );
+
+        const Showcase = () => (
+            <section id="showcase" className="relative min-h-screen w-full overflow-hidden flex items-center justify-center py-32 text-center px-4" style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent 0, #000 30%)', maskImage: 'linear-gradient(to bottom, transparent 0, #000 30%)' }}>
+                <img src="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260616_040223_98d314e9-b8b4-4218-bcbd-18ffc38032ac.png&w=1280&q=85" alt="Галерея Still Frame" className="absolute inset-0 w-full h-full object-cover" />
+                <div className="relative z-10 flex flex-col items-center">
+                    <h2 className="reveal font-arsenica text-4xl sm:text-6xl md:text-7xl tracking-wide text-white drop-shadow-[0_2px_20px_rgba(0,0,0,0.3)]">Still Frame</h2>
+                    <div className="reveal font-arsenica text-xl sm:text-3xl md:text-4xl tracking-wide text-white/90 drop-shadow-[0_2px_16px_rgba(0,0,0,0.25)] mt-6 leading-snug" style={{ animationDelay: '0.15s' }}>
+                        <div>подарила миру красоту,</div>
+                        <div>рождённую в тишине</div>
+                        <div>опустевших студий.</div>
+                    </div>
+                    <a href="#qa" className="reveal mt-10 inline-block rounded-[50%] border border-white/50 px-10 py-4 sm:px-12 sm:py-5 text-[10px] sm:text-xs uppercase tracking-[0.25em] font-inter text-white transition-all hover:border-white hover:bg-white/10 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]" style={{ animationDelay: '0.3s' }}>
+                        Смотреть их архив
+                    </a>
+                </div>
+                <div className="absolute bottom-0 left-0 w-full h-48 pointer-events-none" style={{ background: 'linear-gradient(to top, #410C01, transparent)' }} />
+            </section>
+        );
+
+        const QAndA = () => {
+            const cloudRef = useRef(null);
+            const progress = useParallax(cloudRef);
+            const offset = progress * 30;
+
+            const left = [
+                ['Добро пожаловать, Марен. Как начался путь Still Frame?', 'Меньше чем через год после открытия галереи всё закрылось. Пришлось закрыть двери, отменить все выставки и пересмотреть буквально всё. Но я не переставала курировать — я была твёрдо намерена не дать импульсу художников угаснуть. Мы сразу взялись строить цифровое пространство и с тех пор постоянно развиваемся.'],
+                ['Как вы поняли, с чего начать?', 'Я не стала ждать идеальной платформы. Я видела, как художники борются, оказавшись в изоляции, без вдохновения, на пределе сил — и занялась тем, чтобы как можно быстрее найти способ показать их работы миру.'],
+                ['Какой была первая выставка?', 'Мы одними из первых запустили виртуальную выставку после закрытия. Думаю, художники были по-настоящему благодарны — они видели, как усердно мы работаем, чтобы уважить их мастерство, и доверяли нам, пока мы продолжали дорабатывать цифровой опыт.'],
+            ];
+            const right = [
+                ['Какой была первая реакция?', 'Нам писали десятки людей — онлайн-выставки и архив работ буквально спасали их в изоляции. Атмосфера была очень камерной, и было по-настоящему сильно видеть, как люди объединяются через искусство, хотя каждый сидел в своей комнате, в своём городе.'],
+                ['Куда вы двинулись дальше?', 'Живые pop-up-показы тоже стали особенным опытом — теперь, когда людям снова комфортно собираться вместе. В прошлом месяце у нас прошла первая выставка под открытым небом во дворе, и это было так красиво, что я едва не расплакалась.'],
+                ['Вы чувствуете, что отношение к искусству изменилось?', 'Появилось ощущение срочности — это наша единственная жизнь, единственный шанс, и у нас больше нет времени на равнодушие. Мы будем творить так, будто завтра не наступит, будем творить ради лучшего мира, будем творить, чтобы вернуть себе голос в этой жизни, и будем творить, потому что заслуживаем чувствовать красоту и чудо.'],
+            ];
+
+            return (
+                <section id="qa" className="relative bg-[#410C01] px-4 lg:px-28 pt-20 lg:pt-32 overflow-hidden" style={{ paddingBottom: '50vh' }}>
+                    <h2 className="reveal font-arsenica text-4xl sm:text-6xl md:text-7xl text-white flex items-baseline justify-center gap-1">
+                        <span>Q</span><span className="italic text-xl sm:text-3xl md:text-4xl text-white/80">&amp;</span><span>A</span>
+                    </h2>
+                    <div className="relative z-10 grid md:grid-cols-2 gap-10 md:gap-20 max-w-5xl mx-auto mt-16">
+                        <div className="flex flex-col gap-10">
+                            {left.map(([q, a], i) => (
+                                <div key={i} className="reveal" style={{ animationDelay: (0.12 * (i + 1)) + 's' }}>
+                                    <div className="font-arsenica text-xs sm:text-base uppercase tracking-wide text-white">{q}</div>
+                                    <p className="font-inter text-[11px] sm:text-sm leading-relaxed text-white/60 mt-3">{a}</p>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex flex-col gap-10 md:mt-24">
+                            {right.map(([q, a], i) => (
+                                <div key={i} className="reveal" style={{ animationDelay: (0.12 * (i + 4)) + 's' }}>
+                                    <div className="font-arsenica text-xs sm:text-base uppercase tracking-wide text-white">{q}</div>
+                                    <p className="font-inter text-[11px] sm:text-sm leading-relaxed text-white/60 mt-3">{a}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <CloudBand innerRef={cloudRef} className="absolute bottom-0 left-0 w-full z-10" style={{ height: '22vw', maxHeight: 320, transform: `translateY(${60 - offset}%)` }} />
+                </section>
+            );
+        };
+
+        const QuoteBanner = () => {
+            const wrapRef = useRef(null);
+            const progress = useParallax(wrapRef);
+            const offset = progress * 80;
+            return (
+                <section ref={wrapRef} className="relative h-screen w-full overflow-hidden flex items-center lg:items-start justify-center lg:pt-[25vh] px-4">
+                    <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260616_042421_41f4fa0b-770c-4545-a416-73a809366e49.png&w=1280&q=85')" }} />
+                    <p className="reveal-scale relative z-10 font-arsenica text-xl sm:text-3xl md:text-5xl leading-snug lg:leading-tight text-white max-w-xs sm:max-w-xl md:max-w-2xl text-center lg:text-left">
+                        &laquo;Искусство, стойкость и дальновидность <span className="font-light italic">важны как никогда.</span>&raquo;
+                    </p>
+                    <CloudBand className="absolute left-0 w-full z-10" style={{ bottom: '-4rem', height: '16vw', maxHeight: 220, transform: `translateY(${-offset}px)` }} />
+                </section>
+            );
+        };
+
+        const Footer = () => (
+            <footer className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-black/40 to-transparent">
+                <div className="flex items-center justify-between px-3 py-2.5 sm:px-10 sm:py-4">
+                    <div className="flex items-center gap-4">
+                        <a href="#" aria-label="Facebook" className="text-white/80 hover:text-white transition-colors"><i data-lucide="facebook" style={{ width: 14, height: 14 }}></i></a>
+                        <a href="#" aria-label="Twitter" className="text-white/80 hover:text-white transition-colors"><i data-lucide="twitter" style={{ width: 14, height: 14 }}></i></a>
+                        <a href="#" aria-label="LinkedIn" className="text-white/80 hover:text-white transition-colors"><i data-lucide="linkedin" style={{ width: 14, height: 14 }}></i></a>
+                        <a href="#" className="hidden sm:inline text-[9px] sm:text-[10px] uppercase font-medium tracking-[0.15em] sm:tracking-[0.25em] text-white/80 hover:text-white transition-colors">Конфиденциальность</a>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <a href="#" className="hidden sm:inline text-[9px] sm:text-[10px] uppercase font-medium tracking-[0.15em] sm:tracking-[0.25em] text-white/80 hover:text-white transition-colors">Условия и правила</a>
+                        <a href="#" aria-label="Analytics" className="text-white/80 hover:text-white transition-colors"><i data-lucide="bar-chart-3" style={{ width: 14, height: 14 }}></i></a>
+                        <a href="#" aria-label="Aperture" className="text-white/80 hover:text-white transition-colors"><i data-lucide="aperture" style={{ width: 14, height: 14 }}></i></a>
+                    </div>
+                </div>
+            </footer>
+        );
+
+        const App = () => {
+            useScrollReveal();
+            useEffect(() => { lucide.createIcons(); }, []);
+            return (
+                <React.Fragment>
+                    <Navbar />
+                    <Hero />
+                    <div className="relative -mt-56 sm:-mt-64 md:-mt-72 lg:-mt-80">
+                        <Showcase />
+                        <Dove className="absolute z-20 w-24 sm:w-40 md:w-64 right-6 sm:right-10 -bottom-12 sm:bottom-6" />
+                    </div>
+                    <QAndA />
+                    <QuoteBanner />
+                    <Footer />
+                </React.Fragment>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

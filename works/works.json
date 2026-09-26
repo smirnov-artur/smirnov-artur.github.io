@@ -911,6 +911,21 @@
   "rp": 1
  },
  {
+  "slug": "golden-portal",
+  "v": "golden-portal",
+  "ve": "golden-portal-en",
+  "ru": [
+   "Витрина арт-галереи",
+   "Голубь пролетает сквозь золотые облака, дальше — интервью галереи на бордовом фоне с параллаксом"
+  ],
+  "en": [
+   "Art gallery showcase",
+   "A dove flies through golden clouds, leading into a gallery interview on a maroon parallax background"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
