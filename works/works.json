@@ -656,6 +656,21 @@
   "rp": 1
  },
  {
+  "slug": "vitara-hero",
+  "v": "vitara-hero",
+  "ve": "vitara-hero-en",
+  "ru": [
+   "ИИ-ассистент здоровья",
+   "Заголовок собирается слово за словом над белым видео с россыпью частиц, а в чат-боксе — вопрос ассистенту и быстрые действия."
+  ],
+  "en": [
+   "AI health assistant",
+   "The headline builds word by word over a white video with a particle horizon, and the chat box takes a question plus quick actions."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
