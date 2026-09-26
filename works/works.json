@@ -96,6 +96,22 @@
   "rp": 1
  },
  {
+  "slug": "slowlight",
+  "cat": "3d",
+  "ru": [
+   "Slowlight — биография фотона",
+   "Интерактивное эссе, нарисованное одним шейдером"
+  ],
+  "en": [
+   "Slowlight — a photon's biography",
+   "An interactive essay drawn by a single shader"
+  ],
+  "href": "https://smirnov-artur.github.io/slowlight/ru/",
+  "v": "slowlight",
+  "ve": "slowlight-en",
+  "hre": "https://smirnov-artur.github.io/slowlight/"
+ },
+ {
   "slug": "iron-man-stark",
   "v": "iron-man-stark",
   "ru": [
@@ -173,6 +189,22 @@
   "rp": 1
  },
  {
+  "slug": "lab",
+  "cat": "3d",
+  "ru": [
+   "Drift — частицы на видеокарте",
+   "Облако частиц течёт в поле потока, всё считается на GPU"
+  ],
+  "en": [
+   "Drift — GPU particles",
+   "A particle cloud flows through a flow field, all computed on the GPU"
+  ],
+  "href": "https://smirnov-artur.github.io/webgl/lab/ru/",
+  "v": "lab",
+  "ve": "lab-en",
+  "hre": "https://smirnov-artur.github.io/webgl/lab/"
+ },
+ {
   "slug": "pulse-3d",
   "v": "pulse-3d",
   "ve": "pulse-3d-en",
@@ -230,6 +262,21 @@
   ],
   "cat": "web",
   "ve": "scroll-bloom-en",
+  "rp": 1
+ },
+ {
+  "slug": "cinematic-landing-page",
+  "v": "cinematic-landing-page",
+  "ve": "cinematic-landing-page-en",
+  "ru": [
+   "Кинематографичный лендинг пекарни",
+   "Прокрутка сменяет одно видео другим через растущий круг, затем галерея проявляется из размытия, а внизу бежит лента логотипов партнёров."
+  ],
+  "en": [
+   "Cinematic bakery landing",
+   "Scrolling wipes one hero video into the next through a growing circle, then a photo gallery blurs into focus and partner logos scroll past."
+  ],
+  "cat": "web",
   "rp": 1
  },
  {
@@ -338,6 +385,22 @@
   "rp": 1
  },
  {
+  "slug": "raspad",
+  "cat": "3d",
+  "ru": [
+   "Распад",
+   "Бетонный монолит собирается из пыли, трескается, рушится, плавится и испаряется"
+  ],
+  "en": [
+   "Decay",
+   "A concrete monolith assembles from dust, cracks, collapses, melts and evaporates"
+  ],
+  "href": "https://smirnov-artur.github.io/raspad/",
+  "v": "raspad",
+  "hre": "https://smirnov-artur.github.io/raspad/en/",
+  "ve": "raspad-en"
+ },
+ {
   "slug": "city-scroll-story",
   "v": "city-scroll-story",
   "ru": [
@@ -395,6 +458,21 @@
   ],
   "cat": "web",
   "ve": "new-era-automotive-hero-en",
+  "rp": 1
+ },
+ {
+  "slug": "stellar-launch",
+  "v": "stellar-launch",
+  "ve": "stellar-launch-en",
+  "ru": [
+   "Премия для стартапов",
+   "Видео-заставка и карточки наград со скошенными углами, градиентные цифры статистики — всё внутри одной большой скруглённой карточки."
+  ],
+  "en": [
+   "Startup awards",
+   "A looping video hero and chamfered award cards, with gradient stat numbers, framed inside one big rounded card."
+  ],
+  "cat": "web",
   "rp": 1
  },
  {
@@ -456,6 +534,21 @@
   "cat": "web",
   "ve": "gta-vi-landing-en",
   "rp": 1
+ },
+ {
+  "slug": "maket-kabinet",
+  "cat": "ai",
+  "ru": [
+   "Чат и кабинет ИИ-продавца",
+   "Как владелец видит работу ИИ: чат в Telegram и кабинет с отчётом"
+  ],
+  "en": [
+   "AI seller chat and dashboard",
+   "How the owner sees the AI at work: a Telegram chat and a dashboard"
+  ],
+  "v": "maket-kabinet",
+  "rp": 1,
+  "ve": "maket-kabinet-en"
  },
  {
   "slug": "targo-logistics-hero",
@@ -578,22 +671,6 @@
   "rp": 1
  },
  {
-  "slug": "slowlight",
-  "cat": "3d",
-  "ru": [
-   "Slowlight — биография фотона",
-   "Интерактивное эссе, нарисованное одним шейдером"
-  ],
-  "en": [
-   "Slowlight — a photon's biography",
-   "An interactive essay drawn by a single shader"
-  ],
-  "href": "https://smirnov-artur.github.io/slowlight/ru/",
-  "v": "slowlight",
-  "ve": "slowlight-en",
-  "hre": "https://smirnov-artur.github.io/slowlight/"
- },
- {
   "slug": "viktor-portfolio",
   "v": "viktor-portfolio",
   "ru": [
@@ -699,6 +776,21 @@
   "rp": 1
  },
  {
+  "slug": "pergola-shadow",
+  "cat": "tools",
+  "ru": [
+   "Тень перголы по солнцу",
+   "Когда стол выйдет из тени: расчёт по положению солнца"
+  ],
+  "en": [
+   "Pergola shade by the sun",
+   "When the table leaves the shade, computed from the sun's position"
+  ],
+  "v": "pergola-shadow",
+  "rp": 1,
+  "ve": "pergola-shadow-en"
+ },
+ {
   "slug": "bold-studio",
   "v": "bold-studio",
   "ve": "bold-studio-en",
@@ -774,6 +866,22 @@
   "rp": 1
  },
  {
+  "slug": "ventprom-packer",
+  "cat": "tools",
+  "ru": [
+   "Укладка воздуховодов в транспорт",
+   "Алгоритм раскладывает груз в 3D прямо в браузере"
+  ],
+  "en": [
+   "Duct loading planner",
+   "The packing algorithm lays out the load in 3D right in the browser"
+  ],
+  "href": "https://smirnov-artur.github.io/ventprom-packer/",
+  "v": "ventprom-packer",
+  "hre": "https://smirnov-artur.github.io/ventprom-packer/en/",
+  "ve": "ventprom-packer-en"
+ },
+ {
   "slug": "bubble-orb",
   "v": "bubble-orb",
   "ru": [
@@ -787,22 +895,6 @@
   "cat": "3d",
   "rp": 1,
   "ve": "bubble-orb-en"
- },
- {
-  "slug": "raspad",
-  "cat": "3d",
-  "ru": [
-   "Распад",
-   "Бетонный монолит собирается из пыли, трескается, рушится, плавится и испаряется"
-  ],
-  "en": [
-   "Decay",
-   "A concrete monolith assembles from dust, cracks, collapses, melts and evaporates"
-  ],
-  "href": "https://smirnov-artur.github.io/raspad/",
-  "v": "raspad",
-  "hre": "https://smirnov-artur.github.io/raspad/en/",
-  "ve": "raspad-en"
  },
  {
   "slug": "srez",
@@ -926,22 +1018,6 @@
   "v": "signal",
   "ve": "signal-en",
   "rp": 1
- },
- {
-  "slug": "lab",
-  "cat": "3d",
-  "ru": [
-   "Drift — частицы на видеокарте",
-   "Облако частиц течёт в поле потока, всё считается на GPU"
-  ],
-  "en": [
-   "Drift — GPU particles",
-   "A particle cloud flows through a flow field, all computed on the GPU"
-  ],
-  "href": "https://smirnov-artur.github.io/webgl/lab/ru/",
-  "v": "lab",
-  "ve": "lab-en",
-  "hre": "https://smirnov-artur.github.io/webgl/lab/"
  },
  {
   "slug": "roy",
@@ -3093,21 +3169,6 @@
   "rp": 1
  },
  {
-  "slug": "cinematic-landing-page",
-  "v": "cinematic-landing-page",
-  "ve": "cinematic-landing-page-en",
-  "ru": [
-   "Кинематографичный лендинг пекарни",
-   "Прокрутка сменяет одно видео другим через растущий круг, затем галерея проявляется из размытия, а внизу бежит лента логотипов партнёров."
-  ],
-  "en": [
-   "Cinematic bakery landing",
-   "Scrolling wipes one hero video into the next through a growing circle, then a photo gallery blurs into focus and partner logos scroll past."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
   "slug": "outbound-ai",
   "v": "outbound-ai",
   "ve": "outbound-ai-en",
@@ -3198,21 +3259,6 @@
   "rp": 1
  },
  {
-  "slug": "stellar-launch",
-  "v": "stellar-launch",
-  "ve": "stellar-launch-en",
-  "ru": [
-   "Премия для стартапов",
-   "Видео-заставка и карточки наград со скошенными углами, градиентные цифры статистики — всё внутри одной большой скруглённой карточки."
-  ],
-  "en": [
-   "Startup awards",
-   "A looping video hero and chamfered award cards, with gradient stat numbers, framed inside one big rounded card."
-  ],
-  "cat": "web",
-  "rp": 1
- },
- {
   "slug": "seller",
   "cat": "ai",
   "ru": [
@@ -3226,21 +3272,6 @@
   "v": "seller",
   "href": "https://gad-production.ru/",
   "vh": "seller-hq"
- },
- {
-  "slug": "maket-kabinet",
-  "cat": "ai",
-  "ru": [
-   "Чат и кабинет ИИ-продавца",
-   "Как владелец видит работу ИИ: чат в Telegram и кабинет с отчётом"
-  ],
-  "en": [
-   "AI seller chat and dashboard",
-   "How the owner sees the AI at work: a Telegram chat and a dashboard"
-  ],
-  "v": "maket-kabinet",
-  "rp": 1,
-  "ve": "maket-kabinet-en"
  },
  {
   "slug": "avito-otvetchik",
@@ -3383,22 +3414,6 @@
   "ve": "ventprom-tools-en"
  },
  {
-  "slug": "ventprom-packer",
-  "cat": "tools",
-  "ru": [
-   "Укладка воздуховодов в транспорт",
-   "Алгоритм раскладывает груз в 3D прямо в браузере"
-  ],
-  "en": [
-   "Duct loading planner",
-   "The packing algorithm lays out the load in 3D right in the browser"
-  ],
-  "href": "https://smirnov-artur.github.io/ventprom-packer/",
-  "v": "ventprom-packer",
-  "hre": "https://smirnov-artur.github.io/ventprom-packer/en/",
-  "ve": "ventprom-packer-en"
- },
- {
   "slug": "ventprom",
   "cat": "tools",
   "ru": [
@@ -3482,21 +3497,6 @@
   "v": "stick",
   "rp": 1,
   "ve": "stick-en"
- },
- {
-  "slug": "pergola-shadow",
-  "cat": "tools",
-  "ru": [
-   "Тень перголы по солнцу",
-   "Когда стол выйдет из тени: расчёт по положению солнца"
-  ],
-  "en": [
-   "Pergola shade by the sun",
-   "When the table leaves the shade, computed from the sun's position"
-  ],
-  "v": "pergola-shadow",
-  "rp": 1,
-  "ve": "pergola-shadow-en"
  },
  {
   "slug": "chip",
