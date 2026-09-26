@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>g.a.d. — премиальная карта Infinite</title>
+<meta name="description" content="Infinite от g.a.d.: премиальная металлическая карта. Плёнка проявляется при скролле, а курсор зажигает свет над туманными горами.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+  tailwind.config = { theme: { extend: { transitionDuration: { '400': '400ms' } } } };
+</script>
+<script src="https://unpkg.com/lucide@0.469.0"></script>
+<style>
+  .gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}
+
+  * { font-family: 'Geist', sans-serif; }
+  .font-helvetica-neue, .font-helvetica-neue * { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+
+  @keyframes fadeSlideUp { 0% { opacity: 0; transform: translateY(24px); } 100% { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+  .anim-stagger { opacity: 0; transform: translateY(24px); animation: fadeSlideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .anim-fade { opacity: 0; animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .text-shadow-soft { text-shadow: 0 2px 30px rgba(0,0,0,.55), 0 1px 3px rgba(0,0,0,.4); }
+  html { background: #0A0B11; }
+</style>
+</head>
+<body class="bg-[#0A0B11]">
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+const SCROLL_DISTANCE = 1800;
+const SPOTLIGHT_R = 260;
+
+const BG_IMAGE_1 = "../img/hero1.webp";
+const BG_IMAGE_2 = "../img/hero2.webp";
+const CARD_IMAGE_1 = "../img/47ffd9fae3c79a54bef0ff41737f6ad654c92213.png";
+const CARD_IMAGE_2 = "../img/400e1612d64f65aee1c05735530d6f7a86ae3b8d.png";
+const VIDEO_1 = "../video/card.mp4";
+
+const GadLogo = ({ height = 20, color = '#fff' }) => (
+  <span style={{ height, color, display: 'inline-flex', alignItems: 'center' }}>
+    <svg className="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d."><path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/><circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100"/><circle className="orb" cx="322" cy="8" r="5" fill="currentColor"/></svg>
+  </span>
+);
+
+const IconMenu = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+);
+const IconX = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+);
+
+// cursor-lit spotlight: masks a second image over the base image, revealed in a soft radius that eases toward the pointer
+function RevealLayer({ containerRef, image, z }) {
+  const canvasRef = useRef(null);
+  const imgRef = useRef(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let raw = { x: -9999, y: -9999 }, smooth = { x: -9999, y: -9999 };
+    const resize = () => {
+      const r = containerRef.current.getBoundingClientRect();
+      canvas.width = Math.max(1, r.width); canvas.height = Math.max(1, r.height);
+    };
+    resize();
+    window.addEventListener('resize', resize);
+    const onMove = e => {
+      const r = containerRef.current.getBoundingClientRect();
+      raw = { x: e.clientX - r.left, y: e.clientY - r.top };
+    };
+    window.addEventListener('mousemove', onMove);
+    let raf;
+    const draw = () => {
+      smooth.x += (raw.x - smooth.x) * 0.1;
+      smooth.y += (raw.y - smooth.y) * 0.1;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const g = ctx.createRadialGradient(smooth.x, smooth.y, 0, smooth.x, smooth.y, SPOTLIGHT_R);
+      g.addColorStop(0, 'rgba(255,255,255,1)');
+      g.addColorStop(0.4, 'rgba(255,255,255,1)');
+      g.addColorStop(0.6, 'rgba(255,255,255,0.75)');
+      g.addColorStop(0.75, 'rgba(255,255,255,0.4)');
+      g.addColorStop(0.88, 'rgba(255,255,255,0.12)');
+      g.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(smooth.x, smooth.y, SPOTLIGHT_R, 0, Math.PI * 2); ctx.fill();
+      if (imgRef.current) {
+        const url = canvas.toDataURL();
+        imgRef.current.style.maskImage = `url(${url})`;
+        imgRef.current.style.webkitMaskImage = `url(${url})`;
+      }
+      raf = requestAnimationFrame(draw);
+    };
+    raf = requestAnimationFrame(draw);
+    return () => { window.removeEventListener('resize', resize); window.removeEventListener('mousemove', onMove); cancelAnimationFrame(raf); };
+  }, []);
+  return (
+    <React.Fragment>
+      <canvas ref={canvasRef} style={{ display: 'none' }} />
+      <div ref={imgRef} className="absolute inset-0 bg-center bg-cover bg-no-repeat pointer-events-none"
+        style={{ backgroundImage: `url(${image})`, zIndex: z, WebkitMaskSize: 'cover', maskSize: 'cover', WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat' }} />
+    </React.Fragment>
+  );
+}
+
+// grid pattern gently drifts opposite the pointer, offset eased and capped at 16px
+function useGridParallax(containerRef) {
+  const patternRef = useRef(null);
+  useEffect(() => {
+    let raw = { x: 0, y: 0 }, smooth = { x: 0, y: 0 };
+    const onMove = e => {
+      const r = containerRef.current.getBoundingClientRect();
+      const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      raw = { x: ((e.clientX - cx) / (r.width / 2)) * 16, y: ((e.clientY - cy) / (r.height / 2)) * 16 };
+    };
+    window.addEventListener('mousemove', onMove);
+    let raf;
+    const tick = () => {
+      smooth.x += (raw.x - smooth.x) * 0.06;
+      smooth.y += (raw.y - smooth.y) * 0.06;
+      if (patternRef.current) patternRef.current.setAttribute('patternTransform', `translate(${smooth.x} ${smooth.y})`);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => { window.removeEventListener('mousemove', onMove); cancelAnimationFrame(raf); };
+  }, []);
+  return patternRef;
+}
+
+const NAV_ITEMS = ['Карта', 'Бонусы', 'Путешествия', 'Тарифы', 'Поддержка'];
+
+function Nav({ menuOpen, setMenuOpen }) {
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-5 sm:px-8 md:px-10 py-4 sm:py-5">
+      <a href="#top" className="flex items-center gap-2 text-white">
+        <GadLogo height={22} color="#fff" />
+      </a>
+      <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-md rounded-full px-1.5 py-1.5 items-center gap-0.5">
+        {NAV_ITEMS.map(item => (
+          <a key={item} href="#top"
+            className={item === 'Карта' ? "bg-white text-gray-900 text-sm font-medium px-4 py-1.5 rounded-full" : "text-white/70 text-sm font-medium px-4 py-1.5 rounded-full hover:text-white transition-colors"}>
+            {item}
+          </a>
+        ))}
+      </div>
+      <div className="flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-3">
+          <a href="#top" className="flex items-center gap-2 bg-white/10 backdrop-blur-md text-white/80 text-sm font-medium pl-1.5 pr-4 py-1.5 rounded-full hover:text-white hover:bg-white/15 transition-colors">
+            <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center"><i data-lucide="user" style={{ width: 14, height: 14, strokeWidth: 1.8 }}></i></span>
+            Аккаунт
+          </a>
+          <a href="#top" className="bg-white text-gray-900 text-sm font-medium px-5 py-2 rounded-full hover:bg-white/90 transition-colors">Оформить</a>
+        </div>
+        <button aria-label="Меню" onClick={() => setMenuOpen(v => !v)} className="md:hidden text-white p-2 relative w-8 h-8 flex items-center justify-center">
+          <IconMenu className={`absolute w-5 h-5 transition-all duration-300 ${menuOpen ? 'opacity-0 -rotate-90' : 'opacity-100 rotate-0'}`} />
+          <IconX className={`absolute w-5 h-5 transition-all duration-300 ${menuOpen ? 'opacity-100 rotate-0' : 'opacity-0 rotate-90'}`} />
+        </button>
+      </div>
+    </nav>
+  );
+}
+
+function MobileOverlay({ open, onClose }) {
+  return <div onClick={onClose} className={`fixed inset-0 z-[54] bg-black/60 backdrop-blur-sm md:hidden transition-opacity duration-300 ${open ? '' : 'opacity-0 pointer-events-none'}`} />;
+}
+
+function MobileMenu({ open, onClose }) {
+  return (
+    <div className={`fixed top-0 left-0 right-0 z-[55] bg-[#0A0B11]/98 backdrop-blur-xl pt-20 pb-8 px-6 border-b border-white/10 flex flex-col gap-0 md:hidden transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] origin-top ${open ? 'translate-y-0 opacity-100 scale-y-100' : '-translate-y-4 opacity-0 scale-y-95 pointer-events-none'}`}>
+      {NAV_ITEMS.map((item, i) => (
+        <a key={item} href="#top" onClick={onClose} style={{ transitionDelay: open ? `${80 + i * 40}ms` : '0ms' }}
+          className="text-white/80 text-[17px] font-medium py-4 border-b border-white/[0.06] text-left hover:text-white transition-all duration-300">
+          {item}
+        </a>
+      ))}
+      <div className="flex items-center gap-3 pt-5" style={{ transitionDelay: open ? '300ms' : '0ms' }}>
+        <a href="#top" className="flex-1 flex items-center justify-center gap-2 bg-white/10 text-white/80 text-sm font-medium px-4 py-2.5 rounded-full"><i data-lucide="user" style={{ width: 14, height: 14 }}></i>Аккаунт</a>
+        <a href="#top" className="flex-1 text-center bg-white text-gray-900 text-sm font-medium px-4 py-2.5 rounded-full">Оформить</a>
+      </div>
+    </div>
+  );
+}
+
+function HeroSection({ faded }) {
+  const sectionRef = useRef(null);
+  const patternRef = useGridParallax(sectionRef);
+  return (
+    <section id="top" ref={sectionRef} className="font-helvetica-neue relative w-full isolate" style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'clip', zIndex: 3 }}>
+      <div className="transition-opacity duration-500 h-full" style={{ opacity: faded ? 0 : 1 }}>
+        <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.08, zIndex: 0 }}>
+          <defs>
+            <pattern ref={patternRef} id="fs-grid" width="48" height="48" patternUnits="userSpaceOnUse">
+              <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#94a3b8" strokeWidth="0.5" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#fs-grid)" />
+        </svg>
+        <div className="absolute inset-0 bg-center bg-cover bg-no-repeat anim-fade" style={{ backgroundImage: `url(${BG_IMAGE_1})`, zIndex: 10, animationDelay: '0.1s' }} role="img" aria-label="Карта Infinite ночью, туман над тёмными горами" />
+        <RevealLayer containerRef={sectionRef} image={BG_IMAGE_2} z={30} />
+        <div className="absolute bottom-0 left-0 right-0 h-72 pointer-events-none bg-gradient-to-t from-[#0A0B11] via-[#0A0B11]/60 to-transparent" style={{ zIndex: 40 }} />
+        <div className="absolute bottom-0 left-0 right-0 px-6 sm:px-10 md:px-14 pb-12 sm:pb-16 md:pb-20" style={{ zIndex: 50 }}>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-end">
+            <div className="md:col-span-7 lg:col-span-8">
+              <div className="anim-stagger flex items-center gap-2 mb-5" style={{ animationDelay: '0.3s' }}>
+                <span className="w-2.5 h-2.5 rounded-full bg-white/80" />
+                <span className="text-sm sm:text-[15px] text-white/80 font-normal tracking-wide">Лучшая цифровая карта 2026</span>
+              </div>
+              <h1 className="anim-stagger text-shadow-soft text-balance text-[clamp(2.2rem,6.5vw,5rem)] font-light text-white leading-[0.95] tracking-[-0.03em] mb-8 sm:mb-10" style={{ animationDelay: '0.5s' }}>
+                Одна карта. Ноль границ. Весь мир.
+              </h1>
+              <div className="anim-stagger flex flex-nowrap items-center gap-3" style={{ animationDelay: '0.7s' }}>
+                <a href="#top" data-cta="features" className="bg-white text-gray-900 text-[13px] sm:text-sm font-medium px-5 sm:px-7 py-3 sm:py-3.5 rounded-full hover:bg-white/90 transition-all whitespace-nowrap">Возможности</a>
+                <a href="#top" data-cta="works" className="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 text-white/90 text-[13px] sm:text-sm font-medium px-5 sm:px-7 py-3 sm:py-3.5 rounded-full hover:bg-white/15 transition-all whitespace-nowrap">
+                  <i data-lucide="play" style={{ width: 13, height: 13 }} className="fill-white/90"></i>Как это работает
+                </a>
+              </div>
+            </div>
+            <div className="anim-stagger md:col-span-5 lg:col-span-4" style={{ animationDelay: '0.85s' }}>
+              <p className="text-[15px] sm:text-base text-white/75 leading-relaxed font-normal">Infinite — премиальная металлическая карта для тех, кто двигается быстро и тратит по всему миру. Платите где угодно, получайте бонусы мгновенно, забудьте о комиссиях за границей — и путешествуйте, уже получив вознаграждение.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function VideoLayer({ videoRef, visible }) {
+  return (
+    <div className="fixed inset-0 transition-opacity duration-500 pointer-events-none" style={{ zIndex: 2, opacity: visible ? 1 : 0 }}>
+      <video ref={videoRef} src={VIDEO_1} muted playsInline preload="auto" className="w-full h-full object-cover" />
+      <div className="absolute bottom-0 left-0 right-0 h-72 bg-gradient-to-t from-[#0A0B11] via-[#0A0B11]/60 to-transparent" />
+    </div>
+  );
+}
+
+function CardSection({ imagesVisible }) {
+  const sectionRef = useRef(null);
+  return (
+    <section ref={sectionRef} className="fixed inset-0 isolate" style={{ zIndex: 4, width: '100%', height: '100%', opacity: imagesVisible ? 1 : 0, pointerEvents: imagesVisible ? 'auto' : 'none', transition: 'opacity 1000ms ease-out' }}>
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden" style={{ zIndex: 0 }}>
+        <span className="font-medium tracking-[-0.05em] text-white/[0.04] whitespace-nowrap uppercase" style={{ fontSize: '30vw' }}>g.a.d.</span>
+      </div>
+      <div className="absolute inset-0 bg-center bg-cover bg-no-repeat" style={{ backgroundImage: `url(${CARD_IMAGE_1})`, zIndex: 1 }} role="img" aria-label="Металлическая карта Infinite крупным планом" />
+      <RevealLayer containerRef={sectionRef} image={CARD_IMAGE_2} z={3} />
+      <div className="relative pt-16 sm:pt-28 md:pt-32 pl-5 pr-28 sm:px-10 md:px-14" style={{ zIndex: 5 }}>
+        <h2 className="text-shadow-soft text-balance text-[clamp(2rem,7vw,5.5rem)] font-light text-white leading-[0.95] tracking-[-0.03em]">Активна мгновенно</h2>
+      </div>
+      <div className="absolute top-16 sm:top-28 md:top-32 right-5 sm:right-10 md:right-14" style={{ zIndex: 10 }}>
+        <a href="#top" data-cta="more" className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/15 text-white/80 text-sm font-medium px-4 sm:px-5 py-2 sm:py-2.5 rounded-full hover:bg-white/15 transition-all">
+          <i data-lucide="plus" style={{ width: 15, height: 15 }}></i>Ещё
+        </a>
+      </div>
+      <div className="absolute bottom-44 sm:bottom-40 md:bottom-44 right-5 sm:right-10 md:right-14 text-right" style={{ zIndex: 5 }}>
+        <h2 className="text-shadow-soft text-balance text-[clamp(2rem,7vw,5.5rem)] font-light text-white leading-[0.95] tracking-[-0.03em]">Ещё до оплаты</h2>
+      </div>
+      <div className="absolute bottom-6 sm:bottom-14 md:bottom-16 left-5 sm:left-10 md:left-14 right-5 sm:right-auto" style={{ zIndex: 5 }}>
+        <div className="max-w-md">
+          <p className="text-sm sm:text-[15px] md:text-base text-white/65 leading-relaxed mb-5 sm:mb-6">Одобрение за секунды, виртуальная карта появляется мгновенно, а кэшбэк, бонусы для путешествий и аналитика трат уже включены.</p>
+          <a href="#top" data-cta="apply" className="inline-block bg-white text-gray-900 text-sm font-medium px-5 sm:px-6 py-2.5 sm:py-3 rounded-full hover:bg-white/90 transition-all">Оформить бесплатно</a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [videoPhase, setVideoPhase] = useState('idle');
+  const phaseRef = useRef('idle');
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    let raf;
+    const tick = () => {
+      const progress = Math.min(window.scrollY / SCROLL_DISTANCE, 1);
+      const video = videoRef.current;
+      if (video && !video.seeking && video.duration) video.currentTime = progress * video.duration;
+      const phase = window.scrollY === 0 ? 'idle' : progress >= 0.99 ? 'done' : 'playing';
+      if (phase !== phaseRef.current) { phaseRef.current = phase; setVideoPhase(phase); }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  useEffect(() => { lucide.createIcons(); }, [menuOpen]);
+
+  const faded = videoPhase !== 'idle';
+  const imagesVisible = videoPhase === 'done';
+
+  return (
+    <div className="min-h-screen bg-[#0A0B11]">
+      <VideoLayer videoRef={videoRef} visible={faded} />
+      <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileOverlay open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <HeroSection faded={faded} />
+      <div style={{ height: SCROLL_DISTANCE, position: 'relative', zIndex: 0 }} />
+      <CardSection imagesVisible={imagesVisible} />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

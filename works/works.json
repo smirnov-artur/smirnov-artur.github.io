@@ -791,6 +791,21 @@
   "rp": 1
  },
  {
+  "slug": "financial-suite",
+  "v": "financial-suite",
+  "ve": "financial-suite-en",
+  "ru": [
+   "Премиальная карта",
+   "Курсор зажигает свет над туманными горами; скролл прокручивает видео и открывает карту заново, крупным планом."
+  ],
+  "en": [
+   "Premium credit card",
+   "A cursor-lit spotlight glows over foggy mountains; scrolling scrubs a video into the card's second, close-up reveal."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
