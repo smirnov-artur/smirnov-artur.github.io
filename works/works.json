@@ -44,7 +44,9 @@
    "Doves fly through golden clouds that flow into a gallery interview on a maroon parallax background."
   ],
   "cat": "web",
-  "rp": 1
+  "rp": 1,
+  "vh": "golden-portal-hq",
+  "vhe": "golden-portal-hq-en"
  },
  {
   "slug": "fox-404",
@@ -139,7 +141,9 @@
    "A cinematic video is scrubbed frame by frame on a canvas as you scroll, while two stat-heavy sections fade their headlines and numbers up into view."
   ],
   "cat": "web",
-  "rp": 1
+  "rp": 1,
+  "vh": "apex-pulse-hq",
+  "vhe": "apex-pulse-hq-en"
  },
  {
   "slug": "dreams",
@@ -199,7 +203,9 @@
   ],
   "cat": "web",
   "ve": "xportfolio-hero-en",
-  "rp": 1
+  "rp": 1,
+  "vh": "xportfolio-hero-hq",
+  "vhe": "xportfolio-hero-hq-en"
  },
  {
   "slug": "sky-estate",
@@ -1180,7 +1186,9 @@
   ],
   "v": "hot-ice",
   "rp": 1,
-  "ve": "hot-ice-en"
+  "ve": "hot-ice-en",
+  "vh": "hot-ice-hq",
+  "vhe": "hot-ice-hq-en"
  },
  {
   "slug": "eco-intelligence",
@@ -2073,7 +2081,9 @@
   "href": "https://smirnov-artur.github.io/webgl/orb/ru/",
   "v": "orb",
   "ve": "orb-en",
-  "hre": "https://smirnov-artur.github.io/webgl/orb/"
+  "hre": "https://smirnov-artur.github.io/webgl/orb/",
+  "vh": "orb-hq",
+  "vhe": "orb-hq-en"
  },
  {
   "slug": "kanara",
