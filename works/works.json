@@ -1021,8 +1021,9 @@
    "Interior furniture",
    "A site for a furniture maker for homes, cafés and offices"
   ],
-  "href": "/demo/kanara/",
-  "v": "pf-kanara"
+  "v": "kanara",
+  "rp": 1,
+  "ve": "kanara-en"
  },
  {
   "slug": "ferro",
@@ -3228,8 +3229,9 @@
    "AI seller chat and dashboard",
    "How the owner sees the AI at work: a Telegram chat and a dashboard"
   ],
-  "href": "/demo/maket-kabinet/",
-  "v": "pf-maket-kabinet"
+  "v": "maket-kabinet",
+  "rp": 1,
+  "ve": "maket-kabinet-en"
  },
  {
   "slug": "avito-otvetchik",
@@ -3242,8 +3244,9 @@
    "Avito chat responder",
    "Product page: answers from the owner's stock and prices"
   ],
-  "href": "/demo/avito-otvetchik/",
-  "v": "pf-avito-otvetchik"
+  "v": "avito-otvetchik",
+  "rp": 1,
+  "ve": "avito-otvetchik-en"
  },
  {
   "slug": "ai-ekspeditor",
@@ -3438,7 +3441,7 @@
   }
  },
  {
-  "slug": "shelf-config",
+  "slug": "proba-ohra",
   "cat": "tools",
   "ru": [
    "Конфигуратор стеллажа по размерам",
@@ -3448,8 +3451,9 @@
    "Shelving configurator by size",
    "Width, height, depth and shelves in — area, steel mass and load"
   ],
-  "href": "/demo/proba-ohra/",
-  "v": "pf-proba-ohra"
+  "v": "proba-ohra",
+  "rp": 1,
+  "ve": "proba-ohra-en"
  },
  {
   "slug": "stick",
@@ -3462,8 +3466,9 @@
    "Parametric configurator",
    "One geometry, any finish: colour, material, engraving and price"
   ],
-  "href": "/demo/stick/",
-  "v": "pf-stick"
+  "v": "stick",
+  "rp": 1,
+  "ve": "stick-en"
  },
  {
   "slug": "pergola-shadow",
@@ -3476,8 +3481,9 @@
    "Pergola shade by the sun",
    "When the table leaves the shade, computed from the sun's position"
   ],
-  "href": "/demo/pergola-shadow/",
-  "v": "pf-pergola-shadow"
+  "v": "pergola-shadow",
+  "rp": 1,
+  "ve": "pergola-shadow-en"
  },
  {
   "slug": "chip",
@@ -3490,8 +3496,9 @@
    "Turning, in numbers",
    "Cutting parameters in — chip thickness, temperature and its colour"
   ],
-  "href": "/demo/chip/",
-  "v": "pf-chip"
+  "v": "chip",
+  "rp": 1,
+  "ve": "chip-en"
  },
  {
   "slug": "solana-tape",

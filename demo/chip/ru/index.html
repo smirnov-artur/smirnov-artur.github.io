@@ -1,18 +1,18 @@
 <!doctype html>
 <!-- vau-stranitsa · силуэт: многосекционная · предмет: стальная заготовка под резцом и стружка · система: расчёт режима резания, стойкости резца и цены детали · техника: three.js PBR+HDRI, тонкоплёночная интерференция в onBeforeCompile, перестраиваемая лента стружки -->
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="utf-8">
 <script src="/works/js/gad-loader.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Chip — the lathe that counts</title>
-<meta name="description" content="Turning close-up that computes chip geometry, cutting-zone temperature, temper colour, tool life and the cost of the part.">
+<title>Chip — токарный станок, который считает</title>
+<meta name="description" content="Крупный план токарной обработки: расчёт геометрии стружки, температуры в зоне резания, цвета побежалости, стойкости резца и стоимости детали.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%2307080a'/%3E%3Cpath d='M3 11h10' stroke='%23ff7a33' stroke-width='2'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="modulepreload" href="assets/three-scene.js">
-<link rel="preload" href="assets/empty_warehouse_01_256.hdr" as="fetch" crossorigin>
+<link rel="modulepreload" href="/demo/chip/assets/three-scene.js">
+<link rel="preload" href="/demo/chip/assets/empty_warehouse_01_256.hdr" as="fetch" crossorigin>
 <style>
 :root{
   --void:#07080a; --ink:#0f1114; --steel:#79808c; --chalk:#e8e5df;
@@ -286,76 +286,90 @@ footer a:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
   *{transition-duration:.001s}
 }
 </style>
+<style id="cyr">/* русские буквы: исходный шрифт без кириллицы, глифы — у близкого с кириллицей */
+@font-face{font-family:'Archivo';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:600;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:600;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Spline Sans Mono';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbV2o-flEEny0FZhsfKu5WU4xD2OwG_TA.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Spline Sans Mono';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbV2o-flEEny0FZhsfKu5WU4xD_OwG_TA.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Spline Sans Mono';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbV2o-flEEny0FZhsfKu5WU4xD2OwG_TA.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Spline Sans Mono';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbV2o-flEEny0FZhsfKu5WU4xD_OwG_TA.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+</style>
 </head>
 <body>
 <div id="stage"><canvas id="glass"></canvas></div>
 <div class="grade"></div>
 <div class="veil"></div>
 <div class="noscene">
-  <svg width="300" height="180" viewBox="0 0 300 180" aria-label="Cross-section of the cutting zone">
+  <svg width="300" height="180" viewBox="0 0 300 180" aria-label="Разрез зоны резания">
     <path d="M10 132 H290" stroke="rgba(232,229,223,.2)"/>
     <path d="M10 40 H210 A18 18 0 0 1 210 76 H10 Z" fill="rgba(121,128,140,.28)" stroke="rgba(232,229,223,.3)"/>
     <path d="M214 78 L262 128 L286 108 L236 62 Z" fill="rgba(216,163,58,.35)" stroke="rgba(216,163,58,.8)"/>
     <path d="M212 70 C246 46 236 18 202 22 C170 26 172 58 196 62" fill="none" stroke="var(--ember)" stroke-width="6"/>
-    <text x="10" y="160" fill="rgba(232,229,223,.5)" font-size="11">No WebGL2 here — the numbers below still compute.</text>
+    <text x="10" y="160" fill="rgba(232,229,223,.5)" font-size="11">Здесь нет WebGL2 — но числа ниже всё равно считаются.</text>
   </svg>
 </div>
 
 <header>
   <div class="brand">Chip<em>.</em></div>
-  <a class="gad-mark" href="https://smirnov-artur.github.io/works/en" aria-label="g.a.d. portfolio" title="Built by g.a.d."><svg class="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d."><path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/><circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/><circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/></svg></a>
+  <a class="gad-mark" href="https://smirnov-artur.github.io/works/" aria-label="портфолио g.a.d." title="Сделано в g.a.d."><svg class="gad-logo" viewBox="0 0 355 110" role="img" aria-label="g.a.d."><path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/><circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/><circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/></svg></a>
   <div class="hgap"></div>
   <div class="live"><span class="dot"></span><span class="mono" id="clock">--:--:--</span></div>
-  <a class="hlink" href="#regimes">Regimes</a>
-  <a class="hlink" href="#math">Maths</a>
-  <a class="hlink" href="#money">Money</a>
-  <a class="hlink" href="#brief">Brief</a>
+  <a class="hlink" href="#regimes">Режимы</a>
+  <a class="hlink" href="#math">Формулы</a>
+  <a class="hlink" href="#money">Деньги</a>
+  <a class="hlink" href="#brief">Бриф</a>
 </header>
 
 <main>
 <section class="hero" style="border-top:0;background:transparent">
   <div>
-    <div class="eyebrow">Turning · C45 steel · coated carbide</div>
-    <h1><span class="ln">A lathe that</span><span class="ln">counts, not</span><span class="ln">one that spins.</span></h1>
-    <p class="lede">Chip thickness, curl radius, cutting-zone temperature and the colour that
-      temperature paints on the chip are computed from three numbers — not drawn by hand.</p>
-    <p class="hnote">Scene time is stylised: spindle ÷45, chip ÷120, carriage ×260. The numbers are not.</p>
+    <div class="eyebrow">Точение · сталь 45 · твёрдосплавная пластина с покрытием</div>
+    <h1><span class="ln">Станок, который</span><span class="ln">считает, а не</span><span class="ln">просто крутится.</span></h1>
+    <p class="lede">Толщина стружки, радиус завивки, температура в зоне резания и цвет, который эта
+      температура даёт на стружке, — всё это вычисляется из трёх чисел, а не нарисовано вручную.</p>
+    <p class="hnote">Время сцены стилизовано: шпиндель ÷45, стружка ÷120, каретка ×260. А числа — нет.</p>
   </div>
 
   <div class="deck">
     <div class="panel">
       <div class="sweep"></div>
-      <div class="ptitle">Cutting data</div>
+      <div class="ptitle">Данные резания</div>
       <div class="rows">
         <div class="row">
-          <label for="sv">Cutting speed <b>v</b></label>
-          <span class="val mono"><span id="sv-o">210</span><i>m/min</i></span>
-          <input id="sv" type="range" min="30" max="320" step="5" value="210" aria-label="Cutting speed v, metres per minute">
+          <label for="sv">Скорость резания <b>v</b></label>
+          <span class="val mono"><span id="sv-o">210</span><i>м/мин</i></span>
+          <input id="sv" type="range" min="30" max="320" step="5" value="210" aria-label="Скорость резания v, метров в минуту">
         </div>
         <div class="row">
-          <label for="ss">Feed <b>s</b></label>
-          <span class="val mono"><span id="ss-o">0.18</span><i>mm/rev</i></span>
-          <input id="ss" type="range" min="0.05" max="0.6" step="0.01" value="0.18" aria-label="Feed s, millimetres per revolution">
+          <label for="ss">Подача <b>s</b></label>
+          <span class="val mono"><span id="ss-o">0.18</span><i>мм/об</i></span>
+          <input id="ss" type="range" min="0.05" max="0.6" step="0.01" value="0.18" aria-label="Подача s, миллиметров за оборот">
         </div>
         <div class="row">
-          <label for="st">Depth of cut <b>t</b></label>
-          <span class="val mono"><span id="st-o">2.5</span><i>mm</i></span>
-          <input id="st" type="range" min="0.3" max="4" step="0.1" value="2.5" aria-label="Depth of cut t, millimetres">
+          <label for="st">Глубина резания <b>t</b></label>
+          <span class="val mono"><span id="st-o">2.5</span><i>мм</i></span>
+          <input id="st" type="range" min="0.3" max="4" step="0.1" value="2.5" aria-label="Глубина резания t, миллиметров">
         </div>
       </div>
     </div>
 
     <div>
       <div class="read">
-        <div class="cell"><k>Chip a2</k><v id="o-a2">0.32<s>mm</s></v></div>
-        <div class="cell"><k>Curl R</k><v id="o-r">1.7<s>mm</s></v></div>
-        <div class="cell"><k>Zone θ</k><v id="o-th">682<s>°C</s></v></div>
-        <div class="cell"><k>Force Fc</k><v id="o-fc">1180<s>N</s></v></div>
-        <div class="cell"><k>Power</k><v id="o-pc">3.3<s>kW</s></v></div>
-        <div class="cell"><k>Tool life</k><v id="o-tl">28<s>min</s></v></div>
+        <div class="cell"><k>Стружка a2</k><v id="o-a2">0.32<s>мм</s></v></div>
+        <div class="cell"><k>Радиус R</k><v id="o-r">1.7<s>мм</s></v></div>
+        <div class="cell"><k>Зона θ</k><v id="o-th">682<s>°C</s></v></div>
+        <div class="cell"><k>Сила Fc</k><v id="o-fc">1180<s>Н</s></v></div>
+        <div class="cell"><k>Мощность</k><v id="o-pc">3.3<s>кВт</s></v></div>
+        <div class="cell"><k>Стойкость</k><v id="o-tl">28<s>мин</s></v></div>
       </div>
-      <div class="verdict"><span class="chip-b" id="o-badge">Window</span><span class="vtext" id="o-verdict">Chips break into short curls, straw-coloured.</span></div>
-      <div class="hint"><span class="tick"></span><span>Drag a slider · scroll for the maths</span></div>
+      <div class="verdict"><span class="chip-b" id="o-badge">Норма</span><span class="vtext" id="o-verdict">Стружка ломается на короткие завитки, цвет — солома.</span></div>
+      <div class="hint"><span class="tick"></span><span>Потяните ползунок · прокрутите к формулам</span></div>
     </div>
   </div>
 </section>
@@ -363,28 +377,28 @@ footer a:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
 <section class="veiled" id="regimes">
   <div class="shead">
     <span class="snum mono">01</span>
-    <div><h2>Three regimes you can see without reading a label.</h2>
-    <p class="sdesc">Every operator knows them by the swarf on the floor. Press one — the sliders move,
-      the scene follows, the numbers follow.</p></div>
+    <div><h2>Три режима, которые видно без подписи.</h2>
+    <p class="sdesc">Любой оператор узнаёт их по стружке на полу цеха. Нажмите один — ползунки сдвинутся,
+      сцена последует, числа тоже.</p></div>
   </div>
   <div class="grid3">
     <button class="mode rv" type="button" data-v="210" data-s="0.18" data-t="2.5" aria-pressed="true">
-      <span class="tag">Window</span><h3>Short curls, straw</h3>
-      <p>The chip curls, hits the workpiece, snaps every few turns. Colour stops at straw — the edge
-        is warm, not burning.</p>
-      <span class="setline">Set v 210 · s 0.18 · t 2.5 <u></u></span>
+      <span class="tag">Норма</span><h3>Короткие завитки, соломенный цвет</h3>
+      <p>Стружка завивается, задевает деталь, ломается через несколько витков. Цвет останавливается
+        на соломенном — кромка тёплая, а не горит.</p>
+      <span class="setline">Задать v 210 · s 0.18 · t 2.5 <u></u></span>
     </button>
     <button class="mode rv" type="button" data-v="300" data-s="0.2" data-t="1.5" aria-pressed="false">
-      <span class="tag">Burning</span><h3>Blue ribbon, no break</h3>
-      <p>Above roughly 250 m/min the chip goes ductile and stops breaking. Blue means the oxide film
-        crossed 70 nm. The edge is gone in minutes.</p>
-      <span class="setline">Set v 300 · s 0.20 · t 1.5 <u></u></span>
+      <span class="tag">Перегрев</span><h3>Синяя лента, не ломается</h3>
+      <p>Выше примерно 250 м/мин стружка становится пластичной и перестаёт ломаться. Синий цвет
+        значит, что оксидная плёнка перешла отметку 70 нм. Кромка исчезает за считанные минуты.</p>
+      <span class="setline">Задать v 300 · s 0.20 · t 1.5 <u></u></span>
     </button>
     <button class="mode rv" type="button" data-v="90" data-s="0.52" data-t="3.5" aria-pressed="false">
-      <span class="tag">Overloaded</span><h3>Thick chunks, chatter</h3>
-      <p>Feed past 0.45 mm/rev and the chip is too stiff to bend: it fractures at once, the force
-        passes 3.5 kN and the carriage starts to sing.</p>
-      <span class="setline">Set v 90 · s 0.52 · t 3.5 <u></u></span>
+      <span class="tag">Перегружено</span><h3>Толстые куски, вибрация</h3>
+      <p>После подачи 0.45 мм/об стружка слишком жёсткая, чтобы изгибаться: она сразу же ломается,
+        сила переваливает за 3.5 кН, и каретка начинает «петь».</p>
+      <span class="setline">Задать v 90 · s 0.52 · t 3.5 <u></u></span>
     </button>
   </div>
 </section>
@@ -392,78 +406,78 @@ footer a:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
 <section id="math">
   <div class="shead">
     <span class="snum mono">02</span>
-    <div><h2>What is actually being solved, in order.</h2>
-    <p class="sdesc">Four steps. Each one feeds the next, and each one is on screen with your numbers
-      substituted — no static illustration anywhere on this page.</p></div>
+    <div><h2>Что на самом деле считается, по шагам.</h2>
+    <p class="sdesc">Четыре шага. Каждый питает следующий, и каждый — на экране с вашими числами
+      вместо переменных: на этой странице нет ни одной статичной иллюстрации.</p></div>
   </div>
   <div class="forms">
     <div class="card rv">
-      <k>Step 1 · geometry</k><h3>Chip thickness and curl</h3>
+      <k>Шаг 1 · геометрия</k><h3>Толщина стружки и завивка</h3>
       <div class="eq" id="eq1">a1 = s·sin κ<br>φ = 45° − (β − γ)/2<br>ξ = cos(φ − γ)/sin φ<br>a2 = a1·ξ</div>
-      <p class="sub" id="sub1">Merchant's shear-angle solution with γ = 8°, κ = 95°.</p>
+      <p class="sub" id="sub1">Решение Мерчанта для угла сдвига, γ = 8°, κ = 95°.</p>
     </div>
     <div class="card rv">
-      <k>Step 2 · heat</k><h3>Temperature in the zone</h3>
+      <k>Шаг 2 · тепло</k><h3>Температура в зоне</h3>
       <div class="eq" id="eq2">θ = 110·v⁰·⁴·s⁰·²·t⁰·¹⁰⁵</div>
-      <p class="sub" id="sub2">Empirical power law for carbide on medium-carbon steel.</p>
+      <p class="sub" id="sub2">Эмпирический степенной закон для твёрдого сплава по среднеуглеродистой стали.</p>
     </div>
     <div class="card rv">
-      <k>Step 3 · colour</k><h3>Why the chip turns blue</h3>
+      <k>Шаг 3 · цвет</k><h3>Почему стружка синеет</h3>
       <div class="eq" id="eq3">d = 1408·e^(−3393/T)<br>δ = 2·n·d·cos θr<br>I(λ) = |r1 + r2·e^(iδ)|²</div>
-      <p class="sub" id="sub3">Oxide film thickness from temperature, then two-beam interference
-        evaluated separately at 630 / 532 / 465 nm — in the shader, per pixel, against the real view angle.</p>
+      <p class="sub" id="sub3">Толщина оксидной плёнки по температуре, затем двухлучевая интерференция
+        считается отдельно на 630 / 532 / 465 нм — в шейдере, попиксельно, с учётом реального угла обзора.</p>
       <div class="swatch" id="swatch"></div>
     </div>
     <div class="card rv">
-      <k>Step 4 · load</k><h3>Force, power, tool life</h3>
+      <k>Шаг 4 · нагрузка</k><h3>Сила, мощность, стойкость</h3>
       <div class="eq" id="eq4">Fc = kc1.1·a1^(1−mc)·b<br>Pc = Fc·v/60000<br>T = (C/(v·s^0.35·t^0.15))^4</div>
-      <p class="sub" id="sub4">Kienzle with kc1.1 = 1700 N/mm², mc = 0.25; Taylor with C = 270, n = 0.25.</p>
+      <p class="sub" id="sub4">Кинцле при kc1.1 = 1700 Н/мм², mc = 0.25; Тейлор при C = 270, n = 0.25.</p>
     </div>
   </div>
-  <p class="sub rv" style="max-width:66ch;margin-top:18px">The break rule is the one honest fudge here:
-    a chip snaps when the bending strain ε = a2/4R passes the fracture strain εf, and εf rises with
-    temperature because hot steel is ductile. Break length is fitted, not derived —
-    <span class="mono">L = 2πR/CB⁶</span>, capped at 4…380 mm.</p>
+  <p class="sub rv" style="max-width:66ch;margin-top:18px">Правило разлома — единственное честное
+    допущение здесь: стружка ломается, когда изгибная деформация ε = a2/4R превышает предельную
+    деформацию εf, а εf растёт с температурой, потому что горячая сталь пластична. Длина разлома
+    подобрана, а не выведена — <span class="mono">L = 2πR/CB⁶</span>, с ограничением 4…380 мм.</p>
 </section>
 
 <section id="money">
   <div class="shead">
     <span class="snum mono">03</span>
-    <div><h2>The same three numbers decide what the part costs.</h2>
-    <p class="sdesc">A shaft turned from Ø60 to Ø48 over 240 mm. Passes, minutes, edges burned,
-      dollars — recomputed on every slider move, and on every field below.</p></div>
+    <div><h2>Те же три числа решают, сколько стоит деталь.</h2>
+    <p class="sdesc">Вал, обточенный с Ø60 до Ø48 на длине 240 мм. Проходы, минуты, сожжённые кромки,
+      доллары — пересчитывается при каждом движении ползунка и при изменении любого поля ниже.</p></div>
   </div>
   <div class="econ">
     <div>
       <div class="fields">
-        <label class="f"><k>Blank Ø, mm</k><input id="p-d0" type="number" value="60" min="10" max="400" step="1"></label>
-        <label class="f"><k>Target Ø, mm</k><input id="p-d1" type="number" value="48" min="5" max="399" step="1"></label>
-        <label class="f"><k>Length, mm</k><input id="p-l" type="number" value="240" min="10" max="2000" step="5"></label>
-        <label class="f"><k>Batch, pcs</k><input id="p-n" type="number" value="200" min="1" max="100000" step="1"></label>
-        <label class="f"><k>Shop rate, $/h</k><input id="p-rate" type="number" value="58" min="5" max="500" step="1"></label>
-        <label class="f"><k>Edge cost, $</k><input id="p-edge" type="number" value="4.35" min="0.2" max="99" step="0.05"></label>
+        <label class="f"><k>Заготовка Ø, мм</k><input id="p-d0" type="number" value="60" min="10" max="400" step="1"></label>
+        <label class="f"><k>Финиш Ø, мм</k><input id="p-d1" type="number" value="48" min="5" max="399" step="1"></label>
+        <label class="f"><k>Длина, мм</k><input id="p-l" type="number" value="240" min="10" max="2000" step="5"></label>
+        <label class="f"><k>Партия, шт</k><input id="p-n" type="number" value="200" min="1" max="100000" step="1"></label>
+        <label class="f"><k>Ставка цеха, $/ч</k><input id="p-rate" type="number" value="58" min="5" max="500" step="1"></label>
+        <label class="f"><k>Стоимость кромки, $</k><input id="p-edge" type="number" value="4.35" min="0.2" max="99" step="0.05"></label>
       </div>
       <p class="err" id="p-err"></p>
       <div class="money">
-        <div><k>Per part</k><v id="m-part">$5.59</v></div>
-        <div><k>Batch total</k><v id="m-batch">$1 118</v></div>
-        <div><k>Cutting time</k><v id="m-tm">4.1 min</v></div>
-        <div><k>Edges per 100 pcs</k><v id="m-ed">3.6</v></div>
+        <div><k>За деталь</k><v id="m-part">$5.59</v></div>
+        <div><k>Партия целиком</k><v id="m-batch">$1 118</v></div>
+        <div><k>Время резания</k><v id="m-tm">4.1 мин</v></div>
+        <div><k>Кромок на 100 шт</k><v id="m-ed">3.6</v></div>
       </div>
       <div class="btns">
-        <button class="btn" type="button" id="b-opt">Jump to cheapest speed</button>
-        <button class="btn" type="button" id="b-link">Copy link with this setup</button>
+        <button class="btn" type="button" id="b-opt">Перейти на самую дешёвую скорость</button>
+        <button class="btn" type="button" id="b-link">Скопировать ссылку с этой настройкой</button>
       </div>
     </div>
     <div>
       <table>
-        <thead><tr><th>Pass</th><th>Ø before</th><th>Ø after</th><th>n, rpm</th><th>min</th></tr></thead>
+        <thead><tr><th>Проход</th><th>Ø до</th><th>Ø после</th><th>n, об/мин</th><th>мин</th></tr></thead>
         <tbody id="passes"></tbody>
-        <tfoot><tr><td>Total</td><td></td><td></td><td id="f-n"></td><td id="f-t"></td></tr></tfoot>
+        <tfoot><tr><td>Итого</td><td></td><td></td><td id="f-n"></td><td id="f-t"></td></tr></tfoot>
       </table>
-      <svg class="chart" id="chart" viewBox="0 0 320 132" role="img" aria-label="Cost per part against cutting speed"></svg>
-      <p class="sub">Cost per part against v, at your feed and depth. Left of the dip you pay for
-        machine hours; right of it you pay for edges.</p>
+      <svg class="chart" id="chart" viewBox="0 0 320 132" role="img" aria-label="Стоимость детали в зависимости от скорости резания"></svg>
+      <p class="sub">Стоимость детали в зависимости от v, при вашей подаче и глубине. Слева от впадины
+        вы платите за станочное время, справа — за кромки.</p>
     </div>
   </div>
 </section>
@@ -471,23 +485,23 @@ footer a:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
 <section id="brief">
   <div class="shead">
     <span class="snum mono">04</span>
-    <div><h2>Take the setup with you, or hand it over.</h2>
-    <p class="sdesc">The spec on the right is generated from the state above. Send it and I'll reply
-      with what it would take to put a calculator like this on your own part catalogue.</p></div>
+    <div><h2>Возьмите настройку с собой — или передайте её.</h2>
+    <p class="sdesc">Спецификация справа собирается из состояния выше. Отправьте её, и я отвечу, что
+      нужно, чтобы поставить такой калькулятор на ваш собственный каталог деталей.</p></div>
   </div>
   <div class="ask">
     <form id="form" novalidate>
       <div class="fields" style="grid-template-columns:minmax(0,1fr)">
-        <label class="f"><k>Name</k><input id="q-name" type="text" autocomplete="name" placeholder="Your name"></label>
+        <label class="f"><k>Имя</k><input id="q-name" type="text" autocomplete="name" placeholder="Ваше имя"></label>
         <label class="f"><k>Email</k><input id="q-mail" type="email" autocomplete="email" placeholder="you@company.com"></label>
-        <label class="f"><k>What are you making</k><textarea id="q-msg" placeholder="Part family, volumes, what the calculator has to answer."></textarea></label>
+        <label class="f"><k>Что вы производите</k><textarea id="q-msg" placeholder="Семейство деталей, объёмы, на что должен отвечать калькулятор."></textarea></label>
       </div>
       <p class="err" id="q-err"></p>
       <div class="btns">
-        <button class="btn solid" type="submit">Send the brief</button>
-        <button class="btn" type="button" id="b-copy">Copy spec</button>
+        <button class="btn solid" type="submit">Отправить бриф</button>
+        <button class="btn" type="button" id="b-copy">Скопировать спецификацию</button>
       </div>
-      <p class="sent" id="q-ok" hidden>Opening your mail client with the spec attached in the body. If nothing opens, the spec is already copied.</p>
+      <p class="sent" id="q-ok" hidden>Открывается почтовый клиент, спецификация уже вставлена в текст письма. Если ничего не открылось — спецификация уже скопирована.</p>
     </form>
     <div><div class="spec mono" id="spec"></div></div>
   </div>
@@ -495,9 +509,9 @@ footer a:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
 </main>
 
 <footer>
-  <span>Chip — a working demo. The shop is invented, the mechanics are not.</span>
+  <span>Chip — рабочая демонстрация. Цех выдуман, механика — нет.</span>
   <span class="fill"></span>
-  <span>Want this on your parts? <a href="https://t.me/smirnovarturr">@smirnovarturr</a></span>
+  <span>Хотите то же самое для своих деталей? <a href="https://t.me/smirnovarturr">@smirnovarturr</a></span>
   <span>© 2026</span>
 </footer>
 <script type="module">
@@ -548,7 +562,7 @@ function filmRGB(d, cosR) {
   return out;
 }
 const tint = d => filmRGB(d, 0.95).map(x => Math.round(clamp(x, 0, 1.4) * 168 + 14));
-const colourName = d => d < 32 ? 'bright steel' : d < 50 ? 'straw' : d < 66 ? 'brown-purple' : d < 86 ? 'blue' : 'grey';
+const colourName = d => d < 32 ? 'светлая сталь' : d < 50 ? 'солома' : d < 66 ? 'коричнево-фиолетовый' : d < 86 ? 'синий' : 'серый';
 
 /* ═══ 2. Деньги ═══════════════════════════════════════════════════════ */
 function cost(v, s, t, p) {
@@ -592,10 +606,10 @@ function paintSwatch() {
 }
 
 function regime() {
-  if (A.th > 760) return ['hot', 'Burning', 'The chip stays ductile and never breaks. Blue film, edge gone in ' + fmt(A.T, 1) + ' min.'];
-  if (A.CB > 1.45 || A.Fc > 3000) return ['load', 'Overload', 'Too stiff to bend: it fractures at once and the carriage chatters at ' + Math.round(A.Fc) + ' N.'];
-  if (A.CB < 0.75) return ['hot', 'Stringy', 'Feed is too light for the chip to break — it coils into a nest around the part.'];
-  return ['', 'Window', 'Chips break into short curls every ' + fmt(A.Lb, 0) + ' mm. Colour stops at ' + colourName(A.d) + '.'];
+  if (A.th > 760) return ['hot', 'Перегрев', 'Стружка остаётся пластичной и никогда не ломается. Синяя плёнка, кромка исчезает за ' + fmt(A.T, 1) + ' мин.'];
+  if (A.CB > 1.45 || A.Fc > 3000) return ['load', 'Перегрузка', 'Слишком жёсткая, чтобы изгибаться: сразу ломается, а каретку трясёт при ' + Math.round(A.Fc) + ' Н.'];
+  if (A.CB < 0.75) return ['hot', 'Намотка', 'Подача слишком мала, чтобы стружка ломалась — она сворачивается в гнездо вокруг детали.'];
+  return ['', 'Норма', 'Стружка ломается на короткие завитки каждые ' + fmt(A.Lb, 0) + ' мм. Цвет останавливается на «' + colourName(A.d) + '».'];
 }
 
 function chart() {
@@ -622,41 +636,41 @@ function chart() {
     '<text x="' + (W - 26) + '" y="' + (B + 13) + '">320</text>' +
     '<text x="2" y="18">' + money(mx) + '</text>' +
     '<text x="2" y="' + B + '">' + money(mn) + '</text>' +
-    '<text x="' + clamp(bx - 16, 36, W - 60).toFixed(1) + '" y="126">min ' + Math.round(best) + ' m/min</text>';
+    '<text x="' + clamp(bx - 16, 36, W - 60).toFixed(1) + '" y="126">минимум ' + Math.round(best) + ' м/мин</text>';
   el.dataset.best = best.toFixed(0);
 }
 
 function specText() {
   return [
-    'TURNING SETUP — chip.demo',
+    'НАСТРОЙКА ТОЧЕНИЯ — chip.demo',
     '',
-    'Cutting data',
-    '  v  cutting speed      ' + S.v + ' m/min',
-    '  s  feed               ' + S.s.toFixed(2) + ' mm/rev',
-    '  t  depth of cut       ' + S.t.toFixed(1) + ' mm',
-    '  tool  rake 8°, lead 95°, inclination -6°, coated carbide',
+    'Данные резания',
+    '  v  скорость резания      ' + S.v + ' м/мин',
+    '  s  подача                ' + S.s.toFixed(2) + ' мм/об',
+    '  t  глубина резания       ' + S.t.toFixed(1) + ' мм',
+    '  резец  передний угол 8°, угол в плане 95°, наклон -6°, твёрдый сплав с покрытием',
     '',
-    'Computed',
-    '  a1 uncut thickness    ' + A.a1.toFixed(3) + ' mm',
-    '  xi chip compression   ' + A.xi.toFixed(2),
-    '  a2 chip thickness     ' + A.a2.toFixed(3) + ' mm',
-    '  R  curl radius        ' + A.R.toFixed(2) + ' mm',
-    '  L  break length       ' + Math.round(A.Lb) + ' mm',
-    '  th zone temperature   ' + Math.round(A.th) + ' C',
-    '  d  oxide film         ' + A.d.toFixed(0) + ' nm  (' + colourName(A.d) + ')',
-    '  Fc cutting force      ' + Math.round(A.Fc) + ' N',
-    '  Pc power              ' + A.Pc.toFixed(2) + ' kW',
-    '  T  tool life          ' + A.T.toFixed(1) + ' min',
-    '  Q  removal rate       ' + A.Q.toFixed(1) + ' cm3/min',
+    'Расчёт',
+    '  a1 толщина срезаемого слоя  ' + A.a1.toFixed(3) + ' мм',
+    '  xi усадка стружки           ' + A.xi.toFixed(2),
+    '  a2 толщина стружки          ' + A.a2.toFixed(3) + ' мм',
+    '  R  радиус завивки           ' + A.R.toFixed(2) + ' мм',
+    '  L  длина разлома            ' + Math.round(A.Lb) + ' мм',
+    '  th температура в зоне       ' + Math.round(A.th) + ' C',
+    '  d  толщина плёнки           ' + A.d.toFixed(0) + ' нм  (' + colourName(A.d) + ')',
+    '  Fc сила резания             ' + Math.round(A.Fc) + ' Н',
+    '  Pc мощность                 ' + A.Pc.toFixed(2) + ' кВт',
+    '  T  стойкость                ' + A.T.toFixed(1) + ' мин',
+    '  Q  скорость съёма           ' + A.Q.toFixed(1) + ' см3/мин',
     '',
-    'Part  ' + P.d0 + ' -> ' + P.d1 + ' mm over ' + P.l + ' mm, batch ' + P.n,
-    '  passes                ' + C.passes,
-    '  cutting time / part   ' + C.tm.toFixed(2) + ' min',
-    '  edges / part          ' + C.edges.toFixed(3),
-    '  cost / part           ' + money(C.part),
-    '  batch total           ' + money(C.batch),
+    'Деталь  ' + P.d0 + ' -> ' + P.d1 + ' мм на длине ' + P.l + ' мм, партия ' + P.n,
+    '  проходов              ' + C.passes,
+    '  время резания/деталь  ' + C.tm.toFixed(2) + ' мин',
+    '  кромок/деталь         ' + C.edges.toFixed(3),
+    '  цена/деталь           ' + money(C.part),
+    '  партия целиком        ' + money(C.batch),
     '',
-    'Rates: shop ' + P.rate + ' $/h, edge ' + P.edge + ' $, non-cut 1.4 min/part.',
+    'Ставки: цех ' + P.rate + ' $/ч, кромка ' + P.edge + ' $, вспомогательное 1.4 мин/деталь.',
     location.href,
   ].join('\n');
 }
@@ -664,32 +678,32 @@ function specText() {
 function render() {
   A = solve(S.v, S.s, S.t); C = cost(S.v, S.s, S.t, P);
   $('sv-o').textContent = S.v; $('ss-o').textContent = S.s.toFixed(2); $('st-o').textContent = S.t.toFixed(1);
-  $('o-a2').innerHTML = A.a2.toFixed(2) + '<s>mm</s>';
-  $('o-r').innerHTML = A.R.toFixed(2) + '<s>mm</s>';
+  $('o-a2').innerHTML = A.a2.toFixed(2) + '<s>мм</s>';
+  $('o-r').innerHTML = A.R.toFixed(2) + '<s>мм</s>';
   $('o-th').innerHTML = Math.round(A.th) + '<s>°C</s>';
-  $('o-fc').innerHTML = Math.round(A.Fc) + '<s>N</s>';
-  $('o-pc').innerHTML = A.Pc.toFixed(2) + '<s>kW</s>';
-  $('o-tl').innerHTML = (A.T >= 599 ? '600+' : A.T.toFixed(1)) + '<s>min</s>';
+  $('o-fc').innerHTML = Math.round(A.Fc) + '<s>Н</s>';
+  $('o-pc').innerHTML = A.Pc.toFixed(2) + '<s>кВт</s>';
+  $('o-tl').innerHTML = (A.T >= 599 ? '600+' : A.T.toFixed(1)) + '<s>мин</s>';
   const [cls, badge, text] = regime();
   const bd = $('o-badge'); bd.className = 'chip-b ' + cls; bd.textContent = badge;
   $('o-verdict').textContent = text;
 
   $('sub1').innerHTML = 'γ 8°, κ 95°, μ ' + A.mu.toFixed(2) + ' → φ ' + (A.phi / D2R).toFixed(1) +
-    '°, ξ <em>' + A.xi.toFixed(2) + '</em>, a2 <em>' + A.a2.toFixed(3) + ' mm</em>';
+    '°, ξ <em>' + A.xi.toFixed(2) + '</em>, a2 <em>' + A.a2.toFixed(3) + ' мм</em>';
   $('sub2').innerHTML = 'v ' + S.v + ', s ' + S.s.toFixed(2) + ', t ' + S.t.toFixed(1) +
-    ' → θ <em>' + Math.round(A.th) + ' °C</em>, chip leaves at <em>' + Math.round(A.vc) + ' m/min</em>';
+    ' → θ <em>' + Math.round(A.th) + ' °C</em>, стружка сходит на <em>' + Math.round(A.vc) + ' м/мин</em>';
   $('sub3').innerHTML = 'T ' + Math.round(A.th + 273) + ' K → d <em>' + A.d.toFixed(0) +
-    ' nm</em> → <em>' + colourName(A.d) + '</em>. The band below is the same formula swept from 12 to 120 nm.';
-  $('sub4').innerHTML = 'kc <em>' + Math.round(A.kc) + ' N/mm²</em>, Fc <em>' + Math.round(A.Fc) +
-    ' N</em>, Pc <em>' + A.Pc.toFixed(2) + ' kW</em>, T <em>' + (A.T >= 599 ? '600+' : A.T.toFixed(1)) + ' min</em>';
+    ' нм</em> → <em>' + colourName(A.d) + '</em>. Полоса ниже — та же формула, прогнанная от 12 до 120 нм.';
+  $('sub4').innerHTML = 'kc <em>' + Math.round(A.kc) + ' Н/мм²</em>, Fc <em>' + Math.round(A.Fc) +
+    ' Н</em>, Pc <em>' + A.Pc.toFixed(2) + ' кВт</em>, T <em>' + (A.T >= 599 ? '600+' : A.T.toFixed(1)) + ' мин</em>';
   paintSwatch();
 
   const tb = $('passes'); tb.innerHTML = C.rows.map(r =>
     '<tr><td>' + r.i + '</td><td>' + r.before.toFixed(1) + '</td><td>' + r.after.toFixed(1) +
     '</td><td>' + Math.round(r.n) + '</td><td>' + r.min.toFixed(2) + '</td></tr>').join('');
-  $('f-n').textContent = C.passes + ' passes'; $('f-t').textContent = C.tm.toFixed(2);
+  $('f-n').textContent = C.passes + ' проходов'; $('f-t').textContent = C.tm.toFixed(2);
   $('m-part').textContent = money(C.part); $('m-batch').textContent = money(C.batch);
-  $('m-tm').textContent = C.tm.toFixed(1) + ' min'; $('m-ed').textContent = (C.edges * 100).toFixed(1);
+  $('m-tm').textContent = C.tm.toFixed(1) + ' мин'; $('m-ed').textContent = (C.edges * 100).toFixed(1);
   chart();
   $('spec').textContent = specText();
   window.__chipLast = A;
@@ -719,9 +733,9 @@ function readParts() {
     const el = $(id), x = parseFloat(el.value), [lo, hi] = lim[id];
     const ok = Number.isFinite(x) && x >= lo && x <= hi;
     el.setAttribute('aria-invalid', String(!ok));
-    if (ok) P[map[id]] = x; else bad = bad || (el.previousElementSibling.textContent + ' must be between ' + lo + ' and ' + hi + '.');
+    if (ok) P[map[id]] = x; else bad = bad || ('Значение «' + el.previousElementSibling.textContent + '» должно быть между ' + lo + ' и ' + hi + '.');
   }
-  if (P.d1 >= P.d0) { bad = bad || 'Target Ø must be smaller than the blank.'; $('p-d1').setAttribute('aria-invalid', 'true'); P.d1 = P.d0 - 1; }
+  if (P.d1 >= P.d0) { bad = bad || 'Финишный Ø должен быть меньше заготовки.'; $('p-d1').setAttribute('aria-invalid', 'true'); P.d1 = P.d0 - 1; }
   $('p-err').textContent = bad;
 }
 for (const id of ['p-d0', 'p-d1', 'p-l', 'p-n', 'p-rate', 'p-edge'])
@@ -744,23 +758,23 @@ async function copy(txt, btn, done) {
   }
   btn.textContent = done; setTimeout(() => { btn.textContent = old; }, 1600);
 }
-$('b-link').addEventListener('click', e => copy(location.href, e.currentTarget, 'Link copied'));
-$('b-copy').addEventListener('click', e => copy(specText(), e.currentTarget, 'Spec copied'));
+$('b-link').addEventListener('click', e => copy(location.href, e.currentTarget, 'Ссылка скопирована'));
+$('b-copy').addEventListener('click', e => copy(specText(), e.currentTarget, 'Спецификация скопирована'));
 
 $('form').addEventListener('submit', e => {
   e.preventDefault();
   const nm = $('q-name').value.trim(), ml = $('q-mail').value.trim(), ms = $('q-msg').value.trim();
   let bad = '';
-  if (nm.length < 2) { bad = 'Name — at least two characters.'; $('q-name').setAttribute('aria-invalid', 'true'); }
+  if (nm.length < 2) { bad = 'Имя — минимум два символа.'; $('q-name').setAttribute('aria-invalid', 'true'); }
   else $('q-name').setAttribute('aria-invalid', 'false');
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(ml)) { bad = bad || 'Email — that address will not reach anyone.'; $('q-mail').setAttribute('aria-invalid', 'true'); }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(ml)) { bad = bad || 'Email — на этот адрес письмо не дойдёт.'; $('q-mail').setAttribute('aria-invalid', 'true'); }
   else $('q-mail').setAttribute('aria-invalid', 'false');
   $('q-err').textContent = bad;
   if (bad) return;
   const body = encodeURIComponent(ms + '\n\n' + specText());
   const href = 'mailto:paladei702@gmail.com?subject=' +
-    encodeURIComponent('Turning calculator — brief from ' + nm) + '&body=' + body;
-  copy(specText(), $('b-copy'), 'Spec copied');
+    encodeURIComponent('Калькулятор точения — бриф от ' + nm) + '&body=' + body;
+  copy(specText(), $('b-copy'), 'Спецификация скопирована');
   $('q-ok').hidden = false;
   location.href = href;
 });
@@ -792,7 +806,7 @@ function hasGL2(){ try { return !!document.createElement('canvas').getContext('w
 
 let THREE = null;
 if (!hasGL2()) flat(); else {
-  try { THREE = await import('./assets/three-scene.js'); } catch(e) { THREE = null; window.__why = 'import: ' + e; }
+  try { THREE = await import('/demo/chip/assets/three-scene.js'); } catch(e) { THREE = null; window.__why = 'import: ' + e; }
   if (!THREE) flat(); else { try { await build(); } catch(e) { flat(); window.__why = 'build: ' + (e && e.stack || e); } }
 }
 
@@ -815,7 +829,7 @@ async function build(){
   /* ── окружение: свет из окон цеха ── */
   const pmrem = new THREE.PMREMGenerator(renderer); pmrem.compileEquirectangularShader();
   try {
-    const hdr = await new THREE.RGBELoader().loadAsync('assets/empty_warehouse_01_256.hdr');
+    const hdr = await new THREE.RGBELoader().loadAsync('/demo/chip/assets/empty_warehouse_01_256.hdr');
     scene.environment = pmrem.fromEquirectangular(hdr).texture;
     scene.environmentIntensity = 0.42;
     scene.environmentRotation = new THREE.Euler(0, 2.1, 0);

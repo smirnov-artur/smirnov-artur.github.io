@@ -10,6 +10,20 @@ import { OrbitControls } from '../assets/three-stick.js';
 
 const T0 = performance.now();
 
+/* ── RU/EN подписи для того, что рисует сам JS (разметка уже переведена в каждом
+   html; здесь — только строки, которые собираются в коде) ──────────────────── */
+const LANG = document.documentElement.lang === 'ru' ? 'ru' : 'en';
+const ZONE_NAME = { en: { pero:'blade', shaft:'shaft', wrap:'grip wrap', vstavka:'collar insert' },
+                    ru: { pero:'перо', shaft:'шафт', wrap:'обмотка рукояти', vstavka:'вставка воротника' } }[LANG];
+const FINISH_NAME = { en: { matte:'matte', gloss:'gloss', carbon:'carbon' },
+                      ru: { matte:'матовый', gloss:'глянцевый', carbon:'карбон' } }[LANG];
+const MM = LANG === 'ru' ? 'мм' : 'mm';
+const T = LANG === 'ru'
+  ? { premium:'(премиум)', base:'Базовая клюшка', premColor:n=>`Премиум-цвет ×${n}`, wrap:n=>`Обмотка · ${n} мм`,
+      engrave:n=>`Гравировка · ${n} симв.`, perf:(ms,kb)=>`первый кадр ${ms} мс · геометрия ${kb} КБ · свой рендер, без готовых фото` }
+  : { premium:'(premium)', base:'Base stick', premColor:n=>`Premium color ×${n}`, wrap:n=>`Grip wrap · ${n} mm`,
+      engrave:n=>`Engraving · ${n} chars`, perf:(ms,kb)=>`first frame ${ms} ms · geometry ${kb} KB · own render, no pre-baked photos` };
+
 /* ── та же таблица радиуса шафта, что и в assets-lib/_tools/recepty/klyushka.mjs
    (шафтПрофиль, [радиус_мм, высота_мм]) — источник один, число одно ──────────── */
 const SHAFT_MM = [
@@ -151,7 +165,7 @@ const loaderEl = document.getElementById('loader');
 const setLoad = (p) => { loaderFill.style.right = (100-p)+'%'; loaderPct.textContent = ' '+Math.round(p)+'%'; };
 
 const gltfLoader = new GLTFLoader();
-gltfLoader.load('assets/klyushka.glb', (gltf) => {
+gltfLoader.load('/demo/stick/assets/klyushka.glb', (gltf) => {
   let tris = 0;
   const loaded = [];
   /* сначала собрать список — потом переносить: rig.add(o) отцепляет o от
@@ -178,7 +192,7 @@ gltfLoader.load('assets/klyushka.glb', (gltf) => {
 }, (err) => { console.error('glb load failed', err); setLoad(100); loaderEl.classList.add('is-done'); });
 
 let geoKb = 118;
-fetch('assets/klyushka.glb', { method:'HEAD' }).then(r=>{
+fetch('/demo/stick/assets/klyushka.glb', { method:'HEAD' }).then(r=>{
   const kb = r.headers.get('content-length');
   if (kb) { geoKb = +(kb/1024).toFixed(1); document.getElementById('statKb').textContent = geoKb+' KB'; }
 }).catch(()=>{});
@@ -276,7 +290,7 @@ function buildSwatches(zone) {
   PALETTES[zone].forEach(([hex, tier]) => {
     const b = document.createElement('button');
     b.className = 'swatch'; b.style.background = hex; b.type='button';
-    b.setAttribute('aria-label', zone+' color '+hex+(tier==='premium'?' (premium)':''));
+    b.setAttribute('aria-label', ZONE_NAME[zone]+' '+(LANG==='ru'?'цвет':'color')+' '+hex+(tier==='premium'?' '+T.premium:''));
     if (hex === state.color[zone]) b.classList.add('is-active');
     b.addEventListener('click', () => {
       wrap.querySelectorAll('.swatch').forEach(s=>s.classList.remove('is-active'));
@@ -293,7 +307,7 @@ function buildFinishes(zone) {
   if (!wrap) return;
   Object.keys(FINISHES).forEach((key) => {
     const b = document.createElement('button');
-    b.className = 'pill'; b.type='button'; b.textContent = key;
+    b.className = 'pill'; b.type='button'; b.textContent = FINISH_NAME[key];
     if (state.finish[zone] === key) b.classList.add('is-active');
     b.addEventListener('click', () => {
       wrap.querySelectorAll('.pill').forEach(s=>s.classList.remove('is-active'));
@@ -310,7 +324,7 @@ function buildFinishes(zone) {
 const wrapLenInput = document.getElementById('wrapLen');
 wrapLenInput.addEventListener('input', () => {
   state.wrapLen = +wrapLenInput.value;
-  document.getElementById('wrapLenVal').textContent = state.wrapLen+' mm';
+  document.getElementById('wrapLenVal').textContent = state.wrapLen+' '+MM;
   buildWrap();
   setZoneColor('wrap', state.color.wrap);
   updateQuote();
@@ -327,26 +341,26 @@ engraveInput.addEventListener('input', () => {
 function updateQuote() {
   const lines = [];
   let total = BASE_PRICE;
-  lines.push(['Base stick', '$'+BASE_PRICE]);
+  lines.push([T.base, '$'+BASE_PRICE]);
 
   ['pero','shaft'].forEach((z) => {
     const f = state.finish[z];
     const add = FINISHES[f];
-    if (add) { lines.push([`${z==='pero'?'Blade':'Shaft'} · ${f}`, '+$'+add]); total += add; }
+    if (add) { lines.push([`${ZONE_NAME[z]} · ${FINISH_NAME[f]}`, '+$'+add]); total += add; }
   });
 
   let premCount = 0;
   for (const z in state.tier) if (state.tier[z]==='premium') premCount++;
-  if (premCount) { const add = premCount*PREMIUM_SURCHARGE; lines.push(['Premium color ×'+premCount, '+$'+add]); total += add; }
+  if (premCount) { const add = premCount*PREMIUM_SURCHARGE; lines.push([T.premColor(premCount), '+$'+add]); total += add; }
 
   if (state.wrapLen > 5) {
     const add = Math.round(state.wrapLen/1000*WRAP_PRICE_PER_M*100)/100;
-    lines.push(['Grip wrap · '+state.wrapLen+' mm', '+$'+add.toFixed(2)]); total += add;
+    lines.push([T.wrap(state.wrapLen), '+$'+add.toFixed(2)]); total += add;
   }
   if (state.engrave.trim()) {
     const n = state.engrave.trim().length;
     const add = n*ENGRAVE_PRICE_PER_CHAR;
-    lines.push(['Engraving · '+n+' chars', '+$'+add.toFixed(2)]); total += add;
+    lines.push([T.engrave(n), '+$'+add.toFixed(2)]); total += add;
   }
 
   const linesEl = document.getElementById('quoteLines');
@@ -364,7 +378,7 @@ updateQuote();
 
 /* ── HDRI окружение — ПОСЛЕ первого кадра, не блокирует отрисовку ─────────── */
 function loadEnv() {
-  new RGBELoader().load('assets/env.hdr', (hdr) => {
+  new RGBELoader().load('/demo/stick/assets/env.hdr', (hdr) => {
     const pmrem = new THREE.PMREMGenerator(renderer);
     const envMap = pmrem.fromEquirectangular(hdr).texture;
     scene.environment = envMap;
@@ -405,8 +419,7 @@ function tick() {
   if (!firstFrameShown) {
     firstFrameShown = true;
     const ms = performance.now() - T0;
-    document.getElementById('perfLine').textContent =
-      `first frame ${ms.toFixed(0)} ms · geometry ${geoKb} KB · own render, no pre-baked photos`;
+    document.getElementById('perfLine').textContent = T.perf(ms.toFixed(0), geoKb);
     console.log('[stick] first frame:', ms.toFixed(1), 'ms');
     setTimeout(loadEnv, 60);
   }
