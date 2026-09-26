@@ -836,6 +836,21 @@
   "rp": 1
  },
  {
+  "slug": "investment-hero",
+  "v": "investment-hero",
+  "ve": "investment-hero-en",
+  "ru": [
+   "Недвижимость для инвесторов",
+   "Нижняя панель превращается в кнопку с выпадающим меню, а скролл увеличивает три фото объектов, и в финале фон перетекает из чёрного в белый под заключительную фразу."
+  ],
+  "en": [
+   "Real estate for investors",
+   "The bottom bar morphs into a popup menu, and scrolling scales three property photos into place before the screen turns from black to white for a closing line."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
