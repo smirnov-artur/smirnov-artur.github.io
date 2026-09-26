@@ -3744,6 +3744,36 @@
   "rp": 1
  },
  {
+  "slug": "cinematic-brand",
+  "v": "cinematic-brand",
+  "ve": "cinematic-brand-en",
+  "ru": [
+   "Кинематографичный бренд",
+   "Видео-фон из бушующего кольца плазмы на звёздном небе, заголовок печатается по букве, кнопки «Начать» и «Смотреть историю»"
+  ],
+  "en": [
+   "Cinematic brand intro",
+   "A looping video backdrop of a swirling plasma ring against a starfield, a character-by-character typing headline, and \"Begin Now\" / \"Watch the story\" buttons"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "cosmic",
+  "v": "cosmic",
+  "ve": "cosmic-en",
+  "ru": [
+   "Экспедиция к астероиду",
+   "Ролик с кувыркающимся астероидом доигрывает до конца — и заголовок проявляется по буквам, камень наплывает поверх, вокруг пульсируют кольца"
+  ],
+  "en": [
+   "Asteroid expedition",
+   "A tumbling-asteroid clip plays to its end, then the headline rises letter by letter as the rock fades in and rings pulse around it"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
