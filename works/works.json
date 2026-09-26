@@ -1510,7 +1510,9 @@
    "Two complete multi-page sites in different styles"
   ],
   "href": "https://smirnov-artur.github.io/rybtseh-pokaz/",
-  "v": "pf-rybtseh-pokaz"
+  "v": "rybtseh-pokaz",
+  "ve": "rybtseh-pokaz-en",
+  "hre": "https://smirnov-artur.github.io/rybtseh-pokaz/en/"
  },
  {
   "slug": "vault",
@@ -1647,7 +1649,9 @@
    "A winery site showcase that opens into the valley"
   ],
   "href": "https://smirnov-artur.github.io/sunvalley-pokaz/",
-  "v": "pf-sunvalley-pokaz"
+  "v": "sunvalley-pokaz",
+  "ve": "sunvalley-pokaz-en",
+  "hre": "https://smirnov-artur.github.io/sunvalley-pokaz/en/"
  },
  {
   "slug": "vanny-concepts",
