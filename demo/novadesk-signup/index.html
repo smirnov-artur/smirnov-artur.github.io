@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+    <script>if(new URLSearchParams(location.search).get('lang')==='ru')location.replace('ru/'+location.hash)</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g.a.d. — Join us and set up your profile</title>
+    <meta name="description" content="g.a.d. — a fast signup: set up your profile and jump in right now.">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.469.0"></script>
+    <style>.gad-logo{display:inline-block;height:1em;width:auto;overflow:visible;vertical-align:middle}.gad-logo .ring{animation:gad-draw 1.1s cubic-bezier(.65,0,.35,1) .35s forwards}.gad-logo .orb{opacity:0;transform-box:view-box;transform-origin:322px 30px;animation:gad-pop .3s ease 1.35s forwards,gad-orbit 7s linear 1.35s infinite}@keyframes gad-draw{to{stroke-dashoffset:0}}@keyframes gad-pop{to{opacity:1}}@keyframes gad-orbit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gad-logo .ring{animation:none;stroke-dashoffset:0}.gad-logo .orb{animation:none;opacity:1}}</style>
+</head>
+<body class="bg-black antialiased">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const EyeIcon = () => (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+        );
+        const EyeOffIcon = () => (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>
+        );
+        const CheckIcon = () => (
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        );
+
+        const App = () => {
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [agreed, setAgreed] = useState(false);
+            const [showPassword, setShowPassword] = useState(false);
+
+            useEffect(() => { lucide.createIcons(); }, []);
+
+            return (
+                <div className="relative min-h-screen w-screen overflow-x-hidden flex items-center justify-center bg-black py-6 sm:py-0 sm:h-screen sm:overflow-hidden">
+                    <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_191911_e7dc783e-a580-4974-8971-9796ecffd3bd.mp4" />
+
+                    <div className="relative z-10 max-w-4xl mx-4 w-full rounded-2xl overflow-hidden shadow-2xl sm:h-[660px] flex flex-col sm:flex-row">
+                        <div className="sm:w-1/2 w-full bg-[rgba(10,10,10,.92)] px-6 sm:px-10 py-8 sm:py-10 flex flex-col">
+                            <svg className="gad-logo" height="26" viewBox="0 0 355 110" role="img" aria-label="g.a.d." style={{ color: '#DA3F23' }}><path fill="currentColor" d="M53.7 66.8V57.9L54.3 55.8V43.7L53.7 41.7V27.6H70.8V66Q70.8 75.8 66.4 82.6Q61.9 89.5 54 93.1Q46.1 96.7 35.6 96.7Q28.3 96.7 22.2 94.8Q16.1 92.9 10.1 89.1V76Q15.7 80.3 21.9 82.2Q28.1 84 34.5 84Q43.8 84 48.7 79.9Q53.7 75.7 53.7 66.8ZM30.5 74.8Q23.2 74.8 17.4 71.8Q11.6 68.8 8.3 63.3Q4.9 57.8 4.9 50.5Q4.9 43.1 8.3 37.6Q11.6 32.2 17.4 29.1Q23.2 26.1 30.5 26.1Q36 26.1 40.6 27.8Q45.2 29.5 48.8 32.3Q52.4 35 54.9 38.3Q57.4 41.5 58.7 44.8Q60 48.1 60 50.7Q60 54.1 57.9 58.2Q55.9 62.4 52.1 66.2Q48.3 70 42.8 72.4Q37.4 74.8 30.5 74.8ZM36.2 63Q41.9 63 46.4 59.9Q50.9 56.9 54.3 50.5Q50.9 43.9 46.4 40.9Q41.8 37.9 36.2 37.9Q31.9 37.9 28.7 39.4Q25.6 41 23.9 43.8Q22.1 46.6 22.1 50.5Q22.1 54.2 23.8 57Q25.5 59.9 28.6 61.4Q31.8 63 36.2 63Z M84.7 80.9Q81.9 80.9 79.6 79.6Q77.4 78.3 76.1 76Q74.8 73.8 74.8 71.1Q74.8 68.3 76.1 66.1Q77.4 63.9 79.6 62.6Q81.9 61.2 84.7 61.2Q87.4 61.2 89.6 62.6Q91.8 63.9 93.2 66.1Q94.5 68.3 94.5 71.1Q94.5 73.8 93.2 76Q91.8 78.3 89.6 79.6Q87.4 80.9 84.7 80.9Z M146.4 80 144.1 61 146.6 53.8 144.1 46.7 146.4 27.6H164.2L161 53.8L164.2 80ZM150.7 53.8Q149.3 62.2 145.4 68.4Q141.6 74.6 135.7 78Q129.8 81.5 122.4 81.5Q114.7 81.5 108.9 78Q103 74.5 99.7 68.3Q96.4 62.1 96.4 53.8Q96.4 45.5 99.7 39.3Q103 33.1 108.9 29.6Q114.7 26.1 122.4 26.1Q129.8 26.1 135.7 29.5Q141.6 33 145.5 39.2Q149.4 45.3 150.7 53.8ZM113.7 53.8Q113.7 58 115.4 61.3Q117.2 64.5 120.3 66.4Q123.3 68.3 127.4 68.3Q131.4 68.3 135.1 66.4Q138.7 64.5 141.5 61.3Q144.2 58 145.6 53.8Q144.2 49.5 141.5 46.3Q138.7 43 135.1 41.1Q131.4 39.2 127.4 39.2Q123.3 39.2 120.3 41.1Q117.2 43 115.4 46.3Q113.7 49.5 113.7 53.8Z M176.9 80.9Q174.2 80.9 171.9 79.6Q169.7 78.3 168.4 76Q167.1 73.8 167.1 71.1Q167.1 68.3 168.4 66.1Q169.7 63.9 171.9 62.6Q174.2 61.2 176.9 61.2Q179.7 61.2 181.9 62.6Q184.1 63.9 185.4 66.1Q186.8 68.3 186.8 71.1Q186.8 73.8 185.4 76Q184.1 78.3 181.9 79.6Q179.7 80.9 176.9 80.9Z M239 80 236.7 60.2 239.8 54 236.8 46.1 241 9.2H258.8L253.5 52.5L256.7 80ZM242.9 53.8Q241.6 62.2 237.7 68.4Q233.8 74.6 228 78Q222.1 81.5 214.7 81.5Q207 81.5 201.1 78Q195.3 74.5 192 68.3Q188.7 62.1 188.7 53.8Q188.7 45.5 192 39.3Q195.3 33.1 201.1 29.6Q207 26.1 214.7 26.1Q222.1 26.1 228 29.5Q233.8 33 237.8 39.2Q241.7 45.3 242.9 53.8ZM206 53.8Q206 58 207.7 61.3Q209.5 64.5 212.5 66.4Q215.6 68.3 219.7 68.3Q223.7 68.3 227.4 66.4Q231 64.5 233.7 61.3Q236.5 58 237.9 53.8Q236.5 49.5 233.7 46.3Q231 43 227.4 41.1Q223.7 39.2 219.7 39.2Q215.6 39.2 212.5 41.1Q209.5 43 207.7 46.3Q206 49.5 206 53.8Z M269.4 80.9Q266.6 80.9 264.4 79.6Q262.1 78.3 260.8 76Q259.6 73.8 259.6 71.1Q259.6 68.3 260.8 66.1Q262.1 63.9 264.4 62.6Q266.6 61.2 269.4 61.2Q272.2 61.2 274.4 62.6Q276.6 63.9 277.9 66.1Q279.2 68.3 279.2 71.1Q279.2 73.8 277.9 76Q276.6 78.3 274.4 79.6Q272.2 80.9 269.4 80.9Z"/><circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100"/><circle className="orb" cx="322" cy="8" r="5" fill="currentColor"/></svg>
+
+                            <form onSubmit={e => e.preventDefault()} className="flex flex-col gap-5 mt-8 sm:mt-auto">
+                                <div>
+                                    <h1 className="text-white text-2xl font-semibold tracking-tight">Join us</h1>
+                                    <p className="text-zinc-400 text-sm mt-1.5 leading-relaxed">Set up your profile and jump in right now.</p>
+                                </div>
+
+                                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Input Email" className="w-full bg-zinc-800/70 text-white placeholder-zinc-500 text-sm rounded-lg px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-zinc-500 transition-colors" />
+
+                                <div className="relative">
+                                    <input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="Choose Password" className="w-full bg-zinc-800/70 text-white placeholder-zinc-500 text-sm rounded-lg px-4 py-2.5 pr-11 focus:outline-none focus:ring-1 focus:ring-zinc-500 transition-colors" />
+                                    <button type="button" onClick={() => setShowPassword(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors">
+                                        {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                                    </button>
+                                </div>
+
+                                <label className="flex items-start gap-2 cursor-pointer select-none">
+                                    <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} className="sr-only" />
+                                    <span className={"w-4 h-4 mt-0.5 shrink-0 rounded border flex items-center justify-center transition-colors " + (agreed ? 'bg-white border-white' : 'border-zinc-600 bg-transparent')}>
+                                        {agreed && <CheckIcon />}
+                                    </span>
+                                    <span className="text-zinc-400 text-xs leading-relaxed">I Agree On The <a href="#" onClick={e => e.preventDefault()} className="text-zinc-200 hover:text-white underline">Rules</a> & <a href="#" onClick={e => e.preventDefault()} className="text-zinc-200 hover:text-white underline">Privacy Notice</a></span>
+                                </label>
+
+                                <button type="submit" className="w-full bg-white text-black text-sm font-semibold rounded-lg py-2.5 hover:bg-zinc-100 active:bg-zinc-200 transition-colors">Launch Account</button>
+
+                                <div className="flex items-center gap-3">
+                                    <div className="flex-1 h-px bg-zinc-700/60" />
+                                    <span className="text-zinc-500 text-xs">or join us via</span>
+                                    <div className="flex-1 h-px bg-zinc-700/60" />
+                                </div>
+
+                                <div className="flex gap-3">
+                                    <button type="button" className="flex-1 bg-zinc-800/60 rounded-lg py-2 text-zinc-300 text-sm hover:bg-zinc-700/60 hover:text-white transition-colors flex items-center justify-center gap-1.5"><i data-lucide="chrome" style={{ width: 15, height: 15 }}></i>Google</button>
+                                    <button type="button" className="flex-1 bg-zinc-800/60 rounded-lg py-2 text-zinc-300 text-sm hover:bg-zinc-700/60 hover:text-white transition-colors flex items-center justify-center gap-1.5"><i data-lucide="apple" style={{ width: 15, height: 15 }}></i>Apple</button>
+                                    <button type="button" className="flex-1 bg-zinc-800/60 rounded-lg py-2 text-zinc-300 text-sm hover:bg-zinc-700/60 hover:text-white transition-colors flex items-center justify-center gap-1.5"><i data-lucide="twitter" style={{ width: 15, height: 15 }}></i>Twitter</button>
+                                </div>
+
+                                <p className="text-zinc-500 text-xs text-center">Already Hold An Account? <a href="#" className="text-zinc-200 hover:text-white font-medium">Enter</a></p>
+                            </form>
+                        </div>
+
+                        <div className="hidden sm:flex sm:w-1/2 items-center justify-center bg-[rgba(255,255,255,.05)] border border-[rgba(255,255,255,.08)]">
+                            <svg className="gad-logo" height="120" viewBox="293 1 58 58" role="img" aria-label="g.a.d." style={{ color: '#DA3F23', marginTop: '-70px' }}><circle className="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" transform="rotate(-90 322 30)" pathLength="100" strokeDasharray="100" strokeDashoffset="100"/><circle className="orb" cx="322" cy="8" r="5" fill="currentColor"/></svg>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>

@@ -581,6 +581,21 @@
   "rp": 1
  },
  {
+  "slug": "novadesk-signup",
+  "v": "novadesk-signup",
+  "ve": "novadesk-signup-en",
+  "ru": [
+   "Экран регистрации",
+   "Тёмная карточка для входа на фоне видео с закатом и старым телевизором на холме"
+  ],
+  "en": [
+   "Signup screen",
+   "A dark login card sits over a sunset video with an old television on a hill"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
