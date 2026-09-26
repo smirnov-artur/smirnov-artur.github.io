@@ -3999,6 +3999,51 @@
   "rp": 1
  },
  {
+  "slug": "eco-intelligence",
+  "v": "eco-intelligence",
+  "ve": "eco-intelligence-en",
+  "ru": [
+   "Исследования экосистем",
+   "Парящий камень с цветком в зацикленном видео за призрачным логотипом и стеклянными плитками; меню выезжает слева с каскадом ссылок."
+  ],
+  "en": [
+   "Ecosystem research collective",
+   "A floating rock with a flower loops behind a ghost wordmark and glass tiles; the menu slides in from the left with staggered links."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "autonomous-ops",
+  "v": "autonomous-ops",
+  "ve": "autonomous-ops-en",
+  "ru": [
+   "Карточки преимуществ ИИ-платформы",
+   "Три карточки с графиком, запросом к ИИ-ассистенту и сходящимися путями решений: средняя поднимается первой, крайние подтягиваются к ней, панели раскрываются шторкой."
+  ],
+  "en": [
+   "AI platform benefit cards",
+   "Three cards with a bar chart, an AI-assistant prompt and converging decision paths: the middle one rises first, the outer ones drift in, panels wipe open."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
+  "slug": "intelligent-operations",
+  "v": "intelligent-operations",
+  "ve": "intelligent-operations-en",
+  "ru": [
+   "ИИ-консалтинг и автоматизация",
+   "Видео прокручивается вместе со скроллом: пучок проводов раскрывается в светящееся кольцо и сворачивается в коралл, поверх — стеклянные плашки и панель возможностей."
+  ],
+  "en": [
+   "AI consulting and automation",
+   "The video scrubs with the scroll: a bundle of cables blooms into a glowing ring and folds into a coral beneath glass chips and a frosted capability panel."
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [

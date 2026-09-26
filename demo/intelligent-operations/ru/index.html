@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<script src="/works/js/gad-loader.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>g.a.d. — Ясно. Точно. Автоматически.</title>
+<meta name="description" content="g.a.d. — автоматизация, интеграция ИИ и разработка ИИ-агентов: ясность, точность и эффективность в работе вашей компании.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+  tailwind.config = { theme: { extend: { fontFamily: {
+    sans: ['Inter', 'system-ui', 'sans-serif'],
+    mono: ['Inter', 'system-ui', 'sans-serif'],
+  } } } };
+</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: #0a0a0a; color: #fff; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+::selection { background: rgba(255,255,255,.2); }
+h1, h2 { text-wrap: balance; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+function HexagonIcon({ size = 24, className = '' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+    </svg>
+  );
+}
+function ChevronRightIcon({ size = 14, className = '' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="m9 18 6-6-6-6" />
+    </svg>
+  );
+}
+
+function Reveal({ children, delay = 0, className = '', as = 'div' }) {
+  const ref = useRef(null);
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setShown(true); io.disconnect(); } }, { threshold: 0.15 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const Tag = as;
+  return (
+    <Tag ref={ref} className={`transition-all duration-700 ease-out will-change-transform ${shown ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'} ${className}`} style={{ transitionDelay: `${delay}ms` }}>
+      {children}
+    </Tag>
+  );
+}
+
+const VIDEO_URL = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260729_102822_0e6c87e8-c141-4744-bf32-ad30db296371.mp4';
+const PORTRAIT_URL = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260728_050334_5b076e26-0ce7-4898-b432-d764190e448f.png&w=1280&q=85';
+
+// ScrollVideo: extracts up to 90 frames (blob-fetched to avoid a tainted canvas on the cross-origin
+// CDN), then scrubs them by scroll position; the visible <video> is itself scroll-seeked until the
+// cache is ready, so nothing ever autoplays/loops -- motion is scroll-driven only, per spec.
+function ScrollVideo() {
+  const [framesReady, setFramesReady] = useState(false);
+  const framesRef = useRef([]);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    let objectUrl;
+    (async () => {
+      try {
+        const v0 = videoRef.current;
+        if (v0) {
+          if (v0.readyState < 2) await new Promise(r => v0.addEventListener('loadeddata', r, { once: true }));
+          await new Promise(r => setTimeout(r, 300));
+        }
+        if (cancelled) return;
+        const res = await fetch(VIDEO_URL);
+        const blob = await res.blob();
+        if (cancelled) return;
+        objectUrl = URL.createObjectURL(blob);
+        const v = document.createElement('video');
+        v.muted = true; v.playsInline = true; v.src = objectUrl;
+        await new Promise((resolve, reject) => { v.onloadedmetadata = resolve; v.onerror = reject; });
+        if (cancelled) return;
+        const dur = v.duration;
+        const count = Math.min(90, Math.max(24, Math.round(dur * 12)));
+        const maxW = 960;
+        const scale = Math.min(1, maxW / v.videoWidth);
+        const cw = Math.max(1, Math.round(v.videoWidth * scale)), ch = Math.max(1, Math.round(v.videoHeight * scale));
+        const bitmaps = [];
+        for (let i = 0; i < count; i++) {
+          if (cancelled) break;
+          const t = count > 1 ? (i / (count - 1)) * dur : 0;
+          await new Promise(resolve => { v.onseeked = resolve; v.currentTime = t; });
+          if (cancelled) break;
+          bitmaps.push(await createImageBitmap(v, { resizeWidth: cw, resizeHeight: ch }));
+        }
+        if (!cancelled) { framesRef.current = bitmaps; setFramesReady(true); }
+        else bitmaps.forEach(b => b.close());
+      } catch {
+        // frame cache failed -- the <video> fallback keeps scrubbing via seek forever
+      }
+    })();
+    return () => {
+      cancelled = true;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      framesRef.current.forEach(b => b.close());
+    };
+  }, []);
+
+  useEffect(() => {
+    const canvas = canvasRef.current, video = videoRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let raf, smoothed = 0, seeking = false, forcedFirstSeek = false;
+    const resize = () => {
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      canvas.width = Math.round(canvas.clientWidth * dpr);
+      canvas.height = Math.round(canvas.clientHeight * dpr);
+    };
+    resize();
+    window.addEventListener('resize', resize);
+    if (video) video.onseeked = () => { seeking = false; };
+    const tick = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const target = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      smoothed += (target - smoothed) * 0.12;
+      const frames = framesRef.current;
+      if (frames.length > 1) {
+        const idx = Math.min(frames.length - 1, Math.round(smoothed * (frames.length - 1)));
+        const bmp = frames[idx];
+        const cw = canvas.width, ch = canvas.height, s = Math.max(cw / bmp.width, ch / bmp.height);
+        const dw = bmp.width * s, dh = bmp.height * s;
+        ctx.drawImage(bmp, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+      } else if (video && video.duration && !seeking) {
+        const t = smoothed * (video.duration - 0.05);
+        // a video that has never actually seeked can sit fully loaded but visually unpainted (blank/black)
+        // until a real 'seeked' event fires -- force one on the very first tick even if t is already 0
+        if (!forcedFirstSeek || Math.abs(video.currentTime - t) > 0.04) {
+          forcedFirstSeek = true; seeking = true; video.currentTime = t;
+        }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+  }, [framesReady]);
+
+  return (
+    <div className="fixed inset-0 z-0 bg-[#0a0a0a] overflow-hidden pointer-events-none">
+      <video ref={videoRef} src={VIDEO_URL} muted playsInline preload="auto" className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${framesReady ? 'opacity-0' : 'opacity-100'}`} />
+      <canvas ref={canvasRef} className={`absolute inset-0 w-full h-full transition-opacity duration-500 ${framesReady ? 'opacity-100' : 'opacity-0'}`} />
+    </div>
+  );
+}
+
+function Navbar() {
+  const links = ['О нас', 'Блог', 'Контакты'];
+  return (
+    <nav className="fixed top-0 inset-x-0 z-50 border-b border-white/15 flex items-center justify-between px-5 sm:px-8 md:px-12 py-4">
+      <Reveal delay={0} className="flex items-center gap-2">
+        <HexagonIcon size={24} />
+        <span className="text-lg sm:text-xl font-medium tracking-tight">g.a.d.</span>
+      </Reveal>
+      <div className="hidden md:flex items-center gap-8 lg:gap-10">
+        <Reveal delay={100} as="span" className="flex items-center gap-1 text-sm text-white/85 hover:text-white transition-colors duration-300 cursor-default">
+          Проекты<sup className="font-mono text-[10px] text-white/60">6</sup>
+        </Reveal>
+        {links.map((l, i) => (
+          <Reveal key={l} delay={100 + (i + 2) * 100} as="a" className="text-sm text-white/85 hover:text-white transition-colors duration-300 cursor-default">{l}</Reveal>
+        ))}
+      </div>
+      <Reveal delay={500}>
+        <button type="button" className="rounded-md border border-white/20 bg-white/15 backdrop-blur-md px-4 py-2 text-xs sm:px-5 sm:text-sm hover:bg-white/25 transition-colors duration-300 max-md:bg-black/15 max-md:border-white/30">Бесплатная консультация</button>
+      </Reveal>
+    </nav>
+  );
+}
+
+function Badge({ children, delay }) {
+  return (
+    <Reveal delay={delay} className="inline-block border-l-2 border-white bg-white/15 px-3 py-1.5 backdrop-blur-md font-mono text-[11px] uppercase tracking-[0.15em] mb-5">
+      {children}
+    </Reveal>
+  );
+}
+
+function SectionOne() {
+  const services = ['ИИ-автоматизация', 'Интеграция ИИ', 'Разработка ИИ-агентов'];
+  return (
+    <section className="relative min-h-screen supports-[height:100svh]:min-h-[100svh] flex flex-col justify-between px-5 sm:px-8 md:px-12 pt-24 sm:pt-28 pb-12 md:pb-16">
+      <div className="flex flex-col gap-8 sm:flex-row justify-between">
+        <div className="flex flex-col gap-2">
+          {services.map((s, i) => (
+            <Reveal key={s} delay={150 + i * 120} as="span" className="font-mono text-xs uppercase tracking-[0.15em] text-white/90 drop-shadow-md">/ {s}</Reveal>
+          ))}
+        </div>
+        <Reveal delay={300} className="max-w-xs sm:text-right text-lg sm:text-xl leading-relaxed text-white drop-shadow-md max-md:rounded-xl max-md:bg-white/15 max-md:backdrop-blur-md max-md:p-4">
+          Проектируем автоматизацию, которая приносит ясность, точность и эффективность в работу вашей компании.
+        </Reveal>
+      </div>
+
+      <div className="flex flex-col-reverse gap-8 md:flex-row items-start md:items-end justify-between">
+        <div>
+          <Badge delay={150}>Автоматизировали 100+ компаний</Badge>
+          <Reveal delay={280} as="h1" className="text-5xl sm:text-6xl lg:text-7xl font-normal leading-[1.05] tracking-tight text-white drop-shadow-lg max-md:[text-shadow:0_2px_16px_rgba(20,30,50,.3)]">
+            <span className="block">Ясно. Точно.</span><span className="block">Автоматически.</span>
+          </Reveal>
+        </div>
+
+        <Reveal delay={420} className="flex items-center gap-4 rounded-xl bg-white/15 p-3 backdrop-blur-md">
+          <img src={PORTRAIT_URL} alt="Митха, сооснователь g.a.d." className="h-24 w-20 rounded-lg object-cover" />
+          <div className="flex flex-col gap-1.5 pr-2">
+            <span className="text-sm font-medium text-white">Поговорите с Митхой</span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/60">Сооснователь g.a.d.</span>
+            <button type="button" className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-white px-4 py-2 text-xs font-medium text-black hover:bg-white/85 transition-colors duration-300 w-fit">
+              Созвон на 15 минут <ChevronRightIcon size={14} />
+            </button>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+const CAPABILITIES = [
+  { title: 'Зрение в реальном времени', body: 'Считывает контекст по ходу работы и показывает главное ещё до вашего вопроса.' },
+  { title: 'Послойный анализ', body: 'Проходит путь от черновика до чёткого результата, не теряя нити.' },
+  { title: 'Адаптивная скорость', body: 'Подстраивается под ваш ритм и с каждым проходом работает точнее.' },
+];
+
+function SectionTwo() {
+  return (
+    <section className="relative min-h-screen supports-[height:100svh]:min-h-[100svh] flex flex-col justify-between px-5 sm:px-8 md:px-12 pt-24 sm:pt-28 pb-12 md:pb-16">
+      <div className="flex flex-col gap-8 sm:flex-row justify-between">
+        <Badge delay={120}>Аналитика по запросу</Badge>
+        <Reveal delay={220} className="max-w-sm sm:text-right text-lg sm:text-xl leading-relaxed text-white drop-shadow-md">
+          Наш ИИ не просто отвечает — он понимает, уточняет и выдаёт именно тот сигнал, который вам нужен.
+        </Reveal>
+      </div>
+
+      <div className="flex-1 flex flex-col gap-12 justify-end md:flex-row items-end justify-between md:gap-16">
+        <div className="max-w-xl">
+          <Reveal delay={180} as="h2" className="text-5xl sm:text-6xl lg:text-7xl font-normal leading-[1.05] tracking-tight text-white drop-shadow-lg max-md:[text-shadow:0_2px_16px_rgba(20,30,50,.3)]">
+            <span className="block">Видеть</span><span className="block">главное.</span>
+          </Reveal>
+          <Reveal delay={320} as="p" className="mt-6 max-w-md text-sm sm:text-base text-white/80 drop-shadow-md max-md:rounded-xl max-md:bg-white/15 max-md:backdrop-blur-md max-md:p-4 max-md:text-white/90">
+            От первого наброска до финального результата g.a.d. превращает сырые идеи в решения, с которыми ваша команда может работать, — тихо, точно и быстро.
+          </Reveal>
+          <Reveal delay={420} className="mt-8 flex flex-wrap gap-3">
+            <button type="button" className="inline-flex items-center gap-1 rounded-full bg-white px-5 py-2.5 text-xs sm:text-sm font-medium text-black hover:bg-white/85 transition-colors duration-300">
+              Запустить демо <ChevronRightIcon size={14} />
+            </button>
+            <button type="button" className="rounded-full border border-white/25 bg-white/10 backdrop-blur-md px-5 py-2.5 text-xs sm:text-sm hover:bg-white/20 transition-colors duration-300">Бесплатная консультация</button>
+          </Reveal>
+        </div>
+
+        <div className="w-full max-w-md rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md px-5 sm:px-6">
+          {CAPABILITIES.map((c, i) => (
+            <Reveal key={c.title} delay={300 + i * 110} className={`group flex gap-5 py-5 ${i < CAPABILITIES.length - 1 ? 'border-b border-white/15' : ''}`}>
+              <span className="font-mono text-[11px] tracking-[0.15em] text-white/55">{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <div className="flex items-center gap-1.5 text-base sm:text-lg font-medium text-white">
+                  {c.title}
+                  <ChevronRightIcon size={16} className="text-white/40 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-300" />
+                </div>
+                <p className="mt-1.5 text-sm leading-relaxed text-white/70">{c.body}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function App() {
+  return (
+    <div className="relative">
+      <ScrollVideo />
+      <div className="relative z-10">
+        <Navbar />
+        <main>
+          <SectionOne />
+          <div className="h-[80vh]" aria-hidden="true" />
+          <SectionTwo />
+        </main>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</body>
+</html>
