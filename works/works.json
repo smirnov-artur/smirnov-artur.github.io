@@ -866,6 +866,21 @@
   "rp": 1
  },
  {
+  "slug": "space-planet",
+  "v": "space-planet",
+  "ve": "space-planet-en",
+  "ru": [
+   "Курс о планетах Солнечной системы",
+   "Кинематографичный первый экран курса: клик по Венере или Марсу в боковых слотах мгновенно меняет фоновый ролик, заголовок и текст"
+  ],
+  "en": [
+   "Planetary science course",
+   "A cinematic first screen for a planets course: clicking Venus or Mars in the side slots swaps the background clip, headline and copy in place"
+  ],
+  "cat": "web",
+  "rp": 1
+ },
+ {
   "slug": "maket-kabinet",
   "cat": "ai",
   "ru": [
