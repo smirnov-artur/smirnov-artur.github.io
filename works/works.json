@@ -4310,21 +4310,6 @@
   "ve": "proba-ohra-en"
  },
  {
-  "slug": "stick",
-  "cat": "tools",
-  "ru": [
-   "Параметрический конфигуратор",
-   "Одна геометрия, любая отделка: цвет, материал, гравировка и цена"
-  ],
-  "en": [
-   "Parametric configurator",
-   "One geometry, any finish: colour, material, engraving and price"
-  ],
-  "v": "stick",
-  "rp": 1,
-  "ve": "stick-en"
- },
- {
   "slug": "chip",
   "cat": "tools",
   "ru": [
