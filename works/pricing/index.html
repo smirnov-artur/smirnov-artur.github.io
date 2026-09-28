@@ -1,0 +1,86 @@
+<!doctype html>
+<!-- 28.09: страница «услуги и цены» для тех, кто ответил на письма и пришёл из соцсетей (запад). Цены — из поста на странице
+     Facebook Gad Studio; белая метка для студий — из писем студиям. Оплата: USDT, остальное по договорённости. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. — services and prices</title>
+<meta name="description" content="Websites with video, 3D and motion, white-label 3D for studios, AI assistants. Prices, timelines and how we work.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0a0a0c; --fg: #f2f2f4; --dim: #9a9aa6; --line: rgba(255,255,255,.1); --acc: #d6ff3f; }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bg); color: var(--fg); font: 400 17px/1.55 Manrope, system-ui, sans-serif; }
+  a { color: inherit; }
+  .w { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  header { padding: 28px 0; display: flex; justify-content: space-between; align-items: center; }
+  .logo { font: 800 24px Unbounded, sans-serif; letter-spacing: -.02em; text-decoration: none; }
+  .logo span { color: var(--acc); }
+  .tg { background: var(--acc); color: #0a0a0c; padding: 10px 18px; border-radius: 30px; font-weight: 700; text-decoration: none; }
+  h1 { font: 800 clamp(34px, 6vw, 64px)/1.02 Unbounded, sans-serif; letter-spacing: -.03em; margin: 40px 0 18px; }
+  h1 em { font-style: normal; color: var(--acc); }
+  .lead { color: var(--dim); max-width: 640px; font-size: 19px; }
+  h2 { font: 600 22px Unbounded, sans-serif; margin: 72px 0 22px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .card { border: 1px solid var(--line); border-radius: 18px; padding: 22px; background: rgba(255,255,255,.02); }
+  .card b { display: block; font: 600 18px Unbounded, sans-serif; margin-bottom: 6px; }
+  .price { color: var(--acc); font: 800 26px Unbounded, sans-serif; margin: 14px 0 4px; }
+  .card small { color: var(--dim); }
+  .cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .cases a { display: block; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); text-decoration: none; }
+  .cases img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+  .cases span { display: block; padding: 10px 14px; font-weight: 600; font-size: 15px; }
+  ol { padding-left: 22px; } ol li { margin: 10px 0; } ol li b { color: var(--acc); }
+  .pay { color: var(--dim); }
+  footer { margin: 90px 0 50px; padding-top: 28px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 18px; justify-content: space-between; }
+</style>
+</head>
+<body>
+<div class="w">
+  <header>
+    <a class="logo" href="https://smirnov-artur.github.io/works/?lang=en">g.a.d.<span>°</span></a>
+    <a class="tg" href="https://t.me/smirnovarturr">Telegram</a>
+  </header>
+
+  <h1>Websites that feel like <em>a film</em>.<br>Fixed prices.</h1>
+  <p class="lead">Scroll-driven stories, 3D products, animated landing pages, and AI assistants that answer your customers. Built by Artur Smirnov (g.a.d.). All work: <a href="https://smirnov-artur.github.io/works/?lang=en">290+ live sites</a>.</p>
+
+  <h2>Recent work</h2>
+  <div class="cases">
+    <a href="https://smirnov-artur.github.io/demo/iron-man-stark/"><img src="https://smirnov-artur.github.io/works/v/iron-man-stark-en.jpg" alt="Scroll-driven film" loading="lazy"><span>Scroll-driven film</span></a>
+    <a href="https://smirnov-artur.github.io/demo/apex-pulse/"><img src="https://smirnov-artur.github.io/works/v/apex-pulse-en.jpg" alt="Drone landing" loading="lazy"><span>Landing where everything moves</span></a>
+    <a href="https://smirnov-artur.github.io/demo/cinematic-brand/"><img src="https://smirnov-artur.github.io/works/v/cinematic-brand-en.jpg" alt="Cinematic brand intro" loading="lazy"><span>Cinematic brand intro</span></a>
+    <a href="https://smirnov-artur.github.io/demo/big-bang-origin/"><img src="https://smirnov-artur.github.io/works/v/big-bang-origin-en.jpg" alt="Story you scroll" loading="lazy"><span>A story you scroll</span></a>
+  </div>
+
+  <h2>Services and prices</h2>
+  <div class="grid">
+    <div class="card"><b>Landing page</b>One page with video, motion and a clear call to action. Phone first.<div class="price">from $290</div><small>5–7 days</small></div>
+    <div class="card"><b>Website</b>Several pages, scroll animation, contact and booking forms.<div class="price">from $590</div><small>10–14 days</small></div>
+    <div class="card"><b>3D website</b>A product or scene in real-time 3D that turns as you scroll.<div class="price">from $490</div><small>7–10 days</small></div>
+    <div class="card"><b>3D configurator</b>Customers pick colour, material and options; the price updates live.<div class="price">from $790</div><small>10–14 days</small></div>
+    <div class="card"><b>AI assistant</b>Answers customers on your site or in a messenger from your own prices and stock.<div class="price">from $290</div><small>5–7 days</small></div>
+    <div class="card"><b>White-label for studios</b>The 3D or motion part of your client's site, under your brand. You keep the client.<div class="price">from $490</div><small>5–10 days · first one at a discount</small></div>
+  </div>
+
+  <h2>How it works</h2>
+  <ol>
+    <li><b>Brief.</b> You send a link to what you like and what the site must do. I answer the same day.</li>
+    <li><b>Prototype in 3–5 days.</b> You see the first screen live, on your phone, before the rest is built.</li>
+    <li><b>Build.</b> Fixed price, fixed scope. Two rounds of changes included.</li>
+    <li><b>Handoff.</b> Your domain, your hosting, or I host it. Source code is yours.</li>
+  </ol>
+
+  <h2>Payment</h2>
+  <p class="pay">50% to start, 50% on handoff. USDT; other methods by arrangement.</p>
+
+  <footer>
+    <span>g.a.d. · Artur Smirnov</span>
+    <span><a href="https://t.me/smirnovarturr">Telegram @smirnovarturr</a> · <a href="mailto:paladei702@gmail.com">paladei702@gmail.com</a> · <a href="https://smirnov-artur.github.io/works/?lang=en">All work</a></span>
+  </footer>
+</div>
+</body>
+</html>
