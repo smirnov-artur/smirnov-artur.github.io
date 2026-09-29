@@ -54,7 +54,17 @@
   // фото на первом экране
   const фото = d.foto;  // порядок задаёт sobrat.py: первое — на первый экран
   const герой = $('[data-foto-geroj]');
-  if (фото.length) { const im = h('img'); im.src = фото[0].fajl; im.alt = 'Клиника ' + d.nazvanie; im.fetchPriority = 'high'; герой.append(im); }
+  if (фото.length) {
+    // до трёх кадров: медленный наплыв и смена наплывом каждые 4,5 с
+    const кадры = h('div', 'kadry');
+    фото.slice(0, 3).forEach((f, i) => { const im = h('img', i ? '' : 'aktiv'); im.src = f.fajl; im.alt = 'Клиника ' + d.nazvanie; if (!i) im.fetchPriority = 'high'; кадры.append(im); });
+    герой.append(кадры);
+    const все = $$('img', кадры);
+    if (все.length > 1 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let n = 0;
+      setInterval(() => { все[n].classList.remove('aktiv'); n = (n + 1) % все.length; все[n].classList.add('aktiv'); }, 4500);
+    }
+  }
   else { герой.classList.add('pusto'); герой.append(h('span', 'pusto__tekst', 'Здесь будет фото вашей клиники')); }
 
   // выбор в форме
@@ -144,4 +154,69 @@
   // шапка плотнее после прокрутки
   const шапка = $('.shapka');
   addEventListener('scroll', () => шапка.classList.toggle('prokrucheno', scrollY > 40), {passive: true});
+
+  // движение: блоки проявляются при прокрутке, фото плывут медленнее страницы (только transform и opacity — 60 к/с)
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // заголовки выходят по словам из-под маски
+  let и = 0;
+  const поСловам = (узел) => {
+    for (const n of [...узел.childNodes]) {
+      if (n.nodeType === 1 && n.tagName !== 'BR') { поСловам(n); continue; }
+      if (n.nodeType !== 3) continue;
+      const куски = document.createDocumentFragment();
+      for (const ч of n.textContent.split(/(\s+)/)) {
+        if (!ч) continue;
+        if (/^\s+$/.test(ч)) { куски.append(' '); continue; }
+        const маска = h('span', 'slovo'), слово = h('span', null, ч);
+        слово.style.setProperty('--i', и++ % 14);
+        маска.append(слово); куски.append(маска);
+      }
+      n.replaceWith(куски);
+    }
+  };
+  $$('.geroj__zag, .geroj__lid, .zag2, .blok__pod, .prajs__nazv, .vrach__imya').forEach(el => { и = 0; поСловам(el); });
+  requestAnimationFrame(() => requestAnimationFrame(() => $('.geroj__tekst').classList.add('vidno')));
+
+  const цели =$$('.blok__golova, .prajs__stroka, .ssylka, .vrach, .galereya figure, .otzyv, .kontakty__tekst > :not(.knopka), .karta');
+  цели.forEach(el => {
+    el.classList.add('poyav');
+    el.style.setProperty('--z', ([...el.parentElement.children].indexOf(el) % 6) * 80 + 'ms');
+  });
+  const глаз = new IntersectionObserver(записи => {
+    for (const з of записи) if (з.isIntersecting) { з.target.classList.add('vidno'); глаз.unobserve(з.target); }
+  }, {rootMargin: '0px 0px -8% 0px'});
+  цели.forEach(el => глаз.observe(el));
+
+  const плывут = [...$$('.galereya img'), ...$$('.vrach__foto img'), $('.kadry')].filter(Boolean);
+  const сила = matchMedia('(max-width: 860px)').matches ? 0.05 : 0.09;
+  let ждёт = false;
+  const параллакс = () => {
+    ждёт = false;
+    for (const el of плывут) {
+      const r = el.parentElement.getBoundingClientRect();
+      if (r.bottom < -100 || r.top > innerHeight + 100) continue;
+      const край = r.height * 0.06;  // запас кадра: фото увеличено на 14%, край не покажется
+      el.style.setProperty('--py', Math.max(-край, Math.min(край, (r.top + r.height / 2 - innerHeight / 2) * -сила)).toFixed(1) + 'px');
+    }
+  };
+  addEventListener('scroll', () => { if (!ждёт) { ждёт = true; requestAnimationFrame(параллакс); } }, {passive: true});
+  параллакс();
+
+  // мягкая прокрутка колесом (как у сайтов дня Awwwards): страница доплывает, а не прыгает. Тач не трогаем.
+  if (matchMedia('(pointer: coarse)').matches) return;
+  let цель = scrollY, плывёт = false;
+  const шаг = () => {
+    const y = scrollY + (цель - scrollY) * 0.1;
+    if (Math.abs(цель - y) < 0.5) { scrollTo({top: цель, behavior: 'instant'}); плывёт = false; return; }
+    scrollTo({top: y, behavior: 'instant'});
+    requestAnimationFrame(шаг);
+  };
+  addEventListener('wheel', e => {
+    if (e.ctrlKey || e.defaultPrevented) return;  // масштаб страницы — браузеру
+    e.preventDefault();
+    const низ = document.documentElement.scrollHeight - innerHeight;
+    цель = Math.max(0, Math.min(низ, цель + e.deltaY * (e.deltaMode === 1 ? 40 : 1)));
+    if (!плывёт) { плывёт = true; requestAnimationFrame(шаг); }
+  }, {passive: false});
+  addEventListener('scroll', () => { if (!плывёт) цель = scrollY; }, {passive: true});  // клавиши, якоря, ползунок
 })();
