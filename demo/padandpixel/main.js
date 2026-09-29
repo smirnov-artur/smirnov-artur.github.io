@@ -263,7 +263,7 @@
       const need = Math.max(...targets.map(t => t.length)) + (W < 700 ? 90 : 240);
       while (P.length < need) P.push({x: Math.random() * W, y: Math.random() * H, vx: 0, vy: 0, tx: 0, ty: 0, c: 'd', free: true, ph: Math.random() * 6.3});
       P.length = need;
-      if (!(fontsOnly && same && SHAPES[si].k === 'mark')) assign();
+      if (!(fontsOnly && same && SHAPES[si].k === 'mark')) { assign(); phase = 'hold'; t0 = performance.now(); }
       if (reduced) { P.forEach(p => { if (!p.free) { p.x = p.tx; p.y = p.ty; } }); draw(); }
     }
 
