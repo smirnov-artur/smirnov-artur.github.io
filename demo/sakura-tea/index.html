@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hanamizu — tea house &amp; kaiseki in a valley of cherry trees</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="A kaiseki counter, a tea pavilion under the pagoda and a terrace over the water. A live 3D valley: scroll and the camera walks from the red bridge to the pagoda and down to the pond.">
+<meta property="og:title" content="Hanamizu — tea house &amp; kaiseki">
+<meta property="og:description" content="Scroll, and the camera walks a live 3D cherry valley: the bridge, the pagoda, the water.">
+<meta property="og:image" content="https://smirnov-artur.github.io/demo/sakura-tea/og.jpg">
+<meta property="og:url" content="https://smirnov-artur.github.io/demo/sakura-tea/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#141a30">
+<link rel="icon" href="data:,">
+<!-- Концепт сайта чайного дома (бренд выдуманный), 29.09.2026. По открытому промту 宝玉 (@dotey) «日式樱花山谷»:
+     воксельная долина строится кодом (three.js), без картинок и моделей со стороны. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500&family=Shippori+Mincho:wght@600&display=swap" rel="stylesheet">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/",
+  "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.mjs"
+} }
+</script>
+<style>
+:root{--ink:#f3ece4;--mute:rgba(243,236,228,.68);--line:rgba(243,236,228,.16);--glass:rgba(15,18,38,.52);--glass2:rgba(15,18,38,.72);
+  --sakura:#f2b8c9;--lamp:#f3b56a;--shu:#c2402c;--pad:clamp(18px,3.4vw,48px);
+  --serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--jp:'Shippori Mincho','Yu Mincho','Hiragino Mincho ProN',serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:#141a30;color:var(--ink);-webkit-text-size-adjust:100%}
+html.lenis,html.lenis body{height:auto}
+body{font-family:var(--sans);font-size:15px;line-height:1.6;overflow-x:clip;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;touch-action:pan-y}
+.scrim{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(120% 70% at 0% 100%,rgba(10,12,28,.62),rgba(10,12,28,0) 60%),linear-gradient(180deg,rgba(10,12,28,.45),rgba(10,12,28,0) 18%)}
+
+/* loader */
+#load{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:#141a30;transition:opacity 1.1s ease,visibility 1.1s}
+#load.off{opacity:0;visibility:hidden}
+#load .box{text-align:center;width:min(320px,80vw)}
+#load .kanji{font-family:var(--jp);font-size:44px;letter-spacing:.2em;color:var(--sakura)}
+#load .bar{height:1px;background:var(--line);margin:22px 0 12px;overflow:hidden}
+#load .bar i{display:block;height:100%;width:0;background:var(--sakura);transition:width .3s}
+#load p{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+
+/* header */
+.top{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:calc(env(safe-area-inset-top,0px) + 18px) var(--pad) 18px;transition:background .5s,backdrop-filter .5s}
+.top.solid{background:rgba(15,18,38,.62);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.brand{display:flex;align-items:center;gap:12px}
+.hanko{width:34px;height:34px;display:grid;place-items:center;background:var(--shu);color:#fbe9e4;font-family:var(--jp);font-size:17px;border-radius:3px}
+.brand b{font-family:var(--serif);font-weight:600;font-size:21px;letter-spacing:.28em}
+.brand small{display:block;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin-top:-3px}
+.nav{display:flex;align-items:center;gap:6px}
+.nav a{padding:8px 14px;font-size:13px;letter-spacing:.06em;color:var(--mute);border-radius:99px;transition:color .3s,background .3s}
+.nav a:hover{color:var(--ink);background:rgba(255,255,255,.06)}
+.nav a.cta{color:#1b1426;background:var(--sakura);font-weight:500}
+.nav a.cta:hover{background:#f7cdd9}
+
+/* hero */
+.hero{text-shadow:0 2px 22px rgba(10,12,28,.5);position:relative;z-index:2;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 var(--pad) calc(env(safe-area-inset-bottom,0px) + clamp(28px,7vh,72px))}
+.kicker{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--sakura);margin-bottom:16px}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(44px,5.6vw,86px);line-height:.98;letter-spacing:-.01em;max-width:8.4em}
+h1 em,h2 em{font-style:italic;color:var(--sakura)}
+.lead{max-width:33em;margin-top:20px;font-size:16px;color:var(--mute)}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:99px;font-size:14px;letter-spacing:.04em;transition:transform .35s,background .35s,border-color .35s}
+.btn.p{background:var(--sakura);color:#1b1426;font-weight:500}
+.btn.p:hover{background:#f7cdd9;transform:translateY(-2px)}
+.btn.g{border:1px solid var(--line);background:rgba(15,18,38,.3);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.btn.g:hover{border-color:rgba(243,236,228,.4);transform:translateY(-2px)}
+.hint{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);transform:translateX(-50%);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:10px}
+.hint i{width:1px;height:34px;background:linear-gradient(var(--ink),transparent);animation:drip 2.4s ease-in-out infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* moods */
+.moods{position:fixed;right:var(--pad);bottom:calc(env(safe-area-inset-bottom,0px) + 22px);z-index:20;display:flex;gap:2px;padding:4px;border-radius:99px;
+  background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.moods button{padding:7px 13px;border-radius:99px;font-size:12px;letter-spacing:.05em;color:var(--mute);transition:background .3s,color .3s}
+.moods button[aria-pressed=true]{background:rgba(243,236,228,.14);color:var(--ink)}
+
+
+/* sections */
+main{position:relative;z-index:2}
+.sec{min-height:190vh;display:flex;align-items:center;padding:12vh var(--pad)}
+.sec.right{justify-content:flex-end}
+.panel{width:min(540px,44vw);padding:clamp(24px,3vw,40px);background:var(--glass);border:1px solid var(--line);border-radius:6px;
+  backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);box-shadow:0 30px 80px rgba(5,6,16,.35)}
+.sec.left .panel{margin-left:clamp(0px,5vw,80px)}
+.eyebrow{display:flex;align-items:center;gap:12px;font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--sakura);margin-bottom:14px}
+.eyebrow b{font-family:var(--jp);font-weight:600;font-size:15px;letter-spacing:.1em;color:var(--ink);opacity:.8}
+h2{font-family:var(--serif);font-weight:500;font-size:clamp(34px,3.5vw,52px);line-height:1.02;margin-bottom:14px}
+.panel>p{color:var(--mute)}
+.courses{margin:22px 0 4px;border-top:1px solid var(--line)}
+.courses li{list-style:none;display:grid;grid-template-columns:118px 1fr;gap:14px;padding:9px 0;border-bottom:1px solid var(--line)}
+.courses li>span{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--ink);line-height:1.2}
+.courses li p{font-size:13.5px;color:var(--mute);line-height:1.5}
+.prices{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.prices div{display:flex;flex-direction:column-reverse;gap:2px;padding:12px 12px;border:1px solid var(--line);border-radius:4px}
+.prices span{font-size:14px}
+.prices small{display:block;font-size:12px;color:var(--mute)}
+.prices b{font-family:var(--serif);font-weight:600;font-size:24px;color:var(--lamp);white-space:nowrap}
+.note{margin-top:14px;font-size:12.5px;color:var(--mute)}
+.steps{margin:20px 0;counter-reset:s;display:grid;gap:12px}
+.steps li{list-style:none;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.steps li::before{counter-increment:s;content:counter(s);width:30px;height:30px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-family:var(--serif);font-size:16px;color:var(--sakura)}
+.steps b{display:block;font-weight:500}
+.steps p{font-size:13.5px;color:var(--mute)}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:4px;margin:6px 0 22px}
+.facts div{padding:12px 12px;border-left:1px solid var(--line)}
+.facts div:first-child{border-left:0}
+.facts small{display:block;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.facts b{font-family:var(--serif);font-weight:600;font-size:19px;line-height:1.3}
+
+/* form */
+form{display:grid;grid-template-columns:1.3fr 1fr .8fr;gap:10px 12px;margin-top:18px}
+form .h{grid-column:span 1}
+form .n{grid-column:1/2}
+form .e{grid-column:2/4}
+label{display:grid;gap:6px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+label.w,fieldset.w,.w{grid-column:1/-1}
+input,select,textarea{width:100%;padding:11px 12px;background:rgba(8,10,24,.45);border:1px solid var(--line);border-radius:4px;font-size:14.5px;letter-spacing:0;text-transform:none;color:var(--ink);outline:none;transition:border-color .3s}
+input:focus,select:focus,textarea:focus{border-color:var(--sakura)}
+input::placeholder,textarea::placeholder{color:rgba(243,236,228,.38)}
+select option{background:#1a1f38}
+input[type=date]{color-scheme:dark}
+textarea{resize:vertical;min-height:70px}
+fieldset{border:0;display:grid;gap:6px}
+legend{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+.seats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seats label{display:block;cursor:pointer;text-transform:none;letter-spacing:0}
+.seats input{position:absolute;opacity:0;width:1px;height:1px}
+.seats span{display:block;padding:10px 10px;border:1px solid var(--line);border-radius:4px;font-size:13.5px;color:var(--ink);text-align:center;transition:border-color .3s,background .3s}
+.seats span small{display:block;font-size:11.5px;color:var(--mute)}
+.seats input:checked+span{border-color:var(--sakura);background:rgba(242,184,201,.1)}
+.seats input:focus-visible+span{outline:2px solid var(--sakura);outline-offset:2px}
+form .btn{justify-content:center;grid-column:1/-1;margin-top:4px}
+.sent{grid-column:1/-1;font-size:13.5px;color:var(--sakura);min-height:1.2em}
+
+footer{position:relative;z-index:2;padding:48px var(--pad) calc(env(safe-area-inset-bottom,0px) + 90px);display:flex;flex-wrap:wrap;justify-content:space-between;gap:18px 40px;font-size:13px;color:var(--mute);
+  background:linear-gradient(180deg,rgba(12,14,30,0),rgba(12,14,30,.78) 40%)}
+footer b{color:var(--ink);font-weight:500}
+footer a{border-bottom:1px solid var(--line)}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(26px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1.1s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+.sw .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em}
+.sw .w>span{display:inline-block;transform:translateY(105%);transition:transform 1.1s cubic-bezier(.2,.75,.2,1)}
+.sw.in .w>span{transform:none}
+.sp .w{overflow:visible;padding-bottom:0;vertical-align:baseline}
+.sp .w>span{opacity:0;transform:translateY(.4em);transition:opacity .7s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+.sp.in .w>span{opacity:1;transform:none}
+.li{opacity:0;transform:translateX(-14px);transition:opacity .8s,transform .9s cubic-bezier(.2,.7,.2,1)}
+.in .li{opacity:1;transform:none}
+
+.nogl .scrim{background:linear-gradient(180deg,#1b2140,#3a3a6a 60%,#6b5a80)}
+.nogl #glmsg{display:block}
+#glmsg{display:none;position:fixed;top:84px;left:var(--pad);right:var(--pad);z-index:21;padding:12px 16px;border:1px solid var(--line);border-radius:4px;background:var(--glass2);font-size:13px}
+
+@media (max-width:760px){
+  body{font-size:14.5px}
+  .top{padding-top:calc(env(safe-area-inset-top,0px) + 12px);padding-bottom:12px}
+  .brand small{display:none}
+  .brand b{font-size:18px;letter-spacing:.22em}
+  .nav a:not(.cta){display:none}
+  .nav a.cta{padding:8px 14px}
+  .hero{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 34px)}
+  .lead{font-size:15px}
+  .hint{display:none}
+  .moods{position:static;align-self:flex-start;margin-top:18px}
+  .moods button{white-space:nowrap}
+  .sec{min-height:auto;padding:62vh 12px 20vh;align-items:flex-end}
+  .sec.right{justify-content:flex-start}
+  .panel,.sec.left .panel{width:100%;margin:0;padding:22px 18px}
+  .courses li{grid-template-columns:92px 1fr;gap:10px}
+  .facts{grid-template-columns:1fr 1fr}
+  .facts div:nth-child(3){border-left:0}
+  .facts div:nth-child(n+3){border-top:1px solid var(--line)}
+  form{grid-template-columns:1fr 1fr}
+  form .e,form .n{grid-column:1/-1}
+  .seats{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  .rv,.li,.sw .w>span{transition:none;opacity:1;transform:none}
+  .hint i{animation:none}
+}
+</style>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="scrim"></div>
+<div id="load" role="status"><div class="box"><div class="kanji">花水</div><div class="bar"><i></i></div><p>Growing the valley</p></div></div>
+<div id="glmsg">This browser can't draw the 3D valley. The menu and booking below work as usual.</div>
+
+<header class="top">
+  <a class="brand" href="#top" data-go="0" aria-label="Hanamizu, back to top"><span class="hanko">花</span><span><b>HANAMIZU</b><small>Tea house · Kaiseki</small></span></a>
+  <nav class="nav"><a href="#menu" data-go="menu">Menu</a><a href="#ceremony" data-go="ceremony">Tea ceremony</a><a class="cta" href="#reserve" data-go="reserve">Reserve</a></nav>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <p class="kicker rv">Kaiseki · Tea ceremony · Terrace on the pond</p>
+    <h1 class="sw">Supper at <em>blue hour,</em> where the river bends</h1>
+    <p class="lead rv">Hanamizu is a twelve-seat kaiseki counter by the red bridge, a tea pavilion under the pagoda and a terrace over the water. Scroll, and walk the valley with us.</p>
+    <div class="ctas rv"><a class="btn p" href="#reserve" data-go="reserve">Reserve a table</a><a class="btn g" href="#menu" data-go="menu">See the spring menu</a></div>
+    <div class="hint" aria-hidden="true"><i></i>Scroll</div>
+    <div class="moods" role="group" aria-label="Time of day">
+      <button type="button" data-mood="dusk" aria-pressed="true">Blue hour</button><button type="button" data-mood="morning" aria-pressed="false">Morning</button><button type="button" data-mood="rain" aria-pressed="false">Rain</button>
+    </div>
+  </section>
+
+  <section class="sec left" id="menu">
+    <div class="panel rv">
+      <p class="eyebrow"><b>壱</b>By the red bridge</p>
+      <h2 class="sw">The spring <em>kaiseki</em></h2>
+      <p>Nine small courses that follow the market and the blossoms. Twelve seats at a hinoki counter, sittings at 18:30 and 21:00.</p>
+      <ul class="courses">
+        <li class="li"><span>Sakizuke</span><p>Firefly squid, bamboo shoot, sakura-leaf rice</p></li>
+        <li class="li"><span>Owan</span><p>Clear dashi, sea bream, kinome</p></li>
+        <li class="li"><span>Mukōzuke</span><p>Sashimi from the morning's catch</p></li>
+        <li class="li"><span>Yakimono</span><p>River trout grilled over binchōtan</p></li>
+        <li class="li"><span>Kashi</span><p>Sakura mochi and a bowl of matcha</p></li>
+      </ul>
+      <div class="prices">
+        <div><span>Hanami kaiseki<small>9 courses, counter</small></span><b>$185</b></div>
+        <div><span>River set<small>6 courses, terrace</small></span><b>$120</b></div>
+        <div><span>Sake pairing<small>5 pours</small></span><b>$70</b></div>
+      </div>
+      <p class="note">A vegetarian kaiseki is cooked with a day's notice. Prices per guest, service included.</p>
+    </div>
+  </section>
+
+  <section class="sec right" id="ceremony">
+    <div class="panel rv">
+      <p class="eyebrow"><b>弐</b>Under the pagoda</p>
+      <h2 class="sw">Tea in the <em>hillside</em> pavilion</h2>
+      <p>Forty-five minutes with our tea master in a four-and-a-half mat room. Made for first-timers: we show you where to sit and what to do with the bowl.</p>
+      <ol class="steps">
+        <li class="li"><div><b>The garden path</b><p>Stepping stones up from the bridge, past the torii.</p></div></li>
+        <li class="li"><div><b>The stone basin</b><p>Rinse your hands, leave the day outside.</p></div></li>
+        <li class="li"><div><b>Sweet and thick tea</b><p>A seasonal wagashi, then koicha from one shared bowl.</p></div></li>
+        <li class="li"><div><b>Thin tea</b><p>A bowl each, and time to ask about the utensils.</p></div></li>
+      </ol>
+      <div class="facts">
+        <div><small>Length</small><b>45 min</b></div>
+        <div><small>Guests</small><b>1–6</b></div>
+        <div><small>Sittings</small><b>11 · 14 · 16:30</b></div>
+        <div><small>Per guest</small><b>$65</b></div>
+      </div>
+      <a class="btn p" href="#reserve" data-go="reserve" data-seat="pavilion">Book the ceremony</a>
+    </div>
+  </section>
+
+  <section class="sec left" id="reserve">
+    <div class="panel rv">
+      <p class="eyebrow"><b>参</b>On the water</p>
+      <h2 class="sw">Reserve a <em>table</em></h2>
+      <p>The counter, the terrace over the pond or the tea pavilion. We confirm by email the same day.</p>
+      <form id="book" novalidate>
+        <label>Date<input type="date" name="date" required></label>
+        <label>Time<select name="time"><option>17:30</option><option selected>18:30</option><option>19:30</option><option>21:00</option></select></label>
+        <label>Guests<select name="guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>8</option><option>10</option><option>12</option></select></label>
+        <fieldset class="w"><legend>Where</legend>
+          <div class="seats">
+            <label><input type="radio" name="seat" value="counter" checked><span>Counter<small>kaiseki, 12 seats</small></span></label>
+            <label><input type="radio" name="seat" value="terrace"><span>Terrace<small>over the pond</small></span></label>
+            <label><input type="radio" name="seat" value="pavilion"><span>Pavilion<small>tea ceremony</small></span></label>
+          </div>
+        </fieldset>
+        <label class="n">Name<input name="name" autocomplete="name" placeholder="Your name" required></label>
+        <label class="e">Email<input type="email" name="email" autocomplete="email" placeholder="you@example.com" required></label>
+        <label class="w">Allergies, occasion<input name="note" placeholder="No shellfish, a birthday…"></label>
+        <button class="btn p" type="submit">Request the table</button>
+        <p class="sent" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div><b>HANAMIZU</b> · Kaiseki Wed–Sun from 17:30 · Tea pavilion daily 11:00–17:00</div>
+    <div>Concept site: the brand, menu and prices are made up. The valley is drawn live in your browser. Design and build — <a href="https://smirnov-artur.github.io/works/en">g.a.d.</a></div>
+  </footer>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>
