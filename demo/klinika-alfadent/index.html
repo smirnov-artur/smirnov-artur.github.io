@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Альфа-Дент — концепт сайта стоматологии от g.a.d.</title>
+<meta name="description" content="Концепт сайта для Альфа-Дент от g.a.d. Не официальный сайт клиники.">
+<meta name="theme-color" content="#f5f3ee">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>:root{--brand:#736745}</style>
+</head>
+<body>
+<div class="plashka" role="note">Концепт сайта для <b data-k="nazvanie"></b> от g.a.d. — не официальный сайт клиники</div>
+
+<header class="shapka">
+  <a class="znak" href="#top" aria-label="Наверх"></a>
+  <nav class="menu" aria-label="Разделы">
+    <a href="#uslugi">Услуги и цены</a><a href="#vrachi">Врачи</a><a href="#klinika">Клиника</a><a href="#otzyvy">Отзывы</a><a href="#kontakty">Контакты</a>
+  </nav>
+  <a class="tel-shapka" data-tel></a>
+  <a class="knopka knopka--mal" href="#zapis">Записаться</a>
+</header>
+
+<main id="top">
+  <section class="geroj">
+    <div class="geroj__tekst">
+      <p class="metka" data-k="metka"></p>
+      <h1 class="geroj__zag" data-k="zag"></h1>
+      <p class="geroj__lid" data-k="lid"></p>
+      <ul class="geroj__fakty" data-fakty></ul>
+    </div>
+    <figure class="geroj__foto" data-foto-geroj></figure>
+    <form class="zapis" id="zapis" novalidate>
+      <p class="zapis__zag">Онлайн-запись</p>
+      <p class="zapis__pod">Администратор перезвонит и подберёт время</p>
+      <label class="pole"><span>Имя</span><input name="imya" autocomplete="name" required></label>
+      <label class="pole"><span>Телефон</span><input name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7" required></label>
+      <label class="pole"><span>Что беспокоит</span><select name="usluga" data-vybor></select></label>
+      <fieldset class="vremya"><legend>Удобно</legend>
+        <label><input type="radio" name="vr" value="утро" checked><span>Утром</span></label>
+        <label><input type="radio" name="vr" value="день"><span>Днём</span></label>
+        <label><input type="radio" name="vr" value="вечер"><span>Вечером</span></label>
+      </fieldset>
+      <button class="knopka knopka--shir" type="submit">Записаться на приём</button>
+      <p class="zapis__chestno" data-otvet>Форма-заглушка в концепте: данные никуда не отправляются. В рабочей версии заявка придёт администратору.</p>
+    </form>
+  </section>
+
+  <section class="blok" id="uslugi">
+    <div class="blok__golova">
+      <p class="metka">Услуги и цены</p>
+      <h2 class="zag2">Цены видно сразу,<br><em>до звонка</em></h2>
+      <p class="blok__pod" data-k="uslugi_pod"></p>
+    </div>
+    <ol class="prajs" data-prajs></ol>
+    <a class="ssylka" data-prajs-ssylka target="_blank" rel="noopener"></a>
+  </section>
+
+  <section class="blok blok--ton" id="vrachi">
+    <div class="blok__golova">
+      <p class="metka">Врачи</p>
+      <h2 class="zag2">К кому вы <em>попадёте</em></h2>
+      <p class="blok__pod" data-k="vrachi_pod"></p>
+    </div>
+    <div class="vrachi" data-vrachi></div>
+  </section>
+
+  <section class="blok" id="klinika">
+    <div class="blok__golova">
+      <p class="metka">Клиника</p>
+      <h2 class="zag2">Как у нас <em>внутри</em></h2>
+      <p class="blok__pod" data-k="foto_pod"></p>
+    </div>
+    <div class="galereya" data-galereya></div>
+  </section>
+
+  <section class="blok blok--ton" id="otzyvy">
+    <div class="blok__golova">
+      <p class="metka">Отзывы</p>
+      <h2 class="zag2">Что говорят <em>пациенты</em></h2>
+      <p class="blok__pod" data-k="otzyvy_pod"></p>
+    </div>
+    <div class="otzyvy" data-otzyvy></div>
+  </section>
+
+  <section class="blok kontakty" id="kontakty">
+    <div class="kontakty__tekst">
+      <p class="metka">Контакты</p>
+      <h2 class="zag2">Как <em>добраться</em></h2>
+      <dl class="rekvizity">
+        <div><dt>Адрес</dt><dd data-k="adres_tekst"></dd></div>
+        <div><dt>Запись по телефону</dt><dd><a data-tel></a></dd></div>
+        <div><dt>Сайт клиники</dt><dd><a data-sajt target="_blank" rel="noopener"></a></dd></div>
+      </dl>
+      <a class="knopka" href="#zapis">Записаться онлайн</a>
+    </div>
+    <div class="karta" data-karta></div>
+  </section>
+</main>
+
+<footer class="podval">
+  <p><span data-k="nazvanie"></span> · <span data-k="gorod_podval"></span></p>
+  <p>Концепт от <a href="https://smirnov-artur.github.io/works/" target="_blank" rel="noopener">g.a.d.</a> по открытым материалам сайта клиники. Не официальный сайт, не оферта.</p>
+</footer>
+
+<nav class="niz" aria-label="Быстрая запись">
+  <a class="niz__tel" data-tel-knopka>Позвонить</a>
+  <a class="knopka" href="#zapis">Записаться</a>
+</nav>
+
+<script id="dannye-kliniki" type="application/json">{"slug": "alfadent", "sajt": "https://alfadentstom.ru/", "nazvanie": "Альфа-Дент", "gorod": "Сочи", "h1": "Стоматология в Сочи для взрослых и детей", "opisanie": "Стоматологическая клиника Сочи: центр профессиональной стоматологии. Современные технологии. Опытные врачи. Доступные цены, услуги.", "logo": "logo.png", "cveta_sajta": ["#a09060"], "akcent": "#736745", "akcent2": "", "telefon": "+7 862 279-32-53", "telefon_href": "+78622793253", "adres": "Сочи, ул. Северная, 12к2, 2 этаж", "adresov_esche": 1, "karta": [43.594329, 39.725999], "uslugi": [{"razdel": "Консультация", "nazvanie": "Консультация врача", "cena": "от 950 ₽"}, {"razdel": "Гигиена", "nazvanie": "Гигиена полости рта", "cena": "от 4 990 ₽"}, {"razdel": "Лечение кариеса", "nazvanie": "Лечение кариеса", "cena": "от 4 900 ₽"}, {"razdel": "Имплантация", "nazvanie": "Имплантация зуба", "cena": "от 30 000 ₽"}, {"razdel": "Коронки и виниры", "nazvanie": "Коронка из диоксида циркония", "cena": "от 28 000 ₽"}, {"razdel": "Ортодонтия", "nazvanie": "Брекеты, одна челюсть", "cena": "от 45 000 ₽"}, {"razdel": "Удаление зуба", "nazvanie": "Удаление зуба", "cena": "от 4 500 ₽"}, {"razdel": "Детям", "nazvanie": "Детский стоматолог", "cena": "1 000 ₽"}], "strok_v_prajse": 32, "prajs_url": "https://alfadentstom.ru/price-list/", "vrachi": [{"imya": "Петросян Гаянэ Борисовна", "rol": "Главный врач", "foto": "vrach1.jpg"}, {"imya": "Дячук Кирилл Алексеевич", "rol": "Врач-стоматолог хирург", "foto": "vrach2.jpg"}, {"imya": "Ягафаров Наиль Фанилевич", "rol": "Врач-стоматолог ортопед", "foto": "vrach3.jpg"}, {"imya": "Казарян Инна Владимировна", "rol": "Врач-стоматолог ортопед", "foto": "vrach4.jpg"}], "otzyvy": [{"tekst": "Обратилась в клинику Альфа Дент с проблемой ремонта протеза. Администраторы предложили запись к прекрасному специалисту Ягафарову Наилю Фанилевичу. Он качественно и быстро осуществил починку протеза. Обслуживание на высшем уровне. Спасибо за помощь."}, {"tekst": "Пришёл в «АльфаДент» с воспалением, думал, зуб уже удалять. Сделали кт и поставили диагноз - периодонтит. Пролечили, поставили пломбу - всё без боли и спокойно. Через пару дней уже забыл, что вообще что-то болело. Рад, что смогли сохранить. Хорошие врачи, видно, что работают на результат, а не просто для галочки."}, {"tekst": "Лечила кариес в «Альфа-Дент» - всё прошло комфортно и быстро. Врач показала на фото проблемные места, объяснила почему так и сделал всё сразу. Было не больно, почувствовала только укол. Пломбу от зуба не отличить, ничего не мешает. Приятно, когда к тебе относятся с вниманием и по-человечески, а не делают всё без души, лишь бы поскорее."}], "otzyvy_url": "https://alfadentstom.ru/soglasie-na-rasprostranenie-personalnyh-dannyh-dlja-otzyvov/", "foto": [{"fajl": "foto6.jpg", "w": 768, "h": 432, "plosk": 0.17, "otkuda": "https://alfadentstom.ru/wp-content/uploads/2025/09/photo-alfadent-14-768x432.webp"}, {"fajl": "foto5.jpg", "w": 768, "h": 512, "plosk": 0.19, "otkuda": "https://alfadentstom.ru/wp-content/uploads/2023/09/0012-4-768x512.webp"}, {"fajl": "foto4.jpg", "w": 1140, "h": 641, "plosk": 0.42, "otkuda": "https://alfadentstom.ru/wp-content/uploads/2026/01/oblozhka_video_dobro_pozhalovatj-1140x641.webp"}, {"fajl": "foto1.jpg", "w": 1000, "h": 1000, "plosk": 0.09, "otkuda": "https://alfadentstom.ru/wp-content/themes/alfadent/assets/img/zapis.webp"}, {"fajl": "foto2.jpg", "w": 768, "h": 1152, "plosk": 0.31, "otkuda": "https://alfadentstom.ru/wp-content/uploads/2023/09/adent001-768x1152.webp"}, {"fajl": "foto3.jpg", "w": 768, "h": 960, "plosk": 0.48, "otkuda": "https://alfadentstom.ru/wp-content/uploads/2023/09/0103-1-768x960.webp"}]}</script>
+<script src="app.js"></script>
+</body>
+</html>

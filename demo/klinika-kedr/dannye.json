@@ -1,0 +1,149 @@
+{
+ "slug": "kedr",
+ "sajt": "https://kedrclinic.ru/",
+ "nazvanie": "Кедр",
+ "gorod": "Сочи",
+ "h1": "Семейная стоматология «Кедр» в Сочи",
+ "opisanie": "Клиника «Кедр» в Сочи: бережное лечение взрослых и детей, современное оборудование, опытные специалисты. Диагностика, терапия, имплантация, ортодонтия и детская стоматология.",
+ "logo": "logo.png",
+ "cveta_sajta": [
+  "#7fa37c"
+ ],
+ "akcent": "#4e6c4c",
+ "akcent2": "",
+ "telefon": "+7 988 400-56-66",
+ "telefon_href": "+79884005666",
+ "adres": "ул. Ленина д. 219",
+ "adresov_esche": 1,
+ "karta": [
+  43.473553,
+  39.893628
+ ],
+ "uslugi": [
+  {
+   "razdel": "Консультация",
+   "nazvanie": "Осмотр стоматолога",
+   "cena": "1 500 ₽"
+  },
+  {
+   "razdel": "Гигиена",
+   "nazvanie": "Профессиональная гигиена полости рта и молочных зубов 60 мин.",
+   "cena": "1 800 ₽"
+  },
+  {
+   "razdel": "Лечение кариеса",
+   "nazvanie": "Реставрация зуба",
+   "cena": "5 800 ₽"
+  },
+  {
+   "razdel": "Лечение каналов",
+   "nazvanie": "Медикаментозное лечение каналов зуба",
+   "cena": "3 000 ₽"
+  },
+  {
+   "razdel": "Имплантация",
+   "nazvanie": "Установка импланта OSSTEM",
+   "cena": "30 000 ₽"
+  },
+  {
+   "razdel": "Коронки и виниры",
+   "nazvanie": "Коронка цельнокерамическая эстетика/техник - изготовление",
+   "cena": "30 000 ₽"
+  },
+  {
+   "razdel": "Ортодонтия",
+   "nazvanie": "Установка ортодонтической аппаратуры с комбинированными брекетамина",
+   "cena": "108 000 ₽"
+  },
+  {
+   "razdel": "Удаление зуба",
+   "nazvanie": "Удаление зуба мудрости",
+   "cena": "5 200 ₽"
+  },
+  {
+   "razdel": "Отбеливание",
+   "nazvanie": "Профессиональное отбеливание зубов клиническое за один визит аппаратом ZOOM-4 /…",
+   "cena": "35 000 ₽"
+  },
+  {
+   "razdel": "Детям",
+   "nazvanie": "Прием врача-стоматолога детского",
+   "cena": "500 ₽"
+  },
+  {
+   "razdel": "Диагностика",
+   "nazvanie": "Компьютерная томография пазух носа",
+   "cena": "2 850 ₽"
+  }
+ ],
+ "strok_v_prajse": 305,
+ "prajs_url": "https://kedrclinic.ru/prices",
+ "vrachi": [
+  {
+   "imya": "Синица Мирослав Витальевич",
+   "rol": "Врач-стоматолог",
+   "foto": "vrach1.jpg"
+  },
+  {
+   "imya": "Карпекин Михаил Юрьевич",
+   "rol": "Врач-стоматолог",
+   "foto": "vrach2.jpg"
+  },
+  {
+   "imya": "Топоркова Ольга Владимировна",
+   "rol": "Врач-стоматолог-ортодонт",
+   "foto": "vrach3.jpg"
+  },
+  {
+   "imya": "Оганесян Маня Ваниковна",
+   "rol": "Врач-стоматолог",
+   "foto": "vrach4.jpg"
+  }
+ ],
+ "otzyvy": [],
+ "otzyvy_url": "https://kedrclinic.ru/reviews",
+ "foto": [
+  {
+   "fajl": "foto1.jpg",
+   "w": 1672,
+   "h": 941,
+   "plosk": 0.22,
+   "otkuda": "https://kedrclinic.ru/storage/about/gallery/YD2sVFkBuOkCsgVLdjtzoKtMvBAvz7C4m3aAxdFR.png"
+  },
+  {
+   "fajl": "foto6.jpg",
+   "w": 1086,
+   "h": 1448,
+   "plosk": 0.06,
+   "otkuda": "https://kedrclinic.ru/storage/about/gallery/lTF6CquvlMfwe8kY5iz09iKaHXkqDvwmVWcv1RFa.png"
+  },
+  {
+   "fajl": "foto3.jpg",
+   "w": 992,
+   "h": 1586,
+   "plosk": 0.08,
+   "otkuda": "https://kedrclinic.ru/storage/about/gallery/eVzjfiwMhJfyauot0LibgMsS1uWiVJLRXOl2JBZZ.png"
+  },
+  {
+   "fajl": "foto2.jpg",
+   "w": 992,
+   "h": 1586,
+   "plosk": 0.1,
+   "otkuda": "https://kedrclinic.ru/storage/about/gallery/m8HOIGua4k1twTAJlUZulHzIImzPnpHvrtMIgCAB.png"
+  },
+  {
+   "fajl": "foto4.jpg",
+   "w": 992,
+   "h": 1586,
+   "plosk": 0.15,
+   "otkuda": "https://kedrclinic.ru/storage/about/gallery/YogiDc564MLiZ8dYrbrJcKb1LSUnpcUv5wcbJsld.png"
+  },
+  {
+   "fajl": "foto5.jpg",
+   "w": 992,
+   "h": 1586,
+   "plosk": 0.24,
+   "otkuda": "https://kedrclinic.ru/storage/about/gallery/YasdoCbhtvRjFGLdzWLKljUfZG4a7wbe1cfwegA0.png"
+  }
+ ]
+}
