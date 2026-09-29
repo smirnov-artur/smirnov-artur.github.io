@@ -243,3 +243,5 @@ ol, ul { list-style: none; }
   .galereya[data-n] figure:first-child { grid-column: 1 / -1; }
 }
 .znak img.znak--svetlyj { filter: brightness(0) opacity(.86); }
+.znak__slovo--ryadom { margin-left: 12px; font-size: 22px; white-space: nowrap; }
+@media (max-width: 860px) { .znak__slovo--ryadom { font-size: 19px; } }

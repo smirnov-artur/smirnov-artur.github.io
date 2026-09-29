@@ -5,7 +5,7 @@
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const h = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
   const хост = d.domen || (d.sajt ? new URL(d.sajt).hostname.replace(/^www\./, '') : '');
-  if (/официальн\w* сайт/i.test(d.opisanie)) d.opisanie = '';  // спорит с плашкой «не официальный сайт»
+  if (/официальн[а-яё]* сайт/i.test(d.opisanie)) d.opisanie = '';  // спорит с плашкой «не официальный сайт»
   const коротко = (t, n) => t.length > n ? t.slice(0, t.lastIndexOf(' ', n)).replace(/[,.;:—–-]+$/, '') + '…' : t;
 
   if (d.akcent) document.documentElement.style.setProperty('--brand', d.akcent);
@@ -28,7 +28,11 @@
 
   // знак в шапке: логотип клиники или название набором
   const знак = $('.znak');
-  if (d.logo) { const im = h('img', d.logo_svetlyj ? 'znak--svetlyj' : ''); im.src = d.logo; im.alt = d.nazvanie; знак.append(im); }
+  if (d.logo) {
+    const im = h('img', d.logo_svetlyj ? 'znak--svetlyj' : ''); im.src = d.logo; im.alt = d.nazvanie; знак.append(im);
+    // знак без надписи (квадратный) — рядом имя набором
+    im.addEventListener('load', () => { if (im.naturalWidth / im.naturalHeight < 1.6) знак.append(h('span', 'znak__slovo znak__slovo--ryadom', d.nazvanie)); });
+  }
   else знак.append(h('span', 'znak__slovo', d.nazvanie));
 
   // телефон
