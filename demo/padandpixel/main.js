@@ -33,6 +33,30 @@
     addEventListener('pageshow', e => { if (e.persisted) wipe.classList.add('open'); });
   }
 
+  // Intro on the home page: the mark and wordmark come in with a load counter, then the curtain lifts
+  // (the preloader pattern of Noomo Showcase and Mosby's Files, Sites of the Day 01.08 and 13.08.2026).
+  const intro = $('.intro');
+  const heroGate = new Promise(done => {
+    if (!intro) return done();
+    if (reduced) { intro.remove(); return done(); }
+    const cnt = $('.intro-count', intro), t0 = performance.now();
+    document.documentElement.classList.add('lock');
+    intro.classList.add('run');
+    const step = t => {
+      const k = Math.min(1, (t - t0) / 1400);
+      cnt.textContent = String(Math.round((1 - Math.pow(1 - k, 3)) * 100)).padStart(3, '0');
+      if (k < 1) return requestAnimationFrame(step);
+      intro.classList.add('out');
+      setTimeout(() => {
+        intro.remove();
+        document.documentElement.classList.remove('lock');
+        dispatchEvent(new Event('intro:done'));
+        done();
+      }, 750);
+    };
+    requestAnimationFrame(step);
+  });
+
   // Pixel fields at the section edges, each square on its own parallax speed.
   $$('[data-pixels]').forEach(f => {
     const cols = (f.dataset.colors || 'var(--blue),var(--red)').split(','), R = Math.random;
@@ -42,11 +66,19 @@
   });
 
   // Split headings into words that slide up, keep the full sentence for screen readers.
+  // data-split="chars" goes letter by letter, each line a beat later (as the Mosby's Files hero title).
   $$('[data-split]').forEach(el => {
-    const text = el.textContent.trim().replace(/\s+/g, ' ');
-    el.innerHTML = `<span class="sr">${esc(text)}</span>` + text.split(' ')
-      .map((w, i) => `<span class="w" aria-hidden="true"><span style="--i:${i}">${esc(w)}</span></span>`).join(' ');
+    const text = el.textContent.trim().replace(/\s+/g, ' '), chars = el.dataset.split === 'chars';
+    el.innerHTML = `<span class="sr">${esc(text)}</span>` + text.split(' ').map((w, i) => `<span class="w" aria-hidden="true">` +
+      (chars ? [...w].map(c => `<span class="c">${esc(c)}</span>`).join('') : `<span style="--i:${i}">${esc(w)}</span>`) + `</span>`).join(' ');
   });
+  function charDelays(el) {
+    let line = -1, top = null, k = 0;
+    $$('.w', el).forEach(w => {
+      if (w.offsetTop !== top) { top = w.offsetTop; line++; k = 0; }
+      $$('.c', w).forEach(c => c.style.setProperty('--d', line * 130 + k++ * 16));
+    });
+  }
   const scrubs = $$('[data-scrub]').map(el => {
     const text = el.textContent.trim().replace(/\s+/g, ' ');
     el.innerHTML = `<span class="sr">${esc(text)}</span>` + text.split(' ')
@@ -78,11 +110,27 @@
 
   const io = new IntersectionObserver(entries => entries.forEach(e => {
     if (!e.isIntersecting) return;
-    e.target.classList.add('in');
-    if (e.target.dataset.count) countUp(e.target);
-    io.unobserve(e.target);
+    const el = e.target;
+    io.unobserve(el);
+    const show = () => {
+      if (el.dataset.split === 'chars') charDelays(el);
+      el.classList.add('in');
+      if (el.dataset.count) countUp(el);
+    };
+    if (el.closest('.hero')) heroGate.then(show); else show();
   }), {rootMargin: '0px 0px -8% 0px', threshold: .12});
-  $$('[data-split],[data-reveal],[data-count],.photo').forEach(el => io.observe(el));
+  $$('[data-split],[data-reveal],[data-count],.photo,.dossiers').forEach(el => io.observe(el));
+
+  // Mock reviews as a stack of files under NDA: one open at a time (the folder stack of Mosby's Files).
+  $$('.dossiers').forEach(box => box.addEventListener('click', e => {
+    const tab = e.target.closest('.tab');
+    if (!tab) return;
+    $$('.file', box).forEach(f => {
+      const open = f === tab.closest('.file');
+      f.classList.toggle('open', open);
+      $('.tab', f).setAttribute('aria-expanded', open);
+    });
+  }));
 
   // Marquees loop forever and speed up with the scroll.
   const marquees = $$('[data-marquee]').map(el => {
@@ -110,6 +158,7 @@
     addEventListener('wheel', e => {
       if (e.ctrlKey) return;
       e.preventDefault();
+      if (intro && intro.isConnected) return;
       const d = e.deltaMode === 1 ? e.deltaY * 32 : e.deltaMode === 2 ? e.deltaY * innerHeight : e.deltaY;
       if (!smooth) cur = target = scrollY;
       target = clamp(target + d, 0, document.documentElement.scrollHeight - innerHeight);
@@ -126,7 +175,9 @@
     else scrollTo({top: y, behavior: reduced ? 'auto' : 'smooth'});
   }));
 
-  const hero = $('#px') && pixelHero($('#px'));
+  // The hero is 3D (hero3d.js); this flat pixel version only runs when WebGL is unavailable.
+  let hero = null;
+  window.startPixelHero2D = () => { if (!hero && $('#px')) hero = pixelHero($('#px')); };
   let lastY = scrollY, vel = 0, navY = scrollY;
 
   function frame(now) {
