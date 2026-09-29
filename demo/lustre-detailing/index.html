@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LUSTRE — detailing atelier</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Paint correction, ceramic coating, protection film and colour change. A real-time 3D site: scroll and the camera flies around the car.">
+<meta property="og:title" content="LUSTRE — detailing atelier">
+<meta property="og:description" content="Scroll, and the camera flies around the car while the paint gets polished in real time.">
+<meta property="og:image" content="https://smirnov-artur.github.io/demo/lustre-detailing/og.jpg">
+<meta property="og:url" content="https://smirnov-artur.github.io/demo/lustre-detailing/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#060607">
+<link rel="icon" href="data:,">
+<!-- Концепт сайта детейлинг-студии (бренд выдуманный), 29.09.2026. Сцена three.js: модель ferrari.glb из примеров three.js
+     (Ferrari 458 Italia, автор vicent091036, CC BY 4.0), материалы свои, значки марки убраны. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js">
+<link rel="preload" href="m/ferrari.glb" as="fetch" crossorigin>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/",
+  "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.mjs"
+} }
+</script>
+<style>
+:root{--bg:#060607;--ink:#ECE8DF;--mute:#8E8B84;--line:rgba(236,232,223,.14);--pad:clamp(18px,3.2vw,44px);
+  --wide:'Archivo',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);color:var(--ink);-webkit-text-size-adjust:100%}
+html.lenis,html.lenis body{height:auto}
+body{font-family:var(--wide);font-stretch:100%;font-size:16px;line-height:1.5;overflow-x:clip}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;touch-action:pan-y}
+/* зерно плёнки поверх всего */
+.grain{position:fixed;inset:-50%;z-index:30;pointer-events:none;opacity:.07;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 1s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-4%,3%)}40%{transform:translate(3%,-5%)}60%{transform:translate(-6%,-2%)}80%{transform:translate(5%,4%)}100%{transform:translate(0,0)}}
+
+/* загрузка: одна трубка света разгорается */
+.load{position:fixed;inset:0;z-index:40;background:#000;display:grid;place-items:center;transition:opacity .6s ease,visibility 0s .6s}
+.load .t{width:min(300px,60vw);height:1px;background:rgba(255,255,255,.08);position:relative;overflow:visible}
+.load .t i{position:absolute;inset:0;transform-origin:0 50%;transform:scaleX(var(--p,0));background:#fff;box-shadow:0 0 12px 1px rgba(255,248,235,.7)}
+.load span{position:absolute;margin-top:34px;font:500 10px/1 var(--mono);letter-spacing:.3em;color:var(--mute)}
+.go .load{opacity:0;visibility:hidden}
+
+/* шапка */
+.nav{position:fixed;top:16px;left:50%;transform:translate(-50%,-160%);z-index:20;display:flex;align-items:center;gap:22px;
+  padding:9px 9px 9px 22px;border:1px solid var(--line);border-radius:999px;background:rgba(10,10,12,.46);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  font-size:13px;white-space:nowrap;transition:transform 1s cubic-bezier(.2,.8,.2,1) 1.9s}
+.go .nav{transform:translate(-50%,0)}
+.nav b{font-weight:800;font-stretch:125%;letter-spacing:.06em}
+.nav a:not(.cta){color:var(--mute);transition:color .2s}
+.nav a:not(.cta):hover{color:var(--ink)}
+.cta{display:inline-flex;align-items:center;gap:10px;padding:11px 18px;border-radius:999px;background:var(--ink);color:#0a0a0a;font-weight:600;font-size:13px;transition:transform .3s}
+.cta:hover{transform:scale(1.04)}
+
+main{position:relative;z-index:10}
+section{position:relative}
+.hero{height:100vh;height:100svh;pointer-events:none}
+.hero .side{position:absolute;top:50%;font:500 11px/1.7 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#B5B1A9}
+.hero .l{left:var(--pad)}.hero .r{right:var(--pad);text-align:right}
+.hero .bot{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(var(--pad) + env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+.hero h1{font-size:clamp(26px,3.1vw,46px);line-height:1.02;font-weight:760;font-stretch:118%;letter-spacing:-.01em;max-width:13ch}
+.hero .bot .cta{pointer-events:auto}
+.cue{position:absolute;left:50%;bottom:calc(var(--pad) + 4px);transform:translateX(-50%);font:500 10px/1 var(--mono);letter-spacing:.3em;color:var(--mute);text-transform:uppercase}
+.cue::after{content:"";display:block;width:1px;height:34px;margin:12px auto 0;background:linear-gradient(var(--ink),transparent);animation:cue 1.8s ease-in-out infinite;transform-origin:top}
+@keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+
+/* услуги */
+.svc{height:210vh}
+.card{position:sticky;top:15vh;width:min(470px,36vw);margin-left:var(--pad);padding:28px 0}
+.svc.right .card{margin-left:auto;margin-right:var(--pad)}
+.k{display:flex;gap:14px;align-items:center;font:500 11px/1 var(--mono);letter-spacing:.2em;color:var(--mute);text-transform:uppercase}
+.k::after{content:"";flex:1;height:1px;background:var(--line)}
+.card h2{margin:22px 0 18px;font-size:clamp(34px,4.1vw,64px);line-height:.95;font-weight:800;font-stretch:125%;letter-spacing:-.015em;text-transform:uppercase}
+.card p{color:#C9C5BC;font-size:17px;line-height:1.55;max-width:40ch}
+.stats{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);margin:28px 0 22px;border-top:1px solid var(--line)}
+.stats li{padding:16px 12px 0 0}
+.stats b{display:block;font-size:22px;font-weight:760;font-stretch:112%;white-space:nowrap}
+.stats li>span{display:block;margin-top:4px;font:400 11px/1.35 var(--mono);color:var(--mute)}
+.price{font:500 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.price b{font:700 26px/1 var(--wide);font-stretch:112%;letter-spacing:0;color:var(--ink);margin-left:8px}
+
+/* цвета */
+.sw{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0 20px}
+.sw button{display:flex;align-items:center;gap:10px;padding:7px 14px 7px 7px;border:1px solid var(--line);border-radius:999px;font-size:13px;color:#C9C5BC;transition:border-color .3s,background .3s,color .3s}
+.sw button i{width:26px;height:26px;border-radius:50%;background:var(--c);box-shadow:inset 0 -6px 10px rgba(0,0,0,.35),inset 0 5px 8px rgba(255,255,255,.35)}
+.sw button[aria-pressed=true]{border-color:var(--ink);background:rgba(236,232,223,.08);color:var(--ink)}
+
+/* бегущая строка */
+.band{padding:9vh 0;overflow:hidden;white-space:nowrap;pointer-events:none}
+.band div{display:inline-block;font-size:clamp(60px,11vw,190px);font-weight:900;font-stretch:125%;line-height:1;text-transform:uppercase;
+  color:transparent;-webkit-text-stroke:1px rgba(236,232,223,.4);will-change:transform}
+.band div span{color:var(--ink);-webkit-text-stroke:0}
+
+/* запись */
+.book{min-height:120vh;padding:22vh var(--pad) 0;display:flex;flex-direction:column}
+.book h2{font-size:clamp(44px,8.4vw,150px);line-height:.88;font-weight:900;font-stretch:125%;letter-spacing:-.02em;text-transform:uppercase;max-width:9ch}
+.book .row{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-top:4vh}
+.book .row p{max-width:34ch;color:#C9C5BC}
+.pk{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:10vh}
+.pk article{padding:26px;border:1px solid var(--line);border-radius:20px;background:rgba(10,10,12,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:border-color .3s,transform .5s cubic-bezier(.2,.8,.2,1)}
+.pk article:hover{border-color:rgba(236,232,223,.4);transform:translateY(-6px)}
+.pk h3{font-size:22px;font-weight:800;font-stretch:125%;text-transform:uppercase}
+.pk p{margin:10px 0 26px;color:var(--mute);font-size:14px;min-height:4.6em}
+.pk b{font-size:34px;font-weight:760;font-stretch:112%}
+.pk small{font:400 11px/1 var(--mono);color:var(--mute);margin-left:6px}
+footer{margin-top:auto;padding:14vh 0 calc(26px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;gap:20px;font:400 11px/1.6 var(--mono);color:var(--mute)}
+footer a{text-decoration:underline;text-underline-offset:3px}
+
+/* показатели сцены */
+.hud{position:fixed;left:var(--pad);bottom:var(--pad);z-index:15;font:500 10px/1.8 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);opacity:0;transition:opacity .6s}
+.hud b{color:var(--ink);font-weight:500}
+.on.past .hud{opacity:1}
+.rail{position:fixed;right:var(--pad);top:50%;transform:translateY(-50%);z-index:15;display:grid;gap:12px;opacity:0;transition:opacity .6s}
+.on .rail{opacity:1}
+.rail i{display:block;width:18px;height:1px;background:var(--line);transition:width .5s,background .5s;margin-left:auto}
+.rail i.a{width:38px;background:var(--ink)}
+
+/* появление слов */
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.06em;margin-bottom:-.06em}
+.w>span{display:inline-block;transform:translateY(108%);transition:transform 1s cubic-bezier(.16,.84,.24,1) calc(var(--i,0) * 28ms)}
+.in .w>span{transform:none}
+.fade{opacity:0;transform:translateY(18px);transition:opacity .9s ease .35s,transform 1s cubic-bezier(.16,.84,.24,1) .35s}
+.in .fade,.fade.in{opacity:1;transform:none}
+
+@media (max-width:760px){
+  .nav{gap:14px;padding:7px 7px 7px 16px;top:12px}
+  .nav .ln{display:none}
+  .hero .side{top:auto;bottom:calc(150px + env(safe-area-inset-bottom))}
+  .hero h1{font-size:28px}
+  .hero .bot{flex-direction:column;align-items:flex-start;gap:18px}
+  .cue{display:none}
+  /* карточка стоит внизу экрана, пока секция проезжает: сверху машина */
+  .svc{height:200vh;display:flex;flex-direction:column;justify-content:flex-end}
+  .card,.svc.right .card{top:auto;bottom:0;position:sticky;width:auto;margin:0;padding:110px var(--pad) calc(28px + env(safe-area-inset-bottom));
+    background:linear-gradient(transparent,rgba(6,6,7,.86) 90px,rgba(6,6,7,.94))}
+  .card h2{font-size:38px;margin:16px 0 12px}
+  .card p{font-size:15px}
+  .stats{margin:18px 0 14px}
+  .stats b{font-size:18px}
+  .sw{margin:18px 0 14px;gap:8px}
+  .sw button{font-size:12px;padding:5px 11px 5px 5px}
+  .sw button i{width:22px;height:22px}
+  .book{padding-top:44vh}
+  .book .row{flex-direction:column;align-items:flex-start}
+  .pk{grid-template-columns:1fr;margin-top:6vh}
+  .pk p{min-height:0}
+  footer{flex-direction:column}
+  .hud{display:none}
+  .rail{top:auto;bottom:auto;top:82px;transform:none;display:flex;gap:6px}
+  .rail i{width:12px}.rail i.a{width:26px}
+}
+@media (prefers-reduced-motion:reduce){.grain{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+<div class="load" aria-hidden="true"><div class="t"><i></i></div><span>WARMING UP THE LIGHTS</span></div>
+
+<nav class="nav">
+  <b>LUSTRE</b>
+  <a class="ln" href="#correction">Services</a>
+  <a class="ln" href="#colour">Colour</a>
+  <a class="ln" href="#book">Pricing</a>
+  <a class="cta" href="#book">Book an inspection</a>
+</nav>
+
+<div class="hud" aria-hidden="true">
+  <div>Paint <b id="hp">Obsidian · gloss</b></div>
+  <div>Camera <b id="hc">000° / 00°</b></div>
+</div>
+<div class="rail" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+<main>
+  <section class="hero" id="top">
+    <div class="side l">Detailing atelier<br>Los Angeles</div>
+    <div class="side r">Correction · Ceramic<br>Film · Colour</div>
+    <div class="bot">
+      <h1 data-split>Mirror finish, made by hand.</h1>
+      <a class="cta" href="#book">Book an inspection <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="cue">Scroll to inspect</div>
+  </section>
+
+  <section class="svc" id="correction">
+    <div class="card">
+      <div class="k fade">01 / 04 · Paint correction</div>
+      <h2 data-split>Swirls out. Mirror in.</h2>
+      <p data-split>Four years of car washes leave haze, swirls and holograms. We cut and polish every panel under inspection light until the paint reflects like glass again.</p>
+      <ul class="stats fade"><li><b>90%+</b><span data-split>defects removed</span></li><li><b>2-stage</b><span data-split>cut and finish</span></li><li><b>1–2 days</b><span data-split>in the studio</span></li></ul>
+      <div class="price fade">from<b>$900</b></div>
+    </div>
+  </section>
+
+  <section class="svc right" id="ceramic">
+    <div class="card">
+      <div class="k fade">02 / 04 · Ceramic coating</div>
+      <h2 data-split>Gloss you could fall into.</h2>
+      <p data-split>A 9H nano-ceramic layer bonds to the clear coat. Deeper colour, water that beads and rolls off, and a car that washes clean in minutes.</p>
+      <ul class="stats fade"><li><b>9H</b><span data-split>surface hardness</span></li><li><b>5 years</b><span data-split>of protection</span></li><li><b>−70%</b><span data-split>wash time</span></li></ul>
+      <div class="price fade">from<b>$1,500</b></div>
+    </div>
+  </section>
+
+  <section class="svc" id="film">
+    <div class="card">
+      <div class="k fade">03 / 04 · Protection film</div>
+      <h2 data-split>Stone chips hit the film.</h2>
+      <p data-split>Self-healing TPU film takes the gravel, not your paint. Gloss if you love the shine, Stealth if you want the whole car in satin.</p>
+      <ul class="stats fade"><li><b>8.5 mil</b><span data-split>TPU thickness</span></li><li><b>Self-heals</b><span data-split>with sun heat</span></li><li><b>10 years</b><span data-split>warranty</span></li></ul>
+      <div class="price fade">from<b>$2,200</b></div>
+    </div>
+  </section>
+
+  <section class="svc right" id="colour">
+    <div class="card">
+      <div class="k fade">04 / 04 · Colour change</div>
+      <h2 data-split>Any colour. Paint untouched.</h2>
+      <p data-split>Wrap the car in a new finish without touching the factory paint. Tap a colour.</p>
+      <div class="sw fade" role="group" aria-label="Colour"></div>
+      <div class="price fade">from<b>$4,800</b></div>
+    </div>
+  </section>
+
+  <div class="band" aria-hidden="true"><div>Inspect <span>·</span> Correct <span>·</span> Protect <span>·</span> Inspect <span>·</span> Correct <span>·</span> Protect <span>·</span></div></div>
+
+  <section class="book" id="book">
+    <h2 data-split>Book an inspection.</h2>
+    <div class="row">
+      <p data-split>Bring the car in for 30 minutes. We measure the paint, show you every defect under our lights and give you a fixed price.</p>
+      <a class="cta" href="#book">Request a slot <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="pk">
+      <article class="fade"><h3>Gloss</h3><p data-split>Two-stage correction and a one-year sealant.</p><b>$900</b><small>1–2 days</small></article>
+      <article class="fade"><h3>Shield</h3><p data-split>Correction, 5-year ceramic, wheels and glass coated.</p><b>$2,400</b><small>3 days</small></article>
+      <article class="fade"><h3>Signature</h3><p data-split>Full-body film, ceramic on top, interior detail.</p><b>$7,800</b><small>6 days</small></article>
+    </div>
+    <footer>
+      <span>LUSTRE Detailing Atelier · by appointment · Los Angeles</span>
+      <span>3D car: <a href="https://github.com/mrdoob/three.js/tree/dev/examples/models/gltf" target="_blank" rel="noopener">“Ferrari 458 Italia”</a> by vicent091036, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>, from the three.js examples; materials changed, badges removed.</span>
+    </footer>
+  </section>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>
