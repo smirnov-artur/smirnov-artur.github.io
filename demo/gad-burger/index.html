@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>g.a.d — The Lab Burger</title>
+    <meta
+      name="description"
+      content="g.a.d. A dark luxury burger studio. Seven layers, engineered for the night."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="./assets/index-BMamKiVG.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Dd_baDa3.css">
+  </head>
+
+  <body>
+    <!-- z0 — fixed full-screen film, scrubbed by scroll -->
+    <video
+      id="bgv"
+      class="bg-video"
+      muted
+      playsinline
+      preload="auto"
+      disablepictureinpicture
+      poster="./img/hero-burger.jpg"
+      aria-hidden="true"
+    >
+      <source src="./bg.mp4" type="video/mp4" />
+    </video>
+
+    <!-- z0 — still fallback for touch / small screens -->
+    <img
+      class="mobile-poster"
+      src="./img/hero-burger.jpg"
+      alt=""
+      aria-hidden="true"
+    />
+
+    <!-- z1 — readability tint -->
+    <div class="bg-tint" aria-hidden="true"></div>
+
+    <!-- z2 — grain + ambient amber dots -->
+    <div class="grain" aria-hidden="true"></div>
+    <div class="ambient-dots" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <!-- z10 -->
+    <div id="root"></div>
+
+  </body>
+</html>

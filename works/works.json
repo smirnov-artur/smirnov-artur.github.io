@@ -1,5 +1,19 @@
 [
  {
+  "slug": "gad-burger",
+  "cat": "web",
+  "ru": [
+   "Бургерная g.a.d",
+   "Прокручиваете страницу — AI-фильм разбирает бургер на семь слоёв"
+  ],
+  "en": [
+   "g.a.d burger bar",
+   "Scroll the page and an AI film takes the burger apart into seven layers"
+  ],
+  "v": "gad-burger",
+  "ve": "gad-burger-en"
+ },
+ {
   "slug": "lustre-detailing",
   "cat": "3d",
   "ru": [
