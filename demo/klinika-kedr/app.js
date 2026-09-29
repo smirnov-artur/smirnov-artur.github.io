@@ -4,7 +4,8 @@
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const h = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-  const хост = d.sajt ? new URL(d.sajt).hostname.replace(/^www\./, '') : '';
+  const хост = d.domen || (d.sajt ? new URL(d.sajt).hostname.replace(/^www\./, '') : '');
+  if (/официальн\w* сайт/i.test(d.opisanie)) d.opisanie = '';  // спорит с плашкой «не официальный сайт»
   const коротко = (t, n) => t.length > n ? t.slice(0, t.lastIndexOf(' ', n)).replace(/[,.;:—–-]+$/, '') + '…' : t;
 
   if (d.akcent) document.documentElement.style.setProperty('--brand', d.akcent);
@@ -15,7 +16,8 @@
     metka: 'Стоматология' + (d.gorod ? ' · ' + d.gorod : ''),
     zag: d.h1 && d.h1.length <= 64 ? d.h1 : d.nazvanie,
     lid: d.opisanie ? коротко(d.opisanie, 170) : 'Запись к врачу за минуту: оставьте телефон, администратор перезвонит и подберёт удобное время.',
-    uslugi_pod: d.uslugi.length ? 'По одной позиции из каждого раздела прайса ' + (хост || 'клиники') + '. Полный прайс — по ссылке ниже.' : 'Здесь будут ваши услуги с ценами «от» — из вашего прайса.',
+    uslugi_pod: d.uslugi.length >= 4 ? 'По одной позиции из каждого раздела прайса ' + (хост || 'клиники') + '. Полный прайс — по ссылке ниже.'
+      : d.uslugi.length ? 'Строки с ценой — с ' + хост + ', серые — место под ваш прайс.' : 'Здесь будут ваши услуги с ценами «от» — из вашего прайса.',
     vrachi_pod: d.vrachi.length ? 'Имена и фото — с сайта клиники.' : 'Здесь будут ваши врачи: фото, специализация, стаж.',
     foto_pod: d.foto.length > 1 ? 'Фото с сайта клиники.' : 'Здесь будут фото клиники или работы «до и после».',
     otzyvy_pod: d.otzyvy.length ? 'Отзывы с сайта клиники, без правок.' : 'Здесь будут ваши отзывы — с сайта, Яндекс Карт или ПроДокторов.',
@@ -26,7 +28,7 @@
 
   // знак в шапке: логотип клиники или название набором
   const знак = $('.znak');
-  if (d.logo) { const im = h('img'); im.src = d.logo; im.alt = d.nazvanie; знак.append(im); }
+  if (d.logo) { const im = h('img', d.logo_svetlyj ? 'znak--svetlyj' : ''); im.src = d.logo; im.alt = d.nazvanie; знак.append(im); }
   else знак.append(h('span', 'znak__slovo', d.nazvanie));
 
   // телефон
@@ -66,13 +68,16 @@
       li.append(лево, h('span', 'prajs__cena', u.cena));
       прайс.append(li);
     }
-  } else {
-    for (const t of ['Консультация', 'Гигиена', 'Лечение кариеса', 'Имплантация', 'Протезирование', 'Ортодонтия']) {
+  }
+  if (d.uslugi.length < 4) {  // мало строк нашлось — добиваем честными заглушками до шести
+    const есть = new Set(d.uslugi.map(u => u.razdel));
+    for (const t of ['Консультация', 'Гигиена', 'Лечение кариеса', 'Имплантация', 'Коронки и виниры', 'Ортодонтия'].filter(t => !есть.has(t)).slice(0, 6 - d.uslugi.length)) {
       const li = h('li', 'prajs__stroka prajs__stroka--pusto');
       const лево = h('div', 'prajs__imya'); лево.append(h('span', 'prajs__razdel', t), h('span', 'prajs__nazv', 'позиция из вашего прайса'));
       li.append(лево, h('span', 'prajs__cena', 'от … ₽')); прайс.append(li);
     }
   }
+  if (!d.uslugi.length) $('#uslugi .zag2').innerHTML = 'Услуги <em>и цены</em>';
   const ссылкаПрайс = $('[data-prajs-ssylka]');
   if (d.prajs_url) { ссылкаПрайс.href = d.prajs_url; ссылкаПрайс.textContent = 'Весь прайс на ' + хост + ' →'; } else ссылкаПрайс.remove();
 

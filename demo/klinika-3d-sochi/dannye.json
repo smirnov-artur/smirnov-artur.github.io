@@ -1,0 +1,150 @@
+{
+ "slug": "3d-sochi",
+ "sajt": "https://sochident.com/",
+ "nazvanie": "3D Стоматология",
+ "gorod": "Сочи",
+ "h1": "3D Стоматология",
+ "opisanie": "Стоматологическая клиника в Сочи на Чайковского. Опытные зубные врачи. Современное оборудование: микроскоп, 3D-снимки, лазер, артикулятор. Гарантия на все работы. Доступные цены. Все виды стоматологических услуг: +7 (862",
+ "logo": "logo.png",
+ "cveta_sajta": [
+  "#00abbd",
+  "#c23571"
+ ],
+ "akcent": "#238a95",
+ "akcent2": "#c23571",
+ "telefon": "+7 862 225-88-85",
+ "telefon_href": "+78622258885",
+ "adres": "Сочи, ул. Чайковского, 2Б",
+ "adresov_esche": 3,
+ "karta": [
+  43.593727,
+  39.719533
+ ],
+ "uslugi": [
+  {
+   "razdel": "Консультация",
+   "nazvanie": "Первичная консультация",
+   "cena": "1 500 ₽"
+  },
+  {
+   "razdel": "Гигиена",
+   "nazvanie": "Комплекс профессиональной гигиены",
+   "cena": "8 900 ₽"
+  },
+  {
+   "razdel": "Лечение кариеса",
+   "nazvanie": "Лечение кариеса постоянного зуба у детей",
+   "cena": "7 200 ₽"
+  },
+  {
+   "razdel": "Лечение каналов",
+   "nazvanie": "Распломбирование корневого канала",
+   "cena": "4 500 ₽"
+  },
+  {
+   "razdel": "Имплантация",
+   "nazvanie": "Установка Мини имплантата ортодонтического VectorTAS",
+   "cena": "17 900 ₽"
+  },
+  {
+   "razdel": "Коронки и виниры",
+   "nazvanie": "Коронки на молочные зубы",
+   "cena": "2 500 ₽"
+  },
+  {
+   "razdel": "Ортодонтия",
+   "nazvanie": "Комплекс профессиональной гигиены с брекет-системой, установленной в клинике",
+   "cena": "4 900 ₽"
+  },
+  {
+   "razdel": "Удаление зуба",
+   "nazvanie": "Удаление зуба, корней зуба, простое включая обезболивание",
+   "cena": "5 000 ₽"
+  },
+  {
+   "razdel": "Отбеливание",
+   "nazvanie": "Отбеливание зубов",
+   "cena": "21 000 ₽"
+  },
+  {
+   "razdel": "Детям",
+   "nazvanie": "Детская проф.гигиена",
+   "cena": "4 000 ₽"
+  },
+  {
+   "razdel": "Диагностика",
+   "nazvanie": "Диагностический снимок на радиовизиографе",
+   "cena": "600 ₽"
+  }
+ ],
+ "strok_v_prajse": 152,
+ "prajs_url": "https://sochident.com/tseny/",
+ "vrachi": [
+  {
+   "imya": "Старцев Алексей Владимирович",
+   "rol": "Врач стоматолог-ортопед",
+   "foto": "vrach1.jpg"
+  },
+  {
+   "imya": "Трескин Олег Юрьевич",
+   "rol": "Главный врач",
+   "foto": "vrach2.jpg"
+  },
+  {
+   "imya": "Коновальская Снежана Борисовна",
+   "rol": "Врач стоматолог-хирург",
+   "foto": "vrach3.jpg"
+  },
+  {
+   "imya": "Симонова Ксения Васильевна",
+   "rol": "Врач стоматолог-ортодонт",
+   "foto": "vrach4.jpg"
+  }
+ ],
+ "otzyvy": [],
+ "otzyvy_url": "https://sochident.com/otzyvy-i-voprosy/",
+ "foto": [
+  {
+   "fajl": "foto5.jpg",
+   "w": 1125,
+   "h": 750,
+   "plosk": 0.07,
+   "otkuda": "https://sochident.com/wp-content/uploads/Stomatology-Sochi-12.jpg"
+  },
+  {
+   "fajl": "foto1.jpg",
+   "w": 1361,
+   "h": 639,
+   "plosk": 0.11,
+   "otkuda": "https://sochident.com/wp-content/uploads/children-stomatolog-3-1.jpg"
+  },
+  {
+   "fajl": "foto6.jpg",
+   "w": 1125,
+   "h": 750,
+   "plosk": 0.11,
+   "otkuda": "https://sochident.com/wp-content/uploads/Stomatology-Sochi-21.jpg"
+  },
+  {
+   "fajl": "foto4.jpg",
+   "w": 1600,
+   "h": 1067,
+   "plosk": 0.17,
+   "otkuda": "https://sochident.com/wp-content/uploads/fon-2.jpg"
+  },
+  {
+   "fajl": "foto3.jpg",
+   "w": 1024,
+   "h": 1007,
+   "plosk": 0.1,
+   "otkuda": "https://sochident.com/wp-content/uploads/kollazh1-posle-1024x1007.jpg"
+  },
+  {
+   "fajl": "foto2.jpg",
+   "w": 1024,
+   "h": 1007,
+   "plosk": 0.12,
+   "otkuda": "https://sochident.com/wp-content/uploads/kollazh1-do-1024x1007.jpg"
+  }
+ ]
+}

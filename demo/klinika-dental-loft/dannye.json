@@ -1,0 +1,66 @@
+{
+ "slug": "dental-loft",
+ "sajt": "https://dental-loft.ru/",
+ "nazvanie": "Дентал Лофт",
+ "gorod": "Краснодар",
+ "h1": "",
+ "opisanie": "Стоматология Дентал Лофт предлагает комплексный пакет услуг. Имплантация зубов в Краснодаре. Цифровая стоматология. Диагностика и профилактика здоровья со скидкой 35 %. Рассрочка под 0 %. Гарантия результата. Безопасност",
+ "logo": "logo.svg",
+ "cveta_sajta": [
+  "#5881a6",
+  "#ff6e01"
+ ],
+ "akcent": "#405d78",
+ "akcent2": "#ff6e01",
+ "telefon": "+7 861 299-62-42",
+ "telefon_href": "+78612996242",
+ "adres": "Краснодар, Старокубанская, 114",
+ "adresov_esche": 0,
+ "karta": [
+  45.018104,
+  39.048844
+ ],
+ "uslugi": [],
+ "strok_v_prajse": 0,
+ "prajs_url": "https://dental-loft.ru/prices",
+ "vrachi": [
+  {
+   "imya": "Таранов Кирилл Олегович",
+   "rol": "Хирург",
+   "foto": ""
+  },
+  {
+   "imya": "Лукина Екатерина Олеговна",
+   "rol": "Хирург",
+   "foto": ""
+  },
+  {
+   "imya": "Хуако Хазрет Асланович",
+   "rol": "Хирург",
+   "foto": ""
+  },
+  {
+   "imya": "Бацких Денис Сергеевич",
+   "rol": "Главный врач",
+   "foto": ""
+  }
+ ],
+ "otzyvy": [],
+ "otzyvy_url": "https://dental-loft.ru/feedback",
+ "foto": [
+  {
+   "fajl": "foto1.jpg",
+   "w": 1200,
+   "h": 800,
+   "plosk": 0.06,
+   "otkuda": "https://optim.tildacdn.com/tild3166-6238-4232-b632-643931326536/-/resize/800x800/-/format/webp/_DSC2131.jpg.webp"
+  },
+  {
+   "fajl": "foto2.jpg",
+   "w": 1200,
+   "h": 800,
+   "plosk": 0.33,
+   "otkuda": "https://optim.tildacdn.com/tild3630-6338-4763-b065-363539613039/-/resize/800x800/-/format/webp/_DSC1955.jpg.webp"
+  }
+ ]
+}

@@ -1,0 +1,140 @@
+{
+ "slug": "stomopolis",
+ "sajt": "https://xn--h1afchbagmhc.xn--p1acf/",
+ "nazvanie": "Стомополис",
+ "gorod": "Краснодар",
+ "h1": "",
+ "opisanie": "«Стомополис» стоматологическая сеть, весь спектр услуг в Краснодаре: от лечения кариеса до имплантации зубов. Безболезненное, безопасное лечение. Доступная стоматология в Краснодаре. +7 800 444-82-01",
+ "logo": "logo.svg",
+ "cveta_sajta": [
+  "#f5a041",
+  "#a9b64b"
+ ],
+ "akcent": "#955f23",
+ "akcent2": "#a9b64b",
+ "telefon": "+7 861 206-65-82",
+ "telefon_href": "+78612066582",
+ "adres": "ул. Кубанская Набережная, 33",
+ "adresov_esche": 4,
+ "karta": [
+  45.023559,
+  38.959277
+ ],
+ "uslugi": [
+  {
+   "razdel": "Консультация",
+   "nazvanie": "Осмотр с выдачей справки",
+   "cena": "1 200 ₽"
+  },
+  {
+   "razdel": "Гигиена",
+   "nazvanie": "Профессиональная гигиена полости рта СТАНДАРТ AIRFLOW® Prophylaxis Master…",
+   "cena": "6 190 ₽"
+  },
+  {
+   "razdel": "Лечение кариеса",
+   "nazvanie": "Лечение кариеса",
+   "cena": "от 5 000 ₽"
+  },
+  {
+   "razdel": "Лечение каналов",
+   "nazvanie": "Лечение пульпита",
+   "cena": "от 2 000 ₽"
+  },
+  {
+   "razdel": "Имплантация",
+   "nazvanie": "Установка имплантата Medentika",
+   "cena": "от 30 000 ₽"
+  },
+  {
+   "razdel": "Коронки и виниры",
+   "nazvanie": "Металлокерамическая коронка",
+   "cena": "12 000 ₽"
+  },
+  {
+   "razdel": "Ортодонтия",
+   "nazvanie": "Установка металлической лигатурной брекет-системы На 1 челюсть",
+   "cena": "от 23 000 ₽"
+  },
+  {
+   "razdel": "Удаление зуба",
+   "nazvanie": "Удаление зуба сложное",
+   "cena": "5 000 ₽"
+  },
+  {
+   "razdel": "Детям",
+   "nazvanie": "Консультация детского стоматолога",
+   "cena": "2 000 ₽"
+  },
+  {
+   "razdel": "Диагностика",
+   "nazvanie": "Рентген снимок",
+   "cena": "300 ₽"
+  }
+ ],
+ "strok_v_prajse": 95,
+ "prajs_url": "https://xn--h1afchbagmhc.xn--p1acf/prices/",
+ "vrachi": [
+  {
+   "imya": "Антонян Циала Петровна",
+   "rol": "Врач-педиатр",
+   "foto": "vrach1.jpg"
+  },
+  {
+   "imya": "Ким Ольга Алексеевна",
+   "rol": "Стоматолог-терапевт",
+   "foto": ""
+  },
+  {
+   "imya": "Оксузян Юрий Акопович",
+   "rol": "Стоматолог-терапевт",
+   "foto": ""
+  }
+ ],
+ "otzyvy": [],
+ "otzyvy_url": "https://xn--h1afchbagmhc.xn--p1acf/reviews/",
+ "foto": [
+  {
+   "fajl": "foto1.jpg",
+   "w": 1494,
+   "h": 893,
+   "plosk": 0.21,
+   "otkuda": "https://xn--h1afchbagmhc.xn--p1acf/wp-content/uploads/2025/04/doc_stomopolis.png"
+  },
+  {
+   "fajl": "foto2.jpg",
+   "w": 1494,
+   "h": 477,
+   "plosk": 0.3,
+   "otkuda": "https://xn--h1afchbagmhc.xn--p1acf/wp-content/uploads/2024/06/gallery.png"
+  },
+  {
+   "fajl": "foto5.jpg",
+   "w": 669,
+   "h": 687,
+   "plosk": 0.32,
+   "otkuda": "https://xn--h1afchbagmhc.xn--p1acf/wp-content/uploads/2024/06/main_1.png"
+  },
+  {
+   "fajl": "foto3.jpg",
+   "w": 800,
+   "h": 800,
+   "plosk": 0.4,
+   "otkuda": "https://xn--h1afchbagmhc.xn--p1acf/wp-content/uploads/2026/03/Stomopolis_Straumann2.png"
+  },
+  {
+   "fajl": "foto4.jpg",
+   "w": 769,
+   "h": 700,
+   "plosk": 0.4,
+   "otkuda": "https://xn--h1afchbagmhc.xn--p1acf/wp-content/uploads/2024/08/Bagdasarov_Stomatolog_Hirurg.png"
+  },
+  {
+   "fajl": "foto6.jpg",
+   "w": 719,
+   "h": 636,
+   "plosk": 0.51,
+   "otkuda": "https://xn--h1afchbagmhc.xn--p1acf/wp-content/uploads/2024/06/main_3.png"
+  }
+ ]
+}

@@ -1,0 +1,62 @@
+{
+ "slug": "krymsk",
+ "sajt": "https://xn----8sbjugajectcbrpcqd6mtd.xn--p1ai/",
+ "nazvanie": "Крымская стоматологическая поликлиника",
+ "gorod": "Крымск",
+ "h1": "",
+ "opisanie": "Официальный сайт ООО \"Крымская стоматологическая поликлиника\"",
+ "logo": "logo.png",
+ "cveta_sajta": [
+  "#02537d",
+  "#b94a48"
+ ],
+ "akcent": "#184c67",
+ "akcent2": "#b94a48",
+ "telefon": "+7 861 314-38-22",
+ "telefon_href": "+78613143822",
+ "adres": "г.Крымск, ул. Коммунистическая, д. 37",
+ "adresov_esche": 1,
+ "karta": [],
+ "uslugi": [],
+ "strok_v_prajse": 0,
+ "prajs_url": "",
+ "vrachi": [
+  {
+   "imya": "Чернов Юрий Федорович",
+   "rol": "Стоматология",
+   "foto": ""
+  }
+ ],
+ "otzyvy": [],
+ "otzyvy_url": "",
+ "foto": [
+  {
+   "fajl": "foto3.jpg",
+   "w": 1920,
+   "h": 600,
+   "plosk": 0.04,
+   "otkuda": "https://xn----8sbjugajectcbrpcqd6mtd.xn--p1ai/images/slider/slide3.jpg"
+  },
+  {
+   "fajl": "foto4.jpg",
+   "w": 900,
+   "h": 380,
+   "plosk": 0.14,
+   "otkuda": "https://xn----8sbjugajectcbrpcqd6mtd.xn--p1ai/images/main.jpg"
+  },
+  {
+   "fajl": "foto1.jpg",
+   "w": 1920,
+   "h": 600,
+   "plosk": 0.19,
+   "otkuda": "https://xn----8sbjugajectcbrpcqd6mtd.xn--p1ai/images/slider/slide1.jpg"
+  },
+  {
+   "fajl": "foto2.jpg",
+   "w": 1920,
+   "h": 600,
+   "plosk": 0.22,
+   "otkuda": "https://xn----8sbjugajectcbrpcqd6mtd.xn--p1ai/images/slider/slide2.jpg"
+  }
+ ]
+}
