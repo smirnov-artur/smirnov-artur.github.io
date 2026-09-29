@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ЖК «Три неба» — три башни у реки</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Концепт сайта застройщика: жилой квартал в 3D. Прокрутка облетает башни и спускается во двор, этаж выбирается прямо на здании, день и вечер одной кнопкой.">
+<meta property="og:title" content="ЖК «Три неба» — три башни у реки">
+<meta property="og:description" content="Листайте — камера облетает квартал, окна загораются. Нажмите на этаж, и покажем квартиры.">
+<meta property="og:image" content="https://smirnov-artur.github.io/demo/zhk-3d/og.jpg">
+<meta property="og:url" content="https://smirnov-artur.github.io/demo/zhk-3d/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#07090d">
+<link rel="icon" href="data:,">
+<!-- Концепт сайта застройщика (ЖК выдуманный), 29.09.2026. Весь квартал, город, деревья и паркинг собраны кодом в three.js,
+     готовых 3D-моделей нет. Цены, планировки, сроки и цифры — примеры. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/",
+  "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.mjs"
+} }
+</script>
+<style>
+:root{--bg:#07090d;--ink:#EEE8DC;--mute:#8D8B86;--gold:#E2B872;--line:rgba(238,232,220,.15);--pad:clamp(18px,3.2vw,44px);
+  --serif:'Cormorant Garamond',Georgia,serif;--sans:'Manrope',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);color:var(--ink);-webkit-text-size-adjust:100%}
+html.lenis,html.lenis body{height:auto}
+body{font-family:var(--sans);font-size:16px;line-height:1.5;overflow-x:clip}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit;background:none;border:0}
+button{cursor:pointer}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;touch-action:pan-y}
+body.pick #gl,body.pick main{cursor:pointer}
+.grain{position:fixed;inset:-50%;z-index:30;pointer-events:none;opacity:.06;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 1s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-4%,3%)}40%{transform:translate(3%,-5%)}60%{transform:translate(-6%,-2%)}80%{transform:translate(5%,4%)}100%{transform:translate(0,0)}}
+/* низ и верх экрана темнее: текст читается и днём */
+.shade{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(rgba(5,7,10,.5),transparent 18%,transparent 62%,rgba(5,7,10,.55))}
+
+/* загрузка */
+.load{position:fixed;inset:0;z-index:40;background:#05070a;display:grid;place-items:center;transition:opacity .7s ease,visibility 0s .7s}
+.load .t{width:min(300px,60vw);height:1px;background:rgba(255,255,255,.08);position:relative}
+.load .t i{position:absolute;inset:0;transform-origin:0 50%;transform:scaleX(var(--p,0));background:var(--gold);box-shadow:0 0 12px 1px rgba(255,200,120,.7);transition:transform .3s}
+.load span{position:absolute;margin-top:34px;font:500 10px/1 var(--mono);letter-spacing:.3em;color:var(--mute)}
+.go .load{opacity:0;visibility:hidden}
+
+/* шапка */
+.nav{position:fixed;top:16px;left:50%;transform:translate(-50%,-160%);z-index:20;display:flex;align-items:center;gap:20px;
+  padding:7px 7px 7px 22px;border:1px solid var(--line);border-radius:999px;background:rgba(9,11,15,.5);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  font-size:13px;white-space:nowrap;transition:transform 1s cubic-bezier(.2,.8,.2,1) 1.9s}
+.go .nav{transform:translate(-50%,0)}
+.nav b{font:600 17px/1 var(--serif);letter-spacing:.22em}
+.nav a:not(.cta){color:var(--mute);transition:color .2s}
+.nav a:not(.cta):hover{color:var(--ink)}
+.cta{display:inline-flex;align-items:center;gap:10px;padding:11px 18px;border-radius:999px;background:var(--ink);color:#0a0a0a;font-weight:600;font-size:13px;transition:transform .3s,background .3s}
+.cta:hover{transform:scale(1.04);background:#fff}
+.dn{position:relative;display:flex;padding:3px;border:1px solid var(--line);border-radius:999px}
+.dn::before{content:"";position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:999px;background:rgba(238,232,220,.16);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.dn.night::before{transform:translateX(100%)}
+.dn button{position:relative;padding:6px 12px;font-size:12px;color:var(--mute);transition:color .3s}
+.dn button[aria-pressed=true]{color:var(--ink)}
+
+main{position:relative;z-index:10}
+section{position:relative}
+.hero{height:100vh;height:100svh;pointer-events:none}
+.hero .side{position:absolute;top:50%;font:500 11px/1.7 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#D4D0C7;text-shadow:0 1px 2px rgba(0,0,0,.7),0 0 16px rgba(0,0,0,.55)}
+.hero .l{left:var(--pad)}.hero .r{right:var(--pad);text-align:right}
+.hero .bot{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(var(--pad) + env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+.hero h1{font:500 clamp(38px,4.6vw,76px)/.98 var(--serif);letter-spacing:-.01em;max-width:12ch;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.hero .bot .cta{pointer-events:auto}
+.cue{position:absolute;left:50%;bottom:calc(var(--pad) + 4px);transform:translateX(-50%);font:500 10px/1 var(--mono);letter-spacing:.3em;color:#C9C5BC;text-transform:uppercase;text-shadow:0 1px 2px rgba(0,0,0,.7)}
+.cue::after{content:"";display:block;width:1px;height:34px;margin:12px auto 0;background:linear-gradient(var(--ink),transparent);animation:cue 1.8s ease-in-out infinite;transform-origin:top}
+@keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+
+/* разделы */
+.svc{height:210vh}
+.card{position:sticky;top:14vh;width:min(470px,36vw);margin-left:var(--pad);padding:30px 30px 26px;border:1px solid var(--line);border-radius:22px;
+  background:rgba(8,10,14,.62);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.svc.right .card{margin-left:auto;margin-right:var(--pad)}
+.k{display:flex;gap:14px;align-items:center;font:500 11px/1 var(--mono);letter-spacing:.2em;color:var(--mute);text-transform:uppercase}
+.k::after{content:"";flex:1;height:1px;background:var(--line)}
+.card h2{margin:20px 0 16px;font:500 clamp(36px,3.6vw,58px)/.98 var(--serif);letter-spacing:-.01em}
+.card p{color:#CFCAC0;font-size:16px;line-height:1.6;max-width:40ch}
+.stats{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);margin:26px 0 0;border-top:1px solid var(--line)}
+.stats li{padding:16px 12px 0 0}
+.stats b{display:block;font:600 30px/1 var(--serif);white-space:nowrap;color:var(--gold)}
+.stats li>span{display:block;margin-top:6px;font:400 11px/1.4 var(--mono);color:var(--mute)}
+
+/* выбор квартиры */
+.tabs{display:flex;gap:6px;margin:20px 0 12px}
+.tabs button{flex:1;padding:9px 6px;border:1px solid var(--line);border-radius:12px;font-size:13px;color:#CFCAC0;transition:border-color .3s,background .3s,color .3s}
+.tabs button small{display:block;font:400 10px/1.3 var(--mono);color:var(--mute)}
+.tabs button[aria-pressed=true]{border-color:var(--gold);background:rgba(226,184,114,.1);color:var(--ink)}
+.fl{display:flex;align-items:center;justify-content:space-between;padding:6px;border:1px solid var(--line);border-radius:14px}
+.fl button{width:40px;height:40px;border-radius:10px;background:rgba(238,232,220,.07);font-size:20px;line-height:1}
+.fl button:hover{background:rgba(238,232,220,.16)}
+.fl b{font:600 22px/1 var(--serif)}
+.res{display:grid;grid-template-columns:118px 1fr;gap:16px;margin-top:16px;align-items:start}
+.plan{width:100%;height:auto;display:block}
+.plan rect{stroke:#07090d;stroke-width:3;transition:fill .4s}
+.plan .core{fill:rgba(238,232,220,.06)}
+.plan .sold{fill:rgba(238,232,220,.1)}
+.plan .free{fill:var(--gold)}
+.sum b{display:block;font-size:15px;font-weight:600}
+.sum span{display:block;font:600 30px/1.1 var(--serif);color:var(--gold);margin-top:2px}
+.lst{list-style:none;margin-top:10px;font-size:13px;color:#CFCAC0}
+.lst li{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-top:1px solid var(--line)}
+.lst li b{font-weight:600;color:var(--ink);white-space:nowrap}
+.res.flash{animation:flash .6s ease}
+@keyframes flash{from{opacity:.2;transform:translateY(6px)}to{opacity:1;transform:none}}
+.demo{display:inline-block;margin-top:14px;padding:4px 9px;border:1px dashed rgba(226,184,114,.5);border-radius:8px;font:500 10px/1.4 var(--mono);letter-spacing:.08em;color:var(--gold);text-transform:uppercase}
+.tap{position:fixed;z-index:25;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;border:2px solid #fff;pointer-events:none;opacity:0}
+.tap.on{animation:tap .7s ease-out}
+@keyframes tap{0%{transform:scale(.3);opacity:1}100%{transform:scale(1.4);opacity:0}}
+
+/* подписи на карте */
+.tags{position:fixed;inset:0;z-index:5;pointer-events:none;overflow:hidden}
+.tag{position:absolute;left:0;top:0;display:flex;align-items:center;gap:8px;padding:7px 12px 7px 8px;border-radius:999px;background:rgba(8,10,14,.78);border:1px solid var(--line);
+  font-size:12px;white-space:nowrap;transform:translate(-50%,-130%);opacity:0;will-change:transform,opacity}
+.tag i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--gold);color:#0a0a0a;font:700 11px/1 var(--sans);font-style:normal}
+.tag i.m{background:#d8322b;color:#fff}
+.tag span{color:var(--mute)}
+
+/* бегущая строка */
+.band{padding:9vh 0;overflow:hidden;white-space:nowrap;pointer-events:none}
+.band div{display:inline-block;font:500 clamp(64px,11vw,190px)/1 var(--serif);color:transparent;-webkit-text-stroke:1px rgba(238,232,220,.45);will-change:transform}
+.band div span{color:var(--gold);-webkit-text-stroke:0}
+
+/* запись */
+.book{min-height:120vh;padding:22vh var(--pad) 0;display:flex;flex-direction:column}
+.book h2{font:500 clamp(52px,8.4vw,150px)/.9 var(--serif);letter-spacing:-.02em;max-width:10ch;text-shadow:0 2px 30px rgba(0,0,0,.4)}
+.book .row{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-top:4vh}
+.book .row p{max-width:40ch;color:#CFCAC0}
+.form{display:flex;flex-wrap:wrap;gap:10px;margin-top:6vh;padding:10px;border:1px solid var(--line);border-radius:22px;background:rgba(8,10,14,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);max-width:880px}
+.form input,.form select{flex:1 1 180px;min-width:0;padding:14px 16px;border-radius:14px;background:rgba(238,232,220,.06);font-size:15px}
+.form select option{color:#111}
+.form input::placeholder{color:var(--mute)}
+.form .cta{padding:14px 22px;font-size:14px}
+.ok{margin-top:14px;color:var(--gold);font-size:14px}
+.pk{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8vh}
+.pk article{padding:26px;border:1px solid var(--line);border-radius:20px;background:rgba(8,10,14,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:border-color .3s,transform .5s cubic-bezier(.2,.8,.2,1)}
+.pk article:hover{border-color:rgba(238,232,220,.4);transform:translateY(-6px)}
+.pk h3{font:600 26px/1.1 var(--serif)}
+.pk p{margin:10px 0 22px;color:var(--mute);font-size:14px;min-height:3em}
+.pk b{font:600 34px/1 var(--serif);color:var(--gold)}
+.pk small{font:400 10px/1 var(--mono);color:var(--mute);margin-left:8px;text-transform:uppercase;letter-spacing:.1em}
+footer{margin-top:auto;padding:14vh 0 calc(26px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;gap:20px;font:400 11px/1.6 var(--mono);color:var(--mute)}
+footer span{max-width:70ch}
+footer a{text-decoration:underline;text-underline-offset:3px}
+
+/* показатели сцены */
+.hud{position:fixed;left:var(--pad);bottom:var(--pad);z-index:15;font:500 10px/1.8 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);opacity:0;transition:opacity .6s}
+.hud b{color:var(--ink);font-weight:500}
+.on.past .hud{opacity:1}
+.rail{position:fixed;right:var(--pad);top:50%;transform:translateY(-50%);z-index:15;display:grid;gap:12px;opacity:0;transition:opacity .6s}
+.on .rail{opacity:1}
+.rail i{display:block;width:18px;height:1px;background:var(--line);transition:width .5s,background .5s;margin-left:auto}
+.rail i.a{width:38px;background:var(--ink)}
+
+/* появление слов */
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+.w>span{display:inline-block;transform:translateY(108%);transition:transform 1s cubic-bezier(.16,.84,.24,1) calc(var(--i,0) * 28ms)}
+.in .w>span{transform:none}
+.fade{opacity:0;transform:translateY(18px);transition:opacity .9s ease .35s,transform 1s cubic-bezier(.16,.84,.24,1) .35s}
+.in .fade,.fade.in{opacity:1;transform:none}
+
+@media (max-width:760px){
+  .nav{gap:10px;padding:5px 5px 5px 14px;top:12px;font-size:12px}
+  .nav b{font-size:14px;letter-spacing:.14em}
+  .nav .ln{display:none}
+  .nav .cta{padding:9px 13px;font-size:12px}
+  .nav .cta .lg{display:none}
+  .dn button{padding:5px 9px;font-size:11px}
+  .hero .side{top:calc(84px + env(safe-area-inset-top));font-size:10px}
+  .hero h1{font-size:40px}
+  .hero .bot{flex-direction:column;align-items:flex-start;gap:18px}
+  .cue{display:none}
+  /* карточка стоит внизу экрана, пока раздел проезжает: сверху квартал */
+  .svc{height:200vh;display:flex;flex-direction:column;justify-content:flex-end}
+  .card,.svc.right .card{top:auto;bottom:0;position:sticky;width:auto;margin:0;border:0;border-radius:0;backdrop-filter:none;-webkit-backdrop-filter:none;
+    padding:100px var(--pad) calc(24px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(7,9,13,.88) 90px,rgba(7,9,13,.95))}
+  .card h2{font-size:38px;margin:14px 0 10px}
+  .card p{font-size:14.5px}
+  .stats{margin-top:16px}
+  .stats b{font-size:24px}
+  .flats .card{padding-top:70px}
+  .flats .card h2,.flats .card p{display:none}
+  .tabs{margin:14px 0 8px}
+  .tabs button{padding:7px 4px;font-size:12px}
+  .fl button{width:36px;height:36px}
+  .fl b{font-size:20px}
+  .res{grid-template-columns:84px 1fr;gap:12px;margin-top:10px}
+  .sum span{font-size:26px}
+  .lst{font-size:12px;margin-top:6px}
+  .lst li{padding:3px 0}
+  .demo{margin-top:10px}
+  .book{padding-top:40vh}
+  .book .row{flex-direction:column;align-items:flex-start}
+  .form{border-radius:18px}
+  .form input,.form select,.form .cta{flex:1 1 100%}
+  .form .cta{justify-content:center}
+  .pk{grid-template-columns:1fr;margin-top:6vh}
+  .pk p{min-height:0}
+  footer{flex-direction:column}
+  .hud{display:none}
+  .rail{top:74px;transform:none;display:flex;gap:6px}
+  .rail i{width:12px}.rail i.a{width:26px}
+}
+@media (prefers-reduced-motion:reduce){.grain{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="shade" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="load" aria-hidden="true"><div class="t"><i></i></div><span>ЗАЖИГАЕМ ОКНА</span></div>
+<div class="tags" aria-hidden="true">
+  <div class="tag" data-p="-300,55,-262"><i class="m">М</i>Метро<span>6 мин пешком</span></div>
+  <div class="tag" data-p="-40,30,118"><i>≈</i>Набережная<span>2 мин</span></div>
+  <div class="tag" data-p="-250,40,-10"><i>Ш</i>Школа и сад<span>в соседнем квартале</span></div>
+  <div class="tag" data-p="330,40,-240"><i>П</i>Парк<span>5 мин</span></div>
+  <div class="tag" data-p="0,175,0"><i>3</i>Три неба<span>вы здесь</span></div>
+</div>
+<div class="tap" aria-hidden="true"></div>
+
+<nav class="nav">
+  <b>ТРИ НЕБА</b>
+  <a class="ln" href="#loc">Локация</a>
+  <a class="ln" href="#yard">Двор</a>
+  <a class="ln" href="#flats">Квартиры</a>
+  <div class="dn night" role="group" aria-label="Время суток"><button data-d="1" aria-pressed="false">День</button><button data-d="0" aria-pressed="true">Вечер</button></div>
+  <a class="cta" href="#book">Записаться<span class="lg">&nbsp;на просмотр</span></a>
+</nav>
+
+<div class="hud" aria-hidden="true">
+  <div>Время <b id="hv">вечер · 19:40</b></div>
+  <div>Камера <b id="hc">000° / 00°</b></div>
+</div>
+<div class="rail" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+<main>
+  <section class="hero" id="top">
+    <div class="side l">Жилой квартал у реки<br>Москва · Речной квартал</div>
+    <div class="side r">Бизнес-класс<br>Сдача · IV кв. 2028</div>
+    <div class="bot">
+      <h1 data-split>Три башни у&nbsp;реки. Двор без&nbsp;машин.</h1>
+      <a class="cta" href="#book">Записаться на просмотр <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="cue">Листайте — облетим квартал</div>
+  </section>
+
+  <section class="svc" id="loc">
+    <div class="card">
+      <div class="k fade">01 / 05 · Локация</div>
+      <h2 data-split>Метро в шести минутах.</h2>
+      <p data-split>Квартал стоит на первой линии у реки. Пешком до метро, школы и набережной, на машине пятнадцать минут до центра.</p>
+      <ul class="stats fade"><li><b>6 мин</b><span>пешком до метро</span></li><li><b>2 мин</b><span>до набережной</span></li><li><b>15 мин</b><span>до центра на машине</span></li></ul>
+    </div>
+  </section>
+
+  <section class="svc right" id="yard">
+    <div class="card">
+      <div class="k fade">02 / 05 · Двор без машин</div>
+      <h2 data-split>Во дворе нет машин.</h2>
+      <p data-split>Машины съезжают в паркинг прямо с улицы, двор остаётся детям и деревьям. Сад, три площадки по возрастам, вечером свет вдоль дорожек.</p>
+      <ul class="stats fade"><li><b>1,1 га</b><span>сад во дворе</span></li><li><b>0</b><span>машин во дворе</span></li><li><b>24/7</b><span>охрана и консьерж</span></li></ul>
+    </div>
+  </section>
+
+  <section class="svc" id="views">
+    <div class="card">
+      <div class="k fade">03 / 05 · Виды</div>
+      <h2 data-split>С двадцатого этажа видно реку и центр.</h2>
+      <p data-split>Башни поставлены так, чтобы не заслонять друг друга. Окна от пола до потолка, закат над рекой прямо из гостиной.</p>
+      <ul class="stats fade"><li><b>45</b><span>этажей в старшей башне</span></li><li><b>3,1 м</b><span>потолки</span></li><li><b>2,8 м</b><span>высота окон</span></li></ul>
+    </div>
+  </section>
+
+  <section class="svc right" id="park">
+    <div class="card">
+      <div class="k fade">04 / 05 · Паркинг</div>
+      <h2 data-split>Из паркинга на лифте — сразу домой.</h2>
+      <p data-split>Подземный паркинг под всем кварталом. Из машины на лифте до своего этажа, не выходя на улицу. Часть мест с зарядкой для электромобиля.</p>
+      <ul class="stats fade"><li><b>420</b><span>машино-мест</span></li><li><b>2</b><span>подземных уровня</span></li><li><b>60</b><span>мест с зарядкой</span></li></ul>
+    </div>
+  </section>
+
+  <section class="svc flats" id="flats">
+    <div class="card">
+      <div class="k fade">05 / 05 · Выбор квартиры</div>
+      <h2 data-split>Выберите этаж прямо на башне.</h2>
+      <p data-split>Наведите на башню — этаж подсветится. Нажмите, и покажем, что на нём в продаже.</p>
+      <div class="fade">
+        <div class="tabs" role="group" aria-label="Корпус"></div>
+        <div class="fl"><button type="button" data-s="-1" aria-label="Этаж ниже">−</button><b id="fN">Этаж 17</b><button type="button" data-s="1" aria-label="Этаж выше">+</button></div>
+        <div class="res" aria-live="polite">
+          <svg class="plan" viewBox="0 0 220 240" aria-hidden="true"></svg>
+          <div><div class="sum"><b id="fC">Нажмите на этаж</b><span id="fP">&nbsp;</span></div><ul class="lst"></ul></div>
+        </div>
+        <span class="demo">Демо: цены и планировки — пример</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="band" aria-hidden="true"><div>Три башни <span>·</span> один двор <span>·</span> река <span>·</span> Три башни <span>·</span> один двор <span>·</span> река <span>·</span></div></div>
+
+  <section class="book" id="book">
+    <h2 data-split>Записаться на просмотр.</h2>
+    <div class="row">
+      <p data-split>Покажем двор, паркинг и квартиру с отделкой. Встреча в шоуруме у набережной, около часа, без обязательств.</p>
+    </div>
+    <form class="form fade" autocomplete="off">
+      <input name="n" placeholder="Имя" aria-label="Имя" required>
+      <input name="t" type="tel" placeholder="Телефон" aria-label="Телефон" required>
+      <select name="d" aria-label="Когда удобно"><option>На этой неделе</option><option>В выходные</option><option>Позвоните мне</option></select>
+      <button class="cta" type="submit">Записаться на просмотр <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="ok" hidden>Спасибо! Это демо-сайт: заявка никуда не ушла.</p>
+    <div class="pk">
+      <article class="fade"><h3>Студии и 1-комнатные</h3><p data-split>От 32 до 45 м², окна во двор или на реку.</p><b>от 12,9 млн ₽</b><small>демо</small></article>
+      <article class="fade"><h3>2-комнатные</h3><p data-split>От 58 до 72 м², кухня-гостиная и две спальни.</p><b>от 19,4 млн ₽</b><small>демо</small></article>
+      <article class="fade"><h3>3-комнатные и пентхаусы</h3><p data-split>От 88 м², угловые окна, террасы на верхних этажах.</p><b>от 28,6 млн ₽</b><small>демо</small></article>
+    </div>
+    <footer>
+      <span>ЖК «Три неба» — выдуманный квартал, концепт сайта застройщика. Цены, планировки, сроки, адрес и цифры — примеры.</span>
+      <span>3D: квартал, город, деревья и паркинг собраны кодом в <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> (MIT), готовых 3D-моделей нет. Прокрутка — <a href="https://github.com/darkroomengineering/lenis" target="_blank" rel="noopener">Lenis</a> (MIT).</span>
+    </footer>
+  </section>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>
