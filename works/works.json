@@ -1,5 +1,20 @@
 [
  {
+  "slug": "lustre-detailing",
+  "cat": "3d",
+  "ru": [
+   "Детейлинг в 3D",
+   "Камера облетает машину по прокрутке, свет полирует лак, цвет плёнки меняется одним касанием"
+  ],
+  "en": [
+   "Car detailing in 3D",
+   "The camera orbits the car as you scroll; light polishes the paint, one tap changes the wrap colour"
+  ],
+  "v": "lustre-detailing",
+  "vh": "lustre-detailing-hq",
+  "href": "/demo/lustre-detailing/"
+ },
+ {
   "slug": "aurum",
   "cat": "3d",
   "ru": [
