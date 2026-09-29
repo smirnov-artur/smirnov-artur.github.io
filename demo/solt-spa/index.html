@@ -1,0 +1,1695 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Solt, a salt room and a brine float on Leith harbour</title>
+<meta name="description" content="Solt is a salt room and a float pool of warm brine in an old ice store on Leith harbour, Edinburgh. Forty-five minutes of dry salt air, then an hour of floating.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#171411">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23171411'/%3E%3Cpath d='M9 12.5 18.5 9.5 23 17.5 13.5 20.5Z' fill='%23EEE9E1'/%3E%3Cpath d='M13.5 20.5 23 17.5 23 21 13.5 24Z' fill='%23A69D91'/%3E%3Cpath d='M9 12.5 13.5 20.5 13.5 24 9 16Z' fill='%23C98F7B'/%3E%3C/svg%3E">
+<script>
+  document.documentElement.classList.add('js');
+  try { if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('rm'); } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..600&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap">
+<style>
+/* ------------------------------------------------------------------ tokens */
+:root{
+  --ink:#171411;        /* stone, dark sections */
+  --ink-2:#211D19;
+  --paper:#EEE9E1;      /* salt, light sections */
+  --paper-2:#E4DED4;
+  --text:#1D1A16;
+  --text-2:#5E574E;
+  --on:#EDE6DB;
+  --on-2:#A69D91;
+  --rose:#C98F7B;       /* rock salt */
+  --amber:#E7B47C;      /* the lamps behind it */
+  --brine:#8FA6A2;
+  --rule:rgba(29,26,22,.15);
+  --rule-on:rgba(237,230,219,.17);
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"Instrument Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --g:clamp(18px,4.4vw,68px);
+  --maxw:1360px;
+  --t-body:clamp(16.5px,.28vw + 15.2px,19px);
+  --t-small:clamp(12.5px,.16vw + 11.8px,14px);
+  --t-lead:clamp(18px,.6vw + 14.6px,24px);
+  --t-h2:clamp(36px,3.7vw + 12px,80px);
+  --t-h3:clamp(24px,1vw + 17px,34px);
+  --sec:clamp(84px,14vh,170px);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--ink)}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:clip}
+body{margin:0;background:var(--paper);color:var(--text);font:400 var(--t-body)/1.6 var(--serif);font-optical-sizing:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:clip}
+svg,canvas{display:block}
+a{color:inherit}
+p,h1,h2,h3,dl,dd,ul,ol,figure,fieldset{margin:0}
+ul,ol{padding:0;list-style:none}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 var(--g)}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:2px}
+h2{font-weight:300;font-size:var(--t-h2);line-height:.98;letter-spacing:-.022em;text-wrap:balance}
+h3{font-weight:400;font-size:var(--t-h3);line-height:1.1;letter-spacing:-.012em}
+.num{font-variant-numeric:tabular-nums lining-nums}
+.lead{font-size:var(--t-lead);line-height:1.42;color:var(--text-2);max-width:32ch;text-wrap:pretty}
+.label{font:500 var(--t-small)/1.3 var(--sans);letter-spacing:.01em}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:0 28px;border-radius:999px;border:0;background:var(--text);color:var(--paper);font:500 15px/1 var(--sans);text-decoration:none;cursor:pointer;transition:background-color .2s}
+.btn:hover{background:#3a332c}
+.btn-light{background:var(--on);color:var(--text)}
+.btn-light:hover{background:#fff}
+
+/* -------------------------------------------------------------------- hero */
+.hero{position:relative;height:100vh;height:100svh;min-height:440px;overflow:hidden;background:var(--ink);color:var(--on)}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y;-webkit-tap-highlight-color:transparent}
+.hero-word{position:absolute;inset:0;display:none;place-items:center;margin:0;font:400 clamp(120px,25vw,420px)/1 var(--serif);letter-spacing:-.03em;color:rgba(237,230,219,.2);pointer-events:none}
+html:not(.js) .hero-word,.no-gl .hero-word{display:grid}
+.no-gl .hero{background:radial-gradient(90% 70% at 74% 12%,#4a3c30 0%,#241f1b 48%,var(--ink) 100%)}
+.no-gl .meter,.no-gl .hero-outro{display:none}
+.top{position:absolute;z-index:3;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:clamp(14px,3vh,30px) var(--g) 0;font:500 var(--t-small)/1.2 var(--sans)}
+.top-place{color:rgba(237,230,219,.72)}
+.top ul{display:flex;align-items:center;gap:clamp(16px,2.4vw,40px)}
+.top a{text-decoration:none;color:var(--on);padding:6px 0;background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .3s}
+.top a:hover{background-size:100% 1px}
+.top a.top-book{padding:9px 18px;border:1px solid rgba(237,230,219,.45);border-radius:999px;background:none;transition:background-color .2s,color .2s}
+.top a.top-book:hover{background:var(--on);color:var(--text)}
+.hero-intro,.hero-outro{position:absolute;z-index:2;left:var(--g);bottom:clamp(26px,7vh,78px);margin:0;text-wrap:pretty}
+.hero-intro{max-width:min(33ch,50vw);font-size:clamp(16px,.7vw + .6vh + 6px,21.5px);line-height:1.45;color:var(--on)}
+.hero-outro{max-width:13ch;font-size:clamp(30px,2.9vw + 1.3vh,64px);font-weight:300;line-height:1.02;letter-spacing:-.02em;color:#F6F1EA;pointer-events:none}
+.hero-outro em{font-style:italic;color:#F0D9C4}
+.meter{position:absolute;z-index:2;right:var(--g);bottom:clamp(26px,7vh,78px);width:clamp(236px,23vw,330px);font:500 11.5px/1.25 var(--sans);color:rgba(237,230,219,.7);pointer-events:none}
+.meter-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:10px}
+.meter-val{font:400 clamp(24px,1.3vw + 9px,32px)/1 var(--serif);color:var(--on)}
+.meter-val small{font:500 12px/1 var(--sans);margin-left:4px;color:var(--on-2)}
+.meter-rule{position:relative;height:16px;border-bottom:1px solid rgba(237,230,219,.42)}
+.meter-rule i{position:absolute;bottom:0;width:1px;height:4px;background:rgba(237,230,219,.35)}
+.meter-rule i.mj{height:8px;background:rgba(237,230,219,.7)}
+.meter-rule i.sat{height:16px;width:1.5px;background:var(--amber)}
+.meter-mark{position:absolute;bottom:-5px;left:calc(var(--s,3.5) / 28 * 100%);width:9px;height:9px;margin-left:-4.5px;background:var(--on);transform:rotate(45deg);transition:background-color .4s}
+.meter.sat .meter-mark{background:var(--amber)}
+.meter-axis{position:relative;height:14px;margin-top:7px;color:rgba(237,230,219,.5)}
+.meter-axis span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.meter-axis span:first-child{transform:none}
+.meter-axis span:last-child{transform:translateX(-100%)}
+.meter-hint{margin-top:16px;color:rgba(237,230,219,.72);min-height:1.25em}
+.js .top,.js .hero-intro,.js .meter{visibility:hidden}
+.js .hero-outro{opacity:0}
+.rm .top,.rm .hero-intro,.rm .meter{visibility:visible}
+
+/* ------------------------------------------------------------------- story */
+.story{position:relative;background:var(--ink);color:var(--on);padding:var(--sec) 0}
+.js:not(.rm) .story{height:100vh;height:100svh;min-height:540px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;row-gap:clamp(8px,2vh,24px);padding:clamp(20px,6vh,64px) 0 clamp(20px,5.5vh,60px);overflow:hidden}
+.story-head{display:flex;align-items:flex-end;justify-content:space-between;gap:clamp(20px,4vw,72px);width:100%;max-width:var(--maxw);margin:0 auto;padding:0 var(--g)}
+.story-lead{font:400 var(--t-small)/1.5 var(--sans);color:var(--on-2);max-width:38ch}
+.stage{position:relative;min-height:0;overflow:hidden}
+.stage svg,.stage canvas{position:absolute;inset:0;width:100%;height:100%}
+.stage-labels{position:absolute;inset:0;pointer-events:none}
+.lab{position:absolute;left:0;top:0;display:flex;align-items:center;gap:7px;padding:5px 10px 5px 8px;border-radius:999px;background:rgba(20,17,14,.72);font:500 12px/1.2 var(--sans);color:rgba(237,230,219,.9);white-space:nowrap;opacity:0;will-change:transform,opacity}
+.lab::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--amber);flex:none}
+.moments{display:grid;width:100%;max-width:var(--maxw);margin:0 auto;padding:0 var(--g)}
+.steps{grid-row:1;display:flex;gap:8px;margin-bottom:clamp(10px,2vh,18px)}
+.steps li{position:relative;width:clamp(44px,6vw,90px);height:2px;background:var(--rule-on);overflow:hidden}
+.steps i{position:absolute;inset:0;background:var(--amber);transform-origin:0 50%;transform:scaleX(0)}
+.moment{grid-row:2;grid-column:1;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:clamp(20px,5vw,96px);align-items:start}
+.js:not(.rm) .moment{opacity:0;visibility:hidden;transition:opacity .5s ease,visibility 0s .5s}
+.js:not(.rm) .moment.on{opacity:1;visibility:visible;transition:opacity .5s ease,visibility 0s}
+.when{font:500 var(--t-small)/1.3 var(--sans);color:var(--amber);margin-bottom:8px}
+.moment h3{font-size:clamp(24px,1.2vw + 1.3vh + 9px,40px);font-weight:300}
+.moment .body{max-width:52ch;font-size:clamp(15.5px,.4vw + .5vh + 9.5px,19px);line-height:1.55;color:rgba(237,230,219,.88);text-wrap:pretty}
+.rm .steps{display:none}
+.rm .moment,html:not(.js) .moment{margin-top:56px;grid-row:auto}
+.rm .stage,.moment-fig{display:none}
+.rm .moment-fig{display:block;grid-column:1 / -1;position:relative;height:clamp(240px,34vw,460px);margin:0 calc(var(--g) * -1) 28px}
+
+/* ---------------------------------------------------------------- sessions */
+.sessions{background:var(--paper);padding:var(--sec) 0}
+.sessions-head{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:28px clamp(24px,5vw,96px);align-items:end;margin-bottom:clamp(48px,8vh,110px)}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(44px,5vw,96px) clamp(24px,3.4vw,60px)}
+.card-fig{margin:0 0 clamp(22px,3vh,34px);aspect-ratio:4 / 5;background:#120F0D;border-radius:3px;overflow:hidden}
+.card-cv{width:100%;height:100%;touch-action:pan-y}
+.card h3{margin-bottom:12px}
+.card-desc{margin-bottom:14px;max-width:40ch;text-wrap:pretty}
+.card-for{margin-bottom:22px;max-width:40ch;color:var(--text-2);text-wrap:pretty}
+.card-for em{color:var(--text)}
+.specs{display:grid;border-top:1px solid var(--rule);font:400 var(--t-small)/1.4 var(--sans)}
+.specs div{display:grid;grid-template-columns:6.5em 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--rule)}
+.specs dt{color:var(--text-2)}
+.specs dd{font-variant-numeric:tabular-nums lining-nums}
+.card-book{display:inline-block;margin-top:18px;font:500 var(--t-small)/1.3 var(--sans);text-decoration:none;padding-bottom:3px;border-bottom:1px solid currentColor}
+.card-book::after{content:" \2192"}
+
+/* ------------------------------------------------------------------- visit */
+.visit{background:var(--ink);color:var(--on);padding:var(--sec) 0}
+.visit-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(40px,6vw,110px);align-items:start}
+.plan-fig{position:sticky;top:10vh}
+.plan{width:100%;height:auto}
+.plan .pl-room{font-family:var(--serif);font-style:italic;fill:var(--on)}
+.plan .pl-note{font-family:var(--sans);font-weight:500;fill:var(--on-2)}
+.plan .stop circle{fill:var(--ink);stroke:rgba(237,230,219,.5);transition:fill .3s,stroke .3s}
+.plan .stop text{font-family:var(--sans);font-weight:600;fill:var(--on-2);transition:fill .3s}
+.plan .stop.on circle{fill:var(--amber);stroke:var(--amber)}
+.plan .stop.on text{fill:var(--ink)}
+.visit .lead{color:var(--on-2);margin:22px 0 0}
+.route-list{margin:34px 0 0;counter-reset:r;border-top:1px solid var(--rule-on)}
+.route-list li{display:grid;grid-template-columns:2.2em 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--rule-on);font-size:clamp(15px,.3vw + 14px,17px);line-height:1.45;color:var(--on-2);transition:color .3s}
+.route-list li b{font:600 var(--t-small)/1.9 var(--sans);color:var(--on-2);transition:color .3s}
+.route-list li strong{font-weight:500;color:var(--on)}
+.route-list li.on b{color:var(--amber)}
+.facts{margin:36px 0 40px;border-top:1px solid var(--rule-on)}
+.facts div{display:grid;grid-template-columns:7.5em 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--rule-on)}
+.facts dt{font:500 var(--t-small)/1.6 var(--sans);color:var(--on-2)}
+.facts dd{font-size:clamp(15px,.3vw + 14px,17px);line-height:1.5;text-wrap:pretty}
+
+/* -------------------------------------------------------------------- book */
+.book{background:var(--paper);padding:var(--sec) 0}
+.book-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(40px,6vw,120px);align-items:start}
+.book-intro .lead{margin:22px 0 0}
+.book-note{margin-top:36px;padding-top:20px;border-top:1px solid var(--rule);color:var(--text-2);max-width:40ch;text-wrap:pretty}
+.book-form fieldset{border:0;padding:0;min-width:0;margin:0 0 30px}
+.f-leg{padding:0;margin-bottom:12px;font:500 var(--t-small)/1.3 var(--sans);color:var(--text-2)}
+.opts{border-top:1px solid var(--rule)}
+.opt{position:relative;display:grid;grid-template-columns:22px minmax(0,1fr) auto auto;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--rule);cursor:pointer}
+.opt input,.chip input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.opt .dot{width:18px;height:18px;border-radius:50%;border:1px solid rgba(29,26,22,.4);display:grid;place-items:center}
+.opt .dot::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--text);transform:scale(0);transition:transform .2s}
+.opt input:checked ~ .dot::after{transform:scale(1)}
+.opt input:focus-visible ~ .dot{outline:2px solid var(--text);outline-offset:3px}
+.opt-name{font-size:clamp(19px,.6vw + 15px,24px);line-height:1.2}
+.opt-meta,.opt-price{font:500 15px/1 var(--sans)}
+.opt-meta{color:var(--text-2)}
+.stepper{display:flex;align-items:center;gap:6px}
+.step{width:42px;height:42px;border-radius:50%;border:1px solid rgba(29,26,22,.3);background:transparent;color:var(--text);font:400 20px/1 var(--sans);cursor:pointer;display:grid;place-items:center;transition:background-color .15s,border-color .15s}
+.step:hover:not(:disabled){background:rgba(29,26,22,.07);border-color:rgba(29,26,22,.55)}
+.step:disabled{opacity:.3;cursor:default}
+.qty{min-width:2.4ch;text-align:center;font:600 17px/1 var(--sans)}
+.ppl{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.ppl-note{font:400 var(--t-small)/1.4 var(--sans);color:var(--text-2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative;cursor:pointer}
+.chip span{display:inline-flex;align-items:center;min-height:42px;padding:0 15px;border:1px solid rgba(29,26,22,.24);border-radius:999px;font:500 14px/1 var(--sans);font-variant-numeric:tabular-nums;transition:background-color .15s,border-color .15s,color .15s}
+.chip:hover span{border-color:rgba(29,26,22,.55)}
+.chip input:checked + span{background:var(--text);border-color:var(--text);color:var(--paper)}
+.chip input:focus-visible + span{outline:2px solid var(--text);outline-offset:3px}
+.sum{display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:22px 0 10px;border-top:1px solid var(--rule);font:500 15px/1.35 var(--sans)}
+.sum-total{font:400 clamp(26px,1vw + 19px,34px)/1 var(--serif)}
+.fine{font:400 var(--t-small)/1.55 var(--sans);color:var(--text-2);max-width:56ch;margin-bottom:26px}
+.form-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px}
+.form-msg{font:500 var(--t-small)/1.45 var(--sans);max-width:44ch}
+
+/* ------------------------------------------------------------------ footer */
+.foot{background:var(--ink);color:var(--on-2);padding:clamp(60px,10vh,120px) 0 40px;font:400 var(--t-small)/1.6 var(--sans)}
+.foot-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:32px clamp(40px,6vw,120px);align-items:end}
+.foot-word{font:400 clamp(56px,7vw,112px)/.9 var(--serif);letter-spacing:-.03em;color:var(--on);margin-bottom:18px}
+.foot-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 32px}
+.foot a{color:var(--on)}
+.foot-note{margin-top:52px;padding-top:18px;border-top:1px solid var(--rule-on);font-size:12.5px}
+
+/* -------------------------------------------------------------- responsive */
+@media (max-width:980px){
+  .sessions-head,.visit-grid,.book-grid,.foot-grid{grid-template-columns:minmax(0,1fr)}
+  .plan-fig{position:relative;top:auto}
+  .cards{grid-template-columns:minmax(0,1fr);gap:64px}
+  .card{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:30px;align-items:start}
+  .card-fig{margin:0}
+}
+@media (max-width:640px){
+  .top-place{display:none}
+  .top{justify-content:flex-start}
+  .top ul{gap:14px;flex-wrap:wrap}
+  .top a.top-book{padding:8px 14px}
+  .hero-intro{max-width:none;right:var(--g);bottom:calc(clamp(26px,7vh,78px) + 118px)}
+  .hero-outro{bottom:calc(clamp(26px,7vh,78px) + 118px)}
+  .meter{left:var(--g);width:auto}
+  .meter-hint{margin-top:12px}
+  .story-lead{display:none}
+  .moment{grid-template-columns:minmax(0,1fr)}
+  .moment h3{margin-bottom:10px}
+  .card{grid-template-columns:minmax(0,1fr);gap:0}
+  .card-fig{width:86%;margin:0 0 24px}
+  .opt{grid-template-columns:22px minmax(0,1fr) auto;row-gap:6px}
+  .opt-meta{grid-column:2;grid-row:2}
+  .opt-price{grid-column:3;grid-row:1 / 3}
+  .foot-meta{grid-template-columns:minmax(0,1fr)}
+  .facts div{grid-template-columns:minmax(0,1fr);gap:4px}
+}
+@media (max-height:600px) and (min-width:641px){
+  .story-lead{display:none}
+  .moment h3{font-size:clamp(20px,2vw + 4px,30px)}
+  .moment .body{font-size:15px;line-height:1.5}
+}
+@media (pointer:coarse){.step{width:46px;height:46px}}
+@media (prefers-reduced-motion:reduce){
+  .js .moment,.btn,.step,.chip span,.top a,.plan .stop circle,.route-list li{transition:none}
+}
+</style>
+</head>
+<body>
+<main>
+
+<!-- ================================================================ HERO -->
+<section class="hero" id="top" aria-label="Solt">
+  <canvas id="pool" aria-hidden="true"></canvas>
+  <p class="hero-word" aria-hidden="true">Solt</p>
+  <h1 class="sr-only">Solt, a salt room and a brine float pool on Leith harbour, Edinburgh</h1>
+  <header class="top">
+    <span class="top-place">Salt room and brine float, Leith harbour</span>
+    <nav aria-label="Sections">
+      <ul>
+        <li><a href="#rooms">The rooms</a></li>
+        <li><a href="#sessions">Sessions</a></li>
+        <li><a href="#visit">Visit</a></li>
+        <li><a class="top-book" href="#book">Book</a></li>
+      </ul>
+    </nav>
+  </header>
+  <p class="hero-intro">Two quiet rooms in an old ice store on the harbour. One is lined with salt. The other holds a pool of warm brine dense enough to lie on.</p>
+  <p class="hero-outro">Give it an hour. <em>Everything else evaporates.</em></p>
+  <div class="meter" aria-hidden="true">
+    <div class="meter-head"><span>Salt in the water</span><span class="meter-val num"><span id="sal">3.5</span><small>%</small></span></div>
+    <div class="meter-rule" id="meter-rule"><span class="meter-mark"></span></div>
+    <div class="meter-axis"><span style="left:0">0</span><span style="left:12.5%">sea</span><span style="left:94.3%">full</span></div>
+    <p class="meter-hint" id="meter-hint">Scroll to let the water go</p>
+  </div>
+</section>
+
+<!-- ============================================================== STORY -->
+<section class="story" id="rooms" aria-labelledby="rooms-h">
+  <header class="story-head">
+    <h2 id="rooms-h">Salt air, then the float</h2>
+    <p class="story-lead">Most people book both rooms, one after the other. This is the whole visit, from the glowing room to the pool.</p>
+  </header>
+  <div class="stage" id="stage" aria-hidden="true"></div>
+  <div class="moments">
+    <ol class="steps" aria-hidden="true"><li><i></i></li><li><i></i></li><li><i></i></li></ol>
+    <article class="moment on">
+      <div><p class="when">Minute 0, the salt room</p><h3>Walls of salt, lit from behind</h3></div>
+      <p class="body">The walls are built from blocks of rock salt with lamps behind them, so the room glows the colour of a low fire. The floor is loose salt, deep enough to push your bare feet into. Six loungers, blankets, no screens.</p>
+    </article>
+    <article class="moment">
+      <div><p class="when">Minute 5</p><h3>Air you can taste</h3></div>
+      <p class="body">A halogenerator on the wall mills pure salt into a dust finer than flour and lets it drift through the room. You won’t see it. After twenty minutes you taste it on your lips. Nobody talks much.</p>
+    </article>
+    <article class="moment">
+      <div><p class="when">Minute 55, the float room</p><h3>Then you float</h3></div>
+      <p class="body">After a shower, the pool: thirty centimetres of water with half a tonne of Epsom salt dissolved in it, kept at skin temperature. Lie back and it holds you up. The lights are yours to dim, all the way to dark.</p>
+    </article>
+  </div>
+</section>
+
+<!-- =========================================================== SESSIONS -->
+<section class="sessions" id="sessions" aria-labelledby="sessions-h">
+  <div class="wrap">
+    <header class="sessions-head">
+      <h2 id="sessions-h">Three ways in</h2>
+      <p class="lead">We don’t sell salt as a cure; the research on salt air is thin. What we sell is an hour in which nothing asks anything of you.</p>
+    </header>
+    <div class="cards">
+      <article class="card">
+        <div class="card-fig"><canvas class="card-cv" data-kind="room" aria-hidden="true"></canvas></div>
+        <div>
+          <h3>Salt room</h3>
+          <p class="card-desc">Forty-five minutes in a lounger in the glowing room, with up to five other people and no talking.</p>
+          <p class="card-for"><em>Good for</em> a first visit, a long lunch break, anyone who would rather stay dry.</p>
+          <dl class="specs">
+            <div><dt>Length</dt><dd>45 minutes</dd></div>
+            <div><dt>Room</dt><dd>Shared, up to six</dd></div>
+            <div><dt>Price</dt><dd>£32 a person</dd></div>
+          </dl>
+          <a class="card-book" href="#book" data-pick="salt">Book the salt room</a>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-fig"><canvas class="card-cv" data-kind="float" aria-hidden="true"></canvas></div>
+        <div>
+          <h3>Float</h3>
+          <p class="card-desc">An hour alone in a private room with its own shower and a pool of warm brine. The light and the music are yours to switch off.</p>
+          <p class="card-for"><em>Good for</em> long weeks, long flights, heads that won’t switch off by themselves.</p>
+          <dl class="specs">
+            <div><dt>Length</dt><dd>60 minutes</dd></div>
+            <div><dt>Room</dt><dd>Private, one of two</dd></div>
+            <div><dt>Price</dt><dd>£55 a person</dd></div>
+          </dl>
+          <a class="card-book" href="#book" data-pick="float">Book a float</a>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-fig"><canvas class="card-cv" data-kind="heap" aria-hidden="true"></canvas></div>
+        <div>
+          <h3>Salt and float</h3>
+          <p class="card-desc">The salt room, a shower, then the float. Tea afterwards in the tea room, for as long as you like.</p>
+          <p class="card-for"><em>Good for</em> a proper afternoon off, or a present for someone who needs one.</p>
+          <dl class="specs">
+            <div><dt>Length</dt><dd>1 hour 50 minutes</dd></div>
+            <div><dt>Rooms</dt><dd>Both, one after the other</dd></div>
+            <div><dt>Price</dt><dd>£78 a person</dd></div>
+          </dl>
+          <a class="card-book" href="#book" data-pick="both">Book both</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== VISIT -->
+<section class="visit" id="visit" aria-labelledby="visit-h">
+  <div class="wrap visit-grid">
+    <figure class="plan-fig">
+      <svg class="plan" id="plan" viewBox="0 0 1000 650" role="img" aria-label="Floor plan. The entrance and desk are at the front right, the tea room in the middle, lockers and showers on the left. The salt room and two float rooms are at the back.">
+        <defs>
+          <pattern id="pl-salt" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r="1" fill="rgba(231,180,124,.45)"/><circle cx="7.5" cy="7" r=".8" fill="rgba(237,230,219,.3)"/></pattern>
+        </defs>
+        <rect x="44" y="44" width="432" height="282" fill="rgba(201,143,123,.1)"/>
+        <rect x="44" y="44" width="432" height="282" fill="url(#pl-salt)"/>
+        <g fill="none" stroke="rgba(237,230,219,.42)" stroke-width="1.2">
+          <rect x="92" y="96" width="30" height="80" rx="10" transform="rotate(-8 107 136)"/>
+          <rect x="152" y="90" width="30" height="80" rx="10" transform="rotate(-4 167 130)"/>
+          <rect x="212" y="88" width="30" height="80" rx="10"/>
+          <rect x="272" y="88" width="30" height="80" rx="10"/>
+          <rect x="332" y="90" width="30" height="80" rx="10" transform="rotate(4 347 130)"/>
+          <rect x="392" y="96" width="30" height="80" rx="10" transform="rotate(8 407 136)"/>
+          <rect x="484" y="48" width="58" height="58"/><path d="M484 48 L542 106 M542 48 L484 106"/>
+          <rect x="724" y="48" width="58" height="58"/><path d="M724 48 L782 106 M782 48 L724 106"/>
+          <path d="M52 412 V548 M66 412 V548"/>
+          <path d="M52 426 H66 M52 440 H66 M52 454 H66 M52 468 H66 M52 482 H66 M52 496 H66 M52 510 H66 M52 524 H66 M52 538 H66"/>
+          <rect x="322" y="408" width="50" height="40"/><rect x="322" y="456" width="50" height="40"/><rect x="322" y="504" width="50" height="40"/>
+          <circle cx="470" cy="472" r="20"/><circle cx="560" cy="505" r="20"/><circle cx="650" cy="472" r="20"/>
+          <path d="M396 548 H724"/>
+          <rect x="786" y="420" width="130" height="26" rx="4"/>
+        </g>
+        <rect x="46" y="150" width="8" height="34" fill="var(--amber)"/>
+        <rect x="560" y="140" width="136" height="164" rx="18" fill="rgba(143,166,162,.22)" stroke="rgba(143,166,162,.7)" stroke-width="1.2"/>
+        <rect x="800" y="140" width="136" height="164" rx="18" fill="rgba(143,166,162,.22)" stroke="rgba(143,166,162,.7)" stroke-width="1.2"/>
+        <g fill="none" stroke="var(--on)" stroke-linecap="square">
+          <path d="M830 560 H40 V40 H960 V560 H890" stroke-width="7"/>
+          <path d="M40 330 H200 M262 330 H480 M480 40 V330 M480 330 H572 M632 330 H720 M720 40 V330 M720 330 H812 M872 330 H960 M40 400 H150 M212 400 H380 M380 400 V560 M380 400 H480 M640 400 H740 M740 400 H790 M900 400 H960 M740 400 V462 M740 520 V560" stroke-width="3"/>
+          <path d="M830 560 V506 A54 54 0 0 1 884 560" stroke-width="1" stroke="rgba(237,230,219,.5)"/>
+        </g>
+        <text class="pl-room" x="340" y="252" text-anchor="middle" data-px="16">Salt room</text>
+        <text class="pl-note" x="340" y="276" text-anchor="middle" data-px="11.5">six loungers, salt floor</text>
+        <text class="pl-note" x="62" y="210" data-px="11">halogenerator</text>
+        <text class="pl-room" x="628" y="90" text-anchor="middle" data-px="16">Float room</text>
+        <text class="pl-room" x="868" y="90" text-anchor="middle" data-px="16">Float room</text>
+        <text class="pl-note" x="868" y="324" text-anchor="middle" data-px="11">30 cm of brine</text>
+        <text class="pl-room" x="210" y="590" text-anchor="middle" data-px="15">Lockers and showers</text>
+        <text class="pl-room" x="560" y="590" text-anchor="middle" data-px="15">Tea room</text>
+        <text class="pl-note" x="851" y="438" text-anchor="middle" data-px="11">desk</text>
+        <text class="pl-room" x="876" y="612" data-px="15">Way in</text>
+        <g id="route"></g>
+      </svg>
+      <figcaption class="sr-only">Plan of Solt with the route of a first visit.</figcaption>
+    </figure>
+    <div>
+      <h2 id="visit-h">Your first visit</h2>
+      <p class="lead">Come ten minutes early and bring nothing. Robes, towels, slippers and earplugs are ours.</p>
+      <ol class="route-list" id="route-list">
+        <li><b>1</b><span><strong>Tea room.</strong> A cup of tea and a short form about your health.</span></li>
+        <li><b>2</b><span><strong>Lockers.</strong> Change into a robe. Phones stay here.</span></li>
+        <li><b>3</b><span><strong>Salt room.</strong> Forty-five minutes in a lounger.</span></li>
+        <li><b>4</b><span><strong>Float room.</strong> A shower, then sixty minutes alone, the door locked from inside.</span></li>
+        <li><b>5</b><span><strong>Tea room again.</strong> Stay as long as you like.</span></li>
+      </ol>
+      <dl class="facts">
+        <div><dt>Where</dt><dd>The Ice House, on the harbour in Leith, Edinburgh. Step-free from the street.</dd></div>
+        <div><dt>Open</dt><dd>Wednesday to Sunday, 10:00 to 21:00. The last float starts at 19:00.</dd></div>
+        <div><dt>Getting here</dt><dd>Tram to Port of Leith, then a few minutes on foot along the quay.</dd></div>
+        <div><dt>Before you come</dt><dd>Skip shaving and waxing on the day; salt finds every nick. If you are pregnant, have epilepsy or a heart condition, ask your doctor before you float.</dd></div>
+      </dl>
+      <a class="btn btn-light" href="#book">Book a first visit</a>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================== BOOK -->
+<section class="book" id="book" aria-labelledby="book-h">
+  <div class="wrap book-grid">
+    <div class="book-intro">
+      <h2 id="book-h">Book a time</h2>
+      <p class="lead">Pick a session, a day and a time, and send it to us. We hold the slot for a day and reply with a confirmation and a payment link.</p>
+      <p class="book-note">Buying for someone else? Vouchers work for any session, stay valid for a year, and come by email or printed on card. Write to us and say which.</p>
+    </div>
+    <form class="book-form" id="book-form" novalidate>
+      <fieldset>
+        <legend class="f-leg">Session</legend>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="session" value="salt" checked><span class="dot"></span><span class="opt-name">Salt room</span><span class="opt-meta">45 min</span><span class="opt-price num">£32</span></label>
+          <label class="opt"><input type="radio" name="session" value="float"><span class="dot"></span><span class="opt-name">Float</span><span class="opt-meta">60 min</span><span class="opt-price num">£55</span></label>
+          <label class="opt"><input type="radio" name="session" value="both"><span class="dot"></span><span class="opt-name">Salt and float</span><span class="opt-meta">1 h 50</span><span class="opt-price num">£78</span></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend class="f-leg">People</legend>
+        <div class="ppl">
+          <div class="stepper" role="group" aria-label="Number of people">
+            <button type="button" class="step" data-d="-1" aria-label="One person fewer">−</button>
+            <output class="qty num" id="qty" aria-live="polite">1</output>
+            <button type="button" class="step" data-d="1" aria-label="One more person">+</button>
+          </div>
+          <span class="ppl-note" id="ppl-note">Up to six share the salt room.</span>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend class="f-leg">Day</legend>
+        <div class="chips" id="days"></div>
+      </fieldset>
+      <fieldset>
+        <legend class="f-leg">Time</legend>
+        <div class="chips" id="times"></div>
+      </fieldset>
+      <div class="sum"><span id="sum-line">1 person, salt room</span><span id="sum-total" class="sum-total num">£32</span></div>
+      <p class="fine">Pay nothing now. Free to move or cancel up to 24 hours before.</p>
+      <div class="form-row">
+        <button class="btn" type="submit">Request this time</button>
+        <p class="form-msg" id="form-msg" role="status"></p>
+      </div>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <p class="foot-word">Solt</p>
+        <p>Salt room and brine float. The Ice House, Leith harbour, Edinburgh.</p>
+      </div>
+      <div class="foot-meta">
+        <p>Write to us<br><a href="mailto:hello@solt.example">hello@solt.example</a></p>
+        <p>Open<br>Wednesday to Sunday, 10:00–21:00</p>
+        <p>Vouchers<br>Any session, valid for a year</p>
+      </div>
+    </div>
+    <p class="foot-note">Solt is a fictional spa, drawn as a design study by <a href="https://smirnov-artur.github.io/works/en">g.a.d.</a> Nothing here can be booked.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js" integrity="sha384-jqpi9VmOdhyLoLURgjCn7EpnG9BbnHW57ibIZoeaIU+erWDH3k8fQQg0xH2ySjnw" crossorigin="anonymous"></script>
+<script>
+(() => {
+'use strict';
+const doc = document.documentElement;
+const RM = doc.classList.contains('rm');
+const HAS_GSAP = !!(window.gsap && window.ScrollTrigger);
+if (!HAS_GSAP) doc.classList.remove('js');          // a plain page if the CDN is down
+const COARSE = matchMedia('(pointer: coarse)').matches;
+const LITE = COARSE || Math.min(innerWidth, innerHeight) < 560;
+const NS = 'http://www.w3.org/2000/svg';
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const c01 = v => clamp(v, 0, 1);
+const lerp = (a, b, t) => a + (b - a) * t;
+const sstep = (a, b, v) => { const t = c01((v - a) / (b - a)); return t * t * (3 - 2 * t); };
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const track = (k, x) => {
+  if (x <= k[0][0]) return k[0][1];
+  for (let i = 1; i < k.length; i++) if (x <= k[i][0]) {
+    const [x0, y0] = k[i - 1], [x1, y1] = k[i];
+    return lerp(y0, y1, ease((x - x0) / (x1 - x0)));
+  }
+  return k[k.length - 1][1];
+};
+function rng(s) { return () => { s = (s + 0x9E3779B9) | 0; let t = s ^ (s >>> 16); t = Math.imul(t, 0x21F0AAAD); t ^= t >>> 15; t = Math.imul(t, 0x735A2D97); t ^= t >>> 15; return (t >>> 0) / 4294967296; }; }
+const S = (tag, a, parent) => { const n = document.createElementNS(NS, tag); if (a) for (const k in a) n.setAttribute(k, a[k]); if (parent) parent.appendChild(n); return n; };
+
+/* ======================================================================
+   THE POOL: a height-field ripple simulation over a stone floor with the
+   name cut into it. The water level drops with the scroll; what is left
+   on the stone crystallises.
+   ====================================================================== */
+const GL_COMMON = `
+varying vec2 vUv;
+uniform float uAsp;
+uniform sampler2D uWord;
+float h21(vec2 p){ vec3 q = fract(vec3(p.xyx) * .1031); q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z); }
+vec2 h22(vec2 p){ vec3 q = fract(vec3(p.xyx) * vec3(.1031, .1030, .0973)); q += dot(q, q.yzx + 33.33); return fract((q.xx + q.yz) * q.zy); }
+float vn(vec2 p){
+  vec2 i = floor(p), f = fract(p);
+  vec2 u = f * f * (3. - 2. * f);
+  return mix(mix(h21(i), h21(i + vec2(1., 0.)), u.x), mix(h21(i + vec2(0., 1.)), h21(i + 1.), u.x), u.y) * 2. - 1.;
+}
+float fbm3(vec2 p){
+  float s = 0., a = .5;
+  for (int i = 0; i < 3; i++){ s += a * vn(p); p = mat2(1.6, 1.2, -1.2, 1.6) * p + 5.3; a *= .5; }
+  return s;
+}
+// height of the pool floor: a shallow bowl, some unevenness, the letters cut deep
+float floorH(vec2 uv){
+  vec2 p = vec2(uv.x * uAsp, uv.y);
+  vec2 c = (uv - vec2(.5, .48)) * vec2(uAsp, 1.);
+  float h = fbm3(p * 1.5 + 2.7) * .9 + dot(c, c) * 1.25;
+  return h - texture2D(uWord, uv).g * 1.7;
+}
+`;
+
+const GL_BAKE = `
+uniform vec2 uRes;
+void main(){
+  vec2 uv = vUv, p = vec2(uv.x * uAsp, uv.y);
+  vec4 W = texture2D(uWord, uv);
+  float m = fbm3(p * 2.2 + 9.1);
+  float fine = vn(p * 16.) * .55 + vn(p * 41.) * .45;
+  float grain = h21(floor(uv * uRes * .9));
+  float vein = 1. - smoothstep(0., .03, abs(fbm3(p * 1.1 + vec2(3., 7.)) + .06));
+  vec3 c = vec3(.25, .232, .214) * (1. + .26 * m + .1 * fine) * (.93 + .14 * grain);
+  float ex = 1.6 / uRes.x, ey = 1.6 / uRes.y;
+  float gx = texture2D(uWord, uv + vec2(ex, 0.)).g - texture2D(uWord, uv - vec2(ex, 0.)).g;
+  float gy = texture2D(uWord, uv + vec2(0., ey)).g - texture2D(uWord, uv - vec2(0., ey)).g;
+  float inG = smoothstep(.25, .75, W.g);
+  c = mix(c, vec3(.4, .37, .345), vein * .38 * (1. - inG));
+  // the cut: a paler, rosy floor where old salt stained it, walls catching the lamp
+  vec3 gf = vec3(.6, .515, .475) * (1. + .12 * vn(p * 28.)) * (.94 + .12 * grain);
+  c = mix(c, gf, inG * .9);
+  c *= 1. + clamp((-gx * .55 + gy * .83) * 3.4, -.55, .55);
+  c *= 1. - .07 * (sin(dot(p, vec2(.8, .6)) * 240. + vn(p * 5.) * 4.) * .5 + .5) * inG;
+  gl_FragColor = vec4(c, 1.);
+}`;
+
+const GL_SIM = `
+uniform sampler2D uS;
+uniform vec2 uTx;
+uniform vec4 uSeg;
+uniform vec2 uSegRS;
+uniform vec4 uDrop;
+uniform float uK;
+uniform float uDamp;
+uniform float uLevel;
+float capsule(vec2 p, vec2 a, vec2 b){ vec2 pa = p - a, ba = b - a; float t = clamp(dot(pa, ba) / max(dot(ba, ba), 1e-8), 0., 1.); return length(pa - ba * t); }
+void main(){
+  vec4 s = texture2D(uS, vUv);
+  float n = (texture2D(uS, vUv + vec2(uTx.x, 0.)).r + texture2D(uS, vUv - vec2(uTx.x, 0.)).r
+           + texture2D(uS, vUv + vec2(0., uTx.y)).r + texture2D(uS, vUv - vec2(0., uTx.y)).r) * .25;
+  s.g = (s.g + (n - s.r) * uK) * uDamp;
+  s.r = (s.r + s.g) * .9985;
+  vec2 A = vec2(uAsp, 1.);
+  s.r += uSegRS.y * (1. - smoothstep(0., uSegRS.x, capsule(vUv * A, uSeg.xy * A, uSeg.zw * A)));
+  s.r += uDrop.w * (1. - smoothstep(0., uDrop.z, length((vUv - uDrop.xy) * A)));
+  // stone that stands out of the water stops the waves
+  s.rg *= step(floorH(vUv) + .03, uLevel);
+  gl_FragColor = s;
+}`;
+
+const GL_RENDER = `
+uniform sampler2D uS;
+uniform sampler2D uBed;
+uniform vec2 uSTx;
+uniform vec2 uRes;
+uniform vec2 uLamp;
+uniform vec2 uL;
+uniform float uT;
+uniform float uLevel;
+uniform float uLevel0;
+uniform float uExp;
+uniform float uGrow;
+uniform float uDry;
+uniform float uSim;
+uniform float uNK;
+uniform float uCK;
+
+// what the surface reflects: a dark vaulted ceiling and one warm pendant lamp
+vec3 room(vec2 q){
+  vec2 d = (q - uLamp) * vec2(uAsp, 1.);
+  float r2 = dot(d, d);
+  vec3 c = vec3(.04, .037, .035);
+  c += vec3(.07, .058, .048) * (1. - smoothstep(0., 1.2, length((q - vec2(.62, 1.1)) * vec2(uAsp * .45, 1.))));
+  // a long cove light along the far edge of the ceiling
+  c += vec3(.36, .3, .24) * smoothstep(.05, 0., abs(q.y - 1.02)) * smoothstep(.02, .2, q.x) * smoothstep(.98, .8, q.x);
+  c += vec3(1., .66, .38) * (exp(-r2 * 5000.) * 5. + exp(-r2 * 260.) * .18 + exp(-r2 * 9.) * .05);
+  return c;
+}
+#ifndef LITE
+float cellEdge(vec2 p, float t){
+  vec2 i = floor(p), f = fract(p);
+  float d1 = 9., d2 = 9.;
+  for (int y = -1; y <= 1; y++) for (int x = -1; x <= 1; x++){
+    vec2 o = vec2(float(x), float(y));
+    vec2 h = .5 + .42 * sin(t + 6.2831 * h22(i + o));
+    vec2 r = o + h - f;
+    float d = dot(r, r);
+    if (d < d1){ d2 = d1; d1 = d; } else if (d < d2){ d2 = d; }
+  }
+  return sqrt(d2) - sqrt(d1);
+}
+#endif
+// one halite crystal per cell: a cube seen from above and a little in front,
+// its top face stepped like a hopper crystal
+vec4 cube(vec2 p, float cell, float seed, float thr, float px){
+  vec2 gq = p / cell;
+  vec2 id = floor(gq);
+  vec2 f = fract(gq) - .5;
+  float b = h21(id + seed);
+  if (b >= thr) return vec4(0.);
+  float life = clamp((thr - b) / (.3 * thr + .03), 0., 1.);
+  vec2 r = h22(id * 1.37 + seed);
+  float s = mix(.11, .27, r.x * r.x) * (.4 + .6 * life);
+  vec2 c = (h22(id + seed * 3.1 + 5.) - .5) * (.8 - 2.6 * s);
+  float a = r.y * 1.5708, ca = cos(a), sa = sin(a);
+  mat2 Rm = mat2(ca, -sa, sa, ca);
+  vec2 D = vec2(-.2, .28) * s;
+  vec2 q = f - c;
+  vec2 qt = (Rm * (q - D)) / s;
+  vec2 qb = (Rm * q) / s;
+  vec2 qm = (Rm * (q - D * .5)) / s;
+  float mt = max(abs(qt.x), abs(qt.y));
+  float ms = min(mt, min(max(abs(qb.x), abs(qb.y)), max(abs(qm.x), abs(qm.y))));
+  float aa = px / (cell * s) * 1.5;
+  float top = 1. - smoothstep(1. - aa, 1., mt);
+  float body = 1. - smoothstep(1. - aa, 1., ms);
+  if (body <= 0.) return vec4(0.);
+  vec2 Ld = normalize(uL + 1e-4);
+  vec2 et = abs(qt.x) > abs(qt.y) ? vec2(sign(qt.x), 0.) : vec2(0., sign(qt.y));
+  float lit = dot(et * Rm, Ld);
+  float bev = smoothstep(.6, .95, mt);
+  float tone = .86 + .08 * (h21(id + 9.7) - .5) - .07 * floor(mt * 3.) / 3. + bev * lit * .2;
+  float glint = pow(max(lit, 0.), 6.) * bev * step(.7, h21(id + 2.3)) * .6;
+  vec3 salt = vec3(.95, .935, .91);
+  vec2 eb = abs(qb.x) > abs(qb.y) ? vec2(sign(qb.x), 0.) : vec2(0., sign(qb.y));
+  vec3 side = salt * (.5 + .16 * dot(eb * Rm, Ld));
+  return vec4(mix(side, salt * tone + glint, top), body * (.6 + .4 * life));
+}
+void main(){
+  vec2 uv = vUv;
+  vec2 p = vec2(uv.x * uAsp, uv.y);
+  float px = 1. / uRes.y;
+  float fh = floorH(uv);
+  float depth = max(uLevel - fh, 0.);
+  float water = smoothstep(0., .03, depth);
+
+  vec2 g = vec2(0.);
+  float lap = 0.;
+  if (uSim > .5){
+    float h0 = texture2D(uS, uv).r;
+    float hl = texture2D(uS, uv - vec2(uSTx.x, 0.)).r;
+    float hr = texture2D(uS, uv + vec2(uSTx.x, 0.)).r;
+    float hd = texture2D(uS, uv - vec2(0., uSTx.y)).r;
+    float hu = texture2D(uS, uv + vec2(0., uSTx.y)).r;
+    g = vec2(hr - hl, hu - hd) * uNK;
+    lap = hl + hr + hd + hu - 4. * h0;
+  }
+  // an indoor pool barely moves: a slow swell and a faint shiver
+  vec2 swell = vec2(vn(p * 2.2 + vec2(uT * .05, 1.3)), vn(p * 2.2 + vec2(7.1, -uT * .04))) * .009;
+#ifndef LITE
+  swell += vec2(sin(p.x * 29. + p.y * 8. - uT * .8), sin(p.y * 25. - p.x * 6. + uT * .6)) * .0016;
+#endif
+  g = (g + swell) * water;
+  float slope = length(g);
+  vec3 N = normalize(vec3(-g, 1.));
+
+  vec2 ruv = uv - N.xy * (.004 + min(depth, 3.5) * .008);
+  vec2 rp = vec2(ruv.x * uAsp, ruv.y);
+  vec3 bed = texture2D(uBed, ruv).rgb;
+  vec4 Wd = texture2D(uWord, ruv);
+  float letter = smoothstep(.3, .65, Wd.r);
+
+  // wet stone is darker, and stone the water has just left stays wet a while
+  float above = fh - uLevel;
+  float wetX = 1. - smoothstep(0., .05 + .9 * (1. - uDry), above);
+  float wet = max(water, wetX * (1. - uDry * .6));
+  vec3 col = bed * mix(1.1, .68, wet);
+
+  // tide lines: a little salt left at every height the water passed
+  if (uLevel < uLevel0 - .02){
+    float ln = fract(fh * 4. + vn(p * 6.) * .25);
+    float line = 1. - smoothstep(0., .035, abs(ln - .5));
+    line *= step(0., above) * step(fh, uLevel0) * (1. - letter) * smoothstep(-.1, .6, vn(p * 2.7 + 4.)) * (.6 + .4 * vn(p * 40.));
+    col = mix(col, vec3(.64, .62, .59), line * .15);
+  }
+
+  if (uGrow > .001){
+    float dryHere = 1. - water;
+    float n1 = vn(rp * 60.) * .6 + vn(rp * 21.) * .4;
+    float gran = .5 + .5 * (vn(rp * 170.) * .6 + vn(rp * 430.) * .4);
+    float quiet = mix(.2, 1., smoothstep(.08, .46, length((uv - vec2(.15, .12)) * vec2(uAsp * .62, 1.35))));
+    // a skin of salt fills the letters first
+    float skin = letter * smoothstep(0., .4, uGrow * 1.15 + n1 * .15 - (1. - Wd.g) * .25);
+    col = mix(col, vec3(.9, .89, .87) * (.9 + .05 * n1 + .07 * gran), skin * .9 * dryHere);
+    // then a grainy crust creeps out from the letters over the stone
+    float front = 1.1 - uGrow * .6;
+    float halo = Wd.b + fbm3(rp * 5.5 + 1.7) * .3 + n1 * .04;
+    float crust = smoothstep(front, front + .03, halo) * (1. - letter) * dryHere;
+    float lip = crust * (1. - smoothstep(front + .02, front + .08, halo));
+    col = mix(col, vec3(.62, .605, .58) * (.78 + .3 * gran + .1 * n1), crust * .45 * smoothstep(.3, .62, gran + n1 * .3));
+    col += lip * .07;
+    // cubes: packed in the letters, scattered on the crust, a few big ones on open stone
+    vec4 c1 = cube(rp, 17. * px, 1., letter * uGrow * .9, px);
+    col = mix(col, c1.rgb, c1.a * dryHere);
+#ifndef LITE
+    vec4 c0 = cube(rp + vec2(.13, .29), 7. * px, 2., letter * uGrow * 1.1, px);
+    col = mix(col, c0.rgb, c0.a * .75 * dryHere);
+#endif
+    vec4 c2 = cube(rp + vec2(.31, .17), 16. * px, 4., uGrow * (.03 + .55 * lip + .25 * crust + .28 * smoothstep(.2, .7, Wd.b)) * quiet * (1. - letter), px);
+    col = mix(col, c2.rgb, c2.a * dryHere);
+#ifndef LITE
+    vec4 c3 = cube(rp + vec2(.07, .61), 34. * px, 7., uGrow * .11 * quiet * (1. - crust) * (1. - letter), px);
+    col = mix(col, c3.rgb, c3.a * dryHere);
+#endif
+  }
+
+  // light through the surface: ripples focus it on the floor
+  float caus = 1. + clamp(-lap * uCK, -.35, 1.1);
+#ifndef LITE
+  vec2 cq = rp * 8. + vec2(vn(rp * 2. + uT * .06), vn(rp * 2. + 5.3 - uT * .05)) * .7 + N.xy * 14.;
+  float cmask = smoothstep(-.35, .55, vn(rp * 1.4 + vec2(uT * .03, 2.)));
+  caus += pow(1. - smoothstep(0., .2, cellEdge(cq, uT * .5)), 4.) * .12 * cmask * smoothstep(.15, 1.5, depth);
+#endif
+  col *= mix(1., caus, water);
+
+  // the brine: warm light dies first, the deep end reads green-grey
+  col = col * exp(-vec3(.2, .1, .085) * depth) + vec3(.028, .045, .047) * (1. - exp(-.9 * depth)) * water;
+
+  // the lamp and the ceiling in the surface
+  vec3 R = room(uv + N.xy * .5);
+  float fr = .1 + .1 * smoothstep(.2, 1., uv.y) + min(slope * slope * 28., .22);
+  col = mix(col, R, clamp(fr, 0., .45) * water);
+  // glints: only where a ripple tilts the surface toward the lamp
+  vec3 Lp = normalize(vec3((uLamp - uv) * vec2(uAsp, 1.), .4));
+  float nh = max(dot(N, normalize(Lp + vec3(0., 0., 1.))), 0.);
+  col += vec3(1., .76, .5) * min(pow(nh, 5000.) * 1.4 + pow(nh, 300.) * .02, .9) * water;
+  // and from the cove light: calm water never glints, a real ripple does
+  float nc = max(dot(N, normalize(normalize(vec3(-.1, .26, 1.)) + vec3(0., 0., 1.))), 0.);
+  col += vec3(.95, .86, .74) * min(pow(nc, 900.) * .85, .6) * water;
+  col += vec3(.95, .82, .68) * (smoothstep(0., .01, depth) - smoothstep(.015, .06, depth)) * .08;
+
+  // the same lamp lights the floor
+  vec2 dl = (uv - vec2(uLamp.x, uLamp.y - .25)) * vec2(uAsp * .7, 1.);
+  col *= .8 + .6 * exp(-dot(dl, dl) * 1.3);
+
+  col *= uExp;
+  vec2 vq = (uv - .5) * vec2(uAsp * .7, 1.);
+  col *= 1. - .3 * smoothstep(.35, 1.1, length(vq));
+  col = col / (1. + col * .3) * 1.18;
+  col += (h21(gl_FragCoord.xy) - .5) * .022;
+  gl_FragColor = vec4(clamp(col, 0., 1.), 1.);
+}`;
+
+function createPool(canvas, o) {
+  const attrs = { alpha: false, antialias: false, depth: false, stencil: false, premultipliedAlpha: false, preserveDrawingBuffer: false, powerPreference: 'high-performance' };
+  let gl = canvas.getContext('webgl2', attrs);
+  const GL2 = !!gl;
+  if (!gl) gl = canvas.getContext('webgl', attrs);
+  if (!gl) return null;
+
+  let fType = 0, fFmt = 0, fFilter = gl.LINEAR;
+  if (GL2) {
+    if (gl.getExtension('EXT_color_buffer_float') || gl.getExtension('EXT_color_buffer_half_float')) { fType = gl.HALF_FLOAT; fFmt = gl.RGBA16F; }
+  } else {
+    const hf = gl.getExtension('OES_texture_half_float');
+    if (hf) { fType = hf.HALF_FLOAT_OES; fFmt = gl.RGBA; gl.getExtension('EXT_color_buffer_half_float'); if (!gl.getExtension('OES_texture_half_float_linear')) fFilter = gl.NEAREST; }
+  }
+  const hp = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
+  const HEAD = `precision ${hp && hp.precision > 0 ? 'highp' : 'mediump'} float;\n${o.lite ? '#define LITE\n' : ''}`;
+  const shader = (type, src) => {
+    const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.warn(gl.getShaderInfoLog(s)); return null; }
+    return s;
+  };
+  const vs = shader(gl.VERTEX_SHADER, 'attribute vec2 aP; varying vec2 vUv; void main(){ vUv = aP * .5 + .5; gl_Position = vec4(aP, 0., 1.); }');
+  const program = src => {
+    const fs = shader(gl.FRAGMENT_SHADER, HEAD + GL_COMMON + src);
+    if (!vs || !fs) return null;
+    const p = gl.createProgram(); gl.attachShader(p, vs); gl.attachShader(p, fs); gl.bindAttribLocation(p, 0, 'aP'); gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) { console.warn(gl.getProgramInfoLog(p)); return null; }
+    const u = {}, n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+    for (let i = 0; i < n; i++) { const a = gl.getActiveUniform(p, i); u[a.name] = gl.getUniformLocation(p, a.name); }
+    return { p, u };
+  };
+  const bakeP = program(GL_BAKE), renP = program(GL_RENDER), simP = fType ? program(GL_SIM) : null;
+  if (!bakeP || !renP) return null;
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0);
+  gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+  const texture = (filter) => {
+    const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    return t;
+  };
+  const target = (w, h, ifmt, type, filter) => {
+    const t = texture(filter);
+    gl.texImage2D(gl.TEXTURE_2D, 0, ifmt, w, h, 0, gl.RGBA, type, null);
+    const fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
+    const ok = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+    if (ok) { gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    if (!ok) { gl.deleteTexture(t); gl.deleteFramebuffer(fb); return null; }
+    return { t, fb };
+  };
+  const drop = rt => { if (rt) { gl.deleteTexture(rt.t); gl.deleteFramebuffer(rt.fb); } };
+
+  let W = 0, H = 0, cw = 0, ch = 0, sw = 0, sh = 0, sims = null, cur = 0, bed = null, wordT = null;
+  let budget = o.lite ? 6.2e5 : 2.1e6;
+  const dprCap = o.lite ? 1.6 : 2;
+
+  function paintWord() {
+    const c = document.createElement('canvas'); c.width = W; c.height = H;
+    const x = c.getContext('2d');
+    x.fillStyle = '#000'; x.fillRect(0, 0, W, H);
+    const fam = '"Newsreader", Georgia, "Times New Roman", serif', word = 'Solt';
+    x.font = `500 100px ${fam}`;
+    const w100 = x.measureText(word).width || 170;
+    const asp = W / H, tall = asp < .9;
+    const frac = tall ? .8 : clamp(.4 + (asp - 1) * .28, .46, .6);
+    const fs = Math.min(W * frac / (w100 / 100), H * (tall ? .3 : .58));
+    x.font = `500 ${fs.toFixed(1)}px ${fam}`;
+    if ('letterSpacing' in x) x.letterSpacing = `${(-.02 * fs).toFixed(1)}px`;
+    const m = x.measureText(word);
+    const asc = m.actualBoundingBoxAscent || fs * .72, desc = m.actualBoundingBoxDescent || 0;
+    const cx = W * .5, by = H * (tall ? .43 : .47) + (asc - desc) / 2;
+    x.textAlign = 'center'; x.textBaseline = 'alphabetic';
+    x.globalCompositeOperation = 'lighter';
+    // channels: r = the letter, g = a soft profile of the cut, b = a wide halo for the crust
+    const far = W * 4;
+    const shadowOnly = (col, blur) => { x.shadowColor = col; x.shadowBlur = blur; x.shadowOffsetX = far; x.fillStyle = col; x.fillText(word, cx - far, by); };
+    shadowOnly('rgb(0,0,255)', fs * .42);
+    shadowOnly('rgb(0,0,110)', fs * .1);
+    shadowOnly('rgb(0,255,0)', fs * .026);
+    x.shadowColor = 'rgba(0,0,0,0)'; x.shadowBlur = 0; x.shadowOffsetX = 0;
+    x.fillStyle = 'rgb(255,0,0)'; x.fillText(word, cx, by);
+    if (!wordT) wordT = texture(gl.LINEAR);
+    gl.bindTexture(gl.TEXTURE_2D, wordT);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+  }
+  function bake() {
+    drop(bed);
+    bed = target(W, H, gl.RGBA, gl.UNSIGNED_BYTE, gl.LINEAR);
+    if (!bed) return;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, bed.fb);
+    gl.viewport(0, 0, W, H);
+    gl.useProgram(bakeP.p);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, wordT); gl.uniform1i(bakeP.u.uWord, 1);
+    gl.uniform1f(bakeP.u.uAsp, W / H);
+    gl.uniform2f(bakeP.u.uRes, W, H);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  }
+  function buildSim() {
+    if (sims) sims.forEach(drop);
+    sims = null; cur = 0;
+    if (!simP || o.still) return;
+    const a = target(sw, sh, fFmt, fType, fFilter), b = a && target(sw, sh, fFmt, fType, fFilter);
+    if (a && b) sims = [a, b]; else drop(a);
+  }
+  function resize(force) {
+    const r = canvas.getBoundingClientRect();
+    const ncw = Math.max(1, Math.round(r.width)), nch = Math.max(1, Math.round(r.height));
+    let d = Math.min(window.devicePixelRatio || 1, dprCap);
+    if (ncw * nch * d * d > budget) d = Math.sqrt(budget / (ncw * nch));
+    const nW = Math.max(1, Math.round(ncw * d)), nH = Math.max(1, Math.round(nch * d));
+    if (!force && nW === W && nH === H) return false;
+    cw = ncw; ch = nch; W = canvas.width = nW; H = canvas.height = nH;
+    const cell = o.lite ? 5 : 4;
+    sw = clamp(Math.round(cw / cell), 32, 420); sh = clamp(Math.round(ch / cell), 32, 420);
+    paintWord(); buildSim(); bake();
+    return true;
+  }
+
+  // pointer: a stroke through the water between the last two positions
+  const ptr = { x: .5, y: .5, px: .5, py: .5, on: false, moved: false, sx: .7, sy: .72 };
+  let pending = null, nextDrip = 0, lastIn = -9;
+  function setPtr(cx, cy) {
+    const r = canvas.getBoundingClientRect();
+    const x = (cx - r.left) / r.width, y = 1 - (cy - r.top) / r.height;
+    if (x < -.02 || x > 1.02 || y < -.02 || y > 1.02) { ptr.on = false; return; }
+    if (!ptr.on) { ptr.px = x; ptr.py = y; }
+    ptr.x = x; ptr.y = y; ptr.on = true; ptr.moved = true;
+    lastIn = performance.now() / 1000;
+  }
+  if (!o.still) {
+    addEventListener('pointermove', e => setPtr(e.clientX, e.clientY), { passive: true });
+    addEventListener('touchmove', e => { const t = e.touches[0]; if (t) setPtr(t.clientX, t.clientY); }, { passive: true });
+    addEventListener('touchstart', e => { const t = e.touches[0]; if (!t) return; ptr.on = false; setPtr(t.clientX, t.clientY); if (ptr.on) pending = [ptr.x, ptr.y, .03, -.028]; }, { passive: true });
+    canvas.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; setPtr(e.clientX, e.clientY); if (ptr.on) pending = [ptr.x, ptr.y, .032, -.034]; });
+    document.addEventListener('pointerleave', () => { ptr.on = false; });
+    addEventListener('blur', () => { ptr.on = false; });
+  }
+
+  let acc = 0;
+  function frame(t, dt, s) {
+    const asp = W / H;
+    ptr.sx += ((ptr.on ? ptr.x : .7) - ptr.sx) * Math.min(1, dt * 2.5);
+    ptr.sy += ((ptr.on ? ptr.y : .72) - ptr.sy) * Math.min(1, dt * 2.5);
+    if (sims) {
+      let sr = 1e-4, ss = 0;
+      if (ptr.on && ptr.moved) {
+        const dist = Math.hypot((ptr.x - ptr.px) * asp, ptr.y - ptr.py);
+        sr = (o.lite ? 24 : 19) / ch;
+        ss = -(.0022 + Math.min(.011, dist * .38));
+      }
+      const seg = [ptr.px, ptr.py, ptr.x, ptr.y];
+      ptr.px = ptr.x; ptr.py = ptr.y; ptr.moved = false;
+      let dr = [0, 0, 1e-4, 0];
+      if (pending) { dr = pending; pending = null; }
+      else if (!o.still && t > nextDrip && s.fill > .98 && s.level > .4) {
+        // a drip from the ceiling now and then
+        dr = [.1 + Math.random() * .8, .14 + Math.random() * .72, 6 / ch, -.007];
+        nextDrip = t + 2.4 + Math.random() * 4;
+      }
+      acc += dt;
+      let n = Math.floor(acc * 90); acc -= n / 90; n = Math.min(n, 3);
+      const u = simP.u;
+      gl.useProgram(simP.p);
+      gl.viewport(0, 0, sw, sh);
+      gl.uniform1f(u.uAsp, asp);
+      gl.uniform2f(u.uTx, 1 / sw, 1 / sh);
+      gl.uniform1f(u.uK, 1.35);
+      gl.uniform1f(u.uDamp, .992);
+      gl.uniform1f(u.uLevel, s.level);
+      gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, wordT); gl.uniform1i(u.uWord, 1);
+      gl.uniform1i(u.uS, 0);
+      for (let i = 0; i < n; i++) {
+        gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, sims[cur].t);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, sims[1 - cur].fb);
+        gl.uniform4f(u.uSeg, seg[0], seg[1], seg[2], seg[3]);
+        gl.uniform2f(u.uSegRS, i ? 1e-4 : sr, i ? 0 : ss);
+        gl.uniform4f(u.uDrop, dr[0], dr[1], i ? 1e-4 : dr[2], i ? 0 : dr[3]);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+        cur = 1 - cur;
+      }
+    }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, W, H);
+    const u = renP.u;
+    gl.useProgram(renP.p);
+    if (sims) { gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, sims[cur].t); gl.uniform1i(u.uS, 0); }
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, wordT); gl.uniform1i(u.uWord, 1);
+    gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, bed && bed.t); gl.uniform1i(u.uBed, 2);
+    gl.uniform1f(u.uSim, sims ? 1 : 0);
+    gl.uniform1f(u.uAsp, asp);
+    gl.uniform2f(u.uSTx, 1 / sw, 1 / sh);
+    gl.uniform2f(u.uRes, W, H);
+    gl.uniform1f(u.uT, o.still ? 11 : t);
+    gl.uniform1f(u.uLevel, s.level);
+    gl.uniform1f(u.uLevel0, s.level0);
+    gl.uniform1f(u.uExp, s.exp);
+    gl.uniform1f(u.uGrow, s.grow);
+    gl.uniform1f(u.uDry, s.dry);
+    gl.uniform1f(u.uNK, 34);
+    gl.uniform1f(u.uCK, 70);
+    gl.uniform2f(u.uLamp, .74 + (ptr.sx - .7) * .06, .8 + (ptr.sy - .72) * .05);
+    gl.uniform2f(u.uL, -.55 + (ptr.sx - .5) * 1.4, .75 + (ptr.sy - .5) * 1.4);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+
+  let raf = 0, last = 0, visible = true, sig = '', odd = 0, prevBusy = false, tuneN = 0, tuneT = 0, tuned = 0;
+  function loop(ms) {
+    raf = requestAnimationFrame(loop);
+    if (!visible || document.hidden) { last = 0; return; }
+    const t = ms / 1000;
+    const dt = last ? Math.min(.05, t - last) : 1 / 60;
+    const s = o.state(dt);
+    const k = s.level.toFixed(3) + s.grow.toFixed(3) + s.exp.toFixed(3);
+    const busy = k !== sig || t - lastIn < 2.5 || !!pending; sig = k;
+    // a dry floor with nobody touching it does not need redrawing,
+    // and still water is fine at half the frame rate
+    if (!busy && s.level < -2.3) { last = t; prevBusy = false; return; }
+    if (!busy && (++odd & 1)) return;
+    last = t;
+    frame(t, dt, s);
+    // if the first busy seconds run slowly, draw fewer pixels
+    if (busy && prevBusy && tuned < 2) {
+      tuneN++; tuneT += dt;
+      if (tuneN === 60) { if (tuneT / 60 > .022) { budget *= .6; resize(true); } tuneN = 0; tuneT = 0; tuned++; }
+    }
+    prevBusy = busy;
+  }
+  resize(true);
+  return {
+    start() { if (o.still) { frame(0, 1 / 60, o.state(0)); return; } cancelAnimationFrame(raf); raf = requestAnimationFrame(loop); },
+    resize(force) { if (resize(force) && o.still) frame(0, 1 / 60, o.state(0)); },
+    visible(v) { visible = v; },
+    drip(x, y, r, a) { pending = [x, y, r, a]; }
+  };
+}
+
+/* ======================================================================
+   THE ROOMS: a section through the building. A camera moves across it
+   with the scroll: the salt wall lights up, the salt dust drifts, a
+   figure settles onto the float pool.
+   ====================================================================== */
+const fitBox = (b, asp) => { let [x, y, w, h] = b; if (w / h > asp) { const nh = w / asp; y -= (nh - h) / 2; h = nh; } else { const nw = h * asp; x -= (nw - w) / 2; w = nw; } return [x, y, w, h]; };
+const lerpBox = (a, b, t) => a.map((v, i) => lerp(v, b[i], t));
+
+function createStage(root, opt) {
+  const uid = opt.uid;
+  const NSS = 'non-scaling-stroke', LINE = 'rgba(237,230,219,.55)', SKIN = '#E9DCCB', SHADOW = '#0C0A09';
+  const svg = S('svg', { focusable: 'false' }); root.appendChild(svg);
+  const dust = document.createElement('canvas'); root.appendChild(dust);
+  const labs = document.createElement('div'); labs.className = 'stage-labels'; root.appendChild(labs);
+  const dctx = dust.getContext('2d');
+
+  const defs = S('defs', null, svg);
+  const hatch = S('pattern', { id: uid + 'h', width: 6, height: 6, patternUnits: 'userSpaceOnUse' }, defs);
+  S('rect', { width: 6, height: 6, fill: '#221E1A' }, hatch);
+  S('path', { d: 'M-1 1 L1 -1 M0 6 L6 0 M5 7 L7 5', stroke: '#4B433B', 'stroke-width': .8 }, hatch);
+  const grad = (tag, id, stops, a) => { const g = S(tag, Object.assign({ id: uid + id }, a), defs); stops.forEach(s => S('stop', { offset: s[0], 'stop-color': s[1], 'stop-opacity': s[2] == null ? 1 : s[2] }, g)); };
+  // each block glows from a lamp behind its middle and darkens to the edges
+  const BLOCK = { cx: .5, cy: .46, r: .72 };
+  grad('radialGradient', 'b0', [[0, '#FFE4BC'], [.42, '#EDA673'], [1, '#7E3F2C']], BLOCK);
+  grad('radialGradient', 'b1', [[0, '#FFE9DA'], [.42, '#DE9E88'], [1, '#6E3E35']], BLOCK);
+  grad('radialGradient', 'b2', [[0, '#FFF7EC'], [.42, '#EBC4A2'], [1, '#86594A']], BLOCK);
+  grad('radialGradient', 'glow', [[0, '#F0A56A', .5], [1, '#F0A56A', 0]]);
+  grad('radialGradient', 'plume', [[0, '#FFEBD6', .4], [.5, '#FFEBD6', .1], [1, '#FFEBD6', 0]], { cx: .5, cy: .5, r: .5, fx: .1, fy: .42 });
+  grad('radialGradient', 'deep', [[0, '#8FC3BC', .5], [1, '#8FC3BC', 0]]);
+  grad('linearGradient', 'water', [[0, '#6E8987', .9], [1, '#26312F', .96]], { x1: 0, y1: 0, x2: 0, y2: 1 });
+  grad('linearGradient', 'cone', [[0, '#E8B47C', .34], [1, '#E8B47C', 0]], { x1: 0, y1: 0, x2: 0, y2: 1 });
+  const strata = S('pattern', { id: uid + 's', width: 140, height: 13, patternUnits: 'userSpaceOnUse' }, defs);
+  S('path', { d: 'M0 6 C 35 2, 70 11, 105 5 S 140 6, 140 6', fill: 'none', stroke: '#FFF4E6', 'stroke-width': .7 }, strata);
+  const wallClip = S('clipPath', { id: uid + 'w' }, defs);
+  S('rect', { x: 96, y: 172, width: 758, height: 356 }, wallClip);
+
+  const cam = S('g', null, svg);
+  // the rooms behind the cut
+  S('rect', { x: 70, y: 150, width: 810, height: 410, fill: '#1C1815' }, cam);
+  S('rect', { x: 910, y: 150, width: 660, height: 410, fill: '#15120F' }, cam);
+  const glow = S('ellipse', { cx: 475, cy: 350, rx: 470, ry: 260, fill: `url(#${uid}glow)`, opacity: 0 }, cam);
+
+  // salt blocks, running bond, with the grain of the rock across them
+  const R = rng(7);
+  const bricks = [];
+  const wall = S('g', { 'clip-path': `url(#${uid}w)` }, cam);
+  const bg = S('g', null, wall);
+  for (let row = 0, y = 176; y < 528; row++, y += 40) {
+    for (let x = row % 2 ? 70 : 100; x < 854; x += 60) {
+      const k = R() < .45 ? 0 : R() < .6 ? 1 : 2;
+      const el = S('rect', { x, y, width: 56, height: 36, rx: 3, fill: `url(#${uid}b${k})`, opacity: .08 }, bg);
+      const dx = (x + 28 - 475) / 1.7, dy = y + 18 - 360;
+      bricks.push({ el, t: Math.hypot(dx, dy) / 260 * .7 + R() * .12, j: .82 + R() * .18, v: -1 });
+    }
+  }
+  const grain = S('rect', { x: 96, y: 172, width: 758, height: 356, fill: `url(#${uid}s)`, opacity: 0 }, wall);
+  const plume = S('ellipse', { cx: 420, cy: 310, rx: 360, ry: 200, fill: `url(#${uid}plume)`, opacity: 0 }, cam);
+  const floor = S('rect', { x: 70, y: 526, width: 810, height: 34, fill: '#D8C3B2', opacity: .12 }, cam);
+  const speck = S('g', { opacity: .2 }, cam);
+  for (let i = 0; i < 90; i++) S('rect', { x: (74 + R() * 800).toFixed(1), y: (530 + R() * 26).toFixed(1), width: 2, height: 2, fill: '#F3E6D8' }, speck);
+
+  // loungers in silhouette against the lit wall, a folded blanket on each
+  const lounger = (x, s) => {
+    const g = S('g', { transform: `translate(${x} 560) scale(${s})` }, cam);
+    const seat = 'M-96 -112 Q-72 -72 -34 -63 Q4 -54 36 -66 L100 -80';
+    // a curved frame on two feet, a padded seat, a pillow and a folded blanket
+    S('path', { d: 'M-78 -2 Q-40 -48 -6 -52 Q30 -54 58 -2 M-92 0 L-64 0 M46 0 L74 0', fill: 'none', stroke: LINE, 'stroke-width': 1.3, 'stroke-linecap': 'round', 'vector-effect': NSS }, g);
+    S('path', { d: seat, fill: 'none', stroke: SHADOW, 'stroke-width': 11, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
+    S('path', { d: seat, fill: 'none', stroke: 'rgba(237,230,219,.45)', 'stroke-width': 1.1, 'stroke-linecap': 'round', transform: 'translate(0 -5.2)', 'vector-effect': NSS }, g);
+    S('ellipse', { cx: -90, cy: -112, rx: 12, ry: 6.5, transform: 'rotate(-58 -90 -112)', fill: '#3A322C' }, g);
+    S('path', { d: 'M-18 -63 Q8 -58 30 -68', fill: 'none', stroke: '#C9A48C', 'stroke-width': 7, 'stroke-linecap': 'round' }, g);
+  };
+  lounger(300, 1);
+  lounger(600, .96);
+
+  // the halogenerator on the left wall
+  const gen = S('g', { transform: 'translate(72 236)' }, cam);
+  S('rect', { x: 0, y: 0, width: 44, height: 66, rx: 5, fill: '#2B2622', stroke: LINE, 'stroke-width': 1.2, 'vector-effect': NSS }, gen);
+  S('path', { d: 'M9 26 H35 M9 34 H35 M9 42 H35 M9 50 H35', stroke: 'rgba(237,230,219,.3)', 'stroke-width': 1, 'vector-effect': NSS }, gen);
+  S('rect', { x: 44, y: 28, width: 10, height: 14, fill: '#3A332D', stroke: LINE, 'stroke-width': 1, 'vector-effect': NSS }, gen);
+  const led = S('circle', { cx: 34, cy: 11, r: 3, fill: '#5A514A' }, gen);
+
+  // the float room: a pendant lamp, and a ceiling of small lights for later
+  const stars = S('g', { opacity: 0 }, cam);
+  for (let i = 0; i < 70; i++) S('circle', { cx: (918 + R() * 648).toFixed(1), cy: (156 + Math.pow(R(), 1.3) * 250).toFixed(1), r: (.9 + R() * 1.6).toFixed(2), fill: '#FBE9D2', opacity: (.35 + R() * .65).toFixed(2) }, stars);
+  S('path', { d: 'M1240 150 V318', stroke: LINE, 'stroke-width': 1, 'vector-effect': NSS }, cam);
+  const cone = S('path', { d: 'M1226 334 L1254 334 L1352 566 L1128 566 Z', fill: `url(#${uid}cone)`, opacity: .4 }, cam);
+  const shade = S('path', { d: 'M1222 334 L1258 334 L1250 316 L1230 316 Z', fill: '#E8B47C' }, cam);
+  // someone lying back on the brine, face up
+  const fig = S('path', { opacity: 0, fill: SKIN, d: 'M1139 566 C1139 556 1146 551 1153 551 C1160 551 1165 556 1165 562 C1170 560 1176 557 1184 556 C1198 553 1212 553 1224 557 C1236 560 1246 561 1258 559 C1276 557 1292 557 1304 556 C1320 557 1336 560 1350 562 C1354 555 1358 552 1361 553 C1364 556 1364 566 1362 574 L1140 578 Z' }, cam);
+  const water = S('path', { fill: `url(#${uid}water)` }, cam);
+  const deep = S('ellipse', { cx: 1240, cy: 612, rx: 300, ry: 46, fill: `url(#${uid}deep)`, opacity: 0 }, cam);
+  const surf = S('path', { fill: 'none', stroke: 'rgba(237,230,219,.75)', 'stroke-width': 1.3, 'vector-effect': NSS }, cam);
+
+  // the cut through walls, roof and ground, drawn last
+  const cut = { fill: `url(#${uid}h)`, stroke: LINE, 'stroke-width': 1.2, 'vector-effect': NSS };
+  S('rect', Object.assign({ x: 20, y: 118, width: 1600, height: 32 }, cut), cam);
+  S('rect', Object.assign({ x: 30, y: 150, width: 40, height: 410 }, cut), cam);
+  S('rect', Object.assign({ x: 880, y: 150, width: 30, height: 410 }, cut), cam);
+  S('rect', Object.assign({ x: 1570, y: 150, width: 40, height: 410 }, cut), cam);
+  S('path', Object.assign({ d: 'M-200 560 H980 V640 H1500 V560 H1800 V760 H-200 Z' }, cut), cam);
+
+  const LAB = [
+    { x: 475, y: 164, t: 'Rock salt blocks, lamps behind', a: .04, b: .33 },
+    { x: 740, y: 546, t: 'Loose salt floor, 4 cm', a: .12, b: .33 },
+    { x: 610, y: 440, t: 'Zero-gravity lounger', a: .18, b: .33 },
+    { x: 94, y: 222, t: 'Halogenerator', a: .37, b: .66 },
+    { x: 330, y: 300, t: 'Salt dust, 1 to 5 microns', a: .45, b: .66 },
+    { x: 1180, y: 598, t: '30 cm of brine', a: .82, b: 2 },
+    { x: 1150, y: 510, t: '35.5 °C, skin temperature', a: .87, b: 2 },
+    { x: 1330, y: 628, t: '500 kg of Epsom salt', a: .91, b: 2 }
+  ].map(l => { const el = document.createElement('span'); el.className = 'lab'; el.textContent = l.t; labs.appendChild(el); l.el = el; l.o = -1; return l; });
+
+  // salt dust: each grain leaves the vent at its own moment and drifts out
+  const N = LITE ? 380 : 1100;
+  const mote = document.createElement('canvas'); mote.width = mote.height = 32;
+  const mg = mote.getContext('2d'), mr = mg.createRadialGradient(16, 16, 0, 16, 16, 16);
+  mr.addColorStop(0, 'rgba(255,240,222,1)'); mr.addColorStop(.18, 'rgba(255,226,196,.55)'); mr.addColorStop(1, 'rgba(255,210,170,0)');
+  mg.fillStyle = mr; mg.fillRect(0, 0, 32, 32);
+  const grains = [];
+  for (let i = 0; i < N; i++) grains.push({ e: i / N * .9 + R() * .08, r: 40 + Math.pow(R(), .7) * 760, l: (R() - .32) * 300, a: R() * 6.3, b: R() * 6.3, o: .25 + R() * .55, z: .6 + R() * 1.3 });
+
+  let w = 1, h = 1, dpr = 1, p = opt.p || 0, sc = 1, tx = 0, ty = 0, raf = 0, on = !!opt.still, dirty = true, odd = 0;
+  function resize() {
+    const r = root.getBoundingClientRect();
+    w = Math.max(1, r.width); h = Math.max(1, r.height);
+    dpr = Math.min(window.devicePixelRatio || 1, LITE ? 1.5 : 2);
+    dust.width = Math.round(w * dpr); dust.height = Math.round(h * dpr);
+    LAB.forEach(l => { l.w = 0; });
+    dirty = true;
+  }
+  function camera() {
+    const asp = w / h, tall = asp < 1.05;
+    // on a narrow screen frame by height and let the sides go
+    const byH = (cx, cy, hh) => [cx - hh * asp / 2, cy - hh / 2, hh * asp, hh];
+    const A = tall ? byH(470, 356, 520) : [40, 126, 880, 470];
+    const B = tall ? byH(250, 320, 430) : [46, 166, 600, 336];
+    const C = tall ? byH(1245, 500, 400) : [985, 286, 550, 350];
+    const a = ease(sstep(.3, .42, p)), b = ease(sstep(.62, .76, p));
+    let box = lerpBox(lerpBox(A, B, a), C, b);
+    const drift = (1 - a) * sstep(0, .3, p);          // lean in while the wall lights up
+    box = [box[0] + box[2] * drift * .04, box[1] + box[3] * drift * .03, box[2] * (1 - drift * .08), box[3] * (1 - drift * .08)];
+    const v = fitBox(box, w / h);
+    sc = w / v[2]; tx = -v[0] * sc; ty = -v[1] * sc;
+  }
+  function apply() {
+    camera();
+    cam.setAttribute('transform', `matrix(${sc.toFixed(5)} 0 0 ${sc.toFixed(5)} ${tx.toFixed(2)} ${ty.toFixed(2)})`);
+    hatch.setAttribute('patternTransform', `scale(${(1 / sc).toFixed(4)})`);
+    // moment one: the lamps behind the salt come on, from the middle outwards;
+    // moment two: they go down for the session, and the dust shows in the dark
+    const lp = p / .26, dim = 1 - .5 * sstep(.36, .46, p);
+    for (const b of bricks) {
+      const v = Math.round((.08 + .92 * sstep(b.t, b.t + .2, lp)) * b.j * dim * 100) / 100;
+      if (v !== b.v) { b.el.setAttribute('opacity', v); b.v = v; }
+    }
+    glow.setAttribute('opacity', (sstep(.02, .3, p) * (.4 + .6 * dim)).toFixed(3));
+    grain.setAttribute('opacity', (.14 * sstep(.08, .28, p) * dim).toFixed(3));
+    floor.setAttribute('opacity', ((.12 + .3 * sstep(.1, .3, p)) * dim).toFixed(3));
+    speck.setAttribute('opacity', ((.2 + .6 * sstep(.1, .3, p)) * dim).toFixed(3));
+    led.setAttribute('fill', p > .37 ? '#F0B070' : '#5A514A');
+    plume.setAttribute('opacity', (sstep(.4, .56, p) * (1 - sstep(.66, .74, p))).toFixed(3));
+    // moment three: someone settles onto the brine; later the lamp goes out
+    fig.setAttribute('opacity', sstep(.72, .77, p).toFixed(3));
+    const off = p > .8 ? 0 : 1 - ease(sstep(.72, .8, p));
+    fig.dataset.y = (off * 12 + (p > .8 ? -2.2 * Math.sin((p - .8) * 42) * Math.exp(-(p - .8) * 14) : 0)).toFixed(2);
+    const lampOn = sstep(.66, .8, p) * (1 - .85 * sstep(.9, .98, p));
+    cone.setAttribute('opacity', (.3 + .7 * lampOn).toFixed(3));
+    shade.setAttribute('fill-opacity', (.35 + .65 * (1 - sstep(.9, .98, p))).toFixed(3));
+    stars.setAttribute('opacity', sstep(.9, .99, p).toFixed(3));
+    deep.setAttribute('opacity', (sstep(.8, .9, p) * .9).toFixed(3));
+    for (const l of LAB) {
+      const o = Math.round(sstep(l.a, l.a + .04, p) * (1 - sstep(l.b - .04, l.b, p)) * 100) / 100;
+      if (o !== l.o) { l.el.style.opacity = o; l.o = o; }
+      if (o > 0) {
+        const lw = l.w || (l.w = l.el.offsetWidth);
+        const X = clamp(l.x * sc + tx - lw / 2, 8, w - lw - 8), Y = clamp(l.y * sc + ty - 8, 4, h - 20);
+        l.el.style.transform = `translate3d(${X.toFixed(1)}px,${Y.toFixed(1)}px,0)`;
+      }
+    }
+    if (opt.onMoment) {
+      const m = p < .335 ? 0 : p < .665 ? 1 : 2;
+      opt.onMoment(m, [c01(p / .335), c01((p - .335) / .33), c01((p - .665) / .335)]);
+    }
+  }
+  function pool(t) {
+    // the surface: a swell, and rings from where the figure landed
+    const land = sstep(.83, .86, p);
+    const amp = land * (4 - 2.6 * sstep(.86, 1, p));
+    const ph = (p - .84) * 70 + t * 1.6;
+    let d = '';
+    const pts = [];
+    for (let x = 980; x <= 1500; x += 8) {
+      const k = x - 1240;
+      const y = 570 + Math.sin(x * .02 + t * .7) * .8 + amp * Math.sin(Math.abs(k) * .07 - ph) * Math.exp(-Math.abs(k) / 170);
+      pts.push(x + ' ' + y.toFixed(2));
+    }
+    d = 'M' + pts.join(' L');
+    surf.setAttribute('d', d);
+    water.setAttribute('d', d + ' L1500 640 L980 640 Z');
+    fig.setAttribute('transform', `translate(0 ${(+(fig.dataset.y || 0) + Math.sin(t * 1.1) * .7).toFixed(2)})`);
+  }
+  function drawDust(t) {
+    const c = dctx;
+    c.setTransform(1, 0, 0, 1, 0, 0);
+    c.clearRect(0, 0, dust.width, dust.height);
+    const E = sstep(.38, .64, p);
+    if (E <= 0 || -tx / sc > 900) return;
+    c.globalCompositeOperation = 'lighter';
+    const k = dpr;
+    for (const q of grains) {
+      const age = (E - q.e) * 4;
+      if (age <= 0) continue;
+      const sp = 1 - Math.exp(-age * 1.3);
+      let x = 122 + q.r * sp + Math.sin(t * .33 + q.a) * 7 * sp;
+      let y = 268 + q.l * sp + Math.sin(t * .29 + q.b) * 9 * sp + Math.min(age, 3) * 3;
+      x = x > 872 ? 1744 - x : x; y = clamp(y, 158, 524);
+      c.globalAlpha = Math.min(1, age * 2) * q.o * (.6 + .4 * Math.sin(t * 1.7 + q.a * 3));
+      const z = q.z * k * (2.2 + sc * .9);
+      c.drawImage(mote, (x * sc + tx) * k - z, (y * sc + ty) * k - z, z * 2, z * 2);
+    }
+    c.globalAlpha = 1;
+  }
+  function tick(ms) {
+    raf = 0;
+    if (!on) return;
+    const t = ms / 1000;
+    const live = (p > .36 && p < .78) || p > .82;
+    if (dirty) { apply(); dirty = false; }
+    else if (live && (++odd & 1)) { raf = requestAnimationFrame(tick); return; }   // drifting only: 30 fps
+    drawDust(t);
+    if (p > .7) pool(t);
+    if (live) raf = requestAnimationFrame(tick);
+  }
+  const kick = () => { if (!raf && on) raf = requestAnimationFrame(tick); };
+  resize();
+  if (opt.still) { apply(); drawDust(7); pool(3); }
+  return {
+    set(v) { p = v; dirty = true; kick(); },
+    resize() { resize(); if (opt.still) { apply(); drawDust(7); pool(3); } else kick(); },
+    active(v) { on = v; if (v) { dirty = true; kick(); } }
+  };
+}
+
+/* ======================================================================
+   SESSION CARDS: small scenes lit by the pointer (by the scroll on phones)
+   ====================================================================== */
+function createCard(cv, kind, seed) {
+  const R = rng(seed);
+  const HOME = [.2, -.25];
+  let L = HOME.slice(), T = HOME.slice(), raf = 0, rings = [], lastRing = 0;
+  const bricks = [], cubes = [];
+  if (kind === 'room') {
+    for (let row = 0; row < 9; row++) for (let col = -1; col < 5; col++) bricks.push({ row, col, k: R() < .45 ? 0 : R() < .6 ? 1 : 2, s1: R(), s2: R(), j: R() });
+  }
+  if (kind === 'heap') {
+    for (let i = 0; i < 64; i++) {
+      const a = R() * Math.PI * 2, r = Math.pow(R(), .8) * .34;
+      cubes.push({ x: .5 + Math.cos(a) * r * 1.05, y: .55 + Math.sin(a) * r * .9, s: .035 + Math.pow(R(), 2.2) * .07 * (1.25 - r * 1.5), a: R() * 1.57, g: R() });
+    }
+    cubes.sort((p, q) => p.y - q.y);
+  }
+  const TINT = [[246, 196, 150], [240, 196, 176], [251, 232, 214]];
+  function size() {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const w = Math.round(cv.clientWidth * dpr), h = Math.round(cv.clientHeight * dpr);
+    if (w && (cv.width !== w || cv.height !== h)) { cv.width = w; cv.height = h; }
+    return [cv.width, cv.height];
+  }
+  function draw(now) {
+    const [w, h] = size(); if (!w) return;
+    const c = cv.getContext('2d');
+    c.setTransform(1, 0, 0, 1, 0, 0);
+    c.globalCompositeOperation = 'source-over'; c.globalAlpha = 1;
+    if (kind === 'room') {
+      c.fillStyle = '#140F0C'; c.fillRect(0, 0, w, h);
+      const hx = w * (.5 + L[0] * .34), hy = h * (.45 + L[1] * .3);
+      const bw = w / 4.4, bh = bw * .64, gap = Math.max(2, w * .012);
+      for (const b of bricks) {
+        const x = b.col * (bw + gap) + (b.row % 2 ? -bw / 2 : 0) + gap, y = b.row * (bh + gap) + gap - bh * .3;
+        const d = Math.hypot(x + bw / 2 - hx, (y + bh / 2 - hy) * 1.2) / w;
+        const gl = Math.exp(-d * d * 4.2) * (.85 + .3 * b.j) + .12;
+        const t = TINT[b.k];
+        const grd = c.createRadialGradient(x + bw / 2, y + bh * .46, 0, x + bw / 2, y + bh * .46, bw * .62);
+        const col = (m, a) => `rgba(${Math.min(255, t[0] * m) | 0},${Math.min(255, t[1] * m * .96) | 0},${Math.min(255, t[2] * m * .9) | 0},${a})`;
+        grd.addColorStop(0, col(gl * 1.3, 1)); grd.addColorStop(.45, col(gl * .86, 1)); grd.addColorStop(1, col(gl * .36, 1));
+        c.fillStyle = grd;
+        c.beginPath(); c.roundRect ? c.roundRect(x, y, bw, bh, w * .01) : c.rect(x, y, bw, bh); c.fill();
+        // strata in the rock salt
+        c.strokeStyle = `rgba(255,245,235,${(.08 + .22 * gl).toFixed(3)})`; c.lineWidth = Math.max(1, w * .0025);
+        c.beginPath(); c.moveTo(x + bw * .06, y + bh * (.3 + b.s1 * .2)); c.bezierCurveTo(x + bw * .4, y + bh * (.2 + b.s2 * .3), x + bw * .6, y + bh * (.5 + b.s1 * .2), x + bw * .94, y + bh * (.35 + b.s2 * .2)); c.stroke();
+      }
+      const bloom = c.createRadialGradient(hx, hy, 0, hx, hy, w * .6);
+      bloom.addColorStop(0, 'rgba(255,176,110,.22)'); bloom.addColorStop(1, 'rgba(255,176,110,0)');
+      c.globalCompositeOperation = 'lighter'; c.fillStyle = bloom; c.fillRect(0, 0, w, h);
+    } else if (kind === 'float') {
+      c.fillStyle = '#0E0C0B'; c.fillRect(0, 0, w, h);
+      const px = w * .12, py = h * .1, pw = w - px * 2, ph = h - py * 2, pr = w * .1;
+      const edge = c.createLinearGradient(0, py, 0, py + ph);
+      edge.addColorStop(0, '#1C2826'); edge.addColorStop(1, '#0B1110');
+      c.save();
+      c.beginPath(); c.roundRect ? c.roundRect(px, py, pw, ph, pr) : c.rect(px, py, pw, ph); c.fillStyle = edge; c.fill(); c.clip();
+      // someone floating, seen from above: arms out, the water up to the ribs
+      const fs = w * .0034;
+      c.save(); c.translate(w * .5, h * .54); c.rotate(-.32); c.scale(fs, fs);
+      const skin = a => `rgba(233,220,203,${a})`;
+      c.lineCap = 'round';
+      c.strokeStyle = skin(.5); c.lineWidth = 9; c.beginPath(); c.moveTo(-6, 6); c.lineTo(-15, 52); c.moveTo(6, 6); c.lineTo(15, 52); c.stroke();
+      c.strokeStyle = skin(.62); c.lineWidth = 7; c.beginPath(); c.moveTo(-9, -30); c.quadraticCurveTo(-30, -27, -41, -8); c.moveTo(9, -30); c.quadraticCurveTo(30, -27, 41, -8); c.stroke();
+      c.fillStyle = skin(.82); c.beginPath(); c.ellipse(0, -14, 13, 24, 0, 0, Math.PI * 2); c.fill();
+      c.fillStyle = skin(.95); c.beginPath(); c.ellipse(0, -47, 8.5, 10, 0, 0, Math.PI * 2); c.fill();
+      c.restore();
+      // the lamp above, seen in the water
+      const lx = w * (.5 + L[0] * .3), ly = h * (.42 + L[1] * .28);
+      const g1 = c.createRadialGradient(lx, ly, 0, lx, ly, w * .34);
+      g1.addColorStop(0, 'rgba(255,196,130,.55)'); g1.addColorStop(.25, 'rgba(232,160,100,.16)'); g1.addColorStop(1, 'rgba(232,160,100,0)');
+      c.globalCompositeOperation = 'lighter'; c.fillStyle = g1; c.fillRect(0, 0, w, h);
+      c.fillStyle = 'rgba(255,226,190,.9)';
+      c.beginPath(); c.ellipse(lx, ly, w * .022, w * .016, 0, 0, Math.PI * 2); c.fill();
+      const tt = now / 1000;
+      rings = rings.filter(r => tt - r.t < 1.8);
+      for (const r of rings) {
+        const age = tt - r.t;
+        for (let k = 0; k < 3; k++) {
+          const rad = (age * .2 + k * .03) * w;
+          if (rad <= 0) continue;
+          c.strokeStyle = `rgba(237,225,205,${((1 - age / 1.8) * (.3 - k * .08)).toFixed(3)})`;
+          c.lineWidth = Math.max(1, w * .003);
+          c.beginPath(); c.ellipse(r.x * w, r.y * h, rad, rad * .92, 0, 0, Math.PI * 2); c.stroke();
+        }
+      }
+      c.restore();
+      c.strokeStyle = 'rgba(237,230,219,.22)'; c.lineWidth = Math.max(1, w * .003);
+      c.beginPath(); c.roundRect ? c.roundRect(px, py, pw, ph, pr) : c.rect(px, py, pw, ph); c.stroke();
+    } else {
+      const bgG = c.createLinearGradient(0, 0, 0, h);
+      bgG.addColorStop(0, '#2A2521'); bgG.addColorStop(1, '#171411');
+      c.fillStyle = bgG; c.fillRect(0, 0, w, h);
+      const ln = Math.hypot(L[0], L[1] + .0001), Lx = L[0] / ln, Ly = L[1] / ln;
+      const D = [.16, .26];
+      for (const q of cubes) {
+        const s = q.s * w, cx = q.x * w, cy = q.y * h;
+        const ca = Math.cos(q.a), sa = Math.sin(q.a);
+        const corner = (u, v) => [cx + (u * ca - v * sa) * s, cy + (u * sa + v * ca) * s];
+        const top = [corner(-1, -1), corner(1, -1), corner(1, 1), corner(-1, 1)];
+        const off = [D[0] * s, D[1] * s];
+        // side faces that face the viewer
+        for (let i = 0; i < 4; i++) {
+          const a = top[i], b = top[(i + 1) % 4];
+          const nx = (b[1] - a[1]), ny = -(b[0] - a[0]); const nl = Math.hypot(nx, ny);
+          if ((nx * off[0] + ny * off[1]) / nl <= 0) continue;
+          const lit = .42 + .22 * ((nx * -Lx + ny * -Ly) / nl);
+          c.fillStyle = `rgb(${220 * lit | 0},${214 * lit | 0},${206 * lit | 0})`;
+          c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.lineTo(b[0] + off[0], b[1] + off[1]); c.lineTo(a[0] + off[0], a[1] + off[1]); c.closePath(); c.fill();
+        }
+        // the top face, stepped like a hopper crystal
+        const gx = c.createLinearGradient(cx - Lx * s, cy - Ly * s, cx + Lx * s, cy + Ly * s);
+        gx.addColorStop(0, '#A9A39B'); gx.addColorStop(1, '#F6F1EA');
+        for (let k = 0; k < 3; k++) {
+          const f = 1 - k * .3;
+          const tp = [corner(-f, -f), corner(f, -f), corner(f, f), corner(-f, f)];
+          c.fillStyle = k ? `rgba(${k === 1 ? '90,84,78,.13' : '255,252,246,.2'})` : gx;
+          c.beginPath(); c.moveTo(tp[0][0], tp[0][1]); for (let i = 1; i < 4; i++) c.lineTo(tp[i][0], tp[i][1]); c.closePath(); c.fill();
+        }
+        c.strokeStyle = 'rgba(255,255,255,.28)'; c.lineWidth = Math.max(1, w * .0018);
+        c.beginPath(); c.moveTo(top[0][0], top[0][1]); for (let i = 1; i < 4; i++) c.lineTo(top[i][0], top[i][1]); c.closePath(); c.stroke();
+        // a glint on the corner that faces the light
+        let best = 0, bd = -9;
+        for (let i = 0; i < 4; i++) { const d = (top[i][0] - cx) * Lx + (top[i][1] - cy) * Ly; if (d > bd) { bd = d; best = i; } }
+        if (q.g > .55) {
+          const gp = top[best], gs = s * (.14 + .2 * q.g);
+          const sp = c.createRadialGradient(gp[0], gp[1], 0, gp[0], gp[1], gs);
+          sp.addColorStop(0, 'rgba(255,255,255,.85)'); sp.addColorStop(1, 'rgba(255,255,255,0)');
+          c.fillStyle = sp; c.fillRect(gp[0] - gs, gp[1] - gs, gs * 2, gs * 2);
+        }
+      }
+      const vg = c.createRadialGradient(w * .5, h * .5, w * .3, w * .5, h * .5, w * .85);
+      vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.45)');
+      c.fillStyle = vg; c.fillRect(0, 0, w, h);
+    }
+  }
+  function tick(ms) {
+    raf = 0;
+    L[0] += (T[0] - L[0]) * .16; L[1] += (T[1] - L[1]) * .16;
+    draw(ms);
+    if (Math.abs(T[0] - L[0]) + Math.abs(T[1] - L[1]) > .003 || rings.length) raf = requestAnimationFrame(tick);
+  }
+  const want = () => { if (RM) { L = T.slice(); rings = []; draw(performance.now()); } else if (!raf) raf = requestAnimationFrame(tick); };
+  cv.addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse') return;
+    const r = cv.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    T = [clamp((x - .5) * 2.2, -1.2, 1.2), clamp((y - .5) * 2.2, -1.2, 1.2)];
+    const now = performance.now();
+    if (kind === 'float' && !RM && now - lastRing > 160) { rings.push({ x, y, t: now / 1000 }); lastRing = now; }
+    want();
+  });
+  cv.addEventListener('pointerleave', () => { T = HOME.slice(); want(); });
+  return {
+    draw: () => draw(performance.now()),
+    light(x, y) {
+      T = [x, y];
+      const now = performance.now();
+      if (kind === 'float' && !RM && now - lastRing > 700) { rings.push({ x: .5 + x * .12, y: .5 + y * .1, t: now / 1000 }); lastRing = now; }
+      want();
+    }
+  };
+}
+
+/* ======================================================================
+   PLAN of the building: the route of a first visit draws itself
+   ====================================================================== */
+function createPlan(svg) {
+  const g = document.getElementById('route');
+  const pts = [[857, 628], [857, 480], [560, 480], [210, 480], [210, 366], [250, 366], [250, 190], [250, 366], [628, 366], [628, 200], [628, 366], [600, 366], [600, 480]];
+  const stopAt = [2, 3, 6, 9, 12];
+  const len = [0];
+  for (let i = 1; i < pts.length; i++) len.push(len[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  const total = len[len.length - 1];
+  const d = 'M' + pts.map(q => q.join(' ')).join(' L');
+  const mask = S('mask', { id: 'route-mask', maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: 1000, height: 650 }, svg.querySelector('defs'));
+  const mp = S('path', { d, fill: 'none', stroke: '#fff', 'stroke-width': 16, pathLength: 1, 'stroke-dasharray': '1 1', 'stroke-dashoffset': 1 }, mask);
+  S('path', { d, fill: 'none', stroke: 'var(--amber)', 'stroke-width': 2.6, 'stroke-linecap': 'round', 'stroke-dasharray': '0 9', mask: 'url(#route-mask)' }, g);
+  const items = [...document.querySelectorAll('#route-list li')];
+  const texts = [...svg.querySelectorAll('text[data-px]')];
+  const stops = stopAt.map((k, i) => {
+    const q = pts[k], sg = S('g', { class: 'stop' }, g);
+    const off = i === 4 ? 26 : 0;
+    S('circle', { cx: q[0] + off, cy: q[1], r: 13, 'stroke-width': 1.2 }, sg);
+    const t = S('text', { x: q[0] + off, y: q[1] + 4.5, 'text-anchor': 'middle', 'data-px': 11.5 }, sg);
+    t.textContent = i + 1; texts.push(t);
+    return { el: sg, f: len[k] / total, li: items[i] };
+  });
+  let last = -1;
+  function set(v) {
+    if (Math.abs(v - last) < .001) return; last = v;
+    mp.setAttribute('stroke-dashoffset', (1 - v).toFixed(4));
+    stops.forEach(s => { const on = v >= s.f - .004; s.el.classList.toggle('on', on); if (s.li) s.li.classList.toggle('on', on); });
+  }
+  function resize() {
+    const k = (svg.getBoundingClientRect().width || 600) / 1000;
+    for (const t of texts) t.setAttribute('font-size', (t.dataset.px / k).toFixed(2));
+  }
+  resize();
+  return { set, resize };
+}
+
+/* ======================================================================
+   BOOKING: a session, people, a day, a time, then an email
+   ====================================================================== */
+const SESS = {
+  salt: { name: 'salt room', price: 32, max: 6, note: 'Up to six share the salt room.', times: ['10:00', '11:15', '12:30', '14:00', '15:15', '16:30', '18:00', '19:15'] },
+  float: { name: 'float', price: 55, max: 2, note: 'Two float rooms, one person in each.', times: ['10:00', '11:30', '13:00', '14:30', '16:00', '17:30', '19:00'] },
+  both: { name: 'salt and float', price: 78, max: 2, note: 'Two at a time, one float room each.', times: ['10:00', '12:15', '14:30', '16:45'] }
+};
+function setupBook() {
+  const form = document.getElementById('book-form'); if (!form) return () => {};
+  const money = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 });
+  const daysEl = document.getElementById('days'), timesEl = document.getElementById('times');
+  const qtyEl = document.getElementById('qty'), note = document.getElementById('ppl-note'), msg = document.getElementById('form-msg');
+  const sumLine = document.getElementById('sum-line'), sumTotal = document.getElementById('sum-total');
+  const minus = form.querySelector('[data-d="-1"]'), plus = form.querySelector('[data-d="1"]');
+  const chip = (name, value, text, checked) => `<label class="chip"><input type="radio" name="${name}" value="${value}"${checked ? ' checked' : ''}><span>${text}</span></label>`;
+  // the next eight open days, Wednesday to Sunday
+  const days = [];
+  const d0 = new Date(); d0.setHours(12, 0, 0, 0);
+  for (let i = 1; days.length < 8 && i < 30; i++) {
+    const d = new Date(d0); d.setDate(d0.getDate() + i);
+    if (d.getDay() === 1 || d.getDay() === 2) continue;
+    days.push(d);
+  }
+  const dayName = d => d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+  daysEl.innerHTML = days.map((d, i) => chip('day', i, dayName(d), i === 0)).join('');
+  let people = 1;
+  const val = n => { const el = form.querySelector(`input[name="${n}"]:checked`); return el ? el.value : null; };
+  function renderTimes() {
+    const s = SESS[val('session')], keep = val('time');
+    timesEl.innerHTML = s.times.map(t => chip('time', t, t, t === keep)).join('');
+  }
+  function refresh() {
+    const s = SESS[val('session')];
+    people = clamp(people, 1, s.max);
+    qtyEl.textContent = people;
+    minus.disabled = people <= 1; plus.disabled = people >= s.max;
+    note.textContent = s.note;
+    const t = val('time'), day = days[+val('day')];
+    sumLine.textContent = `${people} ${people === 1 ? 'person' : 'people'}, ${s.name}${day ? ', ' + dayName(day) : ''}${t ? ' at ' + t : ''}`;
+    sumTotal.textContent = money.format(s.price * people);
+  }
+  form.addEventListener('change', e => { if (e.target.name === 'session') renderTimes(); msg.textContent = ''; refresh(); });
+  form.addEventListener('click', e => { const b = e.target.closest('.step'); if (!b) return; people += +b.dataset.d; msg.textContent = ''; refresh(); });
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const s = SESS[val('session')], t = val('time'), day = days[+val('day')];
+    if (!t) { msg.textContent = 'Pick a time first.'; timesEl.querySelector('input').focus(); return; }
+    const body = `Hello Solt,\n\nWe would like to book:\n${people} × ${s.name}\n${dayName(day)} at ${t}\n\n${money.format(s.price * people)} in total.\n\nName:\nPhone:\n`;
+    const a = document.createElement('a');
+    a.href = `mailto:hello@solt.example?subject=${encodeURIComponent('Booking request')}&body=${encodeURIComponent(body)}`;
+    a.click();
+    msg.textContent = 'Your email app should open with the booking filled in. Send it and we reply within a few hours.';
+  });
+  renderTimes(); refresh();
+  return key => { const r = form.querySelector(`input[name="session"][value="${key}"]`); if (r && !r.checked) { r.checked = true; renderTimes(); refresh(); } };
+}
+
+/* ======================================================================
+   BOOT
+   ====================================================================== */
+const pick = setupBook();
+const cards = [...document.querySelectorAll('.card-cv')].map((c, i) => createCard(c, c.dataset.kind, 11 + i * 7));
+cards.forEach(c => c.draw());
+const planSvg = document.getElementById('plan');
+const plan = planSvg ? createPlan(planSvg) : null;
+if (plan && (RM || !HAS_GSAP)) plan.set(1);
+
+// the rooms: one moving section, or three still ones when motion is reduced
+const moments = [...document.querySelectorAll('.moment')];
+const bars = [...document.querySelectorAll('.steps i')];
+let curM = -1;
+const onMoment = (m, prog) => {
+  if (m !== curM) { moments.forEach((el, k) => el.classList.toggle('on', k === m)); curM = m; }
+  bars.forEach((b, k) => { b.style.transform = `scaleX(${prog[k].toFixed(3)})`; });
+};
+let stage = null;
+const stills = [];
+if (RM || !HAS_GSAP) {
+  if (!RM) doc.classList.add('rm');
+  moments.forEach((m, i) => {
+    const fig = document.createElement('div'); fig.className = 'moment-fig stage'; fig.setAttribute('aria-hidden', 'true');
+    m.prepend(fig);
+    stills.push(createStage(fig, { uid: 'rm' + i, p: [.3, .6, .95][i], still: true }));
+  });
+} else {
+  stage = createStage(document.getElementById('stage'), { uid: 'st', onMoment });
+}
+
+// hero state, shared by the scroll and the renderer
+const HS = { exp: RM ? 1 : 0, fill: RM ? 1 : 0, drain: 0, ds: 0 };
+const LEVEL = [[0, 2.2], [.08, 1.7], [.3, .2], [.48, -.9], [.64, -1.7], [.8, -2.35], [1, -2.6]];
+const salEl = document.getElementById('sal'), meter = document.querySelector('.meter'), hint = document.getElementById('meter-hint');
+const intro = document.querySelector('.hero-intro'), outro = document.querySelector('.hero-outro');
+let lastSal = '', lastSat = null, lastIn = -1, lastOut = -1;
+(() => {
+  const rule = document.getElementById('meter-rule');
+  for (let v = 0; v <= 26; v++) { const i = document.createElement('i'); if (v % 5 === 0) i.className = 'mj'; i.style.left = (v / 28 * 100) + '%'; rule.appendChild(i); }
+  const s = document.createElement('i'); s.className = 'sat'; s.style.left = (26.4 / 28 * 100) + '%'; rule.appendChild(s);
+})();
+function heroState(dt) {
+  HS.ds += (HS.drain - HS.ds) * Math.min(1, (dt || .016) * 6);
+  if (Math.abs(HS.drain - HS.ds) < 3e-4) HS.ds = HS.drain;
+  const d = HS.ds;
+  const level = lerp(-2.6, track(LEVEL, d), HS.fill);
+  // as the water leaves, the same salt sits in less of it
+  const vol = 1 - .8675 * sstep(0, .52, d);
+  const sal = Math.min(26.4, 3.5 / vol);
+  const txt = sal.toFixed(1);
+  if (txt !== lastSal) { salEl.textContent = txt; meter.style.setProperty('--s', sal.toFixed(2)); lastSal = txt; }
+  const sat = sal > 26.35;
+  if (sat !== lastSat) { meter.classList.toggle('sat', sat); hint.textContent = sat ? 'Saturated. The salt comes out as cubes.' : 'Scroll to let the water go'; lastSat = sat; }
+  if (HAS_GSAP && !RM) {
+    const io = 1 - sstep(.03, .18, d);
+    if (Math.abs(io - lastIn) > .002 && HS.drain > .001) { intro.style.opacity = io.toFixed(3); lastIn = io; }
+    const oo = sstep(.72, .9, d);
+    if (Math.abs(oo - lastOut) > .002) { outro.style.opacity = oo.toFixed(3); lastOut = oo; }
+  }
+  return { level, level0: HS.fill > .999 ? 2.2 : -9, fill: HS.fill, exp: HS.exp, grow: sstep(.5, .95, d), dry: Math.max(1 - HS.fill, sstep(.4, .92, d)) };
+}
+
+let pool = null, lenis = null;
+function setupPool() {
+  const canvas = document.getElementById('pool');
+  try { pool = createPool(canvas, { state: heroState, still: RM, lite: LITE }); } catch (e) { console.warn(e); pool = null; }
+  if (!pool) { doc.classList.add('no-gl'); return; }
+  pool.start();
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(e => pool.visible(e.isIntersecting)), { threshold: 0 }).observe(document.getElementById('top'));
+}
+
+function setupScroll() {
+  if (!HAS_GSAP) return;
+  gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true });
+  if (!RM && window.Lenis) {
+    lenis = new Lenis({ lerp: .1 });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+  if (!RM && pool) {
+    ScrollTrigger.create({
+      trigger: '#top', start: 'top top', end: () => '+=' + Math.round(Math.max(innerHeight * 1.7, 1100)),
+      pin: true, scrub: true, anticipatePin: 1, onUpdate: s => { HS.drain = s.progress; }
+    });
+  }
+  if (stage) {
+    ScrollTrigger.create({
+      trigger: '#rooms', start: 'top top', end: () => '+=' + Math.round(Math.max(innerHeight * 3.2, 2300)),
+      pin: true, scrub: true, anticipatePin: 1,
+      onUpdate: s => stage.set(s.progress), onRefresh: s => { stage.resize(); stage.set(s.progress); }
+    });
+    new IntersectionObserver(es => es.forEach(e => stage.active(e.isIntersecting)), { threshold: 0 }).observe(document.getElementById('rooms'));
+  }
+  if (plan && !RM) ScrollTrigger.create({ trigger: '.plan-fig', start: 'top 78%', end: 'bottom 42%', scrub: true, onUpdate: s => plan.set(s.progress) });
+  if (COARSE && !RM) cards.forEach((c, i) => ScrollTrigger.create({
+    trigger: document.querySelectorAll('.card-fig')[i], start: 'top bottom', end: 'bottom top',
+    onUpdate: s => c.light(Math.sin(s.progress * 3.2 + i) * .7, (s.progress - .5) * 1.4)
+  }));
+  document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+    const id = a.getAttribute('href'), el = id.length > 1 && document.querySelector(id);
+    if (!el) return;
+    e.preventDefault();
+    if (a.dataset.pick) pick(a.dataset.pick);
+    if (lenis) lenis.scrollTo(el, { duration: 1.6 }); else el.scrollIntoView({ behavior: RM ? 'auto' : 'smooth' });
+  }));
+}
+
+function playIntro() {
+  const show = () => ['.top', '.hero-intro', '.meter'].forEach(s => { document.querySelector(s).style.visibility = 'visible'; });
+  if (RM || !HAS_GSAP || !pool) { Object.assign(HS, { exp: 1, fill: 1 }); show(); return; }
+  // the lamp comes up over an empty pool, the pool fills, the name goes under
+  gsap.timeline({ delay: .1 })
+    .to(HS, { exp: 1, duration: 2, ease: 'power2.inOut' }, 0)
+    .to(HS, { fill: 1, duration: 4.4, ease: 'power1.inOut' }, .8)
+    .fromTo('.top', { autoAlpha: 0 }, { autoAlpha: 1, duration: 1, ease: 'none' }, 1.3)
+    .fromTo('.meter', { autoAlpha: 0 }, { autoAlpha: 1, duration: 1, ease: 'none' }, 1.8)
+    .fromTo('.hero-intro', { autoAlpha: 0, clipPath: 'inset(0% 100% 0% 0%)' }, { autoAlpha: 1, clipPath: 'inset(0% 0% 0% 0%)', duration: 1.7, ease: 'power2.inOut', clearProps: 'clipPath' }, 2.3)
+    .call(() => pool.drip(.5, .46, .05, -.014), null, 5.3);
+}
+
+let resizeT = 0;
+addEventListener('resize', () => {
+  clearTimeout(resizeT);
+  resizeT = setTimeout(() => {
+    if (pool) pool.resize();
+    cards.forEach(c => c.draw());
+    if (plan) plan.resize();
+    stills.forEach(s => s.resize());
+  }, 150);
+});
+
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const fontsReady = document.fonts && document.fonts.load
+  ? Promise.race([Promise.all([document.fonts.load('500 100px "Newsreader"'), document.fonts.load('400 18px "Newsreader"'), document.fonts.load('500 12px "Instrument Sans"')]), wait(2200)])
+  : Promise.resolve();
+const loaded = document.readyState === 'complete' ? Promise.resolve() : Promise.race([new Promise(r => addEventListener('load', r, { once: true })), wait(3500)]);
+Promise.all([fontsReady.catch(() => {}), loaded]).then(() => {
+  const wordFont = '500 100px "Newsreader"';
+  const late = document.fonts && !document.fonts.check(wordFont);
+  setupPool();
+  // if the typeface came in after the first paint, cut the name into the stone again
+  if (late && pool) document.fonts.load(wordFont).then(() => { if (document.fonts.check(wordFont)) pool.resize(true); }).catch(() => {});
+  setupScroll();
+  playIntro();
+  if (plan) plan.resize();
+  if (HAS_GSAP) ScrollTrigger.refresh();
+});
+})();
+</script>
+</body>
+</html>
