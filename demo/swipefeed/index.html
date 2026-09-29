@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SwipeFeed | One search. Every viral raw clip. Any niche.</title>
+<meta name="description" content="Find raw, unedited clips from TikTok, Instagram Reels and YouTube Shorts, with engagement rates, retention graphs and a guide to remake them.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b0b0f">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap">
+<link rel="preload" as="image" href="img/gym-squat.webp">
+<style>
+:root{
+  --bg:#0b0b0f;--bg-2:#111117;--card:#16161d;--card-2:#1e1e27;
+  --line:#23232d;--line-2:#30303c;
+  --text:#ededf1;--muted:#a3a3b2;--dim:#71717f;
+  --accent:#7464fe;--accent-hi:#8a7cff;--accent-soft:rgba(116,100,254,.16);
+  --sans:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --display:"Space Grotesk","Plus Jakarta Sans",system-ui,sans-serif;
+  --pad:40px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{color-scheme:dark;-webkit-text-size-adjust:100%;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.55 var(--sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+img{display:block;max-width:100%}
+button,input,select{font:inherit;color:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.wrap{max-width:1280px;margin:0 auto;padding:0 var(--pad)}
+.num{font-variant-numeric:tabular-nums}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:20;background:rgba(11,11,15,.78);-webkit-backdrop-filter:saturate(140%) blur(14px);backdrop-filter:saturate(140%) blur(14px);border-bottom:1px solid transparent;transition:border-color .2s}
+.nav.scrolled{border-bottom-color:var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:40px;height:68px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:600 19px/1 var(--display);letter-spacing:-.02em}
+.brand img{height:30px;width:auto}
+.links{display:flex;gap:28px;margin-right:auto}
+.links a{font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;transition:color .15s}
+.links a:hover{color:var(--text)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;border-radius:9px;border:0;font:600 14px/1 var(--sans);text-decoration:none;cursor:pointer;white-space:nowrap;transition:background-color .15s,transform .15s}
+.btn-accent{background:var(--accent);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 1px 2px rgba(0,0,0,.5)}
+.btn-accent:hover{background:var(--accent-hi)}
+.btn-accent:active{transform:translateY(1px)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,28rem) minmax(0,1fr);gap:clamp(40px,5vw,72px);align-items:start;padding-top:56px;padding-bottom:96px}
+.hero-copy{position:sticky;top:108px}
+.beta{display:inline-flex;align-items:center;gap:9px;margin:0 0 28px;padding:6px 12px 6px 10px;border:1px solid var(--line);border-radius:99px;font-size:13px;font-weight:500;color:var(--muted)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+h1{margin:0 0 22px;font:600 clamp(2.6rem,4.4vw,4.05rem)/1 var(--display);letter-spacing:-.04em}
+h1 .quiet{color:var(--dim)}
+.lede{margin:0 0 32px;max-width:32em;font-size:17px;line-height:1.6;color:var(--muted)}
+.search{position:relative;display:flex;align-items:center;height:56px;padding:0 12px 0 46px;background:var(--bg-2);border:1px solid var(--line-2);border-radius:12px;transition:border-color .15s,box-shadow .15s}
+.search:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.search>svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--dim)}
+.search input{flex:1;min-width:0;height:100%;background:none;border:0;outline:0;font-size:16px;font-weight:500}
+.search input::placeholder{color:var(--dim)}
+.search input::-webkit-search-cancel-button{-webkit-appearance:none}
+.search kbd{font:500 12px/1 var(--display);color:var(--dim);border:1px solid var(--line-2);border-radius:5px;padding:4px 7px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{height:32px;padding:0 13px;border-radius:99px;border:1px solid var(--line);background:none;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;transition:color .15s,border-color .15s,background-color .15s}
+.chip:hover{color:var(--text);border-color:var(--line-2)}
+.chip[aria-pressed="true"]{color:var(--text);border-color:var(--line-2);background:var(--card-2)}
+.fine{margin:28px 0 0;font-size:14px;color:var(--dim)}
+.fine a{color:var(--text);text-decoration:underline;text-decoration-color:var(--line-2);text-underline-offset:3px}
+.fine a:hover{text-decoration-color:var(--text)}
+
+/* product panel */
+.app{background:var(--bg-2);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 0 0 1px rgba(0,0,0,.5),0 40px 90px -40px rgba(0,0,0,.9)}
+.app-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.seg{display:flex;padding:3px;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.seg button{height:30px;padding:0 13px;border:0;border-radius:7px;background:none;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer}
+.seg button:hover{color:var(--text)}
+.seg button[aria-pressed="true"]{background:var(--card-2);color:var(--text);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 1px 2px rgba(0,0,0,.6)}
+.sort{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim)}
+.sort select{appearance:none;-webkit-appearance:none;height:32px;padding:0 30px 0 11px;background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%23a3a3b2' stroke-width='1.5'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 11px center;border:1px solid var(--line);border-radius:8px;font-size:13px;font-weight:500;color:var(--text);cursor:pointer}
+.app-meta{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:14px 2px 12px;font-size:13px;color:var(--dim)}
+.app-meta #count{color:var(--muted);font-weight:500}
+.s-short{display:none}
+.miss{margin:0 2px 12px;padding:10px 12px;border:1px dashed var(--line-2);border-radius:10px;font-size:13px;color:var(--muted)}
+.grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid li{animation:rise .4s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i) * 45ms)}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}}
+.grid.clipped li:nth-child(n+7){display:none}
+.card{display:block;width:100%;padding:0;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);border-color:var(--line-2);box-shadow:0 14px 30px -14px rgba(0,0,0,.8)}
+.card.on{border-color:var(--accent)}
+.thumb{position:relative;display:block;aspect-ratio:9/16;background:#1a1a22;overflow:hidden}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.4),transparent 20%,transparent 48%,rgba(0,0,0,.82))}
+.tag{position:absolute;top:10px;z-index:1;padding:4px 7px;border-radius:6px;background:rgba(10,10,14,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-size:11px;font-weight:600;line-height:1.2;color:#fff}
+.tag.l{left:10px}.tag.r{right:10px}
+.hook{position:absolute;left:12px;right:12px;bottom:12px;z-index:1;font-size:15px;font-weight:600;line-height:1.25;color:#fff;text-wrap:balance;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.meta{display:grid;gap:7px;padding:11px 12px 12px}
+.meta .r1{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--dim)}
+.meta b{font-weight:600;color:var(--text)}
+.meta .r2{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--dim);white-space:nowrap}
+.spark{flex:none;width:40px;height:16px;overflow:visible}
+.spark polyline{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+.more{display:block;width:100%;height:40px;margin-top:12px;border:1px solid var(--line);border-radius:10px;background:none;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer}
+.more:hover{color:var(--text);border-color:var(--line-2)}
+
+/* breakdown */
+.how{padding:104px 0 112px;border-top:1px solid var(--line)}
+.how-head{max-width:42rem;margin-bottom:56px}
+.kicker{margin:0;font-size:14px;font-weight:500;color:var(--muted)}
+h2{margin:10px 0 16px;font:600 clamp(2rem,3.4vw,3rem)/1.04 var(--display);letter-spacing:-.035em}
+.how-head p:last-child{margin:0;font-size:17px;color:var(--muted);max-width:36em}
+.bd{display:grid;grid-template-columns:minmax(0,248px) minmax(0,1fr) minmax(0,300px);gap:48px;align-items:start}
+.bd-clip{margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(0,0,0,.9)}
+.bd-clip .hook{font-size:17px;left:16px;right:16px;bottom:16px}
+.bd-kind{margin:0 0 6px;font-size:13px;font-weight:500;color:var(--dim)}
+.bd-data h3{margin:0 0 28px;font:600 26px/1.15 var(--display);letter-spacing:-.025em}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.metrics div{padding:16px 0 16px 16px;border-left:1px solid var(--line)}
+.metrics div:first-child{padding-left:0;border-left:0}
+.metrics dt{font-size:12px;color:var(--dim)}
+.metrics dd{margin:4px 0 0;font:600 26px/1.1 var(--display);letter-spacing:-.02em}
+.chart-h{display:flex;justify-content:space-between;margin:28px 0 10px;font-size:13px;color:var(--muted)}
+.chart-h span{color:var(--dim)}
+.chart{position:relative;height:190px}
+.chart svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.chart .grid-l{stroke:var(--line);stroke-width:1}
+.chart .area{fill:var(--accent-soft)}
+.chart .line{fill:none;stroke:var(--accent);stroke-width:2;stroke-linejoin:round}
+.chart .mark{stroke:var(--line-2);stroke-width:1;stroke-dasharray:3 3}
+.pin{position:absolute;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+.plabel{position:absolute;transform:translateY(-100%);margin-top:-10px;font-size:12px;font-weight:500;color:var(--text);white-space:nowrap}
+.plabel.end{transform:translate(-100%,-100%)}
+.plabel span{color:var(--dim);font-weight:400}
+.xaxis{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:var(--dim)}
+.bd-steps h4{margin:0 0 18px;font:600 15px/1.2 var(--sans)}
+.bd-steps ol{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.bd-steps li{display:grid;grid-template-columns:32px 1fr;padding:16px 0;border-top:1px solid var(--line)}
+.bd-steps li:last-child{border-bottom:1px solid var(--line)}
+.bd-steps .n{font:500 13px/1.5 var(--display);color:var(--dim)}
+.bd-steps strong{display:block;font-size:14px;font-weight:600;margin-bottom:3px}
+.bd-steps p{margin:0;font-size:14px;line-height:1.55;color:var(--muted)}
+
+/* waitlist + footer */
+.join{display:flex;align-items:end;justify-content:space-between;gap:32px;flex-wrap:wrap;padding:48px 0;border-top:1px solid var(--line)}
+.join h2{font-size:clamp(1.6rem,2.4vw,2.1rem);margin:0 0 6px}
+.join p{margin:0;color:var(--muted)}
+.join form{display:flex;flex-wrap:wrap;gap:8px;width:min(100%,420px)}
+.join input{flex:1 1 200px;min-width:0;height:44px;padding:0 14px;background:var(--bg-2);border:1px solid var(--line-2);border-radius:10px;font-size:16px;outline:0}
+.join input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.join .btn{height:44px}
+.join .note{flex-basis:100%;min-height:1.5em;font-size:14px;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px 32px;flex-wrap:wrap;padding-top:24px;padding-bottom:32px;border-top:1px solid var(--line);font-size:13px;color:var(--dim)}
+footer nav{display:flex;gap:20px;flex-wrap:wrap}
+footer a{text-decoration:none}
+footer a:hover{color:var(--text)}
+
+@media (max-width:1180px){
+  .bd{grid-template-columns:minmax(0,220px) minmax(0,1fr)}
+  .bd-steps{grid-column:1 / -1}
+}
+@media (max-width:960px){
+  :root{--pad:20px}
+  .links{display:none}
+  .nav .wrap{height:60px;justify-content:space-between}
+  .hero{grid-template-columns:minmax(0,1fr);gap:28px;padding-top:28px;padding-bottom:64px}
+  .hero-copy{position:static}
+  .beta{margin-bottom:20px}
+  h1{font-size:clamp(2.5rem,10.6vw,3.4rem);margin-bottom:16px}
+  .lede{font-size:16px;margin-bottom:22px}
+  .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:calc(var(--pad) * -1);padding-right:var(--pad)}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:none}
+  .fine,.search kbd{display:none}
+  .app{padding:12px;border-radius:14px}
+  .seg{flex:1}
+  .seg button{flex:1;padding:0 6px}
+  .sort,.s-long{display:none}
+  .s-short{display:inline}
+  .app-meta{margin:12px 2px 10px}
+  .grid .hook{font-size:14px;left:10px;right:10px;bottom:10px}
+  .meta{padding:10px}
+  .grid,.grid.clipped{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:47%;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+  .grid::-webkit-scrollbar{display:none}
+  .grid li,.grid.clipped li:nth-child(n+7){display:block;scroll-snap-align:start}
+  .more{display:none}
+  .how{padding:72px 0 80px}
+  .how-head{margin-bottom:36px}
+  .bd{grid-template-columns:minmax(0,1fr);gap:32px}
+  .bd-clip{width:min(100%,200px)}
+  .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .metrics div:nth-child(3){padding-left:0;border-left:0}
+  .metrics div:nth-child(n+3){border-top:1px solid var(--line)}
+  .join form{width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="img/logo.png" alt="" width="23" height="30">SwipeFeed</a>
+    <nav class="links" aria-label="Main">
+      <a href="#how">Product</a>
+      <a href="https://swipefeed.org/">FAQ</a>
+      <a href="https://swipefeed.org/">Pricing</a>
+      <a href="https://swipefeed.org/">Founder's note</a>
+      <a href="mailto:support@swipefeed.org">Contact</a>
+    </nav>
+    <a class="btn btn-accent" href="#join">Join waitlist</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero wrap">
+    <div class="hero-copy">
+      <p class="beta"><span class="dot" aria-hidden="true"></span>In beta, waitlist open</p>
+      <h1>One search.<br> Every viral raw&nbsp;clip.<br> <span class="quiet">Any niche.</span></h1>
+      <p class="lede">Type any keyword. Get the top-performing raw clips from TikTok, Reels and Shorts, with real engagement numbers and a guide to remake each one.</p>
+      <form class="search" role="search" id="searchForm">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <label class="sr" for="q">Search clips by keyword</label>
+        <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="Try gym, street food, podcast">
+        <kbd aria-hidden="true">/</kbd>
+      </form>
+      <div class="chips" id="chips" aria-label="Popular niches">
+        <button class="chip" type="button" data-q="gym" aria-pressed="false">Gym</button>
+        <button class="chip" type="button" data-q="food" aria-pressed="false">Food</button>
+        <button class="chip" type="button" data-q="cars" aria-pressed="false">Cars</button>
+        <button class="chip" type="button" data-q="skincare" aria-pressed="false">Skincare</button>
+        <button class="chip" type="button" data-q="podcast" aria-pressed="false">Podcasts</button>
+      </div>
+      <p class="fine">Beta is invite-only. <a href="#join">Join the waitlist</a></p>
+    </div>
+
+    <div class="app" aria-label="Search results">
+      <div class="app-bar">
+        <div class="seg" id="plat" aria-label="Platform">
+          <button type="button" data-p="all" aria-pressed="true">All</button>
+          <button type="button" data-p="TikTok" aria-pressed="false">TikTok</button>
+          <button type="button" data-p="Reels" aria-pressed="false">Reels</button>
+          <button type="button" data-p="Shorts" aria-pressed="false">Shorts</button>
+        </div>
+        <label class="sort"><span>Sort by</span>
+          <select id="sort">
+            <option value="views">Most views</option>
+            <option value="er">Engagement rate</option>
+            <option value="hold">Hook hold</option>
+          </select>
+        </label>
+      </div>
+      <div class="app-meta"><span id="count" class="num" aria-live="polite"></span><span class="s-long">Sample data. Live search opens in the beta.</span><span class="s-short">Sample data</span></div>
+      <p class="miss" id="miss" hidden></p>
+      <ul class="grid" id="grid"></ul>
+      <button class="more" type="button" id="more" hidden></button>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <div class="wrap">
+      <div class="how-head">
+        <p class="kicker">Inside every result</p>
+        <h2>Not just the clip.<br> Why it worked.</h2>
+        <p>Open any result above and you get the real numbers, the second viewers start dropping off, and a short guide to remake it for your niche.</p>
+      </div>
+      <div class="bd">
+        <figure class="bd-clip thumb" id="bdClip">
+          <img id="bdImg" src="img/gym-squat.webp" alt="" width="360" height="640">
+          <span class="tag l" id="bdPlat"></span><span class="tag r num" id="bdDur"></span>
+          <span class="hook" id="bdHook"></span>
+        </figure>
+        <div class="bd-data">
+          <p class="bd-kind" id="bdKind"></p>
+          <h3 id="bdTitle"></h3>
+          <dl class="metrics num">
+            <div><dt>Views</dt><dd id="mViews"></dd></div>
+            <div><dt>Engagement rate</dt><dd id="mEr"></dd></div>
+            <div><dt>Shares</dt><dd id="mShares"></dd></div>
+            <div><dt>Watched to the end</dt><dd id="mEnd"></dd></div>
+          </dl>
+          <p class="chart-h">Retention <span>% of viewers still watching</span></p>
+          <div class="chart" id="chart" role="img" aria-label="Retention graph"></div>
+          <div class="xaxis num" id="xaxis"></div>
+        </div>
+        <div class="bd-steps">
+          <h4>How to remake it</h4>
+          <ol id="steps"></ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="join">
+    <div class="join">
+      <div>
+        <h2>Be first in when the beta opens.</h2>
+        <p>One email when your invite is ready. Nothing else.</p>
+      </div>
+      <form id="wl">
+        <label class="sr" for="wlEmail">Email</label>
+        <input id="wlEmail" type="email" required placeholder="you@email.com" autocomplete="email">
+        <button class="btn btn-accent" type="submit">Join waitlist</button>
+        <p class="note" id="wlNote" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; 2026 SwipeFeed. Redesign concept, results are sample data.</span>
+    <nav aria-label="Legal">
+      <a href="https://swipefeed.org/">Privacy policy</a>
+      <a href="https://swipefeed.org/">Terms of service</a>
+      <a href="https://www.youtube.com/t/terms">YouTube Terms of Service</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+// Sample clips: numbers are made up for the concept, clearly labeled on the page.
+const CLIPS = [
+  {id:1, img:'gym-squat', plat:'TikTok', title:'3 cues that fixed my squat in a week', views:2430000, er:11.2, dur:23, hold:78, end:41, niche:'Fitness', tags:'gym fitness workout squat lifting training legs',
+   steps:['Shows the bad rep first, then says “here’s what fixed it” in the first second.','One cue per cut, each under 5 seconds, same camera angle so the change is easy to see.','Week 1 next to week 2. People replay it, which is why the watch time is high.']},
+  {id:2, img:'gym-rack', plat:'Reels', title:'Gym etiquette nobody tells you about', views:1140000, er:8.4, dur:31, hold:69, end:33, niche:'Fitness', tags:'gym fitness etiquette beginner workout',
+   steps:['Opens mid-mistake with “don’t do this” on screen.','Five quick rules, one per shot, text burned in so it works on mute.','Asks which rule people break most. Most comments are answers to that.']},
+  {id:3, img:'core', plat:'Shorts', title:'10-minute core, no equipment', views:3820000, er:6.9, dur:58, hold:64, end:38, niche:'Fitness', tags:'gym core abs home workout fitness training',
+   steps:['A timer on screen from the first frame, so the promise is clear without a voiceover.','Real-time follow-along, one move per 40 seconds, no cuts inside a set.','Loops back to the first move, so the second play feels like round two.']},
+  {id:4, img:'tasting', plat:'TikTok', title:'$12 vs $120 tasting menu', views:5210000, er:9.8, dur:47, hold:81, end:44, niche:'Food', tags:'food restaurant review fine dining tasting menu cheap expensive street food',
+   steps:['Both plates in one frame with the prices on them in the first second.','Alternates bites, cheap one first each time, so viewers keep score.','The verdict comes at the very end. That keeps 44% watching to the last second.']},
+  {id:5, img:'bowl', plat:'Reels', title:'High-protein bowl in under 10 minutes', views:890000, er:12.6, dur:29, hold:72, end:46, niche:'Food', tags:'food recipe protein meal prep healthy cooking',
+   steps:['Finished bowl first, then “10 minutes, 52 g protein” as text.','Top-down shots only, every ingredient with its weight on screen.','A macros card at the end. Saves are high because people want the numbers later.']},
+  {id:6, img:'salad', plat:'Shorts', title:'What I eat in a day at 2,000 calories', views:1640000, er:7.3, dur:55, hold:66, end:35, niche:'Food', tags:'food what i eat in a day calories diet healthy',
+   steps:['Opens with the calorie total and asks “guess how much food this is”.','Meal by meal, with a running calorie counter in the corner.','Total vs guess at the end, so the question from the hook pays off.']},
+  {id:7, img:'garage', plat:'TikTok', title:'Detailing a car that sat for 3 years', views:7940000, er:10.4, dur:39, hold:84, end:52, niche:'Cars', tags:'cars car detailing cleaning satisfying garage auto',
+   steps:['Worst angle of the dirty car, no talking, the pressure washer is the first sound.','Strictly before, process, after. The process runs at 4x speed.','The final reveal is held for 3 seconds. That is where most shares come from.']},
+  {id:8, img:'sedan', plat:'Shorts', title:'Why this sedan holds its value', views:640000, er:5.8, dur:44, hold:58, end:29, niche:'Cars', tags:'cars car resale value sedan buying advice auto',
+   steps:['Starts with the resale price of a 5-year-old car next to the new price.','Three reasons, one number on screen for each.','Ends on a question about the viewer’s car. The hook is weaker, so fewer people get there.']},
+  {id:9, img:'makeup', plat:'Reels', title:'Drugstore vs luxury: same finish?', views:2210000, er:9.1, dur:34, hold:76, end:40, niche:'Beauty', tags:'beauty makeup drugstore luxury dupe cosmetics skincare',
+   steps:['Half the face done with each product, shown in the first frame.','Same light, same distance, price tags pop up as each product goes on.','Asks viewers to guess which side is which before the answer.']},
+  {id:10, img:'skincare', plat:'TikTok', title:'The 3-step routine that cleared my skin', views:1320000, er:13.4, dur:27, hold:73, end:48, niche:'Beauty', tags:'skincare beauty routine acne skin care',
+   steps:['Close-up of the skin before, no filter, with “3 steps, 6 weeks” as text.','One product per step, held up to the camera with the name readable.','After shot in the same light. It is short, so people watch it twice.']},
+  {id:11, img:'mic', plat:'TikTok', title:'The clip that grew our podcast to 100K', views:980000, er:8.8, dur:52, hold:70, end:34, niche:'Podcasts', tags:'podcast podcasts clips growth creator interview',
+   steps:['The guest’s strongest line is the first thing you hear. No intro.','Burned-in captions with one highlighted word per line, a cut on every pause.','Stops mid-thought and points to the full episode.']},
+  {id:12, img:'podcast', plat:'Shorts', title:'Guest says what every founder thinks', views:2890000, er:7.9, dur:41, hold:79, end:37, niche:'Podcasts', tags:'podcast podcasts founder startup business interview clips',
+   steps:['A sharp opinion in the first two seconds, captioned in large type.','Two camera angles, switching on every new sentence.','The host’s reaction closes the clip. The comments argue with the guest.']}
+];
+const STEP_NAMES = ['Hook', 'Structure', 'Ending'];
+
+const $ = id => document.getElementById(id);
+const q = $('q'), grid = $('grid'), more = $('more');
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const state = {q:'', plat:'all', sort:'views', all:false, sel:1};
+let touched = false;
+
+const fmt = n => n >= 1e6 ? (n/1e6).toFixed(1).replace(/\.0$/,'') + 'M' : n >= 1e3 ? Math.round(n/1e3) + 'K' : String(n);
+const time = s => '0:' + String(s).padStart(2, '0');
+
+// Retention in % over the clip: fast drop in the first 3 s, then a slow decay to the end.
+function curve(c, n) {
+  const pts = [];
+  for (let i = 0; i <= n; i++) {
+    const t = c.dur * i / n;
+    let r = t <= 3 ? 100 - (100 - c.hold) * Math.pow(t / 3, .7)
+                   : c.hold * Math.pow(c.end / c.hold, (t - 3) / (c.dur - 3));
+    if (t > 3 && i < n) r += Math.sin(i * 1.9 + c.dur) * 1.1;
+    pts.push([t, Math.max(0, Math.min(100, r))]);
+  }
+  return pts;
+}
+
+function matches(c, query) {
+  const words = query.toLowerCase().split(/\s+/).filter(w => w.length > 1);
+  if (!words.length) return true;
+  const hay = (c.title + ' ' + c.niche + ' ' + c.tags).toLowerCase();
+  return words.some(w => hay.includes(w));
+}
+
+function card(c, i) {
+  const sp = curve(c, 16).map(([t, r]) => (t / c.dur * 52).toFixed(1) + ',' + (16 - r * .16).toFixed(1)).join(' ');
+  return `<li style="--i:${i}"><button class="card${c.id === state.sel ? ' on' : ''}" type="button" data-id="${c.id}" aria-label="Open breakdown: ${c.title}">
+    <span class="thumb"><img src="img/${c.img}.webp" alt="" width="360" height="640"${i > 2 ? ' loading="lazy"' : ''}>
+      <span class="tag l">${c.plat}</span><span class="tag r num">${time(c.dur)}</span><span class="hook">${c.title}</span></span>
+    <span class="meta num"><span class="r1"><span><b>${fmt(c.views)}</b> views</span><span><b>${c.er}%</b> ER</span></span>
+      <span class="r2"><svg class="spark" viewBox="0 0 52 16" preserveAspectRatio="none" aria-hidden="true"><polyline points="${sp}"/></svg>${c.hold}% hold at 3s</span></span>
+  </button></li>`;
+}
+
+function render() {
+  const pool = CLIPS.filter(c => state.plat === 'all' || c.plat === state.plat);
+  let hits = pool.filter(c => matches(c, state.q));
+  const query = state.q.trim();
+  const miss = query && !hits.length;
+  if (miss) hits = pool;
+  const key = {views: c => c.views, er: c => c.er, hold: c => c.hold}[state.sort];
+  hits.sort((a, b) => key(b) - key(a));
+
+  $('miss').hidden = !miss;
+  if (miss) $('miss').textContent = `No sample clips for “${query}” here. In the beta any keyword runs a live search. Trending now:`;
+  $('count').textContent = miss ? `${hits.length} trending clips`
+    : query ? `${hits.length} clip${hits.length === 1 ? '' : 's'} for “${query}”`
+    : `${hits.length} clips trending this week`;
+  grid.innerHTML = hits.map(card).join('');
+  const clip = hits.length > 6 && !state.all;
+  grid.classList.toggle('clipped', clip);
+  more.hidden = !clip;
+  more.textContent = `Show all ${hits.length}`;
+  document.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.q === query.toLowerCase())));
+}
+
+function select(id, scroll) {
+  const c = CLIPS.find(x => x.id === id);
+  state.sel = id;
+  grid.querySelectorAll('.card').forEach(b => b.classList.toggle('on', +b.dataset.id === id));
+  $('bdImg').src = `img/${c.img}.webp`;
+  $('bdPlat').textContent = c.plat;
+  $('bdDur').textContent = time(c.dur);
+  $('bdHook').textContent = c.title;
+  $('bdKind').textContent = `${c.niche} · ${c.plat} · sample clip`;
+  $('bdTitle').textContent = c.title;
+  $('mViews').textContent = fmt(c.views);
+  $('mEr').textContent = c.er + '%';
+  $('mShares').textContent = fmt(Math.round(c.views * c.er / 100 * .11));
+  $('mEnd').textContent = c.end + '%';
+
+  const pts = curve(c, 60).map(([t, r]) => [t / c.dur * 100, 100 - r]);
+  const line = 'M' + pts.map(p => p[0].toFixed(2) + ',' + p[1].toFixed(2)).join(' L');
+  const x3 = 3 / c.dur * 100, yEnd = 100 - c.end;
+  $('chart').innerHTML =
+    `<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      ${[0, 50, 100].map(y => `<line class="grid-l" x1="0" x2="100" y1="${y}" y2="${y}" vector-effect="non-scaling-stroke"/>`).join('')}
+      <line class="mark" x1="${x3}" x2="${x3}" y1="0" y2="100" vector-effect="non-scaling-stroke"/>
+      <path class="area" d="${line} L100,100 L0,100 Z"/>
+      <path class="line" d="${line}" vector-effect="non-scaling-stroke"/>
+    </svg>
+    <span class="pin" style="left:${x3}%;top:${100 - c.hold}%"></span>
+    <span class="plabel" style="left:${x3}%;top:${100 - c.hold}%">${c.hold}% <span>after the hook</span></span>
+    <span class="pin" style="left:100%;top:${yEnd}%"></span>
+    <span class="plabel end" style="left:100%;top:${yEnd}%">${c.end}% <span>at the end</span></span>`;
+  $('chart').setAttribute('aria-label', `Retention: ${c.hold}% still watching at 3 seconds, ${c.end}% at the end`);
+  $('xaxis').innerHTML = `<span>0:00</span><span>${time(Math.round(c.dur / 2))}</span><span>${time(c.dur)}</span>`;
+  $('steps').innerHTML = c.steps.map((s, i) =>
+    `<li><span class="n">0${i + 1}</span><div><strong>${STEP_NAMES[i]}</strong><p>${s}</p></div></li>`).join('');
+  if (scroll) $('how').scrollIntoView({behavior: reduced ? 'auto' : 'smooth'});
+}
+
+function setQuery(v) {
+  q.value = v; state.q = v; state.all = false; render();
+}
+
+q.addEventListener('input', () => { touched = true; state.q = q.value; state.all = false; render(); });
+q.addEventListener('focus', () => { touched = true; });
+$('searchForm').addEventListener('submit', e => { e.preventDefault(); q.blur(); });
+$('chips').addEventListener('click', e => {
+  const b = e.target.closest('.chip'); if (!b) return;
+  touched = true; setQuery(b.dataset.q);
+});
+$('plat').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  state.plat = b.dataset.p; state.all = false;
+  $('plat').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  render();
+});
+$('sort').addEventListener('change', e => { state.sort = e.target.value; render(); });
+more.addEventListener('click', () => { state.all = true; render(); });
+grid.addEventListener('click', e => {
+  const b = e.target.closest('.card'); if (b) select(+b.dataset.id, true);
+});
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT') { e.preventDefault(); q.focus(); }
+});
+$('wl').addEventListener('submit', e => {
+  e.preventDefault();
+  $('wlNote').textContent = 'Thanks. This page is a design concept, so the form isn’t connected yet.';
+});
+const nav = $('nav');
+addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 8), {passive: true});
+
+render();
+select(1, false);
+
+// Types a first query so the page opens on real-looking results, stops as soon as the visitor touches search.
+const demo = 'gym';
+if (reduced) setQuery(demo);
+else setTimeout(() => {
+  let i = 0;
+  const t = setInterval(() => {
+    if (touched) return clearInterval(t);
+    q.value = demo.slice(0, ++i);
+    if (i === demo.length) { clearInterval(t); setQuery(demo); }
+  }, 150);
+}, 800);
+</script>
+</body>
+</html>
