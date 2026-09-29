@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pet Hair Remover Glove — concept for My Pet Offer</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="A rebuilt product page for the My Pet Offer grooming glove: clip first, one honest offer, buy button always in reach.">
+<meta property="og:title" content="Pet Hair Remover Glove — new page concept for My Pet Offer">
+<meta property="og:description" content="Clip under the title, one honest offer, buy button always in reach. Concept by g.a.d.">
+<meta property="og:image" content="https://smirnov-artur.github.io/demo/mypetoffer-glove/og.jpg">
+<meta property="og:url" content="https://smirnov-artur.github.io/demo/mypetoffer-glove/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:,">
+<!-- Концепт страницы товара для Adeel Ijaz (mypetoffer.com, 29.09.2026). Фото, ролики, цены, обещания — с его живой страницы.
+     Отзывов на его странице нет, поэтому здесь заглушки. Фото 5 и 6 с его страницы (серая щётка, другой товар) не взяты. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --oat:#F6F1E7;--card:#FFFDF8;--ink:#1C1B18;--mute:#686256;--line:#E2D9C8;
+  --glove:#F4C300;--glove-soft:#FFF3C2;--ok:#2F6B3A;
+  --e1:0 1px 2px rgba(28,27,24,.08);
+  --e2:0 1px 2px rgba(28,27,24,.06),0 10px 28px -14px rgba(28,27,24,.35);
+  --e3:0 -10px 30px -14px rgba(28,27,24,.45);
+  --pad:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font:400 16px/1.5 'Instrument Sans',system-ui,sans-serif;background:var(--oat);color:var(--ink);-webkit-font-smoothing:antialiased;padding-bottom:88px;overflow-x:hidden}
+img,video{display:block;max-width:100%}
+a{color:inherit}
+h1,h2,h3{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;letter-spacing:-.02em;line-height:1.05}
+.wrap{max-width:1120px;margin:0 auto;padding:0 var(--pad)}
+
+.concept{background:var(--ink);color:#EDE6D6;font-size:12.5px;text-align:center;padding:7px var(--pad);letter-spacing:.01em}
+.concept a{color:var(--glove);text-decoration:none;font-weight:600}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:10px 0}
+.bar img{height:30px;width:auto}
+.bar span{font-size:13px;color:var(--mute)}
+
+.top{display:grid;gap:14px;padding-bottom:28px}
+.head .eyebrow{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ok)}
+.head h1{font-size:clamp(30px,8vw,52px);margin:4px 0 6px}
+.head p{color:var(--mute);font-size:16px}
+
+.media{position:relative}
+.media video{width:100%;aspect-ratio:4/5;max-height:56svh;object-fit:cover;object-position:50% 78%;border-radius:10px;background:#2a2824;box-shadow:var(--e2)}
+.media figcaption{display:flex;gap:10px;margin-top:8px;font-size:13px;color:var(--mute)}
+.media figcaption b{color:var(--ink);font-weight:600}
+
+.price{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.price strong{font:800 44px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.03em}
+.price span{color:var(--mute)}
+.offer{margin:10px 0 16px;padding:12px 14px;background:var(--glove-soft);border-left:4px solid var(--glove);border-radius:0 8px 8px 0;font-size:15px}
+.packs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border:0;margin-bottom:12px}
+.packs legend{font-size:13px;font-weight:600;margin-bottom:8px}
+.packs label{position:relative;display:block;cursor:pointer}
+.packs input{position:absolute;opacity:0;inset:0}
+.packs .opt{display:block;padding:10px 8px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);text-align:center;transition:border-color .15s,background .15s}
+.packs .opt b{display:block;font-size:15px}
+.packs .opt small{font-size:12.5px;color:var(--mute)}
+.packs input:checked+.opt{border-color:var(--ink);background:var(--glove-soft);box-shadow:inset 0 0 0 1px var(--ink)}
+.packs input:focus-visible+.opt{outline:3px solid var(--glove);outline-offset:2px}
+.hint{font-size:13.5px;color:var(--mute);min-height:1.5em;margin-bottom:12px}
+.buy{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:54px;border-radius:8px;background:var(--glove);color:var(--ink);font:700 17px 'Instrument Sans',sans-serif;text-decoration:none;box-shadow:var(--e1);transition:transform .12s}
+.buy:active{transform:scale(.98)}
+.buy:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.trust{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:10px;font-size:13px;color:var(--mute)}
+
+.gains{list-style:none;margin-top:22px;border-top:1px solid var(--line)}
+.gains li{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:15.5px}
+.gains li::before{content:"";width:12px;height:12px;margin-top:6px;border-radius:3px;background:var(--glove);box-shadow:inset 0 0 0 2px var(--ink)}
+
+section{padding:34px 0}
+section>.wrap>h2{font-size:clamp(26px,6vw,38px);margin-bottom:14px}
+
+.strip{display:flex;align-items:flex-start;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 var(--pad);padding:0 var(--pad) 6px;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.strip>*{flex:none;width:min(72vw,280px);max-width:none;scroll-snap-align:start}
+.strip img,.strip video{height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:8px;background:#fff;box-shadow:var(--e1)}
+.strip video{width:100%;background:#2a2824}
+.strip figcaption{font-size:13px;color:var(--mute);margin-top:6px}
+
+.slots{display:grid;gap:12px}
+.slot{border:2px dashed #C99A00;background:repeating-linear-gradient(-45deg,var(--glove-soft) 0 12px,#FFF8DC 12px 24px);border-radius:10px;padding:18px}
+.slot b{display:block;font:800 20px 'Bricolage Grotesque',sans-serif;margin-bottom:4px}
+.slot p{font-size:14px;color:#5a4a10}
+.slot .ph{display:grid;place-items:center;height:120px;margin-top:12px;border:1.5px dashed #C99A00;border-radius:6px;font-size:13px;color:#7a6412;background:rgba(255,255,255,.5)}
+
+.two{display:grid;gap:34px}
+.promise{display:grid;gap:0;background:var(--card);border-radius:10px;box-shadow:var(--e2);overflow:hidden}
+.promise div{padding:16px 18px;border-bottom:1px solid var(--line)}
+.promise div:last-child{border-bottom:0}
+.promise h3{font-size:19px;margin-bottom:2px}
+.promise p{font-size:15px;color:var(--mute)}
+.promise a{font-weight:600;color:var(--ink)}
+
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:15px 30px 15px 0;font-weight:600;font-size:16px;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:4px;top:11px;font:400 24px 'Bricolage Grotesque',sans-serif}
+.faq details[open] summary::after{content:"–"}
+.faq summary:focus-visible{outline:3px solid var(--glove);outline-offset:2px}
+.faq details p{padding:0 0 16px;color:var(--mute);font-size:15px}
+
+.notes{background:var(--ink);color:#EDE6D6;border-radius:10px;padding:22px 20px}
+.notes h2{color:#fff;font-size:24px;margin-bottom:12px}
+.notes ol{padding-left:20px;display:grid;gap:8px;font-size:15px}
+.notes li::marker{color:var(--glove);font-weight:700}
+.notes p{margin-top:14px;font-size:14px;color:#B9B19F}
+.notes a{color:var(--glove)}
+
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;align-items:center;gap:12px;padding:10px var(--pad) calc(10px + env(safe-area-inset-bottom));background:var(--card);box-shadow:var(--e3)}
+.sticky .s-p{line-height:1.15}
+.sticky .s-p b{display:block;font:800 22px 'Bricolage Grotesque',sans-serif}
+.sticky .s-p small{font-size:12.5px;color:var(--mute)}
+.sticky .buy{flex:1;min-height:50px;font-size:16px}
+footer{padding:10px 0 30px;font-size:13px;color:var(--mute)}
+
+@media (min-width:900px){
+  body{padding-bottom:0}
+  .sticky{display:none}
+  .top{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"media head" "media buyzone";grid-template-rows:auto 1fr;column-gap:48px;padding-top:12px}
+  .head{grid-area:head;align-self:end}
+  .media{grid-area:media}
+  .media>div{position:sticky;top:16px}
+  .media video{max-height:78vh}
+  .buyzone{grid-area:buyzone}
+  .strip{max-width:1120px;margin:0 auto}
+  .slots{grid-template-columns:1fr 1fr}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="concept">Concept by <a href="https://smirnov-artur.github.io/works/?lang=en">g.a.d.</a> for My Pet Offer — not a live store</div>
+
+<div class="wrap">
+  <header class="bar">
+    <img src="m/logo.png" alt="My Pet Offer" width="128" height="30">
+    <span>Free US delivery, 3–5 days</span>
+  </header>
+
+  <main class="top">
+    <div class="head">
+      <div class="eyebrow">For dogs &amp; cats</div>
+      <h1>Pet Hair Remover Glove</h1>
+      <p>Pet your dog or cat. The loose fur stays on the glove.</p>
+    </div>
+
+    <figure class="media">
+      <div>
+        <video id="hero" src="m/hero.mp4" poster="m/hero.jpg" autoplay muted loop playsinline preload="auto" aria-label="Clip: handheld vacuum on the left half of a rug, the glove on the right half"></video>
+        <figcaption><span><b>Left:</b> handheld vacuum</span><span><b>Right:</b> the glove</span><span>Same rug</span></figcaption>
+      </div>
+    </figure>
+
+    <div class="buyzone">
+      <div class="price"><strong id="price">$15</strong><span id="each">for 2 gloves · $7.50 each</span></div>
+      <p class="offer">2 gloves for $15 with free US delivery. If it doesn't pick up your pet's fur, you get your money back within 30 days.</p>
+
+      <fieldset class="packs">
+        <legend>Choose your pack</legend>
+        <label><input type="radio" name="pack" value="0" checked><span class="opt"><b>2 gloves</b><small>$15</small></span></label>
+        <label><input type="radio" name="pack" value="1"><span class="opt"><b>3 gloves</b><small>$20</small></span></label>
+        <label><input type="radio" name="pack" value="2"><span class="opt"><b>4 gloves</b><small>$25</small></span></label>
+      </fieldset>
+      <p class="hint" id="hint">One for you, one for the car or a friend.</p>
+
+      <a class="buy" id="buy" href="https://mypetoffer.com/products/pet-grooming-glove?variant=54039506550895">Get 2 gloves — $15</a>
+      <div class="trust"><span>Free delivery with tracking</span><span>30-day money back</span><span>Secure checkout</span></div>
+
+      <ul class="gains">
+        <li>Just pet. The mesh lifts loose fur, dirt and dander.</li>
+        <li>Dogs and cats, short or long hair.</li>
+        <li>Slips on, one size fits most hands.</li>
+        <li>Pull the fur off, rinse, use again.</li>
+      </ul>
+    </div>
+  </main>
+</div>
+
+<section aria-label="Photos and clips">
+  <div class="wrap"><h2>Up close</h2></div>
+  <div class="strip">
+    <figure><video id="clip2" src="m/clip2.mp4" poster="m/clip2.jpg" muted loop playsinline preload="none" aria-label="Clip: the glove takes fur off black clothes"></video><figcaption>Fur off black clothes</figcaption></figure>
+    <img src="m/p7.jpg" alt="Woman petting a golden retriever with the glove" width="679" height="679" loading="lazy">
+    <img src="m/p2.jpg" alt="Glove on a hand next to a white cat, fur collected on the mesh" width="800" height="800" loading="lazy">
+    <img src="m/p3.jpg" alt="Black sweater, one half cleaned with the glove" width="800" height="800" loading="lazy">
+    <img src="m/p4.jpg" alt="Glove on a hand, cat fur pulled off in one piece" width="800" height="762" loading="lazy">
+    <img src="m/p1.jpg" alt="Two gloves, black mesh with yellow trim" width="720" height="640" loading="lazy">
+  </div>
+</section>
+
+<section aria-labelledby="rev">
+  <div class="wrap">
+    <h2 id="rev">What owners say</h2>
+    <div class="slots">
+      <div class="slot"><b>Your review here</b><p>The live page has no reviews yet, so nothing is made up here. The first real buyer's words and first name go in this spot.</p><div class="ph">customer photo: glove full of fur</div></div>
+      <div class="slot"><b>Your review here</b><p>A short email a week after delivery asking for one photo is enough to fill two or three of these.</p><div class="ph">customer clip or photo</div></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="prom">
+  <div class="wrap two">
+    <div>
+      <h2 id="prom">Our promise</h2>
+      <div class="promise">
+        <div><h3>30-day money back</h3><p>Not working for your pet? Write to us within 30 days and get a refund.</p></div>
+        <div><h3>Free US delivery</h3><p>3–5 business days, with tracking, on every order.</p></div>
+        <div><h3>Real people answer</h3><p><a href="mailto:info@mypetoffer.com">info@mypetoffer.com</a> · <a href="tel:+13073012378">+1 (307) 301-2378</a></p></div>
+      </div>
+    </div>
+    <div class="faq">
+      <h2>Questions</h2>
+      <details><summary>Will it work on my cat?</summary><p>Yes. Cats and dogs, short or long hair. Most pets take it as petting and stay put.</p></details>
+      <details><summary>How do I clean it?</summary><p>Pull the collected fur off the mesh and rinse the glove with water.</p></details>
+      <details><summary>Will it fit my hand?</summary><p>It's a slip-on mitt, one size fits most hands.</p></details>
+      <details><summary>How long is delivery?</summary><p>3–5 business days in the US. Free, with tracking.</p></details>
+      <details><summary>Which pack should I get?</summary><p>2 gloves: one for you, one for the car or a friend. 3: homes with more than one pet. 4: one for every room.</p></details>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="notes">
+  <div class="wrap">
+    <div class="notes">
+      <h2 id="notes">Adeel, what changed vs. the live page</h2>
+      <ol>
+        <li>The clip is right under the title and plays on its own. On the live page it sits below four feature blocks.</li>
+        <li>One offer, no crossed-out $29.99 and no "ends Wednesday" banner. The price is just the price.</li>
+        <li>Photos 5 and 6 on the live page show a grey pad, not this glove, so they're left out. If the pad ships in the box, say so.</li>
+        <li>Review spots are marked. Nothing here is invented: photos, clips, prices and promises are from your page.</li>
+      </ol>
+      <p>Concept by g.a.d. · <a href="https://smirnov-artur.github.io/works/?lang=en">more work</a></p>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">My Pet Offer · 30 N Gould St #66849, Sheridan, WY 82801</footer>
+
+<div class="sticky" id="sticky">
+  <div class="s-p"><b id="s-price">$15</b><small id="s-pack">2 gloves</small></div>
+  <a class="buy" id="s-buy" href="https://mypetoffer.com/products/pet-grooming-glove?variant=54039506550895">Buy now</a>
+</div>
+
+<script>
+const packs=[
+  {n:2,p:15,v:'54039506550895',hint:'One for you, one for the car or a friend.'},
+  {n:3,p:20,v:'67576775573615',hint:'For homes with more than one pet.'},
+  {n:4,p:25,v:'67576775606383',hint:'One for every room.'}
+];
+const $=id=>document.getElementById(id);
+const url=v=>'https://mypetoffer.com/products/pet-grooming-glove?variant='+v;
+document.querySelectorAll('input[name=pack]').forEach(r=>r.addEventListener('change',()=>{
+  const k=packs[r.value];
+  $('price').textContent=$('s-price').textContent='$'+k.p;
+  $('each').textContent='for '+k.n+' gloves · $'+(k.p/k.n).toFixed(2)+' each';
+  $('s-pack').textContent=k.n+' gloves';
+  $('hint').textContent=k.hint;
+  $('buy').textContent='Get '+k.n+' gloves — $'+k.p;
+  $('buy').href=$('s-buy').href=url(k.v);
+}));
+
+const hero=$('hero'),clip=$('clip2');
+if(matchMedia('(prefers-reduced-motion: reduce)').matches){hero.removeAttribute('autoplay');hero.pause();hero.controls=true}
+new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?e.target.play().catch(()=>{}):e.target.pause()),{threshold:.4}).observe(clip);
+</script>
+</body>
+</html>
