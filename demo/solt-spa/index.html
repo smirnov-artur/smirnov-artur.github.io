@@ -734,7 +734,7 @@ void main(){
     float halo = Wd.b + fbm3(rp * 5.5 + 1.7) * .3 + n1 * .04;
     float crust = smoothstep(front, front + .03, halo) * (1. - letter) * dryHere;
     float lip = crust * (1. - smoothstep(front + .02, front + .08, halo));
-    col = mix(col, vec3(.62, .605, .58) * (.78 + .3 * gran + .1 * n1), crust * .45 * smoothstep(.3, .62, gran + n1 * .3));
+    col = mix(col, vec3(.64, .625, .6) * (.92 + .08 * n1), crust * .32);
     col += lip * .07;
     // cubes: packed in the letters, scattered on the crust, a few big ones on open stone
     vec4 c1 = cube(rp, 17. * px, 1., letter * uGrow * .9, px);
