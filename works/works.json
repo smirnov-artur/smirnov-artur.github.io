@@ -1,5 +1,53 @@
 [
  {
+  "slug": "gad-energy",
+  "cat": "3d",
+  "ru": [
+   "Энергетик g.a.d. в 3D",
+   "Банка крутится по прокрутке и меняет вкус волной, язычок открывается, газ брызжет — всё в живом 3D"
+  ],
+  "en": [
+   "g.a.d. energy drink in 3D",
+   "The can turns as you scroll and repaints to the next flavour, the tab pops and the fizz sprays, all in live 3D"
+  ],
+  "v": "gad-energy",
+  "ve": "gad-energy-en",
+  "href": "https://smirnov-artur.github.io/demo/gad-energy/ru/",
+  "hre": "https://smirnov-artur.github.io/demo/gad-energy/"
+ },
+ {
+  "slug": "gad-vr-flight",
+  "cat": "web",
+  "ru": [
+   "VR-аттракцион g.a.d.",
+   "Прокрутка ведёт полёт от первого лица над городом на скалах, от пике до водопада"
+  ],
+  "en": [
+   "g.a.d. VR flight attraction",
+   "Scrolling flies you in first person over a cliffside city, from the dive to the waterfall"
+  ],
+  "v": "gad-vr-flight",
+  "ve": "gad-vr-flight-en",
+  "href": "https://smirnov-artur.github.io/demo/gad-vr-flight/ru/",
+  "hre": "https://smirnov-artur.github.io/demo/gad-vr-flight/"
+ },
+ {
+  "slug": "gad-moto",
+  "cat": "web",
+  "ru": [
+   "Мототуры g.a.d. в горы",
+   "Прокрутка везёт по Каракоруму к перевалу, высота растёт на глазах"
+  ],
+  "en": [
+   "g.a.d. motorcycle expeditions",
+   "Scrolling rides the Karakoram to the pass while the altitude climbs"
+  ],
+  "v": "gad-moto",
+  "ve": "gad-moto-en",
+  "href": "https://smirnov-artur.github.io/demo/gad-moto/ru/",
+  "hre": "https://smirnov-artur.github.io/demo/gad-moto/"
+ },
+ {
   "slug": "gad-burger",
   "cat": "web",
   "ru": [

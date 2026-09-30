@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="en" class="static">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>g.a.d. — VR flight over a cliff city</title>
+<link rel="alternate" hreflang="en" href="./">
+<link rel="alternate" hreflang="ru" href="ru/">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="description" content="Demo site for the g.a.d. VR ride: a motion seat and a 12-minute chase after a speeder through a city carved into a cliff.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tektur:wdth,wght@75..100,400..900&family=Onest:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400&text=g.ad&display=block" rel="stylesheet">
+<link rel="preload" as="image" href="frames/poster-l.jpg" media="(orientation: landscape)">
+<link rel="preload" as="image" href="frames/poster-p.jpg" media="(orientation: portrait)">
+
+<!-- ═══ КОНТЕНТ ПРОЛЁТА: правьте здесь ═══
+  beats — кусочная шкала: vh — длина прокрутки на ПК, m — на телефоне (в высотах экрана),
+          from/to — секунды ролика; from = to — удержание одного кадра.
+  chapters — когда глава видна: [beat, доля бита]; доля может выходить за 1 (заход в следующий бит).
+  Тексты глав — прямо в HTML ниже (article.ch). Кадры и их число — frames/manifest.json. -->
+<script type="application/json" id="flight-content">
+{
+  "manifest": "frames/manifest.json",
+  "fadeVh": 18, "fadeVhMobile": 13,
+  "beats": [
+    {"id": "hold",    "name": "Start",    "vh": 55,  "m": 30,  "from": 0,     "to": 0},
+    {"id": "dive",    "name": "Dive",     "vh": 125, "m": 100, "from": 0,     "to": 2.4},
+    {"id": "ledge",   "name": "Turn",    "vh": 135, "m": 110, "from": 2.4,   "to": 4.8},
+    {"id": "arch",    "name": "Arch",     "vh": 85,  "m": 65,  "from": 4.8,   "to": 5.9},
+    {"id": "alleys",  "name": "Alleys", "vh": 210, "m": 170, "from": 5.9,   "to": 9.8},
+    {"id": "gallery", "name": "Gallery",  "vh": 135, "m": 110, "from": 9.8,   "to": 12.1},
+    {"id": "exit",    "name": "Exit",    "vh": 70,  "m": 55,  "from": 12.1,  "to": 13.2},
+    {"id": "valley",  "name": "Valley",   "vh": 125, "m": 100, "from": 13.2,  "to": 15.07},
+    {"id": "end",     "name": "Finish",    "vh": 85,  "m": 45,  "from": 15.07, "to": 15.07}
+  ],
+  "chapters": [
+    {"id": "hero",    "start": ["hold", 0],       "end": ["dive", 0.22], "atRest": true},
+    {"id": "dive",    "start": ["dive", 0.30],    "end": ["dive", 1.05]},
+    {"id": "ledge",   "start": ["ledge", 0.10],   "end": ["ledge", 1.0]},
+    {"id": "alleys",  "start": ["alleys", 0.08],  "end": ["alleys", 0.95]},
+    {"id": "gallery", "start": ["gallery", 0.08], "end": ["gallery", 1.0]},
+    {"id": "valley",  "start": ["valley", 0.45],  "end": ["end", 1], "atEnd": true}
+  ]
+}
+</script>
+<script>
+  // Анимация только там, где она уместна: иначе остаётся статичная версия (главы на стоп-кадрах).
+  (function () {
+    var c = navigator.connection || {};
+    var calm = matchMedia('(prefers-reduced-motion: reduce)').matches || c.saveData || (navigator.deviceMemory && navigator.deviceMemory <= 2);
+    if (!calm) document.documentElement.classList.replace('static', 'fly');
+  })();
+</script>
+<style>
+:root{
+  --ink:#150F0B;      /* ущелье — самый тёмный */
+  --stone:#241A13;
+  --sand:#E0BC8E;     /* песчаник */
+  --sand-d:#A8784A;
+  --lime:#D6FF3F;     /* лайм g.a.d. */
+  --lime-h:#E6FF85;
+  --black:#0A0A0C;    /* чёрный g.a.d. */
+  --paper:#F7EFE4;
+  --sky:#DCE9EF;      /* небо долины */
+  --mist:#F2F7F9;
+  --slate:#4B5B66;
+  --line:rgba(21,15,11,.14);
+  --hdr:68px;
+  --gut:clamp(20px,5.5vw,88px);
+  --f-d:'Tektur',Impact,sans-serif;
+  --f-b:'Onest',system-ui,sans-serif;
+  --f-m:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-padding-top:calc(var(--hdr) + env(safe-area-inset-top));-webkit-text-size-adjust:100%}
+body{background:var(--ink);color:var(--paper);font:400 17px/1.55 var(--f-b);overflow-x:hidden}
+body.locked{overflow:hidden}
+a{color:inherit}
+img{display:block;max-width:100%}
+:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+.k{font:500 12px/1.3 var(--f-m);letter-spacing:.14em;text-transform:uppercase}
+.d{font-family:var(--f-d);font-stretch:75%;font-weight:800;text-transform:uppercase;line-height:.9;letter-spacing:-.005em}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.6em;min-height:48px;padding:0 24px;border-radius:2px;
+  font:600 15px/1 var(--f-b);text-decoration:none;border:1.5px solid transparent;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.btn-lime{background:var(--lime);color:var(--black)}
+.btn-lime:hover{background:var(--lime-h)}
+.btn-ghost{border-color:rgba(247,239,228,.45);color:var(--paper);background:rgba(21,15,11,.25)}
+.btn-ghost:hover{border-color:var(--paper)}
+
+/* ── шапка: стекло над полётом, сплошная после ── */
+.hdr{position:fixed;inset:0 0 auto;z-index:50;height:calc(var(--hdr) + env(safe-area-inset-top));padding:env(safe-area-inset-top) max(var(--gut),env(safe-area-inset-right)) 0 max(var(--gut),env(safe-area-inset-left));
+  display:flex;align-items:center;gap:28px}
+.hdr::before,.hdr::after{content:"";position:absolute;inset:0;z-index:-1;transition:opacity .3s}
+.hdr::before{bottom:-36px;background:linear-gradient(rgba(21,15,11,.72),rgba(21,15,11,.38) 55%,rgba(21,15,11,0))}
+.hdr::after{background:rgba(21,15,11,.93);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid rgba(224,188,142,.16);opacity:0}
+.hdr.solid::before,body.menu-open .hdr::before{opacity:0}
+.hdr.solid::after,body.menu-open .hdr::after{opacity:1}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;white-space:nowrap;min-height:44px}
+/* логотип g.a.d.: слово шрифтом Unbounded 400, лайм; кольцо — те же пропорции, что в video/avatar.py */
+.gad{font:400 25px/1 'Unbounded',sans-serif;color:var(--lime);letter-spacing:0;text-shadow:0 1px 10px rgba(10,10,12,.45)}
+.gad-ring{--d:92px;width:var(--d);height:var(--d);border-radius:50%;border:calc(var(--d)*.036) solid var(--lime);display:grid;place-items:center;
+  font:400 calc(var(--d)*.23)/1 'Unbounded',sans-serif;color:var(--lime);background:var(--black);flex:none}
+.nav{display:flex;gap:26px;margin-left:auto}
+.nav a{text-shadow:0 1px 8px rgba(21,15,11,.7);font:500 14px/1 var(--f-b);text-decoration:none;color:rgba(247,239,228,.82);padding:14px 0}
+.nav a:hover{color:var(--paper)}
+.hdr-cta{min-height:42px;padding:0 20px}
+.lang{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;font:500 12px/1 var(--f-m);letter-spacing:.14em;text-decoration:none;color:rgba(247,239,228,.82);text-shadow:0 1px 8px rgba(21,15,11,.7)}
+.lang:hover{color:var(--lime)}
+.burger{display:none;margin-left:auto;width:48px;height:48px;background:none;border:0;color:var(--paper);cursor:pointer}
+.burger i{display:block;width:24px;height:2px;background:currentColor;margin:5px auto}
+
+.menu{position:fixed;inset:0;z-index:40;background:var(--ink);padding:calc(var(--hdr) + env(safe-area-inset-top) + 28px) var(--gut) calc(28px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px}
+.menu[hidden]{display:none}
+.menu a:not(.btn){font:800 40px/1.05 var(--f-d);font-stretch:75%;text-transform:uppercase;text-decoration:none;padding:10px 0;border-bottom:1px solid rgba(224,188,142,.16)}
+.menu .btn{margin-top:auto}
+.menu-close{position:fixed;z-index:60;top:calc(env(safe-area-inset-top) + 10px);right:max(var(--gut),env(safe-area-inset-right));width:48px;height:48px;background:none;border:0;color:var(--paper);font:400 30px/1 var(--f-b);cursor:pointer}
+.menu-close[hidden]{display:none}
+
+/* ── полёт ── */
+.flight{position:relative;background:var(--ink)}
+.stage{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;background:var(--ink) url(frames/poster-l.jpg) center/cover no-repeat}
+@media (orientation:portrait){.stage{background-image:url(frames/poster-p.jpg)}}
+#cv{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .4s}
+#cv.on{opacity:1}
+.grade{position:absolute;inset:0;pointer-events:none;background:
+  radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(21,15,11,.55) 100%),
+  linear-gradient(270deg,rgba(21,15,11,.5),transparent 20%),
+  linear-gradient(transparent 70%,rgba(21,15,11,.35))}
+.ch{position:absolute;bottom:15vh;width:min(560px,42vw);--o:1;isolation:isolate}
+.ch[data-side=left]{left:var(--gut)}
+.ch[data-side=right]{right:calc(var(--gut) + 110px)}
+.ch::before{content:"";position:absolute;inset:-26vh -18vw;z-index:-1;background:radial-gradient(closest-side,rgba(21,15,11,.7),rgba(21,15,11,0));pointer-events:none}
+.ch-t{font-size:clamp(46px,6.4vw,104px);overflow:hidden;padding-bottom:.04em}
+.ch-t span{display:block}
+.ch-b{text-shadow:0 1px 10px rgba(21,15,11,.7);margin-top:22px;max-width:30em;color:rgba(247,239,228,.88);text-wrap:pretty}
+.ch .k{color:var(--sand);margin-bottom:18px;display:block}
+.ledge{height:1.5px;background:var(--sand);margin-top:22px;transform-origin:left;width:calc(100% + var(--gut))}
+.ch[data-side=left] .ledge{margin-left:calc(-1 * var(--gut))}
+.ch[data-side=right] .ledge{transform-origin:right;width:calc(100% + var(--gut) + 110px)}
+.ch-a{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.ch-meta{margin-top:18px;color:rgba(247,239,228,.7)}
+.ch-hero{width:min(760px,56vw);bottom:13vh}
+.ch-hero .ch-t{font-size:clamp(56px,8.6vw,148px)}
+.ch-hero .ch-t em{font-style:normal;color:var(--sand)}
+.cue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;color:rgba(247,239,228,.75);pointer-events:none}
+.cue i{width:1.5px;height:38px;background:linear-gradient(var(--sand),transparent);animation:cue 1.8s ease-in-out infinite}
+.cue-m{display:none}
+body.menu-open .burger{visibility:hidden}
+@keyframes cue{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+html.fly .ch{opacity:var(--o);will-change:opacity}
+html.fly .ch-t span{transform:translateY(calc((1 - var(--o)) * 55%))}
+html.fly .ledge{transform:scaleX(var(--o))}
+html.fly .ch.off{visibility:hidden}
+
+.hud{position:absolute;right:var(--gut);top:50%;transform:translateY(-50%);height:46vh;width:90px;pointer-events:none}
+.rail{position:absolute;right:0;top:0;bottom:0;width:1.5px;background:rgba(247,239,228,.22)}
+.rail-fill{position:absolute;inset:0 0 auto;height:100%;background:var(--sand);transform-origin:top;transform:scaleY(0)}
+.wp{position:absolute;right:-4.5px;height:10px;display:flex;align-items:center;flex-direction:row-reverse;gap:12px;transform:translateY(-50%)}
+.wp::before{content:"";width:8px;height:8px;border:1.5px solid rgba(247,239,228,.55);background:var(--ink);transform:rotate(45deg);transition:background .25s,border-color .25s}
+.wp span{text-shadow:0 1px 6px rgba(21,15,11,.9),0 0 2px rgba(21,15,11,.8);white-space:nowrap;font:500 11px/1 var(--f-m);letter-spacing:.12em;text-transform:uppercase;color:rgba(247,239,228,.5);transition:color .25s}
+.wp.on::before{border-color:var(--sand);background:var(--sand)}
+.wp.on span{color:var(--sand)}
+.tc{text-shadow:0 1px 8px rgba(21,15,11,.85);position:absolute;right:calc(var(--gut) - 2px);bottom:26px;text-align:right;color:rgba(247,239,228,.8);pointer-events:none}
+.tc b{display:block;font:500 22px/1 var(--f-m);letter-spacing:.02em;color:var(--paper);margin-top:6px;font-variant-numeric:tabular-nums}
+.load{margin-top:8px;color:var(--sand)}
+.skip{position:absolute;left:var(--gut);bottom:22px;min-height:44px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:rgba(247,239,228,.85);border-bottom:1px solid rgba(224,188,142,.5)}
+.skip:hover{color:var(--paper)}
+.pbar{position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--lime);transform-origin:left;transform:scaleX(0);display:none}
+
+/* статичная версия полёта: главы на стоп-кадрах */
+html.static .flight{height:auto!important}
+html.static .stage{position:relative;height:auto;background:none;overflow:visible}
+html.static #cv,html.static .hud,html.static .tc,html.static .skip,html.static .cue,html.static .grade,html.static .pbar{display:none}
+html.static .ch{position:relative;inset:auto;width:auto;min-height:88vh;display:flex;flex-direction:column;justify-content:flex-end;padding:18vh var(--gut) 12vh;
+  background:linear-gradient(90deg,rgba(21,15,11,.82),rgba(21,15,11,.25) 70%),var(--still) center/cover}
+html.static .ch>*{max-width:620px}
+html.static .ch::before{display:none}
+html.static .ch-hero>*{max-width:920px}
+
+/* ── после полёта: долина ── */
+.sec{padding:clamp(80px,11vw,160px) var(--gut)}
+.light{background:var(--sky);color:var(--ink)}
+.light .k{color:var(--sand-d)}
+.h2{font-size:clamp(42px,5.6vw,92px)}
+.lead{font-size:clamp(17px,1.35vw,20px);color:var(--slate);max-width:34em;text-wrap:pretty}
+.split{display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(28px,5vw,80px);align-items:end;margin-bottom:clamp(48px,6vw,88px)}
+.facts{display:flex;gap:clamp(20px,3vw,44px);margin-top:28px;flex-wrap:wrap}
+.facts div{border-top:1.5px solid var(--ink);padding-top:12px;min-width:88px}
+.facts b{display:block;font:800 36px/1 var(--f-d);font-stretch:75%}
+.facts span{font:500 12px/1.3 var(--f-m);letter-spacing:.08em;text-transform:uppercase;color:var(--slate)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,28px)}
+.card img{width:100%;aspect-ratio:4/5;object-fit:cover}
+.card h3{font:600 22px/1.2 var(--f-b);margin:18px 0 8px}
+.card p{color:var(--slate);font-size:16px}
+.card .k{display:block;margin-top:18px}
+
+.prices{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,28px);align-items:stretch}
+.plan{background:var(--mist);padding:32px 28px 28px;display:flex;flex-direction:column;border-top:3px solid var(--ink)}
+.plan h3{font:700 28px/1 var(--f-d);font-stretch:85%;text-transform:uppercase}
+.plan .who{color:var(--slate);margin-top:10px;font-size:15px;min-height:3em}
+.plan .price{font:800 clamp(48px,4.4vw,64px)/1 var(--f-d);font-stretch:75%;margin-top:26px;font-variant-numeric:tabular-nums}
+.plan .unit{margin-top:8px;color:var(--slate)}
+.plan ul{list-style:none;margin:24px 0 28px;border-top:1px solid var(--line)}
+.plan li{padding:11px 0;border-bottom:1px solid var(--line);font-size:15px}
+.plan .btn{margin-top:auto}
+.plan-ink{background:var(--black);color:var(--paper);border-top-color:var(--lime)}
+.plan-ink .who,.plan-ink .unit{color:rgba(247,239,228,.7)}
+.plan-ink li{border-color:rgba(224,188,142,.18)}
+.plan-ink ul{border-color:rgba(224,188,142,.18)}
+.btn-ink{background:var(--ink);color:var(--paper)}
+.btn-ink:hover{background:var(--stone)}
+.note{margin-top:22px;color:var(--slate);font-size:14px}
+
+.how{background:var(--mist);color:var(--ink)}
+.how .k{color:var(--sand-d)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(16px,2.4vw,36px);list-style:none;counter-reset:s;position:relative;margin-top:clamp(40px,5vw,72px)}
+.steps::before{content:"";position:absolute;left:0;right:0;top:34px;height:1.5px;background:var(--ink)}
+.steps li{counter-increment:s;position:relative;padding-top:74px}
+.steps li::before{content:counter(s);position:absolute;top:0;left:0;width:68px;height:68px;display:grid;place-items:center;background:var(--mist);border:1.5px solid var(--ink);font:800 34px/1 var(--f-d);font-stretch:75%}
+.steps h3{font:600 20px/1.25 var(--f-b);margin:22px 0 8px}
+.steps p{color:var(--slate);font-size:16px}
+.nope{margin-top:clamp(48px,6vw,80px);display:grid;grid-template-columns:auto 1fr;gap:12px 40px;padding:28px 0;border-top:1.5px solid var(--ink);border-bottom:1px solid var(--line)}
+.nope p{max-width:52em}
+
+.band{position:relative;min-height:88vh;display:flex;align-items:flex-end;padding:clamp(40px,6vw,96px) var(--gut);color:var(--paper);
+  background:linear-gradient(180deg,rgba(21,15,11,0) 35%,rgba(21,15,11,.85)),url(frames/stills/valley.jpg) 60% center/cover}
+.band-in{display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(24px,5vw,80px);align-items:end;width:100%}
+.band dl{display:grid;grid-template-columns:auto 1fr;gap:10px 28px;border-top:1.5px solid var(--sand);padding-top:18px}
+.band dt{color:var(--sand)}
+.ph{border-bottom:1px dashed rgba(224,188,142,.7);color:rgba(247,239,228,.8)}
+
+.book{background:var(--ink);display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(32px,6vw,100px)}
+.book .lead{color:rgba(247,239,228,.72)}
+.book .k{color:var(--sand)}
+form{display:grid;grid-template-columns:1fr 1fr;gap:18px 16px;align-content:start}
+label{display:flex;flex-direction:column;gap:8px;font:500 12px/1.3 var(--f-m);letter-spacing:.1em;text-transform:uppercase;color:var(--sand)}
+.wide{grid-column:1/-1}
+input,select,textarea{font:400 17px/1.3 var(--f-b);color:var(--paper);background:var(--stone);border:1px solid rgba(224,188,142,.25);border-radius:2px;min-height:52px;padding:12px 14px;width:100%;color-scheme:dark}
+textarea{min-height:96px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:var(--sand);outline:none}
+form .btn{grid-column:1/-1;min-height:56px;font-size:16px}
+.status{grid-column:1/-1;min-height:1.5em;color:var(--sand);font-size:15px}
+footer{background:var(--ink);border-top:1px solid rgba(224,188,142,.16);padding:40px var(--gut) calc(40px + env(safe-area-inset-bottom));display:flex;flex-wrap:wrap;gap:20px 40px;align-items:center;color:rgba(247,239,228,.65);font-size:14px}
+footer nav{display:flex;gap:22px;flex-wrap:wrap}
+footer nav a{text-decoration:none;padding:12px 0}
+footer .demo{margin-left:auto;max-width:36em}
+
+/* ── телефон ── */
+@media (max-width:900px){
+  :root{--hdr:60px}
+  .nav,.hdr-cta{display:none}
+  .burger{display:block;margin-left:0}
+  .lang{margin-left:auto}
+  .split,.band-in,.book{grid-template-columns:1fr}
+  .cards,.prices{grid-template-columns:1fr}
+  .card img{aspect-ratio:16/10}
+  .steps{grid-template-columns:1fr;gap:28px}
+  .steps::before{display:none}
+  .steps li{padding:0 0 0 88px;min-height:68px}
+  .steps h3{margin-top:0}
+  .nope{grid-template-columns:1fr}
+  form{grid-template-columns:1fr}
+  footer .demo{margin-left:0}
+}
+@media (orientation:portrait) and (max-width:900px), (max-width:640px){
+  .hud{display:none}
+  .pbar{display:block}
+  .tc{display:none}
+  html.fly .ch,html.fly .ch[data-side]{left:20px;right:20px;width:auto;bottom:calc(84px + env(safe-area-inset-bottom))}
+  html.fly .ch::before{inset:-40vh -20px -30vh;background:linear-gradient(rgba(21,15,11,0),rgba(21,15,11,.78) 55%)}
+  .ch-t{font-size:clamp(40px,12vw,64px)}
+  .ch-hero .ch-t{font-size:clamp(50px,15vw,84px)}
+  .ch-b,.ch-meta,.ch .ch-b2,.ch-hero .k{display:none}
+  .ch-keep .ch-b{display:block;font-size:16px;margin-top:14px}
+  .ch-a .btn-ghost{display:none}
+  .ch-a{margin-top:20px}
+  .ledge{margin-top:14px}
+  .ch[data-side] .ledge{width:calc(100% + 20px);margin-left:-20px;transform-origin:left}
+  .cue{left:auto;right:20px;transform:none;bottom:calc(30px + env(safe-area-inset-bottom));flex-direction:row;align-items:center}
+  .cue i{height:24px}
+  .cue-d{display:none}.cue-m{display:inline}
+  .skip{left:20px;bottom:calc(20px + env(safe-area-inset-bottom));font-size:12px}
+  html.static .ch{padding:20vh 20px 10vh;min-height:78vh;background:linear-gradient(rgba(21,15,11,.1),rgba(21,15,11,.85) 70%),var(--still) center/cover}
+}
+@media (orientation:landscape) and (max-height:560px){
+  .ch,.ch-hero{bottom:70px}
+  .ch-t,.ch-hero .ch-t{font-size:min(12vh,52px)}
+  .ch-b,.ch-keep .ch-b,.ch-hero .k,.ch-meta,.cue,.ch-a .btn-ghost{display:none}
+  .ch .k{margin-bottom:10px}
+  .ledge{margin-top:12px}
+  .ch-a{margin-top:14px}
+  .tc b{font-size:17px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body id="top">
+
+<header class="hdr" id="hdr">
+  <a class="brand" href="#top" aria-label="g.a.d. — back to top"><span class="gad">g.a.d.</span></a>
+  <nav class="nav" aria-label="Sections">
+    <a href="#offer">The ride</a><a href="#prices">Prices</a><a href="#how">How it works</a><a href="#route">Getting here</a>
+  </nav>
+  <a class="lang" href="ru/" hreflang="ru" lang="ru" aria-label="Русская версия">RU</a>
+  <a class="btn btn-lime hdr-cta" href="#book">Book a flight</a>
+  <button class="burger" id="burger" aria-expanded="false" aria-controls="menu" aria-label="Open menu"><i></i><i></i><i></i></button>
+</header>
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+  <a href="#offer">The ride</a><a href="#prices">Prices</a><a href="#how">How it works</a><a href="#route">Getting here</a>
+  <a class="btn btn-lime" href="#book">Book a flight</a>
+</div>
+<button class="menu-close" id="menuClose" aria-label="Close menu" hidden>✕</button>
+
+<main>
+<section class="flight" id="flight" aria-label="The flight: scroll to fly">
+  <div class="stage" id="stage">
+    <canvas id="cv" aria-hidden="true"></canvas>
+    <div class="grade" aria-hidden="true"></div>
+
+    <article class="ch ch-hero" data-ch="hero" data-side="left" style="--still:url(frames/poster-l.jpg)">
+      <span class="k">VR ride · 12 minutes on a motion seat</span>
+      <h1 class="ch-t d"><span>Catch</span><span>the speeder</span><span><em>over the edge</em></span></h1>
+      <div class="ledge"></div>
+      <p class="ch-b">A city carved into a cliff, a ledge with nothing below it and a speeder just ahead. The throttle is yours, and the seat leans into every turn.</p>
+      <div class="ch-a"><a class="btn btn-lime" href="#book">Book a flight</a><a class="btn btn-ghost" href="#prices">Prices</a></div>
+    </article>
+
+    <article class="ch" data-ch="dive" data-side="right" style="--still:url(frames/stills/dive.jpg)">
+      <span class="k">01 · Dive</span>
+      <h2 class="ch-t d"><span>First,</span><span>straight down</span></h2>
+      <div class="ledge"></div>
+      <p class="ch-b">The ride opens on a sheer rock face. Your seat tips nose-first as the speeder drops toward the road above the gorge.</p>
+    </article>
+
+    <article class="ch" data-ch="ledge" data-side="left" style="--still:url(frames/stills/ledge.jpg)">
+      <span class="k">02 · Turn</span>
+      <h2 class="ch-t d"><span>The seat</span><span>leans</span><span>with you</span></h2>
+      <div class="ledge"></div>
+      <p class="ch-b">The motion platform follows every bank of the speeder, and a fan blasts your face when you open the throttle. The dust stays on the screen.</p>
+    </article>
+
+    <article class="ch" data-ch="alleys" data-side="left" style="--still:url(frames/stills/alleys.jpg)">
+      <span class="k">03 · Alleys</span>
+      <h2 class="ch-t d"><span>You're</span><span>driving</span></h2>
+      <div class="ledge"></div>
+      <p class="ch-b">Throttle and brake sit on the handlebar. Ease off and the speeder slips away behind the laundry lines. Push it and you're right on its tail. No two flights go the same way.</p>
+    </article>
+
+    <article class="ch" data-ch="gallery" data-side="right" style="--still:url(frames/stills/gallery.jpg)">
+      <span class="k">04 · Gallery</span>
+      <h2 class="ch-t d"><span>Solo,</span><span>head-to-head</span><span>or the crew</span></h2>
+      <div class="ledge"></div>
+      <p class="ch-b">There are six seats in the room. Fly on your own, race a friend against the clock or book the whole room for your group.</p>
+      <div class="ch-a"><a class="btn btn-ghost" href="#prices">See prices</a></div>
+    </article>
+
+    <article class="ch ch-keep" data-ch="valley" data-side="left" style="--still:url(frames/stills/valley.jpg)">
+      <span class="k">05 · Valley</span>
+      <h2 class="ch-t d"><span>Finish</span><span>above the falls</span></h2>
+      <div class="ledge"></div>
+      <p class="ch-b">The city drops away and the valley opens up beneath you. A video of your run hits your phone before the headset is off.</p>
+      <div class="ch-a"><a class="btn btn-lime" href="#book">Book a flight</a></div>
+      <p class="ch-meta k">from $24 · daily 10 am–11 pm</p>
+    </article>
+
+    <div class="cue k" aria-hidden="true"><span class="cue-d">Scroll is the throttle</span><span class="cue-m">Scroll</span><i></i></div>
+    <div class="hud" aria-hidden="true"><div class="rail"><i class="rail-fill" id="railFill"></i></div></div>
+    <div class="tc k" aria-hidden="true"><span id="tcName">Start</span><b id="tc">0:00.00</b><div class="load" id="load"></div></div>
+    <a class="skip k" href="#offer">Skip the tour ↓</a>
+    <i class="pbar" id="pbar" aria-hidden="true"></i>
+  </div>
+</section>
+
+<section class="sec light" id="offer">
+  <div class="split">
+    <div><span class="k">The ride</span><h2 class="h2 d" style="margin-top:18px">A flight where you're at the controls</h2></div>
+    <div>
+      <p class="lead">This isn't a movie in a headset. You sit in a seat that tilts and shakes with the speeder, hold the handlebar and decide when to push and when to brake.</p>
+      <div class="facts"><div><b>12 min</b><span>flight</span></div><div><b>6</b><span>seats</span></div><div><b>8+</b><span>age</span></div></div>
+    </div>
+  </div>
+  <div class="cards">
+    <article class="card"><img src="frames/stills/ledge.jpg" alt="The speeder banks into a turn on a narrow street, kicking up dust" loading="lazy" style="object-position:48% center"><span class="k">The seat</span><h3>Motion platform</h3><p>It banks into turns, dips into dives and rattles when you hit the boost. You buckle in like you would in a car.</p></article>
+    <article class="card"><img src="frames/stills/alleys.jpg" alt="The speeder races down a narrow alley under hanging laundry" loading="lazy" style="object-position:45% center"><span class="k">Headset and wind</span><h3>Speed you can feel</h3><p>A VR headset, headphones and a fan right in front of the seat. The harder you push, the harder the wind hits.</p></article>
+    <article class="card"><img src="frames/stills/valley.jpg" alt="Leaving the cliff city: a valley, a waterfall and a rainbow" loading="lazy" style="object-position:40% center"><span class="k">After the flight</span><h3>Your run on video</h3><p>A recording of your route from the same angle goes straight to your phone, so you can show your friends exactly where you lost it.</p></article>
+  </div>
+</section>
+
+<section class="sec light" id="prices" style="padding-top:clamp(24px,4vw,56px)">
+  <div class="split">
+    <div><span class="k">Prices</span><h2 class="h2 d" style="margin-top:18px">What a flight costs</h2></div>
+    <p class="lead">Every price covers a 12-minute run plus the safety briefing. Please arrive 15 minutes early.</p>
+  </div>
+  <div class="prices">
+    <article class="plan"><h3>Single run</h3><p class="who">First time, or just for the thrill</p><p class="price">$24</p><p class="unit k">per person</p>
+      <ul><li>5-minute briefing</li><li>12-minute flight</li><li>Video of your run</li></ul>
+      <a class="btn btn-ink" href="#book" data-plan="solo">Choose</a></article>
+    <article class="plan plan-ink"><h3>Duel</h3><p class="who">Two seats side by side, one speeder to catch</p><p class="price">$44</p><p class="unit k">for two</p>
+      <ul><li>Shared track and timer</li><li>First to catch its tail wins</li><li>Two run videos</li></ul>
+      <a class="btn btn-lime" href="#book" data-plan="duel">Choose</a></article>
+    <article class="plan"><h3>Whole room</h3><p class="who">Birthdays, teams and groups of up to 6</p><p class="price">$159</p><p class="unit k">per hour, whole group</p>
+      <ul><li>All six seats to yourselves</li><li>Up to three runs each</li><li>Leaderboard on the big screen</li></ul>
+      <a class="btn btn-ink" href="#book" data-plan="hall">Choose</a></article>
+  </div>
+  <p class="note">Sample prices: this is a demo website.</p>
+</section>
+
+<section class="sec how" id="how">
+  <span class="k">How it works</span>
+  <h2 class="h2 d" style="margin-top:18px">Door to finish line in half an hour</h2>
+  <ol class="steps">
+    <li><h3>Arrive 15 minutes early</h3><p>Leave your jacket and bag in a locker. Your phone can come with you.</p></li>
+    <li><h3>Briefing</h3><p>Five minutes on the throttle, the brake and how to stop the ride if you need a break.</p></li>
+    <li><h3>The flight</h3><p>Twelve minutes of chasing through the cliff city, with an instructor next to you the whole time.</p></li>
+    <li><h3>Your video</h3><p>The recording lands on your phone. Want a rematch? Your second run is discounted.</p></li>
+  </ol>
+  <div class="nope">
+    <span class="k" style="color:var(--ink)">Not suitable for</span>
+    <p>Children under 8 or shorter than 4 ft 1 in (125 cm), anyone with epilepsy, pregnant guests and anyone who has been drinking. If you get motion sick, tell the instructor and they'll tone down the seat tilt.</p>
+  </div>
+</section>
+
+<section class="band" id="route" aria-label="Getting here">
+  <div class="band-in">
+    <div><span class="k" style="color:var(--sand)">Getting here</span><h2 class="h2 d" style="margin-top:18px">Come to the room with six seats</h2></div>
+    <dl class="k">
+      <dt>Address</dt><dd><span class="ph">add your venue address</span></dd>
+      <dt>Hours</dt><dd>daily 10 am–11 pm</dd>
+      <dt>Booking</dt><dd>online or by phone <span class="ph">your number</span></dd>
+    </dl>
+  </div>
+</section>
+
+<section class="sec book" id="book">
+  <div>
+    <span class="k">Booking</span>
+    <h2 class="h2 d" style="margin-top:18px">Book a flight</h2>
+    <p class="lead" style="margin-top:22px">Pick a package and a day that suits you. We'll call or text to confirm your time.</p>
+  </div>
+  <form id="form" novalidate>
+    <label>Name<input name="name" autocomplete="given-name" required></label>
+    <label>Phone or email<input name="contact" autocomplete="email" required></label>
+    <label class="wide">Package<select name="plan" id="plan"><option value="solo">Single run — $24</option><option value="duel">Duel — $44 for two</option><option value="hall">Whole room — $159 per hour</option></select></label>
+    <label>Date<input type="date" name="date" id="date"></label>
+    <label>Time<select name="time"><option>10 am</option><option>12 pm</option><option>2 pm</option><option>4 pm</option><option selected>6 pm</option><option>8 pm</option><option>10 pm</option></select></label>
+    <label class="wide">Comments<textarea name="note" placeholder="E.g. it's a birthday and there'll be five of us"></textarea></label>
+    <button class="btn btn-lime" type="submit">Book</button>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+  </form>
+</section>
+</main>
+
+<footer>
+  <a class="brand" href="#top" aria-label="g.a.d. — back to top"><span class="gad-ring">g.a.d.</span></a>
+  <nav aria-label="Footer sections"><a href="#offer">The ride</a><a href="#prices">Prices</a><a href="#how">How it works</a><a href="#book">Booking</a></nav>
+  <p class="demo">A g.a.d. demo website: prices and address are made up. The flight is a ready-made clip, and your scroll drives the frames.</p>
+</footer>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const html = document.documentElement;
+const C = JSON.parse($('#flight-content').textContent);
+const flight = $('#flight'), stage = $('#stage'), cv = $('#cv'), hdr = $('#hdr');
+const chEls = [...document.querySelectorAll('.ch')];
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+
+/* ── шапка: стекло над полётом, сплошная после ── */
+function headerState() {
+  const solid = flight.getBoundingClientRect().bottom <= hdr.offsetHeight;
+  hdr.classList.toggle('solid', solid);
+}
+addEventListener('scroll', headerState, {passive: true});
+addEventListener('resize', headerState);
+headerState();
+
+/* ── меню на телефоне ── */
+const burger = $('#burger'), menu = $('#menu'), menuClose = $('#menuClose');
+function setMenu(open) {
+  menu.hidden = !open; menuClose.hidden = !open;
+  burger.setAttribute('aria-expanded', open);
+  document.body.classList.toggle('menu-open', open);
+  document.body.classList.toggle('locked', open);
+  (open ? menu.querySelector('a') : burger).focus();
+}
+burger.onclick = () => setMenu(true);
+menuClose.onclick = () => setMenu(false);
+menu.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
+addEventListener('keydown', e => {
+  if (menu.hidden) return;
+  if (e.key === 'Escape') setMenu(false);
+  if (e.key === 'Tab') {
+    const f = [...menu.querySelectorAll('a'), menuClose];
+    const i = f.indexOf(document.activeElement);
+    if (e.shiftKey && i <= 0) { f[f.length - 1].focus(); e.preventDefault(); }
+    else if (!e.shiftKey && i === f.length - 1) { f[0].focus(); e.preventDefault(); }
+  }
+});
+
+/* ── форма: демо, ничего не отправляет ── */
+document.querySelectorAll('[data-plan]').forEach(a => a.addEventListener('click', () => { $('#plan').value = a.dataset.plan; }));
+const d = new Date(Date.now() + 864e5); $('#date').value = d.toISOString().slice(0, 10); $('#date').min = new Date().toISOString().slice(0, 10);
+$('#form').addEventListener('submit', e => {
+  e.preventDefault();
+  const f = e.target, st = $('#status');
+  if (!f.name.value.trim() || !f.contact.value.trim()) { st.textContent = 'Please add your name and a phone number or email so we can confirm your time.'; return; }
+  // Сюда подключается отправка (почта, Telegram-бот, CRM). Пока её нет, честно говорим об этом.
+  st.textContent = 'This is a demo, so nothing was sent. Connect email or a bot in index.html; the spot is marked with a comment.';
+});
+
+if (!html.classList.contains('fly')) return;
+
+/* ── шкала прокрутки ── */
+let H = innerHeight, W = innerWidth, portrait, travel = 0, top0 = 0, fps = 30, count = 452;
+const beats = C.beats, chs = C.chapters.map(c => ({...c, el: chEls.find(e => e.dataset.ch === c.id)}));
+const beatById = id => beats.find(b => b.id === id);
+const at = ([id, fr]) => { const b = beatById(id); return b.y0 + fr * (b.y1 - b.y0); };
+function layout() {
+  H = innerHeight; W = innerWidth; portrait = W < H;
+  let y = 0;
+  for (const b of beats) { b.y0 = y; y += (portrait ? b.m : b.vh) * H / 100; b.y1 = y; b.f0 = Math.min(b.from * fps, count - 1); b.f1 = Math.min(b.to * fps, count - 1); }
+  travel = y;
+  flight.style.height = (travel + H) + 'px';
+  top0 = flight.getBoundingClientRect().top + scrollY;
+  for (const c of chs) { c.y0 = at(c.start); c.y1 = at(c.end); }
+  buildRail();
+}
+function frameAt(p) {
+  for (const b of beats) if (p <= b.y1) return b.f0 + (b.f1 - b.f0) * clamp((p - b.y0) / (b.y1 - b.y0 || 1));
+  return count - 1;
+}
+const rail = $('.rail');
+function buildRail() {
+  rail.querySelectorAll('.wp').forEach(e => e.remove());
+  for (const c of chs) {
+    if (c.id === 'hero') continue;
+    const w = document.createElement('b'); w.className = 'wp'; w.style.top = (c.y0 / travel * 100) + '%';
+    w.innerHTML = '<span>' + beatById(c.start[0]).name + '</span>'; c.wp = w; rail.appendChild(w);
+  }
+}
+
+/* ── кадры: poster сразу, дальше вокруг текущей точки, память ограничена ── */
+let man, seq, blobs, state, bitmaps = new Map(), inflight = 0, decoding = 0, ctrl, gen = 0, loaded = 0;
+const MAXNET = 6, MAXDEC = 4;
+const base = C.manifest.slice(0, C.manifest.lastIndexOf('/') + 1);
+const url = i => base + seq.pattern.replace('{i}', String(i).padStart(man.pad, '0')) + '?v=' + man.version;
+function pickSeq() {
+  const want = portrait ? man.portrait : man.landscape;
+  if (seq === want) return;
+  if (ctrl) ctrl.abort();                       // старые запросы другой последовательности больше не нужны
+  bitmaps.forEach(b => b.close()); bitmaps.clear();
+  seq = want; gen++; ctrl = new AbortController();
+  blobs = new Array(count).fill(null); state = new Uint8Array(count); inflight = 0; decoding = 0; loaded = 0;
+  cv.classList.remove('on'); drawn = -1;
+  pump();
+}
+let cur = 0, dir = 1, drawn = -1;
+function pickNext() {
+  const c = Math.round(cur);
+  for (let k = 0; k <= 48; k++) {
+    const a = c + dir * k, b = c - dir * k;
+    if (a >= 0 && a < count && !state[a]) return a;
+    if (k <= 12 && b >= 0 && b < count && !state[b]) return b;
+  }
+  for (const s of [16, 8, 4, 2, 1]) for (let i = 0; i < count; i += s) if (!state[i]) return i;
+  return -1;
+}
+function fetchFrame(i, tries = 0) {
+  const g = gen; state[i] = 1; inflight++;
+  fetch(url(i), {signal: ctrl.signal}).then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); })
+    .then(b => { if (g !== gen) return; blobs[i] = b; state[i] = 2; loaded++; })
+    .catch(e => { if (g !== gen || e.name === 'AbortError') return; state[i] = tries < 2 ? 0 : 3; if (tries < 2) setTimeout(() => fetchFrame(i, tries + 1), 400 * (tries + 1)); })
+    .finally(() => { if (g === gen) { inflight--; pump(); } });
+}
+function pump() {
+  while (inflight < MAXNET) { const i = pickNext(); if (i < 0) break; fetchFrame(i); }
+  decodeNear();
+}
+const CAP = () => portrait ? 36 : 44;
+function decodeNear() {
+  const c = Math.round(cur);
+  for (let k = 0; k <= 14 && decoding < MAXDEC; k++) {
+    for (const i of [c + dir * k, c - dir * Math.floor(k / 3)]) {
+      if (i < 0 || i >= count || state[i] !== 2 || bitmaps.has(i) || decoding >= MAXDEC) continue;
+      const g = gen; decoding++; bitmaps.set(i, null);
+      createImageBitmap(blobs[i]).then(bm => {
+        if (g !== gen) { bm.close(); return; }
+        bitmaps.set(i, bm); evict();
+      }).catch(() => bitmaps.delete(i)).finally(() => { if (g === gen) { decoding--; decodeNear(); } });
+    }
+  }
+}
+function evict() {
+  if (bitmaps.size <= CAP()) return;
+  const c = Math.round(cur);
+  const far = [...bitmaps.keys()].filter(i => bitmaps.get(i)).sort((a, b) => Math.abs(b - c) - Math.abs(a - c));
+  for (const i of far.slice(0, bitmaps.size - CAP())) { bitmaps.get(i).close(); bitmaps.delete(i); }
+}
+
+/* ── отрисовка ── */
+const ctx = cv.getContext('2d', {alpha: false});
+function sizeCanvas() {
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  cv.width = Math.round(stage.clientWidth * dpr); cv.height = Math.round(stage.clientHeight * dpr); drawn = -1;
+}
+function cover(bm, alpha) {
+  const s = Math.max(cv.width / bm.width, cv.height / bm.height), w = bm.width * s, h = bm.height * s;
+  ctx.globalAlpha = alpha; ctx.drawImage(bm, (cv.width - w) / 2, (cv.height - h) / 2, w, h);
+}
+function nearest(i) {
+  for (let k = 0; k < 40; k++) { const a = bitmaps.get(i - k * dir), b = bitmaps.get(i + k * dir); if (a) return a; if (b) return b; }
+  return null;
+}
+function draw(f) {
+  if (Math.abs(f - drawn) < 0.004) return;
+  const i0 = Math.floor(f), fr = f - i0, a = bitmaps.get(i0), b = bitmaps.get(i0 + 1);
+  if (a) { cover(a, 1); if (b && fr > 0.02) cover(b, fr); }
+  else { const n = nearest(Math.round(f)); if (!n) return; cover(n, 1); }
+  ctx.globalAlpha = 1; drawn = a ? f : -1;
+  if (!cv.classList.contains('on')) cv.classList.add('on');
+}
+
+/* ── кадр анимации: сглаженная прокрутка → кадр, главы, приборы ── */
+const cue = $('.cue'), tcEl = $('#tc'), tcName = $('#tcName'), railFill = $('#railFill'), pbar = $('#pbar'), loadEl = $('#load');
+let ps = 0, lastP = -1, lastLoad = -1;
+function tick() {
+  const p = clamp(scrollY - top0, 0, travel);
+  if (Math.abs(p - ps) > H * 1.6) ps = p; else ps += (p - ps) * 0.16;
+  if (Math.abs(p - ps) < 0.3) ps = p;
+  const f = frameAt(ps);
+  if (f !== cur) { dir = f > cur ? 1 : -1; cur = f; decodeNear(); if (inflight < MAXNET) pump(); }
+  draw(f);
+  if (ps !== lastP) {
+    lastP = ps;
+    const fade = (portrait ? C.fadeVhMobile : C.fadeVh) * H / 100;
+    let active = null;
+    for (const c of chs) {
+      let o = c.atRest ? clamp((c.y1 - ps) / fade) : Math.min(clamp((ps - c.y0) / fade), c.atEnd ? 1 : clamp((c.y1 - ps) / fade));
+      if (c.atRest && ps < c.y1 - fade) o = 1;
+      o = Math.round(o * 1000) / 1000;
+      if (o !== c.o) { c.o = o; c.el.style.setProperty('--o', o); c.el.classList.toggle('off', o < 0.04); }
+      if (c.wp) { const on = ps >= c.y0 - 1; c.wp.classList.toggle('on', on); if (on) active = c; }
+    }
+    const t = f / fps, b = beats.find(b => ps <= b.y1) || beats[beats.length - 1];
+    cue.style.opacity = chs[0].o;
+    tcEl.textContent = '0:' + t.toFixed(2).padStart(5, '0');
+    tcName.textContent = b.name;
+    const pr = ps / travel;
+    railFill.style.transform = 'scaleY(' + pr + ')';
+    pbar.style.transform = 'scaleX(' + pr + ')';
+  }
+  if (loaded !== lastLoad) { lastLoad = loaded; loadEl.textContent = loaded < count ? 'track ' + Math.round(loaded / count * 100) + '%' : ''; }
+  requestAnimationFrame(tick);
+}
+
+function onResize() {
+  if (Math.abs(innerHeight - H) < 140 && innerWidth === W) return;   // шторка адреса на телефоне не пересчитывает шкалу
+  layout(); sizeCanvas(); if (man) pickSeq(); lastP = -1;
+}
+addEventListener('resize', onResize);
+addEventListener('orientationchange', () => setTimeout(() => { W = -1; onResize(); }, 200));
+
+layout(); sizeCanvas();
+fetch(C.manifest).then(r => { if (!r.ok) throw 0; return r.json(); }).then(m => {
+  man = m; count = m.count; fps = m.fps; layout(); pickSeq(); requestAnimationFrame(tick);
+}).catch(() => { html.classList.replace('fly', 'static'); flight.style.height = ''; });
+})();
+</script>
+</body>
+</html>

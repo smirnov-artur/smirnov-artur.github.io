@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>g.a.d. — энергетик, который заряжает</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230A0A0C'/%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%23D6FF3F' stroke-width='7'/%3E%3Ctext x='50' y='57' text-anchor='middle' font-family='Arial Black,sans-serif' font-weight='900' font-size='21' fill='%23D6FF3F'%3Eg.a.d.%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;800;900&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--acc:#D6FF3F;--bg:#0A0A0C;--ink:#F3F3EE;--mute:#8F8F96;--line:rgba(255,255,255,.12);
+  --disp:'Unbounded',system-ui,sans-serif;--body:'Manrope',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;overflow-x:clip}
+body.dragging{user-select:none;cursor:grabbing}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+.mono{font-family:var(--mono);font-weight:500;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+.acc{color:var(--acc)}
+
+#glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(52vmax 52vmax at var(--gx,70%) 52%,color-mix(in srgb,var(--acc) 17%,transparent),transparent 64%)}
+#gl{position:fixed;inset:0;width:100vw;height:100vh;z-index:5;pointer-events:none}
+#ld{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;transition:opacity .8s,visibility .8s}
+#ld svg{width:92px;height:92px;color:var(--acc);animation:pulse 1.4s ease-in-out infinite}
+#ld.off{opacity:0;visibility:hidden}
+@keyframes pulse{50%{transform:scale(.9);opacity:.6}}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:28px;padding:16px clamp(16px,4vw,56px)}
+.nav::before{content:"";position:absolute;inset:0 0 -30px;background:linear-gradient(#0A0A0Ce6,#0A0A0C00);pointer-events:none;z-index:-1}
+.logo{display:flex;align-items:center;gap:12px;color:var(--acc);cursor:pointer}
+.logo svg{width:44px;height:44px}
+.logo b{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:-.01em}
+.nav ul{display:flex;gap:28px;list-style:none;margin-left:auto}
+.nav ul a{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#cfcfca;cursor:pointer;transition:color .2s}
+.nav ul a:hover{color:var(--acc)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 24px;border-radius:999px;border:0;
+  background:var(--acc);color:#0A0A0C;font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:.01em;cursor:pointer;transition:transform .25s,box-shadow .25s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 40px -10px var(--acc)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid rgba(255,255,255,.28)}
+.btn.ghost:hover{border-color:var(--acc);color:var(--acc);box-shadow:none}
+.nav .btn{height:42px;font-size:12px}
+.lang{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:#cfcfca;border:1px solid var(--line);border-radius:999px;padding:11px 13px;transition:color .2s,border-color .2s}
+.lang:hover{color:var(--acc);border-color:var(--acc)}
+
+.sec{position:relative;min-height:100vh;padding:0 clamp(16px,5vw,76px)}
+.behind{position:absolute;z-index:1;pointer-events:none;user-select:none}
+.front{position:relative;z-index:10}
+.giant{font-family:var(--disp);font-weight:900;line-height:.82;letter-spacing:-.045em;white-space:nowrap;text-transform:uppercase}
+.kick{color:var(--acc);margin-bottom:22px}
+h1,h2{font-family:var(--disp);font-weight:900;text-transform:uppercase;letter-spacing:-.03em;line-height:.92}
+h2{font-size:clamp(38px,5.2vw,88px)}
+p.lead,.fl-l p,.in-r p.txt,.or-l p.txt{font-size:clamp(16px,1.25vw,19px);line-height:1.55;color:#c9c9c4;max-width:34ch}
+
+.rv{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.24s}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:end;padding-bottom:9vh}
+.hero-word{left:50%;top:35%;transform:translate(-50%,-50%);font-size:min(24vw,44vh);color:var(--acc);text-transform:none}
+.hero-l h1{font-size:clamp(40px,4.6vw,80px);margin-bottom:22px;white-space:nowrap}
+.hero-l .lead{margin-bottom:34px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-r{justify-self:end;text-align:right;display:grid;gap:10px}
+.hero-r div{display:flex;justify-content:flex-end;gap:18px;color:var(--mute)}
+.hero-r b{color:var(--ink);font-weight:700;min-width:70px}
+.hint{position:absolute;left:70%;bottom:6vh;transform:translateX(-50%);color:var(--mute);z-index:10;display:flex;align-items:center;gap:10px}
+.hint i{display:block;width:26px;height:26px;border:1px solid var(--line);border-radius:50%;position:relative}
+.hint i::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--acc);animation:pulse 1.6s infinite}
+
+/* flavours */
+.flav{display:grid;grid-template-columns:minmax(0,1fr) 30vw minmax(0,1fr);align-items:center;gap:0}
+.flav .outline{left:50%;top:50%;transform:translate(-50%,-50%);font-size:min(12vw,28vh);color:transparent;-webkit-text-stroke:2px var(--acc);opacity:.5;text-align:center;white-space:normal;width:100vw}
+.fl-l .idx{color:var(--mute);margin-bottom:18px}
+.fl-l h2{margin-bottom:22px;font-size:clamp(32px,4.1vw,70px)}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:26px;list-style:none}
+.tags li{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:8px 12px;border:1px solid var(--line);border-radius:999px;color:#d9d9d4}
+.fl-r{grid-column:3;justify-self:end;width:min(320px,100%);display:grid;gap:18px}
+.bar span{display:flex;justify-content:space-between;margin-bottom:8px;color:var(--mute)}
+.bar em{display:block;height:6px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden}
+.bar em::after{content:"";display:block;height:100%;width:calc(var(--w)*100%);background:var(--acc);border-radius:9px;transform-origin:left;transform:scaleX(0);transition:transform 1.3s cubic-bezier(.2,.7,.2,1) .2s}
+.fl-r.in .bar em::after{transform:scaleX(1)}
+#strip{position:fixed;left:50%;bottom:22px;transform:translate(-50%,30px);z-index:40;display:flex;gap:6px;padding:6px;border-radius:999px;
+  background:rgba(20,20,22,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);opacity:0;pointer-events:none;transition:opacity .4s,transform .4s}
+#strip.on{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+#strip button{border:0;background:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#bdbdb8;transition:background .3s,color .3s}
+#strip button i{width:9px;height:9px;border-radius:50%}
+#strip button.on{background:rgba(255,255,255,.08);color:#fff}
+
+/* crack */
+.crack{position:relative;height:260vh}
+.crack .stick{position:sticky;top:0;height:100vh;overflow:hidden}
+.cw{left:50%;top:50%;transform:translate(-50%,-50%);will-change:opacity,transform}
+.cw1{font-size:min(19vw,40vh);color:#F3F3EE}
+.cw2{font-size:min(19vw,40vh);color:var(--acc);opacity:0}
+.crack-cap{position:absolute;left:clamp(16px,5vw,76px);bottom:8vh;color:var(--mute);max-width:30ch;line-height:1.7}
+
+/* inside */
+.inside{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center}
+.in-r{grid-column:2}
+.in-r h2{margin-bottom:34px}
+.stats{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);margin-bottom:26px}
+.stats div{padding:22px 16px 22px 0;border-bottom:1px solid var(--line)}
+.stats div:nth-child(odd){border-right:1px solid var(--line)}
+.stats div:nth-child(even){padding-left:22px}
+.stats b{display:block;font-family:var(--disp);font-weight:800;font-size:clamp(34px,3.6vw,58px);color:var(--acc);letter-spacing:-.03em}
+.stats b small{font-size:.42em;color:var(--ink);margin-left:6px;letter-spacing:0}
+.stats span{display:block;color:#b9b9b4;font-size:14px;line-height:1.45;margin-top:6px}
+.fine{font-size:12px;color:var(--mute);line-height:1.6;max-width:46ch}
+
+/* order */
+.order{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;padding-top:12vh;padding-bottom:10vh;min-height:110vh}
+.or-l h2{margin-bottom:28px}
+.sw{display:flex;gap:10px;margin:28px 0 22px;flex-wrap:wrap}
+.sw button{display:flex;align-items:center;gap:10px;padding:10px 16px 10px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.02);cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;transition:border-color .3s,background .3s}
+.sw button i{width:22px;height:22px;border-radius:50%}
+.sw button.on{border-color:var(--acc);background:rgba(255,255,255,.06)}
+.packs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:22px;max-width:560px}
+.packs label{position:relative;display:block;padding:18px 16px;border-radius:16px;border:1px solid var(--line);cursor:pointer;transition:border-color .3s,background .3s}
+.packs input{position:absolute;opacity:0}
+.packs label:has(input:checked){border-color:var(--acc);background:rgba(255,255,255,.05)}
+.packs b{display:block;font-family:var(--disp);font-weight:800;font-size:22px;margin:6px 0 2px}
+.packs small{color:var(--mute);font-size:12px}
+.packs .mono{color:var(--mute);font-size:10px}
+form.buy{display:flex;gap:10px;max-width:560px;flex-wrap:wrap}
+form.buy input{flex:1 1 220px;height:48px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);padding:0 20px;outline:none;transition:border-color .3s}
+form.buy input:focus{border-color:var(--acc)}
+.note{margin-top:14px;font-size:13px;color:var(--acc)}
+
+/* footer */
+.foot{position:relative;z-index:10;padding:14vh clamp(16px,5vw,76px) 40px;overflow:hidden}
+.foot-word{font-family:var(--disp);font-weight:900;font-size:27vw;line-height:.8;letter-spacing:-.05em;color:var(--acc);margin-left:-.04em}
+.foot-row{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between;align-items:center;border-top:1px solid var(--line);margin-top:5vh;padding-top:22px;color:var(--mute)}
+.foot-row a:hover{color:var(--acc)}
+
+@media (max-width:760px){
+  .nav{gap:10px}.nav ul{display:none}.nav .lang{margin-left:auto}.nav .btn{padding:0 16px}
+  .logo svg{width:38px;height:38px}.logo b{font-size:16px}
+  .hero{grid-template-columns:1fr;align-content:end;padding-bottom:7vh}
+  .hero-word{top:30%;font-size:28vw}
+  .hero-r,.hint{display:none}
+  .hero-l h1{font-size:10.5vw;margin-bottom:16px;white-space:normal}.hero-l .lead{margin-bottom:22px}
+  .flav{grid-template-columns:1fr;align-content:end;padding-bottom:13vh;gap:18px}
+  .flav .outline{top:30%;font-size:13vw}
+  .fl-r{grid-column:1;justify-self:start;width:100%;grid-template-columns:repeat(3,1fr);gap:12px}
+  .fl-l h2{font-size:10vw}
+  #strip{bottom:12px}#strip button{padding:8px 10px}#strip button b{display:none}
+  .inside{grid-template-columns:1fr;align-content:end;padding-bottom:8vh;padding-top:48vh}
+  .in-r{grid-column:1}
+  .order{grid-template-columns:1fr;padding-top:44vh}
+  .packs{grid-template-columns:1fr 1fr 1fr}.packs label{padding:14px 10px}.packs b{font-size:18px}
+  .foot-word{font-size:30vw}
+}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div id="ld"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="5"/><text x="50" y="58" text-anchor="middle" font-family="Unbounded,Arial Black,sans-serif" font-weight="800" font-size="22" fill="currentColor">g.a.d.</text></svg></div>
+<div id="glow"></div>
+<canvas id="gl" aria-hidden="true"></canvas>
+
+<header class="nav">
+  <a class="logo" data-to="#hero" aria-label="g.a.d. — наверх">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="5"/><text x="50" y="58" text-anchor="middle" font-family="Unbounded,sans-serif" font-weight="800" font-size="22" fill="currentColor">g.a.d.</text></svg>
+    <b>g.a.d.</b>
+  </a>
+  <ul>
+    <li><a data-to="#flav0">Вкусы</a></li>
+    <li><a data-to="#crack">Щелчок</a></li>
+    <li><a data-to="#inside">Состав</a></li>
+    <li><a data-to="#order">Заказ</a></li>
+  </ul>
+  <a class="lang" href="../" hreflang="en">EN</a>
+  <a class="btn" data-to="#order">Заказать</a>
+</header>
+
+<main>
+  <section class="sec hero" id="hero">
+    <div class="behind giant hero-word" aria-hidden="true">g.a.d.</div>
+    <div class="front hero-l">
+      <p class="mono kick rv">N°01 — газированный энергетик · 355 мл</p>
+      <h1 class="rv d1">Заряжает.</h1>
+      <p class="lead rv d2">80 мг натурального кофеина, ноль сахара и холодный злой газ. Четыре вкуса. Одна банка, после которой правда просыпаешься.</p>
+      <div class="cta rv d2"><a class="btn" data-to="#order">Заказать упаковку</a><a class="btn ghost" data-to="#flav0">Смотреть вкусы</a></div>
+    </div>
+    <div class="front hero-r mono rv d2">
+      <div>Кофеин <b>80 мг</b></div><div>Сахар <b>0 г</b></div><div>Энергия <b>12 ккал</b></div>
+    </div>
+    <div class="hint mono"><i></i>покрутите банку</div>
+  </section>
+
+  <div id="flavs"></div>
+
+  <section class="crack" id="crack">
+    <div class="stick">
+      <div class="behind giant cw cw1" aria-hidden="true">Щёлк.</div>
+      <div class="behind giant cw cw2" aria-hidden="true">Пшшш.</div>
+      <p class="crack-cap mono">Потяните за язычок.<br>Дальше всё само.</p>
+    </div>
+  </section>
+
+  <section class="sec inside" id="inside">
+    <div class="front in-r">
+      <p class="mono kick rv">Состав</p>
+      <h2 class="rv d1">Состав<br>без загадок.</h2>
+      <div class="stats rv d2">
+        <div><b data-count="80">0<small>мг</small></b><span>натурального кофеина из зелёных кофейных зёрен</span></div>
+        <div><b data-count="0">0<small>г</small></b><span>сахара. Сладость — от стевии и капли эритрита</span></div>
+        <div><b data-count="12">0<small>ккал</small></b><span>в банке, так что впишется в любой рацион</span></div>
+        <div><b data-count="3">0<small>B</small></b><span>витамина группы B: B3, B6 и B12</span></div>
+      </div>
+      <p class="fine rv d2">Не для детей, беременных и тех, кто чувствителен к кофеину. Не больше двух банок в день.</p>
+    </div>
+  </section>
+
+  <section class="sec order" id="order">
+    <div class="front or-l">
+      <p class="mono kick rv">Заказ</p>
+      <h2 class="rv d1">Выберите<br>свой заряд.</h2>
+      <p class="txt rv d1">Выберите вкус, и банка справа поменяется вместе с вами. От 24 банок доставка бесплатная.</p>
+      <div class="sw rv d2" id="sw" role="radiogroup" aria-label="Вкус"></div>
+      <div class="packs rv d2" role="radiogroup" aria-label="Упаковка">
+        <label><input type="radio" name="pack" value="12"><span class="mono">Попробовать</span><b>12 банок</b><small>1 490 ₽</small></label>
+        <label><input type="radio" name="pack" value="24" checked><span class="mono">Берут чаще</span><b>24 банки</b><small>2 690 ₽ · доставка бесплатно</small></label>
+        <label><input type="radio" name="pack" value="mix"><span class="mono">Все четыре</span><b>Микс 24</b><small>2 790 ₽ · доставка бесплатно</small></label>
+      </div>
+      <form class="buy rv d2" id="buy">
+        <input type="email" required placeholder="Ваша почта" aria-label="Почта">
+        <button class="btn" type="submit">Забронировать</button>
+      </form>
+      <p class="note" id="note" hidden>Это концепт-сайт, поэтому ничего не отправилось.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot" id="foot">
+  <div class="foot-word">g.a.d.</div>
+  <div class="foot-row mono">
+    <span>Get A Drive.</span>
+    <span>Концепт-сайт g.a.d. — сайты и 3D для брендов</span>
+    <a href="mailto:paladei702@gmail.com">paladei702@gmail.com</a>
+    <a href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a>
+    <a href="https://smirnov-artur.github.io/works/" target="_blank" rel="noopener">Портфолио</a>
+  </div>
+</footer>
+
+<nav id="strip" aria-label="Вкусы"></nav>
+
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const FL = [
+  { name:'Лайм',    lines:['Лайм'],     bg:'#D6FF3F', ink:'#0A0A0C', notes:'Цедра лайма, щепотка морской соли и холодок в послевкусии.', tags:['цедра лайма','морская соль','холодок'], bars:[.35,.8,.9] },
+  { name:'Вишня',  lines:['Вишня'],   bg:'#FF2E4D', ink:'#FFF4EF', notes:'Тёмная вишня и немного чёрного перца. Долгое яркое послевкусие.', tags:['тёмная вишня','перец','яркий'],  bars:[.7,.45,.75] },
+  { name:'Ледник',      lines:['Ледник'],         bg:'#5CD6FF', ink:'#06121A', notes:'Голубая малина на колотом льду. Чисто, резко — и через секунду уже нет.', tags:['голубая малина','лёд','чисто'], bars:[.5,.6,1] },
+  { name:'Красный апельсин', lines:['Красный','апельсин'],  bg:'#FF7A1A', ink:'#0A0A0C', notes:'Сицилийский красный апельсин с горчинкой цедры.', tags:['красный апельсин','цедра','горчинка'], bars:[.6,.7,.7] },
+];
+const TAU = Math.PI * 2;
+const $ = s => document.querySelector(s);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const sstep = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- DOM: flavour panels, strip, swatches ---------- */
+$('#flavs').innerHTML = FL.map((f, i) => `
+  <section class="sec flav" id="flav${i}">
+    <div class="behind giant outline" aria-hidden="true">${f.lines.join('<br>')}</div>
+    <div class="front fl-l">
+      <p class="mono idx rv">0${i + 1} / 04 — вкус</p>
+      <h2 class="rv d1">${f.lines.join('<br>')}</h2>
+      <p class="rv d2">${f.notes}</p>
+      <ul class="tags rv d2">${f.tags.map(t => `<li>${t}</li>`).join('')}</ul>
+    </div>
+    <div class="front fl-r mono rv">
+      ${['Сладость', 'Кислинка', 'Газ'].map((n, j) => `<div class="bar" style="--w:${f.bars[j]}"><span>${n}<b>${Math.round(f.bars[j] * 10)}/10</b></span><em></em></div>`).join('')}
+    </div>
+  </section>`).join('');
+$('#strip').innerHTML = FL.map((f, i) => `<button data-to="#flav${i}"><i style="background:${f.bg}"></i><b>${f.name}</b></button>`).join('');
+$('#sw').innerHTML = FL.map((f, i) => `<button type="button" role="radio" data-f="${i}"><i style="background:${f.bg}"></i>${f.name}</button>`).join('');
+
+/* ---------- smooth scroll + anchors ---------- */
+let lenis = null;
+if (!reduce && window.Lenis) lenis = new window.Lenis({ lerp: .09 });
+const go = sel => { const el = $(sel); if (!el) return; lenis ? lenis.scrollTo(el, { duration: 1.5 }) : el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); };
+document.addEventListener('click', e => { const a = e.target.closest('[data-to]'); if (a) { e.preventDefault(); go(a.dataset.to); } });
+
+/* ---------- renderer ---------- */
+const canvas = $('#gl');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight, false);
+renderer.setClearColor(0x000000, 0);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, .1, 60);
+camera.position.set(0, 0, 6);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), .04).texture;
+const key = new THREE.DirectionalLight(0xffffff, 2.1); key.position.set(-3, 4, 5); scene.add(key);
+const rim = new THREE.DirectionalLight(0xD6FF3F, 5.5); rim.position.set(4, 1.5, -3); scene.add(rim);
+const rim2 = new THREE.DirectionalLight(0xffffff, 1.3); rim2.position.set(-4.5, -1, -2); scene.add(rim2);
+
+/* ---------- textures ---------- */
+function labelTexture(f, i) {
+  const W = 2048, H = 1348, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  g.fillStyle = f.bg; g.fillRect(0, 0, W, H);
+  // hairline pattern on the back half
+  g.save(); g.strokeStyle = f.ink; g.globalAlpha = .09; g.lineWidth = 3;
+  for (let x = -H; x < W; x += 26) { g.beginPath(); g.moveTo(x, H); g.lineTo(x + H, 0); g.stroke(); }
+  g.restore();
+  g.fillStyle = f.bg; g.fillRect(560, 0, 928, H);
+  // bands with running text
+  g.fillStyle = f.ink; g.fillRect(0, 0, W, 56); g.fillRect(0, H - 56, W, 56);
+  g.fillStyle = f.bg; g.font = '700 26px "JetBrains Mono"'; g.textBaseline = 'middle';
+  const run = 'g.a.d. — ЗАРЯЖАЕТ — 80 МГ — БЕЗ САХАРА — '.repeat(10);
+  g.fillText(run, -40, 29); g.fillText(run, -380, H - 27);
+  // giant vertical wordmark on the front
+  g.fillStyle = f.ink; g.textAlign = 'center';
+  g.save(); g.translate(1024, H / 2); g.rotate(-Math.PI / 2);
+  let fs = 400; g.font = `900 ${fs}px Unbounded`; fs = fs * 1110 / g.measureText('g.a.d.').width;
+  g.font = `900 ${fs}px Unbounded`; g.textBaseline = 'middle'; g.fillText('g.a.d.', 0, fs * .06);
+  g.restore();
+  g.save(); g.translate(752, H / 2); g.rotate(-Math.PI / 2); g.font = '800 62px Unbounded'; g.textBaseline = 'middle';
+  g.fillText(f.name.toUpperCase(), 0, 0); g.restore();
+  g.save(); g.translate(1300, H / 2); g.rotate(-Math.PI / 2); g.font = '700 30px "JetBrains Mono"'; g.textBaseline = 'middle';
+  g.fillText('ГАЗИРОВАННЫЙ ЭНЕРГЕТИК · 80 МГ КОФЕИНА · 0 САХАРА', 0, 0); g.restore();
+  g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+  g.font = '900 46px Unbounded'; g.fillText('N°0' + (i + 1), 606, 136);
+  g.font = '700 26px "JetBrains Mono"'; g.textAlign = 'right'; g.fillText('355 МЛ', 1442, 130); g.textAlign = 'left';
+  // back: slogan, ingredients, nutrition, barcode
+  g.font = '900 64px Unbounded'; ['GET A', 'DRIVE.'].forEach((t, k) => g.fillText(t, 70, 250 + k * 72));
+  g.font = '500 23px "JetBrains Mono"';
+  ['ВОДА ГАЗИРОВАННАЯ, РЕГУЛЯТОРЫ', 'КИСЛОТНОСТИ: ЛИМОННАЯ, ЯБЛОЧНАЯ.', 'КОФЕИН НАТУРАЛЬНЫЙ (ЗЕЛЁНЫЙ', 'КОФЕ), НАТУРАЛЬНЫЕ АРОМАТИЗАТОРЫ,', 'СТЕВИЯ, ЭРИТРИТ, B3, B6, B12.', '', 'ВЫСОКОЕ СОДЕРЖАНИЕ КОФЕИНА.', 'НЕ ДЛЯ ДЕТЕЙ И БЕРЕМЕННЫХ.', '80 МГ / 355 МЛ.']
+    .forEach((t, k) => g.fillText(t, 70, 440 + k * 36));
+  g.lineWidth = 4; g.strokeStyle = f.ink; g.strokeRect(1600, 180, 380, 500);
+  g.font = '800 25px Unbounded'; g.fillText('ПИЩЕВАЯ ЦЕННОСТЬ', 1622, 234);
+  g.font = '500 24px "JetBrains Mono"';
+  [['ЭНЕРГИЯ', '12 ККАЛ'], ['ЖИРЫ', '0 Г'], ['УГЛЕВОДЫ', '3 Г'], ['САХАР', '0 Г'], ['СОЛЬ', '0,1 Г'], ['КОФЕИН', '80 МГ'], ['B12', '1,2 МКГ']].forEach(([a, b], k) => {
+    const y = 300 + k * 52; g.fillText(a, 1622, y); g.textAlign = 'right'; g.fillText(b, 1958, y); g.textAlign = 'left';
+    g.fillRect(1622, y + 16, 336, 2);
+  });
+  let bx = 1610; const rnd = mulberry(7 + i);
+  while (bx < 1960) { const w = 3 + Math.floor(rnd() * 3) * 3; g.fillRect(bx, 780, w, 170); bx += w + 4 + Math.floor(rnd() * 3) * 3; }
+  g.font = '500 22px "JetBrains Mono"'; g.fillText('4 606 0' + (i + 1) + '2 118 55', 1618, 986);
+  // print shading
+  const gr = g.createLinearGradient(0, 0, 0, H);
+  gr.addColorStop(0, 'rgba(0,0,0,.2)'); gr.addColorStop(.1, 'rgba(0,0,0,0)'); gr.addColorStop(.9, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,.24)');
+  g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = renderer.capabilities.getMaxAnisotropy(); t.wrapS = THREE.RepeatWrapping;
+  return t;
+}
+function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+// condensation: height field -> normal map + roughness map
+function dropMaps() {
+  const W = 1024, H = 674, h = new Float32Array(W * H), wet = new Uint8Array(W * H), rnd = mulberry(42);
+  const stamp = (cx, cy, r) => {
+    const ri = Math.ceil(r);
+    for (let dy = -ri; dy <= ri; dy++) for (let dx = -ri; dx <= ri; dx++) {
+      const d2 = (dx * dx + dy * dy) / (r * r); if (d2 >= 1) continue;
+      const y = Math.round(cy) + dy; if (y < 0 || y >= H) continue;
+      const x = (Math.round(cx) + dx + W) % W, i = y * W + x, v = Math.sqrt(1 - d2) * r * .45;
+      if (v > h[i]) h[i] = v; wet[i] = 1;
+    }
+  };
+  for (let n = 0; n < 3200; n++) stamp(rnd() * W, rnd() * H, rnd() < .92 ? 1 + rnd() * 2.6 : 3.5 + rnd() * 5);
+  for (let n = 0; n < 22; n++) { // drips
+    let x = rnd() * W, y = rnd() * H * .6; const len = 60 + rnd() * 220, r = 2 + rnd() * 1.6;
+    for (let k = 0; k < len; k += 1.5) { x += (rnd() - .5) * .8; stamp(x, y + k, r * (1 - k / len * .35)); }
+    stamp(x, y + len, r * 1.7);
+  }
+  const nc = document.createElement('canvas'); nc.width = W; nc.height = H;
+  const rc = document.createElement('canvas'); rc.width = W; rc.height = H;
+  const nd = nc.getContext('2d').createImageData(W, H), rd = rc.getContext('2d').createImageData(W, H);
+  const at = (x, y) => h[clamp(y, 0, H - 1) * W + ((x + W) % W)];
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    let nx = -(at(x + 1, y) - at(x - 1, y)) * 1.1, ny = (at(x, y + 1) - at(x, y - 1)) * 1.1, nz = 1;
+    const l = Math.hypot(nx, ny, nz); nx /= l; ny /= l; nz /= l;
+    const i = (y * W + x) * 4;
+    nd.data[i] = (nx * .5 + .5) * 255; nd.data[i + 1] = (ny * .5 + .5) * 255; nd.data[i + 2] = (nz * .5 + .5) * 255; nd.data[i + 3] = 255;
+    const r = wet[y * W + x] ? 18 : 92; rd.data[i] = rd.data[i + 1] = rd.data[i + 2] = r; rd.data[i + 3] = 255;
+  }
+  nc.getContext('2d').putImageData(nd, 0, 0); rc.getContext('2d').putImageData(rd, 0, 0);
+  const n = new THREE.CanvasTexture(nc), r = new THREE.CanvasTexture(rc);
+  [n, r].forEach(t => { t.wrapS = THREE.RepeatWrapping; t.anisotropy = 8; });
+  return { n, r };
+}
+
+/* ---------- the can ---------- */
+const R = .3, BH = 1.24;
+const can = new THREE.Group(); can.rotation.order = 'ZXY'; scene.add(can);
+const metal = new THREE.MeshPhysicalMaterial({ color: 0xd8dce0, metalness: 1, roughness: .24, side: THREE.DoubleSide });
+const lidMat = new THREE.MeshPhysicalMaterial({ color: 0xc9ced3, metalness: 1, roughness: .33 });
+const V = a => a.map(([r, y]) => new THREE.Vector2(r, y));
+can.add(new THREE.Mesh(new THREE.LatheGeometry(V([[R, .62], [R, .64], [.296, .66], [.285, .685], [.268, .705], [.258, .716], [.257, .728], [.259, .736], [.254, .742], [.246, .741], [.242, .734], [.241, .72], [.236, .714]]), 128), metal));
+can.add(new THREE.Mesh(new THREE.LatheGeometry(V([[0, -.67], [.12, -.676], [.19, -.69], [.22, -.7], [.24, -.702], [.262, -.695], [.28, -.68], [.294, -.66], [R, -.64], [R, -.62]]), 128), metal));
+const lid = new THREE.Mesh(new THREE.CircleGeometry(.237, 96).rotateX(-Math.PI / 2), lidMat); lid.position.y = .714; can.add(lid);
+const groove = new THREE.Mesh(new THREE.TorusGeometry(.205, .0035, 8, 128).rotateX(Math.PI / 2), lidMat); groove.position.y = .7145; can.add(groove);
+const score = new THREE.Mesh(new THREE.RingGeometry(.9, 1, 64).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x777c80, metalness: 1, roughness: .5 }));
+score.scale.set(.056, 1, .044); score.position.set(.14, .7148, 0); can.add(score);
+const hole = new THREE.Mesh(new THREE.CircleGeometry(1, 64).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x050505 }));
+hole.scale.set(.05, 1, .039); hole.position.set(.14, .7152, 0); hole.visible = false; can.add(hole);
+const rivet = new THREE.Mesh(new THREE.CylinderGeometry(.013, .013, .007, 24), metal); rivet.position.set(0, .717, 0); can.add(rivet);
+const tabShape = new THREE.Shape(); const tw = .034;
+tabShape.moveTo(-.12, -tw); tabShape.lineTo(.03, -tw); tabShape.absarc(.03, 0, tw, -Math.PI / 2, Math.PI / 2, false);
+tabShape.lineTo(-.12, tw); tabShape.absarc(-.12, 0, tw, Math.PI / 2, Math.PI * 1.5, false);
+const ring = new THREE.Path(); ring.absellipse(-.108, 0, .021, .019, 0, TAU, true); tabShape.holes.push(ring);
+const tabGeo = new THREE.ExtrudeGeometry(tabShape, { depth: .004, bevelEnabled: true, bevelThickness: .0015, bevelSize: .0015, bevelSegments: 2, curveSegments: 24 }).rotateX(-Math.PI / 2);
+const tabPivot = new THREE.Group(); tabPivot.position.set(0, .7175, 0); can.add(tabPivot);
+tabPivot.add(new THREE.Mesh(tabGeo, new THREE.MeshPhysicalMaterial({ color: 0xbfc5ca, metalness: 1, roughness: .2 })));
+
+let labelMat, TEX = [];
+const wipe = { mapB: { value: null }, uMix: { value: 0 }, uSeam: { value: new THREE.Color(1, 1, 1) } };
+function buildLabel() {
+  TEX = FL.map(labelTexture);
+  const d = dropMaps();
+  labelMat = new THREE.MeshPhysicalMaterial({ map: TEX[0], normalMap: d.n, normalScale: new THREE.Vector2(.55, .55), roughnessMap: d.r, roughness: 1, metalness: .28, clearcoat: .35, clearcoatRoughness: .18 });
+  wipe.mapB.value = TEX[1];
+  labelMat.onBeforeCompile = sh => {
+    Object.assign(sh.uniforms, wipe);
+    sh.fragmentShader = 'uniform sampler2D mapB;\nuniform float uMix;\nuniform vec3 uSeam;\n' + sh.fragmentShader
+      .replace('#include <map_fragment>', `
+        vec4 cA = texture2D( map, vMapUv );
+        vec4 cB = texture2D( mapB, vMapUv );
+        float uu = vMapUv.x * .94 + .03;
+        float edge = smoothstep( uMix - .03, uMix + .03, uu );
+        diffuseColor *= mix( cB, cA, edge );
+        float seam = ( 1. - abs( edge * 2. - 1. ) ) * step( .001, uMix ) * step( uMix, .999 );`)
+      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n totalEmissiveRadiance += uSeam * seam * 1.6;');
+  };
+  can.add(new THREE.Mesh(new THREE.CylinderGeometry(R, R, BH, 180, 1, true, Math.PI, TAU), labelMat));
+}
+
+/* ---------- fizz ---------- */
+const N = 520, pPos = new Float32Array(N * 3), pVel = new Float32Array(N * 3), pLife = new Float32Array(N), pSize = new Float32Array(N);
+const pGeo = new THREE.BufferGeometry();
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+pGeo.setAttribute('aLife', new THREE.BufferAttribute(pLife, 1));
+pGeo.setAttribute('aSize', new THREE.BufferAttribute(pSize, 1));
+const pMat = new THREE.ShaderMaterial({
+  transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  uniforms: { uColor: { value: new THREE.Color(0xD6FF3F) }, uPR: { value: renderer.getPixelRatio() } },
+  vertexShader: `attribute float aLife; attribute float aSize; uniform float uPR; varying float vL;
+    void main(){ vL = aLife; vec4 mv = modelViewMatrix * vec4(position, 1.); gl_PointSize = 70. * aSize * uPR * (.5 + aLife * .5) / -mv.z; gl_Position = projectionMatrix * mv; }`,
+  fragmentShader: `uniform vec3 uColor; varying float vL;
+    void main(){ float d = length(gl_PointCoord - .5); if (d > .5 || vL <= 0.) discard;
+      float ringA = smoothstep(.5, .36, d) * smoothstep(.12, .34, d); float core = smoothstep(.5, 0., d) * .35;
+      gl_FragColor = vec4(mix(vec3(1.), uColor, .45), (ringA * .9 + core) * vL); }`
+});
+const fizz = new THREE.Points(pGeo, pMat); fizz.frustumCulled = false; scene.add(fizz);
+let pCur = 0;
+const tmpV = new THREE.Vector3(), upV = new THREE.Vector3();
+function emit(n) {
+  can.updateMatrixWorld(); tmpV.set(.14, .72, 0); can.localToWorld(tmpV);
+  upV.set(0, 1, 0).applyQuaternion(can.quaternion);
+  for (let k = 0; k < n; k++) {
+    const i = pCur++ % N, sp = 1.3 + Math.random() * 2.6;
+    pPos[i * 3] = tmpV.x + (Math.random() - .5) * .05; pPos[i * 3 + 1] = tmpV.y + (Math.random() - .5) * .03; pPos[i * 3 + 2] = tmpV.z + (Math.random() - .5) * .05;
+    pVel[i * 3] = upV.x * sp + (Math.random() - .5) * 1.1; pVel[i * 3 + 1] = upV.y * sp + (Math.random() - .5) * .6; pVel[i * 3 + 2] = upV.z * sp + (Math.random() - .5) * 1.1;
+    pLife[i] = 1; pSize[i] = .35 + Math.random() * 1.1;
+  }
+}
+function stepFizz(dt) {
+  for (let i = 0; i < N; i++) {
+    if (pLife[i] <= 0) continue;
+    pVel[i * 3 + 1] -= 2.6 * dt; const drag = Math.exp(-dt * 1.4);
+    pVel[i * 3] *= drag; pVel[i * 3 + 1] *= drag; pVel[i * 3 + 2] *= drag;
+    pPos[i * 3] += pVel[i * 3] * dt; pPos[i * 3 + 1] += pVel[i * 3 + 1] * dt; pPos[i * 3 + 2] += pVel[i * 3 + 2] * dt;
+    pLife[i] = Math.max(0, pLife[i] - dt * .75);
+  }
+  pGeo.attributes.position.needsUpdate = true; pGeo.attributes.aLife.needsUpdate = true; pGeo.attributes.aSize.needsUpdate = true;
+}
+
+/* ---------- scroll choreography ---------- */
+let vh = innerHeight, A = {}, keys = [];
+const mob = () => innerWidth < 760;
+function states() {
+  const m = mob();
+  const P = (d, mo) => m ? mo : d;
+  return {
+    hero:  P({ x: 1.12, y: -.02, s: 1, rx: .06, ry: -.35, rz: -.26 }, { x: 0, y: .55, s: .62, rx: .05, ry: -.35, rz: -.18 }),
+    flav:  k => P({ x: 0, y: -.02, s: 1.02, rx: .05, ry: k * TAU, rz: 0 }, { x: 0, y: .5, s: .64, rx: .04, ry: k * TAU, rz: 0 }),
+    crack0: P({ x: 0, y: -.12, s: 1.16, rx: .64, ry: 3 * TAU + .35, rz: .06 }, { x: 0, y: .12, s: .84, rx: .64, ry: 3 * TAU + .35, rz: .06 }),
+    crack1: P({ x: 0, y: -.12, s: 1.16, rx: .6, ry: 3 * TAU + .6, rz: .1 }, { x: 0, y: .12, s: .84, rx: .6, ry: 3 * TAU + .6, rz: .1 }),
+    inside: P({ x: -1.25, y: 0, s: .92, rx: .05, ry: 3 * TAU + Math.PI, rz: .18 }, { x: 0, y: .66, s: .52, rx: .05, ry: 3 * TAU + Math.PI, rz: .12 }),
+    order: P({ x: 1.3, y: -.04, s: .9, rx: .05, ry: 4 * TAU + .25, rz: -.2 }, { x: 0, y: .72, s: .5, rx: .05, ry: 4 * TAU + .25, rz: -.12 }),
+    foot:  { x: 0, y: -3.4, s: .8, rx: .4, ry: 4.6 * TAU, rz: .5 },
+  };
+}
+function layout() {
+  vh = innerHeight;
+  const top = el => el.getBoundingClientRect().top + scrollY, st = states(), hold = vh * .2;
+  const f = [0, 1, 2, 3].map(i => top($('#flav' + i)));
+  const cr = $('#crack'), c0 = top(cr), c1 = c0 + cr.offsetHeight - vh;
+  const ins = top($('#inside')), ord = top($('#order')), ft = top($('#foot'));
+  const max = document.documentElement.scrollHeight - vh;
+  A = { f, c0, c1, hold };
+  keys = [[0, st.hero], [vh * .3, st.hero]];
+  f.forEach((p, k) => keys.push([p, st.flav(k)], [p + hold, st.flav(k)]));
+  keys.push([c0, st.crack0], [c1, st.crack1], [ins - vh * .15, st.inside], [ins + vh * .25, st.inside],
+    [ord - vh * .15, st.order], [ord + vh * .3, st.order], [Math.max(ord + vh * .35, ft - vh * .3), st.order], [max, st.foot]);
+  for (let i = 1; i < keys.length; i++) if (keys[i][0] <= keys[i - 1][0]) keys[i][0] = keys[i - 1][0] + 1;
+}
+const KS = ['x', 'y', 's', 'rx', 'ry', 'rz'];
+function stateAt(y) {
+  if (y <= keys[0][0]) return keys[0][1];
+  for (let i = 0; i < keys.length - 1; i++) {
+    const [p0, a] = keys[i], [p1, b] = keys[i + 1];
+    if (y < p1) { const e = ease(clamp((y - p0) / (p1 - p0))), o = {}; KS.forEach(k => o[k] = a[k] + (b[k] - a[k]) * e); return o; }
+  }
+  return keys[keys.length - 1][1];
+}
+function flavPhase(y) {
+  const { f, hold } = A;
+  if (y < f[0]) return -1;
+  for (let k = 0; k < 3; k++) {
+    if (y < f[k] + hold) return k;
+    if (y < f[k + 1]) return k + ease(clamp((y - f[k] - hold) / (f[k + 1] - f[k] - hold)));
+  }
+  return y < f[3] + hold ? 3 : 4;
+}
+
+/* ---------- label + accent control ---------- */
+let shown = 0, picked = 3, anim = null, accHex = '';
+const cA = new THREE.Color(), cB = new THREE.Color(), acc = new THREE.Color();
+function setLabel(a, b, m) {
+  if (labelMat.map !== TEX[a]) labelMat.map = TEX[a];
+  wipe.mapB.value = TEX[b]; wipe.uMix.value = m;
+  acc.copy(cA.set(FL[a].bg)).lerp(cB.set(FL[b].bg), m);
+  wipe.uSeam.value.copy(acc);
+  rim.color.copy(acc); pMat.uniforms.uColor.value.copy(acc);
+  const hx = '#' + acc.getHexString();
+  if (hx !== accHex) { accHex = hx; document.documentElement.style.setProperty('--acc', hx); }
+}
+function labelStep(dt, ph) {
+  if (ph >= 0 && ph <= 3) { anim = null; const k = Math.min(2, Math.floor(ph)); setLabel(k, k + 1, ph - k); shown = Math.round(ph); return; }
+  const want = ph < 0 ? 0 : picked;
+  if (!anim && want !== shown) anim = { a: shown, b: want, t: 0 };
+  if (anim) { anim.t += dt / .9; setLabel(anim.a, anim.b, ease(clamp(anim.t))); if (anim.t >= 1) { shown = anim.b; anim = null; } return; }
+  setLabel(shown, shown, 0);
+}
+function markSwatch() { document.querySelectorAll('#sw button').forEach((b, i) => { b.classList.toggle('on', i === picked); b.setAttribute('aria-checked', i === picked); }); }
+$('#sw').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; picked = +b.dataset.f; markSwatch(); });
+markSwatch();
+
+/* ---------- pointer: tilt + drag to spin ---------- */
+const mouse = { x: 0, y: 0, sx: 0, sy: 0 }, drag = { on: false, x: 0, v: 0, ry: 0 };
+addEventListener('pointermove', e => {
+  mouse.x = e.clientX / innerWidth * 2 - 1; mouse.y = e.clientY / innerHeight * 2 - 1;
+  if (!drag.on) return; const dx = e.clientX - drag.x; drag.x = e.clientX; drag.v = dx * .011; drag.ry += drag.v;
+});
+addEventListener('pointerdown', e => {
+  if (e.pointerType !== 'mouse' || e.button !== 0 || e.target.closest('a,button,input,select,label,textarea,#strip')) return;
+  drag.on = true; drag.x = e.clientX; drag.v = 0; document.body.classList.add('dragging');
+});
+addEventListener('pointerup', () => { drag.on = false; document.body.classList.remove('dragging'); });
+
+/* ---------- reveal + counters + form ---------- */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .2 });
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
+const cio = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return; cio.unobserve(e.target);
+  const b = e.target, to = +b.dataset.count, unit = b.querySelector('small').outerHTML, t0 = performance.now();
+  const tick = now => { const t = clamp((now - t0) / 1400); b.innerHTML = Math.round(to * ease(t)) + unit; if (t < 1) requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+}), { threshold: .6 });
+document.querySelectorAll('[data-count]').forEach(el => cio.observe(el));
+$('#buy').addEventListener('submit', e => { e.preventDefault(); $('#note').hidden = false; });
+
+/* ---------- loop ---------- */
+const cur = { ...states().hero };
+const strip = $('#strip'), stripBtns = [...strip.children], cw1 = $('.cw1'), cw2 = $('.cw2');
+let last = performance.now(), lastC = 0, shake = 0, phD = -1;
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  if (lenis) lenis.raf(now);
+  const y = scrollY, tgt = stateAt(y), k = 1 - Math.exp(-dt * 9);
+  KS.forEach(q => cur[q] += (tgt[q] - cur[q]) * k);
+
+  // drag inertia, then settle back to the nearest full turn
+  if (!drag.on) {
+    drag.ry += drag.v; drag.v *= Math.exp(-dt * 3.2);
+    if (Math.abs(drag.v) < .003) { const t = Math.round(drag.ry / TAU) * TAU; drag.ry += (t - drag.ry) * (1 - Math.exp(-dt * 2.4)); }
+  }
+  mouse.sx += (mouse.x - mouse.sx) * (1 - Math.exp(-dt * 4)); mouse.sy += (mouse.y - mouse.sy) * (1 - Math.exp(-dt * 4));
+  const heroW = 1 - sstep(0, vh * .6, y), idle = reduce ? 0 : 1;
+  can.position.set(cur.x + mouse.sx * .05, cur.y + Math.sin(now * .0011) * .035 * idle, 0);
+  can.rotation.set(cur.rx + mouse.sy * .12, cur.ry + Math.sin(now * .0006) * .32 * heroW * idle + drag.ry, cur.rz - mouse.sx * .07);
+  can.scale.setScalar(cur.s * 1.25);
+  document.documentElement.style.setProperty('--gx', (50 + cur.x / 2.6 * 50).toFixed(1) + '%');
+
+  // flavours
+  const ph = flavPhase(y);
+  if (ph >= 0 && ph <= 3) phD = phD < 0 || phD > 3 ? ph : phD + (ph - phD) * k; else phD = ph;
+  labelStep(dt, phD);
+  const inStrip = y > A.f[0] - vh * .3 && y < A.f[3] + vh * .6;
+  strip.classList.toggle('on', inStrip);
+  if (inStrip) { const a = clamp(Math.round(phD), 0, 3); stripBtns.forEach((b, i) => b.classList.toggle('on', i === a)); }
+
+  // crack
+  const c = clamp((y - A.c0) / (A.c1 - A.c0));
+  const lift = sstep(.16, .3, c) * (1 - sstep(.4, .58, c));
+  tabPivot.rotation.z = -lift * 1.05;
+  hole.visible = c > .29; hole.scale.set(.05 * sstep(.28, .33, c) + .0001, 1, .039 * sstep(.28, .33, c) + .0001);
+  if (c >= .3 && lastC < .3) { emit(170); shake = 1; }
+  if (c > .3 && c < .9 && y > A.c0 - 1) emit(Math.round(90 * dt * (1 - c)));
+  lastC = c;
+  cw1.style.opacity = 1 - sstep(.44, .54, c); cw1.style.transform = `translate(-50%,-50%) scale(${1 + sstep(.3, .54, c) * .25})`;
+  cw2.style.opacity = sstep(.5, .6, c); cw2.style.transform = `translate(-50%,-50%) scale(${1.25 - sstep(.5, .7, c) * .25})`;
+  stepFizz(dt);
+
+  shake *= Math.exp(-dt * 6);
+  camera.position.x = (Math.random() - .5) * .05 * shake; camera.position.y = (Math.random() - .5) * .05 * shake;
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+
+function resize() {
+  renderer.setSize(innerWidth, innerHeight, false);
+  camera.aspect = innerWidth / innerHeight;
+  camera.fov = innerWidth / innerHeight < .8 ? 36 : 30;
+  camera.updateProjectionMatrix();
+  pMat.uniforms.uPR.value = renderer.getPixelRatio();
+  layout();
+}
+addEventListener('resize', resize);
+
+(async () => {
+  try { await Promise.all(['900 100px Unbounded', '800 60px Unbounded', '700 30px "JetBrains Mono"', '500 20px "JetBrains Mono"'].map(f => document.fonts.load(f))); } catch (e) {}
+  buildLabel();
+  resize();
+  setTimeout(layout, 600);
+  requestAnimationFrame(t => { last = t; frame(t); $('#ld').classList.add('off'); });
+})();
+</script>
+</body>
+</html>
