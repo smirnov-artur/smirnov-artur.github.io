@@ -1,5 +1,117 @@
 [
  {
+  "slug": "gad-villa",
+  "cat": "web",
+  "ru": [
+   "Виллы g.a.d. cala на скале",
+   "Прокрутка ведёт с моря в дом на закате: скала, гостиная с камином, бассейн над водой"
+  ],
+  "en": [
+   "g.a.d. cala cliff villas",
+   "Scrolling flies you from the sea into a cliff house at sunset: the rock, the fireplace room, the pool over the water"
+  ],
+  "v": "gad-villa",
+  "ve": "gad-villa-en",
+  "href": "https://smirnov-artur.github.io/cases/gad-villa/ru/",
+  "hre": "https://smirnov-artur.github.io/cases/gad-villa/"
+ },
+ {
+  "slug": "gad-cafe",
+  "cat": "web",
+  "ru": [
+   "Кафе g.a.d. — лучший столик на Земле",
+   "Прокрутка ведёт из космоса сквозь облака и город к столику на террасе, высотомер считает от 400 км до 0,6 м"
+  ],
+  "en": [
+   "g.a.d. café, the best table on Earth",
+   "Scroll from orbit through the clouds and downtown to a terrace table while an altimeter counts from 400 km to 0.6 m"
+  ],
+  "v": "gad-cafe",
+  "ve": "gad-cafe-en",
+  "href": "https://smirnov-artur.github.io/cases/gad-cafe/ru/",
+  "hre": "https://smirnov-artur.github.io/cases/gad-cafe/"
+ },
+ {
+  "slug": "gad-residences",
+  "cat": "web",
+  "ru": [
+   "Квартиры g.a.d. residences",
+   "Прокрутка открывает дверь и ведёт по квартире до кухни, метры растут на глазах, ниже планировки и ипотека"
+  ],
+  "en": [
+   "g.a.d. residences",
+   "Scrolling opens the door and walks you through the flat to the kitchen as the square metres add up, then plans and a mortgage calculator"
+  ],
+  "v": "gad-residences",
+  "ve": "gad-residences-en",
+  "href": "https://smirnov-artur.github.io/cases/gad-residences/ru/",
+  "hre": "https://smirnov-artur.github.io/cases/gad-residences/"
+ },
+ {
+  "slug": "gad-build",
+  "cat": "web",
+  "ru": [
+   "Стройка g.a.d. build",
+   "Чертёж по прокрутке становится домом: фундамент, стены, кровля, ключи и счётчик дней стройки"
+  ],
+  "en": [
+   "g.a.d. build",
+   "A blueprint turns into a building as you scroll: foundation, walls, roof and keys, with a build-day counter"
+  ],
+  "v": "gad-build",
+  "ve": "gad-build-en",
+  "href": "https://smirnov-artur.github.io/cases/gad-build/ru/",
+  "hre": "https://smirnov-artur.github.io/cases/gad-build/"
+ },
+ {
+  "slug": "gad-watch-2",
+  "cat": "web",
+  "ru": [
+   "Часы g.a.d. N°02",
+   "Часы разлетаются до шестерёнок в кино по прокрутке, дальше 3D-часы на светлом фоне: крутишь пальцем, выбираешь металл и циферблат"
+  ],
+  "en": [
+   "g.a.d. N°02 watch",
+   "The watch comes apart down to the gears in a scroll-driven film, then a 3D watch you spin and dress in metal and dial"
+  ],
+  "v": "gad-watch-2",
+  "ve": "gad-watch-2-en",
+  "href": "https://smirnov-artur.github.io/cases/gad-watch-2/ru/",
+  "hre": "https://smirnov-artur.github.io/cases/gad-watch-2/"
+ },
+ {
+  "slug": "gad-lemonade",
+  "cat": "web",
+  "ru": [
+   "Лимонад g.a.d.",
+   "Банка в джунглях по прокрутке: холодные капли, фрукты в воздухе, всплеск в стакане, банка наполняется до 330 мл"
+  ],
+  "en": [
+   "g.a.d. sparkling lemonade",
+   "A can in the jungle as you scroll: cold drops, fruit in mid-air, the pour, while a can fills to 330 ml"
+  ],
+  "v": "gad-lemonade",
+  "ve": "gad-lemonade-en",
+  "href": "https://smirnov-artur.github.io/cases/gad-lemonade/ru/",
+  "hre": "https://smirnov-artur.github.io/cases/gad-lemonade/"
+ },
+ {
+  "slug": "gad-ambre",
+  "cat": "web",
+  "ru": [
+   "Аромат g.a.d. Ambre Fumé",
+   "Шкатулка открывается по прокрутке, смолы уходят в дымку и во флакон, у каждой ноты — откуда сырьё"
+  ],
+  "en": [
+   "g.a.d. Ambre Fumé",
+   "The walnut box opens as you scroll, raw resins turn to smoke and then the flacon, each note with where it comes from"
+  ],
+  "v": "gad-ambre",
+  "ve": "gad-ambre-en",
+  "href": "https://smirnov-artur.github.io/cases/gad-ambre/ru/",
+  "hre": "https://smirnov-artur.github.io/cases/gad-ambre/"
+ },
+ {
   "slug": "gad-ring",
   "cat": "3d",
   "ru": [
