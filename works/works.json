@@ -1,5 +1,21 @@
 [
  {
+  "slug": "gad-ring",
+  "cat": "3d",
+  "ru": [
+   "Кольцо g.a.d. с бриллиантом в 3D",
+   "Камень с настоящей огранкой играет светом, кольцо разбирается по прокрутке, металл и камень выбираешь сам — цена считается сразу"
+  ],
+  "en": [
+   "g.a.d. diamond ring in 3D",
+   "A true-cut stone throws light and fire, the ring comes apart as you scroll, pick the metal and stone and the price updates"
+  ],
+  "v": "gad-ring",
+  "ve": "gad-ring-en",
+  "href": "https://smirnov-artur.github.io/demo/gad-ring/ru/",
+  "hre": "https://smirnov-artur.github.io/demo/gad-ring/"
+ },
+ {
   "slug": "gad-diner",
   "cat": "web",
   "ru": [

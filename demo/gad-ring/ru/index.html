@@ -1,0 +1,797 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>g.a.d. — Чтобы на него смотрели.</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230A0A0C'/%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%23D6FF3F' stroke-width='7'/%3E%3Ctext x='50' y='57' text-anchor='middle' font-family='Arial Black,sans-serif' font-weight='900' font-size='21' fill='%23D6FF3F'%3Eg.a.d.%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;800;900&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap&subset=latin,cyrillic" rel="stylesheet">
+<style>
+:root{--acc:#D6FF3F;--bg:#0A0A0C;--ink:#F3F3EE;--mute:#8F8F96;--line:rgba(255,255,255,.12);
+  --disp:'Unbounded',system-ui,sans-serif;--body:'Manrope',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;overflow-x:clip}
+body.dragging{user-select:none;cursor:grabbing}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit}
+.mono{font-family:var(--mono);font-weight:500;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+.acc{color:var(--acc)}
+
+#glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(40vmax 40vmax at var(--gx,70%) var(--gy,45%),rgba(214,255,63,.075),transparent 62%),
+             radial-gradient(90vmax 60vmax at 50% 120%,rgba(255,255,255,.045),transparent 60%)}
+#gl{position:fixed;inset:0;width:100vw;height:100vh;z-index:5;pointer-events:none}
+#ld{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;transition:opacity .8s,visibility .8s}
+#ld svg{width:92px;height:92px;color:var(--acc);animation:pulse 1.4s ease-in-out infinite}
+#ld.off{opacity:0;visibility:hidden}
+@keyframes pulse{50%{transform:scale(.9);opacity:.6}}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:28px;padding:16px clamp(16px,4vw,56px)}
+.nav::before{content:"";position:absolute;inset:0 0 -30px;background:linear-gradient(#0A0A0Ce6,#0A0A0C00);pointer-events:none;z-index:-1}
+.logo{display:flex;align-items:center;gap:12px;color:var(--acc);cursor:pointer}
+.logo svg{width:44px;height:44px}
+.logo b{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:-.01em}
+.nav ul{display:flex;gap:28px;list-style:none;margin-left:auto}
+.nav ul a{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#cfcfca;cursor:pointer;transition:color .2s}
+.nav ul a:hover{color:var(--acc)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 24px;border-radius:999px;border:0;
+  background:var(--acc);color:#0A0A0C;font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:.01em;cursor:pointer;transition:transform .25s,box-shadow .25s;white-space:nowrap}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 40px -10px var(--acc)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid rgba(255,255,255,.28)}
+.btn.ghost:hover{border-color:var(--acc);color:var(--acc);box-shadow:none}
+.nav .btn{height:42px;font-size:12px}
+.lang{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:#cfcfca;border:1px solid var(--line);border-radius:999px;padding:11px 13px;transition:color .2s,border-color .2s}
+.lang:hover{color:var(--acc);border-color:var(--acc)}
+
+.sec{position:relative;min-height:100vh;padding:0 clamp(16px,5vw,76px)}
+.behind{position:absolute;z-index:1;pointer-events:none;user-select:none}
+.front{position:relative;z-index:10}
+.giant{font-family:var(--disp);font-weight:900;line-height:.82;letter-spacing:-.045em;white-space:nowrap;text-transform:uppercase}
+.outline{color:transparent;-webkit-text-stroke:1.5px var(--acc);opacity:.22}
+.kick{color:var(--acc);margin-bottom:22px}
+h1,h2{font-family:var(--disp);font-weight:900;text-transform:uppercase;letter-spacing:-.03em;line-height:.92}
+h2{font-size:clamp(38px,5vw,84px)}
+p.lead,p.txt{font-size:clamp(16px,1.25vw,19px);line-height:1.55;color:#c9c9c4;max-width:36ch}
+
+.rv{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.24s}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:end;padding-bottom:9vh}
+.hero-word{left:50%;top:40%;transform:translate(-50%,-50%);font-size:min(25vw,46vh);text-transform:none}
+.hero-l h1{font-size:clamp(40px,4.6vw,82px);margin-bottom:22px}
+.hero-l .lead{margin-bottom:34px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-r{justify-self:end;text-align:right;display:grid;gap:10px}
+.hero-r div{display:flex;justify-content:flex-end;gap:18px;color:var(--mute)}
+.hero-r b{color:var(--ink);font-weight:700;min-width:96px}
+.hint{position:absolute;left:68%;top:86vh;transform:translateX(-50%);color:var(--mute);z-index:10;display:flex;align-items:center;gap:10px}
+.hint i{display:block;width:26px;height:26px;border:1px solid var(--line);border-radius:50%;position:relative}
+.hint i::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--acc);animation:pulse 1.6s infinite}
+
+/* sticky scenes: stone close-up and exploded view */
+.pin{position:relative}
+.pin .stick{position:sticky;top:0;height:100vh;overflow:hidden}
+.stone{height:240vh}.apart{height:300vh}
+.pin-word{left:50%;top:50%;transform:translate(-50%,-50%);font-size:min(17vw,40vh)}
+.cap{position:absolute;left:clamp(16px,5vw,76px);top:15vh;max-width:30ch}
+.cap h2{font-size:clamp(30px,3.4vw,58px)}
+.cap p.txt{margin-top:18px;font-size:15px}
+#tags{position:fixed;inset:0;z-index:12;pointer-events:none}
+#tags svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+#tags path{fill:none;stroke:rgba(243,243,238,.5);stroke-width:1}
+#tags circle{fill:var(--acc)}
+.tag{position:absolute;left:0;top:0;white-space:nowrap;line-height:1.25;will-change:transform;opacity:0}
+.tag b{display:block;font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:.01em;text-transform:uppercase}
+.tag span{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--mute);margin-top:3px}
+
+/* configurator */
+.make{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;padding-top:12vh;padding-bottom:8vh;min-height:115vh}
+.mk-l h2{margin-bottom:22px;font-size:clamp(34px,4.2vw,62px)}
+.grp{margin-top:26px;max-width:560px}
+.lbl{display:flex;justify-content:space-between;color:var(--mute);margin-bottom:12px}
+.lbl b{color:var(--ink);font-weight:700}
+.sw{display:flex;gap:10px;flex-wrap:wrap}
+.sw button{display:flex;align-items:center;gap:10px;padding:10px 16px 10px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.02);cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;transition:border-color .3s,background .3s}
+.sw button i{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.sw button svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6}
+.sw button.on{border-color:var(--acc);background:rgba(255,255,255,.06)}
+.sw button.on svg{stroke:var(--acc)}
+input[type=range]{width:100%;accent-color:var(--acc);height:28px;cursor:pointer}
+.ticks{display:flex;justify-content:space-between;color:var(--mute);font-size:10px;margin-top:4px}
+.price{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:30px 0 26px;padding-top:22px;border-top:1px solid var(--line);max-width:560px}
+.price span{display:block;color:var(--mute);margin-bottom:8px}
+.price b{display:block;font-family:var(--disp);font-weight:800;font-size:clamp(34px,3.4vw,54px);letter-spacing:-.03em;color:var(--acc);white-space:nowrap;font-variant-numeric:tabular-nums}
+.price small{color:var(--mute);font-size:11px;letter-spacing:.1em}
+
+/* fitting */
+.fit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;padding-top:12vh;padding-bottom:10vh;min-height:105vh}
+.fit-l h2{margin-bottom:26px}
+.sum{color:var(--ink);margin:26px 0 18px;line-height:1.7;max-width:560px}
+form.buy{display:flex;gap:10px;max-width:560px;flex-wrap:wrap}
+form.buy input{flex:1 1 200px;height:48px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);padding:0 20px;outline:none;transition:border-color .3s;color-scheme:dark}
+form.buy input:focus{border-color:var(--acc)}
+.note{margin-top:14px;font-size:13px;color:var(--acc);max-width:560px}
+
+/* footer */
+.foot{position:relative;z-index:10;padding:14vh clamp(16px,5vw,76px) 40px;overflow:hidden}
+.foot-word{font-family:var(--disp);font-weight:900;font-size:27vw;line-height:.8;letter-spacing:-.05em;color:var(--acc);margin-left:-.04em}
+.foot-row{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between;align-items:center;border-top:1px solid var(--line);margin-top:5vh;padding-top:22px;color:var(--mute)}
+.foot-row a:hover{color:var(--acc)}
+
+@media (max-width:760px){
+  .nav{gap:10px}.nav ul{display:none}.nav .lang{margin-left:auto}.nav .btn{padding:0 16px}
+  .logo svg{width:38px;height:38px}.logo b{font-size:16px}
+  .hero{grid-template-columns:1fr;align-content:end;padding-bottom:6vh}
+  .hero-word{top:30%;font-size:30vw}
+  .hero-r,.hint{display:none}
+  .hero-l h1{font-size:11.5vw;margin-bottom:14px}.hero-l .lead{margin-bottom:20px;font-size:15px}
+  .cap{top:auto;bottom:5vh}.cap p.txt{display:none}
+  .pin-word{font-size:18vw;top:24%}
+  .tag b{font-size:10px}.tag span{font-size:9px;letter-spacing:.04em}
+  .make,.fit{grid-template-columns:1fr;align-content:end;padding-top:46vh;padding-bottom:7vh;min-height:100vh}
+  .grp{margin-top:18px}
+  .price{margin:22px 0 18px}
+  .foot-word{font-size:30vw}
+}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div id="ld"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="5"/><text x="50" y="58" text-anchor="middle" font-family="Unbounded,Arial Black,sans-serif" font-weight="800" font-size="22" fill="currentColor">g.a.d.</text></svg></div>
+<div id="glow"></div>
+<canvas id="gl" aria-hidden="true"></canvas>
+
+<header class="nav">
+  <a class="logo" data-to="#hero" aria-label="g.a.d. — наверх">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="5"/><text x="50" y="58" text-anchor="middle" font-family="Unbounded,sans-serif" font-weight="800" font-size="22" fill="currentColor">g.a.d.</text></svg>
+    <b>g.a.d.</b>
+  </a>
+  <ul>
+    <li><a data-to="#stone">Камень</a></li>
+    <li><a data-to="#apart">Разбор</a></li>
+    <li><a data-to="#make">Собрать</a></li>
+    <li><a data-to="#fit">Примерка</a></li>
+  </ul>
+  <a class="lang" href="../" hreflang="en">EN</a>
+  <a class="btn" data-to="#fit">На примерку</a>
+</header>
+
+<main>
+  <section class="sec hero" id="hero">
+    <div class="behind giant outline hero-word" aria-hidden="true">g.a.d.</div>
+    <div class="front hero-l">
+      <p class="mono kick rv">N°03 — солитер · 1,00 кт · золото 750</p>
+      <h1 class="rv d1">Чтобы на него<br>смотрели.</h1>
+      <p class="lead rv d2">Круглый бриллиант в шести лапках на шинке, которая не давит на палец. Здесь нет ни одной фотографии: кольцо можно повернуть, разобрать, поменять металл и камень.</p>
+      <div class="cta rv d2"><a class="btn" data-to="#make">Собрать своё</a><a class="btn ghost" data-to="#stone">Рассмотреть</a></div>
+    </div>
+    <div class="front hero-r mono rv d2">
+      <div>Камень <b>1,00 кт</b></div><div>Цвет <b>D</b></div><div>Металл <b>золото 750</b></div>
+    </div>
+    <div class="hint mono"><i></i>покрутите кольцо</div>
+  </section>
+
+  <section class="pin stone" id="stone">
+    <div class="stick">
+      <div class="behind giant outline pin-word" aria-hidden="true">4C</div>
+      <div class="cap front">
+        <p class="mono kick">02 — Камень</p>
+        <h2>Пятьдесят семь<br>граней света.</h2>
+        <p class="txt">Свет входит через площадку, отражается от граней павильона и выходит обратно белым блеском и цветной игрой. Здесь ничего не снято: каждая вспышка просчитывается вживую, пока камень поворачивается.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pin apart" id="apart">
+    <div class="stick">
+      <div class="behind giant outline pin-word" aria-hidden="true">Разбор</div>
+      <div class="cap front">
+        <p class="mono kick">03 — Вид в разборе</p>
+        <h2>Как оно<br>держится.</h2>
+        <p class="txt">Листайте медленно. Камень поднимается из каста, лапки раскрываются, и кольцо видно так, как его видит ювелир.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec make" id="make">
+    <div class="front mk-l">
+      <p class="mono kick rv">04 — Соберите своё</p>
+      <h2 class="rv d1">Ваш металл,<br>ваш камень.</h2>
+      <p class="txt rv d1">Меняйте что угодно: кольцо тут же перерисуется, цена тоже.</p>
+      <div class="grp rv d2"><p class="mono lbl">Металл</p>
+        <div class="sw" id="metal" role="radiogroup" aria-label="Металл">
+          <button type="button" role="radio" data-v="0"><i style="background:linear-gradient(135deg,#ffe9ad,#c38b2c)"></i>Жёлтое золото</button>
+          <button type="button" role="radio" data-v="1"><i style="background:linear-gradient(135deg,#ffd9c7,#b9705a)"></i>Розовое золото</button>
+          <button type="button" role="radio" data-v="2"><i style="background:linear-gradient(135deg,#f6f7f8,#8f959c)"></i>Платина</button>
+        </div></div>
+      <div class="grp rv d2"><p class="mono lbl">Форма</p>
+        <div class="sw" id="shape" role="radiogroup" aria-label="Форма">
+          <button type="button" role="radio" data-v="0"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8 12h8M12 8v8"/></svg>Круг</button>
+          <button type="button" role="radio" data-v="1"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="6.5" ry="9.5"/><path d="M12 6.5v11"/></svg>Овал</button>
+          <button type="button" role="radio" data-v="2"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="4.5" width="15" height="15"/><path d="M4.5 4.5l15 15M19.5 4.5l-15 15"/></svg>Принцесса</button>
+        </div></div>
+      <div class="grp rv d2"><p class="mono lbl">Масса <b id="ctv">1,00 кт</b></p>
+        <input type="range" id="ct" min="0.5" max="2" step="0.05" value="1" aria-label="Масса камня в каратах">
+        <div class="ticks mono"><span>0,5</span><span>1,0</span><span>1,5</span><span>2,0</span></div></div>
+      <div class="price rv d2"><div><span class="mono">Ваше кольцо</span><b id="price">—</b></div><small class="mono" id="split"></small></div>
+      <a class="btn rv d2" data-to="#fit">Записаться на примерку</a>
+    </div>
+  </section>
+
+  <section class="sec fit" id="fit">
+    <div class="front fit-l">
+      <p class="mono kick rv">05 — Примерка</p>
+      <h2 class="rv d1">Сначала<br>примерьте.</h2>
+      <p class="txt rv d1">Выберите день и оставьте почту. Мы привезём кольцо в вашем металле и три камня для сравнения, а решать будете, когда оно уже на руке.</p>
+      <p class="mono sum rv d2" id="sum"></p>
+      <form class="buy rv d2" id="buy">
+        <input type="email" required placeholder="Ваша почта" aria-label="Почта">
+        <input type="date" required aria-label="День примерки" id="day">
+        <button class="btn" type="submit">Записаться</button>
+      </form>
+      <p class="note" id="note" hidden>Это концепт-сайт: ничего не отправилось, и никого не записали.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot" id="foot">
+  <div class="foot-word">g.a.d.</div>
+  <div class="foot-row mono">
+    <span>Чтобы на него смотрели.</span>
+    <span>Концепт-сайт g.a.d. — сайты и 3D для брендов</span>
+    <a href="mailto:paladei702@gmail.com">paladei702@gmail.com</a>
+    <a href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a>
+    <a href="https://smirnov-artur.github.io/works/" target="_blank" rel="noopener">Портфолио</a>
+  </div>
+</footer>
+
+<div id="tags" aria-hidden="true"><svg></svg></div>
+
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js';
+
+/* ---------- words and money (tools/ru.py swaps this block) ---------- */
+const T = {
+  loc: 'ru-RU', cur: 'RUB', fx: 92, step: 1000, ct: 'кт', mm: 'мм',
+  metals: ['жёлтое золото', 'розовое золото', 'платина'],
+  shapes: ['круг', 'овал', 'принцесса'],
+  cuts: ['круглая огранка', 'овальная огранка', 'огранка «принцесса»'],
+  c4: [['Огранка', 'отличная, точные углы'], ['Цвет', 'D, совсем бесцветный'], ['Чистота', 'VVS1, чистый при 10×'], ['Масса', '']],
+  parts: [['Камень', ''], ['Лапки', 'держат камень за рундист'], ['Галерея', 'открытая, свет входит сбоку'], ['Шинка', 'комфортная посадка, 2 мм'], ['Гравировка', 'g.a.d. внутри шинки']],
+  split: (a, b) => `оправа ${a} · камень ${b}`,
+  sum: (sh, ct, me, pr) => `Ваше кольцо: ${sh}, ${ct}, ${me} — ${pr}`,
+};
+
+const TAU = Math.PI * 2, DEG = Math.PI / 180;
+const $ = s => document.querySelector(s);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const sstep = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const LOW = matchMedia('(max-width: 760px), (pointer: coarse)').matches;
+
+/* ---------- smooth scroll + anchors ---------- */
+let lenis = null;
+if (!reduce && window.Lenis) lenis = new window.Lenis({ lerp: .09 });
+const go = sel => { const el = $(sel); if (!el) return; lenis ? lenis.scrollTo(el, { duration: 1.6 }) : el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); };
+document.addEventListener('click', e => { const a = e.target.closest('[data-to]'); if (a) { e.preventDefault(); go(a.dataset.to); } });
+
+/* ---------- renderer ---------- */
+const canvas = $('#gl');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, LOW ? 1.5 : 2));
+renderer.setSize(innerWidth, innerHeight, false);
+renderer.setClearColor(0x000000, 0);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, .1, 80);
+camera.position.set(0, 0, 10);
+
+function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const cnv = (w, h = w) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+
+// jewellery studio: dark room, long softboxes for the metal, and a field of small hard lights —
+// the small lights are what a diamond breaks into sparkle
+function studio() {
+  const s = new THREE.Scene();
+  const sg = new THREE.SphereGeometry(30, 48, 24), col = [];
+  for (let i = 0; i < sg.attributes.position.count; i++) { const v = .02 + .08 * clamp(sg.attributes.position.getY(i) / 30 * .5 + .5) ** 2; col.push(v, v, v * 1.04); }
+  sg.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  s.add(new THREE.Mesh(sg, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide })));
+  const tex = soft => {
+    const cc = cnv(64), g = cc.getContext('2d'), gr = g.createRadialGradient(32, 32, 4, 32, 32, 32);
+    gr.addColorStop(0, '#fff'); gr.addColorStop(soft ? .55 : .85, '#fff'); gr.addColorStop(1, '#000'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(cc);
+  };
+  const tSoft = tex(true), tHard = tex(false);
+  const box = (w, h, x, y, z, c, k, soft = true) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(c).multiplyScalar(k), map: soft ? tSoft : tHard, side: THREE.DoubleSide }));
+    m.position.set(x, y, z); m.lookAt(0, 0, 0); s.add(m);
+  };
+  box(22, 5, 0, 13, 1, 0xffffff, 6, false);     // overhead strip
+  box(5, 18, -13, 2, 5, 0xfff0df, 3.8);         // left, warm
+  box(5, 18, 13, 1, 2, 0xe4eeff, 3.2);          // right, cool
+  box(26, 11, 0, 5, -14, 0xffffff, 1.6);        // back wall
+  box(20, 9, 0, 2, 15, 0xffffff, 1.3);          // front diffusion
+  box(5, 5, 9, -5, 8, 0xD6FF3F, .45);           // lime kicker
+  box(34, 34, 0, -15, 0, 0x3a3a40, .8);         // floor
+  const rnd = mulberry(11);
+  for (let i = 0; i < 64; i++) {                // pin lights
+    const th = rnd() * TAU, y = -.35 + rnd() * 1.3, yy = Math.min(y, .97), r = Math.sqrt(1 - yy * yy), sz = .35 + rnd() * .9;
+    box(sz, sz * (.5 + rnd()), Math.cos(th) * r * 16, yy * 16, Math.sin(th) * r * 16, rnd() < .2 ? 0xfff0d6 : 0xffffff, 5 + rnd() * 10, false);
+  }
+  return s;
+}
+scene.environmentRotation = new THREE.Euler();
+const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(-3, 5, 6); scene.add(key);
+const rim = new THREE.DirectionalLight(0xD6FF3F, .6); rim.position.set(5, 1, -4); scene.add(rim);
+const fill = new THREE.DirectionalLight(0xdfe8ff, .6); fill.position.set(4, -3, 5); scene.add(fill);
+
+/* ---------- the stone: real facet geometry, ray-traced inside ---------- */
+const V3 = (x, y, z) => new THREE.Vector3(x, y, z);
+// round brilliant, girdle diameter 1: table 56 %, crown 34.5°, pavilion 40.75°, star 50 %, lower girdle 77 %
+function brilliantPts() {
+  const P = [], R = .5, rt = .28, gt = .011, c8 = Math.cos(Math.PI / 8);
+  const hc = gt + (R - rt) * Math.tan(34.5 * DEG), hp = gt + R * Math.tan(40.75 * DEG);
+  const at = (r, a, y) => V3(Math.cos(a) * r, y, Math.sin(a) * r), A = i => i * Math.PI / 4;
+  const rs = rt * c8 + .5 * (R - rt * c8), hs = hc + (gt - hc) * (rs * c8 - rt) / (R - rt);     // star points, kites stay planar
+  const rq = .77 * R / c8, hq = -hp + (hp - gt) * (rq * c8 / R);                                // lower girdle points
+  const S = [], Q = [];
+  for (let i = 0; i < 8; i++) {
+    P.push(at(rt, A(i), hc));
+    S.push(at(rs, A(i) + Math.PI / 8, hs)); Q.push(at(rq, A(i) + Math.PI / 8, hq));
+  }
+  P.push(...S, ...Q, V3(0, -hp, 0));
+  // 32 girdle points; the in-between ones sit on their facet planes, so the girdle scallops like a real one
+  const plane = (a, b, c) => new THREE.Plane().setFromCoplanarPoints(a, b, c);
+  for (let k = 0; k < 32; k++) {
+    const a = k * Math.PI / 16;
+    if (k % 2 === 0) { P.push(at(R, a, gt), at(R, a, -gt)); continue; }
+    const i = Math.floor(k / 4), k0 = k - 1, k1 = k + 1, g0 = k0 * Math.PI / 16, g1 = k1 * Math.PI / 16;
+    for (const sg of [1, -1]) {
+      const pl = plane(sg > 0 ? S[i] : Q[i], at(R, g0, sg * gt), at(R, g1, sg * gt)), x = Math.cos(a) * R, z = Math.sin(a) * R;
+      P.push(V3(x, (-pl.constant - pl.normal.x * x - pl.normal.z * z) / pl.normal.y, z));
+    }
+  }
+  return P;
+}
+function princessPts() {  // square brilliant: step crown, chevron pavilion
+  const P = [], h = .42, sq = (s, y, rot = 0) => { for (let i = 0; i < 4; i++) { const a = rot + Math.PI / 4 + i * Math.PI / 2; P.push(V3(Math.cos(a) * s * Math.SQRT2, y, Math.sin(a) * s * Math.SQRT2)); } };
+  const mid = (s, y) => { for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2; P.push(V3(Math.cos(a) * s, y, Math.sin(a) * s)); } };
+  sq(h * .68, .1); sq(h * .9, .05); mid(h * .93, .047); sq(h, .009); sq(h, -.009); mid(h, .009); mid(h, -.009);
+  sq(h * .84, -.2); mid(h * .78, -.24); sq(h * .55, -.4); mid(h * .47, -.44); sq(h * .24, -.56); P.push(V3(0, -.64, 0));
+  return P;
+}
+const SHAPES = [
+  { pts: brilliantPts, sx: 1, sz: 1, k: 1 },
+  { pts: brilliantPts, sx: .82, sz: 1.24, k: .92 },
+  { pts: princessPts, sx: 1, sz: 1, k: .8 },
+];
+const MAXP = 128;
+function gemGeo(i) {
+  const sh = SHAPES[i], pts = sh.pts().map(p => V3(p.x * sh.sx, p.y, p.z * sh.sz));
+  const g = new ConvexGeometry(pts), pos = g.attributes.position, nor = g.attributes.normal, planes = [];
+  const a = V3(), b = V3(), c = V3(), n = V3();
+  for (let t = 0; t < pos.count; t += 3) {
+    a.fromBufferAttribute(pos, t); b.fromBufferAttribute(pos, t + 1); c.fromBufferAttribute(pos, t + 2); n.fromBufferAttribute(nor, t);
+    const d = n.dot(a), ar = b.clone().sub(a).cross(c.clone().sub(a)).length() / 2;
+    let q = planes.find(p => p.n.dot(n) > .99995 && Math.abs(p.d - d) < 2e-4);
+    if (!q) { q = { n: n.clone(), d, c: V3(0, 0, 0), w: 0 }; planes.push(q); }
+    q.c.addScaledVector(a.clone().add(b).add(c), ar / 3); q.w += ar;
+  }
+  planes.forEach(p => p.c.divideScalar(p.w));
+  return { g, planes };
+}
+
+const U = {
+  planes: { value: Array.from({ length: MAXP }, () => new THREE.Vector4()) }, np: { value: 0 },
+  env: { value: null }, camObj: { value: V3(0, 0, 10) }, rotW: { value: new THREE.Matrix3() }, envR: { value: new THREE.Matrix3() },
+  ior: { value: 2.42 }, disp: { value: .045 }, time: { value: 0 }, size: { value: 30 },
+};
+const gemMat = new THREE.ShaderMaterial({
+  defines: { MAXP, BOUNCE: LOW ? 4 : 7 },
+  uniforms: U,
+  vertexShader: /* glsl */`
+    varying vec3 vP; varying vec3 vN;
+    void main() { vP = position; vN = normal; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); }`,
+  fragmentShader: /* glsl */`
+    uniform vec4 planes[MAXP]; uniform int np; uniform samplerCube env; uniform vec3 camObj; uniform mat3 rotW; uniform float ior, disp;
+    varying vec3 vP; varying vec3 vN;
+    vec3 E(vec3 d) { return textureLod(env, rotW * d, 0.).rgb; }
+    float fres(float c, float r0) { return r0 + (1. - r0) * pow(1. - c, 5.); }
+    void main() {
+      vec3 n = normalize(vN), rd = normalize(vP - camObj);
+      float r0 = pow((ior - 1.) / (ior + 1.), 2.), F = fres(clamp(-dot(rd, n), 0., 1.), r0);
+      vec3 col = E(reflect(rd, n)) * F;                       // polish on the facet
+      vec3 d = refract(rd, n, 1. / ior), p = vP;
+      vec3 iv = vec3(ior - disp, ior, ior + disp * 1.5);      // red bends least, blue most: that split is the fire
+      float thr = 1. - F;
+      for (int b = 0; b < BOUNCE; b++) {
+        float tm = 1e5; vec3 nh = vec3(0., 1., 0.);
+        for (int i = 0; i < MAXP; i++) {                      // the stone is convex: nearest facet plane ahead is the exit
+          if (i >= np) break;
+          vec4 pl = planes[i]; float dn = dot(pl.xyz, d);
+          if (dn > 1e-5) { float t = (pl.w - dot(pl.xyz, p)) / dn; if (t < tm) { tm = t; nh = pl.xyz; } }
+        }
+        p += d * tm;
+        float c = dot(d, nh), s2 = ior * ior * (1. - c * c);
+        vec3 rf = reflect(d, -nh);
+        if (s2 < 1.) {                                        // not total internal reflection: some light leaves here
+          float Fo = fres(sqrt(1. - s2), r0);
+          vec3 dr = refract(d, -nh, iv.r), dg = refract(d, -nh, iv.g), db = refract(d, -nh, iv.b), er = E(rf);
+          vec3 o = vec3(dot(dr, dr) > 0. ? E(dr).r : er.r, E(dg).g, dot(db, db) > 0. ? E(db).b : er.b);
+          col += thr * (1. - Fo) * o;
+          thr *= Fo;
+        }
+        d = rf;
+      }
+      col += thr * E(d);
+      gl_FragColor = vec4(col, 1.);
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+    }`,
+});
+// sparkle: a star where a crown facet mirrors one of the pin lights straight at you
+const sparkMat = new THREE.ShaderMaterial({
+  uniforms: U, transparent: true, depthWrite: false,
+  blending: THREE.CustomBlending, blendSrc: THREE.OneFactor, blendDst: THREE.OneFactor, blendSrcAlpha: THREE.ZeroFactor, blendDstAlpha: THREE.OneFactor,
+  vertexShader: /* glsl */`
+    attribute vec3 fn; attribute float ph;
+    uniform samplerCube env; uniform mat3 envR; uniform float time, size;
+    varying float vI;
+    void main() {
+      vec4 wp = modelMatrix * vec4(position, 1.);
+      vec3 nn = normalize(mat3(modelMatrix) * fn), v = normalize(wp.xyz - cameraPosition);
+      vec3 e = textureLod(env, envR * reflect(v, nn), 0.).rgb;
+      float L = dot(e, vec3(.3, .5, .2));
+      vI = smoothstep(1.4, 5.5, L) * (.7 + .3 * sin(time * 9. + ph)) * smoothstep(.0, .25, dot(nn, -v));
+      vec4 mv = viewMatrix * wp;
+      gl_Position = projectionMatrix * mv;
+      gl_PointSize = size * vI * 10. / -mv.z;
+    }`,
+  fragmentShader: /* glsl */`
+    varying float vI;
+    void main() {
+      vec2 c = gl_PointCoord - .5; float d = length(c);
+      float arms = exp(-abs(c.x) * 70.) * exp(-abs(c.y) * 6.) + exp(-abs(c.y) * 70.) * exp(-abs(c.x) * 6.);
+      float a = (exp(-d * d * 160.) * 1.4 + arms) * smoothstep(.5, .2, d) * vI;
+      gl_FragColor = vec4(vec3(1., .98, .94) * a, 0.);
+    }`,
+});
+
+/* ---------- metals ---------- */
+const METALS = [
+  { color: 0xffc766, rough: .09, base: 690 },   // 18k yellow gold
+  { color: 0xf7b196, rough: .09, base: 690 },   // 18k rose gold
+  { color: 0xd9dbde, rough: .07, base: 1090 },  // platinum 950
+];
+const phys = o => new THREE.MeshPhysicalMaterial(o);
+const M = {
+  metal: phys({ color: METALS[0].color, metalness: 1, roughness: METALS[0].rough }),
+  engr: phys({ color: new THREE.Color(METALS[0].color).multiplyScalar(.3), metalness: 1, roughness: .5, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 }),
+};
+
+/* ---------- the ring ---------- */
+// rig (pointer) > W (pose, scale) > SP (turntable spin round the stone axis) > R (ring, shifted so the pivot can move to the stone)
+const rig = new THREE.Group(); scene.add(rig);
+const W = new THREE.Group(); W.rotation.order = 'ZXY'; rig.add(W);
+const SP = new THREE.Group(); W.add(SP);
+const R = new THREE.Group(); SP.add(R);
+const SEG = LOW ? 160 : 320, NT = LOW ? 28 : 56, RIN = 1, HEADY = 1.17, YG = .53;
+
+// band: section swept round the finger axis (Z). Flat-topped outside, gently domed inside (comfort fit),
+// wider and thicker under the head
+const up = (ph, k) => Math.pow(Math.max(0, Math.sin(ph)), k);
+const bw = ph => .2 + .1 * up(ph, 6), bh = ph => .12 + .07 * up(ph, 10);
+function secPt(t, ph, inset = 0) {
+  const c = Math.cos(t), s = Math.sin(t), w = bw(ph), h = bh(ph);
+  const a = w / 2 * Math.sign(c) * Math.abs(c) ** .55, r = RIN + h / 2 + h / 2 * Math.sign(s) * Math.abs(s) ** (s > 0 ? .5 : .72) - inset;
+  return [Math.cos(ph) * r, Math.sin(ph) * r, a];
+}
+function sweep(nP, nT, ph0, ph1, t0, t1, wrap, inset) {
+  const pos = [], uv = [], idx = [], cp = wrap ? nP : nP + 1, ct = wrap ? nT : nT + 1;
+  for (let i = 0; i < cp; i++) for (let j = 0; j < ct; j++) {
+    pos.push(...secPt(t0 + (t1 - t0) * j / nT, ph0 + (ph1 - ph0) * i / nP, inset)); uv.push(i / nP, j / nT);
+  }
+  for (let i = 0; i < nP; i++) for (let j = 0; j < nT; j++) {
+    const i1 = wrap ? (i + 1) % nP : i + 1, j1 = wrap ? (j + 1) % nT : j + 1;
+    const a = i * ct + j, b = i1 * ct + j, a1 = i * ct + j1, b1 = i1 * ct + j1;
+    idx.push(a, a1, b, b, a1, b1);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  g.setIndex(idx); g.computeVertexNormals(); return g;
+}
+const band = new THREE.Mesh(sweep(SEG, NT, -Math.PI / 2, Math.PI * 1.5, 0, TAU, true, 0), M.metal); R.add(band);
+
+// engraving inside the band, at the bottom: reads from above, through the ring
+const HALL = ['750 · AU', '750 · AU', 'PT 950'];
+function engraving(hm) {
+  const c = cnv(2048, 256), g = c.getContext('2d');
+  g.fillStyle = '#000'; g.fillRect(0, 0, 2048, 256); g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.font = '800 120px Unbounded'; g.fillText('g.a.d.', 1024, 128);
+  g.font = '500 58px "JetBrains Mono"'; if (g.letterSpacing !== undefined) g.letterSpacing = '12px';
+  g.fillText(hm, 470, 132); g.fillText('N°03 · 1/1', 1590, 132);
+  const t = new THREE.CanvasTexture(c); t.flipY = false; t.anisotropy = renderer.capabilities.getMaxAnisotropy(); return t;
+}
+let engrMesh;
+
+// head: collar, claws, two gallery rails and the stone. Head units: stone diameter = 1, scaled by carat.
+const head = new THREE.Group(); head.position.y = HEADY; R.add(head);
+const gemG = new THREE.Group(); head.add(gemG);
+const clawG = new THREE.Group(); head.add(clawG);
+const railG = new THREE.Group(); head.add(railG);
+head.add(new THREE.Mesh(new THREE.LatheGeometry([[0, -.14], [.1, -.14], [.12, -.03], [.14, .02], [.13, .05], [.08, .065], [0, .065]].map(([x, y]) => new THREE.Vector2(x, y)), 64), M.metal));
+let gem, spark, claws = [], shapeNow = -1;
+const outline = (sh, a) => sh === 2 ? .42 * Math.SQRT2 : .5 / Math.hypot(Math.cos(a) / SHAPES[sh].sx, Math.sin(a) / SHAPES[sh].sz);
+function buildHead(sh) {
+  if (gem) { gem.geometry.dispose(); spark.geometry.dispose(); gemG.remove(gem); }
+  [clawG, railG].forEach(g => { g.children.forEach(m => m.traverse(o => o.geometry && o.geometry.dispose())); g.clear(); });
+  const { g, planes } = gemGeo(sh);
+  U.np.value = planes.length;
+  planes.forEach((p, i) => U.planes.value[i].set(p.n.x, p.n.y, p.n.z, p.d));
+  gem = new THREE.Mesh(g, gemMat); gemG.add(gem);
+  const inv = new THREE.Matrix4(), m3 = new THREE.Matrix3(), er = new THREE.Matrix3();
+  gem.onBeforeRender = (r, s, cam) => {
+    U.camObj.value.copy(cam.position).applyMatrix4(inv.copy(gem.matrixWorld).invert());
+    m3.setFromMatrix4(gem.matrixWorld); const e = m3.elements;
+    for (let k = 0; k < 9; k += 3) { const l = Math.hypot(e[k], e[k + 1], e[k + 2]); e[k] /= l; e[k + 1] /= l; e[k + 2] /= l; }
+    U.rotW.value.copy(er.copy(U.envR.value)).multiply(m3);
+    gemMat.uniformsNeedUpdate = true;
+  };
+  // sparkle points on the crown facets
+  const crown = planes.filter(p => p.n.y > .12 && p.n.y < .98), sp = [], fn = [], ph = [];
+  crown.forEach((p, i) => { sp.push(...p.c.clone().addScaledVector(p.n, .004).toArray()); fn.push(p.n.x, p.n.y, p.n.z); ph.push(i * 2.39); });
+  const sg = new THREE.BufferGeometry();
+  sg.setAttribute('position', new THREE.Float32BufferAttribute(sp, 3)); sg.setAttribute('fn', new THREE.Float32BufferAttribute(fn, 3)); sg.setAttribute('ph', new THREE.Float32BufferAttribute(ph, 1));
+  spark = new THREE.Points(sg, sparkMat); spark.frustumCulled = false; gem.add(spark);
+  // claws: six (four on the princess), each a swept wire from the collar up the pavilion, over the girdle, onto the crown
+  const angs = sh === 2 ? [0, 1, 2, 3].map(i => Math.PI / 4 + i * Math.PI / 2) : [0, 1, 2, 3, 4, 5].map(i => Math.PI / 6 + i * Math.PI / 3);
+  const tipG = new THREE.SphereGeometry(.046, 20, 14).scale(1, .72, 1);
+  claws = angs.map(a => {
+    const ro = outline(sh, a), hold = new THREE.Group(), piv = new THREE.Group();
+    hold.rotation.y = -a; piv.position.set(.09, -.03, 0); hold.add(piv); clawG.add(hold);
+    const pts = [[.09, -.03], [.17, .12], [ro * .8, .32], [ro + .034, YG - .03], [ro + .03, YG + .045], [ro - .018, YG + .082]].map(([x, y]) => V3(x - .09, y + .03, 0));
+    piv.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), LOW ? 36 : 64, .034, LOW ? 8 : 14), M.metal));
+    const tip = new THREE.Mesh(tipG, M.metal); tip.position.copy(pts[pts.length - 1]); tip.rotation.z = -.5; piv.add(tip);
+    return { piv, tip };
+  });
+  // gallery rails
+  const rail = (r, y, tube) => {
+    const m = new THREE.Mesh(new THREE.TorusGeometry(r, tube, 10, sh === 2 ? 4 : 96).rotateX(Math.PI / 2), M.metal);
+    if (sh === 2) m.rotation.y = Math.PI / 4; else m.scale.set(SHAPES[sh].sx, 1, SHAPES[sh].sz);
+    m.position.y = y; railG.add(m);
+  };
+  rail(sh === 2 ? outline(2, 0) * .8 : .4, .32, .022); rail(.17, .12, .02);
+  shapeNow = sh;
+}
+
+/* ---------- scroll choreography ---------- */
+let vh = innerHeight, keys = [], A = {};
+const mob = () => innerWidth < 760;
+function states() {
+  const m = mob(), Q = (d, mo) => ({ ex: 0, pv: .45, spin: .3, ...(m ? mo : d) });
+  return {
+    hero:   Q({ x: 1.3, y: -.05, s: 1.02, rx: .42, ry: .5, rz: -.1, spin: 1 }, { x: 0, y: 1.05, s: .6, rx: .42, ry: .5, rz: -.06, spin: 1 }),
+    stone0: Q({ x: 1.05, y: -.05, s: 2.5, rx: .62, ry: 0, rz: 0, pv: 1, spin: .4 }, { x: -.25, y: 1.6, s: 1.15, rx: .95, ry: 0, rz: 0, pv: 1, spin: .4 }),
+    stone1: Q({ x: .95, y: -.1, s: 2.9, rx: .95, ry: .6, rz: 0, pv: 1, spin: .3 }, { x: -.25, y: 1.6, s: 1.25, rx: 1.15, ry: .6, rz: 0, pv: 1, spin: .3 }),
+    apart0: Q({ x: .55, y: -.3, s: .9, rx: .32, ry: .2, rz: 0, spin: .12 }, { x: -.3, y: .7, s: .5, rx: .32, ry: .2, rz: 0, spin: .12 }),
+    apart1: Q({ x: .55, y: -.6, s: .9, rx: .3, ry: .4, rz: 0, ex: 1, spin: .12 }, { x: -.3, y: .45, s: .45, rx: .3, ry: .4, rz: 0, ex: 1, spin: .12 }),
+    apart2: Q({ x: .55, y: -.45, s: .95, rx: .9, ry: .6, rz: 0, ex: 1, pv: .3, spin: .12 }, { x: -.3, y: .6, s: .48, rx: .9, ry: .6, rz: 0, ex: 1, pv: .3, spin: .12 }),
+    make:   Q({ x: 1.25, y: -.1, s: 1.05, rx: .5, ry: .9, rz: -.08, spin: .45 }, { x: .7, y: 2.05, s: .4, rx: .5, ry: .9, rz: -.05, spin: .45 }),
+    fit:    Q({ x: 1.3, y: -.15, s: .95, rx: .3, ry: 1.6, rz: -.12, spin: .5 }, { x: 0, y: 1.6, s: .5, rx: .3, ry: 1.6, rz: -.08, spin: .5 }),
+    foot:   { x: m ? 0 : .55, y: m ? .2 : -.2, s: m ? .5 : .72, rx: .7, ry: 2, rz: .3, ex: 0, pv: .45, spin: .6 },
+  };
+}
+function layout() {
+  vh = innerHeight;
+  const top = el => el.getBoundingClientRect().top + scrollY, st = states();
+  const s0 = top($('#stone')), sSpan = $('#stone').offsetHeight - vh, a0 = top($('#apart')), aSpan = $('#apart').offsetHeight - vh;
+  const mk = top($('#make')), ft = top($('#fit')), fo = top($('#foot')), max = document.documentElement.scrollHeight - vh;
+  A = { s0, sSpan, a0, aSpan };
+  keys = [[0, st.hero], [vh * .2, st.hero], [s0 - vh * .05, st.stone0], [s0 + sSpan * .9, st.stone1],
+    [a0 - vh * .1, st.apart0], [a0 + aSpan * .38, st.apart1], [a0 + aSpan * .78, st.apart2], [a0 + aSpan * .95, st.apart2],
+    [mk - vh * .12, st.make], [mk + vh * .3, st.make], [ft - vh * .1, st.fit], [Math.min(Math.max(ft + vh * .2, fo - vh * .6), max - vh * .4), st.fit], [max, st.foot]];
+  for (let i = 1; i < keys.length; i++) if (keys[i][0] <= keys[i - 1][0]) keys[i][0] = keys[i - 1][0] + 1;
+}
+const KS = ['x', 'y', 's', 'rx', 'ry', 'rz', 'ex', 'pv', 'spin'];
+function stateAt(y) {
+  if (y <= keys[0][0]) return keys[0][1];
+  for (let i = 0; i < keys.length - 1; i++) {
+    const [p0, a] = keys[i], [p1, b] = keys[i + 1];
+    if (y < p1) { const e = ease(clamp((y - p0) / (p1 - p0))), o = {}; KS.forEach(k => o[k] = a[k] + (b[k] - a[k]) * e); return o; }
+  }
+  return keys[keys.length - 1][1];
+}
+
+/* ---------- labels with thin leader lines ---------- */
+const tagsEl = $('#tags'), svg = tagsEl.querySelector('svg');
+function mkTag(txt, pts) {
+  const el = document.createElement('div'); el.className = 'tag'; tagsEl.appendChild(el);
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path'), dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  dot.setAttribute('r', 2.5); svg.append(path, dot);
+  const t = { el, path, dot, pts, set(x) { el.innerHTML = `<b>${x[0]}</b><span>${x[1]}</span>`; } };
+  t.set(txt); return t;
+}
+const around = (obj, r, y, axis = 'y') => () => Array.from({ length: 12 }, (_, i) => {
+  const a = i / 12 * TAU, v = axis === 'y' ? V3(Math.cos(a) * r, y, Math.sin(a) * r) : V3(Math.cos(a) * r, Math.sin(a) * r, y);
+  return obj.localToWorld(v);
+});
+const C4 = [
+  mkTag(T.c4[0], () => around(gem, .38, .06)()),     // cut: the crown facets
+  mkTag(T.c4[1], () => around(gem, .06, .16)()),     // colour: through the table
+  mkTag(T.c4[2], () => around(gem, .2, -.24)()),     // clarity: deep in the pavilion
+  mkTag(T.c4[3], () => around(gem, .5, 0)()),        // carat: the girdle
+];
+const PARTS = [
+  mkTag(T.parts[0], () => around(gem, .45, 0)()),
+  mkTag(T.parts[1], () => claws.map(c => c.tip.localToWorld(V3(0, 0, 0)))),
+  mkTag(T.parts[2], () => around(railG.children[0], .4, 0)()),
+  mkTag(T.parts[3], around(R, 1.18, 0, 'z')),
+  mkTag(T.parts[4], () => [R.localToWorld(V3(0, -RIN + .004, 0))]),
+];
+const pv = V3();
+function drawTags(list, op) {
+  list.forEach(t => { const o = op.toFixed(3); t.el.style.opacity = o; t.path.style.opacity = o; t.dot.style.opacity = o; });
+  if (op < .01) return;
+  const w = innerWidth, h = innerHeight, m = mob();
+  const a = list.map(t => {
+    let ax = -1e9, ay = 0;
+    for (const p of t.pts()) { pv.copy(p).project(camera); const sx = (pv.x * .5 + .5) * w; if (sx > ax) { ax = sx; ay = (-pv.y * .5 + .5) * h; } }
+    return { t, ax, ay, ly: ay };
+  }).sort((p, q) => p.ay - q.ay);
+  const gap = m ? 30 : 50;
+  for (let i = 1; i < a.length; i++) a[i].ly = Math.max(a[i].ly, a[i - 1].ly + gap);
+  const over = a.length ? Math.max(0, a[a.length - 1].ly - (h - (m ? 40 : 60))) : 0;   // keep the column on screen
+  const right = Math.max(...a.map(q => q.ax));
+  a.forEach(q => {
+    q.ly -= over;
+    const tw = q.t.el.offsetWidth;
+    const col = m ? Math.min(Math.max(right + 12, w - 140), w - 16 - tw) : Math.min(Math.max(right + 40, w * .7), w - 30 - tw);
+    q.t.path.setAttribute('d', `M${q.ax.toFixed(1)} ${q.ay.toFixed(1)}L${(col - 18).toFixed(1)} ${q.ly.toFixed(1)}H${col.toFixed(1)}`);
+    q.t.dot.setAttribute('cx', q.ax.toFixed(1)); q.t.dot.setAttribute('cy', q.ay.toFixed(1));
+    q.t.el.style.transform = `translate(${(col + 8).toFixed(1)}px,${(q.ly - (m ? 7 : 17)).toFixed(1)}px)`;
+  });
+}
+
+/* ---------- configurator ---------- */
+const cfg = { metal: 0, shape: 0, ct: 1 };
+const money = v => new Intl.NumberFormat(T.loc, { style: 'currency', currency: T.cur, maximumFractionDigits: 0 }).format(Math.round(v * T.fx / T.step) * T.step);
+const num = (v, d = 2) => v.toLocaleString(T.loc, { minimumFractionDigits: d, maximumFractionDigits: d });
+const diam = ct => .76 * Math.cbrt(ct);   // 1 ct round = 6.5 mm on a size-17 band
+function sizeTxt() {
+  const d = 6.5 * Math.cbrt(cfg.ct), s = SHAPES[cfg.shape];
+  const mm = cfg.shape === 0 ? num(d, 1) : cfg.shape === 1 ? `${num(d * s.sz, 1)} × ${num(d * s.sx, 1)}` : `${num(d * .84, 1)} × ${num(d * .84, 1)}`;
+  return `${num(cfg.ct)} ${T.ct} · ${mm} ${T.mm}`;
+}
+function refresh() {
+  const stone = 5600 * Math.pow(cfg.ct, 1.85) * SHAPES[cfg.shape].k, base = METALS[cfg.metal].base;
+  const ctT = `${num(cfg.ct)} ${T.ct}`, pr = money(base + stone);
+  $('#ctv').textContent = ctT; $('#price').textContent = pr;
+  $('#split').textContent = T.split(money(base), money(stone));
+  $('#sum').textContent = T.sum(T.shapes[cfg.shape], ctT, T.metals[cfg.metal], pr);
+  C4[3].set([T.c4[3][0], sizeTxt()]);
+  PARTS[0].set([T.parts[0][0], T.cuts[cfg.shape]]);
+  [['#metal', cfg.metal], ['#shape', cfg.shape]].forEach(([s, v]) => document.querySelectorAll(s + ' button').forEach((b, k) => { b.classList.toggle('on', k === v); b.setAttribute('aria-checked', k === v); }));
+}
+let mT = 1; const mFrom = new THREE.Color(), mTo = new THREE.Color(); let rFrom = METALS[0].rough;
+$('#metal').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b || +b.dataset.v === cfg.metal) return;
+  if (HALL[+b.dataset.v] !== HALL[cfg.metal]) { M.engr.alphaMap.dispose(); M.engr.alphaMap = engraving(HALL[+b.dataset.v]); }
+  cfg.metal = +b.dataset.v; mFrom.copy(M.metal.color); rFrom = M.metal.roughness; mTo.set(METALS[cfg.metal].color); mT = 0; refresh();
+});
+let swapT = 1, swapTo = 0;
+$('#shape').addEventListener('click', e => { const b = e.target.closest('button'); if (!b || +b.dataset.v === cfg.shape) return; cfg.shape = swapTo = +b.dataset.v; swapT = 0; refresh(); });
+$('#ct').addEventListener('input', e => { cfg.ct = +e.target.value; refresh(); });
+
+/* ---------- pointer: tilt + drag to spin ---------- */
+const mouse = { x: 0, y: 0, sx: 0, sy: 0 }, drag = { on: false, x: 0, v: 0, ry: 0 };
+addEventListener('pointermove', e => {
+  mouse.x = e.clientX / innerWidth * 2 - 1; mouse.y = e.clientY / innerHeight * 2 - 1;
+  if (!drag.on) return; const dx = e.clientX - drag.x; drag.x = e.clientX; drag.v = dx * .011; drag.ry += drag.v;
+});
+addEventListener('pointerdown', e => {
+  if (e.pointerType !== 'mouse' || e.button !== 0 || e.target.closest('a,button,input,label,textarea,form')) return;
+  drag.on = true; drag.x = e.clientX; drag.v = 0; document.body.classList.add('dragging');
+});
+addEventListener('pointerup', () => { drag.on = false; document.body.classList.remove('dragging'); });
+
+/* ---------- reveal + form ---------- */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .2 });
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
+const today = new Date(); today.setDate(today.getDate() + 1); $('#day').min = today.toISOString().slice(0, 10);
+$('#buy').addEventListener('submit', e => { e.preventDefault(); $('#note').hidden = false; });
+
+/* ---------- loop ---------- */
+const cur = { ...states().hero };
+const root = document.documentElement.style, hint = $('.hint');
+let last = performance.now(), spinA = 0, hs = diam(1);
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now; const t = now / 1000;
+  if (lenis) lenis.raf(now);
+  const y = scrollY, tgt = stateAt(y), k = 1 - Math.exp(-dt * 7);
+  KS.forEach(q => cur[q] += (tgt[q] - cur[q]) * k);
+
+  if (!drag.on) {
+    drag.ry += drag.v; drag.v *= Math.exp(-dt * 3.2);
+    if (Math.abs(drag.v) < .003) { const tt = Math.round(drag.ry / TAU) * TAU; drag.ry += (tt - drag.ry) * (1 - Math.exp(-dt * 1.6)); }
+  }
+  mouse.sx += (mouse.x - mouse.sx) * (1 - Math.exp(-dt * 4)); mouse.sy += (mouse.y - mouse.sy) * (1 - Math.exp(-dt * 4));
+  const idle = reduce ? .15 : 1;
+  hint.style.opacity = (1 - sstep(0, vh * .12, y)).toFixed(3);
+  spinA += cur.spin * dt * .42 * idle;
+  rig.position.set(cur.x, cur.y + Math.sin(t * 1.1) * .03 * idle, 0);
+  rig.rotation.set(mouse.sy * .12, drag.ry + mouse.sx * .2, 0);
+  W.rotation.set(cur.rx, cur.ry, cur.rz); W.scale.setScalar(cur.s);
+  SP.rotation.y = spinA;
+
+  // carat: head scales round its seat on the band; shape: the stone shrinks away, swaps, grows back
+  hs += (diam(cfg.ct) - hs) * (1 - Math.exp(-dt * 6));
+  let pop = 1;
+  if (swapT < 1) { swapT = Math.min(1, swapT + dt / .7); if (swapT >= .5 && shapeNow !== swapTo) buildHead(swapTo); pop = Math.abs(swapT - .5) * 2; pop = pop * pop * (3 - 2 * pop); }
+  head.scale.setScalar(hs);
+  R.position.y = -cur.pv * (HEADY + YG * hs);
+  const ex = cur.ex;
+  gemG.position.y = YG + ex * 1.05; gemG.rotation.set(ex * .25, ex * .8, 0); gemG.scale.setScalar(pop);
+  claws.forEach(c => { c.piv.rotation.z = -ex * .26; c.piv.scale.setScalar(.25 + .75 * pop); });
+  railG.position.y = -ex * .05;
+  head.position.y = HEADY + ex * .32;
+
+  if (mT < 1) { mT = Math.min(1, mT + dt / .8); const e = ease(mT); M.metal.color.copy(mFrom).lerp(mTo, e); M.metal.roughness = rFrom + (METALS[cfg.metal].rough - rFrom) * e; M.engr.color.copy(M.metal.color).multiplyScalar(.3); }
+
+  // the studio turns slowly with scroll, time and the pointer: that is what makes the facets flash
+  const envA = y / vh * .32 + mouse.sx * .35 + t * .06 * idle;
+  scene.environmentRotation.y = envA;
+  U.envR.value.setFromMatrix4(new THREE.Matrix4().makeRotationY(envA));
+  U.time.value = t;
+  U.size.value = 40 * cur.s * hs * renderer.getPixelRatio() * (mob() ? 1.3 : 1);
+  root.setProperty('--gx', (50 + cur.x / 4.3 * 50).toFixed(1) + '%');
+  root.setProperty('--gy', (50 - cur.y / 2.7 * 50).toFixed(1) + '%');
+
+  scene.updateMatrixWorld();
+  renderer.render(scene, camera);
+  drawTags(C4, sstep(A.s0 - vh * .15, A.s0 + vh * .1, y) * (1 - sstep(A.s0 + A.sSpan - vh * .05, A.s0 + A.sSpan + vh * .25, y)));
+  drawTags(PARTS, sstep(.7, .95, ex) * sstep(A.a0 - vh * .3, A.a0, y) * (1 - sstep(A.a0 + A.aSpan + vh * .05, A.a0 + A.aSpan + vh * .3, y)));
+  requestAnimationFrame(frame);
+}
+
+function resize() {
+  renderer.setSize(innerWidth, innerHeight, false);
+  camera.aspect = innerWidth / innerHeight;
+  camera.fov = innerWidth / innerHeight < .8 ? 36 : 30;
+  camera.updateProjectionMatrix();
+  layout();
+}
+addEventListener('resize', resize);
+
+(async () => {
+  try { await Promise.all(['800 100px Unbounded', '500 20px "JetBrains Mono"'].map(f => document.fonts.load(f))); } catch (e) {}
+  const st = studio();
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(st, .015).texture;
+  const cubeRT = new THREE.WebGLCubeRenderTarget(LOW ? 256 : 512, { type: THREE.HalfFloatType, generateMipmaps: false, minFilter: THREE.LinearFilter });
+  new THREE.CubeCamera(.1, 100, cubeRT).update(renderer, st);
+  U.env.value = cubeRT.texture;
+  M.engr.alphaMap = engraving(HALL[0]);
+  engrMesh = new THREE.Mesh(sweep(64, 12, -Math.PI / 2 - .55, -Math.PI / 2 + .55, Math.PI * 1.5 - .8, Math.PI * 1.5 + .8, false, .0025), M.engr);
+  R.add(engrMesh);
+  buildHead(0);
+  refresh();
+  resize();
+  setTimeout(layout, 600);
+  renderer.compile(scene, camera);
+  requestAnimationFrame(t => { last = t; frame(t); $('#ld').classList.add('off'); });
+})();
+</script>
+</body>
+</html>
