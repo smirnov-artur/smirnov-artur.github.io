@@ -1,5 +1,21 @@
 [
  {
+  "slug": "gad-islands",
+  "cat": "web",
+  "ru": [
+   "Туры g.a.d. islands",
+   "Семь дней на острове по прокрутке: рассвет над рифом, вилла над лагуной, качели на закате, часы острова идут вместе с историей"
+  ],
+  "en": [
+   "g.a.d. islands tours",
+   "Seven island days as you scroll: sunrise over the reef, a villa over the lagoon, a swing at sunset, with island time ticking along"
+  ],
+  "v": "gad-islands",
+  "ve": "gad-islands-en",
+  "href": "https://smirnov-artur.github.io/cases/gad-islands/ru/",
+  "hre": "https://smirnov-artur.github.io/cases/gad-islands/"
+ },
+ {
   "slug": "gad-villa",
   "cat": "web",
   "ru": [
