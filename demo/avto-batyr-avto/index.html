@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Батыр Авто · демо ответа</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f4f0;--card:#fff;--ink:#0a0a0c;--mute:#6b6b72;--line:#e3e3dd;--acc:#b8e62e;--acc-ink:#0a0a0c;
+--phone:#0a0a0c;--screen:#fff;--head:#f7f7f7;--in:#f0f0f0;--out:#e6f7c8;--warn:#c2410c;--ok:#15803d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a0a0c;--card:#16161a;--ink:#f2f2ee;--mute:#9a9aa3;--line:#2a2a30;
+--phone:#2a2a30;--screen:#111114;--head:#1a1a1f;--in:#24242a;--out:#2c3a12;--warn:#fb923c;--ok:#86efac}}
+:root[data-theme="dark"]{--bg:#0a0a0c;--card:#16161a;--ink:#f2f2ee;--mute:#9a9aa3;--line:#2a2a30;
+--phone:#2a2a30;--screen:#111114;--head:#1a1a1f;--in:#24242a;--out:#2c3a12;--warn:#fb923c;--ok:#86efac}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 Onest,system-ui,sans-serif;padding:20px 16px 40px}
+main{max-width:440px;margin:0 auto}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.logo{font-weight:700;letter-spacing:.02em}.logo b{background:var(--acc);color:var(--acc-ink);padding:1px 6px;border-radius:6px}
+#tema{background:none;border:1px solid var(--line);color:var(--ink);border-radius:20px;padding:4px 12px;font:inherit;font-size:14px;cursor:pointer}
+h1{font-size:24px;line-height:1.2;margin-bottom:6px}
+.lead{color:var(--mute);margin-bottom:20px}
+.phone{background:var(--phone);border-radius:38px;padding:10px;box-shadow:0 20px 50px rgba(0,0,0,.18)}
+.screen{background:var(--screen);border-radius:30px;overflow:hidden;min-height:560px;display:flex;flex-direction:column}
+.status{display:flex;justify-content:space-between;padding:10px 22px 4px;font-size:13px;font-weight:600}
+.chead{display:flex;gap:10px;align-items:center;padding:10px 14px;background:var(--head);border-bottom:1px solid var(--line)}
+.pic{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#8fa3b8,#3b4452);flex:none;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:700}
+.chead b{display:block;font-size:14px;line-height:1.25;overflow-wrap:anywhere}.chead small{color:var(--mute);font-size:12px;display:block}
+.chead .pr{font-size:13px;font-weight:600}
+.msgs{padding:14px 12px;display:flex;flex-direction:column;gap:8px;flex:1}
+.day{align-self:center;font-size:12px;color:var(--mute);margin-bottom:4px}
+.m{max-width:84%;padding:8px 12px 18px;border-radius:16px;position:relative;font-size:15px;overflow-wrap:anywhere}
+.m time{position:absolute;right:10px;bottom:3px;font-size:11px;color:var(--mute)}
+.in{background:var(--in);align-self:flex-start;border-bottom-left-radius:4px}
+.out{background:var(--out);align-self:flex-end;border-bottom-right-radius:4px}
+.typing{align-self:flex-end;background:var(--out);border-radius:16px;padding:10px 14px;display:flex;gap:4px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--mute);animation:b 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{50%{opacity:.25}}
+.sec{align-self:flex-end;font-size:12px;font-weight:600;background:var(--acc);color:var(--acc-ink);padding:2px 8px;border-radius:10px}
+.zap{align-self:center;font-size:13px;font-weight:600;color:var(--ok);border:1px solid currentColor;border-radius:12px;padding:4px 10px;margin-top:4px}
+.anim .typing{animation:hide 0s 2.6s forwards}
+.anim .s{opacity:0;animation:show .35s forwards}
+@keyframes show{to{opacity:1}}@keyframes hide{to{opacity:0;height:0;padding:0;margin-top:-8px}}
+@media (prefers-reduced-motion:reduce){.anim .typing{display:none}.anim .s{opacity:1;animation:none}}
+.inp{margin:8px 12px 14px;border:1px solid var(--line);border-radius:20px;padding:8px 14px;color:var(--mute);font-size:14px}
+.note{color:var(--mute);font-size:13px;margin:12px 4px 0}
+section{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px 18px;margin-top:28px}
+h2{font-size:20px;line-height:1.25;margin-bottom:4px}
+.tag{display:inline-block;font-size:12px;font-weight:600;color:var(--warn);border:1px solid currentColor;border-radius:8px;padding:0 6px;margin-bottom:12px}
+ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:10px}
+li{display:grid;grid-template-columns:78px 1fr;gap:2px 10px;padding:10px 0;border-top:1px solid var(--line)}
+li .t{grid-row:span 2;font-size:13px;color:var(--mute);font-variant-numeric:tabular-nums}
+li .r{font-size:14px;color:var(--warn)}
+footer{margin-top:28px;padding:0 4px;display:flex;flex-direction:column;gap:8px;font-size:15px}
+footer b{font-weight:600}
+a{color:inherit;text-decoration-color:var(--acc);text-decoration-thickness:2px;text-underline-offset:3px;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<main>
+<header><span class="logo"><b>g.a.d.</b></span><button id="tema" type="button" aria-label="Сменить тему">Тема</button></header>
+<h1>Покупатель пишет в 23:40. Ответ через 8 секунд.</h1>
+<p class="lead">Батыр Авто, Казань: вы закрываетесь в 20:00. Так ИИ-продавец ответил бы покупателю, который пишет в чат Авито поздно вечером.</p>
+
+<div class="phone" role="img" aria-label="Чат Авито: покупатель спрашивает в 23:40 про машину, ответ приходит через 8 секунд, запись на осмотр на 11:00">
+<div class="screen anim">
+<div class="status"><span>23:40</span><span>●●● 4G</span></div>
+<div class="chead"><div class="pic">VOLKSW</div><div><b>Volkswagen Polo, 2019</b><span class="pr">1 250 000 ₽</span><small>Батыр Авто · Казань · машина-пример</small></div></div>
+<div class="msgs">
+<span class="day">Сегодня · чат Авито</span>
+<div class="m in s" style="animation-delay:.2s">Ещё в продаже? Торг есть? Возьмёте мою Солярис в зачёт?<time>23:40</time></div>
+<div class="typing" aria-hidden="true"><i></i><i></i><i></i></div>
+<span class="sec s" style="animation-delay:2.6s">ответ через 8 сек</span>
+<div class="m out s" style="animation-delay:2.6s">Да, в продаже. Солярис в зачёт возьмём, какой год и пробег? Торг — на осмотре, когда посмотрите машину.<time>23:40</time></div>
+<div class="m in s" style="animation-delay:4.2s">2017, пробег 120 тыс<time>23:41</time></div>
+<div class="m out s" style="animation-delay:5.4s">Хорошо, Солярис оценим на месте, там же скажем цену зачёта. Завтра открыты с 9:00, во сколько удобно подъехать?<time>23:41</time></div>
+<div class="m in s" style="animation-delay:6.8s">Давайте в 11<time>23:42</time></div>
+<div class="m out s" style="animation-delay:8s">Хорошо, завтра в 11:00 ждём, Чистопольская улица, 69. Солярис берите с собой вместе с ПТС, оценим сразу.<time>23:42</time></div>
+<span class="zap s" style="animation-delay:8.8s">✓ Запись на осмотр: завтра, 11:00</span>
+</div>
+<div class="inp">Сообщение</div>
+</div>
+</div>
+<p class="note">Машина в чате — пример: наличие на сайте не видно. В работе ИИ берёт машины и цены из ваших объявлений на Авито, а торг и цену зачёта оставляет вам.</p>
+
+<section>
+<h2>Вот что было бы в разборе ваших чатов</h2>
+<span class="tag">пример, не ваши данные</span>
+<ul><li><span class="t">Пт, 23:12</span><span class="q">«Polo ещё продаётся? В кредит без взноса можно?»</span><span class="r">ответ в 10:05, покупатель больше не писал</span></li><li><span class="t">Сб, 21:47</span><span class="q">«Гранту 2015 в зачёт возьмёте?»</span><span class="r">без ответа</span></li><li><span class="t">Вт, 14:20</span><span class="q">«Можно завтра посмотреть после работы?»</span><span class="r">ответ через 3 ч 10 мин, покупатель больше не писал</span></li></ul>
+<p class="note">Настоящий разбор — по вашим чатам Авито за 30 дней: кто писал, когда получил ответ и кто ушёл без ответа. Бесплатно.</p>
+</section>
+
+<footer>
+<div><b>Что это:</b> ИИ-продавец в чатах Авито. Отвечает покупателям за секунды днём и ночью по вашим машинам в наличии, спрашивает про трейд-ин и кредит, записывает на осмотр и возвращает тех, кто замолчал.</div>
+<div><b>Цена:</b> 7 000 ₽ в месяц, первые 14 дней бесплатно. Разбор чатов за 30 дней — бесплатно.</div>
+<div><b>Связаться:</b> ответьте на письмо или напишите в <a href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a> · почта <a href="mailto:paladei702@gmail.com">paladei702@gmail.com</a></div>
+</footer>
+</main>
+<script>
+(function(){var r=document.documentElement,k="gad-tema";
+try{var s=localStorage.getItem(k);if(s)r.setAttribute("data-theme",s)}catch(e){}
+document.getElementById("tema").onclick=function(){
+var dark=r.getAttribute("data-theme")?r.getAttribute("data-theme")==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+var n=dark?"light":"dark";r.setAttribute("data-theme",n);try{localStorage.setItem(k,n)}catch(e){}};})();
+</script>
+</body>
+</html>
