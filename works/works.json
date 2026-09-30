@@ -1,14 +1,46 @@
 [
  {
+  "slug": "gad-honey",
+  "cat": "web",
+  "ru": [
+   "Мёд g.a.d. honey",
+   "Пчёлы на подсолнухе по прокрутке, сота наполняется, счётчик облетевших цветков, ниже сорта, наборы и доставка"
+  ],
+  "en": [
+   "g.a.d. honey",
+   "Bees on a sunflower as you scroll, the comb fills and a flower counter climbs, then the honeys, gift sets and delivery"
+  ],
+  "v": "gad-honey",
+  "ve": "gad-honey-en",
+  "href": "https://smirnov-artur.github.io/cases/gad-honey/ru/",
+  "hre": "https://smirnov-artur.github.io/cases/gad-honey/"
+ },
+ {
+  "slug": "gad-tea",
+  "cat": "web",
+  "ru": [
+   "Чайная g.a.d. tea",
+   "Чайная церемония матча по прокрутке: вода нагревается до 80 °C, венчик, чаша, ниже чаи, посуда и запись на церемонию"
+  ],
+  "en": [
+   "g.a.d. tea house",
+   "A matcha ceremony as you scroll: water heats to 80 °C, the whisk, the bowl, then teas, tea ware and ceremony booking"
+  ],
+  "v": "gad-tea",
+  "ve": "gad-tea-en",
+  "href": "https://smirnov-artur.github.io/cases/gad-tea/ru/",
+  "hre": "https://smirnov-artur.github.io/cases/gad-tea/"
+ },
+ {
   "slug": "gad-cycles",
   "cat": "web",
   "ru": [
-   "Веломагазин g.a.d. cycles",
-   "Ночной заезд под дождём по прокрутке: серпантин, мокрая дорога, g.a.d. на шлеме, велокомпьютер считает километры, ниже подбор рамы по росту"
+   "Непромокаемая велоодежда g.a.d. rain",
+   "Ночной заезд под дождём по прокрутке: капли скатываются с куртки, туман, серпантин, датчик «сухо внутри 100 %», ниже куртка, штаны, бахилы и подбор размера"
   ],
   "en": [
-   "g.a.d. cycles bike shop",
-   "A rainy night ride as you scroll: the switchback, wet tarmac, g.a.d. on the helmet, a bike computer counting the km, then frame sizing by height"
+   "g.a.d. rain cycling rainwear",
+   "A rainy night ride as you scroll: drops bead off the jacket, fog, the switchback, a 'dry inside 100%' gauge, then jacket, trousers, overshoes and sizing"
   ],
   "v": "gad-cycles",
   "ve": "gad-cycles-en",
