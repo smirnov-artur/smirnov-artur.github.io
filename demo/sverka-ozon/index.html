@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Сверка сгоревшего склада Ozon</title>
+<meta name="description" content="Что лежало на сгоревшем складе Ozon против того, что начислили: пропущенные товары, недосчитанные штуки, арифметика отчёта. Считает браузер, файлы никуда не уходят.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{--bg:#F4F5F7;--card:#FFFFFF;--ink:#15181E;--muted:#5B6371;--line:#DCE0E6;--accent:#1F5BD8;--ok:#0B7A55;--warn:#B4540A;
+  --f:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;--m:"JetBrains Mono",ui-monospace,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root{--bg:#0F1216;--card:#171B21;--ink:#E6E9EE;--muted:#9AA3B2;--line:#2A303A;--accent:#7FA2FF;--ok:#35C48E;--warn:#F0A25A;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--f);padding:28px 16px 56px}
+main{max-width:780px;margin:0 auto;display:grid;gap:20px}
+h1{font-size:clamp(26px,5vw,36px);line-height:1.12;margin:0;text-wrap:balance}
+p{margin:0}
+.muted{color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:14px}
+ol{margin:0;padding-left:20px;display:grid;gap:6px}
+label{font-weight:600}
+input[type=file]{font:inherit;max-width:100%}
+select{font:inherit;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:600 15px var(--f);padding:11px 18px;border-radius:10px;border:1px solid var(--accent);cursor:pointer}
+.go{background:var(--accent);color:#fff}
+.alt{background:transparent;color:var(--accent)}
+button:disabled{opacity:.5;cursor:wait}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.status{font:500 14px var(--m);color:var(--muted)}
+.status.ok{color:var(--ok)}.status.err{color:var(--warn)}
+pre{margin:0;white-space:pre-wrap;word-break:break-word;font:13px/1.5 var(--m);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;max-height:70vh;overflow:auto}
+.cta{background:var(--ink);color:var(--bg);border-radius:12px;padding:18px;display:grid;gap:6px}
+.cta a{color:inherit}
+small{color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<main>
+  <div class="muted" style="font:600 12px var(--m);letter-spacing:.06em;text-transform:uppercase">g.a.d. · для продавцов Ozon</div>
+  <h1>Сверка по сгоревшему складу Ozon</h1>
+  <p>Летом сгорели склады Ozon, первый транш уже пришёл, окончательный расчёт будет после инвентаризации. Эта страница сравнивает, что у вас лежало на сгоревшем складе, с тем, что Ozon начислил, и показывает три вещи: какие товары пропущены целиком, где недосчитали штуки и где не сходится арифметика самого отчёта. У каждой цифры указан файл, строка и колонка, чтобы было что показать поддержке.</p>
+  <p class="muted">Считает ваш браузер, файлы никуда не отправляются. Сумму будущей выплаты страница не называет: методику страховщик не раскрыл.</p>
+
+  <section class="card">
+    <b>Нужны два файла из кабинета</b>
+    <ol>
+      <li>Аналитика → Отчёты → Продажи со склада Ozon → оборотная ведомость по товарам. Период должен <b>начинаться датой пожара</b> на вашем складе.</li>
+      <li>Финансы → Документы → Компенсации и прочие начисления → отчёт о компенсациях.</li>
+    </ol>
+    <div class="row"><label for="f">Файлы xlsx</label><input id="f" type="file" accept=".xlsx" multiple></div>
+    <div class="row"><label for="nds">Ваш режим НДС</label>
+      <select id="nds"><option>ОСНО</option><option>УСН-7</option><option>УСН-5</option><option>льгота-10</option><option>без НДС</option></select></div>
+    <div class="row"><button class="go" id="go" type="button" disabled>Сверить</button><button class="alt" id="demo" type="button" disabled>Показать на примере</button></div>
+    <div class="status" id="st">Загружаю движок сверки, 10–20 секунд…</div>
+  </section>
+
+  <pre id="out" hidden></pre>
+
+  <section class="cta">
+    <b>Нашлись расхождения?</b>
+    <span>Разберу их с вами и соберу обращение в поддержку Ozon и страховую с таблицей по каждому товару — 3 000 ₽, фиксированно. Напишите в <a href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a> или на почту paladei702@gmail.com.</span>
+    <small style="color:inherit;opacity:.7">Логин, ключи и доступ в кабинет не нужны и не будут запрошены.</small>
+  </section>
+  <small>Ещё для продавцов: <a href="../pretenziya-wb/">проценты за задержку выплат WB</a> · <a href="../strahovka-ozon/">страховка Ozon с 5 октября</a>. g.a.d.</small>
+</main>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js" integrity="sha384-i3R37b3tF+HWudsUf1VSEOY2YxwSNMqY8DQa9Z0O3xh+NkJ9o+yjcGyIi5huj+nB" crossorigin="anonymous"></script>
+<script>
+(async () => {
+  const st = document.getElementById('st'), out = document.getElementById('out');
+  const go = document.getElementById('go'), dm = document.getElementById('demo');
+  const say = (t, cls) => { st.textContent = t; st.className = 'status ' + (cls || ''); };
+  let py;
+  try {
+    py = await loadPyodide();
+    await py.loadPackage(['micropip']);
+    await py.runPythonAsync("import micropip\nawait micropip.install('openpyxl')");
+    for (const f of ['sverka.py', 'test_sverka.py']) {
+      const r = await fetch(f); if (!r.ok) throw new Error(f + ': ' + r.status);
+      py.FS.writeFile('/home/pyodide/' + f, await r.text());
+    }
+    await py.runPythonAsync("import sys, io, contextlib\nsys.path.insert(0, '/home/pyodide')\nimport sverka");
+    say('Готово. Выберите два файла или посмотрите пример.', 'ok');
+    go.disabled = dm.disabled = false;
+  } catch (e) { say('Движок не загрузился: ' + e.message + '. Обновите страницу.', 'err'); return; }
+
+  const show = t => { out.textContent = t; out.hidden = false; out.scrollIntoView({block: 'start', behavior: 'smooth'}); };
+
+  dm.addEventListener('click', async () => {
+    dm.disabled = true; say('Считаю пример…');
+    try {
+      show(await py.runPythonAsync("b = io.StringIO()\nwith contextlib.redirect_stdout(b):\n    sverka.demo()\nb.getvalue()"));
+      say('Это выдуманный магазин посуды. Для своего магазина выберите файлы.', 'ok');
+    } catch (e) { say('Не получилось: ' + e.message, 'err'); }
+    dm.disabled = false;
+  });
+
+  go.addEventListener('click', async () => {
+    const files = [...document.getElementById('f').files];
+    if (files.length < 2) { say('Нужны оба файла: оборотная ведомость и отчёт о компенсациях.', 'err'); return; }
+    go.disabled = true; say('Сверяю…');
+    try {
+      const bufs = await Promise.all(files.map(f => f.arrayBuffer()));
+      py.globals.set('imena', py.toPy(files.map(f => f.name)));
+      py.globals.set('dannye', py.toPy(bufs.map(b => new Uint8Array(b))));
+      py.globals.set('rezhim', document.getElementById('nds').value);
+      show(await py.runPythonAsync(
+        "fayly = [(io.BytesIO(bytes(d)), n) for d, n in zip(dannye, imena)]\n" +
+        "itog, svodka, pred = sverka.svertka(fayly, rezhim)\n" +
+        "sverka.otchet(itog, svodka, pred)"));
+      say('Готово. Расчёт по вашим файлам, в интернет они не уходили.', 'ok');
+    } catch (e) {
+      const m = String(e.message || e).trim().split('\n').pop();
+      say('Не получилось: ' + m, 'err');
+    }
+    go.disabled = false;
+  });
+})();
+</script>
+</body>
+</html>
