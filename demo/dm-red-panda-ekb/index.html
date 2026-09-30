@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Red Panda — бронь на Новый год</title>
+<meta name="description" content="Как клиенты Red Panda бронируют Деда Мороза на дом сами: дата, время, район, предоплата, маршрут на 31 декабря.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA; --ink:#15130F; --muted:#6B665C; --card:#FFFFFF; --line:#E4DED2; --soft:#F7F4EE;
+  --acc:#9E2A2B; --acc-ink:#FFFFFF; --acc-soft:#F5E6E3; --pine:#1F4D3A; --gold:#B08A3E;
+  --frame:#15130F; --dis:#B9B3A7; --shadow:0 30px 60px -30px rgba(21,19,15,.35);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E0D0B; --ink:#F1EDE4; --muted:#A39D90; --card:#18171A; --line:#2B2A2D; --soft:#141316;
+    --acc:#D5605A; --acc-ink:#140C0B; --acc-soft:#34201F; --pine:#7DBB9C; --gold:#D6B46A;
+    --frame:#2B2A2D; --dis:#56524B; --shadow:0 30px 60px -30px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E0D0B; --ink:#F1EDE4; --muted:#A39D90; --card:#18171A; --line:#2B2A2D; --soft:#141316;
+  --acc:#D5605A; --acc-ink:#140C0B; --acc-soft:#34201F; --pine:#7DBB9C; --gold:#D6B46A;
+  --frame:#2B2A2D; --dis:#56524B; --shadow:0 30px 60px -30px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 Onest,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
+a{color:inherit}
+button,select{font:inherit;color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px 48px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:28px}
+.brand{font-weight:800;letter-spacing:-.02em;font-size:18px}
+.brand span{font-weight:500;color:var(--muted);font-size:14px;margin-left:6px}
+.tg{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-size:14px;cursor:pointer}
+.eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);font-weight:700}
+h1{font-size:clamp(28px,6vw,50px);line-height:1.04;letter-spacing:-.035em;font-weight:800;max-width:17ch;margin-top:8px;overflow-wrap:anywhere}
+.lead{margin-top:14px;color:var(--muted);max-width:60ch;font-size:17px}
+.lead b{color:var(--ink);font-weight:600}
+.grid{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:40px;align-items:start;margin-top:36px}
+@media (max-width:820px){.grid{grid-template-columns:minmax(0,1fr);gap:36px}}
+
+/* телефон */
+.phone{width:100%;max-width:390px;margin:0 auto;background:var(--frame);border-radius:44px;padding:10px;box-shadow:var(--shadow)}
+.screen{background:var(--soft);border-radius:35px;overflow:hidden}
+.sbar{display:flex;justify-content:space-between;padding:12px 26px 4px;font-weight:600;font-size:13px}
+.ahead{padding:10px 18px 14px;border-bottom:1px solid var(--line);background:var(--card)}
+.ahead b{display:block;font-size:17px;line-height:1.2}
+.ahead small{color:var(--muted);font-size:12.5px}
+.body{padding:14px 14px 18px;display:flex;flex-direction:column;gap:16px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between;gap:8px}
+.lbl i{font-style:normal;text-transform:none;letter-spacing:0;font-weight:500}
+.cal{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.d{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:7px 4px 6px;text-align:center;cursor:pointer;line-height:1.15}
+.d b{display:block;font-size:17px}
+.d small{display:block;font-size:10.5px;color:var(--muted)}
+.d em{display:block;font-style:normal;font-size:11.5px;font-weight:600;margin-top:3px;color:var(--pine)}
+.d[data-t="2"] em{color:var(--gold)}
+.d[data-t="3"] em{color:var(--acc)}
+.d.on{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.d.on small,.d.on em{color:var(--acc-ink)}
+.slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.s{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 0;text-align:center;font-size:13.5px;font-weight:500;cursor:pointer}
+.s:disabled{color:var(--dis);text-decoration:line-through;cursor:default;background:transparent}
+.s.on{outline:2px solid var(--acc);outline-offset:-2px;color:var(--acc);font-weight:700}
+select{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 12px;font-size:15px}
+.sum{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:14px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
+.row span:first-child{color:var(--muted)}
+.row b{text-align:right}
+.row.big{border-top:1px dashed var(--line);margin-top:6px;padding-top:9px;font-size:16px}
+.pay{width:100%;border:0;border-radius:14px;background:var(--acc);color:var(--acc-ink);font-weight:700;font-size:16px;padding:14px;cursor:pointer}
+.note{font-size:12.5px;color:var(--muted);text-align:center;margin-top:-6px}
+.done{display:none;background:var(--acc-soft);border-radius:14px;padding:12px 14px;font-size:13.5px}
+.done.show{display:block}
+
+/* маршрут */
+.side h2{font-size:clamp(22px,4vw,30px);letter-spacing:-.025em;line-height:1.1}
+.side p.sub{color:var(--muted);margin-top:8px;max-width:52ch}
+.pair{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:13.5px}
+.chip b{font-weight:700}
+.route{list-style:none;margin-top:18px;position:relative}
+.stop{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.stop .t{font-weight:700;font-size:15px;line-height:1.2}
+.stop .t small{display:block;color:var(--muted);font-weight:500;font-size:12px}
+.stop .a{font-weight:600;overflow-wrap:anywhere}
+.stop .w{font-size:13px;color:var(--muted);margin-top:2px}
+.tag{display:inline-block;font-size:11px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:0 6px;margin-left:6px;vertical-align:2px}
+.go{font-size:13px;color:var(--muted);padding:6px 0 6px 76px;position:relative}
+.go:before{content:"";position:absolute;left:38px;top:0;bottom:0;border-left:2px dotted var(--line)}
+.tot{margin-top:14px;font-size:14px;color:var(--muted)}
+.tot b{color:var(--ink)}
+
+.foot{margin-top:48px;border-top:1px solid var(--line);padding-top:18px;display:grid;gap:8px;font-size:15px;color:var(--muted);max-width:760px}
+.foot b{color:var(--ink);font-weight:600}
+.foot a{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">g.a.d.<span>для Red Panda</span></div>
+    <button class="tg" id="tg" type="button" aria-label="Сменить тему">Тема</button>
+  </div>
+
+  <div class="eyebrow">Екатеринбург · сезон 20–31 декабря</div>
+  <h1>Бронь Деда Мороза для Red Panda</h1>
+  <p class="lead">Так клиент бронирует визит сам, с телефона: дата, время, район, <b>цена по вашей сетке</b> и предоплата по ссылке вашего банка. Занятое время другим уже не показывается, накладок нет. Ниже — маршрут пары на 31 декабря, он собирается из броней сам.</p>
+
+  <div class="grid">
+    <div class="phone" aria-label="Экран брони на телефоне">
+      <div class="screen">
+        <div class="sbar"><span>12:40</span><span>●●● 5G</span></div>
+        <div class="ahead"><b>Red Panda</b><small>Дед Мороз и Снегурочка на дом</small></div>
+        <div class="body">
+          <div>
+            <div class="lbl">Дата <i>цена за визит</i></div>
+            <div class="cal" id="cal"></div>
+          </div>
+          <div>
+            <div class="lbl">Время <i id="free"></i></div>
+            <div class="slots" id="slots"></div>
+          </div>
+          <div>
+            <div class="lbl">Район</div>
+            <select id="rayon" aria-label="Район"></select>
+          </div>
+          <div class="sum" id="sum"></div>
+          <button class="pay" id="pay" type="button">Внести предоплату</button>
+          <div class="note">Остаток — Деду Морозу после визита</div>
+          <div class="done" id="done"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="eyebrow">пример</div>
+      <h2>31 декабря: маршрут пары №1</h2>
+      <p class="sub">Дед Мороз и Снегурочка видят свой день в телефоне: адреса по порядку, время в пути, кто и что оплатил. Брони в соседних районах ставятся одной паре, чтобы не ездить через весь город.</p>
+      <div class="pair" id="pair"></div>
+      <ol class="route" id="route"></ol>
+      <p class="tot" id="tot"></p>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div><b>Что это.</b> Черновик страницы брони для Red Panda: цены взяты с вашего сайта, адреса в маршруте выдуманы. Заявки из мессенджеров и звонков ложатся в тот же календарь, клиенту уходит напоминание за день.</div>
+    <div><b>Цена.</b> 7 000 ₽ за сезон под ключ: ваши цены, районы и пары. Окупается одной сохранённой бронью на 31-е.</div>
+    <div><b>Связь.</b> Напишите в <a href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a> или на почту <a href="mailto:paladei702@gmail.com">paladei702@gmail.com</a>. Артур, g.a.d.</div>
+  </div>
+</div>
+
+<script>
+const D = {"prices": {"31": 7000, "20": 3500, "21": 4000, "22": 4000, "23": 4000, "24": 4000, "25": 4000, "26": 4000, "27": 4000, "28": 5000, "29": 5000, "30": 5000}, "visit": "визит", "times": ["10:00", "11:30", "13:00", "14:30", "16:00", "17:30", "19:00", "20:30"], "pick": "17:30", "prepay": 30, "rayons": ["Верх-Исетский", "Железнодорожный", "Кировский", "Ленинский", "Октябрьский", "Орджоникидзевский", "Чкаловский", "Академический"], "t31": [[18, 7000], [21, 9000]], "pair": "Дед Мороз и Снегурочка", "route": [{"go": 0, "adr": "ул. Крауля, 48, кв. 70", "who": "двое детей, 4 и 7 лет · предоплата внесена", "from": "14:00", "to": "14:30"}, {"go": 30, "adr": "ул. Викулова, 37, кв. 168", "who": "один ребёнок, 5 лет · предоплата внесена · подарок в прихожей", "from": "15:00", "to": "15:30"}, {"go": 25, "adr": "ул. Татищева, 90, кв. 29", "who": "трое детей, 3–9 лет · предоплата внесена", "from": "15:55", "to": "16:25"}, {"go": 30, "adr": "ул. Малышева, 71, кв. 85", "who": "двое детей, 6 лет · домофон 45К", "from": "16:55", "to": "17:25"}, {"go": 30, "adr": "ул. Белинского, 56, кв. 172", "who": "один ребёнок, 3 года · предоплата внесена", "from": "17:55", "to": "18:25"}, {"go": 30, "adr": "ул. Куйбышева, 98, кв. 27", "who": "семья с бабушкой, двое детей · предоплата внесена", "from": "18:55", "to": "19:25"}], "routeRayons": "Верх-Исетский и Октябрьский", "seed": 63};
+const WD = ['вс','пн','вт','ср','чт','пт','сб'];
+const rub = n => n.toLocaleString('ru-RU').replace(/,/g,' ') + ' ₽';
+const $ = id => document.getElementById(id);
+let day = 31, slot = null;
+
+/* занятость: одна и та же на каждом открытии, к 31-му занято больше */
+function busy(d, i){ if (d === 31 && D.times[i] === D.pick) return false; const x = Math.sin(d * 97 + i * 13 + D.seed) * 10000; return (x - Math.floor(x)) < (d >= 30 ? .55 : d >= 26 ? .4 : .25); }
+/* 31-го цена зависит от времени, как в их прайсе: [[до часа, цена], ...] */
+function price(d, t){
+  if (d !== 31 || !D.t31 || !t) return D.prices[d];
+  const h = parseInt(t, 10); const r = D.t31.find(x => h < x[0]) || D.t31[D.t31.length-1]; return r[1];
+}
+const tiers = [...new Set(Object.values(D.prices))].sort((a,b)=>a-b);
+const tier = p => tiers.length < 2 ? 1 : p === tiers[tiers.length-1] ? 3 : p === tiers[0] ? 1 : 2;
+
+function cal(){
+  $('cal').innerHTML = '';
+  for (let d = 20; d <= 31; d++){
+    const p = D.prices[d], b = document.createElement('button');
+    b.type = 'button'; b.className = 'd' + (d === day ? ' on' : ''); b.dataset.t = tier(p);
+    b.innerHTML = `<b>${d}</b><small>${WD[new Date(2026,11,d).getDay()]}</small><em>${d === 31 && D.t31 ? 'от ' : ''}${(p/1000).toLocaleString('ru-RU')} т.</em>`;
+    b.onclick = () => { day = d; slot = null; cal(); slots(); sum(); };
+    $('cal').appendChild(b);
+  }
+}
+function slots(){
+  $('slots').innerHTML = ''; let free = 0;
+  D.times.forEach((t, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 's' + (t === slot ? ' on' : ''); b.textContent = t;
+    if (busy(day, i)) b.disabled = true; else { free++; if (!slot && day === 31 && t === D.pick) { slot = t; b.className += ' on'; } }
+    b.onclick = () => { slot = t; slots(); sum(); };
+    $('slots').appendChild(b);
+  });
+  $('free').textContent = 'свободно ' + free + ' из ' + D.times.length;
+}
+function sum(){
+  const p = price(day, slot), pre = Math.round(p * D.prepay / 100 / 100) * 100;
+  $('sum').innerHTML = `<div class="row"><span>Когда</span><b>${day} декабря, ${slot || '—'}</b></div>
+    <div class="row"><span>Где</span><b>${$('rayon').value}</b></div>
+    <div class="row"><span>${D.visit === 'визит' ? 'Цена' : 'Визит, ' + D.visit}</span><b>${rub(p)}</b></div>
+    <div class="row big"><span>Предоплата ${D.prepay}%</span><b>${rub(pre)}</b></div>`;
+  $('pay').textContent = slot ? 'Внести предоплату ' + rub(pre) : 'Выберите время';
+  $('pay').disabled = !slot; $('done').className = 'done';
+}
+D.rayons.forEach(r => { const o = document.createElement('option'); o.textContent = r; $('rayon').appendChild(o); });
+$('rayon').value = D.rayons[Math.min(2, D.rayons.length - 1)];
+$('rayon').onchange = sum;
+$('pay').onclick = () => {
+  $('done').innerHTML = `Здесь откроется оплата по ссылке вашего банка. После оплаты слот ${day}.12 в ${slot} закрыт для других, клиенту приходит подтверждение, а за день до визита — напоминание.`;
+  $('done').className = 'done show';
+};
+cal(); slots(); sum();
+
+$('pair').innerHTML = `<span class="chip">Пара №1: <b>${D.pair}</b></span><span class="chip">${D.route.length} визитов</span><span class="chip">районы: ${D.routeRayons}</span>`;
+let travel = 0;
+$('route').innerHTML = D.route.map((s, i) => {
+  travel += s.go || 0;
+  return (s.go ? `<li class="go">в пути ${s.go} мин</li>` : '') +
+    `<li class="stop"><div class="t">${s.from}<small>до ${s.to}</small></div><div><div class="a">${s.adr}<span class="tag">пример</span></div><div class="w">${s.who}</div></div></li>`;
+}).join('');
+$('tot').innerHTML = `С ${D.route[0].from} до ${D.route[D.route.length-1].to}: <b>${D.route.length} визитов</b>, в дороге ${Math.floor(travel/60)} ч ${travel%60} мин. По вашему прайсу на 31-е это <b>${rub(D.route.reduce((a, s) => a + price(31, s.from), 0))}</b> за день одной пары.`;
+
+const root = document.documentElement;
+try { const t = localStorage.getItem('dm-theme'); if (t) root.dataset.theme = t; } catch(e) {}
+$('tg').onclick = () => {
+  const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  root.dataset.theme = dark ? 'light' : 'dark';
+  try { localStorage.setItem('dm-theme', root.dataset.theme); } catch(e) {}
+};
+</script>
+</body>
+</html>
