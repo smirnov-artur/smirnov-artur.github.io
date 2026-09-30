@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Корпоратив в ресторане «Буль-Вар»</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--bg:#f4f2ee;--card:#fff;--ink:#1b1a18;--mute:#6f6a62;--line:#e3dfd8;--acc:#1f5f4a;--acc-ink:#fff;--busy:#d9d4cc;--free:#e7f0ec;--sel:#1f5f4a;--warn:#8a5a00}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121211;--card:#1c1c1a;--ink:#ecebe7;--mute:#9a968e;--line:#2e2d2a;--acc:#6fbf9f;--acc-ink:#0f1a15;--busy:#34332f;--free:#1d2e27;--sel:#6fbf9f;--warn:#e0b25a}}
+:root[data-theme="dark"]{--bg:#121211;--card:#1c1c1a;--ink:#ecebe7;--mute:#9a968e;--line:#2e2d2a;--acc:#6fbf9f;--acc-ink:#0f1a15;--busy:#34332f;--free:#1d2e27;--sel:#6fbf9f;--warn:#e0b25a}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden}
+.wrap{max-width:440px;margin:0 auto;padding:16px 16px 28px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;color:var(--mute)}
+.top button{background:none;border:1px solid var(--line);color:var(--mute);border-radius:8px;padding:4px 10px;font:inherit;cursor:pointer}
+h1{font-size:23px;line-height:1.2;margin:14px 0 4px;letter-spacing:-.01em}
+.where{color:var(--mute);font-size:14px;margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 0 12px}
+.lbl{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);margin:0 0 8px;display:flex;justify-content:space-between;gap:8px}
+.ex{color:var(--warn);text-transform:none;letter-spacing:0}
+.dates{display:flex;flex-wrap:wrap;gap:8px}
+.dates button{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:10px;padding:8px 10px;font:inherit;font-size:15px;cursor:pointer;min-width:64px}
+.dates button small{display:block;font-size:11px;color:var(--mute)}
+.dates button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.dates button[aria-pressed="true"] small{color:inherit;opacity:.8}
+.price{font-size:28px;font-weight:650}
+.price span{font-size:15px;font-weight:400;color:var(--mute)}
+.note{font-size:13px;color:var(--mute);margin-top:2px}
+ul{margin:0;padding-left:18px}li{margin:2px 0}
+.hall{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stage{grid-column:1/-1;text-align:center;font-size:12px;color:var(--mute);border:1px dashed var(--line);border-radius:8px;padding:6px}
+.t{aspect-ratio:1;border-radius:50%;border:2px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;line-height:1.1;cursor:pointer;background:var(--free);color:var(--ink);padding:0}
+.t b{font-size:15px}
+.t[disabled]{background:var(--busy);color:var(--mute);cursor:default}
+.t[aria-pressed="true"]{border-color:var(--sel)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--mute);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.step{display:flex;align-items:center;gap:6px}
+.step button{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);font-size:20px;cursor:pointer}
+.step output{min-width:30px;text-align:center;font-size:18px;font-weight:600}
+.sum{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:15px}
+.sum div{display:flex;justify-content:space-between;gap:10px}
+.sum strong{font-size:18px}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:14px;font:inherit;font-weight:600;cursor:pointer;margin-top:10px}
+.pay{background:var(--acc);color:var(--acc-ink)}
+.inv{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn[disabled]{opacity:.45;cursor:default}
+form{display:none;margin-top:10px}
+form.on{display:block}
+label{display:block;font-size:13px;color:var(--mute);margin:8px 0 4px}
+input{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+.msg{display:none;margin-top:10px;font-size:14px;padding:10px 12px;border-radius:10px;background:var(--free)}
+.msg.on{display:block}
+footer{font-size:13px;color:var(--mute);margin-top:18px;border-top:1px solid var(--line);padding-top:12px}
+footer p{margin:4px 0}
+footer a{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><span>Пример страницы · g.a.d.</span><button id="theme" type="button">Тема</button></div>
+  <h1>Сборный новогодний корпоратив в ресторане «Буль-Вар»</h1>
+  <p class="where">Санкт-Петербург, ул. Маршала Казакова, 12к2</p>
+
+  <section class="card">
+    <p class="lbl"><span>Дата</span><span class="ex" id="dex"></span></p>
+    <div class="dates" id="dates"></div>
+  </section>
+
+  <section class="card">
+    <p class="lbl"><span>Цена с человека</span><span class="ex" id="pex"></span></p>
+    <div class="price" id="price"></div>
+    <div class="note" id="pnote"></div>
+  </section>
+
+  <section class="card">
+    <p class="lbl"><span>Программа</span></p>
+    <ul id="prog"></ul>
+    <div class="note" id="cap"></div>
+  </section>
+
+  <section class="card">
+    <p class="lbl"><span>Схема зала</span><span class="ex">пример</span></p>
+    <div class="hall" id="hall"><div class="stage">сцена</div></div>
+    <div class="legend"><span><i style="background:var(--free)"></i>есть места</span><span><i style="background:var(--busy)"></i>занят</span></div>
+  </section>
+
+  <section class="card">
+    <div class="row"><div><div>Мест</div><div class="note" id="tinfo">выберите стол на схеме</div></div>
+      <div class="step"><button type="button" id="minus" aria-label="меньше">−</button><output id="n">1</output><button type="button" id="plus" aria-label="больше">+</button></div></div>
+    <div class="sum">
+      <div><span id="calc"></span><strong id="total"></strong></div>
+      <div class="note"><span>Предоплата 30% (пример)</span><span id="pre"></span></div>
+    </div>
+    <button class="btn pay" id="pay" type="button" disabled>Оплатить предоплату</button>
+    <button class="btn inv" id="inv" type="button" disabled>Нужен счёт для юрлица</button>
+    <form id="invf" novalidate>
+      <label for="inn">ИНН компании</label><input id="inn" inputmode="numeric" maxlength="12" placeholder="7700000000">
+      <label for="org">Название</label><input id="org" placeholder="ООО «Ромашка»">
+      <label for="em">Почта для счёта</label><input id="em" type="email" placeholder="buh@romashka.ru">
+      <button class="btn pay" type="submit">Получить счёт</button>
+    </form>
+    <div class="msg" id="msg"></div>
+  </section>
+
+  <footer>
+    <p>Это пример страницы продажи мест на ваш сборный корпоратив: гости сами выбирают дату и стол, вносят предоплату или берут счёт на компанию, а напоминания уходят им без вас.</p>
+    <p>12 000 ₽ за сезон, настраиваю под ваши даты, зал и банк.</p>
+    <p>Ответьте на письмо или напишите в <a href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ">MAX</a> · <a href="mailto:paladei702@gmail.com">paladei702@gmail.com</a> · Артур, g.a.d.</p>
+  </footer>
+</div>
+<script>
+const D = {"name": "«Буль-Вар»", "price": 6000, "price_ex": false, "dates": [{"d": 18, "w": "пт"}, {"d": 19, "w": "сб"}, {"d": 25, "w": "пт"}, {"d": 26, "w": "сб"}], "dates_ex": true, "prog": ["Программа с 20:00 до 23:00", "Сцена на два этажа", "Спецменю от шефа"], "note": "", "cap": "залы на 180 и 120 гостей", "tables": 12, "seats": 10, "slug": "bulvar"};
+const $ = id => document.getElementById(id);
+const rub = x => x.toLocaleString('ru-RU').replace(/,/g, ' ') + ' ₽';
+let date = D.dates[0], table = null, n = 1, occ = [];
+
+// тема: системная по умолчанию, кнопка переключает
+$('theme').onclick = () => {
+  const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  r.dataset.theme = dark ? 'light' : 'dark';
+};
+
+// занятость столов — выдуманная, но одна и та же для даты
+function rnd(seed) { let h = 2166136261; for (const c of seed) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0) % 1000) / 1000; }
+function fill() {
+  const r = rnd(D.slug + date.d);
+  occ = Array.from({length: D.tables}, () => { const x = r(); return x < .35 ? D.seats : x < .75 ? 2 + Math.floor(r() * (D.seats - 3)) : 0; });
+}
+
+function render() {
+  const hall = $('hall');
+  hall.querySelectorAll('.t').forEach(e => e.remove());
+  occ.forEach((o, i) => {
+    const b = document.createElement('button'), free = D.seats - o;
+    b.type = 'button'; b.className = 't';
+    b.innerHTML = `<b>${i + 1}</b>${free ? free + ' своб.' : 'занят'}`;
+    b.setAttribute('aria-label', `Стол ${i + 1}: ${free ? 'свободно ' + free + ' из ' + D.seats : 'занят'}`);
+    if (!free) b.disabled = true;
+    b.setAttribute('aria-pressed', table === i);
+    b.onclick = () => { table = i; n = Math.min(Math.max(n, 1), free); render(); };
+    hall.appendChild(b);
+  });
+  const free = table === null ? 0 : D.seats - occ[table];
+  $('n').value = $('n').textContent = n;
+  $('tinfo').textContent = table === null ? 'выберите стол на схеме' : `стол ${table + 1}, свободно ${free} из ${D.seats}`;
+  const total = D.price * n;
+  $('calc').textContent = `${n} × ${rub(D.price)}`;
+  $('total').textContent = rub(total);
+  $('pre').textContent = rub(Math.round(total * .3));
+  $('pay').textContent = `Оплатить предоплату ${rub(Math.round(total * .3))}`;
+  $('pay').disabled = $('inv').disabled = table === null;
+}
+
+function dates() {
+  const box = $('dates');
+  box.innerHTML = '';
+  D.dates.forEach(x => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.innerHTML = `${x.d} дек<small>${x.w}</small>`;
+    b.setAttribute('aria-pressed', x === date);
+    b.onclick = () => { date = x; table = null; n = 1; fill(); dates(); render(); msg(''); };
+    box.appendChild(b);
+  });
+}
+
+function msg(t) { $('msg').textContent = t; $('msg').classList.toggle('on', !!t); }
+
+$('minus').onclick = () => { n = Math.max(1, n - 1); render(); };
+$('plus').onclick = () => { const cap = table === null ? D.seats : D.seats - occ[table]; n = Math.min(cap, n + 1); render(); };
+$('pay').onclick = () => { $('invf').classList.remove('on'); msg(`Здесь откроется оплата по ссылке вашего банка: ${rub(Math.round(D.price * n * .3))} за ${n} мест, ${date.d} декабря, стол ${table + 1}. Гость получит подтверждение и напоминание за день.`); };
+$('inv').onclick = () => { $('invf').classList.toggle('on'); msg(''); };
+$('invf').onsubmit = e => {
+  e.preventDefault();
+  const inn = $('inn').value.trim();
+  if (!/^\d{10}(\d{2})?$/.test(inn)) return msg('ИНН — 10 или 12 цифр.');
+  msg(`Счёт на ${rub(D.price * n)} по ИНН ${inn} уйдёт на почту, места за столом ${table + 1} держим до оплаты. Это пример, ничего не отправлено.`);
+};
+
+$('price').innerHTML = `${rub(D.price)} <span>с человека</span>`;
+$('pex').textContent = D.price_ex ? 'пример, уточню у вас' : '';
+$('dex').textContent = D.dates_ex ? 'даты для примера' : '';
+$('pnote').textContent = D.note;
+$('prog').innerHTML = D.prog.map(p => `<li>${p.replace(/</g, '&lt;')}</li>`).join('');
+$('cap').textContent = D.cap;
+fill(); dates(); render();
+</script>
+</body>
+</html>
