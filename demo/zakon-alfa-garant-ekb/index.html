@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Альфа-Гарант — проверка сайта</title>
+<meta name="description" content="Что на сайте Альфа-Гарант (avtoremont-ekb.ru) попадает под штрафы с 2026 года и как будет после правки.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F3EF;--ink:#0A0A0C;--muted:#5E5E66;--card:#FFFFFF;--line:#E2E0D8;--red:#D7262F;--red-bg:#FDECEC;--ok:#1F7A45;--ok-bg:#E6F4EC;--lime:#C6F432;--btn:#0A0A0C;--btn-ink:#FFFFFF}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0A0A0C;--ink:#F2F2EF;--muted:#9C9CA6;--card:#141417;--line:#26262C;--red:#FF6B6B;--red-bg:#2A1416;--ok:#6FD39A;--ok-bg:#12251A;--btn:#F2F2EF;--btn-ink:#0A0A0C}}
+:root[data-theme="dark"]{--bg:#0A0A0C;--ink:#F2F2EF;--muted:#9C9CA6;--card:#141417;--line:#26262C;--red:#FF6B6B;--red-bg:#2A1416;--ok:#6FD39A;--ok-bg:#12251A;--btn:#F2F2EF;--btn-ink:#0A0A0C}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 Onest,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
+a{color:inherit}
+.wrap{max-width:920px;margin:0 auto;padding:20px 16px 56px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:32px}
+.brand{font-weight:800;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+.brand i{width:10px;height:10px;border-radius:50%;background:var(--lime);flex:none}
+.th{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 13px;font:500 14px Onest,sans-serif;cursor:pointer}
+h1{font-size:clamp(27px,5.4vw,46px);line-height:1.06;letter-spacing:-.03em;font-weight:800;overflow-wrap:anywhere}
+.lead{margin-top:14px;color:var(--muted);font-size:17px;max-width:62ch}
+.lead b{color:var(--ink);font-weight:600}
+h2{font-size:22px;letter-spacing:-.02em;margin:44px 0 14px}
+figure{margin:16px 0 0}
+figure img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);background:#fff}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px}
+ol{list-style:none;display:grid;gap:12px}
+.it{display:flex;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.it .n{flex:none;width:30px;height:30px;border-radius:50%;background:var(--red-bg);color:var(--red);font-weight:700;display:grid;place-items:center}
+.it div{min-width:0}
+.it h3{font-size:18px;line-height:1.3;margin-bottom:6px}
+.it p{overflow-wrap:anywhere}
+.law{color:var(--muted);font-size:15px;margin-top:6px}
+.fine{margin-top:8px;font-weight:600;color:var(--red)}
+table{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+th,td{text-align:left;padding:12px 16px;vertical-align:top;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+th{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+tr:last-child td{border-bottom:0}
+td:first-child{color:var(--red);width:42%}
+td:last-child{color:var(--ok)}
+@media (max-width:560px){thead{display:none}table,tbody,tr,td{display:block;width:100%!important}tr{border-bottom:1px solid var(--line)}tr:last-child{border-bottom:0}td{border:0;padding:4px 16px}tr td:first-child{padding-top:14px}tr td:last-child{padding-bottom:14px}td::before{content:attr(data-l) ": ";color:var(--muted);font-size:13px}}
+.price{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px}
+.pc{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.pc b{display:block;font-size:30px;letter-spacing:-.02em}
+.pc span{color:var(--muted);font-size:15px}
+.note{margin-top:14px;color:var(--muted);font-size:14.5px;max-width:66ch}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.cta a{display:inline-block;text-decoration:none;border-radius:12px;padding:13px 18px;font-weight:600;max-width:100%;overflow-wrap:anywhere}
+.cta .p{background:var(--btn);color:var(--btn-ink)}
+.cta .s{border:1px solid var(--line);background:var(--card)}
+footer{margin-top:48px;color:var(--muted);font-size:13.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><div class="brand"><i></i>g.a.d.</div><button class="th" id="th" type="button" aria-label="Сменить тему">Тема</button></div>
+
+  <h1>Что на сайте Альфа-Гарант попадает под штрафы с 2026 года</h1>
+  <p class="lead">Открыли главную страницу <a href="https://avtoremont-ekb.ru/" rel="nofollow noopener">avtoremont-ekb.ru</a> в браузере 30.09.2026, формы не заполняли. Нашли <b>2 пункта</b>, за которые штрафуют юрлицо. Ниже снимок, что каждый пункт значит и как будет после правки.</p>
+
+  <h2>Снимок сайта</h2>
+  <figure><a href="snimok1.png"><img src="snimok1.png" alt="Первый экран сайта avtoremont-ekb.ru, нарушения в красных рамках" loading="lazy" width="1280" height="860"></a><figcaption>Первый экран сайта. Красные рамки — то, что попадает под штраф.</figcaption></figure><figure><a href="snimok2.png"><img src="snimok2.png" alt="Форма заявки avtoremont-ekb.ru, нарушения в красных рамках" loading="lazy" width="1280" height="860"></a><figcaption>Форма заявки. Красные рамки — то, что попадает под штраф.</figcaption></figure>
+
+  <h2>Что нашли</h2>
+  <ol><li class="it"><span class="n">1</span><div><h3>Капча Google на форме</h3><p>На сайте подключена Google reCAPTCHA. Она получает данные того, кто заполняет форму.</p><p class="law">Закон о персональных данных (152-ФЗ): с 1 июля 2025 года собирать данные россиян через иностранные сервисы нельзя.</p><p class="fine">Штраф: 300–700 тыс. ₽ юрлицу (ст. 13.11 КоАП)</p></div></li><li class="it"><span class="n">2</span><div><h3>Нет отдельного согласия на обработку данных</h3><p>У формы галочка или ссылка на политику, а отдельного документа согласия нет.</p><p class="law">Закон о персональных данных (152-ФЗ): с 1 сентября 2025 года согласие — отдельный документ, а не пункт внутри политики.</p><p class="fine">Штраф: 300–700 тыс. ₽ юрлицу (ст. 13.11 КоАП)</p></div></li></ol>
+
+  <h2>Как будет после правки</h2>
+  <table><thead><tr><th>Было</th><th>Станет</th></tr></thead><tbody><tr><td data-l="Было">Google reCAPTCHA</td><td data-l="Станет">Yandex SmartCaptcha: российская, для посетителя выглядит так же</td></tr><tr><td data-l="Было">галочка без отдельного документа согласия</td><td data-l="Станет">ссылка на отдельный документ «Согласие на обработку персональных данных» и политика отдельно</td></tr></tbody></table>
+
+  <h2>Цена и срок</h2>
+  <div class="price">
+    <div class="pc"><b>5 000 ₽</b><span>правка сайта за 1 день: всё из таблицы выше</span></div>
+    <div class="pc"><b>+2 000 ₽</b><span>документы шаблонами: согласие на обработку данных, политика, текст уведомления в Роскомнадзор</span></div>
+  </div>
+  <p class="note">Мы не юристы. Правим сайт и готовим шаблоны документов; подписываете и подаёте уведомление вы, при сомнениях покажите юристу.</p>
+
+  <h2>Как связаться</h2>
+  <p>Ответьте на письмо или напишите в MAX, пришлём, с чего начнём.</p>
+  <div class="cta">
+    <a class="p" href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" rel="noopener">Написать в MAX</a>
+    <a class="s" href="mailto:paladei702@gmail.com?subject=Альфа-Гарант">paladei702@gmail.com</a>
+  </div>
+
+  <footer>g.a.d. · проверка сайта avtoremont-ekb.ru, Екатеринбург · штрафы указаны по КоАП на 30.09.2026</footer>
+</div>
+<script>
+(function(){var r=document.documentElement,b=document.getElementById('th');
+try{var s=localStorage.getItem('theme');if(s)r.dataset.theme=s}catch(e){}
+b.onclick=function(){var d=r.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+r.dataset.theme=d==='dark'?'light':'dark';try{localStorage.setItem('theme',r.dataset.theme)}catch(e){}};})();
+</script>
+</body>
+</html>
