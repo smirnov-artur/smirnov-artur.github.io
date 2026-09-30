@@ -1,5 +1,21 @@
 [
  {
+  "slug": "gad-ballroom",
+  "cat": "web",
+  "ru": [
+   "Зал g.a.d. ballroom над облаками",
+   "Бал по прокрутке: закат, вальс, ночь над облаками, программа вечера идёт с 18:00 до 23:00, ниже форматы, меню и план зала"
+  ],
+  "en": [
+   "g.a.d. ballroom above the clouds",
+   "A ball as you scroll: sunset, the waltz, night over the clouds, the evening's timeline runs 18:00 to 23:00, then formats, menu and floor plan"
+  ],
+  "v": "gad-ballroom",
+  "ve": "gad-ballroom-en",
+  "href": "https://smirnov-artur.github.io/cases/gad-ballroom/ru/",
+  "hre": "https://smirnov-artur.github.io/cases/gad-ballroom/"
+ },
+ {
   "slug": "gad-islands",
   "cat": "web",
   "ru": [
