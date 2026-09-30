@@ -228,11 +228,11 @@
   "cat": "web",
   "ru": [
    "VR-аттракцион g.a.d.",
-   "Прокрутка ведёт полёт от первого лица над городом на скалах, от пике до водопада"
+   "Прокрутка — погоня за спидером по городу, вырубленному в скале: кресло кренится в поворотах, обрыв под колёсами"
   ],
   "en": [
-   "g.a.d. VR flight attraction",
-   "Scrolling flies you in first person over a cliffside city, from the dive to the waterfall"
+   "g.a.d. VR ride",
+   "Scrolling puts you on a speeder's tail through a city carved into a cliff, the seat banking into every turn"
   ],
   "v": "gad-vr-flight",
   "ve": "gad-vr-flight-en",
