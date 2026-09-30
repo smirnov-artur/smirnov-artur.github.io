@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Страховка Ozon с 5 октября</title>
+<meta name="description" content="Сколько будет стоить страховка товаров на складах Ozon с 5 октября 2026 по каждому товару. Считает в браузере, файлы никуда не уходят.">
+<style>
+:root{--bg:#f7f7f4;--card:#fff;--text:#0a0a0c;--muted:#5c5f66;--line:#e2e2dc;--accent:#4d7c0f;--accent-bg:#ecfccb;--warn:#b45309;--warn-bg:#fef3c7;--bad:#b91c1c}
+@media (prefers-color-scheme:dark){:root{--bg:#0a0a0c;--card:#15161a;--text:#ececec;--muted:#9a9ca3;--line:#2a2c31;--accent:#c6f432;--accent-bg:#26300c;--warn:#fbbf24;--warn-bg:#3a2a07;--bad:#f87171}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:980px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:clamp(24px,5vw,34px);line-height:1.2;margin:0 0 12px}
+h2{font-size:20px;margin:32px 0 8px}
+p{margin:0 0 10px}
+.muted{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:16px 0}
+.facts{margin:0;padding-left:20px}.facts li{margin:0 0 8px}
+.facts a{color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
+label{display:block;font-size:14px;color:var(--muted)}
+input,select,textarea{font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;max-width:100%}
+input[type=number]{width:110px}
+textarea{width:100%;min-height:110px;font-family:ui-monospace,Consolas,monospace;font-size:14px}
+button{font:inherit;cursor:pointer;border-radius:8px;padding:9px 16px;border:1px solid var(--line);background:var(--card);color:var(--text)}
+button.main{background:var(--text);color:var(--bg);border-color:var(--text)}
+.safe{background:var(--accent-bg);border-radius:8px;padding:8px 12px;font-size:14px}
+.totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.num{font-size:26px;font-weight:700}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+th:first-child,td:first-child,td.tip{text-align:left}
+th{color:var(--muted);font-weight:500;white-space:nowrap}
+td.tip{min-width:240px;color:var(--muted)}
+tr.old td:first-child{border-left:3px solid var(--warn)}
+.tag{display:inline-block;background:var(--warn-bg);color:var(--warn);border-radius:6px;padding:0 6px;font-size:12px}
+.err{color:var(--bad)}
+footer{margin-top:40px;padding:20px;border-radius:12px;background:var(--text);color:var(--bg)}
+footer a{color:var(--bg);font-weight:700}
+</style>
+</head>
+<body>
+<main>
+<h1>Страховка товаров на Ozon с 5 октября: сколько это вам будет стоить</h1>
+<p>Загрузите выгрузку остатков FBO и увидите взнос по каждому товару по старой и новой ставке, залежавшийся остаток и какую стоимость объявить.</p>
+
+<div class="card">
+<ul class="facts">
+<li>С 5 октября ставка 0,0838% в день вместо 0,0115%. Это в 7,3 раза выше, но считать её будут не от цены, а от суммы возмещения, которую Ozon заплатил бы за потерянный товар. Возмещение меньше цены, поэтому платёж вырастет не в 7 раз, а меньше. Насколько, зависит от категории. <a href="https://e-pepper.ru/blogs/news/ozon-snova-menyaet-tsenu-strahovki-tovarov-na-sklade" target="_blank" rel="noopener">e-pepper</a>, <a href="https://oborot.ru/news/vy-gotovy-25-v-mesyac-otdat-za-polis-strahovka-tovarov-na-ozon-rezko-dorozhaet-i278272.html" target="_blank" rel="noopener">Oborot</a></li>
+<li>Возмещение Ozon считает сам: средняя цена продажи за 7, 30 или 90 дней, умноженная на коэффициент категории, с учётом НДС. Коэффициент своей категории смотрите в кабинете, раздел «Комиссии и тарифы». <a href="https://oborot.ru/news/ozon-menyaet-raschet-vozmeshheniya-za-utrachennyj-tovar-budet-uchityvat-oborachivaemost-i-shemu-raboty-i276479.html" target="_blank" rel="noopener">Oborot</a></li>
+<li>С 28 сентября можно объявить стоимость товара самому. Ozon сравнит её со своей суммой и возьмёт меньшую. Ниже объявленная стоимость — меньше платёж за полис, но и выплата при утрате не больше неё. <a href="https://oborot.ru/news/sellery-ozon-smogut-sami-ukazyvat-stoimost-tovara-dlya-kompensacij-kak-ne-navredit-sebe-i279507.html" target="_blank" rel="noopener">Oborot</a></li>
+<li>Одежде, обуви и части аксессуаров на FBO Ozon вернёт расходы на полис бонусами, если объявить стоимость хотя бы на 5% ниже его суммы. <a href="https://oborot.ru/news/ozon-s-5-oktyabrya-nachnet-kompensirovat-fashion-selleram-rashody-na-strahovanie-tovarov-no-est-nyuansy-i279581.html" target="_blank" rel="noopener">Oborot</a></li>
+<li>С 5 октября «Ингосстрах» может менять ставку сам, предупредив за 5 дней.</li>
+<li>Полис включают без спроса, отказаться можно в любой момент: «Финансы» → «Страхование». Полис покрывает пожар и удары по складу. Без него остаётся только обычная компенсация Ozon за потерянный товар. <a href="https://finance.mail.ru/article/kak-otkazatsya-ot-platnoj-strahovki-ozon-i-skolko-ona-stoit-69222117/" target="_blank" rel="noopener">Финансы Mail</a></li>
+</ul>
+</div>
+
+<h2>Ваши товары</h2>
+<div class="card">
+<p class="safe">Файлы никуда не уходят: страница считает всё у вас в браузере, на сервер ничего не отправляется.</p>
+<p><b>Файл из кабинета.</b> «FBO» → «Управление остатками» → скачать xlsx. Если цен в нём нет, добавьте второй файл: выгрузку товаров с ценами. Их сведём по артикулу.</p>
+<p><input type="file" id="fajly" accept=".xlsx,.xls,.csv" multiple></p>
+<p><b>Или вставьте таблицу</b>: артикул; остаток; цена; себестоимость; продаж в день (последнее можно не писать).</p>
+<textarea id="tekst" placeholder="ЧАШ-01; 40; 890; 310; 1,5&#10;КРУЖ-02; 120; 450; 140; 0"></textarea>
+<div class="row" style="margin-top:12px">
+<div><label for="koef">Коэффициент возмещения</label><input type="number" id="koef" value="0.5" step="0.05" min="0" max="1.5"></div>
+<div><label for="nds">НДС</label><select id="nds"><option value="0">без НДС</option><option value="0.05">5%</option><option value="0.07">7%</option><option value="0.1">10%</option><option value="0.22">22%</option></select></div>
+<div><label for="porog">Залежался, если больше, дней</label><input type="number" id="porog" value="60" min="1"></div>
+</div>
+<div class="row" style="margin-top:12px">
+<button class="main" id="schitat">Посчитать</button>
+<button id="primer">Показать на примере</button>
+</div>
+<p class="muted" style="margin-top:10px">Коэффициент 0,5 стоит для примера, поставьте свой. Цена — та, по которой товар реально продаётся.</p>
+<p class="err" id="oshibka"></p>
+</div>
+
+<div id="itog" hidden>
+<h2>Всего по магазину, в месяц</h2>
+<div class="totals">
+<div class="card"><div class="muted">До 5 октября</div><div class="num" id="t-star"></div></div>
+<div class="card"><div class="muted">С 5 октября</div><div class="num" id="t-nov"></div><div class="muted" id="t-raz"></div></div>
+<div class="card"><div class="muted">Если объявить себестоимость</div><div class="num" id="t-sebest"></div><div class="muted" id="t-sebest-pro"></div></div>
+<div class="card"><div class="muted" id="t-old-zag"></div><div class="num" id="t-old"></div><div class="muted" id="t-old-pro"></div></div>
+</div>
+<h2>По каждому товару</h2>
+<div class="scroll"><table>
+<thead><tr><th>Артикул</th><th>Остаток</th><th>Цена</th><th>Взнос сейчас, ₽/мес</th><th>С 5.10, ₽/мес</th><th>Хватит на, дней</th><th>Что объявить</th></tr></thead>
+<tbody id="tablica"></tbody>
+</table></div>
+<p class="muted">Это прикидка: точную сумму возмещения знает только Ozon. Если в файле есть объявленная стоимость, считаем от меньшей из двух, как Ozon.</p>
+</div>
+
+<footer>
+<p style="margin:0">Товар лежал на сгоревшем складе? Сверю компенсацию по вашим файлам — пишите в Telegram <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">@smirnovarturr</a></p>
+</footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+/*РАСЧЁТ*/
+var STAVKA_STAR = 0.000115, STAVKA_NOV = 0.000838, DNEJ_V_MES = 30;
+
+// Поля по названиям колонок. Названия из выгрузок Ozon: «Доступно к продаже», «Готовим к продаже»,
+// «Резерв», «В пути», «Артикул», «SKU», «Текущая цена с учетом скидки, ₽», «Среднесуточные продажи».
+var POLYA = [
+  ['art', /^артикул(?! ozon)|offer id|item code/],
+  ['sku', /^sku|ozon sku/],
+  ['dney', /оборачиваем|хватит на|дней хранения|дней на складе|^idc/],
+  ['ads', /среднесуточн|^ads$|продаж\S* в (день|сутки)/],
+  ['prodazhi', /(продаж|продано|заказано)\S* за (\d+)/],
+  ['sebest', /себестоим|закупочн/],
+  ['obyavl', /объявленн/],
+  ['cena', /цена/, /до скидки|перечерк|premium|рыночн|минимал|конкурент/],
+  ['kol', /доступно к продаже|доступный к продаже|готовим к продаже|^валид|резерв|в пути|^остат|количеств|кол во|free to sell/, /дн/]
+];
+
+function norm(s) { return String(s == null ? '' : s).toLowerCase().replace(/ё/g, 'е').replace(/[^a-zа-я0-9%]+/g, ' ').trim(); }
+function chislo(v) {
+  if (typeof v === 'number') return v;
+  var s = String(v == null ? '' : v).replace(/[\s ₽]/g, '').replace(',', '.').replace(/[^0-9.\-]/g, '');
+  return s === '' || isNaN(+s) ? null : +s;
+}
+
+// Колонка → поле. kol может быть несколько (доступно + резерв + в пути), остальные — первая подходящая.
+function ugadat(zagolovki) {
+  var karta = { kol: [] };
+  zagolovki.forEach(function (z, i) {
+    var n = norm(z);
+    for (var j = 0; j < POLYA.length; j++) {
+      var p = POLYA[j], m = n.match(p[1]);
+      if (!m || (p[2] && p[2].test(n))) continue;
+      if (p[0] === 'kol') karta.kol.push(i);
+      else if (karta[p[0]] == null) { karta[p[0]] = i; if (p[0] === 'prodazhi') karta.prodazhiDnej = +m[2]; }
+      break;
+    }
+  });
+  return karta;
+}
+
+// Строка заголовка — та из первых 15, где узнали больше всего колонок (в выгрузках Ozon сверху бывает шапка отчёта).
+function izTablicy(stroki, istochnik) {
+  var luchshaya = -1, ochki = 0;
+  for (var i = 0; i < Math.min(15, stroki.length); i++) {
+    var k = ugadat(stroki[i]), o = Object.keys(k).length - 1 + (k.kol.length ? 1 : 0);
+    if ((k.art != null || k.sku != null) && o > ochki) { ochki = o; luchshaya = i; }
+  }
+  if (luchshaya < 0) return [];
+  var karta = ugadat(stroki[luchshaya]), klyuch = karta.art != null ? karta.art : karta.sku;
+  return stroki.slice(luchshaya + 1).map(function (r) {
+    var t = { art: String(r[klyuch] == null ? '' : r[klyuch]).trim(), src: istochnik };
+    if (karta.kol.length) t.kol = karta.kol.reduce(function (s, i) { return s + (chislo(r[i]) || 0); }, 0);
+    ['cena', 'sebest', 'obyavl', 'ads', 'dney'].forEach(function (p) { if (karta[p] != null) t[p] = chislo(r[karta[p]]); });
+    if (t.ads == null && karta.prodazhi != null) { var pr = chislo(r[karta.prodazhi]); if (pr != null) t.ads = pr / karta.prodazhiDnej; }
+    return t;
+  }).filter(function (t) { return t.art && !/^(итого|всего)/.test(norm(t.art)); });
+}
+
+// Вставленный текст: с заголовком — угадываем колонки, без него — артикул; остаток; цена; себестоимость; продаж в день.
+function izTeksta(tekst) {
+  var linii = tekst.split(/\r?\n/).filter(function (l) { return l.trim(); });
+  if (!linii.length) return [];
+  var razd = /\t/.test(linii[0]) ? '\t' : ';';
+  var stroki = linii.map(function (l) { return l.split(razd).map(function (x) { return x.trim(); }); });
+  if (chislo(stroki[0][1]) == null) return izTablicy(stroki, 'tekst');
+  return stroki.map(function (r) {
+    return { art: r[0], kol: chislo(r[1]), cena: chislo(r[2]), sebest: chislo(r[3]), ads: r[4] == null ? undefined : chislo(r[4]), src: 'tekst' };
+  }).filter(function (t) { return t.art; });
+}
+
+// Строки со всех файлов → один товар на артикул. Остаток и продажи складываем по складам, но только из одного файла,
+// чтобы остаток из выгрузки цен не лёг поверх остатка из выгрузки складов.
+function sobrat(stroki) {
+  var tov = {}, poryadok = [];
+  stroki.forEach(function (s) {
+    var t = tov[s.art];
+    if (!t) { t = tov[s.art] = { art: s.art }; poryadok.push(s.art); }
+    [['kol', 'srcKol'], ['ads', 'srcAds']].forEach(function (p) {
+      if (s[p[0]] == null) return;
+      if (t[p[1]] == null) { t[p[1]] = s.src; t[p[0]] = 0; }
+      if (t[p[1]] === s.src) t[p[0]] += s[p[0]];
+    });
+    ['cena', 'sebest', 'obyavl'].forEach(function (p) { if (t[p] == null && s[p] != null) t[p] = s[p]; });
+    if (s.dney != null) t.dney = Math.max(t.dney || 0, s.dney);
+  });
+  return poryadok.map(function (a) { return tov[a]; });
+}
+
+// Единственный расчёт. o: { koef, nds, porog }. Возвращает строки по товарам и суммы по магазину, в рублях за месяц.
+function raschet(tovary, o) {
+  var s = { star: 0, nov: 0, novSebest: 0, lezhitVznos: 0, lezhitSht: 0, lezhitTov: 0, bezCeny: [] };
+  var stroki = tovary.filter(function (t) { return t.kol > 0; }).map(function (t) {
+    if (!(t.cena > 0)) { s.bezCeny.push(t.art); return null; }
+    var vozm = t.cena * o.koef / (1 + o.nds);
+    var baza = t.obyavl > 0 ? Math.min(t.obyavl, vozm) : vozm;
+    var r = {
+      art: t.art, kol: t.kol, cena: t.cena, vozm: vozm, baza: baza,
+      star: t.kol * t.cena * STAVKA_STAR * DNEJ_V_MES,
+      nov: t.kol * baza * STAVKA_NOV * DNEJ_V_MES,
+      dney: t.dney != null ? t.dney : t.ads > 0 ? t.kol / t.ads : t.ads === 0 ? Infinity : null
+    };
+    r.lezhit = r.dney != null && r.dney > o.porog;
+    // Подсказка. Себестоимость — ваши реальные потери при пожаре: выше неё объявлять — платить за то, что вы не теряли.
+    if (t.sebest > 0 && t.sebest < baza) {
+      r.obyavit = t.sebest;
+      r.novSebest = t.kol * t.sebest * STAVKA_NOV * DNEJ_V_MES;
+      r.sovet = 'Объявить ' + Math.round(t.sebest) + ' ₽ (себестоимость): взнос ' + Math.round(r.novSebest) + ' ₽ вместо ' + Math.round(r.nov) + ' ₽. Выплата при утрате будет не больше ' + Math.round(t.sebest) + ' ₽ за штуку.';
+    } else if (t.sebest > 0) {
+      r.novSebest = r.nov;
+      r.sovet = 'Себестоимость выше суммы Ozon (' + Math.round(baza) + ' ₽): объявлять нечего, Ozon всё равно возьмёт меньшую.';
+    } else {
+      r.novSebest = r.nov;
+      r.sovet = 'Впишите себестоимость, подскажу, что объявить.';
+    }
+    s.star += r.star; s.nov += r.nov; s.novSebest += r.novSebest;
+    if (r.lezhit) { s.lezhitVznos += r.nov; s.lezhitSht += r.kol; s.lezhitTov++; }
+    return r;
+  }).filter(Boolean);
+  return { stroki: stroki, itog: s };
+}
+
+var PRIMER = 'артикул;остаток;цена;себестоимость;продаж в день\n' +
+  'ЧАШ-ГЛЯНЕЦ-01;40;890;310;1,5\nКРУЖ-МАТ-02;120;450;140;0\nТАРЕЛ-26-03;300;620;210;12\n' +
+  'САЛАТН-04;85;1290;520;0,4\nНАБОР-6-05;25;3490;1400;0,8\nВАЗА-ГЛИНА-06;60;2150;700;0\nПОДНОС-07;18;1750;;2';
+/*КОНЕЦ РАСЧЁТА*/
+
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var izFajlov = [];
+  var rub = function (v) { return Math.round(v).toLocaleString('ru-RU') + ' ₽'; };
+  var shtuk = function (v) { return (Math.round(v * 10) / 10).toLocaleString('ru-RU'); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+
+  function pokazat() {
+    $('oshibka').textContent = '';
+    var stroki = izFajlov.concat($('tekst').value.trim() ? izTeksta($('tekst').value) : []);
+    if (!stroki.length) { $('oshibka').textContent = 'Нет данных: загрузите файл, вставьте таблицу или нажмите «Показать на примере».'; return; }
+    var o = { koef: chislo($('koef').value) || 0, nds: +$('nds').value, porog: chislo($('porog').value) || 60 };
+    var res = raschet(sobrat(stroki), o), s = res.itog;
+    if (!res.stroki.length) { $('oshibka').textContent = 'Не нашёл остатков с ценой. Проверьте, что в файле есть колонки с артикулом, остатком и ценой.'; return; }
+    if (s.bezCeny.length) $('oshibka').textContent = 'Без цены, не посчитаны: ' + s.bezCeny.slice(0, 10).join(', ') + (s.bezCeny.length > 10 ? ' и ещё ' + (s.bezCeny.length - 10) : '') + '. Добавьте файл с ценами.';
+    $('t-star').textContent = rub(s.star);
+    $('t-nov').textContent = rub(s.nov);
+    $('t-raz').textContent = s.star > 0 ? 'в ' + (s.nov / s.star).toFixed(1).replace('.', ',') + ' раза больше' : '';
+    $('t-sebest').textContent = rub(s.novSebest);
+    $('t-sebest-pro').textContent = s.nov > s.novSebest ? 'на ' + rub(s.nov - s.novSebest) + ' меньше' : 'разницы нет';
+    $('t-old-zag').textContent = 'Лежит больше ' + o.porog + ' дней';
+    $('t-old').textContent = s.lezhitTov ? rub(s.lezhitVznos) : 'нет';
+    $('t-old-pro').textContent = s.lezhitTov ? s.lezhitTov + ' тов., ' + shtuk(s.lezhitSht) + ' шт. Распродать или вывезти — и платить за них не придётся' : 'нет данных о продажах или всё уходит быстро';
+    $('tablica').innerHTML = res.stroki.sort(function (a, b) { return b.nov - a.nov; }).map(function (r) {
+      var d = r.dney == null ? '—' : r.dney === Infinity ? 'не продаётся' : Math.round(r.dney);
+      return '<tr' + (r.lezhit ? ' class="old"' : '') + '><td>' + esc(r.art) + (r.lezhit ? ' <span class="tag">залежался</span>' : '') +
+        '</td><td>' + shtuk(r.kol) + '</td><td>' + rub(r.cena) + '</td><td>' + rub(r.star) + '</td><td><b>' + rub(r.nov) +
+        '</b></td><td>' + d + '</td><td class="tip">' + esc(r.sovet) + '</td></tr>';
+    }).join('');
+    $('itog').hidden = false;
+  }
+
+  $('fajly').addEventListener('change', function (e) {
+    var fajly = Array.prototype.slice.call(e.target.files);
+    if (typeof XLSX === 'undefined') { $('oshibka').textContent = 'Не загрузилась библиотека для xlsx. Проверьте интернет или вставьте таблицу текстом.'; return; }
+    Promise.all(fajly.map(function (f, n) {
+      return f.arrayBuffer().then(function (buf) {
+        var kniga = XLSX.read(buf, { type: 'array' }), vse = [];
+        kniga.SheetNames.forEach(function (imya) {
+          vse = vse.concat(izTablicy(XLSX.utils.sheet_to_json(kniga.Sheets[imya], { header: 1, defval: '' }), n + ':' + imya));
+        });
+        return vse;
+      });
+    })).then(function (spiski) {
+      izFajlov = [].concat.apply([], spiski);
+      if ($('tekst').value === PRIMER) $('tekst').value = '';
+      if (!izFajlov.length) { $('oshibka').textContent = 'В файле не нашёл колонку с артикулом или SKU.'; return; }
+      pokazat();
+    }).catch(function () { $('oshibka').textContent = 'Не получилось прочитать файл. Сохраните его как xlsx или csv и попробуйте ещё раз.'; });
+  });
+  $('schitat').addEventListener('click', pokazat);
+  $('primer').addEventListener('click', function () { $('tekst').value = PRIMER; izFajlov = []; $('fajly').value = ''; pokazat(); });
+})();
+</script>
+</body>
+</html>

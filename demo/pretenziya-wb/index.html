@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Проценты за задержку WB</title>
+<style>
+:root{--bg:#f6f6f2;--fg:#0a0a0c;--mut:#5b5b62;--card:#fff;--line:#dcdcd4;--acc:#c6f432;--acc-fg:#0a0a0c}
+@media (prefers-color-scheme:dark){:root{--bg:#0a0a0c;--fg:#f2f2ee;--mut:#9a9aa2;--card:#141418;--line:#2a2a30}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:32px 16px 48px}
+h1{font-size:28px;line-height:1.2;margin:0 0 8px}
+p{margin:0 0 12px}
+.mut{color:var(--mut);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:16px 0}
+textarea{width:100%;font:14px/1.45 ui-monospace,Consolas,monospace;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
+input[type=date]{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+button,.file{font:inherit;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
+button.main{background:var(--acc);color:var(--acc-fg);border-color:var(--acc);font-weight:600}
+.file input{display:none}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+tr.itog td{font-weight:700;border-bottom:none}
+.big{font-size:22px;font-weight:700}
+.err{color:#d33}
+footer{margin-top:24px;padding:16px;border-radius:12px;background:var(--fg);color:var(--bg)}
+footer a{color:var(--acc)}
+</style>
+</head>
+<body>
+<main>
+<h1>Проценты за задержку выплат WB</h1>
+<p>В августе и сентябре WB задерживал вывод денег до 14 рабочих дней. За каждый день сверх срока закон даёт проценты (ст. 395 ГК РФ). Вставьте свои заявки: посчитаем проценты и соберём текст претензии.</p>
+<p class="mut">Считает ваш браузер, данные никуда не уходят. Мы не юристы: инструмент считает и готовит текст, подаёте вы сами.</p>
+
+<div class="card">
+  <p><b>Заявки на вывод</b> — по строке на заявку: дата заявки; сумма; дата зачисления. Деньги не пришли — третье поле пустое.</p>
+  <textarea id="vvod" rows="7" placeholder="18.08.2026; 212 750,50; 09.09.2026&#10;08.09.2026; 150 000;"></textarea>
+  <div class="row">
+    <label class="file">Загрузить CSV<input type="file" id="fajl" accept=".csv,.txt"></label>
+    <button id="primer">Пример</button>
+    <label>Дата претензии <input type="date" id="data"></label>
+    <button class="main" id="schet">Посчитать</button>
+  </div>
+  <p class="mut" style="margin-top:8px">Выгрузка из кабинета в Excel? Сохраните её как CSV или скопируйте колонки прямо сюда.</p>
+</div>
+
+<div id="itog" hidden>
+  <div class="card">
+    <p>Проценты за просрочку: <span class="big" id="summa"></span></p>
+    <div class="scroll"><table id="tab"></table></div>
+    <p class="mut" style="margin-top:8px">Срок по п. 5.7 оферты: 7 рабочих дней после заявки (до 20.07.2026 — 5). Проценты — со следующего дня после срока по день зачисления, а если не пришло — по дату претензии.</p>
+  </div>
+  <div class="card">
+    <p><b>Текст претензии</b> — впишите свои реквизиты вместо прочерков.</p>
+    <textarea id="tekst" rows="16"></textarea>
+    <div class="row"><button class="main" id="kopi">Скопировать</button><span id="ok" class="mut"></span></div>
+    <p class="mut" style="margin-top:8px">Куда подать: кабинет WB → «Поддержка» → «Досудебные претензии». Ответить должны за 30 календарных дней (п. 8.9 оферты).</p>
+  </div>
+</div>
+<p id="osh" class="err"></p>
+
+<footer>Готовую претензию в DOCX и разбор по вашей выгрузке сделаю за 990 ₽ — пишите в Telegram <a href="https://t.me/smirnovarturr">@smirnovarturr</a></footer>
+<p class="mut" style="margin-top:12px">Ключевая ставка — cbr.ru на 30.09.2026 (сейчас 14%). Срок выплаты — п. 5.7 оферты WB, файл от 24.09.2026. Рабочие дни — производственный календарь 2025–2026. g.a.d.</p>
+</main>
+
+<script>
+// Та же логика, что в pretenziya.py. Даты — целые номера дней (UTC), без часовых поясов.
+const d = (y, m, dd) => Date.UTC(y, m - 1, dd) / 864e5;
+const iso = s => d(...s.split('-').map(Number));
+const STAVKI = [[d(2024,10,28),21],[d(2025,6,9),20],[d(2025,7,28),18],[d(2025,9,15),17],[d(2025,10,27),16.5],
+  [d(2025,12,22),16],[d(2026,2,16),15.5],[d(2026,3,23),15],[d(2026,4,27),14.5],[d(2026,6,22),14.25],[d(2026,7,27),14]];
+const PRAZDNIKI = new Set(("2025-01-01 2025-01-02 2025-01-03 2025-01-06 2025-01-07 2025-01-08 2025-05-01 2025-05-02 2025-05-08 " +
+  "2025-05-09 2025-06-12 2025-06-13 2025-11-03 2025-11-04 2025-12-31 2026-01-01 2026-01-02 2026-01-05 " +
+  "2026-01-06 2026-01-07 2026-01-08 2026-01-09 2026-02-23 2026-03-09 2026-05-01 2026-05-11 2026-06-12 " +
+  "2026-11-04 2026-12-31").split(' ').map(iso));
+const RAB_VYH = new Set([d(2025,11,1)]);
+const NOVAYA_OFERTA = d(2026,7,20);
+const WB = 'ООО «РВБ», ИНН 9714053621, ОГРН 1247700471919\n142181, Московская обл., г.о. Подольск, д. Коледино, тер. Индустриальный парк Коледино, д. 6 стр. 1';
+
+const dt = n => new Date(n * 864e5);
+const rabochiy = n => RAB_VYH.has(n) || (dt(n).getUTCDay() % 6 !== 0 && !PRAZDNIKI.has(n));
+function srokOferty(z) { let n = z >= NOVAYA_OFERTA ? 7 : 5, x = z; while (n) { x++; if (rabochiy(x)) n--; } return x; }
+function stavka(n) { let s = null; for (const [a, st] of STAVKI) if (n >= a) s = st; if (s === null) throw new Error('нет ставки ЦБ на ' + fd(n)); return s; }
+function procenty(summa, a, b) {
+  let itog = 0, x = a;
+  while (x <= b) {
+    const st = stavka(x), g = dt(x).getUTCFullYear(), start = x;
+    while (x <= b && stavka(x) === st && dt(x).getUTCFullYear() === g) x++;
+    itog += summa * st / 100 * (x - start) / ((g % 4 === 0 && (g % 100 !== 0 || g % 400 === 0)) ? 366 : 365);
+  }
+  return Math.round(itog * 100) / 100;
+}
+function raschet(zayavki, dataP) {
+  return zayavki.map(([z, summa, prishlo]) => {
+    const srok = srokOferty(z), konec = prishlo ?? dataP;
+    const pros = konec > srok ? konec - srok : 0;
+    return { z, summa, srok, prishlo, pros, proc: pros ? procenty(summa, srok + 1, konec) : 0 };
+  });
+}
+
+// ---- чтение строк ----
+function dataIz(s) {
+  s = (s || '').trim(); let m;
+  if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return d(+m[1], +m[2], +m[3]);
+  if ((m = s.match(/^(\d{1,2})[./](\d{1,2})[./](\d{2,4})/))) return d(+m[3] < 100 ? +m[3] + 2000 : +m[3], +m[2], +m[1]);
+  return null;
+}
+function summaIz(s) {
+  s = (s || '').replace(/[^\d,.\-]/g, '').replace(/,/g, '.');
+  const k = (s.match(/\./g) || []).length; if (k > 1) for (let i = 1; i < k; i++) s = s.replace('.', '');
+  return s ? parseFloat(s) : null;
+}
+function stroka(line, delim) { // CSV с кавычками
+  const out = []; let cur = '', q = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (q) { if (c === '"' && line[i + 1] === '"') { cur += '"'; i++; } else if (c === '"') q = false; else cur += c; }
+    else if (c === '"') q = true; else if (c === delim) { out.push(cur); cur = ''; } else cur += c;
+  }
+  out.push(cur); return out;
+}
+const KLYUCHI = { zayavka: ['заявк','создан','запрос','востребов'], summa: ['сумм','к выплате','amount'],
+  prishlo: ['зачисл','выплат','поступ','оплач','исполн','перечисл'] };
+function kolonki(h) {
+  h = h.map(x => (x || '').toLowerCase()); const n = {};
+  for (const [pole, slova] of Object.entries(KLYUCHI))
+    for (let i = 0; i < h.length; i++) if (!Object.values(n).includes(i) && slova.some(w => h[i].includes(w))) { n[pole] = i; break; }
+  if (!('zayavka' in n)) for (let i = 0; i < h.length; i++) if (h[i].includes('дата') && !Object.values(n).includes(i)) { n.zayavka = i; break; }
+  return ('zayavka' in n && 'summa' in n) ? n : null;
+}
+function razobrat(tekst) {
+  const lines = tekst.replace(/^﻿/, '').split(/\r?\n/).filter(l => l.trim());
+  if (!lines.length) return [];
+  const delim = [';', '\t', ','].reduce((a, c) => lines[0].split(c).length > lines[0].split(a).length ? c : a);
+  let rows = lines.map(l => stroka(l, delim)), k = kolonki(rows[0]);
+  if (k) rows = rows.slice(1); else k = { zayavka: 0, summa: 1, prishlo: 2 };
+  const res = [];
+  for (const r of rows) {
+    const z = dataIz(r[k.zayavka]), s = summaIz(r[k.summa]);
+    if (z && s) res.push([z, s, 'prishlo' in k ? dataIz(r[k.prishlo]) : null]);
+  }
+  return res;
+}
+
+// ---- текст ----
+const rub = x => x.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/\s/g, ' ') + ' ₽';
+const fd = n => n == null ? 'не пришло' : dt(n).toISOString().slice(0, 10).split('-').reverse().join('.');
+function tekstPretenzii(st, dataP) {
+  const vsego = st.reduce((a, s) => a + s.proc, 0), ne = st.filter(s => s.prishlo == null);
+  const tab = st.map((s, i) => `${i + 1}. Заявка ${fd(s.z)} на ${rub(s.summa)}: срок ${fd(s.srok)}, зачислено ${fd(s.prishlo)}, ` +
+    `просрочка ${s.pros} дн., проценты ${rub(s.proc)}`).join('\n');
+  return [
+    'Кому: ' + WB,
+    'От: ______________________ (ИП / ООО, ФИО)\nИНН ____________ ОГРН/ОГРНИП ____________\nАдрес: ______________________\nТелефон, почта: ______________________',
+    'Претензия о процентах за просрочку выплаты',
+    'Я продаю на Wildberries по оферте о реализации товара. По п. 5.7 оферты вы выплачиваете деньги не позднее 7 рабочих дней ' +
+      'со дня заявки на вывод (до 20.07.2026 — 5 рабочих дней). По заявкам ниже деньги пришли позже срока' + (ne.length ? ' или не пришли совсем.' : '.'),
+    `За просрочку денежного обязательства по ст. 395 ГК РФ начисляются проценты по ключевой ставке Банка России. Расчёт по каждой заявке на ${fd(dataP)}:`,
+    tab + `\nИтого процентов: ${rub(vsego)}`,
+    'Прошу:\n1. Выплатить проценты за просрочку — ' + rub(vsego) + '.' +
+      (ne.length ? `\n2. Выплатить деньги по заявкам, которые не пришли, — ${rub(ne.reduce((a, s) => a + s.summa, 0))}, и проценты за дни после даты претензии по день выплаты.` : ''),
+    'Реквизиты для перечисления: ______________________',
+    'По п. 8.9 оферты жду ответа в течение 30 календарных дней. Если не договоримся, обращусь в Арбитражный суд Московской области.',
+    'Приложения:\n1. Расчёт процентов (выше).\n2. Выгрузка истории выводов из личного кабинета.\n3. Скриншоты заявок на вывод с датами и статусами.',
+    `${fd(dataP)}            ____________ / ______________`,
+  ].join('\n\n');
+}
+
+if (typeof document !== 'undefined') {
+  const $ = id => document.getElementById(id);
+  const PRIMER = 'Дата заявки;Сумма;Дата зачисления\n04.08.2026;184 300,00;11.08.2026\n18.08.2026;212 750,50;09.09.2026\n25.08.2026;96 000;16.09.2026\n08.09.2026;150 000;';
+  const t = new Date(); $('data').value = new Date(t - t.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+  $('primer').onclick = () => { $('vvod').value = PRIMER; $('data').value = '2026-09-30'; schet(); };
+  $('fajl').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { $('vvod').value = r.result; schet(); }; r.readAsText(f, 'utf-8'); };
+  $('kopi').onclick = () => { $('tekst').select(); navigator.clipboard.writeText($('tekst').value).then(() => $('ok').textContent = 'Скопировано'); };
+  $('schet').onclick = schet;
+  function schet() {
+    $('osh').textContent = '';
+    try {
+      const z = razobrat($('vvod').value), dataP = iso($('data').value);
+      if (!z.length) throw new Error('Не нашёл ни одной заявки. Нужны строки: дата заявки; сумма; дата зачисления.');
+      const st = raschet(z, dataP), vsego = st.reduce((a, s) => a + s.proc, 0);
+      $('summa').textContent = rub(vsego);
+      $('tab').innerHTML = '<tr><th>Заявка</th><th>Сумма</th><th>Срок</th><th>Зачислено</th><th>Просрочка</th><th>Проценты</th></tr>' +
+        st.map(s => `<tr><td>${fd(s.z)}</td><td>${rub(s.summa)}</td><td>${fd(s.srok)}</td><td>${fd(s.prishlo)}</td><td>${s.pros} дн.</td><td>${rub(s.proc)}</td></tr>`).join('') +
+        `<tr class="itog"><td>Итого</td><td>${rub(st.reduce((a, s) => a + s.summa, 0))}</td><td></td><td></td><td></td><td>${rub(vsego)}</td></tr>`;
+      $('tekst').value = tekstPretenzii(st, dataP); $('ok').textContent = '';
+      $('itog').hidden = false;
+    } catch (e) { $('itog').hidden = true; $('osh').textContent = e.message; }
+  }
+}
+if (typeof module !== 'undefined') module.exports = { razobrat, raschet, srokOferty, procenty, d };
+</script>
+</body>
+</html>
