@@ -1,5 +1,21 @@
 [
  {
+  "slug": "gad-parfum",
+  "cat": "web",
+  "ru": [
+   "Аромат g.a.d. «Восемь часов»",
+   "Кино об аромате по прокрутке, часы отсчитывают восемь часов его жизни на коже"
+  ],
+  "en": [
+   "g.a.d. fragrance, Huit Heures",
+   "A film about the scent plays as you scroll while a clock counts its eight hours on skin"
+  ],
+  "v": "gad-parfum",
+  "ve": "gad-parfum-en",
+  "href": "https://smirnov-artur.github.io/demo/gad-parfum/ru/",
+  "hre": "https://smirnov-artur.github.io/demo/gad-parfum/"
+ },
+ {
   "slug": "gad-energy",
   "cat": "3d",
   "ru": [

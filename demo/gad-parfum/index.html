@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>g.a.d. — Huit Heures</title>
+<meta name="description" content="Huit Heures, eau de parfum by the g.a.d. perfume house: a scent that takes eight hours to tell. Demo site.">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta name="theme-color" content="#080706">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..600;1,6..96,400..600&family=Jost:wght@300;400;500&family=Unbounded:wght@500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="frames/stills/poster-d.webp" media="(min-aspect-ratio: 4/5) and (prefers-reduced-motion: no-preference)">
+<link rel="preload" as="image" href="frames/stills/poster-m.webp" media="(max-aspect-ratio: 4/5) and (prefers-reduced-motion: no-preference)">
+<style>
+:root{
+  --lime:#D6FF3F; --onyx:#080706; --lacquer:#110E0B; --line:rgba(214,182,122,.2);
+  --gilt:#CFAE6E; --bronze:#8A6934; --champagne:#F2E8D4; --smoke:#A39884;
+  --serif:"Bodoni Moda", "Didot", Georgia, serif;
+  --sans:"Jost", "Futura", system-ui, sans-serif;
+  --hdr:72px; --pad:clamp(20px, 3.4vw, 56px);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--onyx);-webkit-text-size-adjust:100%}
+body{background:var(--onyx);color:var(--champagne);font:300 17px/1.6 var(--sans);overflow-x:clip}
+img{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:1px solid var(--gilt);outline-offset:4px}
+.eyebrow{font:500 11px/1.4 var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--gilt)}
+.serif{font-family:var(--serif);font-style:italic;font-weight:400;font-optical-sizing:auto}
+h2,h3{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em;line-height:1.02}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.7em;min-height:50px;padding:0 28px;border-radius:999px;
+  background:var(--champagne);color:var(--onyx);font:500 12px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border:0;cursor:pointer;
+  transition:background .3s, transform .3s}
+.btn:hover{background:var(--gilt)}
+.link{font:500 12px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;text-decoration:none;padding:14px 0;border-bottom:1px solid var(--line);transition:border-color .3s,color .3s}
+.link:hover{color:var(--gilt);border-color:var(--gilt)}
+
+/* ---------- header (outside the story, always on top) ---------- */
+.hdr{position:fixed;inset:0 0 auto 0;z-index:50;height:calc(var(--hdr) + env(safe-area-inset-top));padding:env(safe-area-inset-top) max(var(--pad), env(safe-area-inset-right)) 0 max(var(--pad), env(safe-area-inset-left));
+  display:flex;align-items:center;gap:32px;background:rgba(10,8,6,.42);-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);border-bottom:1px solid rgba(214,182,122,.12)}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none;min-height:44px}
+/* logo g.a.d.: Unbounded, lime #D6FF3F — the owner's mark, as in video/brend/LOGO-g.a.d.png */
+.logo{font-family:"Unbounded",var(--sans);font-weight:500;font-style:normal;letter-spacing:0;text-transform:none;color:var(--lime);-webkit-text-fill-color:var(--lime)}
+.brand .logo{font-size:22px;line-height:1}
+.nav{display:flex;gap:30px;margin-left:auto}
+.nav a{font:400 13px/1 var(--sans);letter-spacing:.08em;text-decoration:none;color:rgba(242,232,212,.72);padding:14px 0;transition:color .25s}
+.nav a:hover{color:var(--champagne)}
+.hdr .btn{min-height:42px;padding:0 22px}
+.lang{display:flex;align-items:center;font:500 11px/1 var(--sans);letter-spacing:.16em}
+.lang>*{display:grid;place-items:center;min-width:34px;min-height:44px;text-decoration:none}
+.lang span{color:var(--champagne)}.lang a{color:rgba(242,232,212,.45);transition:color .25s}.lang a:hover{color:var(--gilt)}
+.burger{display:none;margin-left:auto;width:44px;height:44px;background:none;border:0;color:var(--champagne);cursor:pointer;position:relative}
+.burger i{position:absolute;left:11px;right:11px;height:1px;background:currentColor}
+.burger i:first-child{top:18px}.burger i:last-child{top:26px}
+
+dialog.menu{margin:0;width:100%;max-width:none;height:100%;max-height:none;border:0;background:rgba(8,7,6,.86);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);color:var(--champagne);
+  padding:calc(env(safe-area-inset-top) + 12px) 20px calc(env(safe-area-inset-bottom) + 24px)}
+dialog.menu::backdrop{background:transparent}
+.menu-top{display:flex;justify-content:space-between;align-items:center;height:48px}
+.menu .close{width:44px;height:44px;background:none;border:0;color:inherit;font:300 30px/1 var(--sans);cursor:pointer}
+.menu nav{display:flex;flex-direction:column;margin-top:8vh}
+.menu nav a{font:italic 400 40px/1.1 var(--serif);text-decoration:none;padding:12px 0;border-bottom:1px solid var(--line)}
+.menu .btn{margin-top:36px;width:100%}
+
+/* ---------- the story: pinned stage, canvas frames, timed HTML copy ---------- */
+.story{position:relative;height:1000vh}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#000;isolation:isolate}
+.stage picture img,.stage canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.stage canvas{opacity:0;transition:opacity .6s}
+.stage canvas.on{opacity:1}
+.shade{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%),
+             linear-gradient(to top, var(--onyx) 0, rgba(8,7,6,.55) 14%, transparent 34%),
+             linear-gradient(to bottom, rgba(8,7,6,.5), transparent 22%)}
+
+.ch{position:absolute;z-index:3;opacity:0;visibility:hidden;will-change:opacity,transform}
+.ch h2{font-size:clamp(40px,4.6vw,76px);margin:18px 0 20px}
+.ch p{max-width:34ch;color:rgba(242,232,212,.82)}
+.ch p.eyebrow{max-width:none}
+.ch .eyebrow{display:flex;gap:14px;align-items:center}
+.ch:not(.ch-hero)::before{content:"";position:absolute;inset:-70px -110px;z-index:-1;pointer-events:none;background:radial-gradient(closest-side,rgba(6,5,4,.55),transparent)}
+.ch .eyebrow::before{content:"";width:36px;height:1px;background:var(--gilt)}
+.l{left:var(--pad);top:50%;margin-top:-120px}
+.r{right:calc(var(--pad) + 120px);top:24%;text-align:left}
+.bl{left:var(--pad);bottom:15vh}
+
+.ch-hero{opacity:1;visibility:visible;inset:0;display:grid;place-items:center;pointer-events:none}
+.ch-hero h1{font:italic 400 clamp(68px,15.4vw,280px)/.86 var(--serif);letter-spacing:-.035em;text-align:center;
+  background:linear-gradient(176deg,#FBF3E2 8%,#E4C98E 46%,#A07C3F 78%,#5E4520 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  padding:0 .06em .08em;filter:drop-shadow(0 20px 60px rgba(0,0,0,.6))}
+.ch-hero h1 small{display:block;font:500 12px/1 var(--sans);letter-spacing:.6em;text-transform:uppercase;color:var(--gilt);-webkit-text-fill-color:var(--gilt);margin-bottom:3.2vw;font-style:normal}
+.ch-hero h1 small .logo{font-size:16px;margin-right:.2em}
+.hero-foot{position:absolute;left:var(--pad);bottom:44px;display:flex;flex-direction:column;gap:22px;align-items:flex-start;pointer-events:auto}
+.hero-foot p{max-width:30ch;font-size:18px;color:rgba(242,232,212,.86)}
+
+.ch-end h2{font-size:clamp(46px,5.6vw,96px)}
+.ch-end .facts{display:flex;gap:28px;margin:4px 0 30px;font:400 13px/1.5 var(--sans);letter-spacing:.06em;color:var(--smoke)}
+.ch-end .facts b{display:block;font:italic 400 26px/1.2 var(--serif);color:var(--champagne);letter-spacing:0}
+.ch-end .row{display:flex;gap:26px;align-items:center;flex-wrap:wrap}
+
+/* the skin clock — the signature: scrolling is wearing */
+.clock{position:absolute;z-index:4;right:var(--pad);bottom:40px;text-align:right;pointer-events:none}
+.clock .num{font:italic 400 clamp(44px,4.4vw,72px)/1 var(--serif);font-feature-settings:"tnum","lnum";letter-spacing:-.01em}
+.clock .lbl{margin-top:10px}
+.rail{position:absolute;z-index:4;right:calc(var(--pad) + 8px);top:26vh;height:42vh;width:1px;background:rgba(242,232,212,.16);pointer-events:none}
+.rail .fill{position:absolute;inset:0;background:var(--gilt);transform-origin:top;transform:scaleY(0)}
+.rail span{position:absolute;right:14px;transform:translateY(-50%);white-space:nowrap;font:400 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:rgba(242,232,212,.4);transition:color .4s}
+.rail span::after{content:"";position:absolute;right:-18px;top:50%;width:9px;height:1px;background:currentColor}
+.rail span.on{color:var(--gilt)}
+.bar{display:none}
+.skip{position:absolute;z-index:5;left:50%;bottom:34px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;
+  font:500 11px/1 var(--sans);letter-spacing:.3em;text-transform:uppercase;color:rgba(242,232,212,.7);text-decoration:none;padding:10px 12px;min-height:44px}
+.skip:hover{color:var(--champagne)}
+.skip i{width:1px;height:34px;background:linear-gradient(var(--gilt),transparent);animation:drip 2.4s ease-in-out infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ---------- brand site ---------- */
+section[id]{scroll-margin-top:calc(var(--hdr) + 12px)}
+.sec{padding:clamp(96px,14vh,168px) var(--pad);position:relative}
+.head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:clamp(48px,8vh,96px)}
+.head h2{font-size:clamp(44px,5.4vw,92px);margin-top:18px}
+.head>p{max-width:40ch;color:rgba(242,232,212,.78);justify-self:end}
+
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(16px,2vw,32px);align-items:start}
+.p:nth-child(even){margin-top:88px}
+.p figure{position:relative;overflow:hidden;aspect-ratio:4/5;background:var(--lacquer);border:1px solid var(--line)}
+.p figure img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1),filter 1.2s}
+.p:hover figure img{transform:scale(1.05);filter:brightness(1.08)}
+.p figure::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:var(--gilt);transition:width .8s cubic-bezier(.2,.7,.2,1)}
+.p:hover figure::after{width:100%}
+.p .meta{display:flex;justify-content:space-between;margin-top:20px;font:500 11px/1.4 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--gilt)}
+.p h3{font-size:clamp(28px,2.3vw,38px);margin:12px 0 10px}
+.p p{font-size:15px;color:rgba(242,232,212,.72);min-height:3.2em}
+.p .foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.p .price{font:italic 400 20px/1 var(--serif)}
+.p .foot a{font:500 11px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;text-decoration:none;color:var(--smoke);padding:14px 0}
+.p .foot a:hover{color:var(--gilt)}
+
+.hours{background:linear-gradient(var(--onyx),var(--lacquer) 30%,var(--lacquer) 70%,var(--onyx))}
+.ruler{margin-bottom:64px}
+.ticks{display:flex;justify-content:space-between;font:italic 400 clamp(20px,2vw,30px)/1 var(--serif);color:rgba(242,232,212,.5);margin-bottom:14px}
+.ticks span:last-child{color:var(--champagne)}
+.track{display:flex;height:10px;overflow:hidden}
+.track i{display:block;height:100%}
+.track .z1{width:3.125%;background:#FBF1DA}.track .z2{width:34.375%;background:linear-gradient(90deg,#E6CB8F,var(--gilt))}.track .z3{width:62.5%;background:linear-gradient(90deg,var(--gilt),var(--bronze) 60%,#3C2A12)}
+.phases{display:grid;grid-template-columns:3.4fr 3.4fr 6.25fr;gap:0}
+.ph{padding:28px 32px 0 0;border-left:1px solid var(--line);padding-left:24px}
+.ph .t{font:italic 400 clamp(26px,2.4vw,40px)/1 var(--serif);color:var(--champagne)}
+.ph h3{font:500 11px/1.4 var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--gilt);margin:16px 0 18px;font-style:normal}
+.ph .notes{font:400 16px/1.5 var(--sans);letter-spacing:.02em;margin-bottom:10px}
+.ph p{max-width:36ch;color:rgba(242,232,212,.7);font-size:15px}
+
+.house{display:grid;grid-template-columns:7fr 5fr;gap:clamp(32px,5vw,96px);align-items:center}
+.house figure{overflow:hidden;aspect-ratio:16/11}
+.house figure img{width:100%;height:100%;object-fit:cover;object-position:45% 40%}
+.house h2{font-size:clamp(40px,4.4vw,72px);margin:18px 0 26px}
+.house .body>p{color:rgba(242,232,212,.8);max-width:44ch}
+.house ul{list-style:none;margin-top:36px;border-top:1px solid var(--line)}
+.house li{padding:18px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:12ch 1fr;gap:18px;font-size:15px;color:rgba(242,232,212,.72)}
+.house li b{font:italic 400 20px/1.3 var(--serif);color:var(--champagne)}
+
+.where{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
+.where div{padding:36px 32px 40px 0;border-right:1px solid var(--line)}
+.where div+div{padding-left:32px}.where div:last-child{border-right:0}
+.where h3{font-size:clamp(28px,2.4vw,40px);margin:16px 0 14px}
+.where p{color:rgba(242,232,212,.72);max-width:32ch;font-size:15px;margin-bottom:22px}
+.tbd{font:500 10px/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--smoke);border:1px solid var(--line);border-radius:99px;padding:6px 10px;vertical-align:middle}
+
+.sample{display:grid;grid-template-columns:5fr 6fr;gap:clamp(32px,6vw,120px);align-items:start;background:
+  radial-gradient(60% 80% at 10% 30%, rgba(207,174,110,.12), transparent 70%)}
+.sample h2{font-size:clamp(44px,5vw,84px);margin:18px 0 24px}
+.sample .lead{color:rgba(242,232,212,.8);max-width:36ch}
+form{display:grid;gap:22px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+label{display:grid;gap:10px;font:500 11px/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--smoke)}
+input[type=text],input[type=email]{width:100%;height:54px;background:transparent;border:0;border-bottom:1px solid rgba(242,232,212,.3);color:var(--champagne);font:300 18px/1 var(--sans);letter-spacing:0;text-transform:none;padding:0 2px;border-radius:0}
+input:focus{outline:none;border-bottom-color:var(--gilt)}
+fieldset{border:0;display:flex;flex-wrap:wrap;gap:10px}
+legend{font:500 11px/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--smoke);margin-bottom:14px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.chip span{display:flex;align-items:center;min-height:44px;padding:0 18px;border:1px solid var(--line);border-radius:99px;font:400 14px/1 var(--sans);letter-spacing:.02em;text-transform:none;color:var(--champagne);transition:.25s}
+.chip input:checked+span{background:var(--champagne);color:var(--onyx);border-color:var(--champagne)}
+.chip input:focus-visible+span{outline:1px solid var(--gilt);outline-offset:3px}
+.send{display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:8px}
+.note{font-size:13px;color:var(--smoke);max-width:40ch}
+.status{min-height:1.6em;font:italic 400 20px/1.4 var(--serif);color:var(--gilt)}
+
+footer{padding:80px var(--pad) calc(36px + env(safe-area-inset-bottom));border-top:1px solid var(--line);overflow:hidden}
+.big{font-size:clamp(64px,24vw,440px);line-height:.9;white-space:nowrap;margin-left:-.04em}
+.fine{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:40px;font-size:13px;color:var(--smoke)}
+.fine nav{display:flex;gap:24px;flex-wrap:wrap}
+.fine a{text-decoration:none;padding:12px 0}
+.fine a:hover{color:var(--champagne)}
+
+@media (prefers-reduced-motion: no-preference){
+  @supports (animation-timeline: view()){
+    .rv{animation:rv linear both;animation-timeline:view();animation-range:entry 5% entry 55%}
+    @keyframes rv{from{opacity:0;transform:translateY(48px)}}
+    .track{animation:fill linear both;animation-timeline:view();animation-range:entry 20% cover 45%;clip-path:inset(0 100% 0 0)}
+    @keyframes fill{to{clip-path:inset(0 0 0 0)}}
+    .house figure img{animation:zoom linear both;animation-timeline:view()}
+    @keyframes zoom{from{transform:scale(1.16)}to{transform:scale(1)}}
+  }
+}
+
+/* ---------- reduced motion / save-data: a composed still, normal flow ---------- */
+.static .story{height:auto!important}
+.static .stage{position:relative;height:auto;min-height:100svh;display:flex;flex-direction:column;gap:14vh;padding:calc(100svh + 10vh) var(--pad) 16vh}
+.static .stage picture img{height:100svh}
+.static canvas,.static .rail,.static .skip,.static .clock,.static .bar{display:none}
+.static .ch{position:relative;inset:auto;margin:0;opacity:1!important;visibility:visible!important;transform:none!important}
+.static .ch-hero{position:absolute;inset:0 0 auto 0;height:100svh}
+.static .shade{background:linear-gradient(to bottom,transparent 60vh,var(--onyx) 100svh)}
+
+/* ---------- mobile: its own composition, portrait frames ---------- */
+@media (max-width: 760px){
+  :root{--hdr:60px;--pad:20px}
+  body{font-size:16px}
+  .nav,.hdr .btn{display:none}
+  .burger{display:block;margin-left:0}
+  .lang{margin-left:auto}
+  .brand .logo{font-size:20px}
+  .ch h2{font-size:34px;margin:12px 0 0}
+  .ch p.more,.hero-foot p{display:none}
+  .l,.r,.bl{left:var(--pad);right:var(--pad);top:auto;bottom:calc(92px + env(safe-area-inset-bottom));margin:0}
+  .ch-hero{place-items:start center;padding-top:calc(var(--hdr) + 15vh)}
+  .ch-hero h1{font-size:25vw;line-height:.84}
+  .ch-hero h1 small{font-size:10px;letter-spacing:.5em;margin-bottom:22px}
+  .hero-foot{left:0;right:0;bottom:calc(88px + env(safe-area-inset-bottom));align-items:center}
+  .ch-end h2{font-size:40px;margin:10px 0 22px}
+  .ch-end .facts,.ch-end .link{display:none}
+  .rail{display:none}
+  .clock{left:var(--pad);right:auto;bottom:calc(30px + env(safe-area-inset-bottom));text-align:left;display:flex;align-items:baseline;gap:12px}
+  .clock .num{font-size:28px}.clock .lbl{margin:0;font-size:10px}
+  .bar{display:block;position:absolute;z-index:4;left:0;right:0;bottom:0;height:2px;background:rgba(242,232,212,.12)}
+  .bar i{display:block;height:100%;background:var(--gilt);transform-origin:left;transform:scaleX(0)}
+  .skip{left:8px;transform:none;top:calc(var(--hdr) + env(safe-area-inset-top) + 6px);bottom:auto;flex-direction:row;letter-spacing:.22em;font-size:10px}
+  .skip i{display:none}
+  .head{grid-template-columns:1fr;gap:18px}.head>p{justify-self:start}
+  .grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:0 calc(-1 * var(--pad));padding:0 var(--pad) 8px;scrollbar-width:none}
+  .grid::-webkit-scrollbar{display:none}
+  .p{flex:0 0 76%;scroll-snap-align:start}.p:nth-child(even){margin-top:0}
+  .ticks span:nth-child(even){visibility:hidden}
+  .phases{grid-template-columns:1fr;gap:34px}
+  .house,.sample{grid-template-columns:1fr}
+  .house li{grid-template-columns:1fr;gap:4px}
+  .where{grid-template-columns:1fr}
+  .where div,.where div+div{padding:30px 0;border-right:0;border-bottom:1px solid var(--line)}
+  .f2{grid-template-columns:1fr}
+  .big{font-size:25vw}
+}
+@media (min-width: 761px) and (max-width: 1100px){
+  .nav{display:none}.lang{margin-left:auto}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .r{right:var(--pad)}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <a class="brand" href="#top" aria-label="g.a.d., back to top"><span class="logo">g.a.d.</span></a>
+  <nav class="nav" aria-label="Main">
+    <a href="#collection">Collection</a><a href="#hours">Eight hours</a><a href="#house">The house</a><a href="#stockists">Stockists</a>
+  </nav>
+  <nav class="lang" aria-label="Language"><span aria-current="page">EN</span><a href="ru/index.html" hreflang="ru" lang="ru">RU</a></nav>
+  <a class="btn" href="#sample">Request a sample</a>
+  <button class="burger" id="burger" aria-label="Open menu" aria-haspopup="dialog" aria-expanded="false" aria-controls="menu"><i></i><i></i></button>
+</header>
+
+<dialog class="menu" id="menu" aria-label="Menu">
+  <div class="menu-top"><span class="brand"><span class="logo">g.a.d.</span></span>
+    <button class="close" aria-label="Close menu">&times;</button></div>
+  <nav aria-label="Menu">
+    <a href="#collection">Collection</a><a href="#hours">Eight hours</a><a href="#house">The house</a><a href="#stockists">Stockists</a>
+  </nav>
+  <a class="btn" href="#sample">Request a sample</a>
+</dialog>
+
+<main id="top">
+<!-- ===== THE STORY. Copy lives in the .ch blocks; data-seg = which timeline segments it spans (see SEG in the script) ===== -->
+<section class="story" id="story" aria-label="The story of Huit Heures">
+  <div class="stage">
+    <picture>
+      <source media="(max-aspect-ratio: 4/5)" srcset="frames/stills/poster-m.webp">
+      <img src="frames/stills/poster-d.webp" alt="A square glass flacon in the dark, lit by gold light" fetchpriority="high">
+    </picture>
+    <canvas aria-hidden="true"></canvas>
+    <div class="shade"></div>
+
+    <div class="ch ch-hero" data-seg="0-1" data-fade="1">
+      <h1><small><span class="logo">g.a.d.</span> · Eau de parfum</small>Huit<br>Heures</h1>
+      <div class="hero-foot">
+        <p>A perfume that takes eight hours to tell. This page tells it in one scroll.</p>
+        <a class="btn" href="#sample">Request a sample</a>
+      </div>
+    </div>
+
+    <div class="ch l" data-seg="2">
+      <p class="eyebrow">The flacon</p>
+      <h2>Cut like<br>a watch case</h2>
+      <p class="more">Square shoulders, a heavy glass base, a black cap over a gold collar. It keeps time on a dressing table.</p>
+    </div>
+
+    <div class="ch bl" data-seg="3">
+      <p class="eyebrow">00:00 — Top notes</p>
+      <h2>The first spray<br>is cold light</h2>
+      <p class="more">Bergamot, pink pepper and a clean aldehyde spark. Bright for fifteen minutes, then it lets go.</p>
+    </div>
+
+    <div class="ch r" data-seg="5">
+      <p class="eyebrow">00:15 — Heart</p>
+      <h2>Then it warms<br>to you</h2>
+      <p class="more">Orris butter and sambac jasmine settle into the skin and start to move with it.</p>
+    </div>
+
+    <div class="ch bl" data-seg="6">
+      <p class="eyebrow">03:00 — Base</p>
+      <h2>What stays<br>is yours</h2>
+      <p class="more">Labdanum, amber and a trace of musk. By evening it smells less like perfume and more like you.</p>
+    </div>
+
+    <div class="ch l ch-end" data-seg="7-8" data-delay="0.3">
+      <p class="eyebrow">Huit Heures</p>
+      <h2>Eight hours.<br>One flacon.</h2>
+      <div class="facts"><span><b>50 · 100 ml</b>Eau de parfum</span><span><b>Refillable</b>Cap and collar come off</span></div>
+      <div class="row"><a class="btn" href="#sample">Request a sample</a><a class="link" href="#collection">See the collection</a></div>
+    </div>
+
+    <div class="rail" aria-hidden="true"><i class="fill"></i><span data-seg="3">First spray</span><span data-seg="5">Heart</span><span data-seg="6">Base</span><span data-seg="8">Eight hours</span></div>
+    <div class="clock" aria-hidden="true"><div class="num">00:00</div><div class="lbl eyebrow">Before the first spray</div></div>
+    <div class="bar" aria-hidden="true"><i></i></div>
+    <a class="skip" href="#collection"><span>Skip the story</span><i></i></a>
+  </div>
+</section>
+
+<!-- ===== COLLECTION ===== -->
+<section class="sec" id="collection">
+  <div class="head rv">
+    <div><p class="eyebrow">The collection</p><h2>Four ways to wear<br>eight hours</h2></div>
+    <p>One accord in four formats. Not sure yet? Start with the discovery set and give each one a whole day.</p>
+  </div>
+  <div class="grid">
+    <article class="p rv">
+      <figure><img src="frames/stills/edp.webp" alt="Huit Heures flacon on a black mirror under gold light" width="640" height="800" loading="lazy"></figure>
+      <div class="meta"><span>Eau de parfum</span><span>50 · 100 ml</span></div>
+      <h3>Huit Heures</h3>
+      <p>Bergamot, orris, labdanum. The full eight-hour arc.</p>
+      <div class="foot"><span class="price">from $165</span><a href="#sample" data-pick="edp">Request a sample</a></div>
+    </article>
+    <article class="p rv">
+      <figure><img src="frames/stills/extrait.webp" alt="Gold spray collar of the flacon, close up" width="640" height="800" loading="lazy"></figure>
+      <div class="meta"><span>Extrait</span><span>30 ml</span></div>
+      <h3>Huit Heures Extrait</h3>
+      <p>Twice the labdanum, worn closer to the skin.</p>
+      <div class="foot"><span class="price">$210</span><a href="#sample" data-pick="extrait">Request a sample</a></div>
+    </article>
+    <article class="p rv">
+      <figure><img src="frames/stills/mist.webp" alt="A woman in a black dress, hair moving through gold light" width="640" height="800" loading="lazy"></figure>
+      <div class="meta"><span>Hair mist</span><span>50 ml</span></div>
+      <h3>Voile d’Heures</h3>
+      <p>Low in alcohol, made for hair. Lighter, and it travels.</p>
+      <div class="foot"><span class="price">$85</span><a href="#sample" data-pick="mist">Request a sample</a></div>
+    </article>
+    <article class="p rv">
+      <figure><img src="frames/stills/discovery.webp" alt="Gold ribbons of light spiralling in the dark" width="640" height="800" loading="lazy"></figure>
+      <div class="meta"><span>Discovery set</span><span>4 × 2 ml</span></div>
+      <h3>Le Cadran</h3>
+      <p>All four formats. Wear one per day before you choose.</p>
+      <div class="foot"><span class="price">$28</span><a href="#sample" data-pick="set">Request a sample</a></div>
+    </article>
+  </div>
+</section>
+
+<!-- ===== EIGHT HOURS (the notes, measured in time) ===== -->
+<section class="sec hours" id="hours">
+  <div class="head rv">
+    <div><p class="eyebrow">The structure</p><h2>Eight hours<br>on skin</h2></div>
+    <p>Perfumers talk about top, heart and base. We’d rather tell you when. The bar below is drawn to scale.</p>
+  </div>
+  <div class="ruler rv" aria-hidden="true">
+    <div class="ticks"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8 h</span></div>
+    <div class="track"><i class="z1"></i><i class="z2"></i><i class="z3"></i></div>
+  </div>
+  <div class="phases">
+    <div class="ph rv"><p class="t">00:00 – 00:15</p><h3>Top</h3><p class="notes">Bergamot · Pink pepper · Aldehydes</p><p>Bright and cold. Gone in fifteen minutes, as it should be.</p></div>
+    <div class="ph rv"><p class="t">00:15 – 03:00</p><h3>Heart</h3><p class="notes">Orris butter · Sambac jasmine · Saffron</p><p>Powdery, warm, a little floral. This is what people notice when you pass.</p></div>
+    <div class="ph rv"><p class="t">03:00 – 08:00</p><h3>Base</h3><p class="notes">Labdanum · Amber · White musk</p><p>Resin and skin. It sits close and lasts into the evening.</p></div>
+  </div>
+</section>
+
+<!-- ===== THE HOUSE ===== -->
+<section class="sec house" id="house">
+  <figure class="rv"><img src="frames/stills/house.webp" alt="A woman with eyes closed, gold light behind her" width="1600" height="820" loading="lazy"></figure>
+  <div class="body rv">
+    <p class="eyebrow">The house</p>
+    <h2>We judge a perfume at dinner, not at the counter</h2>
+    <p>g.a.d. is a small perfume house. Every formula is worn the way you will wear it: sprayed in the morning, smelled again in the evening. If it loses its shape before then, it doesn’t leave the studio.</p>
+    <ul>
+      <li><b>Refills</b>The cap and collar come off. A refill costs less than a new flacon.</li>
+      <li><b>On skin</b>Tested on skin through the day, not on a paper strip for a minute.</li>
+      <li><b>Few scents</b>A short collection that we can stand behind, one accord at a time.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== STOCKISTS (placeholders until launch) ===== -->
+<section class="sec" id="stockists">
+  <div class="head rv">
+    <div><p class="eyebrow">Stockists</p><h2>Where to find it</h2></div>
+    <p>Smell it before you buy it. A sample is the easiest way to start.</p>
+  </div>
+  <div class="where rv">
+    <div><p class="eyebrow">Boutique</p><h3>The studio</h3><p>Try every scent on skin, with time to walk around the block before you decide. <span class="tbd">Address at launch</span></p><a class="link" href="#sample">Get notified</a></div>
+    <div><p class="eyebrow">Online</p><h3>Direct from us</h3><p>Flacons, refills and the discovery set, shipped in a box you can reuse. <span class="tbd">Shop at launch</span></p><a class="link" href="#collection">See the collection</a></div>
+    <div><p class="eyebrow">By post</p><h3>A 2 ml sample</h3><p>Any scent from the collection, sent to your door. One request per address.</p><a class="link" href="#sample">Request a sample</a></div>
+  </div>
+</section>
+
+<!-- ===== SAMPLE REQUEST ===== -->
+<section class="sec sample" id="sample">
+  <div class="rv">
+    <p class="eyebrow">Sample</p>
+    <h2>Wear it for<br>a whole day</h2>
+    <p class="lead">Tell us where to send a 2 ml vial. Spray it in the morning and check in the evening; that’s the only test that counts.</p>
+  </div>
+  <form id="form" class="rv" novalidate>
+    <div class="f2">
+      <label>Name<input type="text" name="name" autocomplete="name" required></label>
+      <label>Email<input type="email" name="email" autocomplete="email" required></label>
+    </div>
+    <label>City<input type="text" name="city" autocomplete="address-level2"></label>
+    <fieldset>
+      <legend>Scent</legend>
+      <label class="chip"><input type="radio" name="scent" value="edp" checked><span>Huit Heures</span></label>
+      <label class="chip"><input type="radio" name="scent" value="extrait"><span>Extrait</span></label>
+      <label class="chip"><input type="radio" name="scent" value="mist"><span>Hair mist</span></label>
+      <label class="chip"><input type="radio" name="scent" value="set"><span>Discovery set</span></label>
+    </fieldset>
+    <div class="send"><button class="btn" type="submit">Request a sample</button><p class="note">Demo site: requests aren’t sent anywhere until a form address is connected.</p></div>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+  </form>
+</section>
+</main>
+
+<footer>
+  <div class="big logo" aria-hidden="true">g.a.d.</div>
+  <div class="fine">
+    <span>g.a.d. perfume house — demo site. Prices and addresses are placeholders.</span>
+    <nav aria-label="Footer"><a href="#collection">Collection</a><a href="#hours">Eight hours</a><a href="#house">The house</a><a href="#sample">Sample</a></nav>
+  </div>
+</footer>
+
+<script>
+(() => {
+  // ---- timeline: [scroll length in viewport heights (desktop, mobile), first frame, last frame]
+  // a segment with equal frames is a still-frame hold. Frame ranges come from the 24 fps source (see NOTES.md).
+  const SEG = [
+    [0.50, 0.35,   0,   0], // 0 opening hold: read the hero
+    [0.90, 0.60,   0,  43], // 1 macro glass rises
+    [1.20, 0.80,  43,  94], // 2 flacon in gold rays
+    [1.10, 0.80,  94, 126], // 3 first spray
+    [1.00, 0.65, 126, 173], // 4 transition: gold spiral into the model (no copy)
+    [1.30, 0.90, 173, 232], // 5 heart: she turns
+    [1.30, 0.90, 232, 288], // 6 base: eyes closed
+    [1.00, 0.80, 288, 362], // 7 reveal: flacon over her, then alone
+    [0.70, 0.50, 362, 362], // 8 closing hold
+  ];
+  // skin clock, minutes at segment start/end, and its label
+  const CLOCK = [[0,0],[0,0],[0,0],[0,15],[15,60],[60,180],[180,480],[480,480],[480,480]];
+  const LBL = ['Before the first spray','Before the first spray','Before the first spray','Top notes','Top notes, fading','Heart','Base','Eight hours on skin','Eight hours on skin'];
+  const N = 363, NET = 6, DEC = 3;
+  let WIN, MAXBMP;   // decoded window: desktop 1920x1080 ≈ 8 MB per frame, phone 606x1080 ≈ 2.6 MB
+
+  const $ = s => document.querySelector(s);
+  const root = document.documentElement, story = $('#story'), stage = story.querySelector('.stage');
+  const canvas = stage.querySelector('canvas'), ctx = canvas.getContext('2d');
+  const chs = [...stage.querySelectorAll('.ch')], hero = $('.ch-hero'), heroH1 = hero.querySelector('h1');
+  const num = $('.clock .num'), lbl = $('.clock .lbl'), fill = $('.rail .fill'), barI = $('.bar i');
+  const ticks = [...document.querySelectorAll('.rail span')], skip = $('.skip');
+  const portrait = matchMedia('(max-aspect-ratio: 4/5)');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+
+  // ---------- menu (native <dialog>: focus containment + Escape) ----------
+  const menu = $('#menu'), burger = $('#burger');
+  burger.addEventListener('click', () => { menu.showModal(); burger.setAttribute('aria-expanded', 'true'); });
+  menu.querySelector('.close').addEventListener('click', () => menu.close());
+  menu.addEventListener('close', () => { burger.setAttribute('aria-expanded', 'false'); burger.focus({ preventScroll: true }); });
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.close()));
+
+  // ---------- form: demo unless an endpoint is set ----------
+  const FORM_ENDPOINT = ''; // e.g. https://formspree.io/f/xxxx — then requests are really sent
+  const form = $('#form'), status = $('#status');
+  document.querySelectorAll('[data-pick]').forEach(a => a.addEventListener('click', () => {
+    form.querySelector(`input[value="${a.dataset.pick}"]`).checked = true;
+  }));
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const el = form.elements; if (!el.namedItem('name').value.trim() || !/^\S+@\S+\.\S+$/.test(el.namedItem('email').value)) { status.textContent = 'Add your name and a valid email.'; return; }
+    if (!FORM_ENDPOINT) { status.textContent = 'Demo mode: nothing was sent. Connect a form address to receive requests.'; return; }
+    try {
+      const r = await fetch(FORM_ENDPOINT, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      status.textContent = r.ok ? 'Request sent. Your sample is on its way.' : 'The request didn’t go through. Try again in a minute.';
+      if (r.ok) form.reset();
+    } catch { status.textContent = 'No connection. Check it and send again.'; }
+  });
+
+  // ---------- still mode: reduced motion or save-data ----------
+  if (reduce.matches || (navigator.connection && navigator.connection.saveData)) { root.classList.add('static'); return; }
+
+  // ---------- layout ----------
+  let mob, dir, vh, top0, acc, TOTAL, fw, fh;
+  function layout() {
+    mob = portrait.matches;
+    vh = root.clientHeight;
+    const k = mob ? 1 : 0;
+    acc = [0]; SEG.forEach(s => acc.push(acc[acc.length - 1] + s[k]));
+    TOTAL = acc[acc.length - 1];
+    story.style.height = (TOTAL + 1) * vh + 'px';          // pinned travel counted apart from the stage height
+    top0 = story.getBoundingClientRect().top + scrollY;
+    chs.forEach(el => {
+      const [a, b = a] = el.dataset.seg.split('-').map(Number);
+      el._a = acc[a] + (+el.dataset.delay || 0); el._b = acc[b + 1];
+      el._f = el.dataset.fade ? acc[b + 1] - acc[b] : 0;   // fade out across the whole last segment
+    });
+    ticks.forEach(t => t.style.top = (acc[+t.dataset.seg] / TOTAL * 100) + '%');
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = Math.round(stage.clientWidth * dpr); canvas.height = Math.round(stage.clientHeight * dpr);
+    dirty = true;
+  }
+
+  // ---------- frame loader: nearest first, bounded requests and decoded memory ----------
+  let gen = 0, ac, blobs, bmps, fetching, decoding, failed, want = 0;
+  const url = i => `frames/${dir}/${String(i).padStart(4, '0')}.webp`;
+  function reset() {
+    gen++; if (ac) ac.abort(); ac = new AbortController();
+    if (bmps) bmps.forEach(b => b.close());
+    dir = mob ? 'm' : 'd'; fw = 0; WIN = mob ? 22 : 12; MAXBMP = mob ? 56 : 30;
+    blobs = new Array(N); bmps = new Map(); fetching = new Set(); decoding = new Set(); failed = new Array(N).fill(0);
+    canvas.classList.remove('on'); drawn = -1;
+    pump();
+  }
+  function pump() {
+    const g = gen, c = want;
+    for (let d = 0; d <= WIN && decoding.size < DEC; d++) for (const i of d ? [c + d, c - d] : [c]) {
+      if (i < 0 || i >= N || !blobs[i] || bmps.has(i) || decoding.has(i) || decoding.size >= DEC) continue;
+      decoding.add(i);
+      createImageBitmap(blobs[i]).then(bm => {
+        if (g !== gen) return bm.close();
+        if (!fw) { fw = bm.width; fh = bm.height; }
+        bmps.set(i, bm); dirty = true; if (!raf) raf = requestAnimationFrame(tick);
+      }).catch(() => {}).finally(() => { if (g === gen) { decoding.delete(i); pump(); } });
+    }
+    for (let d = 0; d < N && fetching.size < NET; d++) for (const i of d ? [c + d, c - d] : [c]) {
+      if (i < 0 || i >= N || blobs[i] || fetching.has(i) || failed[i] > 2 || fetching.size >= NET) continue;
+      fetching.add(i);
+      fetch(url(i), { signal: ac.signal }).then(r => r.ok ? r.blob() : Promise.reject(r.status))
+        .then(b => { if (g === gen) blobs[i] = b; })
+        .catch(() => { if (g === gen) failed[i]++; })
+        .finally(() => { if (g === gen) { fetching.delete(i); pump(); } });
+    }
+    if (bmps.size > MAXBMP) for (const [i, b] of bmps) if (Math.abs(i - c) > WIN) { b.close(); bmps.delete(i); }
+  }
+
+  // ---------- drawing: exactly one frame on screen (nearest decoded while the exact one loads) ----------
+  let dirty = true, drawn = -1;
+  function nearest(i) { for (let d = 0; d <= 14; d++) { if (bmps.has(i - d)) return i - d; if (bmps.has(i + d)) return i + d; } return -1; }
+  function draw(f, z) {
+    const a = nearest(f);
+    if (a < 0 || !fw) return;
+    const W = canvas.width, H = canvas.height;
+    // z < 1: pull back from cover, never narrower than the screen, pinned to the top
+    const s = Math.max(Math.max(W / fw, H / fh) * z, W / fw), w = Math.round(fw * s), h = Math.round(fh * s), x = Math.round((W - w) / 2), y = h < H ? 0 : Math.round((H - h) / 2);  // whole pixels: no half-pixel blur
+    ctx.imageSmoothingQuality = 'high'; ctx.drawImage(bmps.get(a), x, y, w, h);
+    if (h < H) {
+      const fade = Math.min(h * .3, H * .22), g = ctx.createLinearGradient(0, h - fade, 0, h);
+      g.addColorStop(0, 'rgba(8,7,6,0)'); g.addColorStop(1, '#080706');
+      ctx.fillStyle = g; ctx.fillRect(0, h - fade, W, fade);
+      ctx.fillStyle = '#080706'; ctx.fillRect(0, h - 1, W, H - h + 1);
+    }
+    if (drawn < 0) canvas.classList.add('on');
+    drawn = a;
+  }
+
+  // ---------- scroll → timeline ----------
+  function at(u) { // segment index and local progress
+    for (let s = 0; s < SEG.length; s++) if (u < acc[s + 1] || s === SEG.length - 1) return [s, clamp((u - acc[s]) / (acc[s + 1] - acc[s]))];
+  }
+  function frameAt(u) { const [s, p] = at(u), g = SEG[s]; return g[2] + (g[3] - g[2]) * p; }
+  function zoomAt(u) { // mobile only: slow pull-back through the reveal
+    if (!mob) return 1;
+    const [s, p] = at(u); if (s < 7) return 1;
+    const e = s === 7 ? p * p * (3 - 2 * p) : 1;
+    return 1 - 0.2 * e;
+  }
+  let u = 0, uS = 0, last = 0, lastFrame = -1, lastZ = 1, raf = 0, lastT = 0;
+  function onScroll() {
+    u = clamp((scrollY - top0) / vh, 0, TOTAL);
+    const w = Math.round(frameAt(u)); if (w !== want) { want = w; pump(); }
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+  const pad = n => String(n).padStart(2, '0');
+  function ui(v) {
+    const F = mob ? 0.2 : 0.28;
+    for (const el of chs) {
+      let o = 0, i = 1, x = 1;
+      if (v >= el._a - 1e-6 && v <= el._b + 1e-6) {
+        i = el._a === 0 ? 1 : clamp((v - el._a) / F); x = el._b >= TOTAL - 1e-6 ? 1 : clamp((el._b - v) / (el._f || F));
+        o = Math.min(i, x);
+      }
+      if (el === hero) {
+        heroH1.style.transform = `translateY(${(1 - x) * -6}vh) scale(${1 + (1 - x) * .08})`;
+        heroH1.style.opacity = x;
+      }
+      el.style.opacity = o;
+      el.style.visibility = o > 0.01 ? 'visible' : 'hidden';
+      if (el !== hero) el.style.transform = `translateY(${(1 - i) * 28 - (1 - x) * 18}px)`;
+    }
+    const [s, p] = at(v), c = CLOCK[s], m = Math.round(c[0] + (c[1] - c[0]) * p);
+    const txt = pad(Math.floor(m / 60)) + ':' + pad(m % 60);
+    if (num.textContent !== txt) num.textContent = txt;
+    if (lbl.textContent !== LBL[s]) lbl.textContent = LBL[s];
+    const pr = v / TOTAL;
+    fill.style.transform = `scaleY(${pr})`; barI.style.transform = `scaleX(${pr})`;
+    ticks.forEach(t => t.classList.toggle('on', v >= acc[+t.dataset.seg] - 0.01));
+    skip.style.opacity = v > TOTAL - 0.8 ? clamp((TOTAL - v) / 0.8) : 1;
+    skip.style.visibility = v > TOTAL - 0.05 ? 'hidden' : 'visible';
+  }
+  function tick(t) {
+    const dt = Math.min(64, t - lastT || 16.7); lastT = t;
+    const k = 1 - Math.pow(1 - 0.16, dt / 16.7);
+    uS += (u - uS) * k; if (Math.abs(u - uS) < 0.0004) uS = u;
+    const f = Math.round(frameAt(uS)), z = zoomAt(uS);
+    if (f !== lastFrame || z !== lastZ || dirty) { draw(f, z); lastFrame = f; lastZ = z; dirty = false; }
+    if (uS !== last) { ui(uS); last = uS; }
+    raf = (uS !== u || dirty) ? requestAnimationFrame(tick) : 0;
+  }
+
+  // ---------- resize, breakpoint swap (cancel and release the old sequence), visibility ----------
+  let lw = innerWidth, lh = innerHeight;
+  addEventListener('resize', () => {
+    if (innerWidth === lw && Math.abs(innerHeight - lh) < 120) return;  // ignore mobile toolbar show/hide
+    lw = innerWidth; lh = innerHeight;
+    const was = mob; layout(); if (was !== mob) reset(); onScroll();
+  });
+  portrait.addEventListener('change', () => { layout(); reset(); onScroll(); });
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('pagehide', () => { gen++; if (ac) ac.abort(); if (bmps) bmps.forEach(b => b.close()); });
+
+  layout(); reset(); onScroll(); uS = u; ui(u);
+  window.__story = { get frame() { return lastFrame; }, get total() { return TOTAL; }, get loaded() { return blobs.filter(Boolean).length; }, get decoded() { return bmps.size; }, get dir() { return dir; } };
+})();
+</script>
+</body>
+</html>

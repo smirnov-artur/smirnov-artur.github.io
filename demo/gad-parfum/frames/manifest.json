@@ -1,0 +1,21 @@
+{
+ "count": 363,
+ "pattern": "{set}/{i:04d}.webp",
+ "quality": 92,
+ "desktop": {
+  "dir": "d",
+  "w": 1920,
+  "h": 1080,
+  "bytes": 27470834,
+  "logo": "g.a.d. 150px, right 1764, top 108"
+ },
+ "mobile": {
+  "dir": "m",
+  "w": 606,
+  "h": 1080,
+  "bytes": 13733236,
+  "logo": "g.a.d. 96px, right 531, top 104"
+ },
+ "fps": 24,
+ "source": "src/source.mp4 (1920x1080, 24 fps, 2.94 Mbit/s, 15.1 s)"
+}
