@@ -1,5 +1,21 @@
 [
  {
+  "slug": "gad-cycles",
+  "cat": "web",
+  "ru": [
+   "Веломагазин g.a.d. cycles",
+   "Ночной заезд под дождём по прокрутке: серпантин, мокрая дорога, g.a.d. на шлеме, велокомпьютер считает километры, ниже подбор рамы по росту"
+  ],
+  "en": [
+   "g.a.d. cycles bike shop",
+   "A rainy night ride as you scroll: the switchback, wet tarmac, g.a.d. on the helmet, a bike computer counting the km, then frame sizing by height"
+  ],
+  "v": "gad-cycles",
+  "ve": "gad-cycles-en",
+  "href": "https://smirnov-artur.github.io/cases/gad-cycles/ru/",
+  "hre": "https://smirnov-artur.github.io/cases/gad-cycles/"
+ },
+ {
   "slug": "gad-ballroom",
   "cat": "web",
   "ru": [
