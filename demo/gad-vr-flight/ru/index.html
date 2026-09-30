@@ -672,5 +672,6 @@ fetch(C.manifest).then(r => { if (!r.ok) throw 0; return r.json(); }).then(m => 
 }).catch(() => { html.classList.replace('fly', 'static'); flight.style.height = ''; });
 })();
 </script>
+<script>new Image().src='https://gad-production.ru/px?p='+encodeURIComponent(location.pathname)+'&r='+encodeURIComponent(document.referrer)+'&s='+encodeURIComponent(new URLSearchParams(location.search).get('src')||'')</script>
 </body>
 </html>

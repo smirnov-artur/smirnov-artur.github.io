@@ -635,5 +635,6 @@ footer{padding:80px var(--pad) calc(36px + env(safe-area-inset-bottom));border-t
   window.__story = { get frame() { return lastFrame; }, get total() { return TOTAL; }, get loaded() { return blobs.filter(Boolean).length; }, get decoded() { return bmps.size; }, get dir() { return dir; } };
 })();
 </script>
+<script>new Image().src='https://gad-production.ru/px?p='+encodeURIComponent(location.pathname)+'&r='+encodeURIComponent(document.referrer)+'&s='+encodeURIComponent(new URLSearchParams(location.search).get('src')||'')</script>
 </body>
 </html>
