@@ -527,5 +527,6 @@ const holst = document.getElementById('golova');
 if (document.createElement('canvas').getContext('webgl2')) try { window.gadWait = golova(holst); } catch (e) { console.warn('портрет не поднялся:', e); holst.hidden = true; }
 else { holst.hidden = true; document.querySelector('.hint').hidden = true; }
 </script>
+<script>new Image().src='https://gad-production.ru/px?p='+encodeURIComponent(location.pathname)+'&r='+encodeURIComponent(document.referrer)+'&s='+encodeURIComponent(new URLSearchParams(location.search).get('src')||'')</script>
 </body>
 </html>
