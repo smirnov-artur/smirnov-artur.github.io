@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>g.a.d. diner — ради этого шейка время останавливается</title>
+<meta name="description" content="g.a.d. diner: молочные коктейли на миксере, бургеры с плиты и завтрак весь день в хромированной закусочной 50-х. Концепт-сайт g.a.d.">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="theme-color" content="#0D0B0A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Extra+Condensed:wght@700;800;900&family=Lobster&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500&text=g.ad&display=block" rel="stylesheet">
+<link rel="preload" as="image" href="../frames/stills/poster-d.webp" media="(min-aspect-ratio: 4/5) and (prefers-reduced-motion: no-preference)">
+<link rel="preload" as="image" href="../frames/stills/poster-m.webp" media="(max-aspect-ratio: 4/5) and (prefers-reduced-motion: no-preference)">
+<style>
+:root{
+  --ink:#0D0B0A; --booth:#17100E; --cream:#F3EAD7; --cherry:#E0463D; --cherry-d:#A92E27; --chrome:#C9CDD1;
+  --smoke:#A89C8C; --line:rgba(243,234,215,.14); --lime:#D6FF3F;
+  --display:"Sofia Sans Extra Condensed", "Oswald", "Arial Narrow", sans-serif;
+  --script:"Lobster", "Brush Script MT", cursive;
+  --sans:"Manrope", system-ui, sans-serif;
+  --hdr:72px; --pad:clamp(20px, 3.4vw, 56px);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--ink);-webkit-text-size-adjust:100%;overflow-x:clip}
+body{background:var(--ink);color:var(--cream);font:400 17px/1.6 var(--sans);overflow-x:clip}
+img{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--cherry);outline-offset:4px}
+.eyebrow{font:700 12px/1.4 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--cherry)}
+.script{font-family:var(--script);font-weight:400;text-transform:none;letter-spacing:0}
+h1,h2,h3{font-family:var(--display);font-weight:900;text-transform:uppercase;letter-spacing:-.005em;line-height:.9}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.6em;min-height:50px;padding:0 26px;border-radius:999px;
+  background:var(--cherry);color:#fff;font:700 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border:0;cursor:pointer;
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.18);transition:background .25s, transform .25s}
+.btn:hover{background:#F0564C;transform:translateY(-1px)}
+.link{font:700 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;padding:14px 0;border-bottom:2px solid var(--line);transition:border-color .25s,color .25s}
+.link:hover{border-color:var(--cherry)}
+/* logo g.a.d.: Unbounded, lime #D6FF3F — the owner's mark, as in video/brend/LOGO-g.a.d.png */
+.logo{font-family:"Unbounded",var(--sans);font-weight:500;font-style:normal;letter-spacing:0;text-transform:none;color:var(--lime)}
+
+/* ---------- header (outside the story, always on top) ---------- */
+.hdr{position:fixed;inset:0 0 auto 0;z-index:50;height:calc(var(--hdr) + env(safe-area-inset-top));padding:env(safe-area-inset-top) max(var(--pad), env(safe-area-inset-right)) 0 max(var(--pad), env(safe-area-inset-left));
+  display:flex;align-items:center;gap:30px;background:rgba(13,11,10,.46);-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:10px;text-decoration:none;min-height:44px;align-items:center}
+.brand .logo{font-size:22px;line-height:1}
+.brand .script{font-size:24px;line-height:1;color:var(--cream);transform:translateY(2px)}
+.nav{display:flex;gap:28px;margin-left:auto}
+.nav a{font:500 14px/1 var(--sans);text-decoration:none;color:rgba(243,234,215,.74);padding:14px 0;transition:color .25s}
+.nav a:hover{color:var(--cream)}
+.hdr .btn{min-height:42px;padding:0 20px;font-size:12px}
+.lang{display:flex;align-items:center;font:700 12px/1 var(--sans);letter-spacing:.12em}
+.lang>*{display:grid;place-items:center;min-width:34px;min-height:44px;text-decoration:none}
+.lang span{color:var(--cream)}.lang a{color:rgba(243,234,215,.45);transition:color .25s}.lang a:hover{color:var(--cherry)}
+.burger{display:none;width:44px;height:44px;background:none;border:0;color:var(--cream);cursor:pointer;position:relative}
+.burger i{position:absolute;left:11px;right:11px;height:2px;background:currentColor;border-radius:2px}
+.burger i:first-child{top:17px}.burger i:last-child{top:25px}
+
+dialog.menu{margin:0;width:100%;max-width:none;height:100%;max-height:none;border:0;background:rgba(13,11,10,.9);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);color:var(--cream);
+  padding:calc(env(safe-area-inset-top) + 12px) 20px calc(env(safe-area-inset-bottom) + 24px)}
+dialog.menu::backdrop{background:transparent}
+.menu-top{display:flex;justify-content:space-between;align-items:center;height:48px}
+.menu .close{width:44px;height:44px;background:none;border:0;color:inherit;font:300 32px/1 var(--sans);cursor:pointer}
+.menu nav{display:flex;flex-direction:column;margin-top:8vh}
+.menu nav a{font:900 46px/1 var(--display);text-transform:uppercase;text-decoration:none;padding:14px 0;border-bottom:1px solid var(--line)}
+.menu .btn{margin-top:36px;width:100%}
+
+/* ---------- the story: pinned stage, canvas frames, timed HTML copy ---------- */
+.story{position:relative;height:1140vh}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#000;isolation:isolate}
+.stage picture img,.stage canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.stage canvas{opacity:0;transition:opacity .5s}
+.stage canvas.on{opacity:1}
+.shade{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top, var(--ink) 0, rgba(13,11,10,.5) 12%, transparent 30%),
+             linear-gradient(to bottom, rgba(13,11,10,.45), transparent 20%)}
+
+.ch{position:absolute;z-index:3;opacity:0;visibility:hidden;will-change:opacity,transform;max-width:560px}
+.ch h2{font-size:clamp(46px,5.2vw,92px);margin:14px 0 18px}
+.ch p{max-width:36ch;color:rgba(243,234,215,.86)}
+.ch p.eyebrow{max-width:none;display:flex;gap:12px;align-items:center}
+.ch p.eyebrow::before{content:"";width:28px;height:2px;background:var(--cherry)}
+.ch::before{content:"";position:absolute;inset:-80px -120px;z-index:-1;pointer-events:none;background:radial-gradient(closest-side,rgba(10,8,7,.62),transparent)}
+.l{left:var(--pad);top:50%;transform:translateY(-50%)}
+.tl{left:var(--pad);top:calc(var(--hdr) + 9vh)}
+.r{right:var(--pad);top:30%}
+.bl{left:var(--pad);bottom:19vh}
+.price-tag{display:inline-block;margin-top:18px;font:900 28px/1 var(--display);color:var(--cream);text-transform:uppercase}
+.price-tag small{font:700 11px/1 var(--sans);letter-spacing:.2em;color:var(--smoke);margin-right:10px;vertical-align:middle}
+
+.ch-hero{opacity:1;visibility:visible;right:var(--pad);bottom:13vh;max-width:min(760px,52vw);pointer-events:none}
+.ch-hero::before{inset:-140px -160px -120px -140px;background:radial-gradient(closest-side,rgba(10,8,7,.72),transparent)}
+.ch-hero .kicker{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.ch-hero .kicker .logo{font-size:20px}
+.ch-hero .kicker .script{font-size:30px;color:var(--cream);line-height:1}
+.ch-hero h1{font-size:clamp(64px,8.2vw,156px);line-height:.84}
+.ch-hero h1 em{font-style:normal;color:var(--cherry)}
+.ch-hero p{max-width:34ch;margin:22px 0 26px;font-size:18px;color:rgba(243,234,215,.9)}
+.ch-hero .row{display:flex;gap:26px;align-items:center;flex-wrap:wrap;pointer-events:auto}
+
+.ch-end h2{font-size:clamp(54px,6vw,110px)}
+.ch-end .facts{display:flex;gap:30px;margin:6px 0 28px;font:500 13px/1.5 var(--sans);color:var(--smoke)}
+.ch-end .facts b{display:block;font:900 30px/1.1 var(--display);color:var(--cream);text-transform:uppercase}
+.ch-end .row{display:flex;gap:26px;align-items:center;flex-wrap:wrap}
+
+/* the diner clock — the signature: time runs, stops and rewinds with the scroll */
+.clock{position:absolute;z-index:4;left:var(--pad);bottom:36px;pointer-events:none;display:flex;align-items:baseline;gap:16px}
+.clock .num{font:800 clamp(34px,3vw,52px)/1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:.02em;min-width:5.2ch}
+.clock .lbl{font:700 11px/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--smoke);display:flex;align-items:center;gap:8px}
+.clock .lbl i{width:8px;height:8px;border-radius:50%;background:var(--cherry);box-shadow:0 0 12px var(--cherry)}
+.clock[data-mode="stop"] .lbl i{background:var(--chrome);box-shadow:none}
+.clock[data-mode="rew"] .lbl i{background:var(--lime);box-shadow:0 0 12px var(--lime)}
+.bar{position:absolute;z-index:4;left:0;right:0;bottom:0;height:3px;background:rgba(243,234,215,.1)}
+.bar i{display:block;height:100%;background:var(--cherry);transform-origin:left;transform:scaleX(0)}
+.skip{position:absolute;z-index:5;left:50%;bottom:30px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;
+  font:700 11px/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:rgba(243,234,215,.74);text-decoration:none;padding:10px 12px;min-height:44px}
+.skip:hover{color:var(--cream)}
+.skip i{width:2px;height:30px;background:linear-gradient(var(--cherry),transparent);animation:drip 2.4s ease-in-out infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ---------- the diner below the story ---------- */
+section[id]{scroll-margin-top:calc(var(--hdr) + 12px)}
+.sec{padding:clamp(96px,14vh,160px) var(--pad);position:relative}
+.head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:clamp(44px,7vh,84px)}
+.head h2{font-size:clamp(52px,6.4vw,118px);margin-top:14px}
+.head h2 .script{color:var(--cherry);font-size:.62em;display:block;margin-bottom:.12em}
+.head>p{max-width:42ch;color:rgba(243,234,215,.78);justify-self:end}
+
+/* menu board */
+.board{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,72px) clamp(32px,5vw,96px)}
+.cat{border-top:3px solid var(--cream);padding-top:20px}
+.cat-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.cat-h h3{font-size:clamp(34px,3vw,52px)}
+.cat-h span{font:700 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--smoke)}
+.item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--line)}
+.item b{font:800 22px/1.1 var(--display);text-transform:uppercase;letter-spacing:.01em}
+.item i{border-bottom:2px dotted rgba(243,234,215,.22);transform:translateY(-5px)}
+.item .pr{font:900 24px/1 var(--display);color:var(--cherry)}
+.item p{grid-column:1 / -1;font-size:15px;color:rgba(243,234,215,.66);margin-top:-2px}
+.pics{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.6vw,24px);margin-top:clamp(48px,7vh,80px)}
+.pics figure{position:relative;overflow:hidden;aspect-ratio:4/5;background:var(--booth);border-radius:6px}
+.pics img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.pics figure:hover img{transform:scale(1.04)}
+.pics figcaption{position:absolute;left:14px;bottom:12px;font:700 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;background:rgba(13,11,10,.72);padding:8px 10px;border-radius:4px}
+.fine-print{margin-top:22px;font-size:13px;color:var(--smoke)}
+
+/* how it's made */
+.made{background:linear-gradient(var(--ink),var(--booth) 25%,var(--booth) 75%,var(--ink))}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
+.step{padding:34px 32px 10px 0;border-right:1px solid var(--line)}
+.step+.step{padding-left:32px}.step:last-child{border-right:0}
+.step .n{font:900 64px/1 var(--display);color:transparent;-webkit-text-stroke:1.5px var(--cherry)}
+.step h3{font-size:clamp(28px,2.4vw,40px);margin:14px 0 12px}
+.step p{color:rgba(243,234,215,.72);max-width:34ch;font-size:15px}
+.wide{margin-top:clamp(56px,8vh,96px);display:grid;grid-template-columns:7fr 5fr;gap:clamp(28px,4vw,72px);align-items:center}
+.wide figure{overflow:hidden;aspect-ratio:16/10;border-radius:6px}
+.wide img{width:100%;height:100%;object-fit:cover}
+.wide blockquote{font:400 clamp(34px,3vw,52px)/1.1 var(--script);color:var(--cream)}
+.wide blockquote+p{margin-top:18px;color:var(--smoke);font-size:15px;max-width:40ch}
+
+/* visit */
+.visit{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
+.visit>div{padding:34px 32px 36px 0;border-right:1px solid var(--line)}
+.visit>div+div{padding-left:32px}.visit>div:last-child{border-right:0}
+.visit h3{font-size:clamp(30px,2.6vw,44px);margin:14px 0 14px}
+.visit p,.visit li{color:rgba(243,234,215,.74);font-size:15px}
+.visit ul{list-style:none}
+.visit li{display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px dotted var(--line)}
+.visit li b{font-weight:500;color:var(--cream)}
+.tbd{display:inline-block;margin-top:14px;font:700 10px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--smoke);border:1px solid var(--line);border-radius:99px;padding:7px 10px}
+
+/* booking */
+.book{display:grid;grid-template-columns:5fr 6fr;gap:clamp(32px,6vw,120px);align-items:start;background:radial-gradient(60% 80% at 8% 30%, rgba(224,70,61,.14), transparent 70%)}
+.book h2{font-size:clamp(52px,6vw,108px);margin:14px 0 22px}
+.book .lead{color:rgba(243,234,215,.8);max-width:36ch}
+form{display:grid;gap:22px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.f3{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:22px}
+label{display:grid;gap:10px;font:700 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--smoke)}
+input[type=text],input[type=tel],input[type=date],select{width:100%;height:54px;background:transparent;border:0;border-bottom:1px solid rgba(243,234,215,.3);color:var(--cream);font:400 18px/1 var(--sans);letter-spacing:0;text-transform:none;padding:0 2px;border-radius:0;color-scheme:dark}
+select option{background:var(--ink)}
+input:focus,select:focus{outline:none;border-bottom-color:var(--cherry)}
+fieldset{border:0;display:flex;flex-wrap:wrap;gap:10px}
+legend{font:700 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--smoke);margin-bottom:14px}
+.chip{position:relative;display:block}
+.chip input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.chip span{display:flex;align-items:center;min-height:44px;padding:0 18px;border:1px solid var(--line);border-radius:99px;font:500 14px/1 var(--sans);letter-spacing:0;text-transform:none;color:var(--cream);transition:.25s}
+.chip input:checked+span{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+.chip input:focus-visible+span{outline:2px solid var(--cherry);outline-offset:3px}
+.send{display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:6px}
+.note{font-size:13px;color:var(--smoke);max-width:42ch}
+.status{min-height:1.6em;font:500 16px/1.5 var(--sans);color:var(--lime)}
+
+footer{padding:80px var(--pad) calc(36px + env(safe-area-inset-bottom));border-top:1px solid var(--line);overflow:hidden}
+.big{display:flex;align-items:baseline;gap:.25em;white-space:nowrap;line-height:.9;margin-left:-.04em}
+.big .logo{font-size:clamp(64px,17vw,300px)}
+.big .script{font-size:clamp(40px,9vw,160px);color:var(--cream)}
+.credit{display:flex;justify-content:space-between;gap:20px 40px;flex-wrap:wrap;margin-top:44px;padding-top:24px;border-top:1px solid var(--line);font-size:14px;color:var(--smoke)}
+.credit strong{color:var(--cream);font-weight:500}
+.credit nav{display:flex;gap:22px;flex-wrap:wrap}
+.credit a{text-decoration:none;padding:12px 0;color:var(--cream)}
+.credit a:hover{color:var(--cherry)}
+.fine{margin-top:14px;font-size:12px;color:rgba(168,156,140,.8)}
+
+@media (prefers-reduced-motion: no-preference){
+  @supports (animation-timeline: view()){
+    .rv{animation:rv linear both;animation-timeline:view();animation-range:entry 5% entry 50%}
+    @keyframes rv{from{opacity:0;transform:translateY(44px)}}
+  }
+}
+
+/* ---------- reduced motion / save-data: composed still, normal flow ---------- */
+.static .story{height:auto!important}
+.static .stage{position:relative;height:auto;min-height:100svh;display:flex;flex-direction:column;gap:14vh;padding:calc(100svh + 8vh) var(--pad) 14vh}
+.static .stage picture img{height:100svh}
+.static canvas,.static .skip,.static .clock,.static .bar{display:none}
+.static .ch{position:relative;inset:auto;margin:0;opacity:1!important;visibility:visible!important;transform:none!important;max-width:640px}
+.static .ch-hero{position:absolute;right:var(--pad);bottom:auto;top:calc(100svh - 70vh)}
+.static .shade{background:linear-gradient(to bottom,transparent 55vh,var(--ink) 100svh)}
+
+/* ---------- mobile: its own composition, portrait frames ---------- */
+@media (max-width: 760px){
+  :root{--hdr:60px;--pad:20px}
+  body{font-size:16px}
+  .nav,.hdr .btn{display:none}
+  .brand .script{display:none}
+  .lang{margin-left:auto}
+  .burger{display:block}
+  .brand .logo{font-size:20px}
+  .ch{max-width:none}
+  .ch h2{font-size:44px;margin:10px 0 0}
+  .ch p.more,.ch .price-tag,.ch-hero p,.ch-hero .link,.ch-end .facts,.ch-end .link{display:none}
+  .l,.r,.bl,.tl{left:var(--pad);right:var(--pad);top:auto;bottom:calc(84px + env(safe-area-inset-bottom));transform:none;margin:0}
+  .ch::before{inset:-60px -40px}
+  .ch-hero{left:var(--pad);right:var(--pad);bottom:calc(76px + env(safe-area-inset-bottom));max-width:none}
+  .ch-hero .kicker{margin-bottom:12px}
+  .ch-hero h1{font-size:19vw}
+  .ch-hero .row{margin-top:20px}
+  .ch-end h2{font-size:50px;margin:10px 0 20px}
+  .clock{bottom:calc(22px + env(safe-area-inset-bottom));gap:10px}
+  .clock .num{font-size:26px}.clock .lbl{font-size:10px}
+  .skip{left:8px;transform:none;top:calc(var(--hdr) + env(safe-area-inset-top) + 6px);bottom:auto;flex-direction:row;letter-spacing:.2em;font-size:10px}
+  .skip i{display:none}
+  .head{grid-template-columns:1fr;gap:18px}.head>p{justify-self:start}
+  .board{grid-template-columns:1fr}
+  .pics{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin-left:calc(-1 * var(--pad));margin-right:calc(-1 * var(--pad));padding:0 var(--pad) 6px;scrollbar-width:none}
+  .pics::-webkit-scrollbar{display:none}
+  .pics figure{flex:0 0 72%;scroll-snap-align:start}
+  .steps,.visit{grid-template-columns:1fr}
+  .step,.step+.step,.visit>div,.visit>div+div{padding:28px 0;border-right:0;border-bottom:1px solid var(--line)}
+  .wide,.book{grid-template-columns:1fr}
+  .f2,.f3{grid-template-columns:1fr}
+  .static .ch-hero{left:var(--pad);top:calc(100svh - 64vh)}
+}
+@media (min-width: 761px) and (max-width: 1100px){
+  .nav{display:none}.lang{margin-left:auto}
+  .ch-hero{max-width:70vw}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <a class="brand" href="#top" aria-label="g.a.d. diner, наверх"><span class="logo">g.a.d.</span><span class="script">diner</span></a>
+  <nav class="nav" aria-label="Главное">
+    <a href="#menu">Меню</a><a href="#made">Как готовим</a><a href="#visit">Часы и адрес</a>
+  </nav>
+  <nav class="lang" aria-label="Язык"><a href="../" hreflang="en" lang="en">EN</a><span aria-current="page">RU</span></nav>
+  <a class="btn" href="#book">Забронировать стол</a>
+  <button class="burger" id="burger" aria-label="Открыть меню" aria-haspopup="dialog" aria-expanded="false" aria-controls="menu-dlg"><i></i><i></i></button>
+</header>
+
+<dialog class="menu" id="menu-dlg" aria-label="Меню">
+  <div class="menu-top"><span class="brand"><span class="logo">g.a.d.</span></span>
+    <button class="close" aria-label="Закрыть меню">&times;</button></div>
+  <nav aria-label="Меню">
+    <a href="#menu">Меню</a><a href="#made">Как готовим</a><a href="#visit">Часы и адрес</a><a href="#book">Бронь</a>
+  </nav>
+  <a class="btn" href="#book">Забронировать стол</a>
+</dialog>
+
+<main id="top">
+<!-- ===== THE STORY. Copy lives in the .ch blocks; data-seg = which timeline segments it spans (see SEG in the script) ===== -->
+<section class="story" id="story" aria-label="История: в g.a.d. diner останавливается время">
+  <div class="stage">
+    <picture>
+      <source media="(max-aspect-ratio: 4/5)" srcset="../frames/stills/poster-m.webp">
+      <img src="../frames/stills/poster-d.webp" alt="Девушка пьёт шоколадный коктейль в закусочной 50-х: красные диваны, в окне неон g.a.d." fetchpriority="high">
+    </picture>
+    <canvas aria-hidden="true"></canvas>
+    <div class="shade"></div>
+
+    <div class="ch ch-hero" data-seg="0-1" data-fade="1">
+      <div class="kicker"><span class="logo">g.a.d.</span><span class="script">diner</span></div>
+      <h1>Время замирает<br><em>ради шейка</em></h1>
+      <p>Молочные коктейли на шпиндельном миксере, бургеры с плиты и завтрак весь день. Хромированная закусочная, как в 50‑х.</p>
+      <div class="row"><a class="btn" href="#book">Забронировать стол</a><a class="link" href="#menu">Смотреть меню</a></div>
+    </div>
+
+    <div class="ch bl" data-seg="3">
+      <p class="eyebrow">Время стоит</p>
+      <h2>Ничего не упадёт<br>на пол</h2>
+      <p class="more">Глазунья, толстый бекон, кофе прямо из кофейника. Что бы вы ни заказали, до стола оно доедет.</p>
+    </div>
+
+    <div class="ch r" data-seg="4">
+      <p class="eyebrow">Завтрак весь день</p>
+      <h2>Яйца, бекон,<br>кофе. В любой час.</h2>
+      <p class="more">Панкейки до закрытия, хрустящие драники с плиты, а кофейник ходит по залу без перерыва.</p>
+      <span class="price-tag"><small>От</small>550 ₽</span>
+    </div>
+
+    <div class="ch bl" data-seg="5">
+      <p class="eyebrow">Перемотка</p>
+      <h2>Готовим, как<br>в старых дайнерах</h2>
+      <p class="more">Мороженое взбиваем каждое утро, молоко цельное, солод настоящий, три минуты на миксере. Без порошков и сиропных основ.</p>
+    </div>
+
+    <div class="ch tl" data-seg="6">
+      <p class="eyebrow">Обслуживание за столом</p>
+      <h2>Садитесь<br>на диван</h2>
+      <p class="more">Красный винил, пол в клетку, официантка подходит сама. Бронируйте диван на четверых или садитесь на табурет у стойки.</p>
+    </div>
+
+    <div class="ch r ch-end" data-seg="7-8" data-delay="0.35">
+      <p class="eyebrow">Фирменный шейк</p>
+      <h2>Шоколад с солодом.<br>Стоит подождать.</h2>
+      <div class="facts"><span><b>520 ₽ · 470 мл</b>Высокий бокал, две трубочки</span><span><b>3 минуты</b>На миксере</span></div>
+      <div class="row"><a class="btn" href="#book">Забронировать стол</a><a class="link" href="#menu">Смотреть меню</a></div>
+    </div>
+
+    <div class="clock" data-mode="run" aria-hidden="true"><div class="num">12:04:00</div><div class="lbl"><i></i><span>Обеденный час</span></div></div>
+    <div class="bar" aria-hidden="true"><i></i></div>
+    <a class="skip" href="#menu"><span>Пропустить историю</span><i></i></a>
+  </div>
+</section>
+
+<!-- ===== MENU ===== -->
+<section class="sec" id="menu">
+  <div class="head rv">
+    <div><p class="eyebrow">Меню</p><h2><span class="script">весь день</span>Шейки, бургеры,<br>завтраки</h2></div>
+    <p>Короткое меню: всё готовим под заказ на одной плите и одном миксере. Всё, что ниже, подаём от открытия до закрытия.</p>
+  </div>
+  <div class="board">
+    <div class="cat rv">
+      <div class="cat-h"><h3>Шейки</h3><span>470 мл · на миксере</span></div>
+      <div class="item"><b>Шоколадный с солодом</b><i></i><span class="pr">520 ₽</span><p>Фирменный: шоколадное мороженое, солодовое молоко, взбитые сливки, шоколадный соус сверху.</p></div>
+      <div class="item"><b>Ванильный</b><i></i><span class="pr">450 ₽</span><p>Ванильное мороженое и цельное молоко. Спрятаться тут не за чем.</p></div>
+      <div class="item"><b>Клубничный</b><i></i><span class="pr">480 ₽</span><p>Свежая клубника прямо в коктейле, розовый без красителя.</p></div>
+      <div class="item"><b>Чёрно-белый</b><i></i><span class="pr">540 ₽</span><p>Ванильное мороженое с шоколадным сиропом, классика американских стоек с газировкой.</p></div>
+    </div>
+    <div class="cat rv">
+      <div class="cat-h"><h3>С плиты</h3><span>с картошкой +190 ₽</span></div>
+      <div class="item"><b>Смэш-бургер</b><i></i><span class="pr">690 ₽</span><p>Две тонкие котлеты, придавленные на плите, чеддер, огурцы, лук.</p></div>
+      <div class="item"><b>Двойной с сыром</b><i></i><span class="pr">890 ₽</span><p>Четыре котлеты, четыре ломтика сыра. Приходите голодными.</p></div>
+      <div class="item"><b>Пэтти-мелт</b><i></i><span class="pr">790 ₽</span><p>Ржаной хлеб, швейцарский сыр, лук, томлённый на плите.</p></div>
+      <div class="item"><b>Чили-дог</b><i></i><span class="pr">550 ₽</span><p>Сосиска с гриля, говяжий чили, свежий лук, горчица.</p></div>
+    </div>
+    <div class="cat rv">
+      <div class="cat-h"><h3>Завтрак</h3><span>весь день</span></div>
+      <div class="item"><b>Яйца с беконом</b><i></i><span class="pr">650 ₽</span><p>Два яйца как любите, толстый бекон, драники, тост с маслом.</p></div>
+      <div class="item"><b>Стопка панкейков</b><i></i><span class="pr">550 ₽</span><p>Три панкейка на пахте, масло, кленовый сироп.</p></div>
+      <div class="item"><b>Омлет «Вестерн»</b><i></i><span class="pr">620 ₽</span><p>Ветчина, перец, лук, чеддер, к нему тост.</p></div>
+    </div>
+    <div class="cat rv">
+      <div class="cat-h"><h3>Кофе и пирог</h3><span>доливаем бесплатно</span></div>
+      <div class="item"><b>Кофе без лимита</b><i></i><span class="pr">190 ₽</span><p>Фильтр-кофе, доливаем за столом, пока не скажете «хватит».</p></div>
+      <div class="item"><b>Кусок пирога</b><i></i><span class="pr">350 ₽</span><p>Яблочный или вишнёвый, печём каждое утро. С шариком мороженого +120 ₽.</p></div>
+      <div class="item"><b>Рутбир-флоат</b><i></i><span class="pr">390 ₽</span><p>Ванильное мороженое в ледяной кружке рутбира.</p></div>
+    </div>
+  </div>
+  <div class="pics">
+    <figure class="rv"><img src="../frames/stills/shake.webp" alt="Шоколадный коктейль со взбитыми сливками и полосатой трубочкой" width="720" height="900" loading="lazy"><figcaption>Шоколад с солодом</figcaption></figure>
+    <figure class="rv"><img src="../frames/stills/breakfast.webp" alt="Глазунья и бекон зависли в воздухе над столом" width="720" height="900" loading="lazy"><figcaption>Завтрак в полёте</figcaption></figure>
+    <figure class="rv"><img src="../frames/stills/coffee.webp" alt="Официантка в розовой форме с кофейником и подносом с завтраком" width="720" height="900" loading="lazy"><figcaption>Кофейник уже идёт</figcaption></figure>
+  </div>
+  <p class="fine-print">Концепт-сайт: блюда и цены для примера.</p>
+</section>
+
+<!-- ===== HOW IT'S MADE ===== -->
+<section class="sec made" id="made">
+  <div class="head rv">
+    <div><p class="eyebrow">Как готовим</p><h2><span class="script">без спешки</span>Три минуты<br>на миксере</h2></div>
+    <p>В правильном шейке трубочка стоит, а пить его всё равно легко. Для этого нужно настоящее мороженое и немного терпения.</p>
+  </div>
+  <div class="steps">
+    <div class="step rv"><span class="n">01</span><h3>Мороженое с утра</h3><p>Делаем его до открытия: сливки, молоко, сахар, яйца. На нём стоит каждый шейк из меню.</p></div>
+    <div class="step rv"><span class="n">02</span><h3>Миксер, а не блендер</h3><p>Шпиндельный миксер крутит шейк три минуты в стальном стакане: он остаётся густым и не превращается в лёд.</p></div>
+    <div class="step rv"><span class="n">03</span><h3>Со стаканом миксера</h3><p>Что не влезло в бокал, приносим в том же стальном стакане. Это бесплатная добавка.</p></div>
+  </div>
+  <div class="wide">
+    <figure class="rv"><img src="../frames/stills/smile.webp" alt="Крупный план: девушка улыбается с закрытыми глазами после глотка" width="1600" height="1000" loading="lazy"></figure>
+    <div class="rv"><blockquote>«Ради первого глотка можно и время остановить».</blockquote><p>В этом вся идея места: сесть, никуда не спешить и допить свой шейк.</p></div>
+  </div>
+</section>
+
+<!-- ===== VISIT (placeholders) ===== -->
+<section class="sec" id="visit">
+  <div class="head rv">
+    <div><p class="eyebrow">Как нас найти</p><h2>Часы<br>и адрес</h2></div>
+    <p>У стойки садитесь без брони, диваны лучше бронировать. Завтрак подаём до закрытия.</p>
+  </div>
+  <div class="visit rv">
+    <div><p class="eyebrow">Часы</p><h3>Каждый день</h3>
+      <ul><li>Пн – Чт <b>7:00 – 23:00</b></li><li>Пт – Сб <b>7:00 – 01:00</b></li><li>Воскресенье <b>8:00 – 22:00</b></li></ul>
+      <span class="tbd">Часы для примера</span></div>
+    <div><p class="eyebrow">Адрес</p><h3>На углу</h3><p>Хромированная закусочная с лаймовым неоном в окне. Парковка во дворе, велопарковка у входа.</p><span class="tbd">Адрес к открытию</span></div>
+    <div><p class="eyebrow">Бронь</p><h3>Диваны и стойка</h3><p>За диваном помещаются от четырёх до шести человек, на выходные лучше бронировать заранее. У стойки место занимает тот, кто пришёл первым.</p><a class="link" href="#book">Забронировать стол</a></div>
+  </div>
+</section>
+
+<!-- ===== BOOKING (concept: nothing is sent) ===== -->
+<section class="sec book" id="book">
+  <div class="rv">
+    <p class="eyebrow">Бронь</p>
+    <h2>Займите<br>диван</h2>
+    <p class="lead">Выберите день, время и сколько вас будет. Стол держим пятнадцать минут.</p>
+  </div>
+  <form id="form" class="rv" novalidate>
+    <div class="f2">
+      <label>Имя<input type="text" name="name" autocomplete="name" required></label>
+      <label>Телефон<input type="tel" name="phone" autocomplete="tel" required></label>
+    </div>
+    <div class="f3">
+      <label>Дата<input type="date" name="date" required></label>
+      <label>Время<select name="time"><option>8:00</option><option>10:00</option><option selected>12:00</option><option>14:00</option><option>17:00</option><option>19:00</option><option>21:00</option></select></label>
+      <label>Гостей<select name="guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label>
+    </div>
+    <fieldset>
+      <legend>Где сесть</legend>
+      <label class="chip"><input type="radio" name="seat" value="booth" checked><span>Диван</span></label>
+      <label class="chip"><input type="radio" name="seat" value="counter"><span>Стойка</span></label>
+      <label class="chip"><input type="radio" name="seat" value="window"><span>У окна</span></label>
+    </fieldset>
+    <div class="send"><button class="btn" type="submit">Забронировать стол</button><p class="note">Концепт-сайт: форма проверяет поля, но никуда ничего не отправляет.</p></div>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+  </form>
+</section>
+</main>
+
+<footer>
+  <div class="big" aria-hidden="true"><span class="logo">g.a.d.</span><span class="script">diner</span></div>
+  <div class="credit">
+    <span><strong>Концепт-сайт g.a.d. — сайты и 3D для бизнеса</strong></span>
+    <nav aria-label="Контакты">
+      <a href="mailto:paladei702@gmail.com">paladei702@gmail.com</a>
+      <a href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a>
+      <a href="https://smirnov-artur.github.io/works/" target="_blank" rel="noopener">Портфолио</a>
+    </nav>
+  </div>
+  <p class="fine">g.a.d. diner — концепт: меню, цены, часы и адрес для примера.</p>
+</footer>
+
+<script>
+(() => {
+  // ---- timeline: [scroll length in viewport heights (desktop, mobile), first frame, last frame]
+  // equal frames = still-frame hold. Frames come from the 24 fps source (see NOTES.md).
+  const SEG = [
+    [0.50, 0.35,   0,   0], // 0 opening hold: read the hero
+    [1.00, 0.70,   0,  72], // 1 the shake, the waitress walks up
+    [0.90, 0.60,  72, 130], // 2 transition: she trips, the tray takes off (no copy)
+    [1.30, 0.90, 130, 210], // 3 time stops: coffee and eggs hang in the air
+    [1.30, 0.90, 210, 288], // 4 the camera walks around the frozen breakfast
+    [1.50, 1.00, 288, 396], // 5 rewind: everything flies back onto the tray
+    [1.80, 1.20, 396, 571], // 6 back to normal, table service
+    [1.40, 1.00, 571, 721], // 7 close-up: the sip, the smile
+    [0.70, 0.50, 721, 721], // 8 closing hold
+  ];
+  // diner clock: seconds after 12:04:00 at segment start/end, label and mode
+  const CLOCK = [[0,0],[0,3],[3,5],[5,5],[5,5],[5,0],[0,7],[7,13],[13,13]];
+  const LBL = ['Обеденный час','Обеденный час','Обеденный час','Время стоит','Время стоит','Перемотка','Всё на местах','Не торопитесь','Не торопитесь'];
+  const MODE = ['run','run','run','stop','stop','rew','run','run','run'];
+  const FRAMES = '../frames/';
+  const N = 722, NET = 6, DEC = 3;
+  let WIN, MAXBMP;   // decoded window: desktop 1920x1080 ≈ 8 MB per frame, phone 606x1080 ≈ 2.6 MB
+
+  const $ = s => document.querySelector(s);
+  const root = document.documentElement, story = $('#story'), stage = story.querySelector('.stage');
+  const canvas = stage.querySelector('canvas'), ctx = canvas.getContext('2d');
+  const chs = [...stage.querySelectorAll('.ch')], hero = $('.ch-hero');
+  const clock = $('.clock'), num = $('.clock .num'), lbl = $('.clock .lbl span'), barI = $('.bar i'), skip = $('.skip');
+  const portrait = matchMedia('(max-aspect-ratio: 4/5)');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+
+  // ---------- menu (native <dialog>: focus containment + Escape) ----------
+  const menu = $('#menu-dlg'), burger = $('#burger');
+  burger.addEventListener('click', () => { menu.showModal(); burger.setAttribute('aria-expanded', 'true'); });
+  menu.querySelector('.close').addEventListener('click', () => menu.close());
+  menu.addEventListener('close', () => { burger.setAttribute('aria-expanded', 'false'); burger.focus({ preventScroll: true }); });
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.close()));
+
+  // ---------- booking form: concept, nothing is sent unless an endpoint is set ----------
+  const FORM_ENDPOINT = ''; // e.g. https://formspree.io/f/xxxx — then bookings are really sent
+  const form = $('#form'), status = $('#status');
+  form.elements.namedItem('date').min = new Date().toISOString().slice(0, 10);
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const el = form.elements;
+    if (!el.namedItem('name').value.trim() || el.namedItem('phone').value.replace(/\D/g, '').length < 6 || !el.namedItem('date').value) { status.textContent = 'Укажите имя, телефон и дату.'; return; }
+    if (!FORM_ENDPOINT) { status.textContent = 'Не отправлено: это концепт-сайт, заявки здесь никто не принимает. На живом сайте бронь сразу ушла бы в закусочную.'; return; }
+    try {
+      const r = await fetch(FORM_ENDPOINT, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      status.textContent = r.ok ? 'Забронировано. Перезвоним, чтобы подтвердить.' : 'Бронь не прошла. Попробуйте через минуту.';
+      if (r.ok) form.reset();
+    } catch { status.textContent = 'Нет связи. Проверьте интернет и отправьте ещё раз.'; }
+  });
+
+  // ---------- still mode: reduced motion or save-data ----------
+  if (reduce.matches || (navigator.connection && navigator.connection.saveData)) { root.classList.add('static'); return; }
+
+  // ---------- layout ----------
+  let mob, dir, vh, top0, acc, TOTAL, fw, fh;
+  function layout() {
+    mob = portrait.matches;
+    vh = root.clientHeight;
+    const k = mob ? 1 : 0;
+    acc = [0]; SEG.forEach(s => acc.push(acc[acc.length - 1] + s[k]));
+    TOTAL = acc[acc.length - 1];
+    story.style.height = (TOTAL + 1) * vh + 'px';          // pinned travel counted apart from the stage height
+    top0 = story.getBoundingClientRect().top + scrollY;
+    chs.forEach(el => {
+      const [a, b = a] = el.dataset.seg.split('-').map(Number);
+      el._a = acc[a] + (+el.dataset.delay || 0); el._b = acc[b + 1];
+      el._f = el.dataset.fade ? acc[b + 1] - acc[b] : 0;   // fade out across the whole last segment
+    });
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = Math.round(stage.clientWidth * dpr); canvas.height = Math.round(stage.clientHeight * dpr);
+    dirty = true;
+  }
+
+  // ---------- frame loader: nearest first, bounded requests and decoded memory ----------
+  let gen = 0, ac, blobs, bmps, fetching, decoding, failed, want = 0;
+  const url = i => `${FRAMES}${dir}/${String(i).padStart(4, '0')}.webp`;
+  function reset() {
+    gen++; if (ac) ac.abort(); ac = new AbortController();
+    if (bmps) bmps.forEach(b => b.close());
+    dir = mob ? 'm' : 'd'; fw = 0; WIN = mob ? 22 : 12; MAXBMP = mob ? 56 : 30;
+    blobs = new Array(N); bmps = new Map(); fetching = new Set(); decoding = new Set(); failed = new Array(N).fill(0);
+    canvas.classList.remove('on'); drawn = -1;
+    pump();
+  }
+  function pump() {
+    const g = gen, c = want;
+    for (let d = 0; d <= WIN && decoding.size < DEC; d++) for (const i of d ? [c + d, c - d] : [c]) {
+      if (i < 0 || i >= N || !blobs[i] || bmps.has(i) || decoding.has(i) || decoding.size >= DEC) continue;
+      decoding.add(i);
+      createImageBitmap(blobs[i]).then(bm => {
+        if (g !== gen) return bm.close();
+        if (!fw) { fw = bm.width; fh = bm.height; }
+        bmps.set(i, bm); dirty = true; if (!raf) raf = requestAnimationFrame(tick);
+      }).catch(() => {}).finally(() => { if (g === gen) { decoding.delete(i); pump(); } });
+    }
+    for (let d = 0; d < N && fetching.size < NET; d++) for (const i of d ? [c + d, c - d] : [c]) {
+      if (i < 0 || i >= N || blobs[i] || fetching.has(i) || failed[i] > 2 || fetching.size >= NET) continue;
+      fetching.add(i);
+      fetch(url(i), { signal: ac.signal }).then(r => r.ok ? r.blob() : Promise.reject(r.status))
+        .then(b => { if (g === gen) blobs[i] = b; })
+        .catch(() => { if (g === gen) failed[i]++; })
+        .finally(() => { if (g === gen) { fetching.delete(i); pump(); } });
+    }
+    if (bmps.size > MAXBMP) for (const [i, b] of bmps) if (Math.abs(i - c) > WIN) { b.close(); bmps.delete(i); }
+  }
+
+  // ---------- drawing: exactly one frame on screen, whole pixels (no blending, no half-pixel blur) ----------
+  let dirty = true, drawn = -1;
+  function nearest(i) { for (let d = 0; d <= 14; d++) { if (bmps.has(i - d)) return i - d; if (bmps.has(i + d)) return i + d; } return -1; }
+  function draw(f) {
+    const a = nearest(f);
+    if (a < 0 || !fw) return;
+    const W = canvas.width, H = canvas.height;
+    const s = Math.max(W / fw, H / fh), w = Math.round(fw * s), h = Math.round(fh * s), x = Math.round((W - w) / 2), y = Math.round((H - h) / 2);
+    ctx.imageSmoothingQuality = 'high'; ctx.drawImage(bmps.get(a), x, y, w, h);
+    if (drawn < 0) canvas.classList.add('on');
+    drawn = a;
+  }
+
+  // ---------- scroll → timeline ----------
+  function at(u) { for (let s = 0; s < SEG.length; s++) if (u < acc[s + 1] || s === SEG.length - 1) return [s, clamp((u - acc[s]) / (acc[s + 1] - acc[s]))]; }
+  function frameAt(u) { const [s, p] = at(u), g = SEG[s]; return g[2] + (g[3] - g[2]) * p; }
+  let u = 0, uS = 0, last = -1, lastFrame = -1, raf = 0, lastT = 0;
+  function onScroll() {
+    u = clamp((scrollY - top0) / vh, 0, TOTAL);
+    const w = Math.round(frameAt(u)); if (w !== want) { want = w; pump(); }
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+  const pad = n => String(n).padStart(2, '0');
+  function ui(v) {
+    const F = mob ? 0.2 : 0.28;
+    for (const el of chs) {
+      let o = 0, i = 1, x = 1;
+      if (v >= el._a - 1e-6 && v <= el._b + 1e-6) {
+        i = el._a === 0 ? 1 : clamp((v - el._a) / F); x = el._b >= TOTAL - 1e-6 ? 1 : clamp((el._b - v) / (el._f || F));
+        o = Math.min(i, x);
+      }
+      el.style.opacity = o;
+      el.style.visibility = o > 0.01 ? 'visible' : 'hidden';
+      const base = el.classList.contains('l') && !mob ? 'translateY(-50%) ' : '';
+      el.style.transform = base + `translateY(${(1 - i) * 28 - (1 - x) * 22}px)`;
+    }
+    const [s, p] = at(v), c = CLOCK[s], sec = Math.round(c[0] + (c[1] - c[0]) * p);
+    const txt = '12:' + pad(4 + Math.floor(sec / 60)) + ':' + pad(sec % 60);
+    if (num.textContent !== txt) num.textContent = txt;
+    if (lbl.textContent !== LBL[s]) lbl.textContent = LBL[s];
+    if (clock.dataset.mode !== MODE[s]) clock.dataset.mode = MODE[s];
+    barI.style.transform = `scaleX(${v / TOTAL})`;
+    skip.style.opacity = v > TOTAL - 0.8 ? clamp((TOTAL - v) / 0.8) : 1;
+    skip.style.visibility = v > TOTAL - 0.05 ? 'hidden' : 'visible';
+  }
+  function tick(t) {
+    const dt = Math.min(64, t - lastT || 16.7); lastT = t;
+    const k = 1 - Math.pow(1 - 0.16, dt / 16.7);
+    uS += (u - uS) * k; if (Math.abs(u - uS) < 0.0004) uS = u;
+    const f = Math.round(frameAt(uS));
+    if (f !== lastFrame || dirty) { draw(f); lastFrame = f; dirty = false; }
+    if (uS !== last) { ui(uS); last = uS; }
+    raf = (uS !== u || dirty) ? requestAnimationFrame(tick) : 0;
+  }
+
+  // ---------- resize, breakpoint swap (cancel and release the old sequence), teardown ----------
+  let lw = innerWidth, lh = innerHeight;
+  addEventListener('resize', () => {
+    if (innerWidth === lw && Math.abs(innerHeight - lh) < 120) return;  // ignore mobile toolbar show/hide
+    lw = innerWidth; lh = innerHeight;
+    const was = mob; layout(); if (was !== mob) reset(); onScroll();
+  });
+  portrait.addEventListener('change', () => { layout(); reset(); onScroll(); });
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('pagehide', () => { gen++; if (ac) ac.abort(); if (bmps) bmps.forEach(b => b.close()); });
+
+  layout(); reset(); onScroll(); uS = u; ui(u);
+  window.__story = { get frame() { return lastFrame; }, get total() { return TOTAL; }, get loaded() { return blobs.filter(Boolean).length; }, get decoded() { return bmps.size; }, get dir() { return dir; } };
+})();
+</script>
+</body>
+</html>

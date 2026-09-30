@@ -1,5 +1,37 @@
 [
  {
+  "slug": "gad-diner",
+  "cat": "web",
+  "ru": [
+   "Закусочная g.a.d. diner",
+   "Время замирает ради шейка: кино по прокрутке, завтрак зависает в воздухе, неон g.a.d. в окне"
+  ],
+  "en": [
+   "g.a.d. diner",
+   "Time stops for the shake: a scroll-driven film where breakfast hangs in mid-air under a g.a.d. neon"
+  ],
+  "v": "gad-diner",
+  "ve": "gad-diner-en",
+  "href": "https://smirnov-artur.github.io/demo/gad-diner/ru/",
+  "hre": "https://smirnov-artur.github.io/demo/gad-diner/"
+ },
+ {
+  "slug": "gad-watch",
+  "cat": "3d",
+  "ru": [
+   "Часы g.a.d. в 3D",
+   "Механические часы разлетаются на детали по прокрутке, шестерни крутятся, отделку корпуса меняешь сам"
+  ],
+  "en": [
+   "g.a.d. watch in 3D",
+   "A mechanical watch comes apart as you scroll, the gears run and you pick the case finish yourself"
+  ],
+  "v": "gad-watch",
+  "ve": "gad-watch-en",
+  "href": "https://smirnov-artur.github.io/demo/gad-watch/ru/",
+  "hre": "https://smirnov-artur.github.io/demo/gad-watch/"
+ },
+ {
   "slug": "gad-parfum",
   "cat": "web",
   "ru": [
