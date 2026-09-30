@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mebel.sava — калькулятор кухни</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--acc:#447bba;--bg:#f6f4f0;--card:#fff;--ink:#1b1a18;--mute:#6d6a64;--line:#e4e0d8;--soft:#efece6;--me:#e9f3ff;--ai:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141312;--card:#1e1d1b;--ink:#f1eee8;--mute:#a19d95;--line:#34322e;--soft:#2a2825;--me:#1f3044;--ai:#26241f}}
+:root[data-theme="dark"]{--bg:#141312;--card:#1e1d1b;--ink:#f1eee8;--mute:#a19d95;--line:#34322e;--soft:#2a2825;--me:#1f3044;--ai:#26241f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.brand b{font-size:20px;letter-spacing:.2px}.brand span{display:block;color:var(--mute);font-size:13px}
+#th{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer;font:inherit;font-size:14px}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.hero img{width:100%;height:180px;object-fit:cover;border-radius:14px;background:var(--soft);display:block}
+.grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+h1{font-size:24px;line-height:1.2;margin:0 0 4px}h2{font-size:17px;margin:0 0 12px}
+.sub{color:var(--mute);font-size:14px;margin:0 0 14px}
+.seg{display:flex;background:var(--soft);border-radius:12px;padding:4px;gap:4px;margin-bottom:16px}
+.seg button{flex:1;border:0;background:transparent;color:var(--ink);padding:10px;border-radius:9px;font:inherit;font-weight:600;cursor:pointer}
+.seg button.on{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12);color:var(--acc)}
+.row{display:block;margin:0 0 14px}
+.row .t{display:flex;justify-content:space-between;font-size:14px;color:var(--mute);margin-bottom:6px}.row .t b{color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 12px;font:inherit;font-size:14px;cursor:pointer}
+.chips button.on{border-color:var(--acc);background:var(--acc);color:#fff}
+.total{margin:16px 0 4px;padding:16px;border-radius:14px;background:var(--soft)}
+.total small{color:var(--mute);font-size:13px}.total .sum{font-size:28px;font-weight:800;color:var(--acc);line-height:1.2;margin:2px 0}
+.note{font-size:12px;color:var(--mute);margin:6px 0 0}
+.go{width:100%;border:0;background:var(--acc);color:#fff;font:inherit;font-weight:700;padding:14px;border-radius:12px;cursor:pointer;margin-top:12px}
+.book{display:none;margin-top:14px;border-top:1px dashed var(--line);padding-top:14px}.book.open{display:block}
+.book h3{font-size:15px;margin:0 0 8px}.book .chips{margin-bottom:12px}
+.book input[type=tel]{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+.ok{display:none;margin-top:12px;padding:12px;border-radius:10px;background:var(--soft);font-size:14px}.ok.show{display:block}
+.chat{padding:0;overflow:hidden}
+.chat .top{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.chat .av{width:34px;height:34px;border-radius:50%;background:#00aaff;color:#fff;display:grid;place-items:center;font-weight:800;font-size:14px;flex:none}
+.chat .top b{font-size:14px}.chat .top span{display:block;font-size:12px;color:var(--mute)}
+.msgs{padding:14px;display:flex;flex-direction:column;gap:8px;background:var(--bg);min-height:300px}
+.m{max-width:86%;padding:8px 11px;border-radius:14px;font-size:14px;box-shadow:0 1px 1px rgba(0,0,0,.06);opacity:0;transform:translateY(6px);transition:.35s}
+.m.in{opacity:1;transform:none}.m i{display:block;font-style:normal;font-size:11px;color:var(--mute);text-align:right;margin-top:2px}
+.m.buy{align-self:flex-start;background:var(--ai);border:1px solid var(--line)}.m.sell{align-self:flex-end;background:var(--me)}
+.tag{font-size:11px;color:var(--mute);text-align:center;padding:6px 14px 12px;background:var(--bg)}
+footer{margin-top:22px;font-size:14px;color:var(--mute)}footer p{margin:4px 0}footer b{color:var(--ink)}footer a{color:var(--acc)}
+@media (max-width:760px){.grid{grid-template-columns:1fr}.hero img{height:130px}h1{font-size:21px}.total .sum{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="brand"><b>mebel.sava</b><span>Ростов-на-Дону · демо для вас</span></div><button id="th" type="button">Тема</button></header>
+<div class="hero"><img src="https://mebelsava.ru/files/u36/proizvodstvo_korpusnoy_mebeli.jpg" alt="Работа mebel.sava" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><img src="https://mebelsava.ru/files/u36/korpusnaya_mebel.jpg" alt="Работа mebel.sava" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></div>
+<div class="grid">
+<section class="card">
+<h1>Сколько стоит — за минуту</h1>
+<p class="sub">Подберите размеры и фасады — сумма посчитается сразу. Как это будет на сайте mebel.sava.</p>
+<div class="seg" role="tablist"><button type="button" class="on" data-k="kitchen">Кухня</button><button type="button" data-k="wardrobe">Шкаф</button></div>
+<div id="kitchen">
+<label class="row"><span class="t">Длина по стене <b id="kLv"></b></span><input id="kL" type="range" min="1.5" max="7" step="0.1" value="3"></label>
+<div class="row"><span class="t">Форма</span><div class="chips" id="kShape"></div></div>
+<div class="row"><span class="t">Фасады</span><div class="chips" id="kFac"></div></div>
+<div class="row"><span class="t">Столешница</span><div class="chips" id="kTop"></div></div>
+</div>
+<div id="wardrobe" hidden>
+<label class="row"><span class="t">Ширина <b id="wWv"></b></span><input id="wW" type="range" min="1" max="4" step="0.1" value="2"></label>
+<label class="row"><span class="t">Высота <b id="wHv"></b></span><input id="wH" type="range" min="2" max="2.8" step="0.05" value="2.4"></label>
+<div class="row"><span class="t">Двери</span><div class="chips" id="wDoor"></div></div>
+<div class="row"><span class="t">Наполнение</span><div class="chips" id="wFill"></div></div>
+</div>
+<div class="total"><small id="what"></small><div class="sum" id="sum"></div><small>Точная цена после замера: он бесплатный, мастер приедет с образцами.</small></div>
+<p class="note">Считает от ваших цен с сайта (кухня от 35 000 ₽ за погонный метр); остальное — пример, в вашей версии поправим под прайс.</p>
+<button class="go" id="go" type="button">Записаться на бесплатный замер</button>
+<div class="book" id="book">
+<h3>День</h3><div class="chips" id="days"></div>
+<h3>Время</h3><div class="chips" id="times"></div>
+<input type="tel" id="tel" placeholder="Телефон" autocomplete="tel">
+<button class="go" id="send" type="button">Записаться</button>
+<div class="ok" id="ok"></div>
+</div>
+</section>
+<aside class="card chat">
+<div class="top"><div class="av">A</div><div><b>Чат Авито · mebel.sava</b><span>Кухня на заказ</span></div></div>
+<div class="msgs" id="msgs"></div>
+<div class="tag">Ответ в 22:15 даёт ИИ по вашему прайсу, мастер в это время отдыхает</div>
+</aside>
+</div>
+<footer>
+<p><b>Что это:</b> калькулятор кухни и шкафа по вашим ценам и запись на замер, ставится на ваш сайт; ИИ отвечает в чатах Авито и ночью.</p>
+<p><b>Цена:</b> калькулятор и запись на замер — 8 000 ₽ под ключ, ИИ в чатах Авито — от 5 000 ₽ в месяц.</p>
+<p><b>Связь:</b> <a href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a> · <a href="mailto:paladei702@gmail.com">paladei702@gmail.com</a> · Артур, g.a.d.</p>
+</footer>
+</div>
+<script>
+const C={"fac": [["ЛДСП", 35000, 43800], ["МДФ плёнка", 40200, 52500], ["Пластик", 47200, 63000], ["Эмаль", 63000, 84000]], "top": [["ЛДСП 38 мм", 0, 2500], ["Компакт-плита", 8000, 12000], ["Искусственный камень", 12000, 20000]], "door": [["ЛДСП", 11000, 14300], ["Зеркало", 12600, 16500], ["МДФ эмаль", 18700, 25300]], "fill": [["Базовое", 0.9], ["Стандарт", 1.0], ["С ящиками и подсветкой", 1.25]], "wMin": 25000};
+const $=id=>document.getElementById(id), fmt=n=>Math.round(n).toLocaleString('ru-RU').replace(/,/g,' ');
+const r1k=n=>Math.round(n/1000)*1000, lc=s=>/^.[а-яё]/.test(s)?s[0].toLowerCase()+s.slice(1):s;
+const S={k:'kitchen',shape:0,fac:0,top:0,door:0,fill:1,day:null,time:null};
+const SHAPES=[['Прямая',1],['Угловая',1.15],['П-образная',1.3]];
+function chips(id,list,key,label){const el=$(id);el.innerHTML='';list.forEach((it,i)=>{const b=document.createElement('button');b.type='button';b.textContent=label(it);if(S[key]===i)b.classList.add('on');b.onclick=()=>{S[key]=i;chips(id,list,key,label);calc()};el.appendChild(b)})}
+function kitchen(L,fac,top,shape){const k=SHAPES[shape][1];return [r1k(L*k*(C.fac[fac][1]+C.top[top][1])),r1k(L*k*(C.fac[fac][2]+C.top[top][2]))]}
+function wardrobe(W,H,door,fill){const a=W*H;return [r1k(Math.max(C.wMin,a*C.door[door][1]*C.fill[fill][1])),r1k(Math.max(C.wMin*1.2,a*C.door[door][2]*C.fill[fill][1]))]}
+function calc(){
+ const L=+$('kL').value,W=+$('wW').value,H=+$('wH').value;
+ $('kLv').textContent=L.toFixed(1).replace('.',',')+' м';$('wWv').textContent=W.toFixed(1).replace('.',',')+' м';$('wHv').textContent=H.toFixed(2).replace('.',',')+' м';
+ let v,w;
+ if(S.k==='kitchen'){v=kitchen(L,S.fac,S.top,S.shape);w=SHAPES[S.shape][0]+' кухня '+L.toFixed(1).replace('.',',')+' м, '+lc(C.fac[S.fac][0])+', столешница '+lc(C.top[S.top][0])}
+ else{v=wardrobe(W,H,S.door,S.fill);w='Шкаф-купе '+W.toFixed(1).replace('.',',')+' × '+H.toFixed(2).replace('.',',')+' м, '+lc(C.door[S.door][0])+', наполнение '+lc(C.fill[S.fill][0])}
+ $('what').textContent=w;$('sum').textContent='от '+fmt(v[0])+' до '+fmt(v[1])+' ₽';return v}
+document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{S.k=b.dataset.k;document.querySelectorAll('.seg button').forEach(x=>x.classList.toggle('on',x===b));$('kitchen').hidden=S.k!=='kitchen';$('wardrobe').hidden=S.k!=='wardrobe';calc()});
+['kL','wW','wH'].forEach(id=>$(id).oninput=calc);
+chips('kShape',SHAPES,'shape',x=>x[0]);chips('kFac',C.fac,'fac',x=>x[0]);chips('kTop',C.top,'top',x=>x[0]);chips('wDoor',C.door,'door',x=>x[0]);chips('wFill',C.fill,'fill',x=>x[0]);
+calc();
+// запись на замер
+const DN=['вс','пн','вт','ср','чт','пт','сб'],MN=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const days=[];for(let d=new Date(),i=0;days.length<6;i++){const x=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1+i);if(x.getDay()!==0)days.push(x)}
+const TIMES=['10:00','12:00','14:00','16:00','18:00','19:30'];
+function dchips(){const el=$('days');el.innerHTML='';days.forEach((x,i)=>{const b=document.createElement('button');b.type='button';b.textContent=DN[x.getDay()]+' '+x.getDate();if(S.day===i)b.classList.add('on');b.onclick=()=>{S.day=i;dchips()};el.appendChild(b)});
+ const t=$('times');t.innerHTML='';TIMES.forEach((x,i)=>{const b=document.createElement('button');b.type='button';b.textContent=x;if(S.time===i)b.classList.add('on');b.onclick=()=>{S.time=i;dchips()};t.appendChild(b)})}
+dchips();
+$('go').onclick=()=>{$('book').classList.add('open');$('book').scrollIntoView({behavior:'smooth',block:'nearest'})};
+$('send').onclick=()=>{const ok=$('ok');if(S.day===null||S.time===null){ok.textContent='Выберите день и время.';ok.classList.add('show');return}
+ const d=days[S.day];ok.innerHTML='Замер: <b>'+DN[d.getDay()]+', '+d.getDate()+' '+MN[d.getMonth()]+', '+TIMES[S.time]+'</b>. Заявка сразу приходит мастеру и встаёт в календарь. В демо никуда не отправляется.';ok.classList.add('show')};
+// чат Авито
+const kv=kitchen(3,0,0,0);
+const CH=[['buy','Здравствуйте, сколько будет кухня 3 метра?','22:15'],
+ ['sell','Прямая 3 м, фасады '+lc(C.fac[0][0])+', столешница '+lc(C.top[0][0])+': от '+fmt(kv[0])+' до '+fmt(kv[1])+' р. Точнее скажем на замере, он бесплатный. Когда удобно, на неделе или в выходные?','22:15'],
+ ['buy','В субботу можно?','22:17'],['sell','Да, в субботу. Во сколько удобно?','22:17'],['buy','Часов в 12','22:18'],
+ ['sell','Хорошо, суббота 12:00. Напишите адрес, мастер приедет с образцами фасадов.','22:18']];
+const box=$('msgs');let i=0;(function next(){if(i>=CH.length)return;const [c,t,h]=CH[i++];const m=document.createElement('div');m.className='m '+c;m.innerHTML=t+'<i>'+h+'</i>';box.appendChild(m);requestAnimationFrame(()=>requestAnimationFrame(()=>m.classList.add('in')));setTimeout(next,i===1?500:1100)})();
+// тема
+const root=document.documentElement;try{const t=localStorage.getItem('th');if(t)root.dataset.theme=t}catch(e){}
+$('th').onclick=()=>{const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;root.dataset.theme=dark?'light':'dark';try{localStorage.setItem('th',root.dataset.theme)}catch(e){}};
+</script>
+</body>
+</html>
