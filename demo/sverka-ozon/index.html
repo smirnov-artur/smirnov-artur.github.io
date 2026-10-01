@@ -42,7 +42,7 @@ small{color:var(--muted);font-size:13px}
   <div class="muted" style="font:600 12px var(--m);letter-spacing:.06em;text-transform:uppercase">g.a.d. · для продавцов Ozon</div>
   <h1>Сверка по сгоревшему складу Ozon</h1>
   <p>Летом сгорели склады Ozon, первый транш уже пришёл, окончательный расчёт будет после инвентаризации. Эта страница сравнивает, что у вас лежало на сгоревшем складе, с тем, что Ozon начислил, и показывает три вещи: какие товары пропущены целиком, где недосчитали штуки и где не сходится арифметика самого отчёта. У каждой цифры указан файл, строка и колонка, чтобы было что показать поддержке.</p>
-  <p class="muted">Считает ваш браузер, файлы никуда не отправляются. Сумму будущей выплаты страница не называет: методику страховщик не раскрыл.</p>
+  <p class="muted">Считает ваш браузер, файлы никуда не отправляются (сайт видит только, что страницу открыли). Сумму будущей выплаты страница не называет: методику страховщик не раскрыл.</p>
 
   <section class="card">
     <b>Нужны два файла из кабинета</b>
@@ -120,5 +120,6 @@ small{color:var(--muted);font-size:13px}
   });
 })();
 </script>
+<script>new Image().src='https://gad-production.ru/px?p='+encodeURIComponent(location.pathname)+'&r='+encodeURIComponent(document.referrer)+'&s='+encodeURIComponent(new URLSearchParams(location.search).get('src')||'')</script>
 </body>
 </html>

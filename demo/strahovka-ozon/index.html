@@ -59,7 +59,7 @@ footer a{color:var(--bg);font-weight:700}
 
 <h2>Ваши товары</h2>
 <div class="card">
-<p class="safe">Файлы никуда не уходят: страница считает всё у вас в браузере, на сервер ничего не отправляется.</p>
+<p class="safe">Файлы никуда не уходят: страница считает всё у вас в браузере. На сервер уходит только отметка, что страницу открыли, без ваших данных.</p>
 <p><b>Файл из кабинета.</b> «FBO» → «Управление остатками» → скачать xlsx. Если цен в нём нет, добавьте второй файл: выгрузку товаров с ценами. Их сведём по артикулу.</p>
 <p><input type="file" id="fajly" accept=".xlsx,.xls,.csv" multiple></p>
 <p><b>Или вставьте таблицу</b>: артикул; остаток; цена; себестоимость; продаж в день (последнее можно не писать).</p>
@@ -280,5 +280,6 @@ var PRIMER = 'артикул;остаток;цена;себестоимость;
   $('primer').addEventListener('click', function () { $('tekst').value = PRIMER; izFajlov = []; $('fajly').value = ''; pokazat(); });
 })();
 </script>
+<script>new Image().src='https://gad-production.ru/px?p='+encodeURIComponent(location.pathname)+'&r='+encodeURIComponent(document.referrer)+'&s='+encodeURIComponent(new URLSearchParams(location.search).get('src')||'')</script>
 </body>
 </html>
