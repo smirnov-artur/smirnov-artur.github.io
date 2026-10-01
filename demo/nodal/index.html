@@ -542,7 +542,7 @@ v.y  ← |<span class="k">ψ</span>| · A   on contact,   then  v ← v · e^(�
     <div>
       <p class="cap">Built by</p>
       <p style="margin-top:8px;font-size:19px">Artur Smirnov — web, 3D and engineering calculators</p>
-      <p class="cap mono" style="margin-top:10px">Belgrade · UTC+2 · <span id="clock">—</span> local</p>
+      <p class="cap mono" style="margin-top:10px">Moscow · UTC+3 · <span id="clock">—</span> local</p>
     </div>
     <nav class="foot__links">
       <a href="https://t.me/smirnovarturr" rel="noopener">t.me/smirnovarturr</a>
@@ -647,7 +647,7 @@ if (!REDUCED){
 /* ── часы ─────────────────────────────────────────────────────────────── */
 const clock = document.getElementById('clock');
 function tickClock(){
-  const d = new Date(Date.now() + (new Date().getTimezoneOffset()*60000) + 7200000);
+  const d = new Date(Date.now() + (new Date().getTimezoneOffset()*60000) + 10800000);
   clock.textContent = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
 }
 tickClock(); setInterval(tickClock, 20000);

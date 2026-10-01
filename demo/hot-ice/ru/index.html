@@ -566,7 +566,7 @@ section.pane.in .rv{animation:rise .8s cubic-bezier(.16,1,.3,1) both;animation-d
       <ul class="flist rv" style="--d:130ms">
         <li><a href="https://t.me/smirnovarturr">Telegram — @smirnovarturr</a></li>
         <li><a href="mailto:paladei702@gmail.com">paladei702@gmail.com</a></li>
-        <li><a href="https://smirnov-artur.github.io/portfolio">Портфолио</a></li>
+        <li><a href="https://smirnov-artur.github.io/works/">Портфолио</a></li>
       </ul>
       <ul class="flist rv" style="--d:190ms">
         <li>$65/ч напрямую · $45/ч субподряд</li>
@@ -575,7 +575,7 @@ section.pane.in .rv{animation:rise .8s cubic-bezier(.16,1,.3,1) both;animation-d
       </ul>
     </div>
     <div class="fend">
-      <span>Белград, UTC+2 · <span id="clock2">00:00</span></span>
+      <span>Москва, UTC+3 · <span id="clock2">00:00</span></span>
       <span id="gridB">Фазовое поле 384², лапласиан по 9 точкам, шестилучевая анизотропия</span>
       <span id="fps">— fps</span>
     </div>
@@ -648,7 +648,7 @@ else {
 
 /* ── часы Белграда ─────────────────────────────────────────────────── */
 function tickClock(){
-  const d = new Date(Date.now() + new Date().getTimezoneOffset()*60000 + 7200000);
+  const d = new Date(Date.now() + new Date().getTimezoneOffset()*60000 + 10800000);
   const s = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
   $('clock').textContent = s; $('clock2').textContent = s;
 }
