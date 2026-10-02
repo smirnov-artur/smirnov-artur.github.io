@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Пост для канала: страховка остатков Ozon с 5 октября</title>
+<style>
+:root{--bg:#f6f6f2;--fg:#0a0a0c;--mut:#5b5b62;--card:#fff;--line:#dcdcd4;--acc:#c6f432;--acc-fg:#0a0a0c}
+@media (prefers-color-scheme:dark){:root{--bg:#0a0a0c;--fg:#f2f2ee;--mut:#9a9aa2;--card:#141418;--line:#2a2a30}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:32px 16px 48px}
+h1{font-size:26px;line-height:1.2;margin:0 0 8px}
+.mut{color:var(--mut);font-size:14px;margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:16px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+button{font:inherit;padding:8px 14px;border-radius:8px;border:1px solid var(--acc);background:var(--acc);color:var(--acc-fg);font-weight:600;cursor:pointer}
+a{color:inherit}
+</style>
+</head>
+<body>
+<main>
+<h1>Пост для канала: страховка остатков Ozon с 5 октября</h1>
+<p class="mut">Готовый пост для Telegram-канала: без рекламы и цен, можно ставить как есть или править. Ссылка в конце ведёт на бесплатный калькулятор: <a href="../">страховка остатков Ozon по каждому товару</a>.</p>
+<button id="k">Скопировать текст</button>
+<div class="card" id="t">С 5 октября Ozon считает страховку остатков по-новому. Тариф вырос с 0,0115% до 0,0838% в день, в 7,3 раза. Но и база другая: процент берут не от цены товара, а от возмещения — средней цены продаж, умноженной на коэффициент категории, без НДС. Поэтому у одних платёж вырос втрое, у других впятеро.
+
+Пример: тарелка за 620 ₽, 300 штук на FBO, коэффициент 0,7, НДС 5%. Было 642 ₽ в месяц, по новым правилам 3 117 ₽, в 4,9 раза больше.
+
+Что можно сделать:
+— указать объявленную стоимость: «Цены и акции» → «Цены на товары». Ozon возьмёт меньшую из двух цифр. Взнос упадёт, но и выплата при потере будет не больше объявленной. Честная планка — себестоимость;
+— одежде, обуви и части аксессуаров на FBO Ozon возвращает расходы на полис бонусами, если объявленная стоимость хотя бы на 5% ниже его расчёта;
+— разобраться с залежавшимся: страховка начисляется каждый день, пока товар лежит;
+— отключить можно в «Финансы» → «Страхование», но полис покрывает пожары и атаки на склады. Вслепую я бы не отключал.
+
+Посчитать свой магазин можно бесплатно. Загружаете выгрузку остатков FBO, вписываете коэффициент и НДС и видите взнос по каждому товару до и после 5 октября, а если есть себестоимость — какую стоимость объявить. Файлы не уходят с компьютера:
+https://smirnov-artur.github.io/demo/strahovka-ozon/?src={src}
+
+Калькулятор сделал Артур, g.a.d.</div>
+</main>
+<script>
+const s=new URLSearchParams(location.search).get('src')||'post',t=document.getElementById('t');
+t.textContent=t.textContent.replace('{src}',encodeURIComponent(s));
+document.getElementById('k').onclick=e=>navigator.clipboard.writeText(t.textContent).then(()=>e.target.textContent='Скопировано');
+</script>
+<script>new Image().src='https://gad-production.ru/px?p='+encodeURIComponent(location.pathname)+'&r='+encodeURIComponent(document.referrer)+'&s='+encodeURIComponent(new URLSearchParams(location.search).get('src')||'')</script>
+</body>
+</html>

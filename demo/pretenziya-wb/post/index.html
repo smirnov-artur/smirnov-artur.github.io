@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Пост для канала: проценты с WB за задержку выплат</title>
+<style>
+:root{--bg:#f6f6f2;--fg:#0a0a0c;--mut:#5b5b62;--card:#fff;--line:#dcdcd4;--acc:#c6f432;--acc-fg:#0a0a0c}
+@media (prefers-color-scheme:dark){:root{--bg:#0a0a0c;--fg:#f2f2ee;--mut:#9a9aa2;--card:#141418;--line:#2a2a30}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:32px 16px 48px}
+h1{font-size:26px;line-height:1.2;margin:0 0 8px}
+.mut{color:var(--mut);font-size:14px;margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:16px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+button{font:inherit;padding:8px 14px;border-radius:8px;border:1px solid var(--acc);background:var(--acc);color:var(--acc-fg);font-weight:600;cursor:pointer}
+a{color:inherit}
+</style>
+</head>
+<body>
+<main>
+<h1>Пост для канала: проценты с WB за задержку выплат</h1>
+<p class="mut">Готовый пост для Telegram-канала: без рекламы и цен, можно ставить как есть или править. Ссылка в конце ведёт на бесплатный калькулятор: <a href="../">проценты по ст. 395 и претензия WB</a>.</p>
+<button id="k">Скопировать текст</button>
+<div class="card" id="t">Если WB задержал вывод денег этим летом, за каждый день просрочки можно забрать проценты по ст. 395 ГК. Без суда, одной претензией через кабинет.
+
+Как считать:
+— срок выплаты по п. 5.7 оферты — 7 рабочих дней с заявки, до 20 июля было 5;
+— проценты идут со следующего дня после срока по день зачисления включительно;
+— сумма × ключевая ставка × дни ÷ 365. Если ставка менялась, период режется на куски: этим летом 14,25% до 26 июля и 14% с 27 июля.
+
+Пример: заявка на 150 000 ₽ от 13 июля, деньги пришли 6 августа. Просрочка 17 дней, проценты 984 ₽.
+
+Сумма скромная, но претензия стоит только времени. А если какая-то заявка так и не пришла, в той же претензии требуете и сами деньги. Подаётся в кабинете: «Поддержка» → «Досудебные претензии», ответить WB должен в течение 30 дней.
+
+Даты заявок берите из истории выводов, даты зачисления — из банковской выписки. Скриншоты заявок лучше сохранить сейчас.
+
+Руками это долго, поэтому есть бесплатный калькулятор. Вставляете строки «дата заявки; сумма; дата зачисления», он считает по периодам ставки и производственному календарю и собирает текст претензии с реквизитами WB. Считает в браузере, ключи от кабинета не нужны:
+https://smirnov-artur.github.io/demo/pretenziya-wb/?src={src}
+
+Калькулятор сделал Артур, g.a.d.</div>
+</main>
+<script>
+const s=new URLSearchParams(location.search).get('src')||'post',t=document.getElementById('t');
+t.textContent=t.textContent.replace('{src}',encodeURIComponent(s));
+document.getElementById('k').onclick=e=>navigator.clipboard.writeText(t.textContent).then(()=>e.target.textContent='Скопировано');
+</script>
+<script>new Image().src='https://gad-production.ru/px?p='+encodeURIComponent(location.pathname)+'&r='+encodeURIComponent(document.referrer)+'&s='+encodeURIComponent(new URLSearchParams(location.search).get('src')||'')</script>
+</body>
+</html>
