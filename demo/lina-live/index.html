@@ -26,6 +26,8 @@
   <span>наведите курсор в круг у лица · клик — подмигнёт · тройной клик — разозлится</span>
 </div>
 <script>
+// Лина нарисована в каждом положении (правки Grok: влево, вправо, вверх, вниз, диагонали, злость, ухмылка); лицо морфится
+// между ними по 478 точкам — нос, глаза, подбородок действительно поворачиваются. Волосы и шея — слои исходника.
 // Слои как в Live2D: формы частей — сегменты Grok, пиксели — исходный арт. Каждый слой — сетка со своей деформацией:
 // голова и черты лица — по объёмной форме лица, передние пряди почти с головой, задние волосы в обратную сторону, шея слабее.
 // Радужка ходит внутри белка, блик стоит, веко закрывается сверху вниз, брови и рот — свои слои. Огонь и искры — последним проходом.
@@ -194,14 +196,86 @@ else cv.remove();
 
 async function start() {
   const S = prog(VS, FS), FX = prog(FX_VS, FX_FS);
-  const [rig, atlas, plast, mask] = await Promise.all([fetch('rig.json').then(r => r.json()), tex('atlas.webp', true), tex('plast.jpg', true), tex('maski.webp', false)]);
+  const [rig, morf, atlas, plast, mask, lico] = await Promise.all([fetch('sloi.json').then(r => r.json()), fetch('morf.json').then(r => r.json()),
+    tex('sloi.webp', true), tex('plast.jpg', true), tex('maski.webp', false), tex('lico.webp', false)]);
   const [AW, AH] = rig.atlas, L = rig.lico;
   const sloj = n => rig.sloi[n];
   const uv = r => [r.uv[0] / AW, r.uv[1] / AH, (r.uv[0] + r.uv[2]) / AW, (r.uv[1] + r.uv[3]) / AH];
-  const formaN0 = (() => { const d = [(L.nos[0] - L.c[0]) / L.os[0], (L.nos[1] - L.c[1]) / L.os[1]], r2 = d[0] ** 2 + d[1] ** 2;
-    return (1 - Math.min(r2, 1)) ** 2 + .35 * (1 - Math.min(r2 / 2.56, 1)) ** 2; })();
   const MELK = setka(6), KRUP = setka(40), FULL = setka(1);
-  const TIP = { volosy_zad: 3, sheya: 4, volosy_pered: 2 };                    // остальное — поверхность головы (1)
+
+  // ---- лицо: сетка, у каждой вершины положение в каждом нарисованном кадре; шейдер собирается под число кадров
+  const PZ = morf.pozy, NP = PZ.length, NV = morf.alfa.length, NA = Math.ceil(NP / 2), IC = PZ.indexOf('centr');
+  const idx = [...Array(NA).keys()];
+  const atr = idx.map(i => `attribute vec4 a${i};`).join('\n');
+  const vary = idx.map(i => `varying vec4 v${i};`).join('\n');
+  const pk = k => `a${k >> 1}.${k & 1 ? 'zw' : 'xy'}`, vk = k => `v${k >> 1}.${k & 1 ? 'zw' : 'xy'}`;
+  const MVS = `${atr}
+attribute float aAl;
+uniform float uW[${NP}];
+uniform vec2 uRes, uOff, uOkno, uPivot;
+uniform float uScale, uRoll;
+${vary}
+varying float vAl;
+void main() {
+  vec2 Q = vec2(0.);
+  ${PZ.map((_, k) => `Q += uW[${k}] * ${pk(k)};`).join(' ')}
+  float s = sin(uRoll), c = cos(uRoll); vec2 d = Q - uPivot; Q = uPivot + vec2(d.x * c - d.y * s, d.x * s + d.y * c);
+  ${idx.map(i => `v${i} = a${i} - uOkno.xyxy;`).join(' ')}
+  vAl = aAl;
+  vec2 sc = Q * uScale + uOff;
+  gl_Position = vec4(sc.x / uRes.x * 2. - 1., 1. - sc.y / uRes.y * 2., 0., 1.);
+}`;
+  const MFS = `precision highp float;
+uniform sampler2D uT;
+uniform vec2 uAtl, uKl[${NP + 1}];
+uniform float uW[${NP}], uBl, uBp, uMode, uZl, uZp;
+uniform vec4 uGlL, uGlP;
+uniform vec2 uOkno;
+${vary}
+varying float vAl;
+vec4 sam(vec2 kl, vec2 p) { return texture2D(uT, (kl + p) / uAtl); }
+// моргание: сверху опускается нарисованное закрытое веко (pozy/zakr) — его линия ресниц идёт от верхнего края глаза до линии
+// смыкания и закрывает открытый глаз; над глазом кожа закрытого века проявляется плавно. Возвращает (сдвиг выборки
+// закрытого кадра вниз, вес закрытого кадра).
+vec2 veko(vec2 P, vec4 g, float x) {
+  if (x < .002) return vec2(0.);
+  float u = (P.x - g.x) / g.z, arc = sqrt(max(0., 1. - u * u));
+  float yT = g.y - g.w * arc, yC = g.y + g.w * arc, ye = mix(yT, yC, x);
+  if (P.y > ye + 1.) return vec2(0.);
+  if (P.y >= yT) return vec2(yC - ye, 1. - smoothstep(ye - 1., ye + 1., P.y));
+  return vec2(0., smoothstep(0., .35, x));
+}
+void main() {
+  vec2 P = ${vk(IC)} + uOkno;
+  if (uMode > .5) {                                 // нарисованные закрытые глаза, едут с сеткой, проявляются в конце моргания
+    vec4 z = sam(uKl[${NP}], ${vk(IC)});
+    gl_FragColor = vec4(z.rgb * z.a, z.a) * (P.x < 906. ? uZl : uZp) * vAl;
+    return;
+  }
+  vec2 vl = P.x < 906. ? veko(P, uGlL, uBl) : veko(P, uGlP, uBp);
+  vec3 c = vec3(0.); float ws = 0.;                 // альфа клетки — «здесь не прядь»: пряди одной позы гасятся кожей соседних
+  ${PZ.map((_, k) => `if (uW[${k}] > .0005) { vec4 t = sam(uKl[${k}], ${vk(k)}); c += uW[${k}] * t.a * t.rgb; ws += uW[${k}] * t.a; }`).join(' ')}
+  c /= max(ws, 1e-4);
+  if (vl.y > 0.) { vec4 z = sam(uKl[${NP}], ${vk(IC)} + vec2(0., vl.x)); c = mix(c, z.rgb, vl.y * z.a); }
+  gl_FragColor = vec4(c * vAl, vAl);
+}`;
+  const M = prog(MVS, MFS);
+  const bufs = [];
+  for (let i = 0; i < NA; i++) {
+    const d = new Float32Array(NV * 4);
+    for (let v = 0; v < NV; v++) for (let j = 0; j < 2; j++) {
+      const k = i * 2 + j, src = morf.v[PZ[Math.min(k, NP - 1)]];
+      d[v * 4 + j * 2] = src[v * 2]; d[v * 4 + j * 2 + 1] = src[v * 2 + 1];
+    }
+    const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, d, gl.STATIC_DRAW); bufs.push(b);
+  }
+  const bufA = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, bufA); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(morf.alfa), gl.STATIC_DRAW);
+  const ibuf = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(morf.tri), gl.STATIC_DRAW);
+  const locA = idx.map(i => gl.getAttribLocation(M.p, 'a' + i)), locAl = gl.getAttribLocation(M.p, 'aAl');
+  const vtx = (p, i) => [morf.v[p][i * 2], morf.v[p][i * 2 + 1]];
+  const W9 = new Float32Array(NP);
+  const KL = new Float32Array((NP + 1) * 2);
+  [...PZ, 'zakr'].forEach((k, i) => { KL[i * 2] = morf.kletki[k][0]; KL[i * 2 + 1] = morf.kletki[k][1]; });
 
   let fb = null, fbt = null, s = 1, ox = 0, oy = 0, dpr = 1;
   function resize() {
@@ -243,26 +317,34 @@ async function start() {
   const pruzh = (x, v, c, K, z, dt) => { v += ((c - x) * K - v * 2 * Math.sqrt(K) * z) * dt; return [x + v * dt, v]; };
   const t0 = performance.now() / 1000; let prev = t0;
 
-  function risovat(r, o) {                           // один слой: цельный кусок со сдвигом группы, обрезка, веко
+  function risovat(r, o) {                           // слой исходника: цельный кусок со сдвигом
     gl.uniform4f(S.u('uRamka'), ...r.ramka); gl.uniform4f(S.u('uUV'), ...uv(r));
-    gl.uniform1f(S.u('uTip'), o.tip); gl.uniform1f(S.u('uA'), o.a ?? 1);
-    gl.uniform2f(S.u('uGr'), ...(o.gr || [0, 0])); gl.uniform2f(S.u('uSc'), ...(o.sc || [1, 1])); gl.uniform2f(S.u('uScC'), ...(o.scC || [0, 0]));
-    gl.uniform2f(S.u('uPre'), ...(o.pre || [0, 0])); gl.uniform1f(S.u('uRot'), o.rot || 0); gl.uniform2f(S.u('uRotC'), ...(o.rotC || [0, 0]));
-    gl.uniform1f(S.u('uKlip'), o.klip ? 1 : 0);
-    if (o.klip) { gl.uniform4f(S.u('uRamkaK'), ...o.klip.ramka); gl.uniform4f(S.u('uUVK'), ...uv(o.klip)); gl.uniform2f(S.u('uKlipSdvig'), ...(o.pre || [0, 0])); }
-    gl.uniform1f(S.u('uVeko'), o.veko || 0);
-    if (o.veko) { const g = o.glaz.ramka; gl.uniform4f(S.u('uGlazE'), (g[0] + g[2]) / 2, (g[1] + g[3]) / 2, (g[2] - g[0]) / 2, (g[3] - g[1]) / 2); }
+    gl.uniform1f(S.u('uTip'), o.tip); gl.uniform1f(S.u('uA'), 1);
+    gl.uniform2f(S.u('uGr'), ...(o.gr || [0, 0])); gl.uniform2f(S.u('uSc'), 1, 1); gl.uniform2f(S.u('uScC'), 0, 0);
+    gl.uniform2f(S.u('uPre'), 0, 0); gl.uniform1f(S.u('uRot'), 0); gl.uniform2f(S.u('uRotC'), 0, 0);
+    gl.uniform1f(S.u('uKlip'), 0); gl.uniform1f(S.u('uVeko'), 0);
     const m = o.setka || MELK;
     gl.bindBuffer(gl.ARRAY_BUFFER, m.buf); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
     gl.drawArrays(gl.TRIANGLES, 0, m.n);
   }
-  // поворот головы как в примере: каждая часть сдвигается целиком — ближние к зрителю сильнее, дальние слабее или навстречу
-  // [px при полном повороте вбок, px при полном наклоне вверх/вниз]
-  const PARALLAKS = { volosy_zad: [-6, -3], sheya: [1.5, 1], uho: [-2, -2], plastina: [6, 5], glaz: [14, 10], nos: [21, 15],
-                      rot: [15, 12], brov: [13, 8], volosy_pered: [8, 5] };
-  const gruppa = n => n.startsWith('uho') ? 'uho' : /^(glaz|yabloko|raduzhka|blik|resnicy|zakr)_/.test(n) ? 'glaz' : n.startsWith('brov') ? 'brov' : n;
-  const centr = r => [(r.ramka[0] + r.ramka[2]) / 2, (r.ramka[1] + r.ramka[3]) / 2];
-
+  let roll = 0;
+  function lico_risovat(mode, bl, bp, zl, zp) {
+    gl.useProgram(M.p);
+    gl.disableVertexAttribArray(0);
+    for (let i = 0; i < NA; i++) { gl.bindBuffer(gl.ARRAY_BUFFER, bufs[i]); gl.enableVertexAttribArray(locA[i]); gl.vertexAttribPointer(locA[i], 4, gl.FLOAT, false, 0, 0); }
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufA); gl.enableVertexAttribArray(locAl); gl.vertexAttribPointer(locAl, 1, gl.FLOAT, false, 0, 0);
+    gl.uniform1fv(M.u('uW'), W9); gl.uniform2fv(M.u('uKl'), KL); gl.uniform2f(M.u('uAtl'), morf.atlas[0], morf.atlas[1]); gl.uniform2f(M.u('uOkno'), morf.okno[0], morf.okno[1]);
+    gl.uniform2f(M.u('uRes'), cv.width, cv.height); gl.uniform2f(M.u('uOff'), ox, oy); gl.uniform1f(M.u('uScale'), s);
+    gl.uniform2f(M.u('uPivot'), L.sheya[0], L.sheya[1]); gl.uniform1f(M.u('uRoll'), roll);
+    gl.uniform1f(M.u('uMode'), mode); gl.uniform1f(M.u('uZl'), zl); gl.uniform1f(M.u('uZp'), zp); gl.uniform1f(M.u('uBl'), bl); gl.uniform1f(M.u('uBp'), bp);
+    gl.uniform4f(M.u('uGlL'), ...morf.glaz_l); gl.uniform4f(M.u('uGlP'), ...morf.glaz_p);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, lico); gl.uniform1i(M.u('uT'), 0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf);
+    gl.drawElements(gl.TRIANGLES, morf.tri.length, gl.UNSIGNED_SHORT, 0);
+    for (let i = 0; i < NA; i++) gl.disableVertexAttribArray(locA[i]); gl.disableVertexAttribArray(locAl);
+    gl.useProgram(S.p); gl.enableVertexAttribArray(0);
+  }
+  const SET = [['vlevo_vverh', 'vverh', 'vpravo_vverh'], ['vlevo', 'centr', 'vpravo'], ['vlevo_vniz', 'vniz', 'vpravo_vniz']];
   function frame() {
     const now = performance.now() / 1000, dt = Math.min(.033, now - prev), t = now - t0; prev = now;
     const aktivna = ptr && now - lastMove < 2.5;
@@ -276,7 +358,7 @@ async function start() {
       if (now > mikroDo) { mx = (Math.random() - .5) * 1.2; my = (Math.random() - .5) * .6; mikroDo = now + .5 + Math.random() * .8; }
       cgx = tx * 7 + mx; cgy = ty * 2.5 + my;
     } else {
-      cax = -.35; cay = .6;                          // склонилась к огню в левой ладони
+      cax = -.3; cay = .3;                           // склонилась к огню в левой ладони
       if (now > ogonDo) { ogonGx = -7 + Math.random() * 3; ogonDo = now + 1.5 + Math.random() * 2.5; }
       cgx = ogonGx; cgy = 2.5;
     }
@@ -299,48 +381,44 @@ async function start() {
     flare += (flareCel - flare) * Math.min(1, dt * 14); flareCel *= Math.exp(-dt * 2.2);
     hover += ((vnutri && aktivna ? 1 : 0) - hover) * Math.min(1, dt * 6);
 
-    // ---- слои в кадровый буфер
+    // ---- веса нарисованных кадров: сетка 3×3 (влево/прямо/вправо × вверх/прямо/вниз), плюс злость и ухмылка
+    const ax = Math.max(-1, Math.min(1, P.ax)), ay = Math.max(-1, Math.min(1, P.ay));
+    const wx = [Math.max(0, -ax), 1 - Math.abs(ax), Math.max(0, ax)], wy = [Math.max(0, -ay), 1 - Math.abs(ay), Math.max(0, ay)];
+    W9.fill(0);
+    const kZ = PZ.includes('zlo') ? P.angry : 0, kU = PZ.includes('uhmylka') ? Math.min(1, P.wink * 1.3 + P.cur * .4) * (1 - P.angry) : 0;
+    const vyr = Math.min(.95, kZ + kU);
+    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
+      let k = PZ.indexOf(SET[i][j]); if (k < 0) k = IC;     // нет кадра — берём «прямо»
+      W9[k] += wy[i] * wx[j] * (1 - vyr);
+    }
+    if (kZ > 0) W9[PZ.indexOf('zlo')] += vyr * kZ / (kZ + kU);
+    if (kU > 0) W9[PZ.indexOf('uhmylka')] += vyr * kU / (kZ + kU);
+    // куда уехал лоб — туда же передние волосы (меньше — уши и шея, задние волосы навстречу)
+    let lx = 0, ly = 0;
+    PZ.forEach((p, k) => { if (W9[k] > 0) { const v = vtx(p, morf.lob), v0 = vtx('centr', morf.lob); lx += W9[k] * (v[0] - v0[0]); ly += W9[k] * (v[1] - v0[1]); } });
+    roll = -ax * .02;
+
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb); gl.viewport(0, 0, cv.width, cv.height);
     gl.clearColor(.039, .027, .024, 1); gl.clear(gl.COLOR_BUFFER_BIT);
     gl.useProgram(S.p); gl.enableVertexAttribArray(0);
     gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.uniform2f(S.u('uRes'), cv.width, cv.height); gl.uniform2f(S.u('uOff'), ox, oy); gl.uniform1f(S.u('uScale'), s);
-    gl.uniform2f(S.u('uPivot'), ...L.sheya);
-    gl.uniform1f(S.u('uRoll'), -P.ax * .035); gl.uniform2f(S.u('uSway'), st.sw1, st.sw2);
-    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, plast);
-    gl.uniform1i(S.u('uAtlas'), 0);
-    risovat({ ramka: [0, 0, 1792, 1008], uv: [0, 0, AW, AH] }, { tip: 0, setka: FULL });    // пласт: uv на весь кадр
+    gl.uniform2f(S.u('uPivot'), L.sheya[0], L.sheya[1]); gl.uniform1f(S.u('uRoll'), roll); gl.uniform2f(S.u('uSway'), st.sw1, st.sw2);
+    gl.uniform1f(S.u('uSmirk'), 0); gl.uniform1f(S.u('uFrown'), 0); gl.uniform2f(S.u('uUgol'), 0, 0);
+    gl.activeTexture(gl.TEXTURE0); gl.uniform1i(S.u('uAtlas'), 0);
+    gl.bindTexture(gl.TEXTURE_2D, plast);
+    risovat({ ramka: [0, 0, 1792, 1008], uv: [0, 0, AW, AH] }, { tip: 0, setka: FULL });
     gl.bindTexture(gl.TEXTURE_2D, atlas);
-    gl.uniform1f(S.u('uSmirk'), Math.min(1, P.wink * 1.4) + P.cur * .3); gl.uniform2f(S.u('uUgol'), 867, 477);
-    gl.uniform1f(S.u('uFrown'), P.angry);
-    const brovUp = P.cur * 6, brovZlo = P.angry;
-    const ochered = Object.entries(rig.sloi).sort((a, b) => a[1].z - b[1].z);
-    for (const [n, r] of ochered) {
-      const g = gruppa(n), k = PARALLAKS[g] || [0, 0];
-      const gr = [k[0] * P.ax, k[1] * P.ay];
-      const tip = n === 'volosy_pered' ? 2 : n === 'volosy_zad' ? 3 : n === 'rot' ? 5 : 1;
-      const setka = n.startsWith('volosy') ? KRUP : MELK;
-      const st2 = n.slice(-1);
-      const o = { tip, setka, gr };
-      if (g === 'glaz') {                              // дальний глаз чуть уже — так в примере выглядит поворот
-        const dal = st2 === 'p' ? Math.max(0, P.ax) : Math.max(0, -P.ax);
-        o.sc = [1 - .12 * dal, 1]; o.scC = centr(sloj('glaz_' + st2));
-      }
-      if (n.startsWith('raduzhka') || n.startsWith('blik')) {
-        o.pre = n.startsWith('blik') ? [P.gx * .25, P.gy * .25] : [P.gx, P.gy];
-        o.klip = sloj('yabloko_' + st2);
-        risovat(r, o);
-      } else if (n.startsWith('zakr')) {
-        const z = st2 === 'l' ? Math.max(P.blink, P.wink) : P.blink;
-        if (z > .002) risovat(r, { ...o, veko: z, glaz: sloj('yabloko_' + st2) });
-      } else if (n.startsWith('brov')) {
-        const vnutr = st2 === 'l' ? 1 : -1;
-        const up = brovUp + (st2 === 'p' ? P.wink * 3 : -P.wink * 1.5) - brovZlo * 4.5;
-        risovat(r, { ...o, pre: [vnutr * brovZlo * 3.5, -up], rot: vnutr * brovZlo * .16, rotC: centr(r) });
-      } else {
-        risovat(r, o);
-      }
-    }
+    risovat(sloj('volosy_zad'), { tip: 3, setka: KRUP, gr: [-lx * .25, -ly * .2] });
+    risovat(sloj('sheya'), { tip: 1, setka: MELK, gr: [lx * .1, ly * .1] });
+    for (const u of ['uho_1', 'uho_2']) if (sloj(u)) risovat(sloj(u), { tip: 1, setka: MELK, gr: [-lx * .15, ly * .3] });
+    // закрытое веко опускается к 80 % моргания, в конце закрытый глаз проявляется целиком (с ресницами ниже линии смыкания)
+    const bl = Math.max(P.blink, P.wink), bp = P.blink;
+    const sm = x => { const t = Math.min(1, Math.max(0, (x - .7) / .3)); return t * t * (3 - 2 * t); };
+    lico_risovat(0, Math.min(1, bl / .8), Math.min(1, bp / .8), 0, 0);
+    if (bl > .7 || bp > .7) lico_risovat(1, 0, 0, sm(bl), sm(bp));
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, atlas);
+    risovat(sloj('volosy_pered'), { tip: 2, setka: KRUP, gr: [lx * .85, ly * .7] });
     // ---- огонь, искры, свет — на экран
     gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.disable(gl.BLEND);
     gl.useProgram(FX.p);
