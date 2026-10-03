@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Металлоцентр — резка, гибка, сварка, покраска и металл со склада</title>
+<meta name="description" content="Лазерная резка до 20 мм, гибка до 3,2 м, сварка и порошковая покраска. Склад металлопроката: лист, труба, уголок, швеллер, арматура. Цена детали онлайн.">
+<meta name="theme-color" content="#0D0E10">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230D0E10'/%3E%3Cpath d='M7 7h11a7 7 0 0 0 7 7v11H7z' fill='%23F2F0EB'/%3E%3Ccircle cx='25' cy='7' r='2.4' fill='%23FF5A1F'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="img/hero.webp" media="(min-width: 700px)">
+<link rel="preload" as="image" href="img/hero-m.webp" media="(max-width: 699px)">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="hdr" id="top">
+  <div class="hdr__in wrap">
+    <a class="logo" href="#top" aria-label="Металлоцентр, наверх">
+      <svg class="logo__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 5h13a9 9 0 0 0 9 9v13H5z" fill="currentColor"/><circle cx="12" cy="20" r="2.6" fill="var(--ink)"/><circle cx="27" cy="5" r="2.6" class="logo__spark"/></svg>
+      <span>Металлоцентр</span>
+    </a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="#raschet">Расчёт</a>
+      <a href="#sklad">Склад</a>
+      <a href="#uslugi">Услуги</a>
+      <a href="#oborudovanie">Оборудование</a>
+      <a href="#dostavka">Доставка</a>
+      <a href="#kontakty">Контакты</a>
+    </nav>
+    <div class="hdr__right">
+      <a class="hdr__tel" href="tel:+74950000000"><span>+7 495 000-00-00</span><small>пн–пт 8–20, сб 9–16</small></a>
+      <a class="btn btn--hot btn--sm" href="#raschet">Рассчитать</a>
+      <button class="burger" type="button" aria-label="Меню" aria-expanded="false"><i></i><i></i></button>
+    </div>
+  </div>
+  <div class="mnav" hidden>
+    <a href="#raschet">Расчёт</a><a href="#sklad">Склад</a><a href="#uslugi">Услуги</a><a href="#oborudovanie">Оборудование</a><a href="#dostavka">Доставка</a><a href="#kontakty">Контакты</a>
+    <a class="mnav__tel" href="tel:+74950000000">+7 495 000-00-00</a>
+  </div>
+</header>
+
+<main>
+
+<!-- Первый экран -->
+<section class="hero">
+  <div class="hero__media" aria-hidden="true">
+    <video class="hero__video" muted loop playsinline autoplay preload="metadata" poster="img/hero.webp" data-src="img/hero.mp4" data-src-m="img/hero-m.mp4" data-poster-m="img/hero-m.webp"></video>
+  </div>
+  <div class="hero__in wrap">
+    <h1 class="hero__h">
+      <span class="ln"><span>Режем, гнём,</span></span>
+      <span class="ln"><span>варим и красим металл.</span></span>
+      <span class="ln dim"><span>Продаём его со склада.</span></span>
+    </h1>
+    <div class="hero__row">
+      <p class="hero__lead">Цех и металлобаза на одной площадке. Лазер режет сталь до&nbsp;20&nbsp;мм, листогиб берёт 3,2&nbsp;метра, рядом сварка и порошковая покраска. Металл свой, поэтому деталь не ждёт поставки.</p>
+      <div class="hero__cta">
+        <a class="btn btn--hot" href="#raschet">Рассчитать стоимость <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10M11 5l5 5-5 5"/></svg></a>
+        <a class="btn btn--line" href="#sklad">Склад и цены</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero__facts wrap">
+    <div class="laser" aria-hidden="true"><i></i></div>
+    <dl>
+      <div><dt>20 мм</dt><dd>режем сталь лазером</dd></div>
+      <div><dt>3,2 м</dt><dd>длина гиба на прессе</dd></div>
+      <div><dt>1 400 т</dt><dd>проката на складе</dd></div>
+      <div><dt>24 часа</dt><dd>на резку от заявки</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- Услуги -->
+<section class="sec sec--dark" id="uslugi">
+  <div class="wrap">
+    <div class="shead" data-r>
+      <h2 class="h2">Деталь от листа до&nbsp;покраски</h2>
+      <p class="shead__p">Всё делаем в одном цехе. Деталь не ездит между подрядчиками, а вы не созваниваетесь с четырьмя мастерами. Металл берём со своего склада.</p>
+    </div>
+    <div class="panels" data-r>
+      <article class="panel is-on" data-op="cut">
+        <img src="img/svc-laser.webp" alt="Лазерная резка стального листа, искры под соплом" loading="lazy" decoding="async" width="1400" height="933">
+        <div class="panel__body">
+          <h3>Лазерная резка</h3>
+          <p>Оптоволоконный лазер 12&nbsp;кВт. Сталь до 20&nbsp;мм, нержавейка до 10, алюминий до 8. Стол 3&nbsp;×&nbsp;1,5&nbsp;м, точность ±0,1&nbsp;мм.</p>
+          <div class="panel__foot"><b>от 22 ₽</b><span>за метр реза</span><a href="#raschet" data-pick="cut">Посчитать</a></div>
+        </div>
+      </article>
+      <article class="panel" data-op="bend">
+        <img src="img/svc-bend.webp" alt="Листогибочный пресс гнёт стальную заготовку" loading="lazy" decoding="async" width="1400" height="933">
+        <div class="panel__body">
+          <h3>Гибка</h3>
+          <p>Пресс 160&nbsp;т с ЧПУ, длина гиба до 3,2&nbsp;м, толщина до 10&nbsp;мм. Короба, кронштейны, корпуса, отливы.</p>
+          <div class="panel__foot"><b>от 30 ₽</b><span>за гиб</span><a href="#raschet" data-pick="bend">Посчитать</a></div>
+        </div>
+      </article>
+      <article class="panel" data-op="weld">
+        <img src="img/svc-weld.webp" alt="Сварщик варит стальной шов, летят искры" loading="lazy" decoding="async" width="1400" height="933">
+        <div class="panel__body">
+          <h3>Сварка</h3>
+          <p>Шесть постов: полуавтомат и аргон. Чёрная сталь, нержавейка, алюминий. Рамы, каркасы, ёмкости, ограждения.</p>
+          <div class="panel__foot"><b>от 450 ₽</b><span>за метр шва</span><a href="#raschet" data-pick="weld">Посчитать</a></div>
+        </div>
+      </article>
+      <article class="panel" data-op="paint">
+        <img src="img/svc-paint.webp" alt="Маляр в защитном костюме наносит порошковую краску на балки" loading="lazy" decoding="async" width="1400" height="933">
+        <div class="panel__body">
+          <h3>Порошковая покраска</h3>
+          <p>Камера 6&nbsp;×&nbsp;2,5&nbsp;×&nbsp;2,5&nbsp;м и печь до 220&nbsp;°C. Любой цвет по RAL, детали длиной до 6&nbsp;метров.</p>
+          <div class="panel__foot"><b>от 450 ₽</b><span>за м²</span><a href="#raschet" data-pick="paint">Посчитать</a></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Калькулятор -->
+<section class="sec sec--calc" id="raschet">
+  <div class="wrap">
+    <div class="shead" data-r>
+      <h2 class="h2">Сколько стоит ваша деталь</h2>
+      <p class="shead__p">Отметьте, что сделать, выберите металл и размеры. Цена пересчитается сразу, по тем же ставкам, по которым считает технолог. Точную сумму по чертежу пришлём за 30 минут.</p>
+    </div>
+
+    <div class="calc" data-r>
+      <form class="calc__form" id="calcForm" autocomplete="off" onsubmit="return false">
+        <fieldset class="grp">
+          <legend>Что сделать <span>можно несколько</span></legend>
+          <div class="ops" role="group">
+            <button type="button" class="op is-on" data-op="cut" aria-pressed="true">
+              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M12 4h8l-2 9h-4z"/><path d="M16 13v9"/><path d="M5 26h22"/><path d="M12 22l-2 2M20 22l2 2M16 22v3"/></svg>
+              <b>Лазерная резка</b><small>от 22 ₽/м</small>
+            </button>
+            <button type="button" class="op" data-op="bend" aria-pressed="false">
+              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 9h12l10 14"/><path d="M5 13h10l9 12" opacity=".45"/></svg>
+              <b>Гибка</b><small>от 30 ₽/гиб</small>
+            </button>
+            <button type="button" class="op" data-op="weld" aria-pressed="false">
+              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 20h10M18 20h10"/><path d="M13 16l2 4 2-4 2 4"/><path d="M8 24h16" opacity=".45"/></svg>
+              <b>Сварка</b><small>от 450 ₽/м</small>
+            </button>
+            <button type="button" class="op" data-op="paint" aria-pressed="false">
+              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 10h11v6H6z"/><path d="M17 12h4M10 16v8h4"/><path d="M24 9v0M27 12v0M24 15v0M27 18v0" stroke-width="2.6" stroke-linecap="round"/></svg>
+              <b>Покраска</b><small>от 450 ₽/м²</small>
+            </button>
+          </div>
+        </fieldset>
+
+        <fieldset class="grp">
+          <legend>Металл</legend>
+          <div class="seg" id="mat" role="radiogroup">
+            <button type="button" role="radio" data-v="steel" aria-checked="true" class="is-on">Сталь <small>Ст3</small></button>
+            <button type="button" role="radio" data-v="stainless" aria-checked="false">Нержавейка <small>AISI 304</small></button>
+            <button type="button" role="radio" data-v="aluminium" aria-checked="false">Алюминий <small>АМг2</small></button>
+          </div>
+        </fieldset>
+
+        <fieldset class="grp">
+          <legend>Толщина, мм</legend>
+          <div class="chips" id="thk" role="radiogroup"></div>
+        </fieldset>
+
+        <fieldset class="grp">
+          <legend>Размер детали</legend>
+          <div class="fields">
+            <label class="fld"><span>Ширина</span><input type="number" inputmode="numeric" id="w" value="300" min="10" max="6000"><em>мм</em></label>
+            <label class="fld"><span>Длина</span><input type="number" inputmode="numeric" id="l" value="500" min="10" max="6000"><em>мм</em></label>
+            <label class="fld" data-need="cut"><span>Отверстий и вырезов</span><input type="number" inputmode="numeric" id="holes" value="4" min="0" max="500"><em>шт</em></label>
+            <label class="fld" data-need="cut"><span>Длина реза на деталь</span><input type="number" inputmode="decimal" id="cutm" value="1.6" min="0.05" max="200" step="0.05"><em>м</em><button type="button" class="fld__reset" id="cutReset" hidden>по контуру</button></label>
+          </div>
+          <p class="hint" data-need="cut" id="cutHint">Длину реза посчитали по контуру детали. Если внутри есть вырезы, впишите свою.</p>
+          <p class="warn" id="sizeWarn" hidden></p>
+        </fieldset>
+
+        <fieldset class="grp" data-need="bend" hidden>
+          <legend>Гибка</legend>
+          <div class="fields">
+            <label class="fld"><span>Гибов на деталь</span><input type="number" inputmode="numeric" id="bends" value="2" min="1" max="20"><em>шт</em></label>
+          </div>
+          <p class="hint" id="bendHint"></p>
+        </fieldset>
+
+        <fieldset class="grp" data-need="weld" hidden>
+          <legend>Сварка</legend>
+          <div class="fields">
+            <label class="fld"><span>Шов на деталь</span><input type="number" inputmode="decimal" id="weldm" value="0.5" min="0.05" max="100" step="0.05"><em>м</em></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="grp" data-need="paint" hidden>
+          <legend>Покраска</legend>
+          <div class="swatches" id="ral" role="radiogroup">
+            <button type="button" role="radio" aria-checked="true" class="is-on" data-c="#2F3236" data-n="RAL 7024"><i style="background:#2F3236"></i>7024 графит</button>
+            <button type="button" role="radio" aria-checked="false" data-c="#0E0E10" data-n="RAL 9005"><i style="background:#0E0E10"></i>9005 чёрный</button>
+            <button type="button" role="radio" aria-checked="false" data-c="#ECECE7" data-n="RAL 9016"><i style="background:#ECECE7"></i>9016 белый</button>
+            <button type="button" role="radio" aria-checked="false" data-c="#2D5A3D" data-n="RAL 6005"><i style="background:#2D5A3D"></i>6005 зелёный</button>
+          </div>
+          <p class="hint" id="paintHint"></p>
+        </fieldset>
+
+        <fieldset class="grp">
+          <legend>Количество</legend>
+          <div class="qty">
+            <div class="step">
+              <button type="button" data-step="-1" aria-label="Меньше">−</button>
+              <input type="number" inputmode="numeric" id="qty" value="10" min="1" max="100000" aria-label="Количество деталей">
+              <button type="button" data-step="1" aria-label="Больше">+</button>
+            </div>
+            <div class="qty__quick" id="qtyQuick">
+              <button type="button" data-q="1">1</button><button type="button" data-q="10">10</button><button type="button" data-q="50">50</button><button type="button" data-q="200">200</button><button type="button" data-q="1000">1000</button>
+            </div>
+          </div>
+          <p class="hint">Скидка на работу: от 50 шт — 5 %, от 200 шт — 10 %, от 1000 шт — 15 %.</p>
+        </fieldset>
+
+        <fieldset class="grp grp--last">
+          <legend>Чей металл</legend>
+          <div class="seg seg--2" id="own" role="radiogroup">
+            <button type="button" role="radio" data-v="ours" aria-checked="true" class="is-on">Наш, со склада</button>
+            <button type="button" role="radio" data-v="client" aria-checked="false">Ваш, привезёте</button>
+          </div>
+        </fieldset>
+      </form>
+
+      <aside class="calc__res" id="calcRes" aria-live="polite">
+        <div class="draw">
+          <svg id="part" viewBox="0 0 420 270" role="img" aria-label="Чертёж детали"></svg>
+          <div class="draw__meta"><span id="metaMat">Сталь Ст3 · 3 мм</span><span id="metaKg">3,5 кг</span></div>
+        </div>
+        <div class="price">
+          <span class="price__lbl" id="priceLbl">За 10 деталей</span>
+          <output class="price__num" id="priceNum">0 ₽</output>
+          <span class="price__sub" id="priceSub"></span>
+        </div>
+        <ul class="bd" id="breakdown"></ul>
+        <button type="button" class="btn btn--hot btn--full" id="sendCalc">Отправить расчёт <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10M11 5l5 5-5 5"/></svg></button>
+        <p class="res__note">Цена предварительная. Технолог проверит чертёж и подтвердит её в ответе.</p>
+      </aside>
+    </div>
+
+    <details class="rates" data-r>
+      <summary>Ставки, по которым считает калькулятор <span>резка, врезки, гибка, сварка, покраска, металл</span></summary>
+      <div class="rates__in" id="ratesTables"></div>
+      <p class="rates__note">В рабочей версии ставки лежат в той же Google Таблице, что и склад. Поменяли цену в таблице — калькулятор считает по-новому.</p>
+    </details>
+  </div>
+
+  <div class="mbar" id="mbar" aria-hidden="true">
+    <div><small id="mbarLbl">За 10 деталей</small><b id="mbarNum">0 ₽</b></div>
+    <button type="button" class="btn btn--hot btn--sm" data-send>Отправить</button>
+  </div>
+</section>
+
+<!-- Склад -->
+<section class="sec sec--paper" id="sklad">
+  <div class="wrap">
+    <div class="shead" data-r>
+      <h2 class="h2">Склад: что есть сегодня</h2>
+      <p class="shead__p">Цены за тонну и за метр, остатки на утро. Порежем в размер и привезём вместе с готовыми деталями.</p>
+    </div>
+
+    <div class="cats" id="cats" data-r></div>
+
+    <div class="stock" data-r>
+      <div class="tools">
+        <label class="search">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
+          <input type="search" id="q" placeholder="Например: труба 40х20 или 09Г2С" aria-label="Поиск по складу">
+        </label>
+        <div class="grades" id="grades" role="group" aria-label="Марка"></div>
+        <label class="switch"><input type="checkbox" id="inStock"><i></i><span>Только в наличии</span></label>
+        <label class="sort"><span>Сортировка</span>
+          <select id="sort">
+            <option value="def">По разделам</option>
+            <option value="price">Сначала дешевле</option>
+            <option value="stock">Больше на складе</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="tbl" role="table" aria-label="Металл на складе">
+        <div class="tbl__head" role="row">
+          <span role="columnheader">Наименование</span>
+          <span role="columnheader">Марка, ГОСТ</span>
+          <span role="columnheader">Наличие</span>
+          <span role="columnheader">Цена за т</span>
+          <span role="columnheader">За метр или лист</span>
+          <span role="columnheader"><span class="vh">В заявку</span></span>
+        </div>
+        <div class="tbl__body" id="rows" role="rowgroup"></div>
+        <button type="button" class="more" id="more" hidden></button>
+        <p class="tbl__empty" id="empty" hidden>Ничего не нашли. Напишите, что нужно, — привезём под заказ за 2–3 дня.</p>
+      </div>
+
+      <div class="stock__foot">
+        <p class="upd"><i></i><span id="updated">Обновлено утром</span></p>
+        <p class="src">В рабочей версии склад и цены подтягиваются из Google Таблицы или выгрузки 1С. Менеджер меняет их там, сайт обновляется сам.</p>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="basket" id="basket" hidden><span id="basketN">0</span> в заявке <b>Отправить</b></button>
+</section>
+
+<!-- Оборудование -->
+<section class="sec sec--dark" id="oborudovanie">
+  <div class="wrap">
+    <div class="shead" data-r>
+      <h2 class="h2">Оборудование</h2>
+      <p class="shead__p">Станки, на которых делаем ваш заказ. Можно приехать, посмотреть цех и обсудить деталь с технологом.</p>
+    </div>
+    <div class="eq" data-r>
+      <figure class="eq__pic">
+        <img src="img/eq-laser.webp" alt="Оператор у станка лазерной резки в цехе" loading="lazy" decoding="async" width="1400" height="933" data-eq="0">
+        <img src="img/svc-bend.webp" alt="" loading="lazy" decoding="async" width="1400" height="933" data-eq="1">
+        <img src="img/svc-weld.webp" alt="" loading="lazy" decoding="async" width="1400" height="933" data-eq="2">
+        <img src="img/svc-paint.webp" alt="" loading="lazy" decoding="async" width="1400" height="933" data-eq="3">
+        <img src="img/eq-portal.webp" alt="" loading="lazy" decoding="async" width="1400" height="933" data-eq="4">
+      </figure>
+      <ul class="eq__list">
+        <li class="is-on" data-eq="0"><h3>Оптоволоконный лазер 12 кВт</h3><p><span>стол 3000 × 1500 мм</span><span>сталь до 20 мм</span><span>нержавейка до 10 мм</span><span>±0,1 мм</span></p></li>
+        <li data-eq="1"><h3>Листогибочный пресс 160 т</h3><p><span>гиб до 3200 мм</span><span>толщина до 10 мм</span><span>задний упор с ЧПУ</span></p></li>
+        <li data-eq="2"><h3>Сварочный участок</h3><p><span>6 постов</span><span>MIG/MAG и TIG</span><span>столы 3 × 1,5 м</span></p></li>
+        <li data-eq="3"><h3>Камера порошковой покраски</h3><p><span>6 × 2,5 × 2,5 м</span><span>печь до 220 °C</span><span>любой RAL</span></p></li>
+        <li data-eq="4"><h3>Портальная резка и ленточная пила</h3><p><span>лист до 40 мм плазмой</span><span>прокат до 400 мм</span><span>рез под углом до 60°</span></p></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Как заказать -->
+<section class="sec sec--paper" id="kak">
+  <div class="wrap">
+    <div class="shead" data-r>
+      <h2 class="h2">Как заказать</h2>
+      <p class="shead__p">На первый заказ договор не нужен: счёт, оплата, детали. Работаем с НДС, закрывающие документы отправляем через ЭДО.</p>
+    </div>
+    <ol class="flow" data-r>
+      <li><time>09:00</time><h3>Присылаете чертёж</h3><p>DXF, DWG, PDF или фото эскиза с размерами. В Telegram, MAX или на почту.</p></li>
+      <li><time>09:30</time><h3>Получаете счёт</h3><p>Технолог проверит файл и раскрой. Если деталь можно сделать дешевле, скажет как.</p></li>
+      <li><time>Завтра</time><h3>Детали готовы</h3><p>Резка и гибка до 50 листов — за сутки. Сварка и покраска — от трёх дней.</p></li>
+      <li><time>В тот же день</time><h3>Забираете или везём</h3><p>Грузим краном в вашу машину или привозим своей по Москве и области.</p></li>
+    </ol>
+    <div class="flow__track" aria-hidden="true"><i id="flowDot"></i></div>
+  </div>
+</section>
+
+<!-- Доставка -->
+<section class="sec sec--photo" id="dostavka">
+  <img class="bgimg" src="img/dostavka.webp" alt="" loading="lazy" decoding="async" width="1800" height="1200">
+  <div class="wrap dl">
+    <div class="dl__l" data-r>
+      <h2 class="h2">Доставка и&nbsp;самовывоз</h2>
+      <p class="shead__p">Металл и готовые детали везём одной машиной. Длинномер берёт прокат до 12 метров.</p>
+    </div>
+    <div class="dl__r" data-r>
+      <ul class="tariffs">
+        <li><span>Газель</span><small>до 1,5 т, кузов 6 м</small><b>3 500 ₽</b></li>
+        <li><span>Манипулятор</span><small>до 10 т, сам разгружает</small><b>9 000 ₽</b></li>
+        <li><span>Длинномер</span><small>до 20 т, прокат до 12 м</small><b>14 000 ₽</b></li>
+        <li><span>Самовывоз</span><small>погрузка краном бесплатно</small><b>0 ₽</b></li>
+      </ul>
+      <p class="tariffs__note">Цены по Москве. За МКАД — плюс 60 ₽ за километр.</p>
+      <div class="addr">
+        <div><small>Склад и цех</small><b>Подольск, Индустриальная ул., 12</b></div>
+        <div><small>Часы</small><b>пн–пт 8:00–20:00, сб 9:00–16:00</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Контакты -->
+<section class="sec sec--cta" id="kontakty">
+  <img class="bgimg" src="img/cta.webp" alt="" loading="lazy" decoding="async" width="2000" height="1333">
+  <div class="wrap cta">
+    <div class="cta__l" data-r>
+      <h2 class="h2 h2--big">Пришлите чертёж&nbsp;— посчитаем за&nbsp;30&nbsp;минут</h2>
+      <p class="shead__p">Подойдёт DXF, DWG, PDF или фото эскиза от руки. Ответим в мессенджер или перезвоним.</p>
+      <ul class="contacts">
+        <li><small>Телефон</small><a href="tel:+74950000000">+7 495 000-00-00</a></li>
+        <li><small>Telegram и MAX</small><a href="#kontakty">@metallocentr_demo</a></li>
+        <li><small>Почта</small><a href="#kontakty">zakaz@metallocentr.example</a></li>
+      </ul>
+    </div>
+    <form class="cta__form" id="ctaForm" data-r novalidate>
+      <div class="cta__state" data-state="form">
+        <label class="in"><span>Имя</span><input name="name" autocomplete="name" required></label>
+        <label class="in"><span>Телефон</span><input name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7" required></label>
+        <label class="in"><span>Что нужно</span><textarea name="msg" rows="3" placeholder="Например: 40 кронштейнов из 4 мм, покраска в чёрный"></textarea></label>
+        <label class="file"><input type="file" name="file" accept=".dxf,.dwg,.pdf,.jpg,.jpeg,.png,.step,.stp"><span>Прикрепить чертёж</span><em>DXF, DWG, PDF, фото</em></label>
+        <button class="btn btn--hot btn--full" type="submit">Отправить заявку <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10M11 5l5 5-5 5"/></svg></button>
+        <p class="demo-note">Это демо: заявка никуда не уйдёт. В рабочей версии она придёт в Telegram и на почту менеджеру.</p>
+      </div>
+      <div class="cta__state" data-state="ok" hidden>
+        <h3>Заявка собрана</h3>
+        <p>В рабочей версии она уже была бы у менеджера в Telegram и на почте, а вам пришло бы подтверждение. В демо ничего не отправляется.</p>
+        <button type="button" class="btn btn--line" data-reset>Заполнить ещё раз</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer class="ftr">
+  <div class="wrap ftr__in">
+    <a class="logo" href="#top"><svg class="logo__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 5h13a9 9 0 0 0 9 9v13H5z" fill="currentColor"/><circle cx="12" cy="20" r="2.6" fill="var(--ink)"/><circle cx="27" cy="5" r="2.6" class="logo__spark"/></svg><span>Металлоцентр</span></a>
+    <nav class="ftr__nav"><a href="#raschet">Расчёт</a><a href="#sklad">Склад</a><a href="#uslugi">Услуги</a><a href="#oborudovanie">Оборудование</a><a href="#dostavka">Доставка</a></nav>
+    <p class="ftr__demo">Демо-версия сайта для обсуждения. Название, контакты, цены, станки и остатки — пример: в рабочей версии будут ваши. Фото — Pexels. Сделано в <a href="https://smirnov-artur.github.io/works/" target="_blank" rel="noopener">g.a.d.</a></p>
+  </div>
+</footer>
+
+<dialog class="dlg" id="dlg" aria-labelledby="dlgTitle">
+  <form method="dialog" class="dlg__close"><button aria-label="Закрыть">×</button></form>
+  <div data-state="form">
+    <h3 id="dlgTitle">Отправить расчёт</h3>
+    <div class="dlg__sum" id="dlgSum"></div>
+    <form id="dlgForm" novalidate>
+      <label class="in"><span>Имя</span><input name="name" autocomplete="name" required autofocus></label>
+      <label class="in"><span>Телефон</span><input name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7" required></label>
+      <button class="btn btn--hot btn--full" type="submit">Отправить</button>
+      <p class="demo-note">Это демо, отправки нет. В рабочей версии расчёт уйдёт в Telegram и на почту менеджеру, а вам придёт копия.</p>
+    </form>
+  </div>
+  <div data-state="ok" hidden>
+    <h3>Готово</h3>
+    <p>В рабочей версии менеджер уже получил бы этот расчёт в Telegram и на почту и перезвонил в течение 15 минут. В демо ничего не отправляется.</p>
+    <form method="dialog"><button class="btn btn--line">Закрыть</button></form>
+  </div>
+</dialog>
+
+<script src="app.js" defer></script>
+</body>
+</html>
