@@ -106,6 +106,7 @@ ul, ol { list-style: none; }
 .page-g .hero__media { background-image: url(img/hero-g.webp); }
 .hero__video { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; transform: scale(1.08); transition: transform 2.6s var(--ease); }
 .is-ready .hero__video { transform: scale(1); }
+.page-d .hero__video { filter: brightness(.72) saturate(.9); }   /* светлый щебень не спорит с заголовком */
 .hero__media::after {
   content: ""; position: absolute; inset: 0;
   background:
