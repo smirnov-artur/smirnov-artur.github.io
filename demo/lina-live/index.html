@@ -32,43 +32,34 @@
 const VS = `
 attribute vec2 aG;
 uniform vec4 uRamka, uUV;
-uniform float uTip;
-uniform vec2 uGol, uNos, uSdvig, uRes, uOff, uSway;
-uniform float uRoll, uScale, uFormaN, uRot, uSmirk, uFrown;
-uniform vec2 uUgol;      // уголок рта для ухмылки
-uniform vec4 uLico;      // центр, полуоси эллипса лица
-uniform vec2 uPivot, uRotC;
+uniform float uTip;           // 0 пласт, 1 часть головы, 2 передние волосы, 3 задние волосы, 5 рот
+uniform vec2 uGr, uSc, uScC;  // сдвиг группы при повороте, сжатие (дальний глаз) и его центр
+uniform vec2 uPre, uRotC;     // свой сдвиг до группы (взгляд радужки, подъём брови) и поворот брови
+uniform float uRot, uRoll, uScale, uSmirk, uFrown;
+uniform vec2 uRes, uOff, uPivot, uSway, uUgol;
 varying vec2 vUV, vP;
-float forma(vec2 p) {
-  vec2 d = (p - uLico.xy) / uLico.zw;
-  float r2 = dot(d, d);
-  return (pow(1. - min(r2, 1.), 2.) + .35 * pow(1. - min(r2 / 2.56, 1.), 2.)) / uFormaN;
-}
 vec2 povernut(vec2 p, vec2 c, float a) { float s = sin(a), k = cos(a); vec2 d = p - c; return c + vec2(d.x * k - d.y * s, d.x * s + d.y * k); }
 void main() {
   vec2 P = mix(uRamka.xy, uRamka.zw, aG);
-  vec2 Q = P;
-  if (uTip > .5 && uTip < 1.5) {                    // поверхность головы и всё, что на ней
-    vec2 du = P - uUgol;                            // ухмылка: уголок рта и щека над ним тянутся вверх — те же пиксели, без вклейки
-    Q += uSmirk * vec2(-3., -7.) * exp(-dot(du, du) / (2. * 15. * 15.));
-    vec2 d1 = P - vec2(867., 477.), d2 = P - vec2(945., 475.);   // злость: оба уголка вниз
-    Q += uFrown * vec2(1.5, 4.) * exp(-dot(d1, d1) / (2. * 13. * 13.)) + uFrown * vec2(-1.5, 4.) * exp(-dot(d2, d2) / (2. * 13. * 13.));
-    Q += forma(P) * vec2(uNos.x * uGol.x, uNos.y * uGol.y) + vec2(uGol.x * 3., uGol.y * 2.);
-    Q = povernut(Q, uPivot, uRoll);
-  } else if (uTip > 1.5 && uTip < 2.5) {            // передние пряди лежат на голове — двигаются как её поверхность (иначе
-    // из-под них выглядывает край черепа); ниже подбородка слабее, концы качаются
-    float pad = 1. - clamp((P.y - 470.) / 300., 0., .65);
-    Q += pad * (forma(P) * vec2(uNos.x * uGol.x, uNos.y * uGol.y) + vec2(uGol.x * 3., uGol.y * 2.));
-    Q = mix(Q, povernut(Q, uPivot, uRoll), pad);
-    Q.x += uSway.x * clamp((P.y - 330.) / 420., 0., 1.);
-  } else if (uTip > 2.5 && uTip < 3.5) {            // задние волосы: чуть в обратную сторону, концы качаются позже
-    Q += vec2(-uNos.x * .22 * uGol.x, -uNos.y * .12 * uGol.y);
-    Q.x += uSway.y * clamp((P.y - 330.) / 420., 0., 1.);
-  } else if (uTip > 3.5 && uTip < 4.5) {            // шея: сверху за головой, к ключицам сходит на нет
-    float v = 1. - clamp((P.y - 500.) / 170., 0., 1.);
-    Q += v * vec2(uNos.x * .14 * uGol.x + uGol.x * 2., uNos.y * .1 * uGol.y + uGol.y * 1.5);
+  vec2 Q = povernut(P + uPre, uRotC, uRot);
+  if (uTip > 4.5) {                                  // рот: ухмылка (один уголок вверх) и злость (оба вниз) — только губы
+    vec2 du = P - uUgol, d1 = P - vec2(867., 477.), d2 = P - vec2(945., 475.);
+    Q += uSmirk * vec2(-3., -6.) * exp(-dot(du, du) / (2. * 13. * 13.));
+    Q += uFrown * (vec2(1.5, 3.5) * exp(-dot(d1, d1) / (2. * 12. * 12.)) + vec2(-1.5, 3.5) * exp(-dot(d2, d2) / (2. * 12. * 12.)));
   }
-  Q = povernut(Q, uRotC, uRot) + uSdvig;            // своя доля части: взгляд радужки, подъём и наклон брови
+  Q = uScC + (Q - uScC) * uSc;                       // цельный кусок: только сдвиг и сжатие, без растяжения
+  float pad = 1.;
+  if (uTip > 1.5 && uTip < 2.5) {                    // передние пряди: у лица со всей головой, концы ниже плеч — слабее и качаются
+    pad = 1. - clamp((P.y - 470.) / 300., 0., .7);
+    Q += uGr * pad;
+    Q.x += uSway.x * clamp((P.y - 330.) / 420., 0., 1.);
+  } else if (uTip > 2.5 && uTip < 3.5) {
+    Q += uGr;
+    Q.x += uSway.y * clamp((P.y - 330.) / 420., 0., 1.);
+  } else {
+    Q += uGr;
+  }
+  if (uTip > .5) Q = povernut(Q, uPivot, uRoll * pad);
   vP = P;
   vUV = mix(uUV.xy, uUV.zw, aG);
   vec2 s = Q * uScale + uOff;
@@ -83,7 +74,7 @@ varying vec2 vUV, vP;
 void main() {
   vec4 c = texture2D(uAtlas, vUV) * uA;
   if (uKlip > .5) {                                 // радужка и блик только внутри яблока глаза
-    vec2 p = vP - uKlipSdvig;
+    vec2 p = vP + uKlipSdvig;                       // точка яблока под этой точкой радужки
     vec2 t = (p - uRamkaK.xy) / (uRamkaK.zw - uRamkaK.xy);
     float a = (t.x < 0. || t.y < 0. || t.x > 1. || t.y > 1.) ? 0. : texture2D(uAtlas, mix(uUVK.xy, uUVK.zw, t)).a;
     c *= a;
@@ -207,7 +198,7 @@ async function start() {
   const [AW, AH] = rig.atlas, L = rig.lico;
   const sloj = n => rig.sloi[n];
   const uv = r => [r.uv[0] / AW, r.uv[1] / AH, (r.uv[0] + r.uv[2]) / AW, (r.uv[1] + r.uv[3]) / AH];
-  const formaN = (() => { const d = [(L.nos[0] - L.c[0]) / L.os[0], (L.nos[1] - L.c[1]) / L.os[1]], r2 = d[0] ** 2 + d[1] ** 2;
+  const formaN0 = (() => { const d = [(L.nos[0] - L.c[0]) / L.os[0], (L.nos[1] - L.c[1]) / L.os[1]], r2 = d[0] ** 2 + d[1] ** 2;
     return (1 - Math.min(r2, 1)) ** 2 + .35 * (1 - Math.min(r2 / 2.56, 1)) ** 2; })();
   const MELK = setka(6), KRUP = setka(40), FULL = setka(1);
   const TIP = { volosy_zad: 3, sheya: 4, volosy_pered: 2 };                    // остальное — поверхность головы (1)
@@ -252,18 +243,25 @@ async function start() {
   const pruzh = (x, v, c, K, z, dt) => { v += ((c - x) * K - v * 2 * Math.sqrt(K) * z) * dt; return [x + v * dt, v]; };
   const t0 = performance.now() / 1000; let prev = t0;
 
-  function risovat(r, o) {                           // один слой: сетка, деформация, обрезка, веко
+  function risovat(r, o) {                           // один слой: цельный кусок со сдвигом группы, обрезка, веко
     gl.uniform4f(S.u('uRamka'), ...r.ramka); gl.uniform4f(S.u('uUV'), ...uv(r));
     gl.uniform1f(S.u('uTip'), o.tip); gl.uniform1f(S.u('uA'), o.a ?? 1);
-    gl.uniform2f(S.u('uSdvig'), ...(o.sdvig || [0, 0])); gl.uniform1f(S.u('uRot'), o.rot || 0); gl.uniform2f(S.u('uRotC'), ...(o.rotC || [0, 0]));
+    gl.uniform2f(S.u('uGr'), ...(o.gr || [0, 0])); gl.uniform2f(S.u('uSc'), ...(o.sc || [1, 1])); gl.uniform2f(S.u('uScC'), ...(o.scC || [0, 0]));
+    gl.uniform2f(S.u('uPre'), ...(o.pre || [0, 0])); gl.uniform1f(S.u('uRot'), o.rot || 0); gl.uniform2f(S.u('uRotC'), ...(o.rotC || [0, 0]));
     gl.uniform1f(S.u('uKlip'), o.klip ? 1 : 0);
-    if (o.klip) { gl.uniform4f(S.u('uRamkaK'), ...o.klip.ramka); gl.uniform4f(S.u('uUVK'), ...uv(o.klip)); gl.uniform2f(S.u('uKlipSdvig'), ...(o.sdvig || [0, 0])); }
+    if (o.klip) { gl.uniform4f(S.u('uRamkaK'), ...o.klip.ramka); gl.uniform4f(S.u('uUVK'), ...uv(o.klip)); gl.uniform2f(S.u('uKlipSdvig'), ...(o.pre || [0, 0])); }
     gl.uniform1f(S.u('uVeko'), o.veko || 0);
     if (o.veko) { const g = o.glaz.ramka; gl.uniform4f(S.u('uGlazE'), (g[0] + g[2]) / 2, (g[1] + g[3]) / 2, (g[2] - g[0]) / 2, (g[3] - g[1]) / 2); }
     const m = o.setka || MELK;
     gl.bindBuffer(gl.ARRAY_BUFFER, m.buf); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
     gl.drawArrays(gl.TRIANGLES, 0, m.n);
   }
+  // поворот головы как в примере: каждая часть сдвигается целиком — ближние к зрителю сильнее, дальние слабее или навстречу
+  // [px при полном повороте вбок, px при полном наклоне вверх/вниз]
+  const PARALLAKS = { volosy_zad: [-6, -3], sheya: [1.5, 1], uho: [-2, -2], plastina: [6, 5], glaz: [14, 10], nos: [21, 15],
+                      rot: [15, 12], brov: [13, 8], volosy_pered: [8, 5] };
+  const gruppa = n => n.startsWith('uho') ? 'uho' : /^(glaz|yabloko|raduzhka|blik|resnicy|zakr)_/.test(n) ? 'glaz' : n.startsWith('brov') ? 'brov' : n;
+  const centr = r => [(r.ramka[0] + r.ramka[2]) / 2, (r.ramka[1] + r.ramka[3]) / 2];
 
   function frame() {
     const now = performance.now() / 1000, dt = Math.min(.033, now - prev), t = now - t0; prev = now;
@@ -307,38 +305,40 @@ async function start() {
     gl.useProgram(S.p); gl.enableVertexAttribArray(0);
     gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.uniform2f(S.u('uRes'), cv.width, cv.height); gl.uniform2f(S.u('uOff'), ox, oy); gl.uniform1f(S.u('uScale'), s);
-    gl.uniform2f(S.u('uGol'), P.ax, P.ay); gl.uniform2f(S.u('uNos'), 20, 14); gl.uniform1f(S.u('uFormaN'), formaN);
-    gl.uniform4f(S.u('uLico'), L.c[0], L.c[1], L.os[0], L.os[1]); gl.uniform2f(S.u('uPivot'), ...L.sheya);
-    gl.uniform1f(S.u('uRoll'), -P.ax * .03); gl.uniform2f(S.u('uSway'), st.sw1, st.sw2);
+    gl.uniform2f(S.u('uPivot'), ...L.sheya);
+    gl.uniform1f(S.u('uRoll'), -P.ax * .035); gl.uniform2f(S.u('uSway'), st.sw1, st.sw2);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, plast);
     gl.uniform1i(S.u('uAtlas'), 0);
     risovat({ ramka: [0, 0, 1792, 1008], uv: [0, 0, AW, AH] }, { tip: 0, setka: FULL });    // пласт: uv на весь кадр
     gl.bindTexture(gl.TEXTURE_2D, atlas);
-    const oo = cur * .35;
     gl.uniform1f(S.u('uSmirk'), Math.min(1, P.wink * 1.4) + P.cur * .3); gl.uniform2f(S.u('uUgol'), 867, 477);
     gl.uniform1f(S.u('uFrown'), P.angry);
     const brovUp = P.cur * 6, brovZlo = P.angry;
     const ochered = Object.entries(rig.sloi).sort((a, b) => a[1].z - b[1].z);
     for (const [n, r] of ochered) {
-      const tip = TIP[n] || 1, setka = (n.startsWith('volosy') || n === 'golova' || n === 'sheya') ? KRUP : MELK;
+      const g = gruppa(n), k = PARALLAKS[g] || [0, 0];
+      const gr = [k[0] * P.ax, k[1] * P.ay];
+      const tip = n === 'volosy_pered' ? 2 : n === 'volosy_zad' ? 3 : n === 'rot' ? 5 : 1;
+      const setka = n.startsWith('volosy') ? KRUP : MELK;
       const st2 = n.slice(-1);
+      const o = { tip, setka, gr };
+      if (g === 'glaz') {                              // дальний глаз чуть уже — так в примере выглядит поворот
+        const dal = st2 === 'p' ? Math.max(0, P.ax) : Math.max(0, -P.ax);
+        o.sc = [1 - .12 * dal, 1]; o.scC = centr(sloj('glaz_' + st2));
+      }
       if (n.startsWith('raduzhka') || n.startsWith('blik')) {
-        const g = n.startsWith('blik') ? [P.gx * .25, P.gy * .25] : [P.gx, P.gy];
-        risovat(r, { tip, setka, sdvig: g, klip: sloj('yabloko_' + st2) });
+        o.pre = n.startsWith('blik') ? [P.gx * .25, P.gy * .25] : [P.gx, P.gy];
+        o.klip = sloj('yabloko_' + st2);
+        risovat(r, o);
       } else if (n.startsWith('zakr')) {
-        const z = st2 === 'l' ? Math.max(P.blink, P.wink) : P.blink;   // прищур закрытым веком выглядел заплаткой — злость бровями и ртом
-        if (z > .002) risovat(r, { tip, setka, veko: z, glaz: sloj('yabloko_' + st2) });
-      } else if (n === 'guby') {
-        risovat(r, { tip, setka });
-      } else if (n.startsWith('rot_')) {
-        const w = n === 'rot_otkryt' ? oo : 0;   // улыбка и злость Grok выглядели вклейкой — ухмылка и злой рот деформацией
-        if (w > .002) risovat(r, { tip, setka, a: w });
+        const z = st2 === 'l' ? Math.max(P.blink, P.wink) : P.blink;
+        if (z > .002) risovat(r, { ...o, veko: z, glaz: sloj('yabloko_' + st2) });
       } else if (n.startsWith('brov')) {
-        const c = [(r.ramka[0] + r.ramka[2]) / 2, (r.ramka[1] + r.ramka[3]) / 2], vnutr = st2 === 'l' ? 1 : -1;
+        const vnutr = st2 === 'l' ? 1 : -1;
         const up = brovUp + (st2 === 'p' ? P.wink * 3 : -P.wink * 1.5) - brovZlo * 4.5;
-        risovat(r, { tip, setka, sdvig: [vnutr * brovZlo * 3.5, -up], rot: vnutr * brovZlo * .16, rotC: c });
+        risovat(r, { ...o, pre: [vnutr * brovZlo * 3.5, -up], rot: vnutr * brovZlo * .16, rotC: centr(r) });
       } else {
-        risovat(r, { tip, setka });
+        risovat(r, o);
       }
     }
     // ---- огонь, искры, свет — на экран
