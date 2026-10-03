@@ -23,7 +23,7 @@
 <a class="logo" href="https://smirnov-artur.github.io/works/">g.a.d.</a>
 <div class="cap">
   <b>Лина · живой портрет</b>
-  <span>наведите курсор в круг у лица · клик — подмигнёт · тройной клик — разозлится</span>
+  <span>курсор у лица — следит глазами, дальше — поворачивает голову · на огонёк — подмигнёт · на грудь — разозлится</span>
 </div>
 <script>
 // Лина нарисована в каждом положении (правки Grok: влево, вправо, вверх, вниз, диагонали, злость, ухмылка); лицо морфится
@@ -230,7 +230,8 @@ uniform sampler2D uT;
 uniform vec2 uAtl, uKl[${NP + 1}];
 uniform float uW[${NP}], uBl, uBp, uMode, uZl, uZp;
 uniform vec4 uGlL, uGlP;
-uniform vec2 uOkno;
+uniform vec3 uIrL, uIrP;
+uniform vec2 uOkno, uGz;
 ${vary}
 varying float vAl;
 vec4 sam(vec2 kl, vec2 p) { return texture2D(uT, (kl + p) / uAtl); }
@@ -246,6 +247,16 @@ vec3 veko(vec2 P, vec4 g, float x) {
   if (P.y <= ye) return vec3(sh, 1. - smoothstep(ye - 1., ye + 1., P.y), 0.);
   return vec3(sh, 0., smoothstep(.05, .25, x) * (1. - smoothstep(ye + .4 * g.w, ye + 1.1 * g.w, P.y)));
 }
+// взгляд без поворота головы: радужка (с ободком белка 1,5 px) сдвигается внутри щели глаза, открывшийся белок берётся с того
+// же ряда сбоку от прежней радужки. Возвращает сдвиг выборки (px кадра «прямо»).
+vec2 zrachok(vec2 P, vec4 g, vec3 ir, vec2 d) {
+  float u = (P.x - g.x) / g.z;
+  if (abs(u) >= 1. || abs(P.y - g.y) > g.w * sqrt(1. - u * u) * 1.1) return vec2(0.);
+  float R = ir.z + 1.5;
+  if (length(P - d - ir.xy) < R) return -d;
+  if (length(P - ir.xy) < R) { float dy = P.y - ir.y, hw = sqrt(max(0., R * R - dy * dy)); return vec2((d.x > 0. ? ir.x - hw - 1. : ir.x + hw + 1.) - P.x, 0.); }
+  return vec2(0.);
+}
 void main() {
   vec2 P = ${vk(IC)} + uOkno;
   if (uMode > .5) {                                 // нарисованные закрытые глаза, едут с сеткой, проявляются в конце моргания
@@ -254,8 +265,9 @@ void main() {
     return;
   }
   vec3 vl = P.x < 906. ? veko(P, uGlL, uBl) : veko(P, uGlP, uBp);
+  vec2 o = P.x < 906. ? zrachok(P, uGlL, uIrL, uGz) : zrachok(P, uGlP, uIrP, uGz);
   vec3 c = vec3(0.); float ws = 0.;                 // альфа клетки — «здесь не прядь»: пряди одной позы гасятся кожей соседних
-  ${PZ.map((_, k) => `if (uW[${k}] > .0005) { vec4 t = sam(uKl[${k}], ${vk(k)}); c += uW[${k}] * t.a * t.rgb; ws += uW[${k}] * t.a; }`).join(' ')}
+  ${PZ.map((_, k) => `if (uW[${k}] > .0005) { vec4 t = sam(uKl[${k}], ${vk(k)} + o); c += uW[${k}] * t.a * t.rgb; ws += uW[${k}] * t.a; }`).join(' ')}
   c /= max(ws, 1e-4);
   if (vl.y + vl.z > 0.) {
     vec4 z = sam(uKl[${NP}], ${vk(IC)} + vec2(0., vl.x));
@@ -297,29 +309,32 @@ void main() {
   }
   addEventListener('resize', resize); resize();
 
-  // ---- поведение (как в примере): занята огнём → курсор — «заметила» (брови вверх), глаза за курсором, голова догоняет,
-  // волосы позже → без движения 2,5 с снова к огню. Клик — подмигивает с ухмылкой, тройной клик — злится, пламя вспыхивает.
-  const st = { ax: -.35, ay: .6, vax: 0, vay: 0, gx: -6, gy: 2, sw1: 0, sv1: 0, sw2: 0, sv2: 0 };
-  let lastMove = -1e9, ptr = null, flare = 0, flareCel = 0, nextBlink = 2.5, blinkT = -1, winkT = -1, angryUntil = 0, kliki = [];
-  let zlost = 0, curT = -9, byla = false, ogonGx = -6, ogonDo = 0, mikroDo = 0, mx = 0, my = 0, prevAx = st.ax, hover = 0;
-  // отклик только в круге чуть больше овала лица: вне круга она занята огнём
-  const KR = { x: L.c[0], y: L.c[1], r: Math.max(L.os[0], L.os[1]) * 1.17 };
+  // ---- поведение: в круге у лица (в 1,5 раза больше прежнего) двигаются только глаза — радужка ходит в белке, голова почти
+  // стоит; за кругом она поворачивает голову к курсору, чем дальше — тем сильнее, глаза добирают остаток. Наведение на грудь —
+  // злится (пламя вспыхивает), на огонёк в ладони — подмигивает с ухмылкой. Без курсора 2,5 с — смотрит на огонь в левой ладони.
+  const GX = 7, GY = 2.5;                             // предел взгляда, px: радужка 15 px, белка до уголков ~12 px
+  const st = { ax: -.3, ay: .3, vax: 0, vay: 0, gx: -GX * .6, gy: GY * .6, sw1: 0, sv1: 0, sw2: 0, sv2: 0 };
+  let lastMove = -1e9, ptr = null, flare = 0, flareCel = 0, nextBlink = 2.5, blinkT = -1, winkT = -1, winkDo = 0;
+  let zlost = 0, curT = -9, byla = false, mikroDo = 0, mx = 0, my = 0, prevAx = st.ax, hover = 0, zona = '', grudT = 0, grudVspyshka = false;
+  const KR = { x: L.c[0], y: L.c[1], r: Math.max(L.os[0], L.os[1]) * 1.17 * 1.5 };
+  const GRUD = { x: 906, y: 880, rx: 190, ry: 150 };                  // грудь с золотой бронёй
+  const OGNI = [{ x: 386, y: 750, r: 100 }, { x: 1420, y: 755, r: 100 }];  // огоньки в ладонях (по маске огня)
   let vnutri = false;
   function point(cx, cy) {
+    const now = performance.now() / 1000;
     ptr = { x: (cx * dpr - ox) / s, y: (cy * dpr - oy) / s };
     vnutri = Math.hypot(ptr.x - KR.x, ptr.y - KR.y) < KR.r;
-    cv.style.cursor = vnutri ? 'crosshair' : 'default';
-    lastMove = vnutri ? performance.now() / 1000 : -1e9;
+    const z = ((ptr.x - GRUD.x) / GRUD.rx) ** 2 + ((ptr.y - GRUD.y) / GRUD.ry) ** 2 < 1 ? 'grud'
+      : OGNI.some(o => Math.hypot(ptr.x - o.x, ptr.y - o.y) < o.r) ? 'ogon' : '';
+    if (z === 'ogon' && zona !== 'ogon' && now > winkDo && winkT < 0) { winkT = now; winkDo = now + 1.2; flareCel = Math.max(flareCel, .5); }
+    if (z === 'grud' && zona !== 'grud') { grudT = now; grudVspyshka = false; }   // злость — если задержался на груди
+    zona = z;
+    cv.style.cursor = z ? 'pointer' : vnutri ? 'crosshair' : 'default';
+    lastMove = now;
   }
   addEventListener('pointermove', e => point(e.clientX, e.clientY));
-  addEventListener('pointerdown', e => {
-    point(e.clientX, e.clientY); if (!vnutri) return;
-    const now = performance.now() / 1000;
-    kliki = kliki.filter(t => now - t < .6); kliki.push(now); flareCel = Math.max(flareCel, .5);
-    if (kliki.length >= 3) { angryUntil = now + 2.2; flareCel = 1.6; kliki = []; curT = -9; nextBlink = Math.max(nextBlink, now + 1);
-      if (winkT > 0) { const b = now - winkT, w = b < .1 ? b / .1 : b < .45 ? 1 : Math.max(0, 1 - (b - .45) / .16); winkT = now - .45 - (1 - w) * .16; } } else if (now >= angryUntil) winkT = now;
-  });
-  document.addEventListener('mouseleave', () => { lastMove = -1e9; });
+  addEventListener('pointerdown', e => point(e.clientX, e.clientY));
+  document.addEventListener('mouseleave', () => { lastMove = -1e9; zona = ''; });
   const pruzh = (x, v, c, K, z, dt) => { v += ((c - x) * K - v * 2 * Math.sqrt(K) * z) * dt; return [x + v * dt, v]; };
   const t0 = performance.now() / 1000; let prev = t0;
 
@@ -333,7 +348,7 @@ void main() {
     gl.bindBuffer(gl.ARRAY_BUFFER, m.buf); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
     gl.drawArrays(gl.TRIANGLES, 0, m.n);
   }
-  let roll = 0;
+  let roll = 0; const gaze = [0, 0];
   function lico_risovat(mode, bl, bp, zl, zp) {
     gl.useProgram(M.p);
     gl.disableVertexAttribArray(0);
@@ -344,6 +359,7 @@ void main() {
     gl.uniform2f(M.u('uPivot'), L.sheya[0], L.sheya[1]); gl.uniform1f(M.u('uRoll'), roll);
     gl.uniform1f(M.u('uMode'), mode); gl.uniform1f(M.u('uZl'), zl); gl.uniform1f(M.u('uZp'), zp); gl.uniform1f(M.u('uBl'), bl); gl.uniform1f(M.u('uBp'), bp);
     gl.uniform4f(M.u('uGlL'), ...morf.glaz_l); gl.uniform4f(M.u('uGlP'), ...morf.glaz_p);
+    gl.uniform3f(M.u('uIrL'), ...morf.iris[0]); gl.uniform3f(M.u('uIrP'), ...morf.iris[1]); gl.uniform2f(M.u('uGz'), gaze[0], gaze[1]);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, lico); gl.uniform1i(M.u('uT'), 0);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf);
     gl.drawElements(gl.TRIANGLES, morf.tri.length, gl.UNSIGNED_SHORT, 0);
@@ -354,36 +370,37 @@ void main() {
   function frame() {
     const now = performance.now() / 1000, dt = Math.min(.033, now - prev), t = now - t0; prev = now;
     const aktivna = ptr && now - lastMove < 2.5;
-    if (aktivna && !byla && now >= angryUntil) { curT = now; flareCel = Math.max(flareCel, .35); }
+    if (aktivna && !byla) { curT = now; flareCel = Math.max(flareCel, .35); }   // заметила курсор
     byla = aktivna;
-    let cax, cay, cgx, cgy;
-    if (aktivna || now < angryUntil) {
-      let tx = ptr ? (ptr.x - KR.x) / KR.r : 0, ty = ptr ? (ptr.y - KR.y) / KR.r : 0;
-      const dl = Math.hypot(tx, ty); if (dl > 1) { tx /= dl; ty /= dl; }
-      cax = tx; cay = ty;
-      if (now > mikroDo) { mx = (Math.random() - .5) * 1.2; my = (Math.random() - .5) * .6; mikroDo = now + .5 + Math.random() * .8; }
-      cgx = tx * 7 + mx; cgy = ty * 2.5 + my;
-    } else {
-      cax = -.3; cay = .3;                           // склонилась к огню в левой ладони
-      if (now > ogonDo) { ogonGx = -7 + Math.random() * 3; ogonDo = now + 1.5 + Math.random() * 2.5; }
-      cgx = ogonGx; cgy = 2.5;
+    let cax = -.3, cay = .3, cgx = -GX * .6, cgy = GY * .6;                    // к огню в левой ладони
+    if (aktivna) {
+      const tx = (ptr.x - KR.x) / KR.r, ty = (ptr.y - KR.y) / KR.r, dl = Math.hypot(tx, ty);
+      const nx = tx / Math.max(dl, 1e-3), ny = ty / Math.max(dl, 1e-3);
+      const a = Math.min(1, Math.max(0, (dl - 1) / 1.3)), h = a * a * (3 - 2 * a);   // полный поворот к 2,3 радиуса
+      const gol = dl <= 1 ? .1 * dl : .1 + .9 * h;
+      cax = nx * gol; cay = ny * gol;
+      const gz = Math.min(dl, 1) * (1 - .6 * h);
+      if (now > mikroDo) { mx = (Math.random() - .5) * .8; my = (Math.random() - .5) * .4; mikroDo = now + .5 + Math.random() * .8; }
+      cgx = nx * gz * GX + mx; cgy = ny * gz * GY + my;
     }
     [st.ax, st.vax] = pruzh(st.ax, st.vax, cax, 40, .9, dt); [st.ay, st.vay] = pruzh(st.ay, st.vay, cay, 40, .9, dt);
     const kg = Math.min(1, dt * 20); st.gx += (cgx - st.gx) * kg; st.gy += (cgy - st.gy) * kg;
     // волосы качаются от скорости поворота: передние сразу, задние позже
     const tolchok = (st.ax - prevAx) / Math.max(dt, 1e-3); prevAx = st.ax;
     [st.sw1, st.sv1] = pruzh(st.sw1, st.sv1, -tolchok * 1.6, 60, .35, dt); [st.sw2, st.sv2] = pruzh(st.sw2, st.sv2, -tolchok * 2.2, 25, .3, dt);
-    zlost += ((now < angryUntil ? 1 : 0) - zlost) * Math.min(1, dt * (now < angryUntil ? 9 : 4));
+    const zl = aktivna && zona === 'grud' && now - grudT > .25 ? 1 : 0;   // мимо груди проскочил — не злится
+    if (zl && !grudVspyshka) { flareCel = 1.6; grudVspyshka = true; }
+    zlost += (zl - zlost) * Math.min(1, dt * (zl ? 6 : 3));
     const tc = now - curT; let cur = tc < 0 ? 0 : tc < .18 ? Math.sin(tc / .18 * Math.PI / 2) : tc < .75 ? 1 : Math.max(0, 1 - (tc - .75) / .9);
     cur = cur * cur * (3 - 2 * cur) * (1 - zlost);
-    if (aktivna) cur = Math.max(cur, Math.max(0, -st.ay) * .4 * (1 - zlost));
     let blink = 0, wink = 0;
     if (!RM && now > nextBlink && blinkT < 0 && winkT < 0) blinkT = now;
     if (blinkT >= 0) { const b = now - blinkT; blink = b < .07 ? b / .07 : Math.max(0, 1 - (b - .07) / .11); if (b > .18) { blinkT = -1; nextBlink = now + 2.5 + Math.random() * 3.5; } }
-    if (winkT > 0) { const b = now - winkT; wink = b < .1 ? b / .1 : b < .45 ? 1 : Math.max(0, 1 - (b - .45) / .16); if (b > .61) winkT = -1; }
+    if (winkT > 0) { const b = now - winkT; wink = b < .1 ? b / .1 : b < .45 ? 1 : Math.max(0, 1 - (b - .45) / .16); if (b > .61) { winkT = -1; nextBlink = Math.max(nextBlink, now + .8); } }
     let P = { ax: st.ax, ay: st.ay, gx: st.gx, gy: st.gy, blink, wink, angry: zlost, cur };
     for (const k in FIX) P[k] = FIX[k];
-    if ('gx' in FIX) P.gx = FIX.gx * 7; if ('gy' in FIX) P.gy = FIX.gy * 2.5;
+    if ('gx' in FIX) P.gx = FIX.gx * GX; if ('gy' in FIX) P.gy = FIX.gy * GY;
+    gaze[0] = P.gx; gaze[1] = P.gy;
     flare += (flareCel - flare) * Math.min(1, dt * 14); flareCel *= Math.exp(-dt * 2.2);
     hover += ((vnutri && aktivna ? 1 : 0) - hover) * Math.min(1, dt * 6);
 
@@ -394,11 +411,17 @@ void main() {
     const kZ = PZ.includes('zlo') ? P.angry : 0, kU = PZ.includes('uhmylka') ? Math.min(1, P.wink * 1.3 + P.cur * .4) * (1 - P.angry) : 0;
     const vyr = Math.min(.95, kZ + kU);
     for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
-      let k = PZ.indexOf(SET[i][j]); if (k < 0) k = IC;     // нет кадра — берём «прямо»
-      W9[k] += wy[i] * wx[j] * (1 - vyr);
+      const kl = PZ.includes(SET[i][j]) ? SET[i][j] : 'centr', w = wy[i] * wx[j];   // нет кадра — берём «прямо»
+      W9[PZ.indexOf(kl)] += w * (1 - vyr);
+      // выражение в повороте: вес клетки уходит в нарисованный вариант выражения для этого поворота (zlo_vniz, uhmylka_vlevo_vniz…);
+      // варианта нет — анфасное выражение берёт 60 %, остальное остаётся у поворота
+      for (const [X, k] of [['zlo', kZ], ['uhmylka', kU]]) {
+        if (k <= 0) continue;
+        const m = w * vyr * k / (kZ + kU), v = kl === 'centr' ? X : X + '_' + kl;
+        if (PZ.includes(v)) W9[PZ.indexOf(v)] += m;
+        else { W9[PZ.indexOf(X)] += m * .6; W9[PZ.indexOf(kl)] += m * .4; }
+      }
     }
-    if (kZ > 0) W9[PZ.indexOf('zlo')] += vyr * kZ / (kZ + kU);
-    if (kU > 0) W9[PZ.indexOf('uhmylka')] += vyr * kU / (kZ + kU);
     // куда уехал лоб — туда же передние волосы (меньше — уши и шея, задние волосы навстречу)
     let lx = 0, ly = 0;
     PZ.forEach((p, k) => { if (W9[k] > 0) { const v = vtx(p, morf.lob), v0 = vtx('centr', morf.lob); lx += W9[k] * (v[0] - v0[0]); ly += W9[k] * (v[1] - v0[1]); } });
