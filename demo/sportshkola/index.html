@@ -1,0 +1,1034 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<script src="/works/js/gad-loader.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Бот записи спортивной школы</title>
+<meta name="description" content="Демо чат-бота для MAX: запись в залы спортивной школы по расписанию с вместимостью, абонементы, договор в PDF, оплата по QR и раздел сотрудника.">
+<meta name="theme-color" content="#E8EBF3">
+<style>
+:root{
+  color-scheme:light;
+  --page:#E8EBF3;--chat:#EEF1F7;--in:#fff;--out:#DDE2FF;--ink:#15171C;--muted:#7A8094;--line:#E3E6EE;
+  --accent:#5652EE;--btn:#ECEEFF;--btn-ink:#3D39D6;
+  --g:#1E9A52;--y:#D69500;--r:#DE454B;--g-bg:#E3F4E9;--y-bg:#FFF2D2;--r-bg:#FCE9EA;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--page);color:var(--ink);font:15px/1.42 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+button{font:inherit;color:inherit}
+.top{display:flex;align-items:center;justify-content:center;gap:18px;padding:12px 16px 10px;flex-wrap:wrap}
+.honest{margin:0;font-size:13px;color:var(--muted)}
+.switch{display:none;background:#D9DEEB;border-radius:12px;padding:3px;gap:2px}
+.switch button{border:0;background:transparent;padding:7px 12px;border-radius:9px;font-size:14px;color:#4A5063;cursor:pointer;position:relative}
+.switch button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(20,24,40,.14)}
+.badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--r);color:#fff;font-size:11px;line-height:18px;font-weight:600}
+.reset{border:0;background:none;color:var(--accent);font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:6px 2px}
+.stage{flex:1;min-height:0;display:flex;justify-content:center;gap:28px;padding:0 16px 18px}
+.col{display:flex;flex-direction:column;width:min(450px,100%);min-height:0}
+.col>.cap{font-size:13px;color:var(--muted);margin:0 0 6px 6px}
+.chat{flex:1;min-height:0;display:flex;flex-direction:column;background:var(--chat);border-radius:22px;overflow:hidden;box-shadow:0 12px 40px rgba(30,36,72,.13),0 1px 3px rgba(30,36,72,.08)}
+.head{display:flex;align-items:center;gap:11px;padding:10px 14px;background:#fff;border-bottom:1px solid var(--line)}
+.ava{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#3B8CFF,#7A4CFF);color:#fff;display:grid;place-items:center;font-weight:600;font-size:14px;flex:none}
+.who{min-width:0}
+.who b{display:block;font-size:15px;font-weight:600}
+.who small{color:var(--accent);font-size:12.5px}
+.pin{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--line);font-size:13px;cursor:pointer}
+.pin[hidden]{display:none}
+.pin:before{content:"";width:3px;align-self:stretch;border-radius:2px;background:var(--accent)}
+.pin .pt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#3A3F50}
+.msgs{flex:1;min-height:0;overflow-y:auto;padding:14px 12px 10px;display:flex;flex-direction:column;gap:6px;overscroll-behavior:contain}
+.msg{display:flex;flex-direction:column;max-width:86%}
+.msg.in{align-self:flex-start}
+.msg.wide{width:92%;max-width:92%}
+.msg.out{align-self:flex-end;align-items:flex-end}
+.bubble{background:var(--in);border-radius:18px 18px 18px 6px;padding:8px 12px 6px;box-shadow:0 1px 1px rgba(20,24,40,.06);overflow-wrap:anywhere}
+.out .bubble{background:var(--out);border-radius:18px 18px 6px 18px}
+.time{float:right;margin:7px 0 -3px 10px;font-size:11px;color:var(--muted)}
+.kb{display:flex;flex-direction:column;gap:5px;margin-top:5px;width:100%}
+.row{display:flex;gap:5px}
+.btn{flex:1 1 0;min-width:0;border:0;background:var(--btn);color:var(--btn-ink);font-size:14px;font-weight:500;padding:9px 7px;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;line-height:1.15;text-align:center}
+.btn:hover{filter:brightness(.97)}
+.btn:active{transform:scale(.98)}
+.btn:focus-visible,.file:focus-visible,.bar input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn small{font-size:12px;opacity:.7}
+.btn.c-g{background:var(--g-bg);color:#11663A}
+.btn.c-y{background:var(--y-bg);color:#865700}
+.btn.c-r{background:var(--r-bg);color:#AE2A30}
+.btn.demo{background:transparent;box-shadow:inset 0 0 0 1.5px #C2C6DE;color:#5D6380;font-weight:400;font-size:13px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--g);flex:none;vertical-align:1px}
+.bubble .dot{margin:0 3px 0 5px}
+.dot.y{background:var(--y)}.dot.r{background:var(--r)}
+.note{align-self:center;max-width:92%;background:rgba(58,64,100,.08);color:#535A70;font-size:12.5px;padding:6px 12px;border-radius:12px;text-align:center}
+.note .kb{margin-top:6px}
+.timer{display:inline-block;background:#ECEBFF;color:var(--btn-ink);border-radius:8px;padding:0 6px;font-variant-numeric:tabular-nums;font-weight:600}
+.timer.off{background:#EEF0F4;color:var(--muted);font-weight:500}
+.file{display:flex;gap:10px;align-items:center;border:0;background:#F2F3F9;border-radius:12px;padding:8px 10px;cursor:pointer;text-align:left;width:100%;margin:2px 0 6px}
+.file .fi{width:36px;height:42px;border-radius:7px;background:#E5484D;color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;flex:none}
+.file b{display:block;font-size:14px;font-weight:600}
+.file small{color:var(--muted);font-size:12px}
+.qr{background:#fff;width:196px;margin:4px auto 6px}
+.qr svg{display:block;width:100%;height:auto}
+.qrcap{font-size:12px;color:var(--muted);margin:0 0 6px}
+.contact{display:flex;gap:9px;align-items:center}
+.contact i{width:34px;height:34px;border-radius:50%;background:#C9CEFF;display:grid;place-items:center;font-style:normal;color:var(--btn-ink);font-weight:600}
+.bar{display:flex;gap:8px;align-items:center;padding:8px 10px;background:#fff;border-top:1px solid var(--line)}
+.bar input{flex:1;min-width:0;border:0;background:#F0F2F7;border-radius:20px;padding:10px 14px;font:inherit;font-size:16px;outline:none;color:var(--ink)}
+.menu-btn{border:0;background:#F0F2F7;color:var(--btn-ink);border-radius:20px;padding:9px 13px;font-size:14px;font-weight:500;cursor:pointer;flex:none}
+.send{width:40px;height:40px;border:0;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
+.new{animation:pop .22s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}}
+@media (prefers-reduced-motion:reduce){.new{animation:none}}
+@media (max-width:899px){
+  .top{justify-content:space-between;padding:8px 16px 8px;gap:8px}
+  .honest{flex-basis:100%;text-align:center;font-size:12px}
+  .switch{display:flex}
+  .stage{padding:0;gap:0}
+  .col{width:100%}
+  .col>.cap{display:none}
+  .chat{border-radius:0;box-shadow:none}
+  .stage[data-view=client] .col.staff,.stage[data-view=staff] .col.client{display:none}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <p class="honest">Демо логики бота: в MAX будет тот же сценарий, база и админка — на сервере школы</p>
+  <div class="switch" role="tablist" aria-label="Чей экран">
+    <button type="button" role="tab" data-view="client" class="on">Клиент</button>
+    <button type="button" role="tab" data-view="staff">Сотрудник школы<span class="badge" hidden></span></button>
+  </div>
+  <button type="button" class="reset" id="reset">Сбросить демо</button>
+</header>
+<main class="stage" data-view="client">
+  <div class="col client">
+    <p class="cap">Клиент</p>
+    <section class="chat" data-chat="client" aria-label="Чат клиента с ботом">
+      <div class="head"><div class="ava">СШ</div><div class="who"><b>Спортивная школа</b><small>бот</small></div></div>
+      <div class="pin" hidden></div>
+      <div class="msgs" role="log" aria-live="polite"></div>
+      <form class="bar" autocomplete="off">
+        <button type="button" class="menu-btn">Меню</button>
+        <input type="text" placeholder="Сообщение" aria-label="Сообщение" maxlength="300">
+        <button class="send" aria-label="Отправить"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button>
+      </form>
+    </section>
+  </div>
+  <div class="col staff">
+    <p class="cap">Сотрудник школы</p>
+    <section class="chat" data-chat="staff" aria-label="Чат сотрудника с ботом">
+      <div class="head"><div class="ava">СШ</div><div class="who"><b>Спортивная школа</b><small>бот · раздел сотрудника</small></div></div>
+      <div class="pin" hidden></div>
+      <div class="msgs" role="log" aria-live="polite"></div>
+      <form class="bar" autocomplete="off">
+        <button type="button" class="menu-btn">Меню</button>
+        <input type="text" placeholder="Сообщение" aria-label="Сообщение" maxlength="300">
+        <button class="send" aria-label="Отправить"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button>
+      </form>
+    </section>
+  </div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" integrity="sha384-mZT2gIty7ZDdOGkxfP6joZcYdMW1Jvj9dRlfpTmaJAKKXTqzygtB22k7FLe+KZC1" crossorigin="anonymous"></script>
+<script>
+(() => {
+'use strict';
+const KEY = 'sportshkola-demo-v1';
+const MSK = 3 * 3600e3, MIN = 60e3, HOLD_MIN = 15;
+const OPEN_H = 8, CLOSE_H = 22; // ponytail: одно расписание на все дни; таблица школы по дням уйдёт в настройки
+const RENT_STARTS = [480, 570, 660, 750, 840, 930, 1020, 1110, 1200]; // 08:00…20:00 через 1 ч 30 мин
+const HALLS = {gym: 'Тренажёрный зал', big: 'Большой спортивный зал', small: 'Малый спортивный зал', org: 'Для организаций'};
+const HALL_IN = {gym: 'тренажёрный зал', big: 'большой зал', small: 'малый зал'};
+const HALL_P = {gym: 'тренажёрном зале', big: 'большом зале', small: 'малом зале'};
+const KIND = {single: 'разовое посещение', month: 'месячный абонемент', rent: 'зал целиком', org: 'заявка организации'};
+const ST = {hold: 'резерв', unpaid: 'ждёт оплаты', reported: 'оплата на проверке', paid: 'оплачено', cancelled: 'отменена', expired: 'резерв истёк', released: 'резерв снят'};
+const STC = {unpaid: 'y', reported: 'y', paid: 'g', cancelled: 'r'};
+const RST = {new: 'на согласовании', agreed: 'согласовано', declined: 'отказано'};
+const LINKS = [['vk', 'VK'], ['max', 'Канал в MAX'], ['site', 'Сайт школы']];
+const PDF_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/';
+const SRI = {'pdfmake.min.js': 'sha384-vseuUuO/VRMn00lXYd5m/Pk4l/7RjMqhXGf6G0RALy+On0txYb39dQsUQDAd7q5L', 'vfs_fonts.min.js': 'sha384-nXUiXap6sIVQQCtbYdJPsTOTJwv3rZjOdv8Ckh+3udRCVp3YLpdgHnjpPHD/LaC0'};
+
+/* ---------- время, Москва ---------- */
+const now = () => Date.now();
+const pad = n => String(n).padStart(2, '0');
+const dkey = ts => new Date(ts + MSK).toISOString().slice(0, 10);
+const today = () => dkey(now());
+const addDays = (k, n) => { const [y, m, d] = k.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10); };
+const tsOf = (k, min) => { const [y, m, d] = k.split('-').map(Number); return Date.UTC(y, m - 1, d, 0, min) - MSK; };
+const hm = min => pad(Math.floor(min / 60)) + ':' + pad(min % 60);
+const clock = ts => { const d = new Date(ts + MSK); return pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()); };
+const WD = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+const MON = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+const MONS = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+const dp = k => { const [y, m, d] = k.split('-').map(Number); return {y, m, d, wd: new Date(Date.UTC(y, m - 1, d)).getUTCDay()}; };
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const dShort = k => { const p = dp(k); return cap(WD[p.wd]) + ' ' + p.d + ' ' + MONS[p.m - 1]; };
+const dDM = k => { const p = dp(k); return p.d + ' ' + MONS[p.m - 1]; };
+const dLong = k => { const p = dp(k); return WD[p.wd] + ', ' + p.d + ' ' + MON[p.m - 1]; };
+const dNum = k => { const p = dp(k); return pad(p.d) + '.' + pad(p.m) + '.' + p.y; };
+const monthEnd = k => { const p = dp(k); return new Date(Date.UTC(p.y, p.m, p.d) - 864e5).toISOString().slice(0, 10); };
+const rub = n => n.toLocaleString('ru-RU') + ' ₽';
+const chunk = (a, n) => a.reduce((r, x, i) => (i % n ? r[r.length - 1].push(x) : r.push([x]), r), []);
+const short = name => { const w = name.split(' '); return w[0] + (w.slice(1).map(x => ' ' + x[0] + '.').join('')); };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+
+/* ---------- состояние ---------- */
+let S;
+const NAMES = ['Соколов Дмитрий Андреевич', 'Кузнецова Мария Олеговна', 'Попов Артём Сергеевич', 'Лебедева Ольга Ивановна',
+  'Новиков Илья Павлович', 'Морозова Анна Викторовна', 'Волков Сергей Николаевич', 'Зайцева Ксения Игоревна',
+  'Орлов Максим Юрьевич', 'Белова Дарья Алексеевна', 'Фролов Кирилл Романович', 'Гусева Елена Петровна'];
+const svc = id => S.services.find(s => s.id === id);
+const booking = id => S.bookings.find(b => b.id === id);
+const isActive = b => b.st === 'unpaid' || b.st === 'reported' || b.st === 'paid' || (b.st === 'hold' && b.until > now());
+const D = () => S.chats.client.d;
+const setD = d => { S.chats.client.d = d; };
+const setAw = (chat, k, x) => { S.chats[chat].aw = k ? Object.assign({k}, x) : null; };
+const nextNo = () => 'СШ-' + String(++S.seq.c).padStart(4, '0');
+
+function services() {
+  return [
+    {id: 'gym_single', hall: 'gym', kind: 'single', name: 'Занятие на тренажёрах, разовое посещение', dur: 60, price: 90, on: true},
+    {id: 'gym_month', hall: 'gym', kind: 'month', name: 'Занятие на тренажёрах, месячный абонемент', price: 270, on: true},
+    {id: 'big_single', hall: 'big', kind: 'single', name: 'Посещение большого спортивного зала, разовое', dur: 60, price: 60, on: true},
+    {id: 'big_month', hall: 'big', kind: 'month', name: 'Посещение большого спортивного зала, месячный абонемент', price: 220, on: true},
+    {id: 'small_single', hall: 'small', kind: 'single', name: 'Посещение малого спортивного зала, разовое', dur: 60, price: 60, on: true},
+    {id: 'small_month', hall: 'small', kind: 'month', name: 'Посещение малого спортивного зала, месячный абонемент', price: 220, on: true},
+    {id: 'small_rent', hall: 'small', kind: 'rent', name: 'Предоставление малого спортивного зала для аэробики, фитнеса, борьбы, гимнастики, йоги', dur: 90, price: 320, on: true},
+    {id: 'org_rent', hall: 'org', kind: 'org', name: 'Малый спортивный зал для коллектива учреждения или организации, по согласованию', dur: 90, price: 320, on: true},
+  ];
+}
+
+function seed() {
+  S = {v: 1, services: services(), caps: {gym: 8, big: null, small: null}, closed: {}, bookings: [], requests: [],
+    links: {vk: 'https://vk.com/', max: 'https://max.ru/', site: ''},
+    seq: {b: 0, c: 0, r: 0, m: 0}, profile: null,
+    chats: {client: {msgs: [], aw: null, d: null}, staff: {msgs: [], aw: null}}};
+  const t = today();
+  const names = NAMES;
+  let i = 0;
+  const add = (id, off, start, st, name) => {
+    const s = svc(id); i++;
+    S.bookings.push({id: 'b' + (++S.seq.b), user: 'x', name: name || names[i % names.length], phone: '+7999' + String(2100000 + i * 7919).slice(-7),
+      svc: id, hall: s.hall, kind: s.kind, date: addDays(t, off), start, dur: s.dur, price: s.price, st,
+      no: nextNo(), cdate: addDays(t, -1), created: now() - 864e5});
+  };
+  ['paid', 'paid', 'unpaid', 'paid', 'paid'].forEach(st => add('gym_single', 1, 1080, st));
+  ['paid', 'paid', 'unpaid', 'paid', 'paid', 'paid', 'unpaid'].forEach(st => add('gym_single', 1, 1140, st));
+  add('gym_single', 1, 1140, 'reported', 'Петров Илья Викторович');
+  add('gym_single', 1, 600, 'paid');
+  ['paid', 'unpaid', 'paid'].forEach(st => add('gym_single', 2, 1080, st));
+  add('small_rent', 1, 1110, 'paid', 'Лебедева Ольга Ивановна');
+  for (let h = 8; h <= 16; h++) S.closed['gym|' + addDays(t, 2) + '|' + h * 60] = 1;
+  for (let h = OPEN_H; h < CLOSE_H; h++) S.closed['gym|' + addDays(t, 6) + '|' + h * 60] = 1;
+  S.requests.push({id: 'r' + (++S.seq.r), n: S.seq.r, user: 'x', org: 'Школа № 12', contact: 'Смирнова Елена', phone: '+79161234567',
+    date: addDays(t, 5), time: 900, comment: '25 детей, гимнастика по средам', st: 'new', created: now() - 3600e3});
+  C.start(); A.start();
+  S.unread = 0;
+}
+
+function load() { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } }
+function save() {
+  const copy = Object.assign({}, S, {chats: {
+    client: Object.assign({}, S.chats.client, {msgs: S.chats.client.msgs.filter(m => !m.tmp)}),
+    staff: Object.assign({}, S.chats.staff, {msgs: S.chats.staff.msgs.filter(m => !m.tmp)})}});
+  try { localStorage.setItem(KEY, JSON.stringify(copy)); } catch (e) {}
+}
+
+/* ---------- расписание и места ---------- */
+const hourSlots = () => { const a = []; for (let h = OPEN_H; h < CLOSE_H; h++) a.push(h * 60); return a; };
+const slotsFor = s => s.kind === 'rent' ? RENT_STARTS : hourSlots();
+function isClosed(hall, date, start, dur) {
+  for (let m = Math.floor(start / 60) * 60; m < start + dur; m += 60) if (S.closed[hall + '|' + date + '|' + m]) return true;
+  return false;
+}
+// Проверка места: её же зовём при показе, при резерве и перед фиксацией брони
+function slotState(s, date, start, exceptId) {
+  const end = start + s.dur, capN = s.kind === 'rent' ? 1 : S.caps[s.hall];
+  if (tsOf(date, start) <= now()) return {ok: false, free: 0, cap: capN, why: 'past'};
+  if (isClosed(s.hall, date, start, s.dur)) return {ok: false, free: 0, cap: capN, why: 'closed'};
+  const over = S.bookings.filter(b => b.id !== exceptId && b.hall === s.hall && b.date === date && b.start != null
+    && isActive(b) && b.start < end && start < b.start + b.dur);
+  if (s.kind === 'rent') return over.length ? {ok: false, free: 0, cap: 1, why: over.some(b => b.kind === 'rent') ? 'rent' : 'busy'} : {ok: true, free: 1, cap: 1};
+  if (over.some(b => b.kind === 'rent')) return {ok: false, free: 0, cap: capN, why: 'rent'};
+  const free = capN - over.length;
+  return free > 0 ? {ok: true, free, cap: capN} : {ok: false, free: 0, cap: capN, why: 'full'};
+}
+const color = (free, total) => free <= 0 ? 'r' : (free * 2 >= total ? 'g' : 'y');
+function dayState(s, date) {
+  let free = 0, total = 0;
+  for (const st of slotsFor(s)) {
+    if (tsOf(date, st) <= now()) continue;
+    const x = slotState(s, date, st); total += x.cap; free += x.ok ? x.free : 0;
+  }
+  return total ? color(free, total) : 'r';
+}
+const bWhen = b => b.kind === 'month' ? 'с ' + dNum(b.from) + ' по ' + dNum(b.to) : dLong(b.date) + ', ' + hm(b.start) + '–' + hm(b.start + b.dur);
+const bWhat = b => HALLS[b.hall] + ', ' + KIND[b.kind];
+const bCard = b => b.name + ', ' + b.phone + '\n' + bWhat(b) + '\n' + cap(bWhen(b)) + '\nДоговор № ' + b.no + ', ' + rub(b.price);
+
+/* ---------- проверка ввода ---------- */
+function checkName(t) {
+  const w = t.replace(/[*_]/g, '').trim().split(/\s+/).filter(Boolean);
+  if (!w.length || w.some(x => !/^[A-Za-zА-Яа-яЁё][A-Za-zА-Яа-яЁё'’.\-]*$/.test(x))) return {err: 'В ФИО только буквы. Например: Иванова Анна Сергеевна'};
+  if (w.length < 2) return {err: 'Нужны хотя бы фамилия и имя, можно с отчеством. Например: Иванова Анна Сергеевна'};
+  if (t.length > 80) return {err: 'Слишком длинно. Фамилия, имя и отчество, без лишнего.'};
+  return {name: w.map(x => x.split('-').map(p => p && p[0].toUpperCase() + p.slice(1).toLowerCase()).join('-')).join(' ')};
+}
+function normPhone(t) {
+  if (/[^\d\s()+\-.]/.test(t.trim())) return null;
+  let d = t.replace(/\D/g, '');
+  if (d.length === 11 && (d[0] === '8' || d[0] === '7')) d = d.slice(1);
+  else if (d.length !== 10) return null;
+  return /^[3489]/.test(d) ? '+7' + d : null;
+}
+
+/* ---------- чат ---------- */
+const B = (t, a, x) => Object.assign({t, a}, x);
+let SRC = null, view = 'client';
+const mobile = matchMedia('(max-width: 899px)');
+function push(chat, m) { m.id = ++S.seq.m; m.ts = now(); S.chats[chat].msgs.push(m); return m; }
+function bot(chat, text, kb, x) {
+  if (chat === 'staff' && mobile.matches && view !== 'staff') S.unread = (S.unread || 0) + 1;
+  return push(chat, Object.assign({from: 'bot', text, kb}, x));
+}
+const me = (chat, text, x) => push(chat, Object.assign({from: 'me', text}, x));
+const note = (chat, text, kb, x) => push(chat, Object.assign({from: 'note', text, kb}, x));
+const edit = (chat, id, patch) => { const m = S.chats[chat].msgs.find(x => x.id === id); if (m) Object.assign(m, patch); return !!m; };
+
+/* ---------- клиент ---------- */
+const C = {};
+const MAIN = () => [[B('Тренажёрный зал', 'obj|gym'), B('Большой зал', 'obj|big')], [B('Малый зал', 'obj|small'), B('Для организаций', 'obj|org')], [B('Мои брони', 'my'), B('Наши ссылки', 'links')]];
+C.start = () => {
+  bot('client', 'Здравствуйте! Это бот спортивной школы. Здесь можно записаться в зал, взять абонемент на месяц, получить договор и оплатить по QR.', MAIN());
+  note('client', 'Нажимайте кнопки, как в MAX. Что в это время видит школа — в разделе «Сотрудник школы».');
+};
+C.menu = () => { setAw('client'); bot('client', 'Выберите зал или раздел.', MAIN()); };
+const svcLine = s => s.kind === 'single' ? 'Разовое посещение, 1 час: ' + rub(s.price) + ' с человека, запись на время'
+  : s.kind === 'month' ? 'Абонемент на месяц: ' + rub(s.price) + ', с любого дня'
+  : 'Зал целиком, 1 ч 30 мин: ' + rub(s.price) + ', для аэробики, фитнеса, борьбы, гимнастики, йоги';
+const svcBtn = s => ({single: 'Разово', month: 'Абонемент', rent: 'Зал целиком'}[s.kind]) + ' · ' + rub(s.price);
+C.obj = hall => {
+  if (hall === 'org') return C.orgInfo();
+  const list = S.services.filter(s => s.hall === hall && s.on);
+  if (!list.length) return bot('client', HALLS[hall] + ': сейчас запись закрыта.', [[B('Назад', 'menu')]]);
+  const capTxt = S.caps[hall] ? 'Одновременно до ' + S.caps[hall] + ' человек.\n' : '';
+  bot('client', '**' + HALLS[hall] + '**\n' + capTxt + '\n' + list.map(svcLine).join('\n'),
+    chunk(list.map(s => B(svcBtn(s), 'svc|' + s.id)), 2).concat([[B('Назад', 'menu')]]));
+};
+C.svc = id => {
+  const s = svc(id);
+  if (!s || !s.on) return bot('client', 'Эта услуга сейчас не продаётся.', [[B('В меню', 'menu')]]);
+  if (s.kind === 'org') return C.orgInfo();
+  if (s.kind === 'month') return C.monthStart(id);
+  if (s.kind === 'single' && !S.caps[s.hall]) {
+    bot('client', 'Разовая запись в ' + HALL_IN[s.hall] + ' откроется, когда школа укажет, сколько человек он вмещает.', [[B('Назад', 'obj|' + s.hall)]]);
+    return note('client', 'В демо это делает сотрудник: «Вместимость» в его разделе.', [[B('Задать вместимость за сотрудника', 'demoCap|' + s.hall, {q: 1, demo: 1})]]);
+  }
+  C.days(id);
+};
+C.days = (id, pre) => {
+  const s = svc(id), t = today(), days = [];
+  for (let i = 0; i < 14; i++) { const k = addDays(t, i); days.push(B(dShort(k), 'day|' + id + '|' + k, {c: dayState(s, k)})); }
+  bot('client', (pre ? pre + '\n\n' : '') + '**' + HALLS[s.hall] + '**, ' + KIND[s.kind] + '. Выберите день, время московское.\n{g} свободно больше половины  {y} мест мало  {r} записи нет',
+    chunk(days, 3).concat([[B('Назад', 'obj|' + s.hall)]]));
+};
+C.day = (id, date, pre) => {
+  const s = svc(id), btns = [];
+  let any = false;
+  for (const st of slotsFor(s)) {
+    if (tsOf(date, st) <= now()) continue;
+    const x = slotState(s, date, st);
+    any = any || x.ok;
+    btns.push(B(hm(st), 'slot|' + id + '|' + date + '|' + st, {c: x.ok ? color(x.free, x.cap) : 'r', s: s.kind === 'single' && x.ok ? String(x.free) : ''}));
+  }
+  const kb = chunk(btns, s.kind === 'rent' ? 3 : 4);
+  kb.push([B('Другой день', 'days|' + id)]);
+  if (any) kb.push([B('Демо: другой клиент занял последнее место', 'race|' + id + '|' + date, {q: 1, demo: 1})]);
+  const head = (pre ? pre + '\n\n' : '') + '**' + cap(dLong(date)) + '**, ' + HALL_IN[s.hall] + (s.kind === 'rent' ? ', зал целиком на 1 ч 30 мин' : '') + '.\n';
+  if (!btns.length) return bot('client', head + 'На этот день время уже закончилось.', [[B('Другой день', 'days|' + id)]]);
+  bot('client', head + (any ? (s.kind === 'rent' ? 'Выберите время начала.' : 'Выберите время. Цифра на кнопке — свободные места.') : 'Свободного времени нет, выберите другой день.'), kb);
+};
+const WHY = {
+  full: t => 'На ' + t + ' мест уже нет: только что заняли.',
+  closed: t => 'Время ' + t + ' школа закрыла для записи.',
+  rent: t => 'В ' + t + ' малый зал арендован целиком.',
+  busy: t => 'На ' + t + ' в малом зале уже есть записи, целиком его не сдать.',
+  past: t => t + ' уже прошло.',
+};
+C.slot = (id, date, start) => {
+  start = +start;
+  const s = svc(id);
+  if (!s || !s.on) return bot('client', 'Эта услуга сейчас не продаётся.', [[B('В меню', 'menu')]]);
+  const dup = S.bookings.find(b => b.user === 'me' && b.svc === id && b.date === date && b.start === start && isActive(b));
+  if (dup && dup.st === 'hold') { if (!D() || D().bid !== dup.id) setD({kind: s.kind, svc: id, bid: dup.id}); return askNext(); }
+  if (dup) return bot('client', 'На это время у вас уже есть бронь (' + ST[dup.st] + '). Вторую такую же не создаю.', [[B('Мои брони', 'my'), B('Другое время', 'day|' + id + '|' + date)]]);
+  const x = slotState(s, date, start);
+  if (!x.ok) return C.day(id, date, WHY[x.why](hm(start)) + ' Вот что свободно сейчас:');
+  const d = D();
+  if (d && d.bid) release(d.bid);
+  const keep = d && d.keep;
+  const b = {id: 'b' + (++S.seq.b), user: 'me', svc: id, hall: s.hall, kind: s.kind, date, start, dur: s.dur, price: s.price, st: 'hold', until: now() + HOLD_MIN * MIN, created: now()};
+  S.bookings.push(b);
+  setD({kind: s.kind, svc: id, bid: b.id, name: keep ? d.name : null, phone: keep ? d.phone : null});
+  bot('client', 'Держу место: **' + bWhen(b) + '**, ' + HALL_IN[s.hall] + '. Резерв на 15 минут {T}', [[B('Отменить', 'cancel')], [B('Демо: промотать 15 минут', 'ff', {q: 1, demo: 1})]], {timer: b.id});
+  askNext();
+};
+function release(bid) { const b = booking(bid); if (b && b.st === 'hold') b.st = 'released'; }
+function askNext() {
+  const d = D();
+  if (!d) return C.menu();
+  if (d.name && d.phone) return summary();
+  if (!d.name && S.profile) {
+    setAw('client', 'name', {ph: 'Фамилия Имя Отчество'});
+    return bot('client', 'На кого оформить?', [[B(S.profile.name + ', ' + S.profile.phone, 'useProfile')], [B('Другие данные', 'otherData')]]);
+  }
+  if (!d.name) { setAw('client', 'name', {ph: 'Фамилия Имя Отчество'}); return bot('client', 'Напишите фамилию, имя и отчество.'); }
+  askPhone();
+}
+function askPhone() {
+  setAw('client', 'phone', {ph: 'Телефон', im: 'tel'});
+  bot('client', 'Теперь телефон, в любом формате: 8 912 345-67-89 или +7 (912) 345 67 89.', [[B('Отправить мой контакт', 'contact', {q: 1})]]);
+}
+C.useProfile = () => { const d = D(); if (!d) return C.menu(); d.name = S.profile.name; d.phone = S.profile.phone; summary(); };
+C.otherData = () => { const d = D(); if (!d) return C.menu(); d.name = d.phone = null; setAw('client', 'name', {ph: 'Фамилия Имя Отчество'}); bot('client', 'Напишите фамилию, имя и отчество.'); };
+C.contact = () => {
+  const p = '+7 916 555-12-34';
+  me('client', '', {contact: p});
+  const aw = S.chats.client.aw;
+  IN[aw && aw.k === 'ophone' ? 'ophone' : 'phone'](p);
+};
+C.resume = () => askNext();
+const IN = {};
+IN.name = t => {
+  const r = checkName(t), d = D();
+  if (!d) return C.menu();
+  if (r.err) return bot('client', r.err);
+  d.name = r.name;
+  d.phone ? summary() : askPhone();
+};
+IN.phone = t => {
+  const p = normPhone(t), d = D();
+  if (!d) return C.menu();
+  if (!p) return bot('client', 'Не похоже на российский номер. Пример: +7 912 345-67-89 или 89123456789.');
+  d.phone = p;
+  summary();
+};
+function summary() {
+  const d = D(), s = svc(d.svc);
+  setAw('client');
+  let when, price, extra = null, tail = '';
+  if (d.kind === 'month') { when = 'С ' + dNum(d.from) + ' по ' + dNum(d.to); price = d.price; }
+  else {
+    const b = booking(d.bid); when = cap(bWhen(b)); price = b.price;
+    if (isActive(b)) { extra = {timer: b.id}; tail = '\nРезерв {T}'; } else tail = '\nРезерв истёк: при оформлении проверю место заново.';
+  }
+  bot('client', 'Проверьте, всё ли верно:\n\n**' + HALLS[s.hall] + '**, ' + KIND[s.kind] + '\n' + when + '\n' + d.name + '\n' + d.phone + '\n\nК оплате: **' + rub(price) + '**' + tail,
+    [[B('Всё верно, оформить', 'confirm')], [B('Исправить', 'fix'), B('Отменить', 'cancel')]], extra);
+}
+C.fix = () => {
+  const d = D();
+  if (!d) return C.menu();
+  bot('client', 'Что исправить?', [[B('ФИО', 'fixName'), B('Телефон', 'fixPhone')], [B(d.kind === 'month' ? 'Период' : 'Дату и время', 'fixWhen')]]);
+};
+C.fixName = () => { if (!D()) return C.menu(); setAw('client', 'name', {ph: 'Фамилия Имя Отчество'}); bot('client', 'Напишите фамилию, имя и отчество.'); };
+C.fixPhone = () => { if (!D()) return C.menu(); askPhone(); };
+C.fixWhen = () => {
+  const d = D();
+  if (!d) return C.menu();
+  setAw('client');
+  d.keep = true;
+  if (d.kind === 'month') return C.monthStart(d.svc);
+  if (d.bid) release(d.bid);
+  d.bid = null;
+  C.days(d.svc);
+};
+C.cancel = () => {
+  const d = D();
+  if (d && d.bid) release(d.bid);
+  setD(null); setAw('client');
+  bot('client', d && d.bid ? 'Отменено, место освободилось.' : 'Отменено.', MAIN());
+};
+C.ff = () => {
+  const d = D(), b = d && d.bid && booking(d.bid);
+  if (!b || b.st !== 'hold') return note('client', 'Сейчас нет резерва, который можно промотать.');
+  b.until = now() - 1;
+  sweep();
+};
+C.race = (id, date) => {
+  const s = svc(id);
+  // слот с самым малым остатком мест: «последнее место» в прямом смысле
+  const st = slotsFor(s).filter(x => slotState(s, date, x).ok && !S.bookings.some(b => b.user === 'me' && b.date === date && b.start === x && b.svc === id && isActive(b)))
+    .sort((a, b) => slotState(s, date, a).free - slotState(s, date, b).free)[0];
+  if (st == null) return note('client', 'На этот день свободных мест уже нет.');
+  const x = slotState(s, date, st);
+  for (let i = 0; i < x.free; i++) {
+    S.bookings.push({id: 'b' + (++S.seq.b), user: 'x', name: NAMES[(S.seq.b + 5) % NAMES.length], phone: '+7999000' + pad(10 + i) + '00', svc: id, hall: s.hall, kind: s.kind,
+      date, start: st, dur: s.dur, price: s.price, st: 'unpaid', no: nextNo(), cdate: today(), created: now()});
+  }
+  note('client', 'Пока вы выбирали, на ' + hm(st) + ' (' + dShort(date) + ') записались другие клиенты, последнее место ушло. Нажмите ' + hm(st) + ' в списке выше: кнопка там ещё старая, но бот перед бронью проверит места заново.');
+};
+C.demoCap = h => { setView('staff'); A.acap(h); };
+
+/* абонемент */
+C.monthStart = id => {
+  const s = svc(id), t = today(), wd = dp(t).wd;
+  const mon = addDays(t, ((8 - wd) % 7) || 7), p = dp(t);
+  const first = new Date(Date.UTC(p.y, p.m, 1)).toISOString().slice(0, 10);
+  const opts = [...new Set([t, mon, first])].sort();
+  bot('client', '**' + HALLS[s.hall] + '**, абонемент на месяц: ' + rub(s.price) + '.\nС какого дня начать?',
+    opts.map(f => [B('С ' + dDM(f) + ' по ' + dDM(monthEnd(f)), 'mfrom|' + id + '|' + f)]).concat([[B('Назад', 'obj|' + s.hall)]]));
+};
+C.mfrom = (id, from) => {
+  const s = svc(id), d = D();
+  if (!s.on) return bot('client', 'Эта услуга сейчас не продаётся.', [[B('В меню', 'menu')]]);
+  const keep = d && d.keep;
+  setD({kind: 'month', svc: id, from, to: monthEnd(from), price: s.price, name: keep ? d.name : null, phone: keep ? d.phone : null});
+  askNext();
+};
+
+/* оформление */
+C.confirm = () => {
+  const d = D();
+  if (!d || d.kind === 'org' || !d.name || !d.phone) return bot('client', 'Это оформление уже закрыто.', [[B('В меню', 'menu')]]);
+  const s = svc(d.svc);
+  if (!s.on) return bot('client', 'Эту услугу только что сняли с продажи, оформить не выйдет.', [[B('В меню', 'menu')]]);
+  let b;
+  if (d.kind === 'month') {
+    const dup = S.bookings.find(x => x.user === 'me' && x.svc === d.svc && isActive(x) && x.from <= d.to && d.from <= x.to);
+    if (dup) return bot('client', 'У вас уже есть такой абонемент ' + bWhen(dup) + ' (' + ST[dup.st] + '). Второй на тот же период не оформляю.', [[B('Мои брони', 'my')]]);
+    b = {id: 'b' + (++S.seq.b), user: 'me', svc: d.svc, hall: s.hall, kind: 'month', from: d.from, to: d.to, price: d.price, created: now()};
+    S.bookings.push(b);
+  } else {
+    b = booking(d.bid);
+    const x = slotState(s, b.date, b.start, b.id); // проверка мест прямо перед фиксацией
+    if (!x.ok) {
+      b.st = 'released'; d.bid = null; d.keep = true;
+      const why = x.why === 'closed' ? 'Пока вы заполняли, школа закрыла ' + hm(b.start) + '.' : x.why === 'past' ? hm(b.start) + ' уже прошло.' : 'Пока вы заполняли, резерв истёк и ' + hm(b.start) + ' заняли.';
+      return C.day(d.svc, b.date, why + ' Данные сохранены, выберите другое время:');
+    }
+  }
+  Object.assign(b, {st: 'unpaid', until: null, name: d.name, phone: d.phone, no: nextNo(), cdate: today()});
+  S.profile = {name: d.name, phone: d.phone};
+  setD(null);
+  bot('client', 'Готово, бронь оформлена. Договор № ' + b.no + ' от ' + dNum(b.cdate) + ' выше, его можно открыть или сохранить.', null, {file: b.id});
+  payMsg(b);
+};
+function payMsg(b) {
+  bot('client', 'Оплатите **' + rub(b.price) + '** по QR в приложении банка: сумма и назначение уже внутри. После оплаты нажмите «Я оплатил».',
+    [[B('Я оплатил', 'paid|' + b.id)], [B('Оплачу позже', 'later')]], {qr: b.id});
+}
+C.paid = id => {
+  const b = booking(id);
+  if (!b) return;
+  if (b.st === 'paid') return bot('client', 'Эта бронь уже оплачена.');
+  if (b.st === 'reported') return bot('client', 'Уже передано школе, ждём проверку.');
+  if (b.st !== 'unpaid') return bot('client', 'Эта бронь не активна: ' + ST[b.st] + '.');
+  b.st = 'reported'; b.reportedAt = now();
+  bot('client', 'Спасибо. Школа сверит поступление и подтвердит здесь же. Пока статус «оплата на проверке».');
+  bot('staff', '**Сообщили об оплате**\n' + bCard(b), [[B('Оплачено', 'ok|' + b.id), B('Не нашли оплату', 'no|' + b.id)]]);
+};
+C.later = () => bot('client', 'Хорошо. Договор и QR лежат в «Мои брони».', [[B('Мои брони', 'my'), B('В меню', 'menu')]]);
+C.pay = id => { const b = booking(id); if (b && b.st === 'unpaid') return payMsg(b); bot('client', 'Оплата не нужна: ' + (b ? ST[b.st] : 'брони нет') + '.'); };
+C.pdf = id => openPdf(id);
+C.my = () => {
+  const list = S.bookings.filter(b => b.user === 'me' && b.no).sort((a, b) => b.created - a.created);
+  const reqs = S.requests.filter(r => r.user === 'me');
+  if (!list.length && !reqs.length) return bot('client', 'Броней пока нет.', [[B('Записаться', 'menu')]]);
+  bot('client', 'Ваши брони' + (reqs.length ? ' и заявки' : '') + ':');
+  list.slice(0, 8).forEach(b => bot('client', '**' + HALLS[b.hall] + '**, ' + KIND[b.kind] + '\n' + cap(bWhen(b)) + '\n' + rub(b.price) + ', {' + (STC[b.st] || 'y') + '} ' + ST[b.st] + '\nДоговор № ' + b.no,
+    b.st === 'unpaid' ? [[B('Договор', 'pdf|' + b.id, {q: 1}), B('Оплатить', 'pay|' + b.id)]] : b.st === 'cancelled' ? null : [[B('Договор', 'pdf|' + b.id, {q: 1})]]));
+  reqs.forEach(r => bot('client', reqCard(r)));
+};
+C.links = () => {
+  const L = LINKS.filter(([k]) => S.links[k]);
+  if (!L.length) return bot('client', 'Ссылки школа ещё не добавила.');
+  bot('client', 'Мы в сети:', L.map(([k, t]) => [B(t, '', {url: S.links[k]})]));
+};
+
+/* организации */
+const reqCard = r => 'Заявка № ' + r.n + ': **' + r.org + '**\n' + r.contact + ', ' + r.phone + '\nЖелательно: ' + dLong(r.date) + ', ' + hm(r.time) + (r.comment ? '\nКомментарий: ' + r.comment : '') + '\nСтатус: ' + RST[r.st];
+C.orgInfo = () => {
+  const s = svc('org_rent');
+  if (!s.on) return bot('client', 'Заявки от организаций сейчас не принимаем.', [[B('Назад', 'menu')]]);
+  bot('client', '**Для организаций**\nМалый спортивный зал для коллектива учреждения или организации: аэробика, фитнес, борьба, гимнастика, йога. ' + rub(s.price) + ' за 1 ч 30 мин.\n\nВремя бот не бронирует: школа созвонится с вами и согласует.',
+    [[B('Оставить заявку', 'org')], [B('Назад', 'menu')]]);
+};
+C.org = () => {
+  const d = D();
+  if (d && d.bid) release(d.bid);
+  setD({kind: 'org'});
+  setAw('client', 'oname', {ph: 'Название организации'});
+  bot('client', 'Как называется организация?');
+};
+const odone = () => { const d = D(); if (d && d.done) { orgSummary(); return true; } return false; };
+IN.oname = t => {
+  if (t.length < 2) return bot('client', 'Напишите название, хотя бы пару букв.');
+  D().org = t.slice(0, 120);
+  if (odone()) return;
+  setAw('client', 'ocontact', {ph: 'Фамилия Имя'});
+  bot('client', 'Кто контактное лицо? Фамилия и имя.');
+};
+IN.ocontact = t => {
+  const r = checkName(t);
+  if (r.err) return bot('client', r.err);
+  D().contact = r.name;
+  if (odone()) return;
+  setAw('client', 'ophone', {ph: 'Телефон', im: 'tel'});
+  bot('client', 'Телефон для связи?', [[B('Отправить мой контакт', 'contact', {q: 1})]]);
+};
+IN.ophone = t => {
+  const p = normPhone(t);
+  if (!p) return bot('client', 'Не похоже на российский номер. Пример: +7 912 345-67-89 или 89123456789.');
+  D().phone = p;
+  if (odone()) return;
+  orgDays();
+};
+function orgDays() {
+  setAw('client');
+  const t = today(), days = [];
+  for (let i = 0; i < 14; i++) { const k = addDays(t, i); days.push(B(dShort(k), 'oday|' + k)); }
+  bot('client', 'Какой день удобен?', chunk(days, 3));
+}
+C.oday = k => {
+  const d = D();
+  if (!d || d.kind !== 'org') return C.menu();
+  d.date = k;
+  bot('client', 'Во сколько примерно?', chunk(hourSlots().slice(0, -1).map(m => B(hm(m), 'otime|' + m)), 4));
+};
+C.otime = m => {
+  const d = D();
+  if (!d || d.kind !== 'org') return C.menu();
+  d.time = +m;
+  if (odone()) return;
+  setAw('client', 'ocomment', {ph: 'Комментарий'});
+  bot('client', 'Комментарий: сколько человек, какие занятия, как часто.', [[B('Без комментария', 'ocomm')]]);
+};
+IN.ocomment = t => { D().comment = t.slice(0, 300); orgSummary(); };
+C.ocomm = () => { const d = D(); if (!d || d.kind !== 'org') return C.menu(); d.comment = ''; orgSummary(); };
+function orgSummary() {
+  const d = D();
+  d.done = true; setAw('client');
+  bot('client', 'Проверьте заявку:\n\n**' + d.org + '**\n' + d.contact + ', ' + d.phone + '\nЖелательно: ' + dLong(d.date) + ', ' + hm(d.time) + '\n' + (d.comment ? 'Комментарий: ' + d.comment : 'Без комментария') + '\n\nВремя не бронируется, школа позвонит и согласует.',
+    [[B('Отправить заявку', 'osend')], [B('Исправить', 'ofix'), B('Отменить', 'cancel')]]);
+}
+C.ofix = () => bot('client', 'Что исправить?', [[B('Организацию', 'ofixf|oname'), B('Контакт', 'ofixf|ocontact')], [B('Телефон', 'ofixf|ophone'), B('День и время', 'ofixf|date')], [B('Комментарий', 'ofixf|ocomment')]]);
+C.ofixf = f => {
+  const d = D();
+  if (!d || d.kind !== 'org') return C.menu();
+  if (f === 'date') return orgDays();
+  const Q = {oname: ['Как называется организация?', 'Название организации'], ocontact: ['Контактное лицо, фамилия и имя?', 'Фамилия Имя'], ophone: ['Телефон для связи?', 'Телефон'], ocomment: ['Комментарий?', 'Комментарий']};
+  setAw('client', f, {ph: Q[f][1], im: f === 'ophone' ? 'tel' : ''});
+  bot('client', Q[f][0]);
+};
+C.osend = () => {
+  const d = D();
+  if (!d || d.kind !== 'org' || !d.done) return bot('client', 'Эта заявка уже отправлена.', [[B('В меню', 'menu')]]);
+  const r = {id: 'r' + (++S.seq.r), n: S.seq.r, user: 'me', org: d.org, contact: d.contact, phone: d.phone, date: d.date, time: d.time, comment: d.comment, st: 'new', created: now()};
+  S.requests.push(r); setD(null);
+  bot('client', 'Заявка № ' + r.n + ' у школы. Позвонят на ' + r.phone + ', чтобы согласовать время.', [[B('В меню', 'menu')]]);
+  bot('staff', '**Новая заявка от организации**\n' + reqCard(r), [[B('Согласовано', 'rok|' + r.id), B('Отказать', 'rno|' + r.id)]]);
+};
+
+/* ---------- сотрудник ---------- */
+const A = {};
+const STAFF = () => [[B('Сегодня', 'aday|0'), B('Завтра', 'aday|1'), B('Дата', 'adates')],
+  [B('Сообщили об оплате', 'arep', {n: 'rep'})],
+  [B('Не оплачены', 'aunpaid', {n: 'unpaid'}), B('Заявки', 'areqs', {n: 'req'})],
+  [B('Цены и услуги', 'asvcs'), B('Вместимость', 'acaps')],
+  [B('Закрыть или открыть время', 'aclose')],
+  [B('Статистика', 'astats'), B('Ссылки', 'alinks')]];
+const MENU = [[B('Меню', 'menu')]];
+const COUNTS = {rep: () => S.bookings.filter(b => b.st === 'reported').length, unpaid: () => S.bookings.filter(b => b.st === 'unpaid').length, req: () => S.requests.filter(r => r.st === 'new').length};
+A.start = () => bot('staff', 'Раздел сотрудника школы. Его видят только те, чьи ID записаны в настройках бота: чтобы добавить сотрудника, код трогать не нужно.', STAFF());
+A.menu = () => { setAw('staff'); bot('staff', 'Меню сотрудника.', STAFF()); };
+A.aday = (off, date) => {
+  const k = date || addDays(today(), +off);
+  const list = S.bookings.filter(b => b.no && isActive(b) && (b.date === k || (b.kind === 'month' && b.from === k)))
+    .sort((a, b) => (a.start ?? -1) - (b.start ?? -1) || a.hall.localeCompare(b.hall));
+  if (!list.length) return bot('staff', cap(dLong(k)) + ': броней нет.', [[B('Другая дата', 'adates'), B('Меню', 'menu')]]);
+  const line = b => (b.kind === 'month' ? 'Абонемент с этого дня' : hm(b.start)) + ', ' + (HALL_IN[b.hall] || '') + (b.kind === 'rent' ? ' целиком' : '') + ': ' + short(b.name) + ', ' + ST[b.st];
+  bot('staff', '**' + cap(dLong(k)) + '**, броней: ' + list.length + '\n\n' + list.map(line).join('\n'),
+    chunk(list.slice(0, 24).map(b => B((b.kind === 'month' ? 'Абон.' : hm(b.start)) + ' ' + short(b.name), 'ab|' + b.id)), 2).concat([[B('Другая дата', 'adates'), B('Меню', 'menu')]]));
+};
+A.adates = () => {
+  const t = today(), days = [];
+  for (let i = 0; i < 14; i++) { const k = addDays(t, i); days.push(B(dShort(k), 'aday|0|' + k)); }
+  bot('staff', 'Какой день показать?', chunk(days, 3).concat(MENU));
+};
+A.ab = id => {
+  const b = booking(id);
+  if (!b) return;
+  const kb = [];
+  if (isActive(b)) kb.push([B('Отменить бронь', 'acx|' + id)].concat(b.st === 'unpaid' || b.st === 'reported' ? [B('Оплачено', 'ok|' + id)] : []));
+  kb.push([B('Договор', 'pdf|' + id, {q: 1}), B('Меню', 'menu')]);
+  bot('staff', '**Договор № ' + b.no + '**\n' + b.name + ', ' + b.phone + '\n' + bWhat(b) + '\n' + cap(bWhen(b)) + '\n' + rub(b.price) + ', ' + ST[b.st], kb);
+};
+A.acx = id => { const b = booking(id); bot('staff', 'Отменить бронь: ' + short(b.name) + ', ' + bWhen(b) + '?', [[B('Да, отменить', 'acx2|' + id), B('Нет', 'ab|' + id)]]); };
+A.acx2 = id => {
+  const b = booking(id);
+  if (!isActive(b)) return bot('staff', 'Бронь уже не активна: ' + ST[b.st] + '.', MENU);
+  b.st = 'cancelled'; b.cancelledAt = now();
+  bot('staff', 'Бронь отменена, место свободно.' + (b.user === 'me' ? ' Клиенту ушло сообщение.' : ''), MENU);
+  if (b.user === 'me') bot('client', 'Школа отменила бронь: ' + HALL_IN[b.hall] + ', ' + bWhen(b) + '. Если это ошибка, позвоните в школу.', [[B('Мои брони', 'my')]]);
+};
+A.ok = id => {
+  const b = booking(id);
+  if (!b || (b.st !== 'unpaid' && b.st !== 'reported')) return bot('staff', 'Статус уже другой: ' + (b ? ST[b.st] : 'брони нет') + '.', MENU);
+  b.st = 'paid'; b.paidAt = now();
+  bot('staff', 'Отмечено: оплачено, ' + short(b.name) + ', ' + rub(b.price) + '.' + (b.user === 'me' ? ' Клиенту ушло подтверждение.' : ''), MENU);
+  if (b.user === 'me') bot('client', 'Оплата **' + rub(b.price) + '** получена, бронь подтверждена.\n' + bWhat(b) + ', ' + bWhen(b) + '.' + (b.kind === 'month' ? '' : ' Ждём вас.'), [[B('Мои брони', 'my')]]);
+};
+A.no = id => {
+  const b = booking(id);
+  if (!b || b.st !== 'reported') return bot('staff', 'Статус уже другой: ' + (b ? ST[b.st] : 'брони нет') + '.', MENU);
+  b.st = 'unpaid';
+  bot('staff', 'Статус снова «ждёт оплаты». Клиенту ушло сообщение.', MENU);
+  if (b.user === 'me') bot('client', 'Оплату по договору № ' + b.no + ' школа пока не видит. Проверьте сумму и получателя. Если всё верно, нажмите «Я оплатил» ещё раз.', [[B('Я оплатил', 'paid|' + id), B('Показать QR', 'pay|' + id)]]);
+};
+A.pdf = id => openPdf(id);
+A.arep = () => {
+  const list = S.bookings.filter(b => b.st === 'reported');
+  if (!list.length) return bot('staff', 'Никто не ждёт проверки оплаты.', MENU);
+  bot('staff', 'Сообщили об оплате: ' + list.length + '. Сверьте поступление и отметьте.');
+  list.forEach(b => bot('staff', bCard(b), [[B('Оплачено', 'ok|' + b.id), B('Не нашли оплату', 'no|' + b.id)]]));
+};
+A.aunpaid = () => {
+  const list = S.bookings.filter(b => b.st === 'unpaid');
+  if (!list.length) return bot('staff', 'Неоплаченных броней нет.', MENU);
+  bot('staff', '**Не оплачены: ' + list.length + '**\n' + list.map(b => short(b.name) + ', ' + (b.kind === 'month' ? 'абонемент ' : '') + bWhen(b) + ', ' + rub(b.price)).join('\n'),
+    chunk(list.slice(0, 20).map(b => B(short(b.name), 'ab|' + b.id)), 2).concat(MENU));
+};
+const svcAdmin = s => (s.hall === 'org' ? 'Организации' : cap(HALL_IN[s.hall])) + ', ' + ({single: 'разово', month: 'абонемент', rent: 'целиком', org: 'заявка'}[s.kind]) + ' · ' + rub(s.price) + (s.on ? '' : ' · выкл.');
+const unit = s => ({single: ' за час с человека', month: ' за месяц', rent: ' за 1 ч 30 мин', org: ' за 1 ч 30 мин'}[s.kind]);
+A.asvcs = () => bot('staff', 'Цены и услуги. Нажмите услугу, чтобы поменять цену или снять с продажи.', S.services.map(s => [B(svcAdmin(s), 'as|' + s.id, s.on ? {} : {c: 'r'})]).concat(MENU));
+A.as = id => {
+  const s = svc(id);
+  bot('staff', '**' + s.name + '**\nЦена: ' + rub(s.price) + unit(s) + '\nСейчас: ' + (s.on ? 'продаётся' : 'снята с продажи'),
+    [[B('Изменить цену', 'aprice|' + id), B(s.on ? 'Выключить' : 'Включить', 'atog|' + id)], [B('Все услуги', 'asvcs')]]);
+};
+A.aprice = id => { setAw('staff', 'price', {id, ph: 'Цена, ₽', im: 'numeric'}); bot('staff', 'Новая цена в рублях. Сейчас ' + rub(svc(id).price) + '.'); };
+IN.price = (t, aw) => {
+  const n = Number(t.replace(/[\s₽]|руб\.?|р\.?/gi, ''));
+  if (!Number.isInteger(n) || n < 1 || n > 1e6) return bot('staff', 'Нужно целое число рублей, например 100.');
+  const s = svc(aw.id), old = s.price;
+  s.price = n; setAw('staff');
+  bot('staff', 'Цена изменена: ' + rub(old) + ' → ' + rub(n) + '. Оформленные брони остаются по своей цене.', [[B('Все услуги', 'asvcs'), B('Меню', 'menu')]]);
+};
+A.atog = id => {
+  const s = svc(id); s.on = !s.on;
+  bot('staff', s.on ? 'Услуга снова продаётся.' : 'Услуга снята с продажи: клиенты её не видят, оформленные брони остаются.', [[B('Все услуги', 'asvcs'), B('Меню', 'menu')]]);
+};
+const capTxt = h => S.caps[h] ? String(S.caps[h]) : 'не задано';
+A.acaps = () => bot('staff', 'Сколько человек одновременно на разовом посещении:\n' + ['gym', 'big', 'small'].map(h => HALLS[h] + ': ' + capTxt(h)).join('\n'),
+  ['gym', 'big', 'small'].map(h => [B(cap(HALL_IN[h]) + ' · ' + capTxt(h), 'acap|' + h)]).concat(MENU));
+A.acap = h => { setAw('staff', 'cap', {h, ph: 'Число', im: 'numeric'}); bot('staff', 'Сколько человек одновременно в ' + HALL_P[h] + '? Числом.'); };
+IN.cap = (t, aw) => {
+  const n = Number(t.trim());
+  if (!Number.isInteger(n) || n < 1 || n > 500) return bot('staff', 'Нужно целое число от 1 до 500.');
+  const was = S.caps[aw.h];
+  S.caps[aw.h] = n; setAw('staff');
+  const per = {};
+  S.bookings.filter(b => b.hall === aw.h && b.kind === 'single' && isActive(b)).forEach(b => { const k = b.date + b.start; per[k] = (per[k] || 0) + 1; });
+  const over = Object.values(per).filter(v => v > n).length;
+  bot('staff', HALLS[aw.h] + ': до ' + n + ' человек.' + (was ? '' : ' Разовая запись открыта.') + (over ? ' На ' + over + ' сеансах уже записано больше: брони остаются, новых туда не будет.' : ''),
+    [[B('Вместимость', 'acaps'), B('Меню', 'menu')]]);
+};
+A.aclose = () => bot('staff', 'Где закрыть или открыть время?', [[B('Тренажёрный зал', 'acl|gym')], [B('Большой зал', 'acl|big')], [B('Малый зал', 'acl|small')]].concat(MENU));
+A.acl = h => {
+  const t = today(), days = [];
+  for (let i = 0; i < 14; i++) {
+    const k = addDays(t, i), n = hourSlots().filter(m => S.closed[h + '|' + k + '|' + m]).length;
+    days.push(B(dShort(k), 'acld|' + h + '|' + k, n ? {c: n === hourSlots().length ? 'r' : 'y'} : {}));
+  }
+  bot('staff', HALLS[h] + ': выберите день. Цветом отмечены дни, где что-то закрыто.', chunk(days, 3).concat(MENU));
+};
+const inHour = (h, k, m) => S.bookings.filter(b => b.hall === h && b.date === k && b.start != null && isActive(b) && b.start < m + 60 && m < b.start + b.dur).length;
+function grid(h, k) {
+  const btns = hourSlots().map(m => { const c = !!S.closed[h + '|' + k + '|' + m], n = inHour(h, k, m); return B(hm(m), 'aclt|' + h + '|' + k + '|' + m, {c: c ? 'r' : 'g', s: n ? String(n) : ''}); });
+  return {text: '**' + cap(dLong(k)) + '**, ' + HALL_IN[h] + '. Нажмите время, чтобы закрыть или открыть.\n{g} открыто  {r} закрыто, цифра — сколько записано',
+    kb: chunk(btns, 4).concat([[B('Закрыть весь день', 'aclall|' + h + '|' + k + '|1'), B('Открыть весь день', 'aclall|' + h + '|' + k + '|0')], [B('Другой день', 'acl|' + h), B('Меню', 'menu')]])};
+}
+A.acld = (h, k) => { const g = grid(h, k); bot('staff', g.text, g.kb, {grid: h + '|' + k}); };
+function regrid(h, k) {
+  const m = S.chats.staff.msgs.find(x => x.id === SRC);
+  if (m && m.grid === h + '|' + k) Object.assign(m, grid(h, k));
+}
+A.aclt = (h, k, m) => {
+  const key = h + '|' + k + '|' + m, n = inHour(h, k, +m);
+  if (S.closed[key]) { delete S.closed[key]; bot('staff', hm(+m) + ' открыто для записи.'); }
+  else { S.closed[key] = 1; bot('staff', hm(+m) + ' закрыто для новой записи.' + (n ? ' Записано ' + n + ': эти брони в силе, отменить можно в списке броней.' : '')); }
+  regrid(h, k);
+};
+A.aclall = (h, k, v) => {
+  hourSlots().forEach(m => { const key = h + '|' + k + '|' + m; if (v === '1') S.closed[key] = 1; else delete S.closed[key]; });
+  const n = S.bookings.filter(b => b.hall === h && b.date === k && isActive(b)).length;
+  bot('staff', v === '1' ? cap(dLong(k)) + ' закрыт для новой записи.' + (n ? ' Оформленных броней ' + n + ', они в силе.' : '') : cap(dLong(k)) + ' открыт для записи.');
+  regrid(h, k);
+};
+A.areqs = () => {
+  if (!S.requests.length) return bot('staff', 'Заявок нет.', MENU);
+  const list = S.requests.slice().sort((a, b) => (a.st === 'new' ? 0 : 1) - (b.st === 'new' ? 0 : 1) || b.created - a.created);
+  bot('staff', 'Заявки организаций: ' + list.length + ', ждут ответа: ' + COUNTS.req() + '.');
+  list.slice(0, 8).forEach(r => bot('staff', reqCard(r), r.st === 'new' ? [[B('Согласовано', 'rok|' + r.id), B('Отказать', 'rno|' + r.id)]] : null));
+};
+A.rok = id => {
+  const r = S.requests.find(x => x.id === id);
+  if (r.st !== 'new') return bot('staff', 'По этой заявке уже ответ: ' + RST[r.st] + '.', MENU);
+  r.st = 'agreed';
+  bot('staff', 'Заявка № ' + r.n + ': согласовано.', MENU);
+  if (r.user === 'me') bot('client', 'По заявке № ' + r.n + ' школа согласна. Детали обсудят по телефону ' + r.phone + '.');
+};
+A.rno = id => {
+  const r = S.requests.find(x => x.id === id);
+  if (r.st !== 'new') return bot('staff', 'По этой заявке уже ответ: ' + RST[r.st] + '.', MENU);
+  r.st = 'declined';
+  bot('staff', 'Заявка № ' + r.n + ': отказ.', MENU);
+  if (r.user === 'me') bot('client', 'По заявке № ' + r.n + ' школа не сможет принять вас в это время. Можно оставить новую на другой день.', [[B('Новая заявка', 'org')]]);
+};
+A.astats = () => {
+  const all = S.bookings.filter(b => b.no), live = all.filter(b => b.st !== 'cancelled'), paid = all.filter(b => b.st === 'paid');
+  bot('staff', '**Статистика**\nБроней оформлено: ' + live.length + (all.length > live.length ? ', отменено: ' + (all.length - live.length) : '')
+    + '\nЖдут оплату: ' + all.filter(b => b.st === 'unpaid' || b.st === 'reported').length + ', из них сообщили об оплате: ' + COUNTS.rep()
+    + '\nПодтверждено оплат: ' + paid.length + '\nСумма подтверждённых: ' + rub(paid.reduce((a, b) => a + b.price, 0))
+    + '\nЗаявок от организаций: ' + S.requests.length + ', ждут ответа: ' + COUNTS.req(), MENU);
+};
+A.alinks = () => bot('staff', 'Ссылки в меню клиента. Пустые клиент не видит.\n' + LINKS.map(([k, t]) => t + ': ' + (S.links[k] || 'не задана')).join('\n'),
+  [LINKS.map(([k, t]) => B(t, 'aln|' + k))].concat(MENU));
+A.aln = k => { setAw('staff', 'link', {lk: k, ph: 'https://…'}); bot('staff', 'Пришлите ссылку для «' + LINKS.find(x => x[0] === k)[1] + '». Чтобы убрать её из меню, пришлите минус.'); };
+IN.link = (t, aw) => {
+  if (t === '-' || t === '—') S.links[aw.lk] = '';
+  else if (!/^https?:\/\/[^\s.]+\.\S+$/.test(t)) return bot('staff', 'Ссылка должна начинаться с https://');
+  else S.links[aw.lk] = t;
+  setAw('staff');
+  bot('staff', S.links[aw.lk] ? 'Сохранено, клиент увидит её в «Наших ссылках».' : 'Убрано, клиент эту ссылку не увидит.', [[B('Ссылки', 'alinks'), B('Меню', 'menu')]]);
+};
+
+/* ---------- таймер резерва ---------- */
+function sweep() {
+  for (const b of S.bookings) {
+    if (b.st !== 'hold' || b.until > now()) continue;
+    b.st = 'expired';
+    const d = D();
+    if (d && d.bid === b.id) {
+      bot('client', '15 минут прошли: резерв на ' + hm(b.start) + ' снят, место снова свободно для других. Можно продолжить, при оформлении проверю, не заняли ли его.', [[B('Выбрать другое время', 'fixWhen')]]);
+    }
+  }
+}
+const timerText = b => {
+  if (!b) return '';
+  if (b.st === 'hold' && b.until > now()) { const s = Math.ceil((b.until - now()) / 1000); return pad(Math.floor(s / 60)) + ':' + pad(s % 60); }
+  return {hold: 'истёк', expired: 'истёк', released: 'снят', cancelled: 'снят'}[b.st] || 'оформлено';
+};
+function updTimers() {
+  document.querySelectorAll('.timer').forEach(el => {
+    const b = booking(el.dataset.b);
+    el.textContent = timerText(b);
+    el.classList.toggle('off', !(b && b.st === 'hold' && b.until > now()));
+  });
+}
+
+/* ---------- PDF договора ---------- */
+const U = ['', 'один', 'два', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять'], UF = ['', 'одна', 'две'].concat(U.slice(3));
+const TEEN = ['десять', 'одиннадцать', 'двенадцать', 'тринадцать', 'четырнадцать', 'пятнадцать', 'шестнадцать', 'семнадцать', 'восемнадцать', 'девятнадцать'];
+const TENS = ['', '', 'двадцать', 'тридцать', 'сорок', 'пятьдесят', 'шестьдесят', 'семьдесят', 'восемьдесят', 'девяносто'];
+const HUND = ['', 'сто', 'двести', 'триста', 'четыреста', 'пятьсот', 'шестьсот', 'семьсот', 'восемьсот', 'девятьсот'];
+const plural = (n, f) => { n %= 100; if (n > 10 && n < 20) return f[2]; n %= 10; return n === 1 ? f[0] : n > 1 && n < 5 ? f[1] : f[2]; };
+const tri = (n, fem) => { const t = Math.floor(n % 100 / 10), o = n % 10; return [HUND[Math.floor(n / 100)], t === 1 ? TEEN[o] : TENS[t], t === 1 ? '' : (fem ? UF : U)[o]].filter(Boolean).join(' '); };
+function words(n) {
+  if (!n) return 'ноль';
+  const th = Math.floor(n / 1000), r = n % 1000;
+  return [th ? tri(th, true) + ' ' + plural(th, ['тысяча', 'тысячи', 'тысяч']) : '', r ? tri(r) : ''].filter(Boolean).join(' ');
+}
+function contractDoc(b) {
+  const s = svc(b.svc), p = dp(b.cdate), blank = '____________________';
+  const when = b.kind === 'month' ? 'с ' + dNum(b.from) + ' по ' + dNum(b.to) + ' включительно' : dNum(b.date) + ', с ' + hm(b.start) + ' до ' + hm(b.start + b.dur) + ' (время московское)';
+  const P = (n, t) => ({text: [{text: n + ' ', bold: true}, t], margin: [0, 0, 0, 4], alignment: 'justify'});
+  const H = t => ({text: t, style: 'sec'});
+  const th = t => ({text: t, bold: true, fillColor: '#F1F1F1'});
+  return {
+    pageSize: 'A4', pageMargins: [62, 56, 50, 64],
+    info: {title: 'Договор № ' + b.no, author: 'Спортивная школа'},
+    defaultStyle: {fontSize: 10.5, lineHeight: 1.3},
+    styles: {title: {fontSize: 14, bold: true, alignment: 'center'}, sec: {bold: true, fontSize: 11, margin: [0, 12, 0, 5]}, small: {fontSize: 8, color: '#666'}},
+    footer: (cur, total) => ({margin: [62, 22, 50, 0], columns: [{text: 'Образец для демо: в рабочей версии подставляется утверждённый шаблон школы.', style: 'small'}, {text: 'стр. ' + cur + ' из ' + total, style: 'small', alignment: 'right', width: 70}]}),
+    content: [
+      {text: 'ДОГОВОР № ' + b.no, style: 'title'},
+      {text: 'на оказание платных услуг', alignment: 'center', margin: [0, 2, 0, 16]},
+      {columns: [{text: 'г. ______________'}, {text: '«' + pad(p.d) + '» ' + MON[p.m - 1] + ' ' + p.y + ' г.', alignment: 'right'}], margin: [0, 0, 0, 14]},
+      {text: ['Спортивная школа (реквизиты из вашего шаблона), именуемая в дальнейшем «Исполнитель», в лице ', blank, ', действующего на основании ', blank,
+        ', с одной стороны, и ', {text: b.name, bold: true}, ', именуемый(ая) в дальнейшем «Потребитель», с другой стороны, вместе именуемые «Стороны», заключили настоящий договор о нижеследующем.']},
+      H('1. Предмет договора'),
+      P('1.1.', 'Исполнитель оказывает Потребителю платную услугу, указанную в таблице, а Потребитель оплачивает её на условиях настоящего договора.'),
+      {table: {headerRows: 1, widths: ['*', 92, 112, 58], body: [[th('Услуга'), th('Объект'), th(b.kind === 'month' ? 'Период' : 'Дата и время'), th('Стоимость, руб.')],
+        [s.name, HALLS[b.hall], when, {text: String(b.price), alignment: 'right'}]]},
+        layout: {hLineWidth: () => .5, vLineWidth: () => .5, hLineColor: () => '#999', vLineColor: () => '#999', paddingTop: () => 3, paddingBottom: () => 3},
+        fontSize: 9.5, margin: [0, 4, 0, 8]},
+      P('1.2.', b.kind === 'month' ? 'Абонемент даёт право посещать объект в течение указанного периода в часы работы Исполнителя.'
+        : b.kind === 'rent' ? 'На время оказания услуги объект предоставляется Потребителю целиком.' : 'Услуга оказывается в общей группе посетителей в пределах вместимости объекта.'),
+      H('2. Стоимость и порядок оплаты'),
+      P('2.1.', 'Стоимость услуги составляет ' + b.price + ' (' + words(b.price) + ') ' + plural(b.price, ['рубль', 'рубля', 'рублей']) + ' 00 копеек.'),
+      P('2.2.', 'Оплата производится безналичным переводом по QR-коду или по реквизитам Исполнителя до начала оказания услуги.'),
+      P('2.3.', 'Обязательство по оплате считается исполненным после поступления денежных средств на счёт Исполнителя и подтверждения поступления сотрудником Исполнителя.'),
+      P('2.4.', 'Стоимость, указанная в договоре, не изменяется после его заключения.'),
+      H('3. Права и обязанности сторон'),
+      P('3.1.', 'Исполнитель обязуется предоставить объект в согласованное время в исправном состоянии, с соблюдением санитарных норм и требований безопасности.'),
+      P('3.2.', 'Потребитель обязуется оплатить услугу в порядке раздела 2, соблюдать правила посещения и технику безопасности, бережно относиться к имуществу Исполнителя.'),
+      P('3.3.', 'Исполнитель вправе не допустить Потребителя к оказанию услуги при нарушении правил посещения.'),
+      H('4. Ответственность сторон'),
+      P('4.1.', 'За неисполнение или ненадлежащее исполнение обязательств Стороны несут ответственность в соответствии с законодательством Российской Федерации.'),
+      P('4.2.', 'Ущерб, причинённый имуществу Исполнителя по вине Потребителя, возмещается Потребителем.'),
+      H('5. Срок действия договора'),
+      P('5.1.', 'Договор вступает в силу с момента оплаты и действует ' + (b.kind === 'month' ? 'по ' + dNum(b.to) + ' включительно.' : 'до полного исполнения Сторонами своих обязательств.')),
+      H('6. Прочие условия'),
+      P('6.1.', 'Потребитель даёт согласие на обработку своих персональных данных (фамилия, имя, отчество, номер телефона) в целях исполнения договора в соответствии с Федеральным законом от 27.07.2006 № 152-ФЗ «О персональных данных».'),
+      P('6.2.', 'Договор сформирован в электронном виде. Порядок подписания определяет Исполнитель, электронная подпись к документу не применяется.'),
+      H('7. Реквизиты и подписи сторон'),
+      {table: {widths: ['*', '*'], body: [
+        [{stack: [{text: 'Исполнитель', bold: true, margin: [0, 0, 0, 4]}, 'Спортивная школа (реквизиты из вашего шаблона)', 'ИНН / КПП: ' + blank, 'Адрес: ' + blank, 'Р/с: ' + blank, 'Банк: ' + blank, 'БИК: ' + blank]},
+          {stack: [{text: 'Потребитель', bold: true, margin: [0, 0, 0, 4]}, b.name, 'Телефон: ' + b.phone]}],
+        [{stack: [{text: '______________ / ______________ /', margin: [0, 26, 0, 0]}, {text: '(подпись, расшифровка)', style: 'small'}, {text: 'М. П.', margin: [0, 6, 0, 0]}]},
+          {stack: [{text: '______________ / ' + short(b.name) + ' /', margin: [0, 26, 0, 0]}, {text: '(подпись)', style: 'small'}]}]]},
+        layout: 'noBorders'},
+    ],
+  };
+}
+let pdfLib;
+function loadPdf() {
+  const js = f => new Promise((ok, bad) => { const el = document.createElement('script'); el.src = PDF_CDN + f; el.integrity = SRI[f]; el.crossOrigin = 'anonymous'; el.onload = ok; el.onerror = bad; document.head.append(el); });
+  return pdfLib || (pdfLib = js('pdfmake.min.js').then(() => js('vfs_fonts.min.js')).catch(e => { pdfLib = null; throw e; }));
+}
+function openPdf(id) {
+  const b = booking(id);
+  if (!b) return;
+  const w = window.open('', '_blank');
+  if (w) w.document.write('<title>Договор</title><p style="font:16px system-ui,sans-serif;padding:24px">Готовлю договор…</p>');
+  loadPdf().then(() => pdfMake.createPdf(contractDoc(b)).getBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    if (w) w.location.href = url; else location.href = url;
+  })).catch(() => { if (w) w.close(); alert('Не загрузился генератор PDF, проверьте интернет и попробуйте ещё раз.'); });
+}
+
+/* ---------- QR оплаты ---------- */
+const qrCache = {};
+function qrSvg(b) {
+  if (qrCache[b.id]) return qrCache[b.id];
+  if (!window.qrcode) return '';
+  qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'];
+  // формат ГОСТ Р 56042-2014, как у банковских приложений; реквизиты нулевые, такой платёж банк не проведёт
+  const data = ['ST00012', 'Name=Спортивная школа (демо)', 'PersonalAcc=00000000000000000000', 'BankName=Банк школы', 'BIC=000000000',
+    'CorrespAcc=00000000000000000000', 'PayeeINN=0000000000', 'Sum=' + b.price * 100, 'Purpose=Оплата по договору № ' + b.no + ' от ' + dNum(b.cdate)].join('|');
+  const q = qrcode(0, 'M'); q.addData(data, 'Byte'); q.make();
+  return (qrCache[b.id] = q.createSvgTag({cellSize: 4, margin: 2, scalable: true}));
+}
+
+/* ---------- отрисовка ---------- */
+const els = {}, seen = {client: 0, staff: 0};
+const fmt = (t, m) => esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\{([gyr])\}/g, '<i class="dot $1"></i>')
+  .replace('{T}', m && m.timer ? '<span class="timer" data-b="' + esc(m.timer) + '"></span>' : '').replace(/\n/g, '<br>');
+function kbHtml(m) {
+  if (!m.kb || !m.kb.length) return '';
+  return '<div class="kb">' + m.kb.map((row, r) => '<div class="row">' + row.map((b, c) => {
+    if (b.url) return '<a class="btn" href="' + esc(b.url) + '" target="_blank" rel="noopener">' + esc(b.t) + ' ↗</a>';
+    const n = b.n && COUNTS[b.n]();
+    return '<button type="button" class="btn' + (b.c ? ' c-' + b.c : '') + (b.demo ? ' demo' : '') + '" data-m="' + m.id + '" data-r="' + r + '" data-c="' + c + '">'
+      + (b.c ? '<i class="dot ' + b.c + '"></i>' : '') + '<span>' + esc(b.t) + (n ? ' · ' + n : '') + '</span>' + (b.s ? '<small>' + esc(b.s) + '</small>' : '') + '</button>';
+  }).join('') + '</div>').join('') + '</div>';
+}
+function msgHtml(m, fresh) {
+  if (m.from === 'note') return '<div class="note' + (fresh ? ' new' : '') + '">' + fmt(m.text) + kbHtml(m) + '</div>';
+  let body = '';
+  if (m.file) { const b = booking(m.file); body += '<button type="button" class="file" data-pdf="' + esc(m.file) + '"><span class="fi">PDF</span><span><b>Договор № ' + esc(b.no) + '.pdf</b><small>А4, откроется в новой вкладке</small></span></button>'; }
+  if (m.qr) body += '<div class="qr">' + qrSvg(booking(m.qr)) + '</div><p class="qrcap">Демо-QR: реквизиты нулевые, банк такой платёж не проведёт. В рабочей версии здесь QR школы.</p>';
+  if (m.contact) body += '<div class="contact"><i>К</i><span><b>Контакт</b><br>' + esc(m.contact) + '</span></div>';
+  if (m.text) body += fmt(m.text, m);
+  const wide = m.kb && m.kb.length && m.kb.some(r => r.length > 1);
+  return '<div class="msg ' + (m.from === 'me' ? 'out' : 'in') + (wide ? ' wide' : '') + (fresh ? ' new' : '') + '"><div class="bubble">' + body + '<span class="time">' + clock(m.ts) + '</span></div>' + kbHtml(m) + '</div>';
+}
+function renderChat(chat) {
+  const box = els[chat].msgs, msgs = S.chats[chat].msgs, top = box.scrollTop;
+  const last = msgs.length ? msgs[msgs.length - 1].id : 0, grew = last > seen[chat];
+  box.innerHTML = msgs.map(m => msgHtml(m, seen[chat] && m.id > seen[chat])).join('');
+  if (grew) box.scrollTop = box.scrollHeight; else box.scrollTop = top;
+  seen[chat] = last;
+  const aw = S.chats[chat].aw, inp = els[chat].input;
+  inp.placeholder = aw && aw.ph || 'Сообщение';
+  inp.inputMode = aw && aw.im || 'text';
+}
+function renderPin() {
+  const d = D(), b = d && d.bid && booking(d.bid), pin = els.client.pin;
+  if (b && b.st === 'hold' && b.until > now()) {
+    pin.hidden = false;
+    pin.innerHTML = '<span class="pt">Резерв: ' + esc(dShort(b.date) + ', ' + hm(b.start) + ', ' + HALL_IN[b.hall]) + '</span><span class="timer" data-b="' + esc(b.id) + '"></span>';
+  } else pin.hidden = true;
+}
+function render() {
+  renderChat('client'); renderChat('staff'); renderPin(); updTimers();
+  const badge = document.querySelector('.badge');
+  badge.hidden = !S.unread; badge.textContent = S.unread || '';
+}
+function commit() { save(); render(); }
+function setView(v) {
+  view = v;
+  document.querySelector('.stage').dataset.view = v;
+  document.querySelectorAll('.switch button').forEach(b => { b.classList.toggle('on', b.dataset.view === v); b.setAttribute('aria-selected', b.dataset.view === v); });
+  if (v === 'staff') S.unread = 0;
+  render();
+}
+function act(chat, btn, src) {
+  if (!btn.q) me(chat, btn.t);
+  const [k, ...args] = btn.a.split('|'), fn = (chat === 'client' ? C : A)[k];
+  SRC = src;
+  try { if (fn) fn(...args); } finally { SRC = null; }
+  commit();
+  if (S.chats[chat].aw && !mobile.matches) els[chat].input.focus();
+}
+function onText(chat, text) {
+  text = text.trim();
+  if (!text) return;
+  me(chat, text);
+  const aw = S.chats[chat].aw;
+  if (/^\/?(start|menu|меню|старт)$/i.test(text)) (chat === 'client' ? C : A).menu();
+  else if (aw && IN[aw.k]) IN[aw.k](text, aw);
+  else if (chat === 'client') bot('client', 'Запись идёт кнопками. Вот меню:', MAIN());
+  else bot('staff', 'Действия — кнопками меню.', STAFF());
+  commit();
+}
+
+for (const chat of ['client', 'staff']) {
+  const root = document.querySelector('[data-chat=' + chat + ']');
+  els[chat] = {msgs: root.querySelector('.msgs'), input: root.querySelector('input'), pin: root.querySelector('.pin')};
+  els[chat].msgs.addEventListener('click', e => {
+    const f = e.target.closest('[data-pdf]');
+    if (f) return openPdf(f.dataset.pdf);
+    const el = e.target.closest('button[data-m]');
+    if (!el) return;
+    const m = S.chats[chat].msgs.find(x => x.id === +el.dataset.m), btn = m && m.kb && m.kb[+el.dataset.r][+el.dataset.c];
+    if (btn) act(chat, btn, m.id);
+  });
+  root.querySelector('form').addEventListener('submit', e => { e.preventDefault(); const v = els[chat].input.value; els[chat].input.value = ''; onText(chat, v); });
+  root.querySelector('.menu-btn').addEventListener('click', () => act(chat, B('Меню', 'menu'), null));
+}
+els.client.pin.addEventListener('click', () => act('client', B('Продолжить оформление', 'resume'), null));
+document.querySelectorAll('.switch button').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+const reset = document.getElementById('reset');
+let armed = 0;
+reset.addEventListener('click', () => {
+  if (Date.now() - armed < 4000) { try { localStorage.removeItem(KEY); } catch (e) {} location.reload(); return; }
+  armed = Date.now(); reset.textContent = 'Точно сбросить? Нажмите ещё раз';
+  setTimeout(() => { reset.textContent = 'Сбросить демо'; }, 4000);
+});
+
+S = load();
+if (!S || S.v !== 1) seed();
+else {
+  sweep();
+  note('client', 'Страница перезагружена: брони, цены и переписка на месте.', null, {tmp: 1});
+  note('staff', 'Страница перезагружена: данные на месте.', null, {tmp: 1});
+}
+commit();
+setInterval(() => { if (S.bookings.some(b => b.st === 'hold' && b.until <= now())) { sweep(); commit(); } else updTimers(); }, 1000);
+window.__demo = {state: () => S, pdfBase64: id => loadPdf().then(() => new Promise(ok => pdfMake.createPdf(contractDoc(booking(id))).getBase64(ok))), normPhone, checkName, words};
+})();
+</script>
+</body>
+</html>
