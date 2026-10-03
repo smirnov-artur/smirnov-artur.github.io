@@ -235,15 +235,16 @@ ${vary}
 varying float vAl;
 vec4 sam(vec2 kl, vec2 p) { return texture2D(uT, (kl + p) / uAtl); }
 // моргание: сверху опускается нарисованное закрытое веко (pozy/zakr) — его линия ресниц идёт от верхнего края глаза до линии
-// смыкания и закрывает открытый глаз; над глазом кожа закрытого века проявляется плавно. Возвращает (сдвиг выборки
-// закрытого кадра вниз, вес закрытого кадра).
-vec2 veko(vec2 P, vec4 g, float x) {
-  if (x < .002) return vec2(0.);
+// смыкания (замер по закрытому кадру: 1,15 ry под центром, к уголкам выше) и закрывает открытый глаз; свисающие ресницы
+// закрытого кадра ложатся на открытый глаз по тёмным пикселям; над глазом кожа закрытого века проявляется плавно.
+// Возвращает (сдвиг выборки закрытого кадра вниз, вес закрытого кадра, вес свисающих ресниц).
+vec3 veko(vec2 P, vec4 g, float x) {
+  if (x < .002) return vec3(0.);
   float u = (P.x - g.x) / g.z, arc = sqrt(max(0., 1. - u * u));
-  float yT = g.y - g.w * arc, yC = g.y + g.w * arc, ye = mix(yT, yC, x);
-  if (P.y > ye + 1.) return vec2(0.);
-  if (P.y >= yT) return vec2(yC - ye, 1. - smoothstep(ye - 1., ye + 1., P.y));
-  return vec2(0., smoothstep(0., .35, x));
+  float yT = g.y - g.w * arc, yL = g.y + g.w * (.4 + .75 * arc), ye = mix(yT, yL, x), sh = yL - ye;
+  if (P.y < yT) return vec3(0., smoothstep(0., .35, x), 0.);
+  if (P.y <= ye) return vec3(sh, 1. - smoothstep(ye - 1., ye + 1., P.y), 0.);
+  return vec3(sh, 0., smoothstep(.05, .25, x) * (1. - smoothstep(ye + .4 * g.w, ye + 1.1 * g.w, P.y)));
 }
 void main() {
   vec2 P = ${vk(IC)} + uOkno;
@@ -252,11 +253,15 @@ void main() {
     gl_FragColor = vec4(z.rgb * z.a, z.a) * (P.x < 906. ? uZl : uZp) * vAl;
     return;
   }
-  vec2 vl = P.x < 906. ? veko(P, uGlL, uBl) : veko(P, uGlP, uBp);
+  vec3 vl = P.x < 906. ? veko(P, uGlL, uBl) : veko(P, uGlP, uBp);
   vec3 c = vec3(0.); float ws = 0.;                 // альфа клетки — «здесь не прядь»: пряди одной позы гасятся кожей соседних
   ${PZ.map((_, k) => `if (uW[${k}] > .0005) { vec4 t = sam(uKl[${k}], ${vk(k)}); c += uW[${k}] * t.a * t.rgb; ws += uW[${k}] * t.a; }`).join(' ')}
   c /= max(ws, 1e-4);
-  if (vl.y > 0.) { vec4 z = sam(uKl[${NP}], ${vk(IC)} + vec2(0., vl.x)); c = mix(c, z.rgb, vl.y * z.a); }
+  if (vl.y + vl.z > 0.) {
+    vec4 z = sam(uKl[${NP}], ${vk(IC)} + vec2(0., vl.x));
+    float lash = 1. - smoothstep(.2, .42, dot(z.rgb, vec3(.3, .59, .11)));
+    c = mix(c, z.rgb, max(vl.y, vl.z * lash) * z.a);
+  }
   gl_FragColor = vec4(c * vAl, vAl);
 }`;
   const M = prog(MVS, MFS);
@@ -311,7 +316,8 @@ void main() {
     point(e.clientX, e.clientY); if (!vnutri) return;
     const now = performance.now() / 1000;
     kliki = kliki.filter(t => now - t < .6); kliki.push(now); flareCel = Math.max(flareCel, .5);
-    if (kliki.length >= 3) { angryUntil = now + 2.2; flareCel = 1.6; kliki = []; winkT = -1; curT = -9; } else if (now >= angryUntil) winkT = now;
+    if (kliki.length >= 3) { angryUntil = now + 2.2; flareCel = 1.6; kliki = []; curT = -9; nextBlink = Math.max(nextBlink, now + 1);
+      if (winkT > 0) { const b = now - winkT, w = b < .1 ? b / .1 : b < .45 ? 1 : Math.max(0, 1 - (b - .45) / .16); winkT = now - .45 - (1 - w) * .16; } } else if (now >= angryUntil) winkT = now;
   });
   document.addEventListener('mouseleave', () => { lastMove = -1e9; });
   const pruzh = (x, v, c, K, z, dt) => { v += ((c - x) * K - v * 2 * Math.sqrt(K) * z) * dt; return [x + v * dt, v]; };
