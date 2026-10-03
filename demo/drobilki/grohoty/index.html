@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Вибрационные грохоты — наклонные, горизонтальные, колосниковые | Фракция</title>
+<meta name="description" content="Вибрационные грохоты на 1–4 деки: площадь сита 4,8–21,9 м², до 900 т/ч, ячейка от 1 мм. Расчёт площади по нижней деке, сита под каждую фракцию, КП за один день.">
+<meta name="theme-color" content="#0F0E0C">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230F0E0C'/%3E%3Cpath d='M5 6h6l8 14v6h-5z' fill='%23F3F0E8'/%3E%3Cpath d='M21 6h6v20h-6z' fill='%23F3F0E8'/%3E%3Crect x='14' y='3' width='5' height='5' rx='1' transform='rotate(45 16.5 5.5)' fill='%23F4B400'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="../img/hero-g.webp" media="(min-width: 641px)">
+<link rel="preload" as="image" href="../img/hero-g-m.webp" media="(max-width: 640px)">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="page-g" data-page="g" data-root="../">
+
+<header class="hdr" id="top">
+  <div class="hdr__in wrap">
+    <a class="logo" href="../" aria-label="Фракция, на страницу дробилок">
+      <svg class="logo__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M3 5h7l9 15v8h-6z" fill="currentColor"/><path d="M22 5h7v23h-7z" fill="currentColor"/><rect class="logo__stone" x="13.6" y="2.6" width="5.4" height="5.4" rx="1" transform="rotate(45 16.3 5.3)"/></svg>
+      <span>Фракция</span>
+    </a>
+    <nav class="series" aria-label="Направления">
+      <a href="../">Дробилки</a>
+      <a href="./" aria-current="page">Грохоты</a>
+      <span class="soon" title="Следующая страница серии">Конвейеры <small>скоро</small></span>
+      <span class="soon" title="Следующая страница серии">Запчасти <small>скоро</small></span>
+    </nav>
+    <div class="hdr__right">
+      <a class="hdr__tel" href="tel:+73430000000"><span>+7 343 000-00-00</span><small>пн–пт 8–18 по Москве</small></a>
+      <a class="btn btn--hot btn--sm" href="#kp">Запросить КП</a>
+      <button class="burger" type="button" aria-label="Меню" aria-expanded="false"><i></i><i></i></button>
+    </div>
+  </div>
+  <div class="mnav" hidden>
+    <p>Направления</p>
+    <a href="../">Дробилки</a><a href="./" aria-current="page">Грохоты</a>
+    <span class="soon">Конвейеры <small>скоро</small></span><span class="soon">Запчасти <small>скоро</small></span>
+    <p>На этой странице</p>
+    <a href="#modeli">Модели</a><a href="#podbor">Подбор</a><a href="#sita">Сита</a><a href="#postavka">Поставка</a><a href="#kejsy">Кейсы</a><a href="#kp">Запросить КП</a>
+    <a class="mnav__tel" href="tel:+73430000000">+7 343 000-00-00</a>
+  </div>
+</header>
+
+<main>
+
+<!-- Первый экран -->
+<section class="hero">
+  <div class="hero__media" aria-hidden="true">
+    <video class="hero__video" muted loop playsinline autoplay preload="metadata" poster="../img/hero-g.webp" data-src="../img/hero-g.mp4" data-src-m="../img/hero-g-m.mp4" data-poster-m="../img/hero-g-m.webp"></video>
+  </div>
+  <div class="hero__in wrap">
+    <h1 class="hero__h">
+      <span class="ln"><span>Вибрационные грохоты</span></span>
+      <span class="ln"><span>на одну–четыре деки</span></span>
+      <span class="ln dim"><span>под ваши фракции.</span></span>
+    </h1>
+    <div class="hero__row">
+      <p class="hero__lead">Считаем площадь сита по нижней деке и подбираем ячейку под каждую фракцию. Грохот выдаёт ровно то, что вы продаёте, без пересева и перегруза.</p>
+      <div class="hero__cta">
+        <a class="btn btn--hot" href="#podbor">Подобрать грохот <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10M11 5l5 5-5 5"/></svg></a>
+        <a class="btn btn--line" href="#modeli">Модели и характеристики</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero__facts wrap">
+    <div class="belt" aria-hidden="true"><i></i></div>
+    <dl>
+      <div><dt>4,8–21,9 м²</dt><dd>площадь сита на деку</dd></div>
+      <div><dt>1–4 деки</dt><dd>до пяти фракций за проход</dd></div>
+      <div><dt>до 900 т/ч</dt><dd>производительность линейки</dd></div>
+      <div><dt>от 1 мм</dt><dd>ячейка полиуретанового сита</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- Типы -->
+<section class="sec sec--dark" id="tipy">
+  <div class="wrap">
+    <div class="shead" data-r>
+      <h2 class="h2">Четыре типа под разные задачи</h2>
+      <p class="shead__p">Наклонный гонит щебень, горизонтальный точно режет мелочь и мокрый песок, колосниковый стоит перед дробилкой, мобильный ездит за забоем.</p>
+    </div>
+    <div class="panels" data-r>
+      <article class="panel is-on">
+        <img src="../img/g-naklon.webp" alt="Наклонный грохот на раме над конвейером" loading="lazy" decoding="async" width="1600" height="1067">
+        <div class="panel__body">
+          <h3>Наклонные</h3>
+          <p>Круговые колебания, угол деки 15–25°. Основная машина на щебне: быстро прогоняет крупные и средние фракции, не забивается.</p>
+          <div class="panel__foot"><b>60–800 т/ч</b><span>4 модели</span><a href="#modeli" data-pick="naklon">Модели</a></div>
+        </div>
+      </article>
+      <article class="panel">
+        <img src="../img/g-gorizont.webp" alt="Дека грохота с жёлтыми полиуретановыми панелями, по ней идёт щебень" loading="lazy" decoding="async" width="1600" height="900">
+        <div class="panel__body">
+          <h3>Горизонтальные</h3>
+          <p>Линейные колебания, дека почти без наклона. Точнее режут мелочь до 5 мм, справляются с мокрым песком и ПГС, ниже по высоте.</p>
+          <div class="panel__foot"><b>80–900 т/ч</b><span>3 модели</span><a href="#modeli" data-pick="gorizont">Модели</a></div>
+        </div>
+      </article>
+      <article class="panel">
+        <img src="../img/g-kolosnik.webp" alt="Вибропитатели с колосниковой решёткой на заводском складе" loading="lazy" decoding="async" width="1600" height="631">
+        <div class="panel__body">
+          <h3>Колосниковые</h3>
+          <p>Тяжёлые грохоты и питатели перед дробилкой. Снимают мелочь и глину с горной массы, и дробилка работает только с тем, что нужно дробить.</p>
+          <div class="panel__foot"><b>150–700 т/ч</b><span>2 модели</span><a href="#modeli" data-pick="kolosnik">Модели</a></div>
+        </div>
+      </article>
+      <article class="panel">
+        <img src="../img/g-mobil.webp" alt="Гусеничный грохот с отвальными конвейерами в карьере" loading="lazy" decoding="async" width="1600" height="1063">
+        <div class="panel__body">
+          <h3>Мобильные</h3>
+          <p>Грохот на гусеницах с отвальными конвейерами и своим дизелем. Для карьеров с переездами, ПГС и сортировки ДСО.</p>
+          <div class="panel__foot"><b>60–500 т/ч</b><span>2 модели</span><a href="#modeli" data-pick="mobil">Модели</a></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Модели -->
+<section class="sec sec--paper" id="modeli">
+  <div class="wrap">
+    <div class="shead" data-r>
+      <h2 class="h2">Модели и&nbsp;характеристики</h2>
+      <p class="shead__p">Одиннадцать грохотов: от колосникового питателя до горизонтального на 21,9 м². Площадь указана на одну деку. Отметьте модели — пришлём КП с ситами под ваши фракции.</p>
+    </div>
+    <div data-r>
+      <div class="tools">
+        <div class="types" id="types" role="group" aria-label="Тип грохота"></div>
+        <label class="switch"><input type="checkbox" id="mobOnly"><i></i><span>Только мобильные</span></label>
+        <label class="sort"><span>Сортировка</span>
+          <select id="sort"><option value="def">По типу</option><option value="q">По производительности</option><option value="t">По массе</option></select>
+        </label>
+      </div>
+      <div class="tbl" id="tbl" role="table" aria-label="Грохоты и характеристики">
+        <div class="tbl__head" id="thead" role="row"></div>
+        <div id="rows" role="rowgroup"></div>
+        <button type="button" class="more" id="more" hidden></button>
+        <p class="tbl__empty" id="empty" hidden>Таких моделей нет. Опишите задачу в заявке — подберём под заказ.</p>
+      </div>
+      <div class="tbl__foot">
+        <p>Производительность — для сухого щебня при ячейке нижней деки 5–20 мм. Мокрый и липкий материал проходит сито медленнее на 20–30 %, это учтено в подборе ниже.</p>
+        <p>В рабочей версии каталог тянется из 1С.</p>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="basket" id="basket" hidden><span id="basketN">0</span> в запросе КП <b>Запросить</b></button>
+</section>
+
+<!-- Подбор -->
+<section class="sec sec--calc" id="podbor">
+  <div class="wrap">
+    <div class="shead" data-r>
+      <h2 class="h2">Подбор грохота и&nbsp;сит</h2>
+      <p class="shead__p">Четыре вопроса — и справа появится грохот, ячейка на каждой деке и расчёт площади. Тот же расчёт инженер проверит по вашему ситовому анализу.</p>
+    </div>
+    <div class="quiz" data-r>
+      <div class="quiz__q">
+        <ol class="qbar" aria-label="Шаги подбора">
+          <li class="is-on">Материал</li><li>Производительность</li><li>Фракции</li><li>Исполнение</li>
+        </ol>
+
+        <div class="qstep">
+          <h3>Что будете сортировать?</h3>
+          <p>От материала зависит тип грохота и сита. Полоски — абразивность: чем выше, тем дольше должно служить сито.</p>
+          <div class="opts" data-k="mat" role="radiogroup" aria-label="Материал">
+            <button type="button" class="opt" role="radio" aria-checked="false" data-v="granit"><b>Щебень гранитный</b><small>после дробилки · абразивный</small><span class="hard" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></button>
+            <button type="button" class="opt" role="radio" aria-checked="false" data-v="ruda"><b>Руда, уголь</b><small>тяжёлая, абразивная</small><span class="hard" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></button>
+            <button type="button" class="opt" role="radio" aria-checked="false" data-v="pgs"><b>ПГС, песок</b><small>влажный, с глиной</small><span class="hard" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></button>
+            <button type="button" class="opt" role="radio" aria-checked="false" data-v="graviy"><b>Гравий мытый</b><small>окатанный, после промывки</small><span class="hard" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></button>
+            <button type="button" class="opt" role="radio" aria-checked="false" data-v="izvest"><b>Известняк</b><small>сухой, пылит</small><span class="hard" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></button>
+            <button type="button" class="opt" role="radio" aria-checked="false" data-v="beton"><b>ДСО</b><small>бетон с арматурой</small><span class="hard" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></button>
+          </div>
+        </div>
+
+        <div class="qstep" hidden>
+          <h3>Сколько тонн в час идёт на грохот?</h3>
+          <p>Весь поток, который подаёте на деку, а не выход одной фракции. По нему считаем площадь сита.</p>
+          <div class="qrange">
+            <div class="qread"><output id="qOut" for="qRange">250</output><span>т/ч</span></div>
+            <input type="range" id="qRange" min="20" max="1000" step="10" value="250" aria-label="Производительность, тонн в час">
+            <div class="qscale" aria-hidden="true"><span>20</span><span>250</span><span>500</span><span>750</span><span>1000</span></div>
+            <div class="qpre"><button type="button" data-q="100">100 т/ч</button><button type="button" data-q="250">250 т/ч</button><button type="button" data-q="500">500 т/ч</button><button type="button" data-q="800">800 т/ч</button></div>
+          </div>
+        </div>
+
+        <div class="qstep" hidden>
+          <h3>На какие фракции делим?</h3>
+          <p>Можно несколько. Каждая граница между фракциями — отдельная дека, поэтому четыре фракции подряд требуют трёх-четырёх дек.</p>
+          <div class="frs" role="group" aria-label="Фракции">
+            <button type="button" data-v="0-5" aria-pressed="false"><b>0–5<em>мм</em></b><small>песок, отсев</small></button>
+            <button type="button" data-v="5-10" aria-pressed="false"><b>5–10<em>мм</em></b><small>мелкий щебень</small></button>
+            <button type="button" data-v="10-20" aria-pressed="false"><b>10–20<em>мм</em></b><small>бетон, асфальт</small></button>
+            <button type="button" data-v="20-40" aria-pressed="false"><b>20–40<em>мм</em></b><small>бетон, основание дорог</small></button>
+            <button type="button" data-v="40-70" aria-pressed="false"><b>40–70<em>мм</em></b><small>основание, балласт</small></button>
+            <button type="button" data-v="70-150" aria-pressed="false"><b>70–150<em>мм</em></b><small>бут, засыпка</small></button>
+          </div>
+        </div>
+
+        <div class="qstep" hidden>
+          <h3>Стационар или на гусеницах?</h3>
+          <p>Мобильный грохот берёт до трёх дек и меньше площади, зато переезжает за забоем без крана.</p>
+          <div class="opts opts--3" data-k="isp" role="radiogroup" aria-label="Исполнение">
+            <button type="button" class="opt" role="radio" aria-checked="false" data-v="stac"><b>Стационарный</b><small>на раме под вашу линию</small></button>
+            <button type="button" class="opt" role="radio" aria-checked="false" data-v="mob"><b>Мобильный на гусеницах</b><small>свой дизель и отвальные ленты</small></button>
+            <button type="button" class="opt" role="radio" aria-checked="false" data-v="any"><b>Пока не знаю</b><small>покажем стационар, мобильный посчитаем в КП</small></button>
+          </div>
+        </div>
+
+        <div class="qnav">
+          <button type="button" class="btn btn--line" id="qBack" hidden>Назад</button>
+          <button type="button" class="btn btn--hot" id="qNext" disabled>Дальше <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10M11 5l5 5-5 5"/></svg></button>
+        </div>
+        <dl class="qrecap" id="qRecap" hidden></dl>
+      </div>
+
+      <aside class="qres" id="qres" aria-live="polite">
+        <div class="qres__head"><h3>Грохот под ваши ответы</h3><p id="qSum"></p></div>
+        <div class="qres__body" id="qOutBody"></div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- Сита -->
+<section class="sec sec--dark" id="sita">
+  <div class="wrap">
+    <div class="shead" data-r>
+      <h2 class="h2">Сита и панели под&nbsp;ваш материал</h2>
+      <p class="shead__p">От сита зависит, сколько грохот проработает до замены и насколько чисто разделит фракции. Ходовые ячейки держим на складе, нестандартные режем под заказ за неделю.</p>
+    </div>
+    <div class="eq" data-r>
+      <figure class="eq__pic">
+        <img src="../img/sito-pu.webp" alt="Полиуретановые панели на деке грохота" loading="lazy" decoding="async" width="806" height="669" data-eq="0">
+        <img src="../img/sito-provoloka.webp" alt="" loading="lazy" decoding="async" width="1200" height="797" data-eq="1">
+        <img src="../img/sito-perfo.webp" alt="" loading="lazy" decoding="async" width="1200" height="800" data-eq="2">
+        <img src="../img/zap-1.webp" alt="" loading="lazy" decoding="async" width="1400" height="933" data-eq="3">
+        <img src="../img/zap-2.webp" alt="" loading="lazy" decoding="async" width="1400" height="1050" data-eq="4">
+      </figure>
+      <div>
+        <ul class="eq__list">
+          <li class="is-on" data-eq="0"><h3>Полиуретановые панели</h3><p><span>модули 305 × 610 мм</span><span>ячейка 1–100 мм</span><span>служат в 5–8 раз дольше проволоки</span></p></li>
+          <li data-eq="1"><h3>Проволочные сита</h3><p><span>сталь 65Г и нержавейка</span><span>ячейка 3–150 мм</span><span>натяжные, с крюками под ваш короб</span></p></li>
+          <li data-eq="2"><h3>Перфолист и резина</h3><p><span>толщина 6–40 мм</span><span>отверстия 10–150 мм</span><span>верхняя дека под удар крупного куска</span></p></li>
+          <li data-eq="3"><h3>Вибровозбудители и подшипники</h3><p><span>дебалансный вал в сборе</span><span>подшипники с зазором C4</span><span>ремонт узла в обмен на старый</span></p></li>
+          <li data-eq="4"><h3>Пружины и опоры</h3><p><span>стальные и резиновые</span><span>подбор по массе короба и числу дек</span></p></li>
+        </ul>
+        <div class="eq__cta">
+          <button type="button" class="btn btn--hot" data-kp="Сита под мой грохот">Подобрать сита <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10M11 5l5 5-5 5"/></svg></button>
+          <p>Пришлите модель грохота, размер короба и фракции. Подберём сита и пришлём цену.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Поставка -->
+<section class="sec sec--paper" id="postavka">
+  <div class="wrap">
+    <div class="shead" data-r>
+      <h2 class="h2">От заявки до первой тонны</h2>
+      <p class="shead__p">Работаем с юрлицами и ИП по договору поставки, с НДС. Счета и закрывающие документы — через ЭДО.</p>
+    </div>
+    <ol class="flow" data-r>
+      <li><time>День 1</time><h3>Заявка и опросный лист</h3><p>Материал, тонны в час, фракции, влажность. Подойдут ситовой анализ и фото сита, которое стоит сейчас.</p></li>
+      <li><time>День 2</time><h3>Расчёт и КП</h3><p>Инженер считает площадь и ячейки по декам и присылает КП: грохот, сита, цена, срок, доставка.</p></li>
+      <li><time>От 14 дней</time><h3>Отгрузка</h3><p>Модели со склада отгружаем за две недели, под заказ — за 45–60 дней. Перед отправкой пришлём фото и видео приёмки.</p></li>
+      <li><time>На площадке</time><h3>Монтаж и запуск</h3><p>Шеф-монтаж, натяжка сит, настройка амплитуды и угла. Акт подписываем, когда грохот выдаёт ваши фракции.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="sec sec--photo" id="servis">
+  <img class="bgimg" src="../img/dostavka.webp" alt="" loading="lazy" decoding="async" width="2000" height="1497">
+  <div class="wrap dl">
+    <div class="dl__l" data-r>
+      <h2 class="h2">Поставка и&nbsp;сервис</h2>
+      <p class="shead__p">Отвечаем за машину, пока она не выдаст фракции на вашей площадке. Дальше — гарантия, склад сит и запчастей и инженер, который знает вашу линию.</p>
+    </div>
+    <div data-r>
+      <ul class="svc">
+        <li><span>Доставка до площадки</span><small>трал или ж/д платформа, по России и в Казахстан</small><b>в КП</b></li>
+        <li><span>Шеф-монтаж и пусконаладка</span><small>инженер на площадке от 3 до 7 дней</small><b>включено</b></li>
+        <li><span>Гарантия</span><small>12 месяцев на короб и вибровозбудитель</small><b>12 мес</b></li>
+        <li><span>Сита и запчасти со склада</span><small>панели, проволока, пружины, подшипники</small><b>1–3 дня</b></li>
+        <li><span>Лизинг</span><small>через партнёров, для юрлиц и ИП</small><b>аванс от 10 %</b></li>
+      </ul>
+      <div class="addr">
+        <div><small>Склад и сервис</small><b>Екатеринбург, Складская ул., 8</b></div>
+        <div><small>Отгрузка</small><b>пн–пт 8:00–18:00, сб по договорённости</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Кейсы -->
+<section class="sec sec--dark" id="kejsy">
+  <div class="wrap">
+    <div class="shead" data-r>
+      <h2 class="h2">Грохоты, которые уже работают</h2>
+      <p class="shead__p">Здесь будут ваши объекты: фото с площадки, схема и цифры после запуска. Пока — три типичных проекта, чтобы было видно формат.</p>
+    </div>
+    <div class="cases" data-r>
+      <article class="case">
+        <figure><img src="../img/case-g1.webp" alt="Отвальные конвейеры сортировочной линии над конусами щебня" loading="lazy" decoding="async" width="1200" height="800"><figcaption>300 т/ч</figcaption></figure>
+        <h3>ПГС, Ленинградская область</h3>
+        <dl>
+          <div><dt>Материал</dt><dd>ПГС с глиной</dd></div>
+          <div><dt>Грохот</dt><dd>ФГГ-2461-3 с промывкой</dd></div>
+          <div><dt>Продукт</dt><dd>песок 0–5, щебень 5–20 и 20–40</dd></div>
+          <div><dt>Итог</dt><dd>глины в песке меньше 2 %</dd></div>
+        </dl>
+      </article>
+      <article class="case">
+        <figure><img src="../img/case-g2.webp" alt="Песчаный карьер с конвейерами, вид сверху" loading="lazy" decoding="async" width="1200" height="797"><figcaption>450 т/ч</figcaption></figure>
+        <h3>Гранит, Урал</h3>
+        <dl>
+          <div><dt>Материал</dt><dd>гранит после щековой</dd></div>
+          <div><dt>Грохоты</dt><dd>ФГК-1550-2 + 2 × ФГН-2470-4</dd></div>
+          <div><dt>Продукт</dt><dd>5–10, 10–20, 20–40, 40–70</dd></div>
+          <div><dt>Итог</dt><dd>дробилка разгружена на 25 %</dd></div>
+        </dl>
+      </article>
+      <article class="case">
+        <figure><img src="../img/case-g3.webp" alt="Самосвал и наклонный конвейер на карьере на закате" loading="lazy" decoding="async" width="1200" height="800"><figcaption>220 т/ч</figcaption></figure>
+        <h3>Известняк, Белгородская область</h3>
+        <dl>
+          <div><dt>Материал</dt><dd>известняк, сухой</dd></div>
+          <div><dt>Грохот</dt><dd>ФГМ-1548-3 на гусеницах</dd></div>
+          <div><dt>Продукт</dt><dd>щебень 0–40 и 40–70</dd></div>
+          <div><dt>Итог</dt><dd>три участка за сезон</dd></div>
+        </dl>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Серия -->
+<section class="sec sec--paper" id="seriya">
+  <div class="wrap">
+    <div class="shead" data-r>
+      <h2 class="h2">Линия целиком у&nbsp;одного поставщика</h2>
+      <p class="shead__p">Под каждую группу оборудования — своя страница с таблицей и подбором. Дробилку, грохот и конвейеры посчитаем одной схемой и одним КП.</p>
+    </div>
+    <div class="tiles" data-r>
+      <a class="tile" href="../"><img src="../img/d-shchek.webp" alt="" loading="lazy" decoding="async" width="1600" height="1067"><b>Дробильное оборудование</b><small>16 моделей · 16–800 т/ч · кусок до 1020 мм</small></a>
+      <div class="tile tile--soon"><img src="../img/konveyer.webp" alt="" loading="lazy" decoding="async" width="1400" height="788"><b>Конвейеры</b><small>страница в работе</small></div>
+      <div class="tile tile--soon"><img src="../img/zap-1.webp" alt="" loading="lazy" decoding="async" width="1400" height="933"><b>Запчасти</b><small>страница в работе</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- Заявка -->
+<section class="sec sec--cta" id="kp">
+  <img class="bgimg" src="../img/cta-g.webp" alt="" loading="lazy" decoding="async" width="2000" height="1331">
+  <div class="wrap cta">
+    <div class="cta__l" data-r>
+      <h2 class="h2 h2--big">Пришлите фракции&nbsp;— посчитаем грохот за&nbsp;день</h2>
+      <p class="shead__p">Тонны в час, нужные фракции, влажность и что стоит перед грохотом. Подойдут ситовой анализ или фото сита, которое стоит сейчас.</p>
+      <ul class="contacts">
+        <li><small>Телефон</small><a href="tel:+73430000000">+7 343 000-00-00</a></li>
+        <li><small>Telegram и MAX</small><a href="#kp">@frakciya_demo</a></li>
+        <li><small>Почта</small><a href="#kp">kp@frakciya.example</a></li>
+      </ul>
+    </div>
+    <form class="cta__form" id="ctaForm" data-r novalidate>
+      <div class="cta__state" data-state="form">
+        <div class="in2">
+          <label class="in"><span>Имя</span><input name="name" autocomplete="name" required></label>
+          <label class="in"><span>Компания или ИНН</span><input name="org" autocomplete="organization"></label>
+        </div>
+        <div class="in2">
+          <label class="in"><span>Телефон</span><input name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7" required></label>
+          <label class="in"><span>Почта</span><input name="email" type="email" inputmode="email" autocomplete="email"></label>
+        </div>
+        <label class="in"><span>Что нужно</span>
+          <select name="topic"><option>Подбор грохота</option><option>Коммерческое предложение</option><option>Стоимость и условия поставки</option><option>Сита и запчасти</option><option>Сервис и ремонт</option></select>
+        </label>
+        <label class="in"><span>Задача</span><textarea name="msg" rows="3" placeholder="Например: ПГС, 300 т/ч, песок 0–5, щебень 5–20 и 20–40, есть глина"></textarea></label>
+        <label class="file"><input type="file" name="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"><span>Приложить опросный лист или ТЗ</span><em>PDF, DOC, XLS</em></label>
+        <button class="btn btn--hot btn--full" type="submit">Отправить заявку <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10M11 5l5 5-5 5"/></svg></button>
+        <p class="demo-note">Это демо: заявка никуда не уйдёт. В рабочей версии заявка уйдёт в CRM и на почту отдела продаж, а вам придёт подтверждение.</p>
+      </div>
+      <div class="cta__state" data-state="ok" hidden>
+        <h3>Заявка собрана</h3>
+        <p>В рабочей версии она уже лежала бы в CRM с пометкой «Грохоты» и пришла бы на почту отдела продаж. В демо ничего не отправляется.</p>
+        <button type="button" class="btn btn--line" data-reset>Заполнить ещё раз</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer class="ftr">
+  <div class="wrap ftr__in">
+    <a class="logo" href="../"><svg class="logo__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M3 5h7l9 15v8h-6z" fill="currentColor"/><path d="M22 5h7v23h-7z" fill="currentColor"/><rect class="logo__stone" x="13.6" y="2.6" width="5.4" height="5.4" rx="1" transform="rotate(45 16.3 5.3)"/></svg><span>Фракция</span></a>
+    <nav class="ftr__nav"><a href="../">Дробилки</a><a href="./" aria-current="page">Грохоты</a><a href="#modeli">Модели</a><a href="#podbor">Подбор</a><a href="#sita">Сита</a><a href="#postavka">Поставка</a><a href="#kp">КП</a></nav>
+    <p class="ftr__demo"><b>Модели и цифры для примера.</b> Это демо серии лендингов для обсуждения: бренд «Фракция», модели, характеристики, сроки, кейсы и контакты придуманы. В рабочей версии будут ваш каталог, ваши фото и реальные цифры. Фото — Pexels. Сделано в <a href="https://smirnov-artur.github.io/works/" target="_blank" rel="noopener">g.a.d.</a></p>
+  </div>
+</footer>
+
+<dialog class="dlg" id="dlg" aria-labelledby="dlgTitle">
+  <form method="dialog" class="dlg__close"><button aria-label="Закрыть">×</button></form>
+  <div data-state="form">
+    <h3 id="dlgTitle">Запросить КП</h3>
+    <div class="dlg__sum" id="dlgSum"></div>
+    <form id="dlgForm" novalidate>
+      <label class="in"><span>Имя</span><input name="name" autocomplete="name" required></label>
+      <label class="in"><span>Компания или ИНН</span><input name="org" autocomplete="organization"></label>
+      <label class="in"><span>Телефон</span><input name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7" required></label>
+      <button class="btn btn--hot btn--full" type="submit">Отправить</button>
+      <p class="demo-note">Это демо, отправки нет. В рабочей версии заявка уйдёт в CRM и на почту, а вам придёт копия.</p>
+    </form>
+  </div>
+  <div data-state="ok" hidden>
+    <h3>Готово</h3>
+    <p>В рабочей версии менеджер уже видел бы этот запрос в CRM и на почте и перезвонил в течение часа. В демо ничего не отправляется.</p>
+    <form method="dialog"><button class="btn btn--line">Закрыть</button></form>
+  </div>
+</dialog>
+
+<script src="../app.js" defer></script>
+</body>
+</html>

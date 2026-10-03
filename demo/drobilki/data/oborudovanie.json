@@ -1,0 +1,34 @@
+{
+  "updated": "2026-10-03T08:00:00+03:00",
+  "drob": [
+    { "id": "fsh46",  "type": "shchek", "mob": false, "name": "ФЩ-46",   "sub": "приёмное отверстие 400 × 600 мм",  "q": [16, 60],   "feed": 340,  "out": [40, 100],  "kw": 30,  "t": 6.8,  "srok": "sklad" },
+    { "id": "fsh69",  "type": "shchek", "mob": false, "name": "ФЩ-69",   "sub": "приёмное отверстие 600 × 900 мм",  "q": [50, 180],  "feed": 500,  "out": [65, 160],  "kw": 55,  "t": 15.5, "srok": "sklad" },
+    { "id": "fsh75",  "type": "shchek", "mob": false, "name": "ФЩ-75",   "sub": "приёмное отверстие 750 × 1060 мм", "q": [110, 320], "feed": 630,  "out": [80, 140],  "kw": 110, "t": 28,   "srok": "sklad" },
+    { "id": "fsh912", "type": "shchek", "mob": false, "name": "ФЩ-912",  "sub": "приёмное отверстие 900 × 1200 мм", "q": [220, 450], "feed": 750,  "out": [95, 165],  "kw": 132, "t": 50,   "srok": "zakaz" },
+    { "id": "fsh1215","type": "shchek", "mob": false, "name": "ФЩ-1215", "sub": "приёмное отверстие 1200 × 1500 мм","q": [400, 800], "feed": 1020, "out": [150, 300], "kw": 200, "t": 98,   "srok": "zakaz" },
+    { "id": "fk90",   "type": "konus",  "mob": false, "name": "ФК-90",   "sub": "чаша 900 мм, камера мелкого дробления", "q": [45, 120], "feed": 70, "out": [5, 20], "kw": 90, "t": 7.8, "srok": "sklad" },
+    { "id": "fk160",  "type": "konus",  "mob": false, "name": "ФК-160",  "sub": "чаша 1100 мм",                     "q": [90, 250],  "feed": 185,  "out": [10, 38],   "kw": 160, "t": 10.9, "srok": "sklad" },
+    { "id": "fk250",  "type": "konus",  "mob": false, "name": "ФК-250",  "sub": "чаша 1300 мм",                     "q": [120, 440], "feed": 230,  "out": [13, 45],   "kw": 250, "t": 17,   "srok": "zakaz" },
+    { "id": "fk315",  "type": "konus",  "mob": false, "name": "ФК-315",  "sub": "чаша 1500 мм",                     "q": [180, 630], "feed": 300,  "out": [16, 51],   "kw": 315, "t": 24,   "srok": "zakaz" },
+    { "id": "fr1010", "type": "rotor",  "mob": false, "name": "ФР-1010", "sub": "ротор 1000 × 1050 мм, три била",   "q": [50, 90],   "feed": 350,  "out": [0, 40],    "kw": 90,  "t": 12.5, "srok": "sklad" },
+    { "id": "fr1214", "type": "rotor",  "mob": false, "name": "ФР-1214", "sub": "ротор 1250 × 1400 мм, четыре била","q": [90, 180],  "feed": 400,  "out": [0, 50],    "kw": 160, "t": 18,   "srok": "sklad" },
+    { "id": "fr1315", "type": "rotor",  "mob": false, "name": "ФР-1315", "sub": "ротор 1300 × 1500 мм, четыре била","q": [150, 260], "feed": 500,  "out": [0, 60],    "kw": 200, "t": 22.5, "srok": "zakaz" },
+    { "id": "fr1520", "type": "rotor",  "mob": false, "name": "ФР-1520", "sub": "ротор 1500 × 2000 мм, шесть бил",  "q": [300, 550], "feed": 700,  "out": [0, 80],    "kw": 315, "t": 41,   "srok": "zakaz" },
+    { "id": "fmsh106","type": "shchek", "mob": true,  "name": "ФМЩ-106", "sub": "на гусеницах, щёки 1060 × 700 мм, дизель", "q": [120, 350], "feed": 600, "out": [50, 150], "kw": 250, "t": 42, "srok": "zakaz" },
+    { "id": "fmk300", "type": "konus",  "mob": true,  "name": "ФМК-300", "sub": "на гусеницах, чаша 1300 мм, дизель", "q": [100, 300], "feed": 200, "out": [13, 45], "kw": 250, "t": 30, "srok": "zakaz" },
+    { "id": "fmr1315","type": "rotor",  "mob": true,  "name": "ФМР-1315","sub": "на гусеницах, ротор 1300 мм, магнит", "q": [100, 280], "feed": 500, "out": [0, 60], "kw": 315, "t": 34, "srok": "sklad" }
+  ],
+  "groh": [
+    { "id": "gn1545", "type": "naklon",   "mob": false, "name": "ФГН-1545-2", "size": [1.5, 4.5], "decks": 2, "area": 6.8,  "cell": [3, 100],  "q": [60, 280],  "kw": 15, "kwTxt": "15",      "t": 5.8,  "srok": "sklad" },
+    { "id": "gn1848", "type": "naklon",   "mob": false, "name": "ФГН-1848-3", "size": [1.8, 4.8], "decks": 3, "area": 8.6,  "cell": [5, 100],  "q": [100, 420], "kw": 22, "kwTxt": "22",      "t": 8.9,  "srok": "sklad" },
+    { "id": "gn2160", "type": "naklon",   "mob": false, "name": "ФГН-2160-3", "size": [2.1, 6.0], "decks": 3, "area": 12.6, "cell": [5, 150],  "q": [150, 650], "kw": 30, "kwTxt": "30",      "t": 13.5, "srok": "zakaz" },
+    { "id": "gn2470", "type": "naklon",   "mob": false, "name": "ФГН-2470-4", "size": [2.4, 7.0], "decks": 4, "area": 16.8, "cell": [3, 100],  "q": [200, 800], "kw": 37, "kwTxt": "37",      "t": 21,   "srok": "zakaz" },
+    { "id": "gg1845", "type": "gorizont", "mob": false, "name": "ФГГ-1845-2", "size": [1.8, 4.5], "decks": 2, "area": 8.1,  "cell": [1, 50],   "q": [80, 300],  "kw": 30, "kwTxt": "2 × 15",  "t": 9.2,  "srok": "sklad" },
+    { "id": "gg2461", "type": "gorizont", "mob": false, "name": "ФГГ-2461-3", "size": [2.4, 6.1], "decks": 3, "area": 14.6, "cell": [2, 60],   "q": [200, 600], "kw": 44, "kwTxt": "2 × 22",  "t": 19,   "srok": "zakaz" },
+    { "id": "gg3073", "type": "gorizont", "mob": false, "name": "ФГГ-3073-2", "size": [3.0, 7.3], "decks": 2, "area": 21.9, "cell": [2, 80],   "q": [400, 900], "kw": 60, "kwTxt": "2 × 30",  "t": 27,   "srok": "zakaz" },
+    { "id": "gk1240", "type": "kolosnik", "mob": false, "name": "ФГК-1240",   "size": [1.2, 4.0], "decks": 1, "area": 4.8,  "cell": [50, 200], "q": [150, 500], "kw": 15, "kwTxt": "15",      "t": 6.2,  "srok": "sklad" },
+    { "id": "gk1550", "type": "kolosnik", "mob": false, "name": "ФГК-1550-2", "size": [1.5, 5.0], "decks": 2, "area": 7.5,  "cell": [40, 200], "q": [250, 700], "kw": 22, "kwTxt": "22",      "t": 9.8,  "srok": "zakaz" },
+    { "id": "gm1548", "type": "mobil",    "mob": true,  "name": "ФГМ-1548-3", "size": [1.5, 4.8], "decks": 3, "area": 7.2,  "cell": [5, 100],  "q": [60, 400],  "kw": 75, "kwTxt": "75, дизель", "t": 28, "srok": "sklad" },
+    { "id": "gm1861", "type": "mobil",    "mob": true,  "name": "ФГМ-1861-2", "size": [1.8, 6.1], "decks": 2, "area": 11,   "cell": [5, 120],  "q": [100, 500], "kw": 90, "kwTxt": "90, дизель", "t": 32, "srok": "zakaz" }
+  ]
+}
