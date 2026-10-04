@@ -308,11 +308,11 @@
   "cat": "web",
   "ru": [
    "Бургерная g.a.d",
-   "Прокручиваете страницу — AI-фильм разбирает бургер на семь слоёв"
+   "Прокручиваете страницу — фильм разбирает бургер на семь слоёв"
   ],
   "en": [
    "g.a.d burger bar",
-   "Scroll the page and an AI film takes the burger apart into seven layers"
+   "Scroll the page and a film takes the burger apart into seven layers"
   ],
   "v": "gad-burger",
   "ve": "gad-burger-en"
@@ -4451,12 +4451,12 @@
   "slug": "vino",
   "cat": "ai",
   "ru": [
-   "ИИ-фильм о виноделии",
-   "Сцены, герои и монтаж сделаны нейросетями"
+   "Фильм о виноделии",
+   "Короткий фильм для винодельни: сцены, герои и монтаж"
   ],
   "en": [
-   "AI film about winemaking",
-   "Scenes, characters and edit made with neural networks"
+   "Film about winemaking",
+   "A short film for a winery: scenes, characters and edit"
   ],
   "v": "vino",
   "lb": {
