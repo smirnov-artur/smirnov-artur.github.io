@@ -3,9 +3,9 @@
 // Показ: заход с любым ?src= (через 2,5 с) или телефон после половины прокрутки. Крестик — больше не показывать (localStorage).
 // Клики и показ шлются тем же пикселем, что и переходы: gad-production.ru/px?...&k=<кнопка>, отчёт zapad/perehody.py.
 (function () {
-  var KEY = 'gad-plashka-x', src = new URLSearchParams(location.search).get('src') || '';
+  var q = new URLSearchParams(location.search), KEY = 'gad-plashka-x', src = q.get('src') || '';
   try { if (localStorage.getItem(KEY)) return; } catch (e) {}
-  var ru = /^ru/i.test(document.documentElement.lang);
+  var ru = /^ru/i.test(q.get('lang') || document.documentElement.lang);   // ?lang=ru — русская ссылка на страницу без ru/
   var mob = matchMedia('(max-width: 760px)').matches;
   if (!src && !mob) return;
 
