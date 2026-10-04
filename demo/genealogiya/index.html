@@ -1,0 +1,1461 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Род Ковалёвых — помощник генеалога · g.a.d.</title>
+<meta name="description" content="Демо: помощник генеалога. Документы разбираются на факты со ссылкой на источник, из фактов собираются досье, план исследования, книга рода и чат.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400;1,7..72,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F2EDE3; --side:#EAE3D5; --sheet:#FBF8F2; --book:#FDFBF6;
+  --ink:#221E19; --ink2:#594F43; --ink3:#857B6B; --rule:#D5CAB5; --rule2:#E3DACA;
+  --blue:#2B5471; --blue-bg:#E1E8EC; --red:#9A3A22; --red-bg:#F3E0D4; --green:#4B6938; --green-bg:#E3E9D6;
+  --marker:rgba(232,186,72,.52); --marker-soft:rgba(232,186,72,.22);
+  --ui:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Literata",Georgia,"Times New Roman",serif;
+  --head-h:52px; --side-w:276px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 var(--ui);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:2px}
+h1,h2,h3,h4,p{margin:0}
+.serif{font-family:var(--serif)}
+.muted{color:var(--ink3)}
+
+/* шапка */
+.top{position:sticky;top:0;z-index:40;height:var(--head-h);display:flex;align-items:center;gap:14px;padding:0 20px;background:var(--paper);border-bottom:1px solid var(--rule)}
+.gad{font:700 17px/1 var(--ui);letter-spacing:-.03em;color:var(--ink)}
+.top-sep{width:1px;height:20px;background:var(--rule)}
+.top-title{font:500 14px/1.2 var(--ui)}
+.top-title span{color:var(--ink3);font-weight:400}
+.stats{margin-left:auto;color:var(--ink2);font-size:13px;font-variant-numeric:tabular-nums}
+.stats b{font-weight:500;color:var(--ink)}
+.stats .warn{color:var(--red)}
+.menu-btn{display:none;margin-left:auto;align-items:center;gap:8px;font-size:13px;color:var(--ink2);padding:6px 2px}
+.menu-btn svg{display:block}
+
+/* каркас */
+.app{display:grid;grid-template-columns:var(--side-w) minmax(0,1fr);min-height:calc(100vh - var(--head-h))}
+.side{position:sticky;top:var(--head-h);height:calc(100vh - var(--head-h));overflow-y:auto;background:var(--side);border-right:1px solid var(--rule);padding:18px 0 28px;scrollbar-width:thin}
+.side h2{font:600 12.5px/1 var(--ui);color:var(--ink2);padding:0 20px;margin:4px 0 8px}
+.side h2 small{font-weight:400;color:var(--ink3);margin-left:4px}
+.side-group+.side-group{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule)}
+.pitem{display:block;width:100%;padding:5px 16px 5px calc(20px + var(--g,0) * 13px);position:relative;border-radius:0}
+.pitem::before{content:"";position:absolute;left:calc(13px + var(--g,0) * 13px);top:8px;bottom:8px;width:1px;background:var(--rule);opacity:var(--gl,1)}
+.pitem .nm{display:block;font-size:13.5px;line-height:1.3;color:var(--ink)}
+.pitem .mt{display:block;font-size:12px;color:var(--ink3);margin-top:1px}
+.pitem:hover{background:rgba(255,255,255,.35)}
+.pitem.on{background:var(--sheet)}
+.pitem.on::before{width:2px;background:var(--ink);opacity:1}
+.pitem.apart .nm{color:var(--ink2);text-decoration:line-through;text-decoration-color:rgba(133,123,107,.5)}
+.ditem{display:grid;grid-template-columns:22px 1fr;gap:6px;width:100%;padding:5px 16px 5px 20px}
+.ditem:hover{background:rgba(255,255,255,.35)}
+.ditem.on{background:var(--sheet)}
+.ditem .n{font:600 11px/18px var(--ui);color:var(--blue);background:var(--blue-bg);border-radius:3px;text-align:center;height:18px;margin-top:1px}
+.ditem .nm{display:block;font-size:13px;line-height:1.3}
+.ditem .mt{display:block;font-size:11.5px;color:var(--ink3);margin-top:1px}
+.ditem .flag{color:var(--red)}
+.ditem .flag.ok{color:var(--green)}
+
+main{min-width:0;display:flex;flex-direction:column}
+.phead{padding:26px 40px 0}
+.phead h1{font:500 29px/1.15 var(--serif);letter-spacing:-.01em}
+.phead .sub{margin-top:6px;color:var(--ink2);font-size:13.5px;max-width:880px}
+.tabs{position:relative;display:flex;gap:24px;margin-top:18px;border-bottom:1px solid var(--rule);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:10px 0 11px;font-size:14px;color:var(--ink2);white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--ink);border-bottom-color:var(--ink);font-weight:500}
+.tab i{font-style:normal;color:var(--ink3);font-size:12px;margin-left:5px;font-variant-numeric:tabular-nums}
+.content{padding:28px 40px 40px;flex:1}
+.view{animation:viewIn .32s ease both}
+@keyframes viewIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.foot{padding:16px 40px 22px;color:var(--ink3);font-size:12px;border-top:1px solid var(--rule2)}
+
+/* кнопки */
+.btn{display:inline-flex;align-items:center;gap:6px;font:500 13px/1 var(--ui);padding:8px 13px;border-radius:4px;background:var(--ink);color:var(--paper);border:1px solid var(--ink)}
+.btn:hover{background:#3a332b}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--rule)}
+.btn.ghost:hover{border-color:var(--ink3);background:rgba(255,255,255,.4)}
+.btn.sm{padding:6px 10px;font-size:12.5px}
+.link{color:var(--blue);text-decoration:underline;text-decoration-color:rgba(43,84,113,.35);text-underline-offset:2px}
+.link:hover{text-decoration-color:var(--blue)}
+
+/* сноски */
+.fn,.bfn{display:inline;text-decoration:none;font:600 10.5px/1 var(--ui);color:var(--blue);background:var(--blue-bg);border:1px solid transparent;border-radius:3px;padding:2px 4px 2px;margin:0 1px 0 3px;vertical-align:.45em;transition:background .15s,color .15s;font-variant-numeric:tabular-nums}
+.fn:hover,.bfn:hover,.fn.on,.bfn.on{background:var(--blue);color:#fff}
+.fn.m-pending,.bfn.m-pending{background:transparent;border:1px dashed var(--blue)}
+.fn.m-no,.bfn.m-no{background:transparent;color:var(--ink3);text-decoration:line-through}
+
+/* документ */
+.q{background-image:linear-gradient(var(--marker),var(--marker));background-repeat:no-repeat;background-size:0% 100%;transition:background-size .9s cubic-bezier(.3,.7,.2,1);border-bottom:1px dotted rgba(133,123,107,.75);cursor:pointer}
+@media (hover:hover){.q:hover{background-image:linear-gradient(var(--marker-soft),var(--marker-soft));background-size:100% 100%;transition:none}}
+.q.lit,.q.lit:hover{background-image:linear-gradient(var(--marker),var(--marker));background-size:100% 100%;border-bottom-color:transparent}
+.ocr del{color:var(--red);text-decoration-thickness:1px;opacity:.8;margin-right:3px}
+.ocr ins{text-decoration:none;border-bottom:1.5px solid var(--green)}
+.doc-kind{font-size:12px;color:var(--ink3)}
+.doc-title{font:500 19px/1.3 var(--serif);margin-top:4px}
+.doc-meta{margin-top:8px;font-size:12.5px;color:var(--ink2);line-height:1.45}
+.doc-meta span{display:block;color:var(--ink3)}
+.doc-body{margin-top:20px;padding-top:18px;border-top:1px solid var(--rule2);font-family:var(--serif);font-size:16px;line-height:1.65}
+.d-h{font-style:italic;color:var(--ink2);margin-bottom:14px;font-size:15px}
+.d-r{font-weight:600;margin:18px 0 6px}
+.d-p{margin-bottom:12px}
+.d-f{display:grid;grid-template-columns:minmax(150px,38%) 1fr;gap:16px;padding:7px 0;border-top:1px solid var(--rule2)}
+.d-f:first-child,.d-h+.d-f,.d-r+.d-f{border-top:0}
+.d-l{font-size:13px;line-height:1.45;font-style:italic;color:var(--ink3);padding-top:2px}
+.d-e{font:13px/1.5 var(--ui);color:var(--ink2);margin-top:14px;padding-left:12px;border-left:2px solid var(--rule)}
+.doc-notes{margin-top:22px;display:grid;gap:10px}
+.dnote{font-size:13px;line-height:1.5;color:var(--ink2);padding:10px 12px;background:var(--paper);border-radius:4px}
+.dnote b{font-weight:600;color:var(--ink)}
+.dnote.red b{color:var(--red)}
+.dnote.green b{color:var(--green)}
+
+/* вкладка документы */
+.reader-bar{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.reader-bar label{font-size:13px;color:var(--ink2)}
+select{font:14px var(--ui);color:var(--ink);background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:7px 30px 7px 10px;appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--ink2) 50%),linear-gradient(135deg,var(--ink2) 50%,transparent 50%);background-position:calc(100% - 15px) 52%,calc(100% - 10px) 52%;background-size:5px 5px;background-repeat:no-repeat;max-width:100%}
+.reader-bar .nav{display:flex;gap:6px;margin-left:auto}
+.reader{display:grid;grid-template-columns:minmax(0,660px) minmax(220px,300px);gap:36px;align-items:start}
+.sheet{background:var(--sheet);border:1px solid var(--rule2);padding:30px 36px 32px;border-radius:2px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .28 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.dfacts{position:sticky;top:calc(var(--head-h) + 20px)}
+.dfacts h3{font:600 13px/1.3 var(--ui);color:var(--ink2);margin-bottom:10px}
+.dfacts p.hint{font-size:12.5px;color:var(--ink3);margin-bottom:12px;line-height:1.45}
+.df{display:block;width:100%;padding:8px 10px;border-radius:4px;border-left:2px solid transparent;transition:background .2s}
+.df:hover,.df.hot,.df.hov{background:var(--marker-soft)}
+.df .w{display:block;font-size:12px;color:var(--ink3)}
+.df .v{display:block;font-size:13.5px;line-height:1.35}
+.df .who{color:var(--ink3);font-size:12px}
+.df.conflict{border-left-color:var(--red)}
+
+/* факты */
+.fbar{display:flex;align-items:center;flex-wrap:wrap;gap:6px 18px;margin-bottom:16px}
+.chip{font-size:13px;color:var(--ink2);padding:4px 0;border-bottom:1.5px solid transparent}
+.chip i{font-style:normal;color:var(--ink3);margin-left:4px;font-variant-numeric:tabular-nums}
+.chip:hover{color:var(--ink)}
+.chip.on{color:var(--ink);border-bottom-color:var(--ink)}
+.fbar .sum{margin-left:auto;font-size:12.5px;color:var(--ink3)}
+.facts{width:100%;border-collapse:collapse;font-size:13.5px}
+.facts th{font:500 12px/1.3 var(--ui);color:var(--ink3);text-align:left;padding:0 14px 8px 0;border-bottom:1px solid var(--rule)}
+.facts td{padding:11px 14px 11px 0;border-bottom:1px solid var(--rule2);vertical-align:top}
+.facts td:first-child{padding-left:12px;color:var(--ink2)}
+.facts th:first-child{padding-left:12px}
+.c-what{width:17%}
+.c-val{width:25%}
+.c-doc{width:19%}
+.c-q{font:italic 14px/1.5 var(--serif);color:var(--ink2)}
+.c-conf{width:96px;white-space:nowrap}
+.fnote{display:block;font-size:12px;color:var(--ink3);margin-top:3px;line-height:1.4}
+.facts tr.conflict td{background:var(--red-bg)}
+.facts tr.conflict td:first-child{box-shadow:inset 3px 0 0 var(--red)}
+.facts tr.conflict .fnote{color:var(--red)}
+.facts tr.pend .fnote{color:var(--blue)}
+.facts tr.rej td{opacity:.45}
+.facts tr.ocrfix .fnote{color:var(--green)}
+.doclink{display:inline-flex;gap:6px;align-items:baseline;text-align:left;color:var(--ink);line-height:1.35}
+.doclink .n{font:600 10.5px/1 var(--ui);color:var(--blue);background:var(--blue-bg);border-radius:3px;padding:3px 4px;flex:none}
+.doclink:hover span:last-child{text-decoration:underline;text-decoration-color:var(--ink3)}
+.meter{display:inline-flex;gap:2px;vertical-align:middle;margin-right:6px}
+.meter b{width:5px;height:11px;border-radius:1px;background:var(--rule)}
+.meter.l1 b:nth-child(-n+1),.meter.l2 b:nth-child(-n+2),.meter.l3 b{background:var(--ink2)}
+.meter.l1 b:first-child{background:var(--red)}
+.conf-t{font-size:12px;color:var(--ink2)}
+
+/* досье */
+.notice{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:var(--blue-bg);border-radius:4px;font-size:13.5px;line-height:1.5;color:var(--ink);margin-bottom:26px;max-width:640px}
+.notice.no{background:var(--paper);border:1px solid var(--rule)}
+.notice .dash{flex:none;width:18px;height:14px;margin-top:3px;border:1px dashed var(--blue);border-radius:3px}
+.dossier{display:grid;grid-template-columns:minmax(0,640px) 260px;gap:48px;align-items:start}
+.prose{font:16.5px/1.72 var(--serif);hyphens:auto;-webkit-hyphens:auto}
+.prose .lead{font-size:18.5px;line-height:1.6;color:var(--ink);margin-bottom:26px}
+.prose h3{font:italic 500 18px/1.3 var(--serif);margin:30px 0 10px;color:var(--ink)}
+.prose p+p{margin-top:12px}
+.prose ul{margin:8px 0 0;padding-left:20px}
+.prose li{margin:4px 0}
+.prose li::marker{color:var(--ink3)}
+.apart-box{margin-top:30px;padding:14px 16px;border-left:3px solid var(--red);background:var(--red-bg);font:14.5px/1.6 var(--serif)}
+.apart-box b{font:600 13px/1.4 var(--ui);display:block;margin-bottom:4px;color:var(--red)}
+.brief{position:sticky;top:calc(var(--head-h) + 20px);font-size:13px}
+.brief h4{font:600 13px/1.3 var(--ui);color:var(--ink2);margin-bottom:10px}
+.brief dl{margin:0}
+.brief dt{font-size:12px;color:var(--ink3);margin-top:11px}
+.brief dd{margin:1px 0 0;line-height:1.45}
+.sources{margin-top:38px;padding-top:16px;border-top:1px solid var(--rule)}
+.sources h3{font:600 13px/1.3 var(--ui);color:var(--ink2);margin-bottom:8px}
+.srow{display:grid;grid-template-columns:24px 1fr;gap:8px;width:100%;padding:6px 0;font-size:13.5px;line-height:1.4}
+.srow .n{font:600 11px/18px var(--ui);color:var(--blue);background:var(--blue-bg);border-radius:3px;text-align:center;height:18px}
+.srow .s{display:block;color:var(--ink3);font-size:12.5px}
+.srow:hover .t{text-decoration:underline;text-decoration-color:var(--ink3)}
+.srow.off{opacity:.55}
+
+/* исследование */
+.rs{max-width:900px}
+.rs-intro{font:16px/1.6 var(--serif);color:var(--ink2);max-width:700px}
+.rs h2{font:500 21px/1.25 var(--serif);margin:40px 0 14px;display:flex;align-items:baseline;gap:10px}
+.rs h2 small{font:400 13px var(--ui);color:var(--ink3)}
+.rs h3{font:600 14.5px/1.35 var(--ui);margin-bottom:10px}
+.rs p{line-height:1.6}
+.ledger{width:100%;border-collapse:collapse;font-size:13.5px;margin:4px 0 14px}
+.ledger td{padding:8px 14px 8px 0;border-bottom:1px solid var(--rule2);vertical-align:top}
+.ledger td:first-child{font:500 15px/1.3 var(--serif);white-space:nowrap;width:110px}
+.ledger .w{color:var(--ink3);white-space:nowrap}
+.ledger tr.bad td:first-child{color:var(--red)}
+.verdict{padding:12px 14px;background:var(--sheet);border-left:3px solid var(--ink);font:15px/1.6 var(--serif)}
+.verdict b{font-weight:600}
+.item{padding:16px 0;border-top:1px solid var(--rule2)}
+.item:first-of-type{border-top:0;padding-top:4px}
+.item .tag{font-size:12px;color:var(--ink3);margin-bottom:4px;display:block}
+.item .tag.red{color:var(--red)}
+.item .tag.green{color:var(--green)}
+.item .tag.blue{color:var(--blue)}
+.merge{display:grid;grid-template-columns:1fr 1fr;gap:6px 28px;margin:10px 0 14px}
+.merge h4{font:600 12.5px/1.3 var(--ui);color:var(--ink2);margin-bottom:6px}
+.why{list-style:none;margin:0;padding:0;font-size:13.5px;line-height:1.5}
+.why li{position:relative;padding-left:16px;margin:5px 0}
+.why li::before{content:"";position:absolute;left:0;top:.5em;width:7px;height:7px;border-radius:1px;background:var(--green)}
+.why li.no::before{background:var(--red)}
+.why li.eh::before{background:var(--ink3)}
+.decide{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.decided{font-size:13.5px;color:var(--green);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.decided.no{color:var(--red)}
+.tl{position:relative;height:92px;margin:6px 0 10px}
+.tl .axis{position:absolute;left:0;right:0;top:46px;height:2px;background:var(--rule)}
+.tl .gap{position:absolute;top:40px;height:14px;background:repeating-linear-gradient(-45deg,rgba(154,58,34,.38) 0 2px,transparent 2px 6px);border-radius:2px}
+.tl .gap.soft{background:repeating-linear-gradient(-45deg,rgba(133,123,107,.4) 0 2px,transparent 2px 6px)}
+.tl .pt{position:absolute;top:40px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:var(--ink);border:3px solid var(--paper);transition:transform .15s}
+.tl .pt:hover{transform:scale(1.25)}
+.tl .pt.mem{background:var(--paper);border:2px dashed var(--ink3)}
+.tl .lb{position:absolute;font:500 12px/1 var(--ui);transform:translateX(-50%);white-space:nowrap;font-variant-numeric:tabular-nums}
+.tl .lb.up{top:18px}
+.tl .lb.dn{top:64px}
+.tl .dec{position:absolute;top:84px;font-size:11px;color:var(--ink3);transform:translateX(-50%)}
+.gaps{list-style:none;padding:0;margin:0}
+.gaps li{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:9px 0;border-top:1px solid var(--rule2);font-size:14px;line-height:1.5}
+.gaps li b{font:500 14.5px/1.5 var(--serif)}
+.gaps .sw{display:inline-block;width:18px;height:10px;margin-right:8px;vertical-align:0;background:repeating-linear-gradient(-45deg,rgba(154,58,34,.45) 0 2px,transparent 2px 5px)}
+.gaps .sw.soft{background:repeating-linear-gradient(-45deg,rgba(133,123,107,.5) 0 2px,transparent 2px 5px)}
+.gaps .sw.none{background:none;border:1px solid var(--rule)}
+.hyp p+p{margin-top:6px}
+.hyp .k{color:var(--ink3);font-size:13px}
+.step{display:grid;grid-template-columns:150px minmax(0,1fr);gap:22px;padding:18px 0;border-top:1px solid var(--rule2)}
+.step .st{font-size:12.5px;line-height:1.4;color:var(--ink2);padding-top:3px}
+.step .st b{display:block;font-weight:600;font-size:13px}
+.step .st b.go{color:var(--green)}
+.step .st b.wait{color:var(--ink3)}
+.step h3{font:500 17px/1.35 var(--serif);margin-bottom:8px}
+.step dl{display:grid;grid-template-columns:110px 1fr;gap:4px 14px;margin:0 0 10px;font-size:13.5px;line-height:1.5}
+.step dt{color:var(--ink3)}
+.step dd{margin:0}
+details.req{margin-top:4px}
+details.req summary{cursor:pointer;font-size:13.5px;color:var(--blue);list-style:none;display:inline-flex;gap:6px;align-items:center}
+details.req summary::-webkit-details-marker{display:none}
+details.req summary::before{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg);transition:transform .2s;margin-right:2px}
+details.req[open] summary::before{transform:rotate(45deg) translate(-1px,-1px)}
+.reqbox{margin-top:10px;background:var(--sheet);border:1px solid var(--rule2);border-radius:3px;padding:16px 18px}
+.reqbox pre{margin:0 0 12px;white-space:pre-wrap;word-break:break-word;font:14px/1.6 var(--serif);color:var(--ink)}
+.hist{list-style:none;margin:0;padding:0}
+.hist li{display:grid;grid-template-columns:96px 1fr;gap:16px;padding:10px 0;border-top:1px solid var(--rule2);font-size:14px;line-height:1.55}
+.hist .dt{font-variant-numeric:tabular-nums;color:var(--ink3);font-size:13px;padding-top:1px}
+.hist .chg{display:block;margin-top:6px;padding-left:12px;border-left:2px solid var(--blue);color:var(--ink2)}
+.hist li.new{animation:hl 1.6s ease}
+@keyframes hl{from{background:var(--green-bg)}to{background:transparent}}
+
+/* книга */
+.bookwrap{display:grid;grid-template-columns:220px minmax(0,1fr);gap:36px;align-items:start}
+.toc{font-size:13px;line-height:1.4}
+.toc h4{font:600 13px/1.3 var(--ui);color:var(--ink2);margin-bottom:10px}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc li{display:flex;gap:8px;padding:6px 0;border-top:1px solid var(--rule2);color:var(--ink2)}
+.toc li span:first-child{flex:1}
+.toc li span:last-child{font-variant-numeric:tabular-nums;color:var(--ink3)}
+.toc li.on{color:var(--ink);font-weight:500}
+.toc .meta{margin-top:16px;color:var(--ink3);font-size:12.5px;line-height:1.5}
+.spread{position:relative;display:grid;grid-template-columns:1fr 1fr;max-width:940px;background:var(--book);box-shadow:0 0 0 1px var(--rule2),0 2px 3px rgba(60,45,25,.06),0 26px 50px -30px rgba(60,45,25,.45)}
+.spread::after{content:"";position:absolute;top:0;bottom:0;left:50%;width:70px;transform:translateX(-50%);background:linear-gradient(90deg,transparent,rgba(70,52,30,.07) 40%,rgba(70,52,30,.16) 50%,rgba(70,52,30,.07) 60%,transparent);pointer-events:none}
+.page{display:flex;flex-direction:column;padding:38px 46px 30px 54px;font:14.5px/1.62 var(--serif);font-feature-settings:"onum","kern","liga";min-height:760px;hyphens:auto;-webkit-hyphens:auto;text-align:justify}
+.page.r{padding:38px 54px 30px 46px}
+.rh{font:italic 12px/1 var(--serif);color:var(--ink3);margin-bottom:34px;text-align:left}
+.page.r .rh{text-align:right}
+.ch-k{font:italic 14px/1.3 var(--serif);color:var(--ink2);text-align:left}
+.ch-t{font:500 32px/1.1 var(--serif);margin:6px 0 4px;text-align:left;letter-spacing:-.01em}
+.ch-d{font-size:13px;color:var(--ink3);margin-bottom:26px;text-align:left}
+.page p+p{text-indent:1.6em}
+.dropcap::first-letter{float:left;font-size:3.55em;line-height:.82;padding:6px 7px 0 0;font-weight:500;color:var(--ink)}
+.bfn{font-size:9.5px;padding:1px 3px;vertical-align:.55em;text-indent:0}
+.pfoot{margin-top:auto;padding-top:22px;font-size:11.5px;line-height:1.45;color:var(--ink2);text-align:left}
+.pfoot::before{content:"";display:block;width:34%;height:1px;background:var(--rule);margin-bottom:8px}
+.pfoot p{text-indent:0!important;margin:2px 0}
+.pfoot p span{font-feature-settings:"lnum";margin-right:4px}
+.pnum{margin-top:16px;font-size:12px;color:var(--ink3);text-align:left;font-feature-settings:"onum"}
+.page.r .pnum{text-align:right}
+.ph{margin:0 0 20px}
+.ph-box{display:flex;align-items:flex-end;justify-content:flex-start;width:100%;aspect-ratio:4/3;background:radial-gradient(ellipse at 50% 38%,#d8ccb3 0%,#c8b998 60%,#b7a685 100%);box-shadow:inset 0 0 0 8px var(--book),inset 0 0 0 9px var(--rule);padding:18px;font:12px/1.3 var(--ui);color:rgba(34,30,25,.6);text-align:left}
+.ph-box:hover{color:var(--ink)}
+.ph figcaption{font:italic 12.5px/1.45 var(--serif);color:var(--ink2);margin-top:8px;text-align:left}
+
+/* чат */
+.chat{max-width:660px}
+.ctx{font-size:13px;color:var(--ink2);padding:10px 0 14px;border-bottom:1px solid var(--rule2);margin-bottom:8px;line-height:1.5}
+.ctx b{font-weight:500;color:var(--ink)}
+.log{display:flex;flex-direction:column;gap:18px;padding:12px 0 8px}
+.msg.me{align-self:flex-end;max-width:80%;background:var(--side);padding:9px 13px;border-radius:6px 6px 2px 6px;font-size:14.5px}
+.msg.ai{max-width:100%}
+.msg.ai .who{font-size:12px;color:var(--ink3);margin-bottom:4px}
+.msg.ai .txt{font:15.5px/1.68 var(--serif)}
+.msg.ai .txt p+p{margin-top:10px}
+.msg.ai .srcs{margin-top:10px;display:grid;gap:2px}
+.msg.ai .srcs button{display:grid;grid-template-columns:22px 1fr;gap:6px;font-size:12.5px;color:var(--ink2);padding:3px 0;line-height:1.4}
+.msg.ai .srcs button .n{font:600 10.5px/16px var(--ui);height:16px;text-align:center;color:var(--blue);background:var(--blue-bg);border-radius:3px}
+.msg.ai .srcs button:hover span:last-child{color:var(--ink)}
+.msg.ai .srcs em{font-family:var(--serif)}
+.typing{display:flex;gap:4px;padding:10px 0}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--ink3);animation:dot 1s infinite ease-in-out}
+.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,80%,100%{opacity:.25;transform:none}40%{opacity:1;transform:translateY(-3px)}}
+.asks{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 12px}
+.ask{font-size:13.5px;padding:7px 12px;border:1px solid var(--rule);border-radius:4px;background:var(--sheet);color:var(--ink)}
+.ask:hover{border-color:var(--ink3)}
+.ask.done{color:var(--ink3);background:transparent}
+.cform{display:flex;gap:8px}
+.cform input{flex:1;min-width:0;font:14px var(--ui);padding:9px 12px;border:1px solid var(--rule);border-radius:4px;background:var(--sheet);color:var(--ink)}
+.empty{max-width:560px;font:16px/1.6 var(--serif);color:var(--ink2)}
+.empty .btn{margin-top:14px}
+
+/* боковая панель источника */
+.drawer{position:fixed;top:var(--head-h);right:0;bottom:0;width:clamp(380px,calc(100vw - 980px),520px);z-index:45;display:flex;flex-direction:column;background:var(--sheet);border-left:1px solid var(--rule);box-shadow:-34px 0 60px -44px rgba(50,38,22,.55);transform:translateX(102%);visibility:hidden;transition:transform .36s cubic-bezier(.2,.8,.2,1),visibility 0s linear .36s}
+.drawer.open{transform:none;visibility:visible;transition:transform .36s cubic-bezier(.2,.8,.2,1)}
+.dr-top{display:flex;align-items:center;gap:10px;padding:12px 16px 12px 28px;border-bottom:1px solid var(--rule2);flex:none}
+.dr-top .t{font-size:13px;color:var(--ink2);flex:1;min-width:0}
+.dr-top .t b{color:var(--blue);font-weight:600}
+.dr-x{width:32px;height:32px;display:grid;place-items:center;border-radius:4px;color:var(--ink2)}
+.dr-x:hover{background:var(--paper);color:var(--ink)}
+.dr-body{flex:1;overflow-y:auto;padding:22px 28px 36px;transition:opacity .16s;overscroll-behavior:contain}
+.dr-body.swap{opacity:0}
+.dr-body .doc-body{font-size:15.5px}
+.dr-facts{margin-top:22px;padding-top:14px;border-top:1px solid var(--rule)}
+.dr-facts h4{font:600 12.5px/1.3 var(--ui);color:var(--ink2);margin-bottom:6px}
+.dr-facts .df{padding:6px 8px}
+.scrim{display:none}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;background:var(--ink);color:var(--paper);font-size:13px;padding:9px 14px;border-radius:4px;transition:.25s;z-index:70;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* свой документ: живой разбор на сервере */
+.own-intro{font:16px/1.6 var(--serif);color:var(--ink2);max-width:720px;margin-bottom:18px}
+.own-ex{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;max-width:996px}
+.own-ex>span{font-size:13px;color:var(--ink3);margin-right:2px}
+.own-in{max-width:996px}
+.own-in textarea{display:block;width:100%;min-height:200px;resize:vertical;font:15px/1.6 var(--serif);color:var(--ink);background:var(--sheet);border:1px solid var(--rule);border-radius:3px;padding:14px 16px}
+.own-in textarea:focus{outline:2px solid var(--blue);outline-offset:1px}
+.own-in textarea[readonly]{color:var(--ink2)}
+.own-bar{display:flex;align-items:center;gap:8px 16px;margin-top:10px;flex-wrap:wrap}
+.own-cnt{font-size:12.5px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.own-cnt.over{color:var(--red)}
+.own-st{font-size:13.5px;color:var(--ink2);display:flex;align-items:center;gap:10px}
+.own-st .typing{padding:0}
+.own-st #ownSec{color:var(--ink3);font-variant-numeric:tabular-nums}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:disabled:hover{background:var(--ink)}
+.own-err{margin-top:14px;padding:12px 14px;background:var(--red-bg);border-left:3px solid var(--red);font-size:14px;max-width:720px}
+.own-res{margin-top:30px;padding-top:20px;border-top:1px solid var(--rule)}
+.own-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:16px}
+.own-head h2{font:500 21px/1.25 var(--serif)}
+.own-head span{font-size:13px;color:var(--ink3)}
+.own-leg{font-size:12.5px;color:var(--ink3);margin-bottom:14px;line-height:1.5}
+.own-leg .lq{background:var(--marker);color:var(--ink);padding:0 3px}
+.own-leg .lo{text-decoration:underline wavy var(--red);text-decoration-thickness:1px;text-underline-offset:3px;color:var(--ink)}
+.own-src{white-space:pre-wrap;word-break:break-word;font:16px/1.75 var(--serif)}
+.own-src .q2{background:var(--marker);cursor:pointer;transition:background-color .2s}
+.own-src.focus .q2{background:rgba(232,186,72,.14)}
+.own-src.focus .q2.lit{background:linear-gradient(var(--marker),var(--marker)) no-repeat 0 0/100% 100%;animation:sweep .8s cubic-bezier(.3,.7,.2,1) both}
+@keyframes sweep{from{background-size:0 100%}to{background-size:100% 100%}}
+.own-src .ocr2{text-decoration:underline wavy var(--red);text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-skip-ink:none}
+.own-src .ocr2.flash{animation:flash 1.4s ease}
+@keyframes flash{0%,55%{background:var(--red-bg)}}
+.own-side{position:static}
+.own-res .sheet{position:sticky;top:calc(var(--head-h) + 16px)}
+.own-side h3{margin-top:22px}
+.own-side h3:first-child{margin-top:0}
+.ppl{list-style:none;margin:0;padding:0}
+.ppl li{padding:6px 10px;font-size:13.5px;line-height:1.4;border-top:1px solid var(--rule2)}
+.ppl li:first-child{border-top:0}
+.ppl .nm{font:15px/1.4 var(--serif)}
+.ppl .rl{color:var(--ink3);font-size:12.5px}
+.df .v del{color:var(--red);text-decoration-thickness:1px}
+.df .v ins{text-decoration:none;border-bottom:1.5px solid var(--green)}
+.qs{margin:0;padding:0 0 0 18px;font-size:13.5px;line-height:1.5}
+.qs li{margin:6px 0}
+.qs li::marker{color:var(--ink3)}
+.own-drop{margin-top:18px;font-size:12.5px;color:var(--ink3);line-height:1.5}
+.own-drop.red{color:var(--red)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+@media (max-width:1180px){
+  .dossier{grid-template-columns:minmax(0,1fr) 230px;gap:32px}
+  .reader{grid-template-columns:minmax(0,1fr) 240px;gap:24px}
+  .bookwrap{grid-template-columns:1fr}
+  .toc{display:none}
+}
+@media (max-width:860px){
+  :root{--head-h:52px}
+  .top{padding:0 14px;gap:10px}
+  .top-title span{display:none}
+  .stats{display:none}
+  .menu-btn{display:inline-flex}
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{position:fixed;top:0;left:0;bottom:0;height:100%;width:min(320px,86vw);z-index:60;transform:translateX(-102%);visibility:hidden;transition:transform .3s cubic-bezier(.2,.8,.2,1),visibility 0s linear .3s;padding-top:20px}
+  .app.side-open .side{transform:none;visibility:visible;transition:transform .3s cubic-bezier(.2,.8,.2,1);box-shadow:20px 0 50px -30px rgba(40,30,20,.5)}
+  .scrim{display:block;position:fixed;inset:0;background:rgba(34,30,25,.32);opacity:0;pointer-events:none;transition:opacity .25s;z-index:44}
+  .app.side-open .scrim.s{opacity:1;pointer-events:auto;z-index:55}
+  .scrim.d.on{opacity:1;pointer-events:auto}
+  .phead{padding:18px 16px 0}
+  .phead h1{font-size:24px}
+  .phead .sub{font-size:13px}
+  .tabs{gap:16px;margin-top:14px;padding-right:28px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
+  .tab i{display:none}
+  .tabs::after{content:"";flex:0 0 12px}
+  .own-res .sheet{position:static}
+  .content{padding:20px 16px 32px}
+  .foot{padding:14px 16px 20px}
+  .dossier{grid-template-columns:minmax(0,1fr);gap:22px}
+  .brief{position:static;order:-1;padding:12px 14px;background:var(--side);border-radius:4px}
+  .brief dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px}
+  .brief dt{margin:0;padding-top:1px}
+  .prose{font-size:16px}
+  .prose .lead{font-size:17px}
+  .reader{grid-template-columns:minmax(0,1fr)}
+  .dfacts{position:static}
+  .sheet{padding:20px 18px 22px}
+  .d-f{grid-template-columns:1fr;gap:2px}
+  .own-src{font-size:15.5px}
+  .own-in textarea{min-height:180px;font-size:14.5px}
+  .reader-bar{flex-wrap:nowrap;gap:8px}
+  .reader-bar label,.reader-bar .tx{display:none}
+  .reader-bar select{flex:1;min-width:0}
+  .reader-bar .nav{margin-left:0;flex:none}
+  .reader-bar .btn.sm{padding:8px 10px}
+  .facts thead{display:none}
+  .facts,.facts tbody,.facts tr,.facts td{display:block;width:auto}
+  .facts tr{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:12px 12px;border-bottom:1px solid var(--rule2)}
+  .facts td{padding:0;border:0;background:none!important;box-shadow:none!important}
+  .facts td:first-child{padding-left:0;font-size:12px;color:var(--ink3);grid-column:1}
+  .facts .c-conf{grid-column:2;grid-row:1;text-align:right}
+  .facts .c-val{grid-column:1/-1;font-size:14.5px}
+  .facts .c-doc{grid-column:1/-1;margin-top:4px;font-size:13px}
+  .facts .c-q{grid-column:1/-1;margin-top:2px}
+  .facts tr.conflict{background:var(--red-bg);box-shadow:inset 3px 0 0 var(--red)}
+  .fbar .sum{margin-left:0;width:100%}
+  .merge{grid-template-columns:1fr}
+  .step{grid-template-columns:1fr;gap:6px}
+  .step dl{grid-template-columns:1fr;gap:0}
+  .step dt{margin-top:6px}
+  .gaps li{grid-template-columns:1fr;gap:2px}
+  .hist li{grid-template-columns:1fr;gap:2px}
+  .ledger,.ledger tbody,.ledger tr,.ledger td{display:block}
+  .ledger tr{display:grid;grid-template-columns:auto 1fr;gap:0 12px;padding:8px 0;border-bottom:1px solid var(--rule2)}
+  .ledger td{border:0;padding:0}
+  .ledger td:first-child{grid-row:1/4;width:auto;min-width:64px}
+  .ledger .w{white-space:normal}
+  .rs h2{margin-top:32px;font-size:19px;flex-wrap:wrap}
+  .tl .lb{font-size:11px}
+  .spread{grid-template-columns:1fr}
+  .spread::after{display:none}
+  .page,.page.r{padding:28px 22px 22px;min-height:0;font-size:15px}
+  .page+.page{border-top:1px dashed var(--rule)}
+  .ch-t{font-size:28px}
+  .msg.me{max-width:92%}
+  .drawer{top:auto;left:0;right:0;width:100%;height:86vh;height:86dvh;border-left:0;border-top:1px solid var(--rule);border-radius:10px 10px 0 0;transform:translateY(102%);box-shadow:0 -20px 50px -30px rgba(40,30,20,.5)}
+  .dr-top{padding:10px 10px 10px 18px}
+  .dr-top::before{content:"";position:absolute;left:50%;top:5px;width:36px;height:4px;border-radius:2px;background:var(--rule);transform:translateX(-50%)}
+  .dr-body{padding:18px 18px 30px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <span class="gad" aria-label="g.a.d.">g.a.d.</span>
+  <span class="top-sep" aria-hidden="true"></span>
+  <span class="top-title">Род Ковалёвых <span>· Тверская губерния</span></span>
+  <span class="stats" id="stats"></span>
+  <button class="menu-btn" id="menuBtn" aria-controls="side" aria-expanded="false">
+    <svg width="18" height="14" viewBox="0 0 18 14" aria-hidden="true"><path d="M0 1h18M0 7h18M0 13h12" stroke="currentColor" stroke-width="1.6"/></svg>
+    Род и документы
+  </button>
+</header>
+
+<div class="app" id="app">
+  <nav class="side" id="side" aria-label="Персоны и документы"></nav>
+  <main>
+    <div class="phead" id="phead"></div>
+    <div class="content" id="content"></div>
+    <div class="foot">Семья и документы вымышлены, архивы и базы настоящие. Демо интерфейса: g.a.d.</div>
+  </main>
+  <div class="scrim s" id="scrimSide"></div>
+</div>
+
+<div class="scrim d" id="scrimDr"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="Источник">
+  <div class="dr-top">
+    <div class="t" id="drT"></div>
+    <button class="btn ghost sm" id="drOpen">Открыть целиком</button>
+    <button class="dr-x" id="drX" aria-label="Закрыть">
+      <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.6"/></svg>
+    </button>
+  </div>
+  <div class="dr-body" id="drBody"></div>
+</aside>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ---------- данные: документы (расшифровка OCR) ---------- */
+const DOCS = [
+ {id:'d1', short:'Метрика о рождении', year:'1879', kind:'Метрическая книга, запись о рождении',
+  title:'Метрическая книга Никольской церкви села Пречистое, 1879',
+  src:'ГАТО, ф. 160 «Тверская духовная консистория». Опись и дело в демо условные', ocr:'Рукопись · OCR 94% · сверено · копия по запросу от 20.03.2026',
+  cite:'ГАТО. Ф. 160. Метрическая книга Никольской церкви с. Пречистое за 1879 г.',
+  body:[
+   ['h','Метрическая книга Никольской церкви села Пречистаго Новоторжскаго уѣзда [[q_yr|на 1879 годъ]]. Часть первая, о родившихся.'],
+   ['f','№ по порядку','41'],
+   ['f','Мѣсяцъ и день рожденія','[[q_bd|Мая 6]]'],
+   ['f','Мѣсяцъ и день крещенія','[[q_bap|Мая 7]]'],
+   ['f','Имена родившихся','[[q_name|Іоаннъ]]'],
+   ['f','Званіе, имя, отчество и фамилія родителей, и какого вѣроисповѣданія','[[q_place|Тверской губерніи Новоторжскаго уѣзда деревни Высокое]] [[q_father|крестьянинъ Петръ Семеновъ Ковалевъ]] и [[q_mother|законная жена его Евдокія Никитина]], [[q_rel|оба православные]]'],
+   ['f','Званіе, имя, отчество и фамилія воспріемниковъ','[[q_god|той же деревни крестьянинъ Андрей Семеновъ Ковалевъ]] и крестьянская дѣвица Анна Никитина'],
+   ['f','Кто совершалъ таинство крещенія','Священникъ Михаилъ Покровскій съ дьячкомъ Василіемъ Соколовымъ']
+  ]},
+ {id:'d2', short:'Перепись, лист формы А', year:'1897', kind:'Первая всеобщая перепись, переписной лист',
+  title:'Перепись 1897 года, деревня Высокое',
+  src:'ГАТО. Фонд и дело в демо условные', ocr:'Бланк и рукопись · OCR · одна правка · добавлен 01.10.2026',
+  cite:'Перепись 1897 г. Переписной лист формы А, д. Высокое Новоторжского у.',
+  body:[
+   ['h','Первая всеобщая перепись населенія Россійской Имперіи 1897 г. Переписной листъ формы А. Тверская губернія, Новоторжскій уѣздъ, [[q2_vil|деревня Высокое]].'],
+   ['r','1. [[q2_head|Петръ Семеновъ Ковалевъ]]'],
+   ['f','Отношеніе къ главѣ хозяйства','глава'],
+   ['f','Возрастъ','[[q2_pa|47 лѣтъ]]'],
+   ['f','Сословіе','крестьянинъ'],
+   ['f','Умѣетъ ли читать','[[q2_pal|не умѣетъ]]'],
+   ['f','Занятіе','земледѣліе'],
+   ['r','2. [[q2_mo|Евдокія Никитина]]'],
+   ['f','Отношеніе къ главѣ хозяйства','жена'],
+   ['f','Возрастъ','[[q2_ma|44 года]]'],
+   ['r','3. [[q2_nm|Иванъ Петровъ {{Ковалсвъ|Ковалевъ}}]]'],
+   ['f','Отношеніе къ главѣ хозяйства','сынъ'],
+   ['f','Возрастъ','[[q2_age|17 лѣтъ]]'],
+   ['f','Холостъ, женатъ, вдовъ','[[q2_sing|холостъ]]'],
+   ['f','Мѣсто рожденія','здѣсь же'],
+   ['f','Умѣетъ ли читать; гдѣ обучался','[[q2_edu|умѣетъ; обучался въ земскомъ училищѣ]]'],
+   ['f','Занятіе','[[q2_job|земледѣліе; отхожій промыселъ въ С.-Петербургѣ, чернорабочій]]']
+  ],
+  notes:[
+   ['green','Правка OCR.','В строке 3 распознано «Ковалсвъ»: буква «е» прочитана как «с». Так же пишется фамилия главы хозяйства в этом листе, поэтому исправлено на «Ковалевъ». Исходное распознавание сохранено.'],
+   ['blue','Склейка.','Запись «Иванъ Петровъ» предложена как Иван Петрович Ковалёв, 1879 г. р. Решение за вами — во вкладке «Исследование».']
+  ]},
+ {id:'d3', short:'Фотография с надписью', year:'1911', kind:'Фотография, оборот',
+  title:'Фотография 1911 года, надпись на обороте',
+  src:'Семейный архив Соколовых', ocr:'Рукопись · расшифровано',
+  cite:'Фотография 1911 г., оборот. Семейный архив Соколовых.',
+  body:[
+   ['h','Фотографическая карточка. Оборотъ, надпись чернилами.'],
+   ['p','[[q3_txt|На добрую память дорогой Машѣ отъ Вани.]] [[q3_pl|Лихославль. 1911 г.]]'],
+   ['f','Штампъ','Фотографія Н. Смирнова въ Лихославлѣ'],
+   ['e','Лицевая сторона: мужчина лет тридцати, [[q3_uni|в форменной тужурке и фуражке с кантом]]. Описание составлено при оцифровке.']
+  ]},
+ {id:'d4', short:'Список призванных', year:'1914', kind:'Именной список нижних чинов запаса',
+  title:'Список призванных по мобилизации, июль 1914',
+  src:'ГАТО, фонд Новоторжского уездного присутствия по воинской повинности. Номер фонда уточнить', ocr:'Рукопись · OCR 91%',
+  cite:'Именной список нижних чинов запаса, призванных по мобилизации 1914 г. Новоторжское уездное присутствие.',
+  body:[
+   ['h','Именной списокъ нижнихъ чиновъ запаса, призванныхъ по мобилизаціи 1914 года. Новоторжское уѣздное по воинской повинности присутствіе.'],
+   ['f','№ по списку','112'],
+   ['f','Званіе, имя, отчество и фамилія','[[q4_nm|крестьянинъ Иванъ Петровичъ Ковалевъ]]'],
+   ['f','Годъ рожденія','[[q4_by|1881]]'],
+   ['f','Откуда','[[q4_from|Тверской губ., Новоторжскаго у., д. Высокое]]'],
+   ['f','Семейное положеніе','[[q4_fam|женатъ, сынъ 6 лѣтъ]]'],
+   ['f','Занятіе','[[q4_job|стрѣлочникъ ст. Лихославль Николаевской жел. дор.]]'],
+   ['f','Явился на сборный пунктъ','[[q4_date|18 іюля 1914 г.]]'],
+   ['f','Куда отправленъ','—'],
+   ['e','Графа «куда отправлен» не заполнена.']
+  ],
+  notes:[['red','Расхождение.','Год рождения 1881 не сходится с метрикой (1879). Разбор — во вкладке «Исследование».']]},
+ {id:'d5', short:'Справка с железной дороги', year:'1926', kind:'Справка с места работы',
+  title:'Справка с места работы, 12 марта 1926',
+  src:'Семейный архив Соколовых', ocr:'Машинопись · OCR 99% · добавлен 18.09.2026',
+  cite:'Справка с места работы, 12 марта 1926 г. Семейный архив Соколовых.',
+  body:[
+   ['h','Справка'],
+   ['p','Дана [[q5_nm|гр. Ковалеву Ивану Петровичу, 1879 г. рожд.]], в том, что он действительно работает [[q5_job|путевым обходчиком 3-го околотка ст. Лихославль Октябрьской ж. д. с 1919 года]].'],
+   ['p','Состав семьи: [[q5_wife|жена Мария Федоровна, 44 л.]], [[q5_son|сын Николай, 18 л.]], [[q5_dau|дочь Анна, 12 л.]]'],
+   ['p','Проживает: [[q5_addr|д. Высокое]].'],
+   ['p','Справка выдана для представления в волисполком.'],
+   ['p','Нач. дистанции пути — подпись неразборчива. 12 марта 1926 г.']
+  ]},
+ {id:'d6', short:'Письмо внучки', year:'1998', kind:'Воспоминания, письмо',
+  title:'Письмо В. Н. Соколовой, 1998',
+  src:'Семейный архив Соколовых', ocr:'Рукопись · расшифровка',
+  cite:'Письмо В. Н. Соколовой, 1998 г. Семейный архив Соколовых.',
+  body:[
+   ['h','Из письма [[q6_head|В. Н. Соколовой]] двоюродной сестре, 1998 г.'],
+   ['p','…Деда Ивана Петровича я помню плохо: [[q6_death|мне было года два, когда его не стало, значит, это тридцать седьмой или тридцать восьмой год]]. Мама рассказывала, что [[q6_rail|он всю жизнь проработал на дороге в Лихославле, ещё с царского времени]], а [[q6_mob|в Германскую его забрали в первый же день]]. [[q6_wound|Был ранен, в шестнадцатом году вернулся домой]]. [[q6_medal|Была у него медаль, кажется, Георгиевская]], но куда она делась, никто не знает.'],
+   ['p','Бабушку, Марию Фёдоровну, [[q6_nick|в деревне звали Маня-Кузнечиха]]: [[q6_smith|отец её, говорят, был кузнецом в Пречистом]]. Фотография деда в форме, которую ты просила, у меня, пришлю копию…']
+  ]},
+ {id:'d7', short:'Запись в «Памяти героев»', year:'1915', kind:'Онлайн-база, запись из списка потерь',
+  title:'«Память героев Великой войны 1914–1918», запись 1915 года',
+  src:'gwar.mil.ru', ocr:'Текст карточки базы',
+  cite:'«Память героев Великой войны 1914–1918», gwar.mil.ru.',
+  body:[
+   ['h','«Память героев Великой войны 1914–1918», gwar.mil.ru. Запись из именного списка потерь, 1915 г.'],
+   ['f','Фамилія, имя, отчество','[[q7_nm|Ковалевъ Иванъ Васильевъ]]'],
+   ['f','Званіе','рядовой'],
+   ['f','Губернія, уѣздъ, селеніе','[[q7_pl|Тверская, Старицкій, д. Курово]]'],
+   ['f','Семейное положеніе','[[q7_fam|холостъ]]'],
+   ['f','Что случилось','[[q7_w|раненъ]]'],
+   ['e','Найдено поиском «Ковалев Иван, Тверская губ.». Выписано для сверки.']
+  ],
+  notes:[['red','Другой человек.','Иван Васильевич из Старицкого уезда. С Иваном Петровичем не склеен: другое отчество, уезд и семейное положение.']]},
+ {id:'d8', short:'Ответ ГАТО на запрос', year:'2026', kind:'Ответ архива',
+  title:'Ответ Государственного архива Тверской области, 12.03.2026',
+  src:'ГАТО, ответ по электронной почте', ocr:'Электронное письмо',
+  cite:'Ответ ГАТО на запрос, 12.03.2026.',
+  body:[
+   ['h','Государственный архив Тверской области. Ответ на запрос, 12.03.2026.'],
+   ['p','На Ваш запрос от 12.02.2026 сообщаем, что [[q8_no|в метрических книгах Никольской церкви села Пречистое Новоторжского уезда Тверской губернии за 1881 год (ф. 160) запись о рождении Ковалева Ивана Петровича не обнаружена]].'],
+   ['p','[[q8_more|Дополнительно просмотрены метрические книги той же церкви за 1880 и 1882 годы — сведений не выявлено.]]'],
+   ['p','[[q8_have|Метрические книги церкви за 1877–1879 годы в архиве имеются.]] Для поиска по ним направьте, пожалуйста, новый запрос.']
+  ]}
+];
+const DOC = {}; DOCS.forEach((d,i)=>{d.n=i+1; DOC[d.id]=d;});
+
+/* цитаты: id -> текст (после правки OCR) */
+const QUOTE = {};
+DOCS.forEach(d=>d.body.forEach(b=>b.slice(1).forEach(s=>{
+  for(const m of s.matchAll(/\[\[(\w+)\|(.+?)\]\]/g)) QUOTE[m[1]] = m[2].replace(/\{\{(.+?)\|(.+?)\}\}/g,'$2');
+})));
+
+/* ---------- персоны ---------- */
+const PERSONS = [
+ {id:'p2', name:'Ковалёв Пётр Семёнович', role:'отец', years:'ок. 1850 — ?', g:0},
+ {id:'p3', name:'Ковалёва Евдокия Никитична', role:'мать', years:'ок. 1853 — ?', g:0},
+ {id:'p1', name:'Ковалёв Иван Петрович', role:'', years:'1879 — 1937/38?', g:1, main:true},
+ {id:'p4', name:'Ковалёва Мария Фёдоровна', role:'жена', years:'ок. 1882 — ?', g:1},
+ {id:'p5', name:'Ковалёв Николай Иванович', role:'сын', years:'ок. 1908 — ?', g:2},
+ {id:'p6', name:'Ковалёва Анна Ивановна', role:'дочь', years:'ок. 1914 — ?', g:2},
+ {id:'p7', name:'Соколова Валентина Николаевна', role:'внучка', years:'1936 — ?', g:3},
+ {id:'x1', name:'Ковалёв Иван Васильевич', role:'другой человек', years:'ранен в 1915', g:0, apart:true}
+];
+const PERSON = {}; PERSONS.forEach(p=>PERSON[p.id]=p);
+const SUB = {
+ p1:'Родился 6 мая 1879 по ст. ст. в деревне Высокое Новоторжского уезда. Крестьянин, служил на Николаевской, затем Октябрьской железной дороге. Призван в 1914 году.',
+ p2:'Отец Ивана Петровича. Крестьянин деревни Высокое.',
+ p3:'Мать Ивана Петровича.',
+ p4:'Жена Ивана Петровича. Девичья фамилия неизвестна.',
+ p5:'Сын Ивана Петровича и Марии Фёдоровны.',
+ p6:'Дочь Ивана Петровича и Марии Фёдоровны.',
+ p7:'Внучка Ивана Петровича, автор воспоминаний 1998 года.',
+ x1:'Найден при поиске по фамилии и отделён от рода: это не Иван Петрович.'
+};
+
+/* ---------- факты: персона, что, значение, документ, цитата, уверенность, пометка, примечание ---------- */
+const FACTS = [
+ ['p1','Дата рождения','6 мая 1879 по ст. ст.','d1','q_bd',3,'conflict','расходится с [d4:q4_by]'],
+ ['p1','Крещение','7 мая 1879, Никольская церковь с. Пречистое','d1','q_bap',3],
+ ['p1','Место рождения','д. Высокое Новоторжского у. Тверской губ.','d1','q_place',3],
+ ['p1','Отец','Пётр Семёнович Ковалёв, крестьянин','d1','q_father',3],
+ ['p1','Мать','Евдокия Никитична','d1','q_mother',3],
+ ['p1','Вероисповедание','православное','d1','q_rel',3],
+ ['p1','Крёстный','Андрей Семёнович Ковалёв','d1','q_god',2,'','родство с отцом — догадка по отчеству'],
+ ['p1','Фамилия в переписи','Ковалёв','d2','q2_nm',3,'ocr','OCR: «Ковалсвъ» → «Ковалевъ»'],
+ ['p1','Возраст в 1897','17 лет: родился в 1879 или в начале 1880','d2','q2_age',3],
+ ['p1','Семейное положение, 1897','холост','d2','q2_sing',3],
+ ['p1','Образование','умел читать, учился в земском училище','d2','q2_edu',3],
+ ['p1','Занятие, 1897','земледелие, отход в Петербург чернорабочим','d2','q2_job',3],
+ ['p1','Жена','Маша (Мария)','d3','q3_txt',2],
+ ['p1','Где жил, 1911','Лихославль','d3','q3_pl',2],
+ ['p1','Форма на фото, 1911','тужурка, фуражка с кантом — похоже на железнодорожную','d3','q3_uni',1],
+ ['p1','Год рождения','1881','d4','q4_by',1,'conflict','расходится с [d1:q_bd] и [d5:q5_nm]'],
+ ['p1','Приписан к','д. Высокое Новоторжского у.','d4','q4_from',3],
+ ['p1','Работа, 1914','стрелочник ст. Лихославль Николаевской ж. д.','d4','q4_job',3],
+ ['p1','Семья, 1914','женат, сын 6 лет','d4','q4_fam',3],
+ ['p1','Мобилизация','явился 18 июля 1914, часть не указана','d4','q4_date',3],
+ ['p1','Год рождения','1879','d5','q5_nm',3],
+ ['p1','Работа с 1919','путевой обходчик ст. Лихославль Октябрьской ж. д.','d5','q5_job',3],
+ ['p1','Где жил, 1926','д. Высокое','d5','q5_addr',3],
+ ['p1','Ранение','ранен, вернулся в 1916','d6','q6_wound',1,'','только воспоминания'],
+ ['p1','Награда','медаль, «кажется, Георгиевская»','d6','q6_medal',1,'','только воспоминания'],
+ ['p1','Смерть','1937 или 1938','d6','q6_death',1,'','по памяти внучки, документа нет'],
+ ['p1','Метрика за 1880–1882','записи нет','d8','q8_no',3,'','отрицательный ответ архива'],
+ ['p2','Сын','Иван, родился 6 мая 1879','d1','q_father',3],
+ ['p2','Возраст в 1897','47 лет: родился около 1850','d2','q2_pa',3],
+ ['p2','Грамотность','не умел читать','d2','q2_pal',3],
+ ['p3','Муж','Пётр Семёнович Ковалёв','d1','q_mother',3],
+ ['p3','Возраст в 1897','44 года: родилась около 1853','d2','q2_ma',3],
+ ['p4','Имя','Мария, дома — Маша','d3','q3_txt',2],
+ ['p4','Возраст в 1926','44 года: родилась около 1882','d5','q5_wife',3],
+ ['p4','Прозвище','Маня-Кузнечиха','d6','q6_nick',1],
+ ['p4','Отец','кузнец в Пречистом, по рассказам','d6','q6_smith',1],
+ ['p5','Возраст в 1914','6 лет','d4','q4_fam',3],
+ ['p5','Возраст в 1926','18 лет: родился около 1908','d5','q5_son',3],
+ ['p6','Возраст в 1926','12 лет: родилась около 1914','d5','q5_dau',3],
+ ['p7','Автор письма','1998 год, воспоминания о деде','d6','q6_head',3],
+ ['x1','Имя','Ковалёв Иван Васильевич','d7','q7_nm',3],
+ ['x1','Откуда','д. Курово Старицкого у.','d7','q7_pl',3],
+ ['x1','Семейное положение','холост','d7','q7_fam',3],
+ ['x1','Что случилось','ранен в 1915','d7','q7_w',3]
+].map(([p,what,val,d,q,conf,flag='',note=''])=>({p,what,val,d,q,conf,flag,note}));
+
+/* ---------- состояние ---------- */
+const state = {person:'p1', tab:'dossier', doc:'d1', merge:'pending', filter:'all', chat:[], busy:false, hist:false};
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const app = $('#app');
+
+/* ---------- разметка ---------- */
+const mcls = d => d==='d2' ? ' m-'+state.merge : '';
+const fn = (d,q) => `<a href="#" role="button" class="fn${mcls(d)}" data-fn="${d}:${q}" aria-label="Источник ${DOC[d].n}: ${DOC[d].short}">${DOC[d].n}</a>`;
+const toks = s => [...s.matchAll(/\[(d\d):(\w*)\]/g)].map(m=>[m[1],m[2]]);
+function byDoc(list){ const g=[]; list.forEach(([d,q])=>{ const x=g.find(y=>y[0]===d); if(x){ if(!x[1].includes(q)) x[1].push(q); } else g.push([d,[q]]); }); return g; }
+/* подряд идущие сноски на один документ — одна сноска, подсвечивает все цитаты */
+const rich = s => s.replace(/(?:\[d\d:\w*\])+/g, run=>{
+  const g=[]; toks(run).forEach(([d,q])=>{ const last=g[g.length-1]; if(last&&last[0]===d) last[1].push(q); else g.push([d,[q]]); });
+  return g.map(([d,qs])=>fn(d,qs.join(','))).join('');
+});
+const paras = s => s.trim().split(/\n\s*\n/).map(p=>`<p>${rich(p.trim())}</p>`).join('');
+const docMark = s => s.replace(/\{\{(.+?)\|(.+?)\}\}/g,'<span class="ocr" title="Правка OCR: исходное распознавание «$1»"><del>$1</del><ins>$2</ins></span>')
+                      .replace(/\[\[(\w+)\|(.+?)\]\]/g,'<span class="q" data-q="$1">$2</span>');
+const confWord = ['','низкая','средняя','высокая'];
+const meter = c => `<span class="meter l${c}" aria-hidden="true"><b></b><b></b><b></b></span><span class="conf-t">${confWord[c]}</span>`;
+
+function docView(d){
+  const D = DOC[d];
+  const body = D.body.map(([t,a,b])=>{
+    if(t==='h') return `<p class="d-h">${docMark(a)}</p>`;
+    if(t==='r') return `<p class="d-r">${docMark(a)}</p>`;
+    if(t==='p') return `<p class="d-p">${docMark(a)}</p>`;
+    if(t==='e') return `<p class="d-e">${docMark(a)}</p>`;
+    return `<div class="d-f"><div class="d-l">${a}</div><div class="d-v">${docMark(b)}</div></div>`;
+  }).join('');
+  let notes = (D.notes||[]).filter(n=>!(d==='d2' && n[0]==='blue' && state.merge!=='pending'));
+  if(d==='d2' && state.merge==='yes') notes.push(['green','Склейка подтверждена.','Вы подтвердили: «Иванъ Петровъ» из этого листа — Иван Петрович Ковалёв, 1879 г. р.']);
+  if(d==='d2' && state.merge==='no') notes.push(['red','Склейка отклонена.','Вы отметили, что «Иванъ Петровъ» — другой человек. Сведения из листа уйдут из досье при пересборке.']);
+  return `<div class="doc-kind">Источник ${D.n} · ${D.kind}</div>
+    <h3 class="doc-title">${D.title}</h3>
+    <div class="doc-meta">${D.src}<span>${D.ocr}</span></div>
+    <div class="doc-body">${body}</div>
+    ${notes.length?`<div class="doc-notes">${notes.map(([c,b,t])=>`<div class="dnote ${c}"><b>${b}</b> ${t}</div>`).join('')}</div>`:''}`;
+}
+const factBtn = (f,showWho) => `<button class="df${f.flag==='conflict'?' conflict':''}" data-q="${f.q}" data-light="${f.q}">
+   <span class="w">${showWho && f.p!=='p1' ? `${PERSON[f.p].name.split(' ').slice(1).join(' ')}: ${f.what.toLowerCase()}` : f.what}</span><span class="v">${f.val}</span></button>`;
+
+/* ---------- боковая панель ---------- */
+function renderSide(){
+  const fam = PERSONS.filter(p=>!p.apart).map(p=>`<button class="pitem${state.person===p.id?' on':''}" style="--g:${p.g}" data-person="${p.id}">
+     <span class="nm">${p.name}</span><span class="mt">${p.role?p.role+' · ':''}${p.years}</span></button>`).join('');
+  const apart = PERSONS.filter(p=>p.apart).map(p=>`<button class="pitem apart${state.person===p.id?' on':''}" data-person="${p.id}" style="--gl:0">
+     <span class="nm">${p.name}</span><span class="mt">${p.years} · не склеен</span></button>`).join('');
+  const docs = DOCS.map(d=>{
+    let flag='';
+    if(d.id==='d2') flag = state.merge==='pending' ? ' · <span class="flag">склейка ждёт решения</span>' : state.merge==='yes' ? ' · <span class="flag ok">склейка подтверждена</span>' : ' · <span class="flag">склейка отклонена</span>';
+    if(d.id==='d4') flag=' · <span class="flag">расхождение</span>';
+    if(d.id==='d7') flag=' · другой человек';
+    return `<button class="ditem${state.tab==='docs'&&state.doc===d.id?' on':''}" data-doc="${d.id}"><span class="n">${d.n}</span>
+      <span><span class="nm">${d.short}</span><span class="mt">${d.year}${flag}</span></span></button>`;
+  }).join('');
+  $('#side').innerHTML = `<div class="side-group"><h2>Род <small>4 поколения</small></h2>${fam}</div>
+    <div class="side-group"><h2>Отделены от рода</h2>${apart}</div>
+    <div class="side-group"><h2>Документы <small>${DOCS.length}</small></h2>${docs}</div>`;
+}
+
+/* ---------- шапка персоны и вкладки ---------- */
+const TABS = [['docs','Документы'],['facts','Факты'],['dossier','Досье'],['research','Исследование'],['book','Книга'],['chat','Чат'],['own','Свой документ']];
+function renderHead(){
+  const p = PERSON[state.person];
+  const nf = FACTS.filter(f=>f.p===state.person).length;
+  const cnt = {docs:DOCS.length, facts:nf};
+  $('#phead').innerHTML = `<h1>${p.name}${p.apart?' <span class="muted" style="font-size:.6em">— не из рода</span>':''}</h1>
+    <p class="sub">${SUB[p.id]}</p>
+    <div class="tabs" role="tablist">${TABS.map(([id,t])=>`<button class="tab${state.tab===id?' on':''}" role="tab" aria-selected="${state.tab===id}" data-tab="${id}">${t}${cnt[id]?`<i>${cnt[id]}</i>`:''}</button>`).join('')}</div>`;
+  const tb=$('.tabs'), on=$('.tab.on'); if(tb&&on) tb.scrollLeft = on.offsetLeft - tb.clientWidth/2 + on.offsetWidth/2;
+  const pend = state.merge==='pending';
+  $('#stats').innerHTML = `<b>${DOCS.length}</b> документов · <b>${FACTS.length}</b> ${plural(FACTS.length,'факт','факта','фактов')} · ${pend?'<span class="warn">1 склейка ждёт решения</span>':'склеек на проверке нет'}`;
+}
+
+/* ---------- вкладка: документы ---------- */
+function viewDocs(){
+  const d = state.doc, i = DOCS.findIndex(x=>x.id===d);
+  const fs = FACTS.filter(f=>f.d===d);
+  return `<div class="reader-bar">
+      <label for="docSel">Документ</label>
+      <select id="docSel">${DOCS.map(x=>`<option value="${x.id}"${x.id===d?' selected':''}>${x.n}. ${x.short}, ${x.year}</option>`).join('')}</select>
+      <div class="nav"><button class="btn ghost sm" data-doc="${DOCS[(i+DOCS.length-1)%DOCS.length].id}" aria-label="Предыдущий документ"><svg width="12" height="10" viewBox="0 0 12 10" aria-hidden="true"><path d="M5 1L1 5l4 4M1 5h11" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span class="tx">Назад</span></button>
+      <button class="btn ghost sm" data-doc="${DOCS[(i+1)%DOCS.length].id}" aria-label="Следующий документ"><span class="tx">Дальше</span><svg width="12" height="10" viewBox="0 0 12 10" aria-hidden="true"><path d="M7 1l4 4-4 4M11 5H0" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button></div>
+    </div>
+    <div class="reader">
+      <article class="sheet" id="sheet">${docView(d)}</article>
+      <aside class="dfacts"><h3>Что система взяла из документа</h3>
+        <p class="hint">${fs.length} ${plural(fs.length,'факт','факта','фактов')}. Нажмите на факт — подсвечу, откуда он взят. Подчёркнутые места в тексте — то, что разобрано на факты.</p>
+        ${fs.map(f=>factBtn(f,true)).join('')}</aside>
+    </div>`;
+}
+function plural(n,a,b,c){n=Math.abs(n)%100;const m=n%10;if(n>10&&n<20)return c;if(m>1&&m<5)return b;if(m===1)return a;return c;}
+
+/* ---------- вкладка: факты ---------- */
+function viewFacts(){
+  let fs = FACTS.filter(f=>f.p===state.person);
+  const c = {
+    all: fs.length,
+    conflict: fs.filter(f=>f.flag==='conflict').length,
+    ocr: fs.filter(f=>f.flag==='ocr').length,
+    merge: fs.filter(f=>f.d==='d2').length
+  };
+  if(state.filter==='conflict') fs = fs.filter(f=>f.flag==='conflict');
+  if(state.filter==='ocr') fs = fs.filter(f=>f.flag==='ocr');
+  if(state.filter==='merge') fs = fs.filter(f=>f.d==='d2');
+  const chips = [['all','Все'],['conflict','Расхождения'],['ocr','Правки OCR'],['merge', state.merge==='pending'?'Ждут склейки':'Из переписи 1897']]
+    .filter(([k])=>k==='all'||c[k]).map(([k,t])=>`<button class="chip${state.filter===k?' on':''}" data-filter="${k}">${t}<i>${c[k]}</i></button>`).join('');
+  const nd = new Set(FACTS.filter(f=>f.p===state.person).map(f=>f.d)).size;
+  const rows = fs.map(f=>{
+    let cls = f.flag==='conflict'?'conflict':f.flag==='ocr'?'ocrfix':'';
+    let note = f.note ? rich(f.note) : '';
+    if(f.d==='d2'){
+      if(state.merge==='pending'){ cls+=' pend'; note = (note?note+'; ':'')+'ждёт склейки'; }
+      if(state.merge==='no'){ cls+=' rej'; note = 'склейка отклонена вами'; }
+    }
+    return `<tr class="${cls}">
+      <td class="c-what">${f.what}</td>
+      <td class="c-val">${f.val}${note?`<span class="fnote">${note}</span>`:''}</td>
+      <td class="c-doc"><button class="doclink" data-fn="${f.d}:${f.q}"><span class="n">${DOC[f.d].n}</span><span>${DOC[f.d].short}, ${DOC[f.d].year}</span></button></td>
+      <td class="c-q">«${QUOTE[f.q]}»</td>
+      <td class="c-conf">${meter(f.conf)}</td></tr>`;
+  }).join('');
+  return `<div class="fbar">${chips}<span class="sum">${c.all} ${plural(c.all,'факт','факта','фактов')} из ${nd} ${plural(nd,'документа','документов','документов')}. Каждый — со ссылкой на цитату.</span></div>
+    <table class="facts"><thead><tr><th>Что</th><th>Значение</th><th>Документ</th><th>Цитата</th><th>Уверенность</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+/* ---------- вкладка: досье ---------- */
+const DOSSIER = `
+<p class="lead">Крестьянин из деревни Высокое, почти всю жизнь проработавший на железной дороге: до революции стрелочник, после — путевой обходчик станции Лихославль. В июле 1914 года призван в первый же день мобилизации.</p>
+<h3>Рождение и родители</h3>
+<p>Иван Петрович Ковалёв родился 6 мая 1879 года по ст. ст. (18 мая по н. ст.) в деревне Высокое Новоторжского уезда Тверской губернии и на следующий день был крещён в Никольской церкви села Пречистое[d1:q_bd]. Родители — крестьянин Пётр Семёнович Ковалёв и его жена Евдокия Никитична[d1:q_father][d1:q_mother]. Крёстным стал Андрей Семёнович Ковалёв из той же деревни[d1:q_god], судя по отчеству, брат отца.</p>
+<p>В списке призванных 1914 года годом рождения записан 1881-й[d4:q4_by]. В досье принят 1879-й: его дают метрика, составленная при крещении, справка 1926 года[d5:q5_nm] и перепись 1897 года, где Ивану 17 лет[d2:q2_age]. Разбор — во вкладке «Исследование».</p>
+<h3>Учёба и работа</h3>
+<p>В 1897 году Иван жил в хозяйстве отца, умел читать и учился в земском училище[d2:q2_edu]. Кроме земледелия, ходил на заработки в Петербург чернорабочим[d2:q2_job].</p>
+<p>В 1911 году он уже в Лихославле[d3:q3_pl], на фотографии того года — в форменной тужурке и фуражке с кантом[d3:q3_uni]. В 1914-м служит стрелочником на станции Лихославль Николаевской железной дороги[d4:q4_job]. С 1919 года — путевой обходчик той же станции, уже на Октябрьской дороге[d5:q5_job].</p>
+<h3>Война</h3>
+<p>18 июля 1914 года, в первый день мобилизации, явился на сборный пункт[d4:q4_date]. В какую часть его отправили, в списке не записано. По воспоминаниям внучки, был ранен и в 1916 году вернулся домой, имел медаль — «кажется, Георгиевскую»[d6:q6_wound][d6:q6_medal]. Документами это пока не подтверждено.</p>
+<h3>Семья</h3>
+<p>Жена — Мария Фёдоровна, около 1882 года рождения[d5:q5_wife]. В деревне её звали Маня-Кузнечиха: её отец был кузнецом в Пречистом[d6:q6_smith]. Фотографию 1911 года Иван подписал ей: «дорогой Машѣ отъ Вани»[d3:q3_txt]. Сын Николай родился около 1908 года, дочь Анна — около 1914-го[d5:q5_son][d5:q5_dau], так что брак заключён не позже 1907 года.</p>
+<h3>Чего пока нет в документах</h3>
+<ul>
+<li>когда он поступил на железную дорогу — где-то между 1897 и 1911 годом;</li>
+<li>запись о браке и девичья фамилия Марии Фёдоровны;</li>
+<li>часть, в которой служил, ранение и награда;</li>
+<li>дата и место смерти — по памяти внучки, 1937 или 1938 год[d6:q6_death].</li>
+</ul>
+<div class="apart-box"><b>Не путать</b>В базе «Память героев Великой войны» есть раненый в 1915 году Иван Васильевич Ковалёв из деревни Курово Старицкого уезда[d7:q7_nm]. Это другой человек: другое отчество, другой уезд, и он холост, а наш Иван к 1914 году женат и с сыном[d4:q4_fam]. В досье его сведения не попали.</div>`;
+
+const BRIEF = [
+ ['Годы жизни','1879 — 1937/38?','[d1:q_bd][d6:q6_death]'],
+ ['Родился','д. Высокое, Новоторжский у., Тверская губ.','[d1:q_place]'],
+ ['Сословие','крестьянин','[d1:q_father]'],
+ ['Образование','земское училище','[d2:q2_edu]'],
+ ['Работа','Николаевская, затем Октябрьская ж. д.: стрелочник, путевой обходчик','[d4:q4_job][d5:q5_job]'],
+ ['Служба','призван 18.07.1914, часть неизвестна','[d4:q4_date]'],
+ ['Награды','медаль, только по воспоминаниям','[d6:q6_medal]'],
+ ['Адреса','Высокое → Лихославль → Высокое','[d2:q2_vil][d3:q3_pl][d5:q5_addr]']
+];
+const BRIEF_OTHER = {
+ p2:`Крестьянин деревни Высокое, отец Ивана Петровича[d1:q_father]. В 1897 году — глава хозяйства, ему 47 лет, значит, родился около 1850 года; читать не умел[d2:q2_pa][d2:q2_pal].
+
+Вероятный брат — Андрей Семёнович Ковалёв, крёстный Ивана[d1:q_god]. Отдельного исследования по Петру Семёновичу пока нет: следующий шаг — метрики Никольской церкви около 1845–1855 годов.`,
+ p3:`Жена Петра Семёновича, мать Ивана[d1:q_mother]. В 1897 году ей 44 года — родилась около 1853 года[d2:q2_ma].
+
+Девичья фамилия неизвестна: в метрике она записана по отчеству, «Евдокия Никитина».`,
+ p4:`Жена Ивана Петровича. В 1926 году ей 44 года, значит, родилась около 1882-го[d5:q5_wife]. Иван подписал ей фотографию 1911 года: «дорогой Машѣ отъ Вани»[d3:q3_txt].
+
+В деревне её звали Маня-Кузнечиха, отец, по семейным рассказам, был кузнецом в Пречистом[d6:q6_smith]. Девичью фамилию должна дать запись о браке — это первый шаг плана.`,
+ p5:`Сын Ивана Петровича и Марии Фёдоровны. В 1914 году ему 6 лет[d4:q4_fam], в 1926-м — 18[d5:q5_son]: родился около 1908 года.
+
+Его поиск в ОБД «Мемориал» и «Памяти народа» стоит в плане: через него можно узнать, был ли жив отец в начале 1940-х.`,
+ p6:`Дочь Ивана Петровича. В 1926 году ей 12 лет[d5:q5_dau] — родилась около 1914 года, вероятно, незадолго до мобилизации отца.`,
+ p7:`Внучка Ивана Петровича, дочь Николая. Автор письма 1998 года[d6:q6_head] — единственного источника о ранении, медали и дате смерти деда. Её сведения в досье помечены как воспоминания.`,
+ x1:`Не из рода. Раненый в 1915 году Иван Васильевич Ковалёв из деревни Курово Старицкого уезда, холостой[d7:q7_nm][d7:q7_pl].
+
+Найден при поиске по фамилии и отделён от Ивана Петровича: другое отчество, другой уезд, другое семейное положение. Держим его отдельной записью, чтобы при следующем поиске система не предлагала его снова.`
+};
+
+function viewDossier(){
+  if(state.person!=='p1'){
+    const used = [...new Set([...BRIEF_OTHER[state.person].matchAll(/\[(d\d):/g)].map(m=>m[1]))];
+    return `<div class="dossier"><div class="prose">${paras(BRIEF_OTHER[state.person])}
+      ${sourcesList(used)}</div></div>`;
+  }
+  let notice='';
+  if(state.merge==='pending') notice = `<div class="notice"><span class="dash" aria-hidden="true"></span><div>Сноски на перепись 1897 года обведены пунктиром. Система считает, что «Иванъ Петровъ» из переписи — это Иван Петрович, но склейку подтверждаете вы. <button class="link" data-goto="research:merge">Посмотреть причины</button></div></div>`;
+  if(state.merge==='no') notice = `<div class="notice no"><div>Вы отметили запись переписи 1897 года как другого человека. Сведения со сноской 2 зачёркнуты и уйдут при пересборке досье. <button class="link" data-merge="pending">Вернуть на проверку</button></div></div>`;
+  const used = DOCS.map(d=>d.id);
+  return `${notice}<div class="dossier">
+    <div class="prose">${rich(DOSSIER)}${sourcesList(used)}</div>
+    <aside class="brief"><h4>Коротко</h4><dl>${BRIEF.map(([k,v,s])=>`<dt>${k}</dt><dd>${v}${rich(s)}</dd>`).join('')}</dl></aside>
+  </div>`;
+}
+function sourcesList(ids){
+  return `<div class="sources"><h3>Источники</h3>${ids.map(id=>{const d=DOC[id];
+    const off = (id==='d7' && state.person==='p1') || (id==='d2' && state.merge==='no');
+    const why = id==='d7'&&state.person==='p1' ? ' · другой человек, в биографию не вошёл' : '';
+    return `<button class="srow${off?' off':''}" data-fn="${id}:"><span class="n">${d.n}</span><span><span class="t">${d.title}</span><span class="s">${d.src}${why}</span></span></button>`;}).join('')}</div>`;
+}
+
+/* ---------- вкладка: исследование ---------- */
+const PLAN = [
+ {st:['go','Готов к отправке'], when:'Почта или портал архива. Ответ обычно 30 дней',
+  h:'ГАТО, ф. 160 «Тверская духовная консистория»',
+  what:'Метрические книги Никольской церкви с. Пречистое за 1900–1908 годы: запись о браке Ивана Петровича и Марии Фёдоровны, запись о рождении сына Николая. Опись и дело — уточнить по описи фонда.',
+  why:'Закрывает сразу два пробела и даёт девичью фамилию жены. Церковь та же, что в найденной метрике 1879 года. За 1880–1882 годы архив уже смотрел — туда не возвращаемся.',
+  req:`В Государственный архив Тверской области
+
+Прошу проверить метрические книги Никольской церкви села Пречистое Новоторжского уезда Тверской губернии (ф. 160) за 1900–1908 годы и выдать архивные копии:
+— записи о браке крестьянина деревни Высокое Ивана Петровича Ковалёва, 1879 года рождения, с Марией Фёдоровной (девичья фамилия неизвестна; по семейным сведениям, её отец — кузнец села Пречистое);
+— записи о рождении их сына Николая, около 1908 года.
+
+По моему запросу от 20.03.2026 архив выдал копию записи о рождении И. П. Ковалёва 6 мая 1879 года из метрической книги той же церкви.
+
+Если в книгах Никольской церкви записей нет, прошу сообщить, к каким ещё приходам в эти годы относились деревня Высокое и станция Лихославль.
+
+С уважением,
+[ФИО, почтовый адрес, телефон, электронная почта]`},
+ {st:['go','Можно сейчас, онлайн'], when:'Без ожидания',
+  h:'«Память героев Великой войны 1914–1918», gwar.mil.ru',
+  what:'Иван Петрович Ковалёв, Тверская губ., Новоторжский уезд, 1914–1917: именные списки потерь, картотека бюро учёта потерь, наградные документы.',
+  why:'Ранение и медаль известны только из письма внучки. Год рождения ставить 1881 или оставлять пустым: в военные бумаги он мог попасть из того же списка 1914 года.',
+  req:`gwar.mil.ru — поиск по людям
+Фамилия: Ковалев (проверить также Ковалёв, Ковалевъ)
+Имя: Иван
+Отчество: Петрович (в документах может быть «Петров»)
+Губерния: Тверская
+Уезд: Новоторжский
+Год рождения: пусто или 1881
+Разделы: списки потерь, картотека бюро учёта потерь, награды
+Не брать: Ковалев Иван Васильевич, Старицкий уезд, д. Курово — проверен, другой человек`},
+ {st:['wait','После поиска в базе'], when:'Нужно название части',
+  h:'РГВИА, документы полка',
+  what:'Если в «Памяти героев» найдётся запись с названием части — приказы и наградные списки этой части за 1915–1916 годы.',
+  why:'Без названия полка запрос в РГВИА не составить. Текст запроса появится, когда станет известна часть.', req:''},
+ {st:['go','Параллельно, онлайн'], when:'Без ожидания',
+  h:'ОБД «Мемориал» и «Память народа»',
+  what:'Сын Николай Иванович Ковалёв, около 1908 г. р., Лихославльский район: учётные карточки и донесения о потерях.',
+  why:'В этих документах записан ближайший родственник с адресом. Если там «отец Ковалёв Иван Петрович» — он был жив в начале 1940-х, и версия «умер в 1937–1938» отпадает. Если «мать» или «жена» — косвенно подтверждает её.',
+  req:`obd-memorial.ru и pamyat-naroda.ru — поиск по людям
+Фамилия: Ковалев
+Имя: Николай
+Отчество: Иванович
+Год рождения: 1907–1909
+Место призыва: Лихославльский район Калининской области (проверить и соседние)
+Смотреть: графу о ближайшем родственнике и адрес семьи`}
+];
+
+function timeline(){
+  const a=1875,b=1945,x=y=>((y-a)/(b-a)*100).toFixed(2)+'%';
+  const gaps=[[1897.6,1910.6,''],[1914.7,1925.6,'soft'],[1926.5,1938.5,'']];
+  const pts=[[1879,'d1','q_bd','up'],[1897,'d2','q2_age','dn'],[1911,'d3','q3_pl','up'],[1914,'d4','q4_date','dn'],[1926,'d5','q5_job','up']];
+  return `<div class="tl" aria-label="Документы на шкале времени">
+    <div class="axis"></div>
+    ${gaps.map(([s,e,c])=>`<div class="gap ${c}" style="left:${x(s)};width:calc(${x(e)} - ${x(s)})"></div>`).join('')}
+    ${pts.map(([y,d,q,pos])=>`<button class="pt" style="left:${x(y)}" data-fn="${d}:${q}" aria-label="${y}: ${DOC[d].short}"></button><span class="lb ${pos}" style="left:${x(y)}">${y}</span>`).join('')}
+    <button class="pt mem" style="left:${x(1937.5)}" data-fn="d6:q6_death" aria-label="1937 или 1938: письмо внучки"></button><span class="lb dn" style="left:${x(1937.5)}">1937/38?</span>
+    ${[1880,1900,1920,1940].map(y=>`<span class="dec" style="left:${x(y)}">${y}</span>`).join('')}
+  </div>`;
+}
+
+function mergeBlock(){
+  let decide;
+  if(state.merge==='pending') decide = `<div class="decide"><button class="btn" data-merge="yes">Подтвердить, это он</button><button class="btn ghost" data-merge="no">Это другой человек</button></div>`;
+  else if(state.merge==='yes') decide = `<div class="decided">Подтверждено вами сегодня. Пять фактов из переписи вошли в досье. <button class="link" data-merge="pending">Отменить</button></div>`;
+  else decide = `<div class="decided no">Отмечено: другой человек. Сведения из переписи не войдут в досье. <button class="link" data-merge="pending">Отменить</button></div>`;
+  return `<div class="item" id="merge">
+      <span class="tag ${state.merge==='pending'?'blue':state.merge==='yes'?'green':'red'}">${state.merge==='pending'?'Предложена склейка · решаете вы':state.merge==='yes'?'Склеено':'Не склеено'}</span>
+      <h3>«Иванъ Петровъ», 17 лет, из переписи 1897 года[d2:q2_nm] — это Иван Петрович, 1879 г. р.?</h3>
+      <div class="merge">
+        <div><h4>Почему это он</h4><ul class="why">
+          <li>Отец — Петръ Семеновъ Ковалевъ, как в метрике[d2:q2_head][d1:q_father]</li>
+          <li>Мать — Евдокія Никитина, тоже как в метрике[d2:q2_mo]</li>
+          <li>Та же деревня Высокое Новоторжского уезда[d2:q2_vil]</li>
+          <li>17 лет на январь 1897 года сходится с маем 1879-го[d2:q2_age]</li></ul></div>
+        <div><h4>Что смущает</h4><ul class="why">
+          <li class="eh">Фамилия распознана как «Ковалсвъ». Это ошибка OCR, исправлена: «е» прочитано как «с»[d2:q2_nm]</li>
+          <li class="eh">Больше ничего не расходится</li></ul></div>
+      </div>
+      ${decide}
+    </div>
+    <div class="item">
+      <span class="tag red">Не склеено · система отказалась</span>
+      <h3>Иван Васильевич Ковалёв, ранен в 1915 году[d7:q7_nm] — не наш Иван</h3>
+      <div class="merge">
+        <div><h4>Почему не он</h4><ul class="why">
+          <li class="no">Отчество Васильевич, а отец нашего — Пётр[d1:q_father]</li>
+          <li class="no">Старицкий уезд, деревня Курово; наш — из Новоторжского, Высокое[d7:q7_pl]</li>
+          <li class="no">В 1915 году холост, а наш к 1914-му женат и с сыном[d4:q4_fam]</li></ul></div>
+        <div><h4>Что совпадает</h4><ul class="why">
+          <li class="eh">Только имя, фамилия и губерния. Фамилия в губернии частая</li></ul></div>
+      </div>
+      <p class="muted" style="font-size:13px">Записан отдельной персоной, чтобы при следующем поиске его не предлагали снова.</p>
+    </div>`;
+}
+
+function viewResearch(){
+  if(state.person!=='p1') return emptyFor('исследования');
+  const histNew = state.merge!=='pending' ? `<li class="${state.hist?'new':''}"><span class="dt">Сегодня</span><span>${state.merge==='yes'?'Вы подтвердили склейку: «Иванъ Петровъ» из переписи 1897 года — Иван Петрович.':'Вы отклонили склейку записи из переписи 1897 года.'}
+      <span class="chg">${state.merge==='yes'?'В досье вошли учёба в земском училище и отход в Петербург. Гипотеза о пути на железную дорогу теперь опирается на документ, а не на догадку.':'Учёба и отход в Петербург убраны из досье. Гипотеза о пути на железную дорогу снова без опоры: в плане появится поиск другого источника о 1897–1911 годах.'}</span></span></li>` : '';
+  return rich(`<div class="rs">
+  <p class="rs-intro">Разобрано 8 документов и два ответа ГАТО. Ниже то, что не сходится, чего не хватает и что делать дальше. План пересчитывается после каждого нового документа или ответа архива.</p>
+
+  <h2>Что не сходится <small>1 расхождение, 1 снято</small></h2>
+  <div class="item">
+    <span class="tag red">Расхождение</span>
+    <h3>Год рождения: 1879 или 1881</h3>
+    <table class="ledger"><tbody>
+      <tr><td>1879</td><td>Метрическая книга[d1:q_bd]</td><td>запись при крещении, на следующий день после рождения</td><td class="w">первичный</td></tr>
+      <tr><td>1879</td><td>Справка 1926 года[d5:q5_nm]</td><td>со слов или по бумагам дороги</td><td class="w">вторичный</td></tr>
+      <tr><td>1879–80</td><td>Перепись 1897 года[d2:q2_age]</td><td>17 лет на январь 1897</td><td class="w">вторичный${state.merge==='pending'?', ждёт склейки':''}</td></tr>
+      <tr class="bad"><td>1881</td><td>Список призванных 1914 года[d4:q4_by]</td><td>через 35 лет после рождения, скорее всего со слов</td><td class="w">вторичный</td></tr>
+      <tr><td>не 1880–82</td><td>Ответ ГАТО[d8:q8_more]</td><td>книги за эти годы просмотрены, записи нет</td><td class="w">проверка</td></tr>
+    </tbody></table>
+    <div class="verdict"><b>Верим 1879 году.</b> За него единственный первичный источник и ещё два независимых, а 1881 записан один раз и через 35 лет. В карточке 1881 остаётся вариантом со ссылкой: в военные документы год мог попасть из этого же списка, и в «Памяти героев» искать нужно с ним.</div>
+  </div>
+  <div class="item">
+    <span class="tag green">Снято, это не противоречие</span>
+    <h3>Где жил в 1914 году: Высокое или Лихославль</h3>
+    <p>В списке 1914 года «откуда — д. Высокое»[d4:q4_from], а служил он в Лихославле[d4:q4_job]. В таких списках графа «откуда» — место приписки по сословию, а не где человек жил. Крестьянин оставался приписан к деревне и когда работал на дороге.</p>
+  </div>
+
+  <h2>Кто есть кто <small>${state.merge==='pending'?'1 склейка ждёт решения':'решения приняты'}</small></h2>
+  ${mergeBlock()}
+
+  <h2>Пробелы</h2>
+  ${timeline()}
+  <ul class="gaps">
+    <li><b><span class="sw"></span>1898–1910</b><span>Тринадцать лет без документов. За это время он ушёл на дорогу, женился, родился сын Николай (около 1908 года).</span></li>
+    <li><b><span class="sw soft"></span>1915–1925</b><span>Служба, ранение, медаль и возвращение известны только из письма внучки[d6:q6_wound].</span></li>
+    <li><b><span class="sw"></span>после 1926</b><span>Ничего, кроме «тридцать седьмой или тридцать восьмой год»[d6:q6_death].</span></li>
+    <li><b><span class="sw none"></span>без даты</b><span>Девичья фамилия Марии Фёдоровны.</span></li>
+  </ul>
+
+  <h2>Гипотезы</h2>
+  <div class="item hyp"><span class="tag">Вероятно</span>
+    <h3>Венчались в 1900–1907 годах в Никольской церкви Пречистого</h3>
+    <p><span class="k">Основание:</span> сын родился около 1908 года[d5:q5_son], отец невесты — кузнец из Пречистого[d6:q6_smith], а венчались обычно в приходе невесты.</p>
+    <p><span class="k">Проверка:</span> первый шаг плана.</p></div>
+  <div class="item hyp"><span class="tag">Возможно</span>
+    <h3>На дорогу попал через отход в Петербург, между 1897 и 1905 годом</h3>
+    <p><span class="k">Основание:</span> в 1897 году ходил на заработки в Петербург[d2:q2_job], а Николаевская дорога шла из Петербурга через Лихославль. К 1911 году он в Лихославле, в форме[d3:q3_uni].</p>
+    <p><span class="k">Проверка:</span> документы о служащих Николаевской железной дороги — РГИА или ЦГИА СПб, фонд уточнить по путеводителю. Пока в плане не стоит: сначала брак и война.</p></div>
+  <div class="item hyp"><span class="tag">Возможно</span>
+    <h3>Ранение найдётся в списках потерь под 1881 годом или без года</h3>
+    <p><span class="k">Основание:</span> письмо внучки[d6:q6_wound] и год из списка 1914 года[d4:q4_by].</p>
+    <p><span class="k">Проверка:</span> второй шаг плана.</p></div>
+
+  <h2 id="plan">План <small>4 шага, первые два можно делать сегодня</small></h2>
+  ${PLAN.map((s,i)=>`<div class="step">
+     <div class="st"><b class="${s.st[0]}">${s.st[1]}</b>${s.when}</div>
+     <div><h3>${s.h}</h3>
+       <dl><dt>Что ищем</dt><dd>${s.what}</dd><dt>Почему</dt><dd>${s.why}</dd></dl>
+       ${s.req?`<details class="req"${i===0?' open':''}><summary>${i===0?'Текст запроса':'Параметры поиска'}</summary><div class="reqbox"><pre>${s.req}</pre><button class="btn sm" data-copy="${i}">Скопировать</button></div></details>`:''}
+     </div></div>`).join('')}
+
+  <h2>История запросов</h2>
+  <ul class="hist">
+    <li><span class="dt">12.02.2026</span><span>Запрос в ГАТО: метрика о рождении за 1881 год. Год взят из списка призванных — других документов о рождении тогда в деле не было.</span></li>
+    <li><span class="dt">12.03.2026</span><span>Ответ ГАТО: за 1881 год записи нет, за 1880 и 1882 тоже[d8:q8_no].
+      <span class="chg">Что изменилось: 1881 перестал считаться надёжным — в списках призванных год часто записан со слов и расходится с метрикой на 1–3 года. Поиск сдвинут назад, на 1877–1880; архив подтвердил, что книги за эти годы есть[d8:q8_have].</span></span></li>
+    <li><span class="dt">20.03.2026</span><span>Второй запрос в ГАТО: те же книги за 1877–1880 годы.</span></li>
+    <li><span class="dt">28.04.2026</span><span>Ответ: запись о рождении 6 мая 1879 года[d1:q_bd].
+      <span class="chg">Год рождения подтверждён, 1881 переведён в варианты. Следующий шаг — брак, в ту же церковь.</span></span></li>
+    <li><span class="dt">18.09.2026</span><span>В дело добавлена справка 1926 года из семейного архива: в ней тоже 1879[d5:q5_nm].</span></li>
+    <li><span class="dt">01.10.2026</span><span>Добавлен лист переписи 1897 года. Система предложила склейку с Иваном Петровичем${state.merge==='pending'?' — ждёт вашего решения':''}.</span></li>
+    ${histNew}
+  </ul>
+  </div>`);
+}
+function emptyFor(what){
+  return `<div class="empty"><p>По этой персоне ${what} пока нет. Всё, что о ней известно, собрано на вкладках «Факты» и «Досье».</p>
+    <button class="btn ghost" data-person="p1">Вернуться к Ивану Петровичу</button></div>`;
+}
+
+/* ---------- вкладка: книга ---------- */
+const BOOK_L = `<div class="rh">Род Ковалёвых</div>
+<p class="ch-k">Глава вторая</p><h2 class="ch-t">Иван Петрович</h2><p class="ch-d">1879 — около 1938</p>
+<p class="dropcap">Иван Петрович Ковалёв родился 6 (18) мая 1879 года в деревне Высокое Новоторжского уезда, в семье крестьянина Петра Семёновича Ковалёва и его жены Евдокии Никитичны. На следующий день его крестили в Никольской церкви села Пречистое; крёстным стал Андрей Семёнович Ковалёв, по всей видимости брат отца[d1:q_god].</p>
+<p>В семнадцать лет Иван умел читать — он учился в земском училище — и, кроме работы на отцовской земле, ходил на заработки в Петербург[d2:q2_job]. Дорога в Петербург шла через Лихославль, и, похоже, отход и привёл его на железную дорогу: в 1911 году он снимается у лихославльского фотографа в форменной тужурке и фуражке с кантом[d3:q3_uni].</p>
+<p>Карточку он подписал жене: «На добрую память дорогой Машѣ отъ Вани»[d3:q3_txt]. Мария Фёдоровна была дочерью кузнеца из Пречистого, в деревне её звали Маня-Кузнечиха[d6:q6_smith].</p>`;
+const BOOK_R = `<div class="rh">Иван Петрович</div>
+<figure class="ph"><button class="ph-box" data-fn="d3:q3_txt">Место под фотографию · источник 3</button>
+<figcaption>Иван Петрович. Лихославль, 1911 год. Из семейного архива Соколовых</figcaption></figure>
+<p>Летом 1914 года он стрелочник станции Лихославль Николаевской дороги, женат, сыну шесть лет[d4:q4_fam]. 18 июля, в первый день мобилизации, Иван Петрович явился на сборный пункт[d4:q4_date]. В семье помнили, что он был ранен и в шестнадцатом году вернулся домой с медалью, «кажется, Георгиевской»[d6:q6_medal]. Документов об этом пока не нашли.</p>
+<p>После революции он остался на дороге: с 1919 года — путевой обходчик той же станции, а в 1926-м живёт в Высоком с женой, сыном Николаем и дочерью Анной[d5:q5_job].</p>`;
+function bookPage(html, start){
+  let n=start; const notes=[];
+  const out = html.replace(/\[(d\d):(\w+)\]/g,(m,d,q)=>{ n++; notes.push([n,d]); return `<a href="#" role="button" class="bfn${mcls(d)}" data-fn="${d}:${q}" aria-label="Сноска ${n}">${n}</a>`; });
+  const foot = notes.map(([k,d],i)=>`<p><span>${k}</span>${i>0&&notes[i-1][1]===d?'Там же.':DOC[d].cite}</p>`).join('');
+  return [out, foot, n];
+}
+function viewBook(){
+  if(state.person!=='p1') return emptyFor('главы в книге');
+  const [l,lf,n] = bookPage(BOOK_L,0), [r,rf] = bookPage(BOOK_R,n);
+  return `<div class="bookwrap">
+    <aside class="toc"><h4>Книга «Род Ковалёвых»</h4><ol>
+      <li><span>От составителя</span><span>5</span></li>
+      <li><span>Глава первая. Пётр Семёнович и Евдокия Никитична</span><span>11</span></li>
+      <li class="on"><span>Глава вторая. Иван Петрович</span><span>23</span></li>
+      <li><span>Глава третья. Николай и Анна</span><span>41</span></li>
+      <li><span>Древо рода</span><span>58</span></li>
+      <li><span>Документы и фотографии</span><span>61</span></li></ol>
+      <p class="meta">Глава собрана из досье. Каждая сноска ведёт к документу — нажмите на номер.${state.merge==='pending'?' Сноски на перепись обведены пунктиром, пока склейка не подтверждена.':''}</p>
+      <p class="meta">Формат 170 × 240 мм, PDF для печати.</p></aside>
+    <div class="spread">
+      <section class="page l">${l}<div class="pfoot">${lf}</div><div class="pnum">23</div></section>
+      <section class="page r">${r}<div class="pfoot">${rf}</div><div class="pnum">24</div></section>
+    </div></div>`;
+}
+
+/* ---------- вкладка: чат ---------- */
+const CHAT = [
+ {q:'Когда он родился и почему даты разные?', a:()=>`6 мая 1879 года по ст. ст. (18 мая по н. ст.), крещён 7 мая[d1:q_bd]. Так записано в метрической книге, и это самый надёжный источник: запись делали на следующий день после рождения.
+
+1881 год стоит только в списке призванных 1914 года[d4:q4_by]. Такие списки составляли со слов, и ошибка на 1–3 года в них обычна. Остальное сходится с 1879-м: справка 1926 года[d5:q5_nm] и перепись 1897 года, где ему 17 лет[d2:q2_age]${state.merge==='pending'?' (эту запись вы ещё не подтвердили как его)':''}. А в марте архив не нашёл записи за 1880–1882 годы[d8:q8_more].
+
+1881 я не выбрасываю: под этим годом его стоит искать в военных базах.`},
+ {q:'Кто его отец?', a:()=>`Пётр Семёнович Ковалёв, крестьянин деревни Высокое[d1:q_father]. Мать — Евдокия Никитична[d1:q_mother].
+
+В переписи 1897 года Пётр Семёнович — глава хозяйства, ему 47 лет[d2:q2_pa], то есть родился он около 1850 года. Читать не умел[d2:q2_pal].
+
+Крёстный Ивана — Андрей Семёнович Ковалёв из той же деревни[d1:q_god]. По отчеству похоже на брата Петра, но документа о родстве нет. Проверить можно по метрикам Никольской церкви 1845–1855 годов.`},
+ {q:'Что искать дальше?', a:()=>`Начать с брака. Запись о венчании даст девичью фамилию Марии Фёдоровны и закроет часть пробела 1898–1910. Скорее всего, это Никольская церковь Пречистого, 1900–1907 годы: сын родился около 1908 года[d5:q5_son], а отец невесты был кузнецом в Пречистом[d6:q6_smith]. Текст запроса в ГАТО готов.
+
+Параллельно, без ожидания: «Память героев Великой войны» по Новоторжскому уезду, с годом 1881 или без года — там может найтись ранение.
+
+За 1880–1882 годы по этой церкви архив уже смотрел[d8:q8_more], туда повторно не пишем.`, link:true},
+ {q:'Это он был ранен в 1915 году?', a:()=>`Скорее всего, нет. В «Памяти героев Великой войны» есть раненый в 1915 году Иван Ковалёв[d7:q7_nm], но это Иван Васильевич из деревни Курово Старицкого уезда, холостой[d7:q7_pl]. Наш — Петрович из Новоторжского уезда, и в 1914 году он уже женат, с сыном[d4:q4_fam]. Поэтому я их не склеил.
+
+О ранении нашего Ивана мы знаем только из письма внучки[d6:q6_wound]. Искать его стоит в списках потерь Новоторжского уезда за 1915–1916 годы.`}
+];
+const INTRO = `Я знаю 8 документов по Ивану Петровичу, его родных, досье и оба запроса в ГАТО. Открытых вопросов три: брак и девичья фамилия жены, война 1914–1916 годов и дата смерти. На каждое утверждение даю сноску — нажмите на номер, откроется документ.`;
+
+function aiMsg(text, link){
+  const src = byDoc(toks(text));
+  return `<div class="msg ai"><div class="who">Помощник</div><div class="txt">${paras(text)}</div>
+    ${link?`<p style="margin-top:10px"><button class="btn ghost sm" data-goto="research:plan">Открыть план</button></p>`:''}
+    ${src.length?`<div class="srcs">${src.map(([d,qs])=>`<button data-fn="${d}:${qs.join(',')}"><span class="n">${DOC[d].n}</span><span>${DOC[d].short}, ${DOC[d].year} — <em>${qs.map(q=>`«${QUOTE[q]}»`).join('; ')}</em></span></button>`).join('')}</div>`:''}</div>`;
+}
+function viewChat(){
+  if(state.person!=='p1') return emptyFor('чата');
+  const log = state.chat.map(m=> m.me ? `<div class="msg me">${m.me}</div>` : m.free ? aiMsg(m.free) : aiMsg(CHAT[m.ai].a(), CHAT[m.ai].link)).join('');
+  const asked = new Set(state.chat.filter(m=>m.ai!==undefined).map(m=>m.ai));
+  return `<div class="chat">
+    <div class="ctx">Чат по персоне <b>Ковалёв Иван Петрович</b>. Знает: 8 документов, 27 фактов, 6 родственников, досье, 2 запроса в архив и 3 открытых вопроса.</div>
+    <div class="log" id="log">${aiMsg(INTRO)}${log}${state.busy?'<div class="typing" aria-label="Помощник пишет"><span></span><span></span><span></span></div>':''}</div>
+    <div class="asks">${CHAT.map((c,i)=>`<button class="ask${asked.has(i)?' done':''}" data-ask="${i}">${c.q}</button>`).join('')}</div>
+    <form class="cform" id="cform"><input id="cin" placeholder="Спросите об Иване Петровиче" aria-label="Вопрос" autocomplete="off"><button class="btn" type="submit">Спросить</button></form>
+  </div>`;
+}
+function ask(i, text){
+  if(state.busy) return;
+  state.chat.push({me: text || CHAT[i].q});
+  state.busy = true; renderTab(); scrollChat();
+  setTimeout(()=>{
+    state.busy=false;
+    state.chat.push(i>=0 ? {ai:i} : {free:'В этом демо я отвечаю на вопросы из подсказок ниже. В рабочей версии ответ собирается из тех же фактов и сносок, что досье.'});
+    renderTab(); scrollChat();
+  }, 900);
+}
+function scrollChat(){
+  const log = $('#log'); if(!log) return;
+  const last = log.lastElementChild; if(!last) return;
+  const r = last.getBoundingClientRect();
+  if(r.top > innerHeight*0.55 || r.bottom > innerHeight) window.scrollBy({top: r.top - innerHeight*0.3, behavior:'smooth'});
+}
+
+/* ---------- отрисовка ---------- */
+const VIEWS = {docs:viewDocs, facts:viewFacts, dossier:viewDossier, research:viewResearch, book:viewBook, chat:viewChat, own:viewOwn};
+function renderTab(anim){
+  const c = $('#content');
+  c.innerHTML = `<div class="${anim?'view':''}">${VIEWS[state.tab]()}</div>`;
+}
+function renderAll(anim){ renderSide(); renderHead(); renderTab(anim); }
+function setTab(t, opts={}){
+  state.tab = t;
+  history.replaceState(null,'','#'+t);
+  renderAll(true);
+  if(!opts.keepScroll) window.scrollTo({top:0});
+}
+
+/* ---------- источник в боковой панели ---------- */
+const drawer=$('#drawer'), drBody=$('#drBody'), scrimDr=$('#scrimDr');
+let drDoc=null, drQ=null, lastFocus=null;
+function openSource(d,q,btn){
+  $$('.fn.on,.bfn.on').forEach(b=>b.classList.remove('on'));
+  if(btn && (btn.classList.contains('fn')||btn.classList.contains('bfn'))) btn.classList.add('on');
+  const fill=()=>{
+    const qs = q.split(',').filter(Boolean), fs = FACTS.filter(f=>f.d===d && qs.includes(f.q));
+    drBody.innerHTML = docView(d) + (fs.length ? `<div class="dr-facts"><h4>Что система взяла из ${qs.length>1?'этих цитат':'этой цитаты'}</h4>${fs.map(f=>factBtn(f,true)).join('')}</div>` : '');
+    $('#drT').innerHTML = `<b>Источник ${DOC[d].n}</b> · ${DOC[d].short}, ${DOC[d].year}`;
+  };
+  const wasOpen = drawer.classList.contains('open');
+  if(!wasOpen){
+    lastFocus = btn || document.activeElement;
+    fill(); drBody.scrollTop=0;
+    drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); scrimDr.classList.add('on');
+    $('#drX').focus({preventScroll:true});
+    setTimeout(()=>lightIn(drBody,q),380);
+  } else if(drDoc!==d){
+    drBody.classList.add('swap');
+    setTimeout(()=>{ fill(); drBody.scrollTop=0; drBody.classList.remove('swap'); setTimeout(()=>lightIn(drBody,q),120); },170);
+  } else { fill(); lightIn(drBody,q,true); }
+  drDoc=d; drQ=q;
+}
+function closeSource(){
+  drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); scrimDr.classList.remove('on');
+  $$('.fn.on,.bfn.on').forEach(b=>b.classList.remove('on'));
+  if(lastFocus && document.contains(lastFocus)) lastFocus.focus({preventScroll:true});
+}
+const spansOf = (box,q) => (q||'').split(',').filter(Boolean).map(x=>box.querySelector(`.q[data-q="${x}"]`)).filter(Boolean);
+function lightIn(box,q,instant){
+  const all = spansOf(box,q); if(!all.length) return; const s = all[0];
+  $$('.q.lit',box).forEach(x=>x.classList.remove('lit'));
+  const br=box.getBoundingClientRect(), sr=s.getBoundingClientRect();
+  const top = box.scrollTop + sr.top - br.top - box.clientHeight*0.4 + sr.height/2;
+  box.scrollTo({top:Math.max(0,top), behavior:'smooth'});
+  setTimeout(()=>all.forEach(x=>x.classList.add('lit')), instant?60:260);
+}
+function lightPage(q){
+  const sheet=$('#sheet'); if(!sheet) return;
+  const all = spansOf(sheet,q); if(!all.length) return; const s = all[0];
+  $$('.q.lit',sheet).forEach(x=>x.classList.remove('lit'));
+  const r = s.getBoundingClientRect();
+  if(r.top < 80 || r.bottom > innerHeight-40) s.scrollIntoView({block:'center',behavior:'smooth'});
+  setTimeout(()=>all.forEach(x=>x.classList.add('lit')),200);
+  $$('.df').forEach(x=>x.classList.toggle('hot', q.split(',').includes(x.dataset.q)));
+}
+
+
+/* ---------- вкладка: свой документ (живой разбор на сервере) ---------- */
+const API = 'https://gad-production.ru/gen/api/razbor', LIMIT = 6000;
+const EX = [
+ ['Метрика 1879, с ошибкой распознавания', "Метрическая книга Николаевской церкви села Горки Новоторжскаго уѣзда за 1879 годъ. Часть первая о родившихся.\n№ 47. Родился 12 марта, крещенъ 14 марта. Іоаннъ. Родители: деревни Горки крестьянинъ Петръ Васильевъ Ковал-\nсвъ и законная жена его Анна Ѳедорова, оба православнаго вѣроисповѣданія. Воспріемники: той же деревни крестьянинъ Никита Ивановъ Сорокинъ и крестьянская дѣвица Марія Петрова. Таинство крещенія совершалъ священникъ Іоаннъ Смирновъ съ дьячкомъ Алексѣемъ Троицкимъ."],
+ ['Запись о браке 1902', "Метрическая книга Успенской церкви села Медное Тверского уѣзда на 1902 годъ. Часть вторая, о бракосочетавшихся.\n№ 9. Мѣсяцъ и день: Октября 20. Женихъ: деревни Каликино крестьянинъ Василій Ѳедоровъ Пахомовъ, православнаго вѣроисповѣданія, первымъ бракомъ, 24 лѣтъ. Невѣста: деревни Ямокъ крестьянская дѣвица Евдокія Михайлова Бѣлова, православнаго вѣроисновѣданія, первымъ бракомъ, 19 лѣтъ.\nПоручители по женихѣ: деревни Каликино крестьяне Петръ Ѳедоровъ Пахомовъ и Иванъ Семеновъ Лапинъ; по невѣстѣ: крестьянинъ Михаилъ Ивановъ Бѣловъ. Вѣнчалъ священникъ Николай Покровскій съ псаломщикомъ Сергѣемъ Даниловымъ."]
+];
+const own = {text:'', sent:'', busy:false, res:null, err:'', t0:0, dt:0};
+const esc = v => String(v==null?'':v).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* где в тексте стоит слово с ошибкой OCR: регистр, ё/е и перенос «Ковал-\nсвъ» не мешают */
+function findLoose(t, w){
+  let n='', m=[];
+  for(let i=0;i<t.length;i++){
+    if(t[i]==='-'){ const r=t.slice(i+1).match(/^[ \t]*\r?\n[ \t]*/); if(r){ i+=r[0].length; continue; } }
+    n += t[i].toLowerCase().replace('ё','е'); m.push(i);
+  }
+  const ww = String(w||'').toLowerCase().replace(/ё/g,'е').replace(/-[ \t]*\r?\n[ \t]*/g,'');
+  const k = ww ? n.indexOf(ww) : -1;
+  return k<0 ? null : [m[k], m[k+ww.length-1]+1];
+}
+
+function ownResult(){
+  const d = own.res, t = own.sent;
+  const people = {}; (d.people||[]).forEach(x=>{ if(x&&x.id) people[x.id]=x; });
+  const fixes = (d.ocr||[]).filter(o=>o && o.was && o.fix);
+  const fixName = v => fixes.reduce((a,o)=>a.split(o.was).join(o.fix), String(v||''));
+  const all = Array.isArray(d.facts) ? d.facts : [];
+  const facts = all.filter(f=>f && Number.isInteger(f.start) && Number.isInteger(f.end) && f.start>=0 && f.end<=t.length && f.end>f.start);
+  const ocrR = []; fixes.forEach((o,i)=>{ const r=findLoose(t,o.was); if(r) ocrR.push([r[0],r[1],i]); });
+  /* текст режется по границам всех цитат и ошибок: цитаты могут перекрываться */
+  const pts = [...new Set([0,t.length, ...facts.flatMap(f=>[f.start,f.end]), ...ocrR.flatMap(r=>[r[0],r[1]])])].sort((a,b)=>a-b);
+  let src = '';
+  for(let i=0;i<pts.length-1;i++){
+    const a=pts[i], b=pts[i+1], seg=esc(t.slice(a,b));
+    const fi = facts.map((f,k)=>f.start<=a && f.end>=b ? k : -1).filter(k=>k>=0);
+    const oi = ocrR.filter(r=>r[0]<=a && r[1]>=b).map(r=>r[2]);
+    if(!fi.length && !oi.length){ src += seg; continue; }
+    const o = oi.length ? fixes[oi[0]] : null;
+    src += `<span class="${fi.length?'q2':''}${oi.length?' ocr2':''}"${fi.length?` data-f="${fi.join(' ')}"`:''}${o?` data-o="${oi.join(' ')}" title="Распознано «${esc(o.was)}», должно быть «${esc(o.fix)}»"`:''}>${seg}</span>`;
+  }
+  const dropped = (+d.dropped||0) + (all.length - facts.length);
+  const np = Object.keys(people).length;
+  const sec = (own.dt/1000).toFixed(1).replace('.',',');
+  const flist = facts.map((f,k)=>{ const pp=people[f.person];
+    return `<button class="df" data-of="${k}"><span class="w">${esc(f.what)}${pp?` · ${esc(fixName(pp.name))}`:''}</span><span class="v">${esc(f.value)}</span></button>`; }).join('');
+  const olist = fixes.map((o,i)=>`<button class="df" data-oo="${i}"><span class="v"><del>${esc(o.was)}</del> → <ins>${esc(o.fix)}</ins></span><span class="w">${esc(o.why)}${ocrR.some(r=>r[2]===i)?'':' · место в тексте не найдено'}</span></button>`).join('');
+  const qs = (d.questions||[]).filter(Boolean).map(q=>`<li>${esc(q)}</li>`).join('');
+  return `<div class="own-res">
+    <div class="own-head"><h2>Что нашла система</h2><span>${np} ${plural(np,'человек','человека','человек')}, ${facts.length} ${plural(facts.length,'факт','факта','фактов')}, ${fixes.length} ${plural(fixes.length,'ошибка','ошибки','ошибок')} распознавания · ответ за ${sec} с${own.dt<1500?' — этот текст уже разбирали, сервер помнит ответ':''}</span></div>
+    <div class="reader">
+      <article class="sheet">
+        <p class="own-leg">Текст ровно в том виде, в каком ушёл на сервер. <span class="lq">Маркер</span> — цитата, на которой держится факт. <span class="lo">Волна</span> — ошибка распознавания.</p>
+        <div class="own-src" id="ownSrc">${src}</div>
+      </article>
+      <aside class="dfacts own-side">
+        <h3>Люди</h3><ul class="ppl">${(d.people||[]).map(x=>`<li><span class="nm">${esc(fixName(x.name))}</span><br><span class="rl">${esc(x.role)}</span></li>`).join('')}</ul>
+        <h3>Факты</h3><p class="hint">Нажмите на факт — покажу его цитату в тексте.</p>${flist || '<p class="hint">Фактов с дословной цитатой не нашлось.</p>'}
+        ${fixes.length?`<h3>Ошибки распознавания</h3>${olist}`:''}
+        ${qs?`<h3>Что проверить дальше</h3><ul class="qs">${qs}</ul>`:''}
+        <p class="own-drop${dropped?' red':''}">${dropped ? `${dropped} ${plural(dropped,'факт','факта','фактов')} без дословной цитаты система отбросила.` : `У всех ${facts.length} ${plural(facts.length,'факта','фактов','фактов')} цитата найдена в тексте дословно.`}</p>
+      </aside>
+    </div></div>`;
+}
+
+function viewOwn(){
+  const n = own.text.trim().length, over = n>LIMIT;
+  return `<p class="own-intro">Разбор настоящий: текст уходит на наш сервер, и модель находит в нём людей и факты. К каждому факту система требует дословную цитату и сама проверяет, что она есть в тексте. Факт без цитаты на экран не попадает.</p>
+    <div class="own-ex"><span>Подставить пример:</span>${EX.map((e,i)=>`<button class="btn ghost sm" data-ex="${i}"${own.busy?' disabled':''}>${e[0]}</button>`).join('')}</div>
+    <div class="own-in">
+      <label class="sr" for="ownT">Текст документа</label>
+      <textarea id="ownT" spellcheck="false" placeholder="Вставьте расшифровку документа: метрику, исповедную ведомость, справку, письмо. До 6000 знаков."${own.busy?' readonly':''}>${esc(own.text)}</textarea>
+      <div class="own-bar">
+        <button class="btn" id="ownGo"${own.busy||!n||over?' disabled':''}>Разобрать</button>
+        <span class="own-cnt${over?' over':''}" id="ownCnt">${n} из ${LIMIT} знаков${over?' — для демо слишком длинно':''}</span>
+        ${own.busy?`<span class="own-st" role="status"><span class="typing" aria-hidden="true"><span></span><span></span><span></span></span>Читаю документ, обычно 10–30 секунд <span id="ownSec"></span></span>`:''}
+      </div>
+      ${own.err?`<div class="own-err" role="alert">${esc(own.err)}</div>`:''}
+    </div>
+    <div id="ownRes">${own.res?ownResult():''}</div>`;
+}
+
+async function razbor(){
+  const ta = $('#ownT'); if(!ta || own.busy) return;
+  const t = ta.value.trim();
+  if(!t || t.length>LIMIT) return;
+  Object.assign(own, {text:t, sent:t, busy:true, err:'', res:null, t0:Date.now()});
+  renderTab();
+  const tick = setInterval(()=>{ const el=$('#ownSec'); if(el) el.textContent='· '+Math.round((Date.now()-own.t0)/1000)+' с'; }, 1000);
+  const ctl = new AbortController(), stop = setTimeout(()=>ctl.abort(), 90000);
+  try{
+    const r = await fetch(API, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({tekst:t}), signal:ctl.signal});
+    let d = null; try{ d = await r.json(); }catch(e){}
+    if(!r.ok) own.err = (d && d.oshibka) || `Сервер ответил ошибкой ${r.status}. Попробуйте ещё раз.`;
+    else if(!d || !Array.isArray(d.facts)) own.err = 'Сервер прислал непонятный ответ. Попробуйте ещё раз.';
+    else own.res = d;
+  }catch(e){
+    own.err = e.name==='AbortError' ? 'Сервер не ответил за 90 секунд. Попробуйте ещё раз.' : 'Не получилось связаться с сервером. Проверьте интернет и попробуйте ещё раз.';
+  }finally{
+    clearTimeout(stop); clearInterval(tick); own.busy=false; own.dt=Date.now()-own.t0;
+  }
+  if(state.tab==='own'){
+    renderTab();
+    const res = $('#ownRes .own-res');
+    if(res) window.scrollTo({top: res.getBoundingClientRect().top + scrollY - 70, behavior:'smooth'});
+  }
+}
+
+function focusFact(k){
+  const box = $('#ownSrc'); if(!box) return;
+  box.classList.add('focus');
+  $$('.q2.lit',box).forEach(x=>x.classList.remove('lit'));
+  const segs = $$('.q2',box).filter(x=>x.dataset.f.split(' ').includes(String(k)));
+  void box.offsetWidth;
+  segs.forEach(x=>x.classList.add('lit'));
+  $$('[data-of]').forEach(b=>b.classList.toggle('hot', b.dataset.of===String(k)));
+  const r = segs[0] && segs[0].getBoundingClientRect();
+  if(r && (r.top<80 || r.bottom>innerHeight-30)) segs[0].scrollIntoView({block:'center', behavior:'smooth'});
+}
+function flashOcr(i){
+  const s = $$('#ownSrc .ocr2').filter(x=>x.dataset.o.split(' ').includes(String(i)));
+  if(!s.length) return;
+  s.forEach(x=>{ x.classList.remove('flash'); void x.offsetWidth; x.classList.add('flash'); });
+  const r = s[0].getBoundingClientRect();
+  if(r.top<80 || r.bottom>innerHeight-30) s[0].scrollIntoView({block:'center', behavior:'smooth'});
+}
+document.addEventListener('click', e=>{
+  const t = e.target.closest('[data-ex],[data-of],[data-oo],#ownGo,#ownSrc .q2'); if(!t) return;
+  if(t.dataset.ex!==undefined){ if(own.busy) return; own.text=EX[+t.dataset.ex][1]; own.err=''; renderTab(); return; }
+  if(t.id==='ownGo'){ razbor(); return; }
+  if(t.dataset.of!==undefined){ focusFact(+t.dataset.of); return; }
+  if(t.dataset.oo!==undefined){ flashOcr(+t.dataset.oo); return; }
+  if(t.dataset.f){ focusFact(+t.dataset.f.split(' ').pop()); }
+});
+document.addEventListener('input', e=>{
+  if(e.target.id!=='ownT') return;
+  own.text = e.target.value;
+  const n = own.text.trim().length, over = n>LIMIT, c = $('#ownCnt');
+  c.textContent = `${n} из ${LIMIT} знаков${over?' — для демо слишком длинно':''}`; c.classList.toggle('over', over);
+  $('#ownGo').disabled = own.busy || !n || over;
+});
+document.addEventListener('keydown', e=>{ if(e.target.id==='ownT' && e.key==='Enter' && (e.ctrlKey||e.metaKey)){ e.preventDefault(); razbor(); } });
+let hoverF=null;
+document.addEventListener('mouseover', e=>{
+  const s = e.target.closest('#ownSrc .q2'), id = s ? s.dataset.f : null;
+  if(id===hoverF) return;
+  hoverF = id;
+  $$('[data-of].hov').forEach(x=>x.classList.remove('hov'));
+  if(id) id.split(' ').forEach(k=>{ const b=$(`[data-of="${k}"]`); if(b) b.classList.add('hov'); });
+});
+
+/* ---------- события ---------- */
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('on'),1600); }
+function copyText(t){
+  const done=()=>toast('Текст скопирован');
+  if(navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).then(done,()=>fallback());
+  else fallback();
+  function fallback(){ const ta=document.createElement('textarea'); ta.value=t; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');done();}catch(e){} ta.remove(); }
+}
+function closeSide(){ app.classList.remove('side-open'); $('#menuBtn').setAttribute('aria-expanded','false'); }
+
+document.addEventListener('click', e=>{
+  const t = e.target.closest('[data-fn],[data-tab],[data-person],[data-doc],[data-filter],[data-merge],[data-copy],[data-ask],[data-goto],[data-light]');
+  if(!t) return;
+  if(t.tagName==='A') e.preventDefault();
+  const ds = t.dataset;
+  if(ds.light && !t.closest('#drawer')){ lightPage(ds.light); return; }
+  if(ds.light && t.closest('#drawer')){ lightIn(drBody, ds.light, true); return; }
+  if(ds.fn){ const [d,q]=ds.fn.split(':'); openSource(d,q||'',t); return; }
+  if(ds.tab){ setTab(ds.tab); return; }
+  if(ds.person){ state.person=ds.person; state.filter='all'; closeSide(); if(state.tab==='docs') state.tab='dossier'; setTab(state.tab); return; }
+  if(ds.doc){ state.doc=ds.doc; closeSide(); setTab('docs', {keepScroll: state.tab==='docs'}); return; }
+  if(ds.filter){ state.filter=ds.filter; renderTab(); return; }
+  if(ds.merge){
+    state.merge=ds.merge; state.hist = ds.merge!=='pending';
+    renderAll(); toast(ds.merge==='yes'?'Склейка подтверждена':ds.merge==='no'?'Отмечено: другой человек':'Склейка снова ждёт решения');
+    const m=$('#merge'); if(m && state.tab==='research'){ const r=m.getBoundingClientRect(); if(r.top<60) m.scrollIntoView({block:'start'}); }
+    return;
+  }
+  if(ds.copy!==undefined){ copyText(PLAN[+ds.copy].req); return; }
+  if(ds.ask!==undefined){ ask(+ds.ask); return; }
+  if(ds.goto){
+    const [tab,id]=ds.goto.split(':'); closeSource(); setTab(tab);
+    requestAnimationFrame(()=>{ const el=document.getElementById(id); if(el){ const y=el.getBoundingClientRect().top+scrollY-(parseInt(getComputedStyle(document.documentElement).getPropertyValue('--head-h'))+16); window.scrollTo({top:y,behavior:'smooth'}); } });
+  }
+});
+document.addEventListener('change', e=>{ if(e.target.id==='docSel'){ state.doc=e.target.value; setTab('docs',{keepScroll:true}); } });
+document.addEventListener('submit', e=>{
+  if(e.target.id!=='cform') return; e.preventDefault();
+  const v=$('#cin').value.trim(); if(!v) return;
+  const s=v.toLowerCase();
+  const i = /родил|(^|[^а-яё])(дат|год)/.test(s)?0 : /отец|отц|родител/.test(s)?1 : /дальше|искать|план|что делать/.test(s)?2 : /ранен|войн|1915/.test(s)?3 : -1;
+  ask(i, v);
+});
+document.addEventListener('mouseover', e=>{
+  const q = e.target.closest('#sheet .q, #drBody .q');
+  const id = q ? q.dataset.q : null;
+  if(id===hoverQ) return;
+  $$('.df.hov').forEach(x=>x.classList.remove('hov'));
+  hoverQ = id;
+  if(!q) return;
+  const scope = q.closest('#drBody') ? drBody : $('.dfacts');
+  if(scope) $$(`.df[data-q="${id}"]`, scope).forEach(x=>x.classList.add('hov'));
+});
+let hoverQ=null;
+$('#drX').addEventListener('click', closeSource);
+scrimDr.addEventListener('click', closeSource);
+$('#drOpen').addEventListener('click', ()=>{ const d=drDoc,q=drQ; closeSource(); state.doc=d; setTab('docs'); setTimeout(()=>lightPage(q),120); });
+$('#menuBtn').addEventListener('click', ()=>{ const o=app.classList.toggle('side-open'); $('#menuBtn').setAttribute('aria-expanded',o); });
+$('#scrimSide').addEventListener('click', closeSide);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ if(drawer.classList.contains('open')) closeSource(); else closeSide(); } });
+
+/* старт */
+const h = location.hash.slice(1);
+if(VIEWS[h]) state.tab = h;
+renderAll(true);
+</script>
+</body>
+</html>
