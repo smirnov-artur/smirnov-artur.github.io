@@ -85,7 +85,11 @@ const OFFICES = [
   ['Санкт-Петербург', 'ул. Большая Конюшенная, 9', [30.3227, 59.9378]],
   ['Сочи', 'Навагинская ул., 9', [39.7218, 43.5853]]
 ];
-const ymap = ([lon, lat], z = 15) => `https://yandex.ru/map-widget/v1/?ll=${lon},${lat}&z=${z}&pt=${lon},${lat},pm2rdm`;
+// Статичная карта вместо виджета: бесплатный виджет показывает рекламную полосу, на дорогом сайте это лишнее.
+// В рабочей версии — JS API Яндекса с ключом агентства; здесь картинка + своя метка, клик открывает Яндекс Карты.
+const smap = ([lon, lat], z = 15) => `https://static-maps.yandex.ru/1.x/?ll=${lon},${lat}&z=${z}&size=650,450&l=map&lang=ru_RU`;
+const ylink = ([lon, lat], z = 15) => `https://yandex.ru/maps/?ll=${lon},${lat}&z=${z}&pt=${lon},${lat}`;
+const mapBox = (coords, z, title, cls = '') => `<a class="map${cls}" href="${ylink(coords, z)}" target="_blank" rel="noopener" aria-label="${title} — открыть в Яндекс Картах"><img src="${smap(coords, z)}" alt="" loading="lazy"><i class="map-pin" aria-hidden="true"></i><span class="map-open">Открыть в Яндекс Картах</span></a>`;
 
 /* ---------- фильтры каталога ---------- */
 const PRICE = [0, 25, 50, 75, 100, 150, 200, 300, 500, 750, 1000];
@@ -476,7 +480,7 @@ function objectPage(slug) {
     <section class="obj-sec"><h2>Характеристики</h2><dl class="specs">${spec.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></section>
     <section class="obj-sec"><h2>Расположение</h2>
       <p>${esc(o.address)}, ${c.name}${o.near ? `. ${esc(o.near)}` : ''}.</p>
-      <div class="map"><iframe src="${ymap(o.coords, o.type === 'dom' ? 13 : 15)}" title="Карта: ${esc(o.address)}" loading="lazy" allowfullscreen></iframe></div>
+      ${mapBox(o.coords, o.type === 'dom' ? 13 : 15, 'Карта: ' + esc(o.address))}
     </section>
   </div>
   <aside class="obj-side">
@@ -616,7 +620,7 @@ function contacts() {
       <div class="msgs">${msgs()}</div>
       <ul class="offices" role="list">${OFFICES.map(([cty, a], i) => `<li><button class="office${i ? '' : ' on'}" type="button" data-office="${i}"><b>${cty}</b><span>${a}</span></button></li>`).join('')}</ul>
     </div>
-    <div class="map map-tall"><iframe id="ct-map" src="${ymap(OFFICES[0][2], 16)}" title="Офис на карте" loading="lazy" allowfullscreen></iframe></div>
+    <div id="ct-map" class="ct-map">${mapBox(OFFICES[0][2], 16, 'Офис на карте', ' map-tall')}</div>
   </div>
   <section class="cta cta-inline">
     <div class="cta-in">
@@ -629,7 +633,7 @@ function contacts() {
       $('.ct-info').addEventListener('click', e => {
         const b = e.target.closest('[data-office]'); if (!b) return;
         $$('.office').forEach(x => x.classList.toggle('on', x === b));
-        $('#ct-map').src = ymap(OFFICES[+b.dataset.office][2], 16);
+        $('#ct-map').innerHTML = mapBox(OFFICES[+b.dataset.office][2], 16, 'Офис на карте', ' map-tall');
       });
     }
   };
