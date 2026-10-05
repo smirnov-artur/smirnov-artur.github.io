@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Изоляция клубов в Supabase: проверка</title>
+<style>
+:root{--ink:#111827;--mut:#5b6472;--line:#e5e7eb;--bg:#f7f8fa;--ok:#15803d;--okb:#dcfce7;--bad:#b91c1c;--badb:#fee2e2;--acc:#3ecf8e}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+main{max-width:980px;margin:0 auto;padding:34px 18px 70px}h1{font-size:clamp(24px,3.4vw,34px);line-height:1.2;margin:0 0 10px}
+h2{font-size:21px;margin:34px 0 10px}p{margin:8px 0}.mut{color:var(--mut)}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:22px 0}
+.k{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px}.k b{display:block;font-size:28px}.k span{color:var(--mut);font-size:14px}
+ol li{margin:6px 0}.tw{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:620px}th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-weight:600;font-size:13px}.b{display:inline-block;border-radius:8px;padding:2px 8px;font-weight:700;font-size:12px}
+.ok{background:var(--okb);color:var(--ok)}.bad{background:var(--badb);color:var(--bad)}
+code{font-family:ui-monospace,Consolas,monospace;font-size:13px;background:#eef0f3;border-radius:5px;padding:1px 5px}
+details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin:10px 0}summary{cursor:pointer}
+pre{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:14px;overflow:auto;font-size:12.5px;line-height:1.45;max-height:520px}
+.row{display:flex;gap:8px;margin:10px 0}button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 12px;cursor:pointer;font:inherit;font-size:14px}
+.note{background:#fff;border-left:4px solid var(--acc);border-radius:10px;padding:12px 16px;margin:16px 0}
+</style></head><body><main>
+<h1>Как проверить, что клуб А не видит данные клуба Б, а федерация видит только сводку</h1>
+<p class="mut">Метод и готовые SQL-проверки. Прогон — на модели по описанию проекта (федерация → клубы → игроки, рейтинги, турниры, планы развития),
+это не ваш код. Окружение как в Supabase: роли anon и authenticated, <code>auth.uid()</code> из JWT. База — PostgreSQL 17.5.</p>
+<div class="kpi"><div class="k"><b>17</b><span>живых проверок под разными пользователями</span></div>
+<div class="k"><b>6 → 0</b><span>дыр до исправлений и после</span></div>
+<div class="k"><b>7 → 3</b><span>находок статики (после остались только «сверить логику» у функций)</span></div></div>
+
+<h2>Метод</h2>
+<ol>
+<li><b>Статика по схеме</b> (<code>audit.sql</code>, хватает выгрузки схемы без данных): таблицы без RLS, политики «всегда да», представления без <code>security_invoker</code> — они читают таблицы правами владельца и обходят RLS, таблицы с данными игроков без <code>org_id</code>, функции SECURITY DEFINER, доступные через rpc.</li>
+<li><b>Живые проверки под пользователями</b> (<code>izolyaciya.sql</code>): роль <code>authenticated</code> и <code>sub</code> в JWT конкретного тренера клуба А, тренера клуба Б, аналитика федерации и не вошедшего. Каждый пытается прочитать, добавить, изменить и «переманить» чужое. Все записи откатываются, база не меняется.</li>
+<li><b>Федерация</b>: сводка — отдельная функция только с агрегатами по клубам своей федерации. Проверяется и то, что сводка по всем клубам есть, и то, что ФИО и телефонов игроков федерации не видно, и то, что тренеру клуба сводка не отдаётся.</li>
+<li><b>Исправления миграцией</b> (<code>fixes.sql</code>) и повторный прогон: все проверки зелёные.</li>
+<li><b>Проверки — в CI</b>: прогон на каждый pull request с изменением схемы, новая таблица без политики не уедет в прод.</li>
+</ol>
+
+<h2>Прогон до исправлений</h2>
+<p>В модель заложены четыре типичные ошибки: забытый RLS на <code>dev_plans</code>, вставка игрока без проверки клуба, турниры «для всех» и витрина рейтинга в обход RLS. Живые проверки их видят:</p>
+<div class="tw"><table><tr><th>Кто</th><th>Проверка</th><th>Итог</th><th>Факт</th></tr><tr><td>тренер А</td><td>видит своих игроков</td><td><span class="b ok">ОК</span></td><td>2 строк</td></tr><tr><td>тренер А</td><td>не видит players клуба Б</td><td><span class="b ok">ОК</span></td><td>0 строк клуба Б</td></tr><tr><td>тренер А</td><td>не видит ratings клуба Б</td><td><span class="b ok">ОК</span></td><td>0 строк клуба Б</td></tr><tr><td>тренер А</td><td>не видит tournaments клуба Б</td><td><span class="b bad">ДЫРА</span></td><td>1 строк клуба Б</td></tr><tr><td>тренер А</td><td>не видит dev_plans клуба Б</td><td><span class="b bad">ДЫРА</span></td><td>1 строк клуба Б</td></tr><tr><td>тренер А</td><td>витрина ratings_board без строк клуба Б</td><td><span class="b bad">ДЫРА</span></td><td>1 строк клуба Б</td></tr><tr><td>тренер А</td><td>не может добавить игрока в клуб Б</td><td><span class="b bad">ДЫРА</span></td><td>вставка прошла</td></tr><tr><td>тренер А</td><td>не может менять рейтинги клуба Б</td><td><span class="b ok">ОК</span></td><td>0 строк изменено</td></tr><tr><td>тренер А</td><td>не может переманить игрока Б к себе</td><td><span class="b ok">ОК</span></td><td>0 строк изменено</td></tr><tr><td>тренер Б</td><td>не видит игроков клуба А</td><td><span class="b ok">ОК</span></td><td>0 строк клуба А</td></tr><tr><td>федерация</td><td>не видит личные данные игроков</td><td><span class="b ok">ОК</span></td><td>0 строк players</td></tr><tr><td>федерация</td><td>видит сводку по обоим клубам</td><td><span class="b ok">ОК</span></td><td>2 клубов в сводке</td></tr><tr><td>тренер А</td><td>не получает сводку федерации</td><td><span class="b ok">ОК</span></td><td>0 строк</td></tr><tr><td>не вошёл</td><td>не видит players</td><td><span class="b ok">ОК</span></td><td>0 строк</td></tr><tr><td>не вошёл</td><td>не видит ratings</td><td><span class="b ok">ОК</span></td><td>0 строк</td></tr><tr><td>не вошёл</td><td>не видит dev_plans</td><td><span class="b bad">ДЫРА</span></td><td>1 строк</td></tr><tr><td>не вошёл</td><td>не видит ratings_board</td><td><span class="b bad">ДЫРА</span></td><td>3 строк</td></tr></table></div>
+<p class="mut" style="margin-top:14px">Статика нашла то же по одной схеме, без пользователей и данных:</p>
+<div class="tw"><table><tr><th>Что нашла проверка</th><th>Где</th><th>Чем грозит</th></tr><tr><td>RLS выключен</td><td><code>dev_plans</code></td><td>таблицу видят все пользователи всех клубов</td></tr><tr><td>политика всегда пропускает</td><td><code>players.players_insert (INSERT)</code></td><td>можно записать строку в чужой клуб</td></tr><tr><td>политика всегда пропускает</td><td><code>tournaments.tournaments_read (SELECT)</code></td><td>видны строки всех клубов</td></tr><tr><td>представление обходит RLS</td><td><code>ratings_board</code></td><td>через него видны данные всех клубов</td></tr><tr><td>функция с правами владельца</td><td><code>federation_of</code></td><td>проверка вызывающего есть — сверить логику</td></tr><tr><td>функция с правами владельца</td><td><code>federation_summary</code></td><td>проверка вызывающего есть — сверить логику</td></tr><tr><td>функция с правами владельца</td><td><code>is_member</code></td><td>проверка вызывающего есть — сверить логику</td></tr></table></div>
+
+<h2>Исправления</h2>
+<ol>
+<li><code>dev_plans</code>: включить RLS, читать и писать — только тренерам и админам своего клуба.</li>
+<li>Вставка игрока: <code>with check (is_member(org_id, …))</code> вместо <code>true</code>.</li>
+<li>Турниры: свои и клубов своей федерации; общие — отдельным флагом.</li>
+<li>Витрина рейтинга: <code>security_invoker = true</code> (Postgres 15+), тогда RLS работает и через представление.</li>
+</ol>
+
+<h2>Прогон после исправлений</h2>
+<div class="tw"><table><tr><th>Кто</th><th>Проверка</th><th>Итог</th><th>Факт</th></tr><tr><td>тренер А</td><td>видит своих игроков</td><td><span class="b ok">ОК</span></td><td>2 строк</td></tr><tr><td>тренер А</td><td>не видит players клуба Б</td><td><span class="b ok">ОК</span></td><td>0 строк клуба Б</td></tr><tr><td>тренер А</td><td>не видит ratings клуба Б</td><td><span class="b ok">ОК</span></td><td>0 строк клуба Б</td></tr><tr><td>тренер А</td><td>не видит tournaments клуба Б</td><td><span class="b ok">ОК</span></td><td>0 строк клуба Б</td></tr><tr><td>тренер А</td><td>не видит dev_plans клуба Б</td><td><span class="b ok">ОК</span></td><td>0 строк клуба Б</td></tr><tr><td>тренер А</td><td>витрина ratings_board без строк клуба Б</td><td><span class="b ok">ОК</span></td><td>0 строк клуба Б</td></tr><tr><td>тренер А</td><td>не может добавить игрока в клуб Б</td><td><span class="b ok">ОК</span></td><td>отказ: new row violates row-level security policy for table &quot;players&quot;</td></tr><tr><td>тренер А</td><td>не может менять рейтинги клуба Б</td><td><span class="b ok">ОК</span></td><td>0 строк изменено</td></tr><tr><td>тренер А</td><td>не может переманить игрока Б к себе</td><td><span class="b ok">ОК</span></td><td>0 строк изменено</td></tr><tr><td>тренер Б</td><td>не видит игроков клуба А</td><td><span class="b ok">ОК</span></td><td>0 строк клуба А</td></tr><tr><td>федерация</td><td>не видит личные данные игроков</td><td><span class="b ok">ОК</span></td><td>0 строк players</td></tr><tr><td>федерация</td><td>видит сводку по обоим клубам</td><td><span class="b ok">ОК</span></td><td>2 клубов в сводке</td></tr><tr><td>тренер А</td><td>не получает сводку федерации</td><td><span class="b ok">ОК</span></td><td>0 строк</td></tr><tr><td>не вошёл</td><td>не видит players</td><td><span class="b ok">ОК</span></td><td>0 строк</td></tr><tr><td>не вошёл</td><td>не видит ratings</td><td><span class="b ok">ОК</span></td><td>0 строк</td></tr><tr><td>не вошёл</td><td>не видит dev_plans</td><td><span class="b ok">ОК</span></td><td>0 строк</td></tr><tr><td>не вошёл</td><td>не видит ratings_board</td><td><span class="b ok">ОК</span></td><td>0 строк</td></tr></table></div>
+
+<h2>Файлы</h2>
+<div class="note">На вашем проекте: копия проекта (или ветка Supabase) → SQL Editor → <code>audit.sql</code> → Run. Для <code>izolyaciya.sql</code> поменять пять значений в начале — id тестовых пользователей и клубов. Продакшен и ключи не нужны.</div>
+<details><summary><b>audit.sql</b> — Статика по схеме: таблицы без RLS, политики «всегда да», представления в обход RLS, таблицы без org_id, функции с правами владельца</summary><div class="row"><button data-f="audit.sql" class="cp">Скопировать</button><button data-f="audit.sql" class="dl">Скачать</button></div><pre id="audit.sql">-- Статическая проверка RLS по схеме (выгрузка схемы без данных или копия проекта). Запуск: SQL Editor / psql, роль postgres.
+-- Одна таблица на выходе: что проверяли, где нашли, чем грозит. Пусто — по этим пунктам чисто.
+with
+tabl as (
+  select c.oid, c.relname as t, c.relrowsecurity as rls
+  from pg_class c join pg_namespace n on n.oid = c.relnamespace
+  where n.nspname = &#x27;public&#x27; and c.relkind in (&#x27;r&#x27;, &#x27;p&#x27;)
+),
+pol as (select * from pg_policies where schemaname = &#x27;public&#x27;)
+select * from (
+  -- 1. Таблица в открытой схеме без RLS: через API её читает и меняет любой вошедший (а с грантом anon — и не вошедший)
+  select 1 as n, &#x27;RLS выключен&#x27; as proverka, t as obekt, &#x27;таблицу видят все пользователи всех клубов&#x27; as chem_grozit
+  from tabl where not rls
+  union all
+  -- 2. RLS включён, а политик нет — для пользователей таблица пустая (часто так «чинят» и ломают экран)
+  select 2, &#x27;RLS без политик&#x27;, t, &#x27;пользователи не видят ничего; проверить, так ли задумано&#x27;
+  from tabl where rls and not exists (select 1 from pol where pol.tablename = tabl.t)
+  union all
+  -- 3. Политика «всегда да» на чтение или запись
+  select 3, &#x27;политика всегда пропускает&#x27;, tablename || &#x27;.&#x27; || policyname || &#x27; (&#x27; || cmd || &#x27;)&#x27;,
+         case when cmd in (&#x27;INSERT&#x27;, &#x27;UPDATE&#x27;, &#x27;ALL&#x27;) and coalesce(with_check, &#x27;&#x27;) = &#x27;true&#x27;
+              then &#x27;можно записать строку в чужой клуб&#x27; else &#x27;видны строки всех клубов&#x27; end
+  from pol where coalesce(qual, &#x27;&#x27;) = &#x27;true&#x27; or coalesce(with_check, &#x27;&#x27;) = &#x27;true&#x27;
+  union all
+  -- 4. Представление без security_invoker читает таблицы правами владельца и обходит RLS
+  select 4, &#x27;представление обходит RLS&#x27;, c.relname, &#x27;через него видны данные всех клубов&#x27;
+  from pg_class c join pg_namespace n on n.oid = c.relnamespace
+  where n.nspname = &#x27;public&#x27; and c.relkind in (&#x27;v&#x27;, &#x27;m&#x27;)
+    and not coalesce((select o.option_value::boolean from pg_options_to_table(c.reloptions) o
+                      where o.option_name = &#x27;security_invoker&#x27;), false)
+  union all
+  -- 5. Таблица с данными игроков без org_id: политику по клубу на неё не написать
+  select 5, &#x27;нет org_id&#x27;, table_name, &#x27;нельзя ограничить по клубу без лишних join&#x27;
+  from information_schema.columns where table_schema = &#x27;public&#x27;
+  group by table_name having bool_or(column_name = &#x27;player_id&#x27;) and not bool_or(column_name = &#x27;org_id&#x27;)
+  union all
+  -- 6. SECURITY DEFINER в public вызывается через API (rpc): внутри должна быть проверка вызывающего
+  select 6, &#x27;функция с правами владельца&#x27;, p.proname,
+         case when pg_get_functiondef(p.oid) ~* &#x27;auth\.uid\(\)|is_member|federation_of&#x27; then &#x27;проверка вызывающего есть — сверить логику&#x27;
+              else &#x27;нет проверки вызывающего: отдаёт данные любому&#x27; end
+  from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+  where n.nspname = &#x27;public&#x27; and p.prosecdef
+) r
+order by n, obekt;
+</pre></details><details><summary><b>izolyaciya.sql</b> — Живые проверки под пользователями: тренер А, тренер Б, аналитик федерации, не вошедший. Пять значений в начале — ваши id</summary><div class="row"><button data-f="izolyaciya.sql" class="cp">Скопировать</button><button data-f="izolyaciya.sql" class="dl">Скачать</button></div><pre id="izolyaciya.sql">-- Живая проверка изоляции клубов: заходим под реальными пользователями (роль authenticated + их sub в JWT),
+-- пробуем прочитать и изменить чужое, смотрим сводку федерации и что видит не вошедший (anon).
+-- Ничего не портит: каждая запись откатывается внутри своего блока. Запуск: SQL Editor на КОПИИ проекта, роль postgres.
+-- Настройка — пять значений ниже: тренер клуба А, тренер клуба Б, аналитик федерации, id клубов А и Б.
+drop table if exists pg_temp.rls_itog;
+create temp table rls_itog (n serial, kto text, proverka text, ok boolean, fakt text);
+grant all on rls_itog to public;
+
+create or replace function pg_temp.kak(p_uid uuid) returns void language plpgsql as $$
+begin
+  perform set_config(&#x27;request.jwt.claims&#x27;,
+    json_build_object(&#x27;sub&#x27;, p_uid, &#x27;role&#x27;, case when p_uid is null then &#x27;anon&#x27; else &#x27;authenticated&#x27; end)::text, true);
+  perform set_config(&#x27;role&#x27;, case when p_uid is null then &#x27;anon&#x27; else &#x27;authenticated&#x27; end, true);
+end $$;
+
+create or replace function pg_temp.itog(p_kto text, p_proverka text, p_ok boolean, p_fakt text) returns void language plpgsql as $$
+begin
+  perform set_config(&#x27;role&#x27;, &#x27;none&#x27;, true);          -- результат пишем своими правами
+  insert into rls_itog (kto, proverka, ok, fakt) values (p_kto, p_proverka, p_ok, p_fakt);
+end $$;
+
+do $$
+declare
+  -- ── настройка под проект ──
+  coach_a  uuid := &#x27;11111111-1111-1111-1111-11111111111a&#x27;;
+  coach_b  uuid := &#x27;22222222-2222-2222-2222-22222222222b&#x27;;
+  analyst  uuid := &#x27;33333333-3333-3333-3333-33333333333f&#x27;;
+  club_a   uuid := &#x27;00000000-0000-0000-0000-0000000000a1&#x27;;
+  club_b   uuid := &#x27;00000000-0000-0000-0000-0000000000b1&#x27;;
+  -- ──
+  n int; m int; t text; imya_b text;
+begin
+  select name into imya_b from organizations where id = club_b;   -- имя клуба Б берём своими правами: тренеру А оно не видно
+  -- Тренер клуба А: своё видит, чужое — нет
+  perform pg_temp.kak(coach_a); select count(*) into n from players where org_id = club_a;
+  perform pg_temp.itog(&#x27;тренер А&#x27;, &#x27;видит своих игроков&#x27;, n &gt; 0, n || &#x27; строк&#x27;);
+  foreach t in array array[&#x27;players&#x27;, &#x27;ratings&#x27;, &#x27;tournaments&#x27;, &#x27;dev_plans&#x27;] loop
+    perform pg_temp.kak(coach_a);
+    execute format(&#x27;select count(*) from %I where org_id = $1&#x27;, t) into n using club_b;
+    perform pg_temp.itog(&#x27;тренер А&#x27;, &#x27;не видит &#x27; || t || &#x27; клуба Б&#x27;, n = 0, n || &#x27; строк клуба Б&#x27;);
+  end loop;
+  perform pg_temp.kak(coach_a); select count(*) into n from ratings_board where club = imya_b;
+  perform pg_temp.itog(&#x27;тренер А&#x27;, &#x27;витрина ratings_board без строк клуба Б&#x27;, n = 0, n || &#x27; строк клуба Б&#x27;);
+
+  -- запись в чужой клуб: вставка, правка, удаление (всё откатывается)
+  begin
+    perform pg_temp.kak(coach_a);
+    insert into players (org_id, full_name) values (club_b, &#x27;подброшенный игрок&#x27;);
+    raise exception &#x27;ОТКАТ 1&#x27;;
+  exception when others then
+    if sqlerrm like &#x27;ОТКАТ%&#x27; then perform pg_temp.itog(&#x27;тренер А&#x27;, &#x27;не может добавить игрока в клуб Б&#x27;, false, &#x27;вставка прошла&#x27;);
+    else perform pg_temp.itog(&#x27;тренер А&#x27;, &#x27;не может добавить игрока в клуб Б&#x27;, true, &#x27;отказ: &#x27; || sqlerrm); end if;
+  end;
+  begin
+    perform pg_temp.kak(coach_a);
+    update ratings set points = points + 500 where org_id = club_b; get diagnostics n = row_count;
+    raise exception &#x27;ОТКАТ %&#x27;, n;
+  exception when others then
+    if sqlerrm like &#x27;ОТКАТ%&#x27; then m := split_part(sqlerrm, &#x27; &#x27;, 2)::int;
+      perform pg_temp.itog(&#x27;тренер А&#x27;, &#x27;не может менять рейтинги клуба Б&#x27;, m = 0, m || &#x27; строк изменено&#x27;);
+    else perform pg_temp.itog(&#x27;тренер А&#x27;, &#x27;не может менять рейтинги клуба Б&#x27;, true, &#x27;отказ: &#x27; || sqlerrm); end if;
+  end;
+  begin
+    perform pg_temp.kak(coach_a);
+    update players set org_id = club_a where org_id = club_b; get diagnostics n = row_count;
+    raise exception &#x27;ОТКАТ %&#x27;, n;
+  exception when others then
+    if sqlerrm like &#x27;ОТКАТ%&#x27; then m := split_part(sqlerrm, &#x27; &#x27;, 2)::int;
+      perform pg_temp.itog(&#x27;тренер А&#x27;, &#x27;не может переманить игрока Б к себе&#x27;, m = 0, m || &#x27; строк изменено&#x27;);
+    else perform pg_temp.itog(&#x27;тренер А&#x27;, &#x27;не может переманить игрока Б к себе&#x27;, true, &#x27;отказ: &#x27; || sqlerrm); end if;
+  end;
+
+  -- Тренер клуба Б зеркально
+  perform pg_temp.kak(coach_b); select count(*) into n from players where org_id = club_a;
+  perform pg_temp.itog(&#x27;тренер Б&#x27;, &#x27;не видит игроков клуба А&#x27;, n = 0, n || &#x27; строк клуба А&#x27;);
+
+  -- Федерация: сводка по своим клубам есть, ФИО и телефонов игроков нет
+  perform pg_temp.kak(analyst); select count(*) into n from players;
+  perform pg_temp.itog(&#x27;федерация&#x27;, &#x27;не видит личные данные игроков&#x27;, n = 0, n || &#x27; строк players&#x27;);
+  perform pg_temp.kak(analyst); select count(*) into n from federation_summary();
+  perform pg_temp.itog(&#x27;федерация&#x27;, &#x27;видит сводку по обоим клубам&#x27;, n = 2, n || &#x27; клубов в сводке&#x27;);
+  perform pg_temp.kak(coach_a); select count(*) into n from federation_summary();
+  perform pg_temp.itog(&#x27;тренер А&#x27;, &#x27;не получает сводку федерации&#x27;, n = 0, n || &#x27; строк&#x27;);
+
+  -- Не вошедший (anon)
+  foreach t in array array[&#x27;players&#x27;, &#x27;ratings&#x27;, &#x27;dev_plans&#x27;, &#x27;ratings_board&#x27;] loop
+    perform pg_temp.kak(null);
+    begin
+      execute format(&#x27;select count(*) from %I&#x27;, t) into n;
+    exception when insufficient_privilege then n := 0;
+    end;
+    perform pg_temp.itog(&#x27;не вошёл&#x27;, &#x27;не видит &#x27; || t, n = 0, n || &#x27; строк&#x27;);
+  end loop;
+  perform set_config(&#x27;role&#x27;, &#x27;none&#x27;, true);
+end $$;
+
+select n, kto as &quot;кто&quot;, proverka as &quot;проверка&quot;, case when ok then &#x27;ОК&#x27; else &#x27;ДЫРА&#x27; end as &quot;итог&quot;, fakt as &quot;факт&quot;
+from rls_itog order by n;
+</pre></details><details><summary><b>fixes.sql</b> — Исправления четырёх дыр модели — образец миграции</summary><div class="row"><button data-f="fixes.sql" class="cp">Скопировать</button><button data-f="fixes.sql" class="dl">Скачать</button></div><pre id="fixes.sql">-- Исправления четырёх дыр модели. На реальном проекте — миграцией, после неё снова audit.sql и izolyaciya.sql.
+
+-- 1. dev_plans: включить RLS и пустить только свой клуб (тренеры и админы)
+alter table dev_plans enable row level security;
+create policy dev_plans_read  on dev_plans for select to authenticated using (is_member(org_id, array[&#x27;admin&#x27;,&#x27;coach&#x27;]));
+create policy dev_plans_write on dev_plans for all    to authenticated using (is_member(org_id, array[&#x27;admin&#x27;,&#x27;coach&#x27;]))
+                                                                     with check (is_member(org_id, array[&#x27;admin&#x27;,&#x27;coach&#x27;]));
+
+-- 2. вставка игрока — только в свой клуб
+drop policy players_insert on players;
+create policy players_insert on players for insert to authenticated with check (is_member(org_id, array[&#x27;admin&#x27;,&#x27;coach&#x27;]));
+
+-- 3. турниры: свои + клубы своей федерации (общие турниры — отдельным флагом is_public, если нужны)
+drop policy tournaments_read on tournaments;
+create policy tournaments_read on tournaments for select to authenticated using (is_member(org_id) or federation_of(org_id));
+
+-- 4. витрина рейтинга — правами того, кто смотрит (Postgres 15+), тогда RLS таблиц работает и в ней
+alter view ratings_board set (security_invoker = true);
+</pre></details><details><summary><b>model.sql</b> — Модель по описанию проекта, на которой сделан прогон</summary><div class="row"><button data-f="model.sql" class="cp">Скопировать</button><button data-f="model.sql" class="dl">Скачать</button></div><pre id="model.sql">-- Модель по описанию проекта (НЕ код заказчика): федерация → клубы → игроки, рейтинги, турниры, планы развития.
+-- Окружение как в Supabase: роли anon / authenticated / service_role, auth.uid() читает sub из request.jwt.claims.
+-- В модель специально заложены 4 типичные ошибки — их должны поймать audit.sql и izolyaciya.sql.
+
+-- ── окружение Supabase ──
+do $$ begin
+  if not exists (select 1 from pg_roles where rolname = &#x27;anon&#x27;) then create role anon nologin; end if;
+  if not exists (select 1 from pg_roles where rolname = &#x27;authenticated&#x27;) then create role authenticated nologin; end if;
+  if not exists (select 1 from pg_roles where rolname = &#x27;service_role&#x27;) then create role service_role nologin bypassrls; end if;
+end $$;
+create schema if not exists auth;
+create or replace function auth.uid() returns uuid language sql stable as
+$$ select nullif(current_setting(&#x27;request.jwt.claims&#x27;, true)::json -&gt;&gt; &#x27;sub&#x27;, &#x27;&#x27;)::uuid $$;
+grant usage on schema auth, public to anon, authenticated, service_role;
+grant execute on function auth.uid() to anon, authenticated, service_role;
+
+-- ── схема ──
+create table organizations (
+  id uuid primary key, name text not null,
+  kind text not null check (kind in (&#x27;federation&#x27;, &#x27;club&#x27;)),
+  parent_id uuid references organizations(id)            -- клуб → его федерация
+);
+create table memberships (                                -- кто в какой организации и с какой ролью
+  user_id uuid not null, org_id uuid not null references organizations(id),
+  role text not null check (role in (&#x27;admin&#x27;, &#x27;coach&#x27;, &#x27;analyst&#x27;)),
+  primary key (user_id, org_id)
+);
+create table players (
+  id uuid primary key default gen_random_uuid(), org_id uuid not null references organizations(id),
+  full_name text not null, birth_date date, phone text      -- личные данные: федерации видеть не нужно
+);
+create table ratings (
+  player_id uuid not null references players(id), org_id uuid not null references organizations(id),
+  points int not null, updated_at date not null default current_date
+);
+create table tournaments (
+  id uuid primary key default gen_random_uuid(), org_id uuid not null references organizations(id),
+  title text not null, starts_on date
+);
+create table dev_plans (                                  -- планы развития игроков
+  player_id uuid not null references players(id), org_id uuid not null references organizations(id),
+  notes text
+);
+grant select, insert, update, delete on all tables in schema public to anon, authenticated;   -- так по умолчанию делает Supabase
+
+-- ── помощники для политик ──
+create or replace function is_member(p_org uuid, p_roles text[] default array[&#x27;admin&#x27;,&#x27;coach&#x27;,&#x27;analyst&#x27;])
+returns boolean language sql stable security definer set search_path = public as
+$$ select exists (select 1 from memberships m where m.user_id = auth.uid() and m.org_id = p_org and m.role = any(p_roles)) $$;
+
+create or replace function federation_of(p_club uuid) returns boolean language sql stable security definer set search_path = public as
+$$ select exists (select 1 from organizations c join memberships m on m.org_id = c.parent_id
+                  where c.id = p_club and m.user_id = auth.uid()) $$;
+
+-- ── RLS ──
+alter table organizations enable row level security;
+alter table memberships   enable row level security;
+alter table players       enable row level security;
+alter table ratings       enable row level security;
+alter table tournaments   enable row level security;
+-- ОШИБКА 1: на dev_plans RLS забыли включить
+
+create policy org_read on organizations for select to authenticated using (is_member(id) or federation_of(id));
+create policy mem_read on memberships for select to authenticated using (user_id = auth.uid());
+
+create policy players_read   on players for select to authenticated using (is_member(org_id));
+create policy players_update on players for update to authenticated using (is_member(org_id, array[&#x27;admin&#x27;,&#x27;coach&#x27;]))
+                                                                      with check (is_member(org_id, array[&#x27;admin&#x27;,&#x27;coach&#x27;]));
+-- ОШИБКА 2: вставка без проверки клуба — тренер может завести игрока в чужой клуб
+create policy players_insert on players for insert to authenticated with check (true);
+
+create policy ratings_read  on ratings for select to authenticated using (is_member(org_id));
+create policy ratings_write on ratings for update to authenticated using (is_member(org_id, array[&#x27;admin&#x27;,&#x27;coach&#x27;]))
+                                                                  with check (is_member(org_id, array[&#x27;admin&#x27;,&#x27;coach&#x27;]));
+-- ОШИБКА 3: турниры «для всех» — вместе с внутренними турнирами чужих клубов
+create policy tournaments_read on tournaments for select to authenticated using (true);
+
+-- ОШИБКА 4: витрина рейтинга без security_invoker — читает таблицы правами владельца и обходит RLS
+create view ratings_board as
+  select p.full_name, o.name as club, r.points from ratings r join players p on p.id = r.player_id join organizations o on o.id = r.org_id;
+grant select on ratings_board to anon, authenticated;
+
+-- Сводка для федерации: только агрегаты по своим клубам, без ФИО и телефонов (так и задумано)
+create or replace function federation_summary()
+returns table (club text, players bigint, avg_points numeric) language sql stable security definer set search_path = public as
+$$ select o.name, count(distinct p.id), round(avg(r.points), 1)
+   from organizations o left join players p on p.org_id = o.id left join ratings r on r.player_id = p.id
+   where o.kind = &#x27;club&#x27; and federation_of(o.id)
+   group by o.name order by o.name $$;
+revoke execute on function federation_summary() from public;
+grant execute on function federation_summary() to authenticated;
+
+-- ── данные ──
+insert into organizations values
+  (&#x27;00000000-0000-0000-0000-0000000000f1&#x27;, &#x27;Федерация&#x27;, &#x27;federation&#x27;, null),
+  (&#x27;00000000-0000-0000-0000-0000000000a1&#x27;, &#x27;Клуб А&#x27;, &#x27;club&#x27;, &#x27;00000000-0000-0000-0000-0000000000f1&#x27;),
+  (&#x27;00000000-0000-0000-0000-0000000000b1&#x27;, &#x27;Клуб Б&#x27;, &#x27;club&#x27;, &#x27;00000000-0000-0000-0000-0000000000f1&#x27;);
+insert into memberships values
+  (&#x27;11111111-1111-1111-1111-11111111111a&#x27;, &#x27;00000000-0000-0000-0000-0000000000a1&#x27;, &#x27;coach&#x27;),     -- тренер клуба А
+  (&#x27;22222222-2222-2222-2222-22222222222b&#x27;, &#x27;00000000-0000-0000-0000-0000000000b1&#x27;, &#x27;coach&#x27;),     -- тренер клуба Б
+  (&#x27;33333333-3333-3333-3333-33333333333f&#x27;, &#x27;00000000-0000-0000-0000-0000000000f1&#x27;, &#x27;analyst&#x27;);   -- аналитик федерации
+insert into players (id, org_id, full_name, birth_date, phone) values
+  (&#x27;aaaaaaaa-0000-0000-0000-000000000001&#x27;, &#x27;00000000-0000-0000-0000-0000000000a1&#x27;, &#x27;Игрок А1&#x27;, &#x27;2010-03-01&#x27;, &#x27;тел-А1&#x27;),
+  (&#x27;aaaaaaaa-0000-0000-0000-000000000002&#x27;, &#x27;00000000-0000-0000-0000-0000000000a1&#x27;, &#x27;Игрок А2&#x27;, &#x27;2011-05-02&#x27;, &#x27;тел-А2&#x27;),
+  (&#x27;bbbbbbbb-0000-0000-0000-000000000001&#x27;, &#x27;00000000-0000-0000-0000-0000000000b1&#x27;, &#x27;Игрок Б1&#x27;, &#x27;2010-07-03&#x27;, &#x27;тел-Б1&#x27;);
+insert into ratings values
+  (&#x27;aaaaaaaa-0000-0000-0000-000000000001&#x27;, &#x27;00000000-0000-0000-0000-0000000000a1&#x27;, 1200),
+  (&#x27;aaaaaaaa-0000-0000-0000-000000000002&#x27;, &#x27;00000000-0000-0000-0000-0000000000a1&#x27;, 1100),
+  (&#x27;bbbbbbbb-0000-0000-0000-000000000001&#x27;, &#x27;00000000-0000-0000-0000-0000000000b1&#x27;, 1350);
+insert into tournaments (org_id, title) values
+  (&#x27;00000000-0000-0000-0000-0000000000a1&#x27;, &#x27;Внутренний турнир клуба А&#x27;),
+  (&#x27;00000000-0000-0000-0000-0000000000b1&#x27;, &#x27;Внутренний турнир клуба Б&#x27;);
+insert into dev_plans values
+  (&#x27;bbbbbbbb-0000-0000-0000-000000000001&#x27;, &#x27;00000000-0000-0000-0000-0000000000b1&#x27;, &#x27;план игрока Б1: подача, ОФП&#x27;);
+</pre></details>
+</main>
+<script>
+document.querySelectorAll("button.cp").forEach(b => b.onclick = async () => {
+  const t = document.getElementById(b.dataset.f).innerText;
+  try { await navigator.clipboard.writeText(t); b.textContent = "Скопировано"; } catch (e) { b.textContent = "Выделите текст вручную"; }
+  setTimeout(() => b.textContent = "Скопировать", 1800);
+});
+document.querySelectorAll("button.dl").forEach(b => b.onclick = () => {
+  const t = document.getElementById(b.dataset.f).innerText;
+  const u = URL.createObjectURL(new Blob([t], {type: "text/plain;charset=utf-8"}));
+  const a = document.createElement("a"); a.href = u; a.download = b.dataset.f; a.click(); setTimeout(() => URL.revokeObjectURL(u), 2000);
+});
+</script>
+</body></html>
