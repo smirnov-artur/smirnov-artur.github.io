@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Бот по сценарию — прототип</title>
+<style>
+:root{--bg:#e7ebf0;--chat:#d9e3ec;--me:#e1ffc7;--bot:#fff;--ink:#0f1720;--mut:#6b7785;--acc:#2a8bd6;--line:#d5dce3;--ok:#16a34a}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+button{font:inherit;cursor:pointer}input{font:inherit}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 18px;background:#fff;border-bottom:1px solid var(--line)}
+.top small{color:var(--mut)}
+.seg{display:none;background:#eef1f5;border-radius:10px;padding:3px;gap:3px}
+.seg button{border:0;background:transparent;padding:7px 12px;border-radius:8px;color:var(--mut)}
+.seg button.on{background:#fff;color:var(--ink)}
+.wrap{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:20px;max-width:1200px;margin:0 auto;padding:20px 16px}
+@media (max-width:900px){.wrap{grid-template-columns:1fr;padding:0}.seg{display:inline-flex}.wrap>.hide-m{display:none}}
+.phone{background:var(--chat);border-radius:22px;overflow:hidden;display:flex;flex-direction:column;height:min(780px,calc(100vh - 110px));min-height:520px;box-shadow:0 12px 34px rgba(0,0,0,.12)}
+@media (max-width:900px){.phone{border-radius:0;height:calc(100vh - 56px);box-shadow:none}}
+.ph{display:flex;align-items:center;gap:10px;background:#fff;padding:10px 14px;border-bottom:1px solid var(--line)}
+.ava{width:38px;height:38px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:700}
+.ph small{display:block;color:var(--mut);font-size:12px}
+.msgs{flex:1;overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:6px}
+.m{max-width:86%;padding:8px 11px;border-radius:14px;white-space:pre-wrap;word-wrap:break-word;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+.m.bot{background:var(--bot);align-self:flex-start;border-bottom-left-radius:4px}
+.m.me{background:var(--me);align-self:flex-end;border-bottom-right-radius:4px}
+.kb{display:flex;flex-direction:column;gap:5px;align-self:flex-start;max-width:86%;width:86%}
+.kb .r{display:flex;gap:5px}
+.kb button{flex:1;border:0;background:rgba(255,255,255,.85);color:var(--acc);border-radius:10px;padding:9px 8px;font-weight:600;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+.kb button:disabled{opacity:.45;cursor:default}
+.inp{display:flex;gap:8px;padding:10px;background:#fff;border-top:1px solid var(--line)}
+.inp input{flex:1;border:1px solid var(--line);border-radius:18px;padding:9px 14px;outline:none}
+.inp button{border:0;background:var(--acc);color:#fff;border-radius:18px;padding:9px 16px}
+.adm{background:#fff;border-radius:18px;padding:16px 18px;min-height:300px;box-shadow:0 12px 34px rgba(0,0,0,.06)}
+@media (max-width:900px){.adm{border-radius:0;min-height:calc(100vh - 56px)}}
+.adm h2{font-size:18px;margin:0 0 4px}.adm .note{color:var(--mut);font-size:13px;margin:0 0 12px}
+.feed{display:flex;flex-direction:column;gap:6px;max-height:240px;overflow:auto;margin-bottom:14px}
+.feed div{background:#f3f7fb;border-left:3px solid var(--acc);border-radius:8px;padding:7px 10px;font-size:14px;white-space:pre-wrap}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.tabs button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 10px;font-size:13px}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-weight:600}
+.sb{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 10px;font-size:13px}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="top"><div><b id="tTitle">Бот</b> <small id="tSub">· прототип по сценарию: слева клиент, справа администратор</small></div>
+  <div class="seg"><button id="vC" class="on">Чат</button><button id="vA">Админ</button></div></div>
+<div class="wrap">
+  <section id="pChat"><div class="phone">
+    <div class="ph"><div class="ava" id="ava">Б</div><div><b id="bName">Бот</b><small>бот</small></div></div>
+    <div class="msgs" id="msgs"></div>
+    <form class="inp" id="frm"><input id="txt" placeholder="Сообщение" autocomplete="off"><button>➤</button></form>
+  </div></section>
+  <section id="pAdm" class="hide-m"><div class="adm">
+    <h2>Администратор</h2><p class="note">Уведомления, которые бот присылает администратору, и все заявки таблицей. В рабочей версии — сообщение в Telegram или MAX администратору, база на сервере, выгрузка в Excel или Google Таблицу.</p>
+    <div class="feed" id="feed"></div>
+    <div class="tabs" id="tabs"></div><div class="tw" id="tbl"></div>
+  </div></section>
+</div>
+<script src="scenarij.js"></script>
+<script>
+"use strict";
+const SC = window.SCENARIJ;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fill = (t, d) => String(t || "").replace(/\{(\w+)\}/g, (_, k) => d[k] ?? "");
+const ST = {forma: null, otvety: {}, shag: 0, zapisi: {}, uved: [], tab: null, pervyj: true};
+Object.keys(SC.formy || {}).forEach(k => ST.zapisi[k] = []);
+
+function msg(cls, text) { const d = document.createElement("div"); d.className = "m " + cls; d.textContent = text; $("#msgs").appendChild(d); scrollDown(); return d; }
+function kb(rows) {
+  const box = document.createElement("div"); box.className = "kb";
+  rows.forEach(r => { const row = document.createElement("div"); row.className = "r";
+    r.forEach(([label, cel]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = label; b.dataset.cel = cel;
+      b.onclick = () => { box.querySelectorAll("button").forEach(x => x.disabled = true); msg("me", label); setTimeout(() => go(cel, label), 250); };
+      row.appendChild(b); });
+    box.appendChild(row); });
+  $("#msgs").appendChild(box); scrollDown();
+}
+function scrollDown() { const m = $("#msgs"); m.scrollTop = m.scrollHeight; }
+
+function ekran(id) {
+  const e = SC.ekrany[id];
+  if (!e) { msg("bot", "Такого раздела нет. Вернул в меню."); return ekran(SC.start); }
+  msg("bot", e.tekst);
+  const rows = (e.knopki || []).map(r => Array.isArray(r[0]) ? r : [r]);
+  if (id !== SC.start) rows.push([["⬅ Главное меню", SC.start]]);
+  kb(rows);
+}
+function go(cel, label) {
+  if (cel === "otpravit") return otpravit();
+  if (cel === "zanovo") return startForma(ST.forma, ST.otvety.istochnik);
+  if (cel.startsWith("forma:")) return startForma(cel.slice(6), label);
+  if (cel.startsWith("vybor:")) return otvet(cel.slice(6));
+  ST.forma = null; ekran(cel);
+}
+
+/* ── анкеты ── */
+function startForma(id, label) {
+  const f = SC.formy[id];
+  ST.forma = id; ST.shag = 0; ST.otvety = {istochnik: label || ""};
+  if (f.vstuplenie) msg("bot", fill(f.vstuplenie, ST.otvety));
+  sprosit();
+}
+function sprosit() {
+  const f = SC.formy[ST.forma], p = f.polya[ST.shag];
+  msg("bot", p.vopros + (p.neobyaz ? "\n(можно пропустить)" : ""));
+  const rows = [];
+  if (p.tip === "vybor") p.varianty.forEach(v => rows.push([[v, "vybor:" + v]]));
+  if (p.tip === "telefon") rows.push([["📱 Отправить мой номер", "vybor:+7 000 000-00-00"]]);
+  if (p.neobyaz) rows.push([["Пропустить", "vybor:—"]]);
+  if (rows.length) kb(rows);
+}
+function prover(p, t) {
+  t = t.trim();
+  if (!t) return "Пустой ответ не подходит";
+  if (t === "—" && p.neobyaz) return null;
+  if (p.tip === "telefon") { const d = t.replace(/\D/g, ""); if (!(d.length === 11 && /^[78]/.test(d)) && !(d.length === 10 && d[0] === "9")) return "Нужен номер из 10 цифр после +7"; }
+  if (p.tip === "pochta" && !/^[^@\s]+@[^@\s]+\.[a-zа-я]{2,}$/i.test(t)) return "Похоже, в адресе опечатка";
+  if (p.tip === "chislo" && !/^\d+$/.test(t)) return "Нужно число";
+  if (p.tip === "vybor" && !p.varianty.includes(t)) return "Выберите вариант кнопкой";
+  if (p.max && t.length > p.max) return "Слишком длинно: до " + p.max + " знаков";
+  return null;
+}
+function otvet(t) {
+  const f = SC.formy[ST.forma];
+  if (ST.shag >= f.polya.length) return; // ждём «Отправить» / «Исправить»
+  const p = f.polya[ST.shag], err = prover(p, t);
+  if (err) { msg("bot", err); return sprosit(); }
+  ST.otvety[p.kluch] = t.trim();
+  ST.shag++;
+  if (ST.shag < f.polya.length) return sprosit();
+  msg("bot", "Проверьте:\n" + f.polya.map(x => "• " + x.podpis + ": " + (ST.otvety[x.kluch] || "—")).join("\n"));
+  kb([[["✅ Всё верно, отправить", "otpravit"]], [["✏️ Заполнить заново", "zanovo"]]]);
+}
+function otpravit() {
+  const id = ST.forma, f = SC.formy[id], z = Object.assign({n: ST.zapisi[id].length + 1, kogda: new Date().toLocaleString("ru-RU")}, ST.otvety);
+  ST.zapisi[id].push(z);
+  ST.uved.unshift(fill(f.uvedomlenie, z));
+  msg("bot", fill(f.itog, z));
+  ST.forma = null; ST.tab = id; drawAdm();
+  setTimeout(() => ekran(f.dalshe || SC.start), 400);
+}
+
+/* свободный текст: в анкете — ответ, иначе — поиск по вопросам и ответам, нет — передать администратору */
+$("#frm").onsubmit = e => {
+  e.preventDefault(); const t = $("#txt").value.trim(); if (!t) return; $("#txt").value = ""; msg("me", t);
+  if (t === "/start") { ST.forma = null; return setTimeout(() => ekran(SC.start), 200); }
+  if (ST.forma) return setTimeout(() => otvet(t), 250);
+  const nashli = (SC.faq || []).find(q => q.slova.some(w => t.toLowerCase().includes(w)));
+  setTimeout(() => {
+    if (nashli) { msg("bot", nashli.otvet); kb([[["⬅ Главное меню", SC.start]]]); return; }
+    if (SC.formy.vopros) { msg("bot", "Готового ответа нет — передам ваш вопрос администратору."); ST.otvety = {istochnik: "свой вопрос"};
+      ST.forma = "vopros"; ST.shag = 0; otvet(t); }
+    else msg("bot", "Пока отвечаю только на кнопки меню.");
+  }, 250);
+};
+
+/* ── админ ── */
+function drawAdm() {
+  $("#feed").innerHTML = ST.uved.length ? ST.uved.map(u => `<div>${esc(u)}</div>`).join("") : `<div>Пока тихо: пройдите сценарий слева</div>`;
+  const ids = Object.keys(SC.formy || {}); if (!ST.tab) ST.tab = ids[0];
+  $("#tabs").innerHTML = ids.map(k => `<button data-t="${k}" class="${ST.tab === k ? "on" : ""}">${esc(SC.formy[k].nazvanie)} (${ST.zapisi[k].length})</button>`).join("") +
+    `<button class="sb" id="csv">Скачать для Excel</button>`;
+  $("#tabs").querySelectorAll("[data-t]").forEach(b => b.onclick = () => { ST.tab = b.dataset.t; drawAdm(); });
+  const f = SC.formy[ST.tab], rows = ST.zapisi[ST.tab] || [];
+  $("#tbl").innerHTML = `<table><tr><th>№</th><th>Когда</th>${f.polya.map(p => `<th>${esc(p.podpis)}</th>`).join("")}</tr>${rows.map(z => `<tr><td>${z.n}</td><td>${esc(z.kogda)}</td>${f.polya.map(p => `<td>${esc(z[p.kluch] || "—")}</td>`).join("")}</tr>`).join("") || `<tr><td colspan="${f.polya.length + 2}">Заявок пока нет</td></tr>`}</table>`;
+  $("#csv").onclick = () => {
+    const sh = ["№", "Когда", ...f.polya.map(p => p.podpis)], data = [sh, ...rows.map(z => [z.n, z.kogda, ...f.polya.map(p => z[p.kluch] || "")])];
+    const csv = "﻿" + data.map(r => r.map(x => '"' + String(x).replace(/"/g, '""') + '"').join(";")).join("\r\n");
+    const u = URL.createObjectURL(new Blob([csv], {type: "text/csv;charset=utf-8"})); const a = document.createElement("a"); a.href = u; a.download = ST.tab + ".csv"; a.click(); setTimeout(() => URL.revokeObjectURL(u), 1500);
+  };
+}
+function show(adm) { $("#pChat").classList.toggle("hide-m", adm); $("#pAdm").classList.toggle("hide-m", !adm); $("#vC").classList.toggle("on", !adm); $("#vA").classList.toggle("on", adm); }
+$("#vC").onclick = () => show(false); $("#vA").onclick = () => show(true);
+document.title = SC.bot.imya + " — прототип"; $("#tTitle").textContent = SC.bot.imya; $("#bName").textContent = SC.bot.imya; $("#ava").textContent = SC.bot.imya[0];
+window.__bot = {ST, SC};
+drawAdm(); ekran(SC.start);
+</script>
+</body>
+</html>
