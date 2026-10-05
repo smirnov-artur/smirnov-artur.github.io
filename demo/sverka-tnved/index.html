@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Сверка спецификаций — прототип</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Загрузка Excel-спецификации, сверка артикулов, наименований и кодов ТН ВЭД со справочником SKU, ручная проверка, решения руководителя и итоговый файл.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232456C7'/%3E%3Cpath d='M8 10h16M8 16h16M8 22h10' stroke='%23fff' stroke-width='2.5'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#F3F4F6;--panel:#fff;--line:#E3E6EB;--line2:#CDD2DA;--ink:#191C21;--ink2:#4A515C;--ink3:#7A818C;
+  --acc:#2456C7;--acc2:#1C47A8;--acc-bg:#EBF0FB;
+  --ok:#1D7446;--ok-bg:#E5F3EA;--nm:#8A5800;--nm-bg:#FAEFD6;--cd:#B2450D;--cd-bg:#FCE8DC;
+  --nw:#1E5DA6;--nw-bg:#E4EEFA;--er:#B21F33;--er-bg:#FBE4E7;--mg:#6539B0;--mg-bg:#EFE8FA;--wt:#5B6370;--wt-bg:#EDEFF2;
+  --m:ui-monospace,'Cascadia Mono',Consolas,'Liberation Mono',monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1400px;margin:0 auto;padding:0 24px}
+.top{background:var(--panel);border-bottom:1px solid var(--line)}
+.top-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:14px;padding-bottom:14px;flex-wrap:wrap}
+h1{font-size:18px;margin:0;font-weight:650;letter-spacing:-.01em}
+.sub{color:var(--ink3);font-size:13px;margin:2px 0 0}
+.roles{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:3px}
+.roles button{border:0;background:none;padding:6px 12px;border-radius:6px;cursor:pointer;color:var(--ink2);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.roles button[aria-pressed=true]{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08);font-weight:600}
+.badge{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--mg);color:#fff;font-size:11px;font-weight:600;display:inline-grid;place-items:center}
+.badge.b-wait{background:var(--wt)}
+.badge[hidden]{display:none}
+main{padding-top:20px;padding-bottom:40px;display:grid;gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;min-width:0}
+.pad{padding:16px 18px}
+h2{font-size:15px;margin:0 0 4px;font-weight:650}
+.muted{color:var(--ink3)}
+.small{font-size:12.5px}
+.btn{border:1px solid var(--line2);background:var(--panel);border-radius:7px;padding:7px 12px;cursor:pointer;white-space:nowrap;line-height:1.3}
+.btn:hover{border-color:var(--ink3)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.pri:hover{background:var(--acc2)}
+.btn.mgb{background:var(--mg);border-color:var(--mg);color:#fff}
+.btn:disabled{opacity:.5;cursor:default}
+.link{border:0;background:none;padding:0;color:var(--acc);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+.upload{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:18px;align-items:center}
+.upload ul{margin:8px 0 0;padding-left:18px;color:var(--ink2)}
+.upload li{margin:2px 0}
+.drop{border:1.5px dashed var(--line2);border-radius:10px;padding:18px;text-align:center;background:#FAFBFC;transition:.15s}
+.drop.over{border-color:var(--acc);background:var(--acc-bg)}
+.drop .row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.drop label.btn{display:inline-block}
+.drop input{position:absolute;width:1px;height:1px;opacity:0}
+
+.alert{border:1px solid #F0C2C9;background:var(--er-bg);border-left:4px solid var(--er);border-radius:8px;padding:12px 14px}
+.alert b{color:var(--er)}
+.alert p{margin:4px 0 0}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}
+.spec-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start;padding:14px 18px;border-bottom:1px solid var(--line)}
+.spec-head>div{flex:1 1 320px}
+.spec-head>.btn{flex:none}
+.meta{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--ink2);margin-top:4px}
+.meta select{border:1px solid var(--line2);border-radius:6px;padding:2px 6px;background:var(--panel)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:12px 18px;border-bottom:1px solid var(--line)}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 10px;cursor:pointer;display:flex;align-items:baseline;gap:8px;text-align:left}
+.chip b{font-size:16px;font-variant-numeric:tabular-nums}
+.chip[aria-pressed=true]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.chip .dot{width:8px;height:8px;border-radius:50%;display:inline-block;align-self:center}
+
+.tw{overflow-x:auto}
+table.t{border-collapse:collapse;width:100%;font-size:13px}
+.t th{text-align:left;font-weight:600;color:var(--ink2);background:#F8F9FA;border-bottom:1px solid var(--line);padding:7px 10px;white-space:nowrap;font-size:12px}
+.t td{border-bottom:1px solid var(--line);padding:7px 10px;vertical-align:top}
+.t tbody tr{cursor:pointer}
+.t tbody tr:hover td{background:#F7F9FD}
+.t .n{color:var(--ink3);font-variant-numeric:tabular-nums;white-space:nowrap}
+.code{font-family:var(--m);font-size:12.5px;white-space:nowrap}
+.sku{font-family:var(--m);font-size:12.5px;white-space:nowrap;font-weight:600}
+.alt{font-size:12px;color:var(--ink3);margin-top:2px}
+.alt .code{font-size:11.5px}
+.bad{color:var(--er)}
+.t .nm{min-width:220px}
+
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:5px;padding:1px 7px;font-size:12px;font-weight:550;white-space:nowrap}
+.pill:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.s-ok{color:var(--ok);background:var(--ok-bg)} .s-nm{color:var(--nm);background:var(--nm-bg)} .s-cd{color:var(--cd);background:var(--cd-bg)}
+.s-nw{color:var(--nw);background:var(--nw-bg)} .s-er{color:var(--er);background:var(--er-bg)} .s-mg{color:var(--mg);background:var(--mg-bg)}
+.s-wait{color:var(--wt);background:var(--wt-bg)} .s-mute{color:var(--ink3);background:transparent;padding-left:0}
+.s-mute:before{display:none}
+
+.side .hd{padding:14px 16px;border-bottom:1px solid var(--line)}
+.prog{height:6px;background:var(--bg);border-radius:3px;margin-top:8px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--ok)}
+.q{list-style:none;margin:0;padding:0;max-height:640px;overflow:auto}
+.q li{border-bottom:1px solid var(--line)}
+.q button{width:100%;text-align:left;background:none;border:0;padding:9px 16px;cursor:pointer;display:grid;gap:4px}
+.q button:hover{background:#F7F9FD}
+.q .l1{display:flex;gap:8px;align-items:baseline;min-width:0}
+.q .l1>span:not(:last-child){flex:none;white-space:nowrap}
+.q .l1 span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.q .l2{display:flex;gap:6px;flex-wrap:wrap}
+.empty{padding:16px;color:var(--ink3);font-size:13px}
+
+details.card>summary{padding:12px 18px;cursor:pointer;font-weight:600}
+details.card[open]>summary{border-bottom:1px solid var(--line)}
+.dict-tools{padding:10px 18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.dict-tools input{border:1px solid var(--line2);border-radius:7px;padding:6px 10px;width:260px;max-width:100%}
+.dict-scroll{max-height:420px;overflow:auto}
+.dict-scroll .t tbody tr{cursor:default}
+.chg{background:var(--mg-bg)}
+.log{margin:0;padding:10px 18px 14px;list-style:none;font-size:13px}
+.log li{padding:3px 0;display:flex;gap:10px}
+.log time{color:var(--ink3);font-variant-numeric:tabular-nums;white-space:nowrap}
+.foot{color:var(--ink3);font-size:12.5px;margin:0}
+
+dialog{border:0;border-radius:12px;padding:0;width:min(760px,calc(100vw - 24px));max-height:calc(100dvh - 24px);box-shadow:0 20px 50px rgba(0,0,0,.25);color:var(--ink)}
+dialog::backdrop{background:rgba(20,24,32,.45)}
+.dh{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);z-index:1}
+.dh .x{border:0;background:none;font-size:22px;line-height:1;cursor:pointer;color:var(--ink3);padding:2px 6px}
+.db{padding:14px 18px 18px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.why{margin:0;color:var(--ink2)}
+.cmp{border-collapse:collapse;width:100%;font-size:13px;table-layout:fixed}
+.cmp td{overflow-wrap:break-word;hyphens:auto}
+.cmp th,.cmp td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+.cmp th{background:#F8F9FA;font-weight:600;color:var(--ink2);font-size:12px}
+.cmp td.diff{background:var(--cd-bg)}
+.cmp td:first-child{color:var(--ink2)}
+.cmp tr>:first-child{width:130px}
+.hist{border-left:3px solid var(--line2);padding:6px 0 6px 12px;display:grid;gap:6px;font-size:13px}
+.hist .h-mg{border-color:var(--mg)}
+.form{display:grid;gap:10px;background:#FAFBFC;border:1px solid var(--line);border-radius:10px;padding:14px}
+.form label{display:grid;gap:4px;font-size:12.5px;color:var(--ink2);font-weight:550}
+.form input[type=text],.form textarea{border:1px solid var(--line2);border-radius:7px;padding:7px 10px;background:#fff;width:100%}
+.form input[type=text]{font-family:var(--m);font-size:14px;max-width:220px}
+.form textarea{min-height:64px;resize:vertical}
+.quick{display:flex;gap:6px;flex-wrap:wrap}
+.quick button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:3px 8px;font-size:12px;cursor:pointer}
+.chk{display:flex!important;align-items:center;gap:8px;font-weight:400!important;color:var(--ink)!important}
+.acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ferr{color:var(--er);font-size:12.5px;min-height:1em;margin:0}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#1F232A;color:#fff;padding:9px 16px;border-radius:8px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;max-width:calc(100vw - 32px)}
+.toast.on{opacity:1}
+
+@media (max-width:1100px){.grid{grid-template-columns:minmax(0,1fr)}.q{max-height:none}}
+@media (max-width:760px){
+  .wrap{padding:0 16px}
+  .upload{grid-template-columns:minmax(0,1fr)}
+  .pad,.spec-head,.chips,.dict-tools,.db,.dh{padding-left:14px;padding-right:14px}
+  .roles button{padding:6px 9px}
+  dialog{width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}
+  .db,.dh{padding-left:12px;padding-right:12px}
+  .cmp tr>:first-child{width:84px}
+  .cmp th,.cmp td{padding:6px}
+  .cmp .code{font-size:12px}
+  .dict-tools input{width:100%}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-in">
+    <div>
+      <h1>Сверка спецификаций</h1>
+      <p class="sub">Прототип первого шага · тестовый справочник SKU · файл обрабатывается в браузере и никуда не отправляется</p>
+    </div>
+    <div class="roles" aria-label="Роль">
+      <button type="button" data-role="spec" aria-pressed="true">Специалист ВЭД <span class="badge b-wait" id="bSpec" hidden></span></button>
+      <button type="button" data-role="mgr" aria-pressed="false">Руководитель <span class="badge" id="bMgr" hidden></span></button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="card pad upload">
+    <div>
+      <h2>Загрузка спецификации</h2>
+      <div class="muted">Нужен Excel со столбцами «Артикул», «Наименование», «Код ТН ВЭД». Система:</div>
+      <ul>
+        <li>найдёт строку заголовка, даже если над ней шапка договора;</li>
+        <li>сверит каждый артикул с активным справочником, наименование и код ТН ВЭД;</li>
+        <li>отправит на ручную проверку всё, что не сошлось, а строку «Итого» пропустит.</li>
+      </ul>
+    </div>
+    <div class="drop" id="drop">
+      <div><b>Перетащите файл .xlsx сюда</b> <span class="muted">или</span></div>
+      <div class="row">
+        <label class="btn pri" for="file">Выбрать файл</label>
+        <input type="file" id="file" accept=".xlsx,.xls,.csv">
+        <button class="btn" type="button" id="dlSample">Скачать пример спецификации</button>
+      </div>
+      <div class="row small">
+        <button class="link" type="button" id="runSample">проверить пример сразу</button>
+        <span class="muted">·</span>
+        <button class="link" type="button" id="runBad">файл с ошибкой структуры</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="err" hidden></div>
+
+  <div class="grid" id="work" hidden>
+    <section class="card">
+      <div class="spec-head">
+        <div style="min-width:0">
+          <h2 id="specTitle"></h2>
+          <div class="meta" id="specMeta"></div>
+        </div>
+        <button class="btn pri" type="button" id="exportBtn">Итоговый Excel</button>
+      </div>
+      <div class="chips" id="chips"></div>
+      <div class="tw"><table class="t" id="tbl"></table></div>
+    </section>
+    <aside class="card side" id="side"></aside>
+  </div>
+
+  <details class="card" id="dictBox">
+    <summary>Справочник SKU <span class="muted" id="dictCount"></span></summary>
+    <div class="dict-tools">
+      <input type="search" id="dictQ" placeholder="Поиск по артикулу, наименованию или коду">
+      <span class="small muted">Активный справочник. Специалист его только читает, менять запись может руководитель решением по строке.</span>
+    </div>
+    <div class="dict-scroll"><table class="t" id="dictTbl"></table></div>
+  </details>
+
+  <details class="card" id="logBox" hidden>
+    <summary>Журнал действий <span class="muted" id="logCount"></span></summary>
+    <ul class="log" id="log"></ul>
+  </details>
+
+  <p class="foot">В рабочей версии то же самое работает на сервере: вход по ролям, назначение специалиста, уведомления, история спецификаций и изменений справочника, параллельная работа нескольких специалистов.</p>
+</main>
+
+<dialog id="dlg"><div id="dlgBody"></div></dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+// Тестовый справочник: артикул, наименование, код ТН ВЭД, страна происхождения
+const DICT_SRC = [
+ ['BT-1101','Чайник электрический 1,7 л, стальной корпус','8516797000','Китай'],
+ ['BT-1102','Кофеварка капельная 1,25 л','8516710000','Китай'],
+ ['BT-1103','Тостер на 2 ломтика, 850 Вт','8516720000','Китай'],
+ ['BT-1104','Микроволновая печь 20 л, 700 Вт','8516500000','Китай'],
+ ['BT-1105','Утюг паровой 2400 Вт','8516400000','Китай'],
+ ['BT-1106','Фен для волос 2200 Вт, складная ручка','8516310000','Китай'],
+ ['BT-1107','Блендер погружной 800 Вт','8509400000','Китай'],
+ ['BT-1108','Пылесос с контейнером 1400 Вт','8508110000','Китай'],
+ ['BT-1109','Бритва электрическая роторная','8510100000','Китай'],
+ ['BT-1110','Вентилятор настольный 40 Вт','8414510000','Китай'],
+ ['BT-1111','Зубная щётка электрическая','8509800000','Китай'],
+ ['BT-1112','Весы напольные электронные','8423101000','Китай'],
+ ['BT-1113','Стиральная машина 7 кг, фронтальная загрузка','8450111900','Турция'],
+ ['BT-1114','Холодильник двухкамерный 360 л','8418211000','Корея'],
+ ['EL-2101','Смартфон 6,7", 256 ГБ','8517130000','Китай'],
+ ['EL-2102','Наушники беспроводные внутриканальные','8518300000','Китай'],
+ ['EL-2103','Колонка портативная 20 Вт','8518220000','Китай'],
+ ['EL-2104','Ноутбук 15,6", 16 ГБ ОЗУ','8471300000','Китай'],
+ ['EL-2105','Мышь компьютерная беспроводная','8471607000','Китай'],
+ ['EL-2106','Клавиатура проводная USB','8471606000','Китай'],
+ ['EL-2107','Аккумулятор литий-ионный 18650, 3000 мА·ч','8507600000','Китай'],
+ ['EL-2108','Лампа светодиодная E27, 10 Вт','8539520000','Китай'],
+ ['EL-2109','Фонарь ручной аккумуляторный','8513100000','Китай'],
+ ['EL-2110','Накопитель USB 64 ГБ','8523511000','Китай'],
+ ['EL-2111','Системный блок офисный','8471500000','Китай'],
+ ['IN-3101','Дрель-шуруповёрт аккумуляторная 18 В','8467211000','Китай'],
+ ['IN-3102','Дрель ударная сетевая 750 Вт','8467219900','Китай'],
+ ['IN-3103','Пила циркулярная 1400 Вт','8467223000','Китай'],
+ ['IN-3104','Пила цепная электрическая','8467221000','Китай'],
+ ['IN-3105','Молоток слесарный 500 г','8205200000','Китай'],
+ ['IN-3106','Набор ключей гаечных рожковых, 8 шт.','8204110000','Китай'],
+ ['HM-4101','Набор посуды из нержавеющей стали, 6 предметов','7323939000','Китай'],
+ ['HM-4102','Тарелка фарфоровая 25 см','6911100000','Китай'],
+ ['HM-4103','Контейнер пищевой пластиковый 1 л','3924100000','Китай'],
+ ['HM-4104','Пакет полиэтиленовый фасовочный, 500 шт.','3923210000','Китай'],
+ ['HM-4105','Коробка из гофрокартона 40×30×30 см','4819100000','Китай'],
+ ['HM-4106','Нож столовый, нержавеющая сталь','8211910000','Китай'],
+ ['HM-4107','Полотенце махровое хлопковое 70×140','6302600000','Турция'],
+ ['HM-4108','Футболка мужская трикотажная хлопковая','6109100000','Узбекистан'],
+ ['HM-4109','Смеситель для раковины однорычажный','8481801100','Китай'],
+ ['HM-4110','Раковина фарфоровая накладная','6910100000','Китай'],
+ ['HM-4111','Ванна акриловая 170×70','3922100000','Китай'],
+ ['HM-4112','Органайзер настольный пластиковый','3926100000','Китай'],
+ ['HM-4113','Мяч надувной детский','9506620000','Китай'],
+ ['HM-4114','Велосипед городской 28"','8712003000','Китай'],
+ ['HM-4115','Зубная щётка мануальная','9603210000','Китай'],
+ ['CS-5101','Шампунь для волос 400 мл','3305100000','Корея'],
+ ['CS-5102','Крем для лица увлажняющий 50 мл','3304990000','Корея'],
+ ['CS-5103','Бумага туалетная, 4 рулона','4818101000','Турция'],
+ ['FD-6101','Чай зелёный листовой, 100 г','0902100000','Китай'],
+ ['FD-6102','Чай чёрный листовой, 250 г','0902300000','Индия'],
+];
+// Пример спецификации: артикул, наименование, код (как пришёл от поставщика), страна, кол-во, цена USD
+const SAMPLE = [
+ ['BT-1101','Чайник электрический 1,7 л, стальной корпус','8516 79 700 0','Китай',240,9.8],
+ ['BT-1102','Кофеварка капельная 1,25 л','8516710000','Китай',120,14.2],
+ ['BT-1104','Микроволновая печь 20 л, 700 Вт','8516500000','Китай',60,38.5],
+ ['BT-1105','Утюг паровой, 2400 Вт','8516400000','Китай',150,11.9],
+ ['EL-2101','Смартфон 6,7", 256 ГБ','8517130000','Китай',80,142],
+ ['EL-2104','Ноутбук 15,6", 16 ГБ ОЗУ','8471300000','Китай',30,318],
+ ['EL-2105','Мышь компьютерная беспроводная','8471607000','Китай',400,3.1],
+ ['EL-2108','лампа светодиодная E27 10 Вт','8539520000','Китай',2000,0.62],
+ ['IN-3105','Молоток слесарный 500 г','8205200000','Китай',300,2.4],
+ ['HM-4102','Тарелка фарфоровая 25 см','6911100000','Китай',1200,1.15],
+ ['HM-4104','Пакет полиэтиленовый фасовочный, 500 шт.','3923210000','Китай',500,1.9],
+ ['FD-6101','Чай зелёный листовой, 100 г',902100000,'Китай',600,1.4],
+ ['CS-5101','Шампунь для волос 400 мл','3305100000','Корея',360,2.7],
+ ['IN-3101','Дрель-шуруповёрт аккумуляторная 18 В','8467211000','Китай',90,27.5],
+ ['BT-1106','Фен для волос 2400 Вт, с диффузором','8516310000','Китай',140,12.6],
+ ['BT-1107','Блендер стационарный 1200 Вт','8509400000','Китай',70,24.9],
+ ['HM-4107','Полотенце вафельное льняное 50×70','6302600000','Турция',800,1.75],
+ ['EL-2102','Наушники беспроводные внутриканальные','8517620009','Китай',500,6.3],
+ ['IN-3102','Дрель ударная сетевая 750 Вт','8467211000','Китай',110,19.8],
+ ['EL-2107','Аккумулятор литий-ионный 18650, 3000 мА·ч','8507800000','Китай',3000,1.05],
+ ['HM-4109','Смеситель для кухни с гибким изливом','8481801900','Китай',90,16.4],
+ ['BT-1121','Обогреватель масляный 2000 Вт','8516291000','Китай',75,29],
+ ['EL-2120','Фонарь налобный светодиодный','8513100000','Китай',600,2.2],
+ ['HM-4120','Кружка фарфоровая 350 мл','6911100000','Китай',1500,0.95],
+ ['CS-5102','Крем для лица увлажняющий 50 мл','','Корея',240,3.6],
+ ['HM-4103','Контейнер пищевой пластиковый 1 л','3924-10','Китай',700,0.8],
+ ['','Органайзер настольный пластиковый','3926100000','Китай',200,1.6],
+ ['EL-2101','Смартфон 6,7", 256 ГБ','8517130000','Китай',20,142],
+];
+
+const dict = new Map(DICT_SRC.map(([sku,name,code,country]) => [sku,{sku,name,code,country,hist:[]}]));
+const ST = {ok:['совпало','s-ok','#1D7446'],name:['расхождение наименования','s-nm','#C08300'],code:['расхождение ТН ВЭД','s-cd','#D2601E'],new:['новый SKU','s-nw','#1E5DA6'],err:['ошибка данных','s-er','#B21F33']};
+const RV = {auto:['автоматически','s-mute'],wait:['ждёт проверки','s-wait'],accepted:['проверено','s-ok'],manager:['у руководителя','s-mg'],decided:['решение руководителя','s-ok']};
+const PEOPLE = ['Котова Е. А.','Белов Д. С.','Рахимова Л. Р.'];
+const S = {role:'spec',rows:[],filter:'all',file:'',title:'',meta:'',specialist:PEOPLE[0],log:[],at:''};
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const now = () => new Date().toLocaleTimeString('ru-RU');
+const fmt = c => /^\d{10}$/.test(c) ? `${c.slice(0,4)} ${c.slice(4,6)} ${c.slice(6,9)} ${c.slice(9)}` : String(c ?? '');
+const who = () => S.role === 'mgr' ? 'руководитель' : 'специалист ' + S.specialist;
+function log(what){ S.log.push({t:now(), who:who(), what}); }
+function toast(t){ const e=$('#toast'); e.textContent=t; e.classList.add('on'); clearTimeout(toast.h); toast.h=setTimeout(()=>e.classList.remove('on'),2600); }
+
+function normName(s){
+  return String(s ?? '').toLowerCase().replace(/ё/g,'е')
+    .replace(/(\d)\s*[×xх*]\s*(\d)/g,'$1x$2')
+    .replace(/(\d),(\d)/g,'$1.$2')
+    .replace(/[^a-zа-я0-9.]+/g,' ')
+    .replace(/(^|[^\d])\.|\.(?!\d)/g,'$1 ')
+    .replace(/\s+/g,' ').trim();
+}
+function similarity(a,b){
+  const A=new Set(normName(a).split(' ').filter(Boolean)), B=new Set(normName(b).split(' ').filter(Boolean));
+  if(!A.size||!B.size) return 0;
+  let n=0; A.forEach(x=>{ if(B.has(x)) n++; });
+  return 2*n/(A.size+B.size);
+}
+function normCode(v){
+  if (v == null || String(v).trim() === '') return {code:'',err:'код ТН ВЭД не указан'};
+  const s = typeof v === 'number' ? String(Math.round(v)) : String(v).trim();
+  const d = s.replace(/[\s ]/g,'');
+  if (/^\d{10}$/.test(d)) return {code:d};
+  if (/^\d{9}$/.test(d)) return {code:'0'+d, note:'восстановлен ведущий ноль кода: Excel хранил код числом'};
+  return {code:'', err:`код «${s}» — нужно 10 цифр`};
+}
+
+// --- разбор файла
+const COLS = {sku:'Артикул',name:'Наименование',code:'Код ТН ВЭД'};
+function colKey(h){
+  const s = String(h ?? '').toLowerCase().replace(/ё/g,'е').replace(/\s+/g,' ').trim();
+  if (!s) return null;
+  if (/тн ?вэд|hs ?code|^hs$/.test(s)) return 'code';
+  if (/артикул|^sku\b|^арт\.?$/.test(s)) return 'sku';
+  if (/наименование|^описание|^товар$/.test(s)) return 'name';
+  if (/страна/.test(s)) return 'country';
+  if (/^кол-?во|количество/.test(s)) return 'qty';
+  return null;
+}
+function findHeader(aoa){
+  let best = {score:-1};
+  for (let i=0; i<Math.min(aoa.length,15); i++){
+    const map = {};
+    (aoa[i]||[]).forEach((h,j)=>{ const k=colKey(h); if(k && map[k]==null) map[k]=j; });
+    const score = ['sku','name','code'].filter(k=>map[k]!=null).length;
+    if (score === 3) return {ok:true,row:i,map};
+    if (score > best.score) best = {score,row:i,map};
+  }
+  return best;
+}
+const colLetter = j => XLSX.utils.encode_col(j);
+
+function loadWorkbook(wb, file){
+  S.file = file;
+  let h=null, aoa=null, sheet='', best=null;
+  for (const name of wb.SheetNames){
+    const a = XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,raw:true,defval:''});
+    const f = findHeader(a);
+    if (f.ok){ h=f; aoa=a; sheet=name; break; }
+    if (!best || f.score > best.score) best = {...f, sheet:name};
+  }
+  if (!h){
+    const has = best && best.score>0 ? Object.keys(COLS).filter(k=>best.map[k]!=null).map(k=>`«${COLS[k]}»`) : [];
+    const miss = Object.keys(COLS).filter(k=>!best || best.map[k]==null).map(k=>`«${COLS[k]}»`);
+    return fail(`Не хватает столбцов: ${miss.join(', ')}.`,
+      has.length ? `Ближе всего строка ${best.row+1} листа «${best.sheet}»: там есть ${has.join(', ')}. Переименуйте столбец или добавьте его и загрузите файл ещё раз.`
+                 : 'Ни одного нужного столбца в первых 15 строках не нашлось. Проверьте, что загружена спецификация, а не другой файл.');
+  }
+  const get = (r,k) => h.map[k]==null ? '' : r[h.map[k]];
+  const rows=[], seen=new Map();
+  for (let i=h.row+1; i<aoa.length; i++){
+    const r = aoa[i] || [];
+    const first = r.find(c => String(c).trim() !== '');
+    if (first === undefined) continue;
+    if (/^итого/i.test(String(first).trim())) continue;
+    const sku = String(get(r,'sku')).trim().toUpperCase();
+    const name = String(get(r,'name')).trim();
+    const raw = get(r,'code');
+    const c = normCode(raw);
+    const d = sku ? dict.get(sku) : null;
+    const row = {xr:i+1, sku, name, raw:String(raw ?? ''), code:c.code, country:String(get(r,'country')).trim(), qty:get(r,'qty'),
+      dName:d?d.name:'', dCode:d?d.code:'', dCountry:d?d.country:'', why:[], sim:null, status:'', st:'wait', prop:'', cmt:'', mCode:'', mCmt:'', final:''};
+    if (!sku) { row.status='err'; row.why.push('нет артикула'); }
+    else if (seen.has(sku)) { row.status='err'; row.why.push(`артикул повторяется, первый раз в строке ${seen.get(sku)}`); }
+    else seen.set(sku, i+1);
+    if (!name) { row.status='err'; row.why.push('нет наименования'); }
+    if (c.err) { row.status='err'; row.why.push(c.err); }
+    if (!row.status){
+      if (!d) { row.status='new'; row.why.push('артикула нет в активном справочнике'); }
+      else {
+        if (c.code !== d.code) { row.status='code'; row.why.push(`в спецификации ${fmt(c.code)}, в справочнике ${fmt(d.code)}`); }
+        if (normName(name) !== normName(d.name)) {
+          row.sim = Math.round(similarity(name,d.name)*100);
+          row.status = row.status || 'name';
+          row.why.push(`наименование отличается от справочника, совпадение слов ${row.sim}%`);
+        }
+        if (!row.status) row.status='ok';
+      }
+    }
+    if (c.note) row.why.push(c.note);
+    if (row.status==='ok'){ row.st='auto'; row.final=d.code; }
+    rows.push(row);
+  }
+  if (!rows.length) return fail('Под заголовком нет строк с товарами.', `Заголовок нашли в строке ${h.row+1} листа «${sheet}», но ниже пусто.`);
+  let title='';
+  for (let i=0;i<h.row && !title;i++){ const f=(aoa[i]||[]).find(c=>String(c).trim()!==''); if(f!==undefined) title=String(f).trim(); }
+  S.rows=rows; S.title=title || file; S.filter='all'; S.at=now();
+  S.meta = `лист «${sheet}», заголовок в строке ${h.row+1}: артикул — ${colLetter(h.map.sku)}, наименование — ${colLetter(h.map.name)}, код — ${colLetter(h.map.code)}`;
+  $('#err').hidden = true;
+  log(`загружен файл «${file}», строк: ${rows.length}`);
+  log(`автосверка: совпало ${count('ok')}, на ручную проверку ${rows.length-count('ok')}`);
+  render();
+  $('#work').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function fail(head, text){
+  S.rows=[]; $('#work').hidden=true;
+  const e=$('#err'); e.hidden=false;
+  e.innerHTML = `<div class="alert" role="alert"><b>Файл «${esc(S.file)}» не принят. ${esc(head)}</b><p>${esc(text)}</p><p class="small muted">Ожидаем в одной строке столбцы «Артикул», «Наименование», «Код ТН ВЭД». Шапка договора над ними не мешает.</p></div>`;
+  log(`файл «${S.file}» не принят: ${head}`); render();
+  e.scrollIntoView({behavior:'smooth',block:'center'});
+}
+const count = s => S.rows.filter(r=>r.status===s).length;
+
+// --- отрисовка
+function pill(cls, t){ return `<span class="pill ${cls}">${esc(t)}</span>`; }
+function render(){
+  const wait = S.rows.filter(r=>r.st==='wait').length, mg = S.rows.filter(r=>r.st==='manager').length;
+  $('#bSpec').hidden = !wait; $('#bSpec').textContent = wait;
+  $('#bMgr').hidden = !mg; $('#bMgr').textContent = mg;
+  document.querySelectorAll('.roles button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.role===S.role));
+  renderDict(); renderLog();
+  if (!S.rows.length) return;
+  $('#work').hidden = false;
+  $('#specTitle').textContent = S.title;
+  const sel = S.role==='mgr'
+    ? `<label>Специалист: <select id="assign">${PEOPLE.map(p=>`<option${p===S.specialist?' selected':''}>${esc(p)}</option>`).join('')}</select></label>`
+    : `<span>Специалист: ${esc(S.specialist)}</span>`;
+  $('#specMeta').innerHTML = `<span>${esc(S.file)}</span><span>строк: ${S.rows.length}</span><span>автосверка ${esc(S.at)}</span>${sel}<span class="muted">${esc(S.meta)}</span>`;
+  const chips = [['all','Все','#7A818C',S.rows.length], ...Object.keys(ST).map(k=>[k,ST[k][0],ST[k][2],count(k)])];
+  $('#chips').innerHTML = chips.map(([k,t,c,n])=>`<button type="button" class="chip" data-f="${k}" aria-pressed="${S.filter===k}"><span class="dot" style="background:${c}"></span><span>${esc(t)}</span><b>${n}</b></button>`).join('');
+  const list = S.rows.filter(r=>S.filter==='all'||r.status===S.filter);
+  $('#tbl').innerHTML = `<thead><tr><th>Стр.</th><th>Артикул</th><th>Наименование</th><th>Код ТН ВЭД</th><th>Статус</th><th>Проверка</th><th>Итоговый код</th></tr></thead><tbody>` +
+    list.map(r=>{
+      const i = S.rows.indexOf(r);
+      const nameAlt = r.dName && normName(r.dName)!==normName(r.name) ? `<div class="alt">в справочнике: ${esc(r.dName)}</div>` : '';
+      const codeCell = r.code ? `<span class="code">${fmt(r.code)}</span>` : `<span class="code bad">${esc(r.raw)||'пусто'}</span>`;
+      const codeAlt = r.dCode && r.dCode!==r.code ? `<div class="alt">справочник: <span class="code">${fmt(r.dCode)}</span></div>` : '';
+      const w = r.why.filter(x=>!x.startsWith('в спецификации')), why = w.length ? `<div class="alt">${esc(w.join('; '))}</div>` : '';
+      return `<tr tabindex="0" data-i="${i}"><td class="n">${r.xr}</td><td class="sku">${esc(r.sku)||'<span class="bad">—</span>'}</td><td class="nm">${esc(r.name)}${nameAlt}</td><td>${codeCell}${codeAlt}</td><td>${pill(ST[r.status][1],ST[r.status][0])}${why}</td><td>${pill(RV[r.st][1],RV[r.st][0])}</td><td><span class="code">${fmt(r.final)}</span></td></tr>`;
+    }).join('') + (list.length?'':`<tr><td colspan="7" class="empty">Строк с таким статусом нет.</td></tr>`) + '</tbody>';
+  renderSide();
+}
+function qItem(r){
+  const i=S.rows.indexOf(r);
+  return `<li><button type="button" data-i="${i}"><span class="l1"><span class="n muted">стр. ${r.xr}</span><span class="sku">${esc(r.sku)||'без артикула'}</span><span>${esc(r.name)}</span></span><span class="l2">${pill(ST[r.status][1],ST[r.status][0])}${pill(RV[r.st][1],RV[r.st][0])}</span></button></li>`;
+}
+function renderSide(){
+  const manual = S.rows.filter(r=>r.status!=='ok');
+  const done = manual.filter(r=>r.st==='accepted'||r.st==='decided').length;
+  const order = {wait:0,manager:1,accepted:2,decided:3};
+  if (S.role==='spec'){
+    const items = manual.slice().sort((a,b)=>order[a.st]-order[b.st]||a.xr-b.xr);
+    $('#side').innerHTML = `<div class="hd"><h2>Ручная проверка</h2><div class="small muted">Закрыто ${done} из ${manual.length}. Откройте строку: предложите код ТН ВЭД и примите или передайте руководителю.</div><div class="prog"><i style="width:${manual.length?done/manual.length*100:100}%"></i></div></div>` +
+      (items.length ? `<ul class="q">${items.map(qItem).join('')}</ul>` : `<div class="empty">Всё совпало со справочником, ручная проверка не нужна.</div>`);
+  } else {
+    const disputed = S.rows.filter(r=>r.st==='manager'), decided = S.rows.filter(r=>r.st==='decided');
+    $('#side').innerHTML = `<div class="hd"><h2>Спорные строки</h2><div class="small muted">Ждут решения: ${disputed.length}. Решено: ${decided.length}. Всего на ручной проверке ${manual.length}, закрыто ${done}.</div><div class="prog"><i style="width:${manual.length?done/manual.length*100:100}%"></i></div></div>` +
+      (disputed.length||decided.length ? `<ul class="q">${disputed.concat(decided).map(qItem).join('')}</ul>`
+        : `<div class="empty">Специалист пока ничего не передал. Переключитесь на роль специалиста и передайте строку, или откройте любую строку в таблице и решите сами.</div>`);
+  }
+}
+function renderDict(){
+  const q = normName($('#dictQ').value), qd = $('#dictQ').value.replace(/\s/g,'');
+  const all = [...dict.values()];
+  const list = all.filter(d=>!q || normName(d.sku+' '+d.name).includes(q) || (qd && d.code.includes(qd)));
+  $('#dictCount').textContent = `· ${all.length} записей` + (all.some(d=>d.hist.length) ? `, изменено решениями: ${all.filter(d=>d.hist.length).length}` : '');
+  $('#dictTbl').innerHTML = `<thead><tr><th>Артикул</th><th>Наименование</th><th>Код ТН ВЭД</th><th>Страна</th><th>История</th></tr></thead><tbody>` +
+    list.map(d=>`<tr class="${d.hist.length?'chg':''}"><td class="sku">${esc(d.sku)}</td><td>${esc(d.name)}</td><td class="code">${fmt(d.code)}</td><td>${esc(d.country)}</td><td class="small">${d.hist.map(h=>`${esc(h.t)} ${esc(h.what)}`).join('<br>')||'<span class="muted">—</span>'}</td></tr>`).join('') + '</tbody>';
+}
+function renderLog(){
+  $('#logBox').hidden = !S.log.length;
+  $('#logCount').textContent = `· ${S.log.length}`;
+  $('#log').innerHTML = S.log.slice().reverse().map(l=>`<li><time>${esc(l.t)}</time><span><span class="muted">${esc(l.who)}:</span> ${esc(l.what)}</span></li>`).join('');
+}
+
+// --- карточка строки
+function cell(a,b,mono){ const f = v => mono ? `<span class="code">${esc(fmt(v))}</span>` : esc(v); const diff = b!=='' && a!=='' && (mono ? a!==b : normName(a)!==normName(b)); return `<td class="${diff?'diff':''}">${a!==''?f(a):'<span class="muted">—</span>'}</td><td class="${diff?'diff':''}">${b!==''?f(b):'<span class="muted">—</span>'}</td>`; }
+function openRow(i){
+  const r = S.rows[i], has = !!r.dCode;
+  let h = `<div class="dh"><div><b>Строка ${r.xr}</b> · <span class="sku">${esc(r.sku)||'без артикула'}</span> ${pill(ST[r.status][1],ST[r.status][0])} ${pill(RV[r.st][1],RV[r.st][0])}</div><button class="x" type="button" data-act="close" aria-label="Закрыть">×</button></div><div class="db">`;
+  h += `<p class="why">${esc(r.why.join('; ') || 'Артикул, наименование и код совпали со справочником.')}</p>`;
+  h += `<table class="cmp"><tr><th></th><th>Спецификация</th><th>Справочник</th></tr>
+    <tr><td>Наименование</td>${cell(r.name,r.dName)}</tr>
+    <tr><td>Код ТН ВЭД</td>${cell(r.code||r.raw,r.dCode,!!r.code)}</tr>
+    <tr><td>Страна</td>${cell(r.country,r.dCountry)}</tr></table>`;
+  if (!has && r.sku) h += `<div class="small muted">Артикула нет в активном справочнике: решение руководителя может добавить его туда.</div>`;
+  const hist = [];
+  if (r.prop || r.cmt) hist.push(`<div><span class="muted">${r.st==='accepted'?'Специалист принял':'Специалист предложил'}:</span> <span class="code">${esc(fmt(r.prop))||'—'}</span>${r.cmt?` · ${esc(r.cmt)}`:''}</div>`);
+  if (r.st==='decided') hist.push(`<div><span class="muted">Решение руководителя:</span> <span class="code">${esc(fmt(r.mCode))}</span>${r.mCmt?` · ${esc(r.mCmt)}`:''}</div>`);
+  if (hist.length) h += `<div class="hist${r.st==='decided'?' h-mg':''}">${hist.join('')}</div>`;
+
+  const q = (lbl,v) => v ? `<button type="button" data-fill="${esc(v)}">${lbl}: ${esc(fmt(v))}</button>` : '';
+  if (r.status==='ok') {
+    h += `<div class="small muted">Строка прошла автосверку, итоговый код ${esc(fmt(r.final))}.</div>`;
+  } else if (S.role==='spec') {
+    if (r.st==='manager') h += `<div class="small muted">Строка у руководителя, ждёт решения. Остальные строки можно проверять дальше.</div>`;
+    else if (r.st==='decided') h += `<div class="small muted">Руководитель принял окончательное решение, итоговый код ${esc(fmt(r.final))}.</div>`;
+    else h += `<div class="form"><label>Предлагаемый код ТН ВЭД<input type="text" id="fCode" inputmode="numeric" placeholder="10 цифр" value="${esc(fmt(r.prop || r.code || r.dCode))}"></label>
+      <div class="quick">${q('как в спецификации',r.code)}${q('как в справочнике',r.dCode)}</div>
+      <label>Комментарий<textarea id="fCmt" placeholder="Почему этот код: описание товара, материал, назначение">${esc(r.cmt)}</textarea></label>
+      <p class="ferr" id="fErr"></p>
+      <div class="acts"><button class="btn pri" type="button" data-act="accept">Принять</button><button class="btn" type="button" data-act="toMgr">Передать руководителю</button></div>
+      <div class="small muted">Справочник специалист не меняет: принятый код идёт в итоговый файл, изменение записи справочника решает руководитель.</div></div>`;
+  } else {
+    const nameDiff = has && normName(r.name)!==normName(r.dName);
+    h += `<div class="form"><label>Окончательный код ТН ВЭД<input type="text" id="fCode" inputmode="numeric" placeholder="10 цифр" value="${esc(fmt(r.mCode || r.prop || r.dCode || r.code))}"></label>
+      <div class="quick">${q('предложил специалист',r.prop)}${q('справочник',r.dCode)}${q('спецификация',r.code)}</div>
+      <label>Комментарий к решению<textarea id="fCmt" placeholder="Основание решения">${esc(r.mCmt)}</textarea></label>
+      ${r.sku ? (has ? `<label class="chk"><input type="checkbox" id="fDictCode"> записать этот код в справочник для ${esc(r.sku)}</label>` : `<label class="chk"><input type="checkbox" id="fDictNew" checked> добавить ${esc(r.sku)} в справочник с этим кодом</label>`) : ''}
+      ${nameDiff ? `<label class="chk"><input type="checkbox" id="fDictName"> заменить наименование в справочнике на наименование из спецификации</label>` : ''}
+      <p class="ferr" id="fErr"></p>
+      <div class="acts"><button class="btn mgb" type="button" data-act="decide">Утвердить решение</button></div></div>`;
+  }
+  h += '</div>';
+  $('#dlgBody').innerHTML = h; $('#dlg').dataset.i = i;
+  if (!$('#dlg').open) $('#dlg').showModal();
+}
+function act(a){
+  const i = +$('#dlg').dataset.i, r = S.rows[i];
+  if (a==='close') return $('#dlg').close();
+  const c = normCode($('#fCode').value), cmt = $('#fCmt').value.trim();
+  const err = t => { $('#fErr').textContent = t; };
+  if (!c.code || c.note) return err('Код ТН ВЭД — 10 цифр, пробелы можно.');
+  if (a==='accept'){
+    Object.assign(r,{prop:c.code,cmt,st:'accepted',final:c.code});
+    log(`стр. ${r.xr} ${r.sku}: принят код ${fmt(c.code)}${cmt?' — '+cmt:''}`); toast(`Строка ${r.xr} проверена`);
+  } else if (a==='toMgr'){
+    if (!cmt) return err('Напишите руководителю, в чём вопрос.');
+    Object.assign(r,{prop:c.code,cmt,st:'manager',final:''});
+    log(`стр. ${r.xr} ${r.sku}: передана руководителю, предложен ${fmt(c.code)} — ${cmt}`); toast(`Строка ${r.xr} у руководителя`);
+  } else if (a==='decide'){
+    Object.assign(r,{mCode:c.code,mCmt:cmt,st:'decided',final:c.code});
+    log(`стр. ${r.xr} ${r.sku}: решение руководителя — код ${fmt(c.code)}${cmt?' — '+cmt:''}`);
+    const d = dict.get(r.sku);
+    if ($('#fDictNew')?.checked && !d){
+      dict.set(r.sku,{sku:r.sku,name:r.name,code:c.code,country:r.country,hist:[{t:now(),what:'добавлен решением по спецификации'}]});
+      log(`справочник: добавлен ${r.sku}, код ${fmt(c.code)}`);
+    }
+    if (d && $('#fDictCode')?.checked && d.code!==c.code){
+      d.hist.push({t:now(),what:`код ${fmt(d.code)} → ${fmt(c.code)}`}); log(`справочник: ${r.sku} код ${fmt(d.code)} → ${fmt(c.code)}`); d.code=c.code;
+    }
+    if (d && $('#fDictName')?.checked && d.name!==r.name){
+      d.hist.push({t:now(),what:`наименование «${d.name}» → «${r.name}»`}); log(`справочник: ${r.sku} новое наименование «${r.name}»`); d.name=r.name;
+    }
+    toast(`Решение по строке ${r.xr} сохранено`);
+  }
+  $('#dlg').close(); render();
+}
+
+// --- Excel
+function sampleBook(){
+  const H=['№','Артикул','Наименование товара','Код ТН ВЭД','Страна происхождения','Кол-во','Ед. изм.','Цена, USD','Сумма, USD'];
+  const aoa=[['Спецификация № 7 к контракту № HD-2026/114 от 12.09.2026'],['Поставщик: Test Supplier Co., Ltd. (Нинбо), условия поставки FOB Нинбо'],[],H];
+  let q=0,s=0;
+  SAMPLE.forEach((r,i)=>{ const sum=Math.round(r[4]*r[5]*100)/100; q+=r[4]; s+=sum; aoa.push([i+1,r[0],r[1],r[2],r[3],r[4],'шт',r[5],sum]); });
+  aoa.push(['Итого:','','','','',q,'','',Math.round(s*100)/100]);
+  const ws=XLSX.utils.aoa_to_sheet(aoa);
+  ws['!cols']=[{wch:4},{wch:10},{wch:44},{wch:15},{wch:12},{wch:8},{wch:7},{wch:9},{wch:11}];
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Спецификация'); return wb;
+}
+function badBook(){
+  const ws=XLSX.utils.aoa_to_sheet([['Товар','Кол-во','Цена, USD'],['Чайник электрический 1,7 л',240,9.8],['Кофеварка капельная 1,25 л',120,14.2]]);
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Лист1'); return wb;
+}
+const roundtrip = wb => XLSX.read(XLSX.write(wb,{type:'array',bookType:'xlsx'}),{type:'array'});
+function exportResult(){
+  const H=['Строка файла','Артикул','Наименование в спецификации','Наименование в справочнике','Код ТН ВЭД в спецификации','Код ТН ВЭД в справочнике','Статус автосверки','Причина','Состояние проверки','Код, предложенный специалистом','Комментарий специалиста','Код по решению руководителя','Комментарий руководителя','Итоговый код ТН ВЭД','Страна происхождения','Количество'];
+  const aoa=[H,...S.rows.map(r=>[r.xr,r.sku,r.name,r.dName,r.code||r.raw,r.dCode,ST[r.status][0],r.why.join('; '),RV[r.st][0],r.prop,r.cmt,r.mCode,r.mCmt,r.final,r.country,r.qty])];
+  const ws=XLSX.utils.aoa_to_sheet(aoa);
+  ws['!cols']=[8,10,40,40,14,14,22,40,18,14,30,14,30,14,12,10].map(w=>({wch:w}));
+  ws['!autofilter']={ref:ws['!ref']};
+  const left = S.rows.filter(r=>r.st==='wait'||r.st==='manager').length;
+  log(`сформирован итоговый Excel${left?`, не закрыто строк: ${left}`:', все строки закрыты'}`);
+  const wl=XLSX.utils.aoa_to_sheet([['Время','Кто','Действие'],...S.log.map(l=>[l.t,l.who,l.what])]);
+  wl['!cols']=[{wch:10},{wch:28},{wch:90}];
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Итог'); XLSX.utils.book_append_sheet(wb,wl,'Журнал');
+  XLSX.writeFile(wb,'итог_'+S.file.replace(/\.(xlsx|xls|csv)$/i,'')+'.xlsx');
+  toast(left ? `Итоговый файл скачан, не закрыто строк: ${left}` : 'Итоговый файл скачан');
+  render();
+}
+function readFile(f){
+  if (!f) return;
+  S.file = f.name;
+  if (!/\.(xlsx|xls|csv)$/i.test(f.name)) return fail('Это не Excel.', 'Подходят файлы .xlsx, .xls и .csv.');
+  f.arrayBuffer().then(b=>{
+    let wb; try { wb = XLSX.read(b,{type:'array'}); } catch(e){ return fail('Файл не читается.', 'Возможно, он повреждён или защищён паролем. Сохраните его заново в Excel и загрузите ещё раз.'); }
+    loadWorkbook(wb, f.name);
+  });
+}
+
+// --- события
+$('#file').addEventListener('change', e=>{ readFile(e.target.files[0]); e.target.value=''; });
+const drop=$('#drop');
+['dragenter','dragover'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.add('over');}));
+['dragleave','drop'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.remove('over');}));
+drop.addEventListener('drop', e=>readFile(e.dataTransfer.files[0]));
+$('#dlSample').onclick = ()=>XLSX.writeFile(sampleBook(),'спецификация_пример.xlsx');
+$('#runSample').onclick = ()=>loadWorkbook(roundtrip(sampleBook()),'спецификация_пример.xlsx');
+$('#runBad').onclick = ()=>loadWorkbook(roundtrip(badBook()),'спецификация_без_кода.xlsx');
+$('#exportBtn').onclick = exportResult;
+$('#dictQ').addEventListener('input', renderDict);
+document.querySelector('.roles').addEventListener('click', e=>{
+  const b=e.target.closest('button'); if(!b||b.dataset.role===S.role) return;
+  S.role=b.dataset.role; render(); toast(S.role==='mgr'?'Вы руководитель':'Вы специалист ВЭД');
+});
+document.addEventListener('click', e=>{
+  const f=e.target.closest('[data-f]'); if(f){ S.filter=f.dataset.f; render(); return; }
+  const row=e.target.closest('#tbl tbody tr[data-i], .q button[data-i]'); if(row){ openRow(+row.dataset.i); return; }
+  const fill=e.target.closest('[data-fill]'); if(fill){ $('#fCode').value=fmt(fill.dataset.fill); return; }
+  const a=e.target.closest('[data-act]'); if(a) act(a.dataset.act);
+});
+document.addEventListener('keydown', e=>{ const tr=e.target.closest?.('#tbl tbody tr[data-i]'); if(tr && e.key==='Enter') openRow(+tr.dataset.i); });
+document.addEventListener('change', e=>{ if(e.target.id==='assign'){ S.specialist=e.target.value; log(`назначен специалист ${S.specialist}`); toast(`Назначен ${S.specialist}`); render(); } });
+$('#dlg').addEventListener('click', e=>{ if(e.target===$('#dlg')) $('#dlg').close(); });
+render();
+</script>
+</body>
+</html>
