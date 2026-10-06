@@ -180,6 +180,8 @@ img,video{display:block}
 .clead{max-width:560px;margin:28px auto 0;font-weight:300;line-height:1.6;opacity:.8;font-size:clamp(1rem,1.6vw,1.2rem)}
 .btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:44px}
 .btns .live{font-size:13px;text-transform:none;letter-spacing:.04em}
+.proverka{max-width:560px;margin:36px auto 0;font-weight:300;line-height:1.6;opacity:.8;font-size:clamp(.95rem,1.4vw,1.1rem)}
+.proverka a{color:inherit;font-weight:500;text-decoration:underline;text-underline-offset:4px}
 footer{border-top:1px solid rgba(215,226,234,.12);padding:24px 20px;font-size:13px;opacity:.6;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 
 @media (min-width:640px){
@@ -310,6 +312,8 @@ footer{border-top:1px solid rgba(215,226,234,.12);padding:24px 20px;font-size:13
       <a class="live" id="max" href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a>
       <a class="live" href="mailto:paladei702@gmail.com">paladei702@gmail.com</a>
     </div>
+    <!-- 06.10: бесплатная проверка сайта, только русская версия (в en убирается скриптом, как MAX) -->
+    <p class="proverka" id="proverka">Сайт уже есть? <a href="https://gad-production.ru/proverka/" target="_blank" rel="noopener">Проверьте его бесплатно за&nbsp;минуту</a>: битые ссылки, страницы, скрытые от&nbsp;поиска, тяжёлые картинки.</p>
   </section>
   <footer><span>g.a.d. © 2026</span><span>t.me/smirnovarturr</span>
     <!-- CC BY требует назвать авторов моделей первого экрана -->
@@ -352,6 +356,7 @@ if (EN) {
   document.head.insertAdjacentHTML('beforeend', '<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;900&display=swap" rel="stylesheet">');
   document.querySelectorAll('[data-t]').forEach(el => { const t = TR[el.dataset.t]; if (t) el.textContent = t; });
   $('max').remove(); // MAX только для русской версии
+  $('proverka').remove(); // проверка сайта — русская, на gad-production.ru
   $('golova').setAttribute('aria-label', 'Portrait of Artur in the Lich King helmet');
 }
 
