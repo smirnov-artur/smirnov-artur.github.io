@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<script src="/works/js/gad-loader.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Меню салона по QR</title>
+<meta name="description" content="Образец меню салона красоты по QR и на планшете: напитки, услуги, товары, чаевые, медиатека. Заказ сразу приходит администратору в Telegram.">
+<meta name="theme-color" content="#F6F1EA">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --page:#EDE6DC;--paper:#FBF8F3;--card:#FFFFFF;--ink:#2A2220;--muted:#857A72;--line:#E9E1D6;
+  --plum:#6B2D4A;--plum-2:#8A4466;--plum-bg:#F4E9EE;--gold:#B08A4E;
+  --ok:#2F7D55;--ok-bg:#E4F2EA;--wait:#A86B12;--wait-bg:#FBF0DC;
+  --tg:#F1F3F6;--tg-in:#FFFFFF;--tg-ink:#151A20;--tg-muted:#7D8792;--tg-accent:#2A8BD8;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--ink);font:15px/1.45 Manrope,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+.honest{max-width:1240px;margin:0 auto;padding:14px 16px 0;font-size:13px;color:var(--muted);display:flex;gap:10px 18px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.honest b{color:var(--ink);font-weight:600}
+.vid{display:none;background:#E0D7CB;border-radius:12px;padding:3px;gap:2px}
+.vid button{border:0;background:transparent;padding:7px 12px;border-radius:9px;font-size:13px;font-weight:600;color:var(--muted)}
+.vid button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.nw{display:none}
+.wrap{max-width:1240px;margin:0 auto;padding:14px 16px 40px;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:22px;align-items:start}
+
+/* ---------- меню (то, что видит клиент) ---------- */
+.menu{background:var(--paper);border-radius:22px;box-shadow:0 10px 40px rgba(60,40,30,.10);overflow:hidden;position:relative;height:calc(100dvh - 80px);min-height:560px;max-height:880px;display:flex;flex-direction:column}
+.mtop{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:22px 26px 6px}
+.brand{display:flex;align-items:baseline;gap:10px}
+.brand h1{margin:0;font:600 34px/1 "Cormorant Garamond",Georgia,serif;letter-spacing:.01em;color:var(--plum)}
+.brand span{font-size:12px;color:var(--muted)}
+.mesto{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.mesto select{font:inherit;font-weight:600;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 10px}
+.hello{padding:2px 26px 12px;color:var(--muted);font-size:14px}
+.tabs{display:flex;gap:6px;padding:4px 22px 14px;overflow-x:auto;scrollbar-width:none;flex:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:9px 16px;font-weight:600;font-size:14px;color:var(--muted)}
+.tabs button.on{background:var(--plum);border-color:var(--plum);color:#fff}
+.razdel{padding:4px 22px 110px;flex:1;overflow-y:auto;min-height:0}
+.podzag{font:600 22px/1.2 "Cormorant Garamond",Georgia,serif;margin:6px 4px 12px;color:var(--ink)}
+.podzag small{display:block;font:400 13px/1.4 Manrope,system-ui,sans-serif;color:var(--muted);margin-top:3px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px;text-align:left}
+.item:hover{border-color:#D8C9BA}
+.cup{width:54px;height:54px;border-radius:50%;position:relative;flex:none;box-shadow:inset 0 -6px 12px rgba(0,0,0,.12)}
+.cup::after{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--pena,transparent);opacity:.9}
+.irow{display:flex;gap:12px;align-items:center}
+.iname{font-weight:700;font-size:15px;line-height:1.25}
+.idesc{font-size:13px;color:var(--muted);line-height:1.4}
+.ifoot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto}
+.price{font-weight:700;font-size:14px}
+.price.free{color:var(--ok)}
+.btn{border:0;background:var(--plum);color:#fff;border-radius:12px;padding:9px 14px;font-weight:600;font-size:14px}
+.btn:hover{background:var(--plum-2)}
+.btn.ghost{background:var(--plum-bg);color:var(--plum)}
+.btn:disabled{opacity:.45;cursor:default}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--gold)}
+.masters{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.master{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:14px;text-align:left}
+.master.on{border-color:var(--plum);background:var(--plum-bg)}
+.ava{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;margin-bottom:8px}
+.summy{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
+.summy button{border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:10px 16px;font-weight:700}
+.summy button.on{border-color:var(--plum);background:var(--plum-bg);color:var(--plum)}
+.summy input{width:120px;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-weight:700}
+.media{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.mtile{border:0;border-radius:18px;padding:18px;min-height:132px;display:flex;flex-direction:column;justify-content:flex-end;text-align:left;color:#fff}
+.mtile b{font-size:16px}
+.mtile span{font-size:13px;opacity:.85}
+.mzametka{margin-top:14px;background:var(--card);border:1px dashed #D8C9BA;border-radius:14px;padding:12px 14px;font-size:13px;color:var(--muted)}
+
+/* лист заказа */
+.shade{position:absolute;inset:0;background:rgba(40,25,20,.28);opacity:0;pointer-events:none;transition:opacity .2s}
+.shade.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);border-radius:22px 22px 0 0;padding:20px 24px 24px;transform:translateY(105%);transition:transform .25s ease;box-shadow:0 -10px 40px rgba(0,0,0,.12);max-height:86%;overflow:auto}
+.sheet.on{transform:none}
+.sheet h3{margin:0 0 4px;font:600 26px/1.15 "Cormorant Garamond",Georgia,serif}
+.opt{margin:14px 0 0}
+.opt .lbl{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chips button{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:8px 13px;font-size:14px;font-weight:600}
+.chips button.on{border-color:var(--plum);background:var(--plum-bg);color:var(--plum)}
+.imya{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;font:inherit;background:var(--card)}
+.sheet .go{display:flex;gap:10px;margin-top:18px}
+.sheet .go .btn{flex:1;padding:13px}
+
+/* мои заказы */
+.moi{position:absolute;left:14px;right:14px;bottom:14px;background:var(--ink);color:#fff;border-radius:16px;padding:10px 14px;display:none;flex-direction:column;gap:6px;box-shadow:0 8px 26px rgba(0,0,0,.25)}
+.moi.on{display:flex}
+.moi .z{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;align-items:center}
+.st{font-size:12px;font-weight:700;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.st.s0{background:#4A403D;color:#E8DED6}.st.s1{background:var(--wait-bg);color:var(--wait)}.st.s2{background:#E7E1F7;color:#5B3FA8}.st.s3{background:var(--ok-bg);color:var(--ok)}
+.toast{position:absolute;left:50%;top:18px;transform:translate(-50%,-20px);background:var(--ink);color:#fff;border-radius:12px;padding:10px 16px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:5;max-width:90%;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- правая колонка: администратор ---------- */
+.side{display:flex;flex-direction:column;gap:16px;position:sticky;top:14px}
+.phone{background:var(--tg);border-radius:26px;overflow:hidden;box-shadow:0 10px 40px rgba(30,40,60,.12);display:flex;flex-direction:column;height:560px;border:1px solid #DDE2E8}
+.phead{background:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #E6E9EE}
+.phead .ava{margin:0;width:36px;height:36px;background:var(--plum);font-size:14px}
+.phead b{display:block;font-size:14.5px;color:var(--tg-ink)}
+.phead span{font-size:12px;color:var(--tg-muted)}
+.feed{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:10px}
+.pusto{margin:auto;text-align:center;color:var(--tg-muted);font-size:13px;max-width:240px}
+.msg{background:var(--tg-in);border-radius:14px 14px 14px 4px;padding:10px 12px;color:var(--tg-ink);font-size:13.5px;box-shadow:0 1px 1px rgba(0,0,0,.05);max-width:94%}
+.msg .t{font-size:11px;color:var(--tg-muted);float:right;margin:6px 0 0 10px}
+.msg .h{font-weight:700;margin-bottom:3px}
+.msg .y{margin-top:7px;padding-top:7px;border-top:1px solid #EEF0F3;color:var(--tg-muted);font-size:12.5px}
+.kb{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:5px;max-width:94%}
+.kb button{border:0;background:rgba(255,255,255,.9);color:var(--tg-accent);border-radius:8px;padding:7px 4px;font-size:12.5px;font-weight:600}
+.kb button.on{background:var(--tg-accent);color:#fff}
+.kb button:disabled{opacity:.5;cursor:default}
+.card2{background:var(--card);border-radius:18px;padding:16px;box-shadow:0 6px 24px rgba(60,40,30,.07);font-size:13.5px;color:var(--muted)}
+.card2 h4{margin:0 0 8px;color:var(--ink);font-size:14.5px}
+.card2 ol{margin:0;padding-left:18px}
+.card2 li{margin:3px 0}
+.qr{display:flex;gap:14px;align-items:center}
+.qr img{width:112px;height:112px;border-radius:10px;background:#fff;padding:6px;border:1px solid var(--line);flex:none}
+
+@media (max-width:980px){
+  .wrap{grid-template-columns:1fr}
+  .vid{display:flex}
+  .w{display:none}.nw{display:inline}
+  .side{position:static}
+  body[data-vid="menu"] .side{display:none}
+  body[data-vid="admin"] .menu{display:none}
+  .phone{height:70vh;min-height:460px}
+}
+@media (max-width:560px){
+  .mtop{padding:18px 16px 4px;flex-wrap:wrap}
+  .brand h1{font-size:30px}
+  .hello{padding:2px 16px 10px}
+  .tabs{padding:4px 12px 12px}
+  .razdel{padding:4px 12px 120px}
+  .grid{grid-template-columns:1fr 1fr;gap:9px}
+  .item{padding:12px;border-radius:16px}
+  .cup{width:44px;height:44px}
+  .irow{flex-direction:column;align-items:flex-start;gap:8px}
+  .ifoot{flex-direction:column;align-items:stretch}
+  .sheet{padding:18px 16px 20px}
+}
+</style>
+</head>
+<body data-vid="menu">
+<div class="honest">
+  <div><b>Образец под ваш заказ:</b> меню салона по QR и на планшете. Салон и позиции условные. Как заказ приходит администратору в Telegram — <span class="w">справа</span><span class="nw">во вкладке «Администратор»</span>.</div>
+  <div class="vid" role="tablist"><button class="on" data-v="menu">Меню клиента</button><button data-v="admin">Администратор</button></div>
+</div>
+
+<div class="wrap">
+  <main class="menu" id="menu">
+    <div class="mtop">
+      <div class="brand"><h1>Пион</h1><span>студия красоты</span></div>
+      <label class="mesto">Ваше место
+        <select id="mesto"></select>
+      </label>
+    </div>
+    <div class="hello">Пока мастер работает, закажите напиток или посмотрите, чем заняться. Администратор принесёт сам.</div>
+    <nav class="tabs" id="tabs"></nav>
+    <section class="razdel" id="razdel"></section>
+
+    <div class="moi" id="moi"></div>
+    <div class="shade" id="shade"></div>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+    <div class="toast" id="toast"></div>
+  </main>
+
+  <aside class="side">
+    <div class="phone">
+      <div class="phead"><div class="ava">П</div><div><b>Пион · заказы из зала</b><span>бот администратора</span></div></div>
+      <div class="feed" id="feed"><div class="pusto" id="pusto">Закажите что-нибудь в меню слева — сообщение появится здесь, как у администратора в Telegram.</div></div>
+    </div>
+    <div class="card2">
+      <h4>QR на стол или зеркало</h4>
+      <div class="qr"><img src="qr-kreslo-3.png" alt="QR-код меню для кресла 3"><div>Свой QR на каждое место: клиент сканирует камерой телефона, меню открывается уже с номером кресла. Этот код ведёт на кресло 3.</div></div>
+    </div>
+    <div class="card2">
+      <h4>Ярлык на планшете Galaxy Tab A9</h4>
+      <ol>
+        <li>Открыть меню в Chrome на планшете.</li>
+        <li>Меню ⋮ → «Добавить на главный экран».</li>
+        <li>Иконка «Пион» открывает меню на весь экран, без адресной строки. Приложения не нужны.</li>
+      </ol>
+    </div>
+    <div class="card2">
+      <h4>Что с YCLIENTS</h4>
+      Напитки и товары заводятся в Склад → Товары. В каждом сообщении бота — подсказка, какой товар добавить в визит клиента, чтобы он остался в истории: «Ольга в прошлый раз пила латте на кокосовом».
+    </div>
+  </aside>
+</div>
+
+<script>
+(function(){
+var MESTA = ['Кресло 1','Кресло 2','Кресло 3','Кресло 4','Кресло 5','Маникюр 1','Маникюр 2','Педикюр','Зона ожидания','Планшет у ресепшена'];
+var MOLOKO = ['Обычное','Кокосовое','Овсяное','Миндальное','Без лактозы'];
+var SAHAR = ['Без сахара','1 ложка','2 ложки'];
+var SIROP = ['Без сиропа','Ваниль','Карамель','Лесной орех'];
+var NAPITKI = [
+  {id:'esp', n:'Эспрессо', d:'Двойная порция, зерно средней обжарки', c:'#3B2418', p:0, o:{sahar:SAHAR}},
+  {id:'amer', n:'Американо', d:'Мягкий, можно с молоком', c:'#4A2C1C', p:0, o:{moloko:['Без молока'].concat(MOLOKO), sahar:SAHAR}},
+  {id:'kap', n:'Капучино', d:'Плотная молочная пена', c:'#7A5235', pena:'#EADBC8', p:0, o:{moloko:MOLOKO, sahar:SAHAR, sirop:SIROP}},
+  {id:'latte', n:'Латте', d:'Больше молока, мягкий вкус', c:'#9B7352', pena:'#F1E6D6', p:0, o:{moloko:MOLOKO, sahar:SAHAR, sirop:SIROP}},
+  {id:'raf', n:'Раф лавандовый', d:'Сливки, ваниль и лаванда', c:'#B9A2C9', pena:'#F2EAF5', p:250, o:{sahar:SAHAR}},
+  {id:'matcha', n:'Матча-латте', d:'Японский зелёный чай с молоком', c:'#7FA05A', pena:'#E3EDD4', p:250, o:{moloko:MOLOKO, sahar:SAHAR}},
+  {id:'chai', n:'Чай', d:'Эрл грей, сенча, ройбуш с апельсином, иван-чай', c:'#A0522D', p:0, o:{sort:['Эрл грей','Сенча','Ройбуш с апельсином','Иван-чай'], dobavka:['Без добавок','Лимон','Мёд','Лимон и мёд']}},
+  {id:'mors', n:'Морс клюквенный', d:'Домашний, не очень сладкий', c:'#B0263C', p:150, o:{led:['Со льдом','Без льда']}},
+  {id:'smuzi', n:'Смузи манго-маракуйя', d:'Без сахара, 300 мл', c:'#F2A541', p:290, o:{}},
+  {id:'voda', n:'Вода', d:'Бутылка 0,5 л', c:'#BFD9E6', p:0, o:{vid:['Без газа','С газом'], dobavka:['Без лимона','С лимоном']}}
+];
+var USLUGI = [
+  {id:'massazh', n:'Массаж головы', d:'10 минут, пока держится краска', p:600, tag:'пока ждёте'},
+  {id:'ruki', n:'Парафин для рук', d:'15 минут, можно в кресле', p:900, tag:'пока ждёте'},
+  {id:'uhod', n:'Восстанавливающий уход', d:'15 минут после окрашивания', p:1500, tag:'для волос'},
+  {id:'ukladka', n:'Укладка', d:'После стрижки или окрашивания', p:1200, tag:'для волос'},
+  {id:'brovi', n:'Коррекция бровей', d:'20 минут, если мастер свободен', p:800, tag:'лицо'}
+];
+var TOVARY = [
+  {id:'shampun', n:'Шампунь для окрашенных волос', d:'250 мл, тот, что у мастера на мойке', p:1450, c:'#C9B7D6'},
+  {id:'maska', n:'Маска восстанавливающая', d:'200 мл', p:1890, c:'#E3C9A8'},
+  {id:'maslo', n:'Масло для кончиков', d:'50 мл', p:1290, c:'#D9A441'},
+  {id:'krem', n:'Крем для рук', d:'75 мл, запах инжира', p:690, c:'#E8D9CF'},
+  {id:'sert', n:'Подарочный сертификат', d:'На любую услугу, 3 000 ₽', p:3000, c:'#6B2D4A'}
+];
+var MASTERA = [
+  {n:'Анна', r:'стилист', c:'#8A4466'}, {n:'Марина', r:'колорист', c:'#B08A4E'},
+  {n:'Олеся', r:'мастер маникюра', c:'#4F7A6A'}, {n:'Виктория', r:'бровист', c:'#5C6FA8'}
+];
+var MEDIA = [
+  {n:'Журналы', d:'Свежие номера о моде, интерьерах и путешествиях', bg:'linear-gradient(140deg,#6B2D4A,#B0607F)'},
+  {n:'Музыка в наушниках', d:'Спокойное утро, джаз, хиты недели', bg:'linear-gradient(140deg,#2F4858,#5F8A8B)'},
+  {n:'Серия на 40 минут', d:'Ровно на время окрашивания', bg:'linear-gradient(140deg,#3E2C23,#9B7352)'},
+  {n:'Для детей', d:'Мультфильмы и раскраски на планшете', bg:'linear-gradient(140deg,#B08A4E,#E3C089)'}
+];
+var TABS = [['napitki','Напитки'],['uslugi','Услуги'],['tovary','Товары'],['chaevye','Чаевые'],['media','Медиатека']];
+
+var $ = function(id){return document.getElementById(id)};
+var esc = function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+var rub = function(p){return p ? p.toLocaleString('ru-RU') + ' ₽' : 'в подарок'};
+var tab = 'napitki', zakazy = [], nomer = 40, master = 0, summa = 300;
+
+// место — из ссылки QR (?mesto=Кресло 3) или выбор
+var q = new URLSearchParams(location.search).get('mesto');
+var sel = $('mesto');
+MESTA.forEach(function(m){var o=document.createElement('option');o.textContent=m;sel.appendChild(o)});
+sel.value = MESTA.indexOf(q) >= 0 ? q : 'Кресло 3';
+
+function tabs(){
+  $('tabs').innerHTML = TABS.map(function(t){return '<button data-t="'+t[0]+'" class="'+(t[0]==tab?'on':'')+'">'+t[1]+'</button>'}).join('');
+}
+$('tabs').onclick = function(e){var b=e.target.closest('button'); if(!b) return; tab=b.dataset.t; tabs(); razdel(); $('razdel').scrollTop=0};
+
+function razdel(){
+  var h = '';
+  if (tab=='napitki'){
+    h = '<div class="podzag">Напитки<small>Кофе, чай и вода — в подарок. Принесём к вашему месту.</small></div><div class="grid">' +
+      NAPITKI.map(function(x){return '<div class="item"><div class="irow"><div class="cup" style="background:'+x.c+(x.pena?';--pena:'+x.pena:'')+'"></div><div><div class="iname">'+esc(x.n)+'</div><div class="idesc">'+esc(x.d)+'</div></div></div><div class="ifoot"><span class="price '+(x.p?'':'free')+'">'+rub(x.p)+'</span><button class="btn" data-n="'+x.id+'">Заказать</button></div></div>'}).join('') + '</div>';
+  } else if (tab=='uslugi'){
+    h = '<div class="podzag">Добавить к визиту<small>Администратор проверит, свободен ли мастер, и подойдёт к вам.</small></div><div class="grid">' +
+      USLUGI.map(function(x){return '<div class="item"><span class="tag">'+esc(x.tag)+'</span><div><div class="iname">'+esc(x.n)+'</div><div class="idesc">'+esc(x.d)+'</div></div><div class="ifoot"><span class="price">'+rub(x.p)+'</span><button class="btn ghost" data-u="'+x.id+'">Хочу</button></div></div>'}).join('') + '</div>';
+  } else if (tab=='tovary'){
+    h = '<div class="podzag">Товары для дома<small>Принесём посмотреть, оплата на ресепшене вместе с визитом.</small></div><div class="grid">' +
+      TOVARY.map(function(x){return '<div class="item"><div class="irow"><div class="cup" style="border-radius:14px;background:'+x.c+'"></div><div><div class="iname">'+esc(x.n)+'</div><div class="idesc">'+esc(x.d)+'</div></div></div><div class="ifoot"><span class="price">'+rub(x.p)+'</span><button class="btn ghost" data-g="'+x.id+'">Принести</button></div></div>'}).join('') + '</div>';
+  } else if (tab=='chaevye'){
+    h = '<div class="podzag">Чаевые мастеру<small>Выберите мастера и сумму. Деньги приходят мастеру напрямую.</small></div><div class="masters">' +
+      MASTERA.map(function(m,i){return '<button class="master '+(i==master?'on':'')+'" data-m="'+i+'"><div class="ava" style="background:'+m.c+'">'+m.n[0]+'</div><b>'+m.n+'</b><div class="idesc">'+m.r+'</div></button>'}).join('') +
+      '</div><div class="opt"><div class="lbl">Сумма</div></div><div class="summy">' +
+      [200,300,500,1000].map(function(s){return '<button data-s="'+s+'" class="'+(s==summa?'on':'')+'">'+s.toLocaleString('ru-RU')+' ₽</button>'}).join('') +
+      '<input id="svoya" inputmode="numeric" placeholder="своя сумма"></div><button class="btn" id="chai">Оставить '+summa.toLocaleString('ru-RU')+' ₽ — '+MASTERA[master].n+'</button>' +
+      '<div class="mzametka">В рабочей версии кнопка ведёт на оплату по СБП или в сервис чаевых, которым уже пользуется салон. В образце оплаты нет.</div>';
+  } else {
+    h = '<div class="podzag">Медиатека<small>Чем заняться, пока мастер работает.</small></div><div class="media">' +
+      MEDIA.map(function(m,i){return '<button class="mtile" data-md="'+i+'" style="background:'+m.bg+'"><b>'+m.n+'</b><span>'+m.d+'</span></button>'}).join('') +
+      '</div><div class="mzametka">Сюда ставятся ваши ссылки: журналы в PDF, плейлисты Яндекс Музыки, подборки Кинопоиска, мультфильмы. На планшете открываются, не закрывая меню.</div>';
+  }
+  $('razdel').innerHTML = h;
+}
+
+$('razdel').onclick = function(e){
+  var b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.n) return list(NAPITKI.filter(function(x){return x.id==b.dataset.n})[0]);
+  if (b.dataset.u){ var u = USLUGI.filter(function(x){return x.id==b.dataset.u})[0]; return otpravit({tip:'usluga', chto:u.n, p:u.p}); }
+  if (b.dataset.g){ var g = TOVARY.filter(function(x){return x.id==b.dataset.g})[0]; return otpravit({tip:'tovar', chto:g.n + ' (' + g.d.split(',')[0] + ')', p:g.p}); }
+  if (b.dataset.m){ master = +b.dataset.m; return razdel(); }
+  if (b.dataset.s){ summa = +b.dataset.s; return razdel(); }
+  if (b.id=='chai'){ tost('Спасибо! ' + MASTERA[master].n + ' получит ' + summa.toLocaleString('ru-RU') + ' ₽. В образце оплата не проводится.'); return; }
+  if (b.dataset.md){ tost('Здесь откроется «' + MEDIA[+b.dataset.md].n + '» — ваши ссылки'); }
+};
+$('razdel').oninput = function(e){
+  if (e.target.id=='svoya'){ var v = parseInt(e.target.value.replace(/\D/g,''),10); if (v>0){ summa=v; document.querySelectorAll('.summy button').forEach(function(x){x.classList.remove('on')}); $('chai').textContent='Оставить '+v.toLocaleString('ru-RU')+' ₽ — '+MASTERA[master].n; } }
+};
+
+// лист выбора напитка
+var tek = null, vybor = {};
+var NAZV = {moloko:'Молоко', sahar:'Сахар', sirop:'Сироп', sort:'Чай', dobavka:'Добавить', led:'Лёд', vid:'Вода'};
+function list(x){
+  tek = x; vybor = {};
+  Object.keys(x.o).forEach(function(k){vybor[k]=x.o[k][0]});
+  var h = '<h3>'+esc(x.n)+'</h3><div class="idesc">'+esc(x.d)+' · <b class="price '+(x.p?'':'free')+'">'+rub(x.p)+'</b></div>';
+  Object.keys(x.o).forEach(function(k){
+    h += '<div class="opt"><div class="lbl">'+NAZV[k]+'</div><div class="chips" data-k="'+k+'">' +
+      x.o[k].map(function(v,i){return '<button class="'+(i?'':'on')+'">'+esc(v)+'</button>'}).join('') + '</div></div>';
+  });
+  h += '<div class="opt"><div class="lbl">Как к вам обращаться (можно не писать)</div><input class="imya" id="imya" maxlength="30" placeholder="Например, Ольга"></div>' +
+       '<div class="go"><button class="btn ghost" id="otmena">Отмена</button><button class="btn" id="hochu">Хочу '+esc(x.n.toLowerCase())+'</button></div>';
+  $('sheet').innerHTML = h; $('sheet').classList.add('on'); $('shade').classList.add('on');
+}
+$('sheet').onclick = function(e){
+  var b = e.target.closest('button'); if (!b) return;
+  var gr = b.parentElement.dataset.k;
+  if (gr){ vybor[gr] = b.textContent; [].forEach.call(b.parentElement.children,function(c){c.classList.toggle('on', c==b)}); return; }
+  if (b.id=='otmena') return zakryt();
+  if (b.id=='hochu'){
+    var detali = Object.keys(vybor).map(function(k){var v=vybor[k]; return k=='moloko' && v!='Без молока' ? (v=='Без лактозы' ? 'молоко без лактозы' : v+' молоко') : v}).filter(function(v){return !/^(Без сиропа|Без добавок|Без лимона|Без молока)$/.test(v)});
+    otpravit({tip:'napitok', chto:tek.n + (detali.length ? ': ' + detali.join(', ').toLowerCase() : ''), p:tek.p, imya:$('imya').value.trim(), tovar:tek.n});
+    zakryt();
+  }
+};
+$('shade').onclick = zakryt;
+function zakryt(){ $('sheet').classList.remove('on'); $('shade').classList.remove('on'); }
+
+// заказ уходит администратору
+var STATUS = ['отправлен','принят','несут','готово'];
+function otpravit(z){
+  z.n = ++nomer; z.mesto = sel.value; z.s = 0; z.t = new Date();
+  zakazy.push(z); moi(); adminMsg(z);
+  tost(z.tip=='napitok' ? 'Заказ отправлен администратору' : z.tip=='usluga' ? 'Администратор подойдёт уточнить время' : 'Администратор принесёт посмотреть');
+}
+function moi(){
+  var el = $('moi'), akt = zakazy.filter(function(z){return z.s<3}).slice(-3);
+  el.classList.toggle('on', akt.length>0);
+  el.innerHTML = akt.map(function(z){return '<div class="z"><span>№'+z.n+' · '+esc(z.chto)+'</span><span class="st s'+z.s+'">'+(z.s==2 && z.tip=='usluga' ? 'идут к вам' : STATUS[z.s])+'</span></div>'}).join('');
+}
+function vremya(d){return d.toTimeString().slice(0,5)}
+function adminMsg(z){
+  var p = $('pusto'); if (p) p.remove();
+  var zag = z.tip=='napitok' ? '☕ Напиток' : z.tip=='usluga' ? '✂️ Добавить услугу' : '🛍 Принести товар';
+  var y = z.tip=='napitok' ? 'YCLIENTS: визит' + (z.imya ? ' — ' + esc(z.imya) : ' клиента') + ' → Товары → «' + esc(z.tovar) + '»'
+        : z.tip=='usluga' ? 'YCLIENTS: проверьте окно у мастера и добавьте услугу в визит'
+        : 'YCLIENTS: товар в визит, оплата на ресепшене';
+  var d = document.createElement('div');
+  d.innerHTML = '<div class="msg"><div class="h">'+zag+' · №'+z.n+'</div>'+esc(z.mesto)+(z.imya?' · '+esc(z.imya):'')+'<br>'+esc(z.chto)+(z.p?' · '+rub(z.p):'')+'<div class="y">'+y+'</div><span class="t">'+vremya(z.t)+'</span></div>' +
+    '<div class="kb" data-z="'+z.n+'"><button>Принял</button><button>'+(z.tip=='usluga'?'Иду':'Несу')+'</button><button>Готово</button></div>';
+  $('feed').appendChild(d); $('feed').scrollTop = $('feed').scrollHeight;
+}
+$('feed').onclick = function(e){
+  var b = e.target.closest('.kb button'); if (!b) return;
+  var kb = b.parentElement, z = zakazy.filter(function(x){return x.n==kb.dataset.z})[0];
+  var i = [].indexOf.call(kb.children, b) + 1;
+  if (i <= z.s) return;
+  z.s = i;
+  [].forEach.call(kb.children, function(c,j){ c.classList.toggle('on', j < i); c.disabled = j < i; });
+  moi();
+  if (i==2) tost(z.tip=='usluga' ? 'Администратор идёт к вам' : 'Администратор несёт: ' + z.chto.split(':')[0]);
+};
+
+var tt;
+function tost(s){ var t=$('toast'); t.textContent=s; t.classList.add('on'); clearTimeout(tt); tt=setTimeout(function(){t.classList.remove('on')},2600); }
+
+// узкий экран: переключатель меню / администратор
+document.querySelector('.vid').onclick = function(e){
+  var b = e.target.closest('button'); if (!b) return;
+  document.body.dataset.vid = b.dataset.v;
+  [].forEach.call(this.children, function(c){c.classList.toggle('on', c==b)});
+  window.scrollTo(0,0);
+};
+
+tabs(); razdel();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
+})();
+</script>
+</body>
+</html>
