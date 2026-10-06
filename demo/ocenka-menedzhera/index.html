@@ -275,7 +275,7 @@ function drawA() {
   if (!authed) {
     A.innerHTML = `<div class="admin"><div class="pin box"><h1>Вход в админку</h1><p class="note">В рабочей версии — логин и пароль на каждого руководителя. Код для демо: ${PIN}</p><input class="inp" id="pin" inputmode="numeric" maxlength="4" autocomplete="off"><div class="err" id="pe"></div><button class="btn" id="pg" style="width:100%;margin-top:8px">Войти</button></div></div>`;
     const go = () => { if (A.querySelector("#pin").value === PIN) { authed = true; drawA(); } else A.querySelector("#pe").textContent = "Неверный код"; };
-    A.querySelector("#pg").onclick = go; A.querySelector("#pin").onkeydown = e => e.key === "Enter" && go();
+    A.querySelector("#pg").onclick = go; A.querySelector("#pin").onkeydown = e => { if (e.key === "Enter") go(); };   // не `&& go()`: false из обработчика гасит ввод цифр
     return;
   }
   const tabs = [["otvety", "Ответы"], ["oprosy", "Опросы"], ["lyudi", "Сотрудники"], ["vid", "Фон и тексты"]];
