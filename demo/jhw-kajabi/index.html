@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>One Kajabi site: migration preview</title>
+<meta name="description" content="drrepole.com and itowecoach.com merged into one Kajabi site: what is broken today, the menu, the templates and the full redirect map.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F4EE;--paper:#FFFFFF;--ink:#23201B;--muted:#6E675C;--line:#E6DFD3;--accent:#2F6B57;--accent-bg:#E6F0EB;--warn:#9A4A16;--warn-bg:#FBEDE2}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,-apple-system,Segoe UI,sans-serif;-webkit-text-size-adjust:100%}
+main{max-width:860px;margin:0 auto;padding:40px 16px 80px}
+.kicker{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+h1{font:600 clamp(30px,5vw,44px)/1.12 Fraunces,Georgia,serif;margin:0 0 14px;letter-spacing:-.01em}
+h2{font:600 26px/1.2 Fraunces,Georgia,serif;margin:56px 0 14px}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 14px}
+.lead{font-size:18px;color:var(--muted)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin:18px 0}
+.plan ol{margin:0;padding-left:22px}
+.plan li{margin:0 0 12px}
+ul.finds{list-style:none;margin:0;padding:0}
+ul.finds li{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:10px;padding:14px 16px;margin:0 0 10px}
+ul.finds li b{display:block;margin-bottom:2px}
+code,.mono{font:13.5px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;background:#F1ECE3;border-radius:5px;padding:1px 5px;overflow-wrap:anywhere}
+a{color:var(--accent)}
+.menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.menu div{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.menu b{display:block;margin-bottom:4px}
+.menu span{color:var(--muted);font-size:14.5px}
+.cta{background:var(--accent);color:#fff;border-radius:12px;padding:14px 16px}
+.cta b,.cta span{color:#fff}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:12px 0 16px}
+.stats div{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.stats b{font-size:20px;display:block}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:640px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#FBF9F5;font-weight:600;position:sticky;top:0}
+td:first-child,td:nth-child(2){font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12.5px;overflow-wrap:anywhere}
+tr.keep td:nth-child(3){color:var(--muted)}
+tr:not(.keep) td:nth-child(3){color:var(--accent);font-weight:500}
+.btn{display:inline-block;background:var(--ink);color:#fff;text-decoration:none;border-radius:10px;padding:10px 16px;font-weight:500;margin:6px 0 4px}
+ol.steps li{margin:0 0 10px}
+.price{border-left:4px solid var(--accent)}
+footer{margin-top:56px;color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:18px}
+@media (max-width:560px){body{font-size:15.5px}.card{padding:18px}h2{margin-top:44px}}
+</style>
+</head>
+<body>
+<main>
+<p class="kicker">For Jacksonville Health &amp; Wellness · checked October 6, 2026</p>
+<h1>drrepole.com + itowecoach.com, one Kajabi site</h1>
+<p class="lead">I went through both sites before writing to you: the 46 addresses in the drrepole.com sitemap plus its blog, and all 153 addresses in the itowecoach.com sitemap. Below: what is broken today, the menu I would build, the page templates, and a redirect map for every address.</p>
+
+<div class="card plan">
+<h3 style="margin-top:0">The plan in three lines</h3>
+<ol>
+<li><b>Run the merged Kajabi site on drrepole.com.</b> It is the clinic's address, registered in 2007. itowecoach.com then forwards every address to the same path on drrepole.com. Kajabi pages keep their slugs when the domain changes, so every Facebook ad, email and webinar link keeps working with one rule.</li>
+<li><b>Redirects go to Cloudflare, not Kajabi.</b> Kajabi can't send a real 301. Its help center offers only a JavaScript snippet per page (<a href="https://help.kajabi.com/articles/website/pages/how-can-i-redirect-a-page" rel="noopener">Kajabi help</a>). Both of your domains already run through Cloudflare, and its free plan allows up to 10,000 redirects (<a href="https://developers.cloudflare.com/rules/url-forwarding/" rel="noopener">Cloudflare docs</a>).</li>
+<li><b>Most old pages need no redirect at all.</b> Build them in Kajabi with the same slugs, the way <code>/disclaimer</code> already lives on your Kajabi site. Kajabi opens the old trailing-slash address too: I tested <code>itowecoach.com/disclaimer/</code>, it returns the page with a canonical to <code>/disclaimer</code>.</li>
+</ol>
+</div>
+
+<h2>What is broken today</h2>
+<h3>drrepole.com</h3>
+<ul class="finds">
+<li><b>The footer "Google Maps" link opens another clinic.</b> It is two map links pasted into one, and it starts with the pin of Toensing Family Chiropractic &amp; Strength Center near Tucson, Arizona.</li>
+<li><b>The sitemap gives Google template addresses instead of your posts.</b> <code>/blog/post/{slug}/</code> and <code>/page/{page}/</code> are listed and open as empty pages, while real posts such as <code>/blog/post/7-steps-to-hormone-health/</code> are not in the sitemap at all.</li>
+<li><b>Every page title calls the clinic a chiropractor,</b> for example "Functional Medicine | Chiropractor in Jacksonville, FL" and "Mental Health Counseling | Chiropractor in Jacksonville, FL". The home page leads with functional and holistic care, but search results still sell one service.</li>
+<li><b>Five pages share one description,</b> "Jacksonville Health &amp; Wellness Center - Chiropractic Care in Jacksonville, FL": Testimonials, Online Forms, Payment Options, Events, Weight Loss and Hormones.</li>
+<li><b>No page has a canonical tag,</b> and <code>/home/</code> serves a full copy of the home page.</li>
+<li><b><code>/chiropractic-topics/</code> is the ChiroMatrix article library:</b> 13 list pages, about 25 categories, articles at <code>?a_id=…</code>. It leaves with the ChiroMatrix plan, so these addresses need redirects, not 404s.</li>
+<li><b>Store, Dr. Repole's Book, Supplement Store, Coaching School and Learn have no text of their own</b> beyond the menu and footer. In the new site they become menu sections.</li>
+<li><b>Check who holds the keys before ChiroMatrix is cancelled.</b> drrepole.com is registered through eNom, and its DNS uses a different pair of Cloudflare nameservers than itowecoach.com, which usually means a different Cloudflare account. You need the registrar and Cloudflare logins for drrepole.com in your own hands first.</li>
+</ul>
+
+<h3>itowecoach.com</h3>
+<ul class="finds">
+<li><b>Old funnels and thank-you pages are open to Google.</b> Of the 55 pages in the sitemap, 17 are thank-you, confirmation, opt-in and sign-up pages, and 8 are funnels with past dates (Oct 2024, April 2025, Sept 2025, Oct and Dec 2025). Kajabi can hide each of them: "Show page in search results" off adds noindex and drops the page from the sitemap (<a href="https://help.kajabi.com/articles/website/pages/how-to-hide-your-page-from-search-engines" rel="noopener">Kajabi help</a>).</li>
+<li><b>Two pages exist twice.</b> <code>/certification-program-Oct2024</code> and <code>/FB-certification-program-oct-2024</code> are the same page of about 26,000 words, and so are <code>/webinar-registration-certprogram-october2024</code> and <code>/FB-webinar-registration-cert-program-oct-2024</code>.</li>
+<li><b>44 tag pages</b> like <code>/blog?tag=oats</code> sit in the sitemap next to 53 real posts.</li>
+<li><b>45 of the 47 landing pages I opened have no meta description, and 29 have no H1.</b> Google writes its own snippet for them.</li>
+</ul>
+
+<h2>The menu</h2>
+<p>One header for the clinic and the school. Patients find care in two taps, and coaching students still have their own section.</p>
+<div class="menu">
+<div><b>Services</b><span>Functional Medicine · Chiropractic &amp; PT · Advanced Bio-Hacks · Weight Loss &amp; Hormones · Nutrition · Mental Health Counseling · Energy Medicine, Hypnosis &amp; AO Scan · Detox · Massage · Postural Correction · Peptides &amp; Ozone · 3D Spine Stimulator</span></div>
+<div><b>Programs</b><span>90-Day Transformation · À-la-carte care · Custom wellness plans</span></div>
+<div><b>Learn</b><span>Blog (both blogs in one) · Webinars and replays · Podcast · Dr. Repole's book · Free resources</span></div>
+<div><b>Coaching School</b><span>CFHHP certification · Next webinar · Curriculum · Personalized health coaching</span></div>
+<div><b>About</b><span>Dr. Repole · Team · Mission and philosophy · Testimonials</span></div>
+<div><b>Patient Center</b><span>Welcome and next steps · Online forms · Payment options · Patient portal · Contact</span></div>
+<div><b>Shop</b><span>Supplements (Fullscript) · Book · Kajabi store</span></div>
+<div class="cta"><b>Book a free discovery call</b><span>One button, on every page, phone next to it on mobile</span></div>
+</div>
+
+<h2>Seven page templates</h2>
+<div class="card">
+<ol style="margin:0;padding-left:22px">
+<li><b>Home</b>: clinic first, school as a clear second path.</li>
+<li><b>Service page</b>: who it helps, what a visit looks like, the tests involved, price or program, discovery call.</li>
+<li><b>Program page</b>: the 90-day journey by month, what is included, next step.</li>
+<li><b>Team member</b>: photo, credentials, what they treat, their services.</li>
+<li><b>Blog post</b>: with related service and webinar blocks under the text.</li>
+<li><b>Webinar</b>: one template for registration and replay, so a new webinar is a copy, not a new design.</li>
+<li><b>Patient Center page</b>: short, task-first: forms, payment, portal.</li>
+</ol>
+<p style="margin:14px 0 0">Your team fills the pages; the templates hold the layout, so every page looks right on a phone without extra work.</p>
+</div>
+
+<h2>Redirect map</h2>
+<p>Every address from the drrepole.com sitemap, plus the two itowecoach.com rules. Lines with a green "How" need a Cloudflare redirect; grey ones keep their slug and need nothing.</p>
+<div class="stats">
+<div><b>37</b>keep their slug</div>
+<div><b>2</b>taken over by Kajabi's own /blog and /store</div>
+<div><b>7</b>redirects on drrepole.com</div>
+<div><b>2</b>rules for all of itowecoach.com</div>
+</div>
+<a class="btn" href="redirect-map.csv" download>Download the map (CSV)</a>
+<div class="tbl"><table>
+<thead><tr><th>Old address</th><th>New address</th><th>How</th></tr></thead>
+<tbody>
+<tr><td>drrepole.com/home/</td><td>drrepole.com/</td><td>301 at Cloudflare</td></tr>
+<tr><td>drrepole.com/site-map/</td><td>drrepole.com/</td><td>301 at Cloudflare</td></tr>
+<tr class="keep"><td>drrepole.com/testimonials/</td><td>drrepole.com/testimonials</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr><td>drrepole.com/chiropractic-topics/</td><td>drrepole.com/blog</td><td>301 at Cloudflare (ChiroMatrix library, incl. ?a_id, ?a_page, ?a_category)</td></tr>
+<tr><td>drrepole.com/chiropractic-topics/article/</td><td>drrepole.com/blog</td><td>301 at Cloudflare</td></tr>
+<tr class="keep"><td>drrepole.com/blog/</td><td>drrepole.com/blog</td><td>same path: Kajabi blog takes over</td></tr>
+<tr class="keep"><td>drrepole.com/patient-center/</td><td>drrepole.com/patient-center</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/welcome-and-next-steps/</td><td>drrepole.com/welcome-and-next-steps</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/online-forms/</td><td>drrepole.com/online-forms</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/payment-options/</td><td>drrepole.com/payment-options</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/patient-portal-and-connections/</td><td>drrepole.com/patient-portal-and-connections</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/contact-us/</td><td>drrepole.com/contact-us</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/services/</td><td>drrepole.com/services</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/functional-medicine/</td><td>drrepole.com/functional-medicine</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/advanced-bio-hacks/</td><td>drrepole.com/advanced-bio-hacks</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/chiropractic-and-physical-therapy/</td><td>drrepole.com/chiropractic-and-physical-therapy</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/energy-medicine-hypnosis-and-ao-scan/</td><td>drrepole.com/energy-medicine-hypnosis-and-ao-scan</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/nutritional-counseling/</td><td>drrepole.com/nutritional-counseling</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/mental-health-counseling/</td><td>drrepole.com/mental-health-counseling</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/detoxification/</td><td>drrepole.com/detoxification</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/massage/</td><td>drrepole.com/massage</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/postural-correction/</td><td>drrepole.com/postural-correction</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/weight-loss-and-hormones/</td><td>drrepole.com/weight-loss-and-hormones</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/peptides-ozone-plant-stem-cells-chelation/</td><td>drrepole.com/peptides-ozone-plant-stem-cells-chelation</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/about-us/</td><td>drrepole.com/about-us</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/meet-the-team/</td><td>drrepole.com/meet-the-team</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/mission-statement/</td><td>drrepole.com/mission-statement</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/our-philosophy-and-tenets/</td><td>drrepole.com/our-philosophy-and-tenets</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/events/</td><td>drrepole.com/events</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/videos-and-webinars/</td><td>drrepole.com/videos-and-webinars</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/3d-spine-stimulator/</td><td>drrepole.com/3d-spine-stimulator</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/store/</td><td>drrepole.com/store</td><td>same path: Kajabi&#x27;s own /store takes over</td></tr>
+<tr><td>drrepole.com/dr-repole-s-book/</td><td>drrepole.com/illness-to-wellness</td><td>301 at Cloudflare to the Kajabi book page</td></tr>
+<tr class="keep"><td>drrepole.com/supplement-store/</td><td>drrepole.com/supplement-store</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/coaching-school/</td><td>drrepole.com/coaching-school</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/learn/</td><td>drrepole.com/learn</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/dr-jon-repole/</td><td>drrepole.com/dr-jon-repole</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/heather-r-fisse/</td><td>drrepole.com/heather-r-fisse</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/nicole-barry/</td><td>drrepole.com/nicole-barry</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/amanda-johns/</td><td>drrepole.com/amanda-johns</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/sean-ivan/</td><td>drrepole.com/sean-ivan</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/keri-anne-baker/</td><td>drrepole.com/keri-anne-baker</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr class="keep"><td>drrepole.com/susanne-morrone/</td><td>drrepole.com/susanne-morrone</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr><td>drrepole.com/blog/post/{slug}/</td><td>drrepole.com/blog/{slug}</td><td>one wildcard 301 at Cloudflare for every post; drop this placeholder from the sitemap</td></tr>
+<tr><td>drrepole.com/page/{page}/</td><td>drrepole.com/blog</td><td>301 at Cloudflare; placeholder, drop from the sitemap</td></tr>
+<tr class="keep"><td>drrepole.com/carissa-mccollum/</td><td>drrepole.com/carissa-mccollum</td><td>same slug in Kajabi, no redirect needed</td></tr>
+<tr><td>itowecoach.com/</td><td>drrepole.com/coaching-school</td><td>301 at Cloudflare, rule 1 (before rule 2)</td></tr>
+<tr><td>itowecoach.com/*</td><td>drrepole.com/*</td><td>301 at Cloudflare, rule 2: same path, covers 53 posts, 44 tag pages, 55 pages, every ad and email link</td></tr></tbody></table></div>
+
+<h2>Launch day, in that order</h2>
+<div class="card">
+<ol class="steps" style="margin:0;padding-left:22px">
+<li>A week before: export the top pages and queries from Search Console for both domains and crawl every old address, so nothing is guessed later.</li>
+<li>Get the drrepole.com registrar and Cloudflare logins, lower the DNS TTL to 5 minutes.</li>
+<li>Hide thank-you pages and past funnels from search in Kajabi, remove the duplicate October 2024 pages.</li>
+<li>Connect drrepole.com to the Kajabi site, keep the Cloudflare proxy on (itowecoach.com already runs Kajabi behind it).</li>
+<li>Add the redirects: 7 on drrepole.com, 2 on itowecoach.com.</li>
+<li>Run the whole list of old addresses: each one has to land on a live page in one hop, no chains, no 404s.</li>
+<li>Submit the new sitemap, use Search Console's change-of-address for itowecoach.com, check the website link on the clinic's Google Business Profile.</li>
+<li>Two weeks of watching 404s and rankings for the top pages, fixing anything that slipped.</li>
+</ol>
+</div>
+
+<h2>What I'd do and what it costs</h2>
+<div class="card price">
+<p><b>Week 1.</b> Site architecture, the menu above, the seven templates built in your Kajabi, brand direction for type, colour and photos applied to the templates.</p>
+<p><b>Weeks 2–4.</b> Your team moves the content. I answer questions within the day.</p>
+<p><b>Weeks 5–6.</b> I review every page on desktop and mobile, write the titles and descriptions, set up the redirects, launch, and run the old-address check above.</p>
+<p style="margin:0"><b>$2,400 fixed</b>, half at the start, half after launch.</p>
+</div>
+
+<footer>Artur Smirnov, g.a.d. · <a href="https://smirnov-artur.github.io/works/en">Live sites I've built</a></footer>
+</main>
+</body>
+</html>
