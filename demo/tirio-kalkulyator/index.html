@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Брошюры на скобе — TIRIO</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Manrope:wght@500;600;700&family=Unbounded:wght@600&display=swap" rel="stylesheet">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <style>
 :root {
@@ -27,7 +27,14 @@ button, input { font: inherit; color: inherit; }
 .logo span { color: var(--accent); letter-spacing: .02em; font-weight: 600; margin-left: 4px; font-size: 14px; }
 .crumbs { color: var(--muted); font-size: 14px; }
 .crumbs b { color: var(--text); font-weight: 500; }
-.hprice { margin-left: auto; display: flex; align-items: center; gap: 18px; }
+.hprice { margin-left: 22px; display: flex; align-items: center; gap: 18px; }
+.madeby { margin-left: auto; display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; text-decoration: none; white-space: nowrap; }
+.madeby svg { display: block; height: 15px; width: auto; overflow: visible; color: var(--text); transition: color .2s; }
+.madeby:hover svg { color: var(--accent); }
+.madeby .ring { animation: gad-draw 1.1s cubic-bezier(.65,0,.35,1) .6s forwards; }
+.madeby .orb { opacity: 0; transform-box: view-box; transform-origin: 322px 30px; animation: gad-pop .3s ease 1.6s forwards, gad-orbit 7s linear 1.6s infinite; }
+@keyframes gad-draw { to { stroke-dashoffset: 0; } } @keyframes gad-pop { to { opacity: 1; } } @keyframes gad-orbit { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .madeby .ring { animation: none; stroke-dashoffset: 0; } .madeby .orb { animation: none; opacity: 1; } }
 .hprice .v { text-align: right; line-height: 1.15; }
 .hprice output { font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
 .hprice small { display: block; color: var(--muted); font-size: 12px; }
@@ -311,7 +318,7 @@ dialog[open] { animation: dlgIn .4s var(--ease); } dialog[open]::backdrop { anim
 .views button[aria-pressed="true"] { background: var(--text); color: #fff; border-color: var(--text); }
 .views .tiltb { margin-left: auto; color: var(--accent-ink); border-color: #b9dcd7; display: inline-flex; gap: 7px; align-items: center; }
 .views .tiltb svg { width: 15px; height: 15px; }
-.views .hint3d { flex-basis: 100%; font-size: 12px; color: var(--muted); padding: 2px 4px; }
+.views .hint3d { flex-basis: 100%; font-size: 12px; color: #3a4048; padding: 2px 4px; text-shadow: 0 0 2px #fff, 0 0 6px #fff, 0 0 12px #fff; }
 
 /* ---------- свой макет ---------- */
 .mk { margin-top: 18px; }
@@ -353,6 +360,8 @@ dialog[open] { animation: dlgIn .4s var(--ease); } dialog[open]::backdrop { anim
 <header class="top">
   <a class="logo" href="#">TIRIO<span>print</span></a>
   <div class="crumbs">Печать / <b>Брошюры на скобе</b></div>
+  <a class="madeby" href="https://smirnov-artur.github.io/works/" target="_blank" rel="noopener" aria-label="Сделано в g.a.d. — другие работы"><span>сделано в</span>
+    <svg viewBox="0 0 355 110" aria-hidden="true"><text x="2" y="80" font-family="Unbounded, sans-serif" font-weight="600" font-size="92" textLength="276" lengthAdjust="spacing" fill="currentColor">g.a.d.</text><circle class="ring" cx="322" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" transform="rotate(-90 322 30)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/><circle class="orb" cx="322" cy="8" r="5" fill="currentColor"/></svg></a>
   <div class="hprice">
     <div class="v"><output id="hp">—</output><small id="hps"></small></div>
     <button class="cta" data-order>Заказать</button>
