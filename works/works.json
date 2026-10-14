@@ -4414,8 +4414,7 @@
    "Answers buyers in Avito chats and sends the tricky ones to the owner's Telegram"
   ],
   "v": "seller",
-  "href": "https://gad-production.ru/",
-  "vh": "seller-hq"
+  "href": "/demo/avito-otvetchik/ru/", "hre": "/demo/avito-otvetchik/", "vh": "seller-hq"
  },
  {
   "slug": "avito-otvetchik",
