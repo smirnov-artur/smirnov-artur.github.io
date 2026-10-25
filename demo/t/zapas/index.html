@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Запас по артикулам: на сколько хватит, что лежит, что кончится</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:#f6f7f9;color:#1f2933;font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;overflow-x:hidden}
+  .wrap{max-width:980px;margin:0 auto;padding:20px 14px 40px}
+  .tag{display:inline-block;font-size:12px;color:#52606d;background:#e8ecf1;border-radius:20px;padding:3px 10px;margin-bottom:10px}
+  h1{font-size:24px;line-height:1.25;margin:0 0 10px;font-weight:650}
+  h2{font-size:17px;margin:0 0 6px;font-weight:600}
+  p{margin:0 0 10px}
+  .lead{color:#3e4c59;margin-bottom:6px}
+  .privacy{font-size:13px;color:#2f7d57;margin:8px 0 18px}
+  .card{background:#fff;border:1px solid #e3e7ec;border-radius:12px;padding:16px;margin-bottom:14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .hint{font-size:13px;color:#616e7c}
+  .file{display:block;margin:10px 0 6px}
+  .file input{max-width:100%;font-size:14px}
+  .linkbtn{background:none;border:0;color:#2a6fdb;padding:0;font:inherit;font-size:13px;cursor:pointer;text-decoration:underline}
+  textarea{width:100%;min-height:110px;margin-top:8px;border:1px solid #cfd6de;border-radius:8px;padding:8px;font:13px/1.4 Consolas,monospace;resize:vertical}
+  .btn{display:inline-block;background:#2a6fdb;color:#fff;border:0;border-radius:8px;padding:9px 16px;font:inherit;font-size:14px;cursor:pointer;text-decoration:none}
+  .btn.light{background:#e8eefb;color:#1f4fa3}
+  .btn.tg{background:#229ed9;font-size:15px;padding:11px 20px}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .status{font-size:13px;margin-top:6px;color:#3e4c59}
+  .status.ok{color:#2f7d57}
+  .msg{border-radius:8px;padding:10px 12px;font-size:14px;margin:8px 0}
+  .msg.err{background:#fdecec;color:#9b1c1c;border:1px solid #f5c2c2}
+  .msg.warn{background:#fff7e6;color:#7a4d00;border:1px solid #f3d9a4}
+  .map{margin-top:10px;border-top:1px dashed #e3e7ec;padding-top:10px}
+  .map label{display:block;font-size:13px;color:#3e4c59;margin:6px 0 2px}
+  .map select{width:100%;max-width:100%;padding:6px;border:1px solid #cfd6de;border-radius:6px;font-size:14px;background:#fff}
+  .settings{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .settings label{font-size:13px;color:#3e4c59;display:block;margin-bottom:3px}
+  .settings input{width:100%;padding:7px;border:1px solid #cfd6de;border-radius:6px;font-size:15px}
+  .sum{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0 14px}
+  .sum div{border-radius:10px;padding:10px;background:#f6f7f9}
+  .sum b{display:block;font-size:22px;line-height:1.2}
+  .sum span{font-size:12px;color:#52606d}
+  .s-red{background:#fdecec!important}.s-red b{color:#b42318}
+  .s-org{background:#fff3e0!important}.s-org b{color:#b54708}
+  .s-gry{background:#eef0f4!important}.s-gry b{color:#475467}
+  .s-grn{background:#e9f6ef!important}.s-grn b{color:#2f7d57}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{text-align:left;font-size:12px;color:#616e7c;font-weight:600;border-bottom:1px solid #e3e7ec;padding:6px}
+  td{padding:8px 6px;border-bottom:1px solid #f0f2f5;vertical-align:top}
+  td.n{text-align:right;white-space:nowrap}
+  .art{font-weight:600;word-break:break-word}
+  .wh{font-size:12px;color:#7b8794;word-break:break-word}
+  .pill{display:inline-block;border-radius:20px;padding:2px 9px;font-size:12px;font-weight:600;white-space:nowrap}
+  .p-red{background:#fdecec;color:#b42318}.p-org{background:#fff3e0;color:#b54708}
+  .p-gry{background:#eef0f4;color:#475467}.p-grn{background:#e9f6ef;color:#2f7d57}
+  .todo{font-size:13px;color:#3e4c59}
+  .paywall{margin-top:16px;padding:14px;border-radius:10px;background:#f1f6fe;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+  .paywall p{margin:0}
+  footer{text-align:center;font-size:12px;color:#9aa5b1;margin-top:26px}
+  .hidden{display:none}
+  @media (max-width:700px){
+    h1{font-size:20px}
+    .grid2,.settings{grid-template-columns:1fr}
+    .sum{grid-template-columns:1fr 1fr}
+    table,thead,tbody,tr,td{display:block;width:100%}
+    thead{display:none}
+    tr{border:1px solid #e3e7ec;border-radius:10px;padding:8px 10px;margin-bottom:10px}
+    td{border:0;padding:3px 0;display:flex;justify-content:space-between;gap:10px;text-align:right}
+    td.n{text-align:right}
+    td::before{content:attr(data-l);color:#7b8794;font-size:12px;text-align:left;flex-shrink:0}
+    td.first{display:block;text-align:left}
+    td.first::before{content:none}
+    td.todo{display:block;text-align:left;padding-top:6px}
+    td.todo::before{content:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">Демо для селлера Wildberries</span>
+  <h1>На сколько месяцев хватит остатка, что лежит больше трёх месяцев, что кончится за неделю и что пора дошить</h1>
+  <p class="lead">Загрузите остатки из кабинета WB по складам и заказы за 1–3 месяца — получите по каждому артикулу и размеру: запас в днях и месяцах, неликвид, что закончится на этой неделе и сколько штук дошить или дозаказать.</p>
+  <p class="privacy">🔒 Всё считается прямо в браузере — файл не уходит с вашего компьютера.</p>
+
+  <div class="grid2">
+    <div class="card" id="box-stock">
+      <h2>1. Остатки</h2>
+      <p class="hint">Excel или CSV из кабинета WB (можно вместе со своим складом): артикул, размер, склад, остаток.</p>
+      <label class="file"><input type="file" id="f-stock" accept=".xlsx,.xls,.csv,.txt"></label>
+      <button class="linkbtn" data-paste="stock">или вставить таблицу текстом</button>
+      <div class="hidden" id="paste-stock">
+        <textarea id="t-stock" placeholder="Артикул;Размер;Склад;Остаток&#10;PL-101;44;Коледино;35"></textarea>
+        <button class="btn light" data-parse="stock">Прочитать</button>
+      </div>
+      <div class="status" id="st-stock"></div>
+      <div id="msg-stock"></div>
+      <div class="map hidden" id="map-stock"></div>
+    </div>
+    <div class="card" id="box-orders">
+      <h2>2. Заказы</h2>
+      <p class="hint">Выгрузка заказов за 1–3 месяца: дата, артикул, количество (размер — если есть).</p>
+      <label class="file"><input type="file" id="f-orders" accept=".xlsx,.xls,.csv,.txt"></label>
+      <button class="linkbtn" data-paste="orders">или вставить таблицу текстом</button>
+      <div class="hidden" id="paste-orders">
+        <textarea id="t-orders" placeholder="Дата;Артикул;Размер;Количество&#10;01.09.2026;PL-101;44;2"></textarea>
+        <button class="btn light" data-parse="orders">Прочитать</button>
+      </div>
+      <div class="status" id="st-orders"></div>
+      <div id="msg-orders"></div>
+      <div class="map hidden" id="map-orders"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row" style="justify-content:space-between">
+      <h2 style="margin:0">Параметры</h2>
+      <button class="btn light" id="demo">Показать на примере</button>
+    </div>
+    <div class="settings" style="margin-top:12px">
+      <div><label for="days">Заказы в файле за, дней</label><input type="number" id="days" min="1" value="30"><div class="hint" id="days-hint">определится по датам</div></div>
+      <div><label for="lead">Срок пошива / поставки, дней</label><input type="number" id="lead" min="0" value="21"></div>
+      <div><label for="cover">Дозаказ — запас на, дней</label><input type="number" id="cover" min="1" value="45"></div>
+    </div>
+  </div>
+
+  <div class="card hidden" id="result"></div>
+
+  <footer>g.a.d.</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+var LIMIT = 20;
+var TG = "https://t.me/gonartur";
+
+var FIELDS = {
+  stock: [
+    {k:"art", label:"Артикул", req:true, syn:["артикулпродавца","артикулпоставщика","supplierarticle","vendorcode","артикул","article","sku","модель","nmid","артикулwb"]},
+    {k:"size", label:"Размер (необязательно)", syn:["размер","техразмер","размерпродавца","techsize","size"]},
+    {k:"wh", label:"Склад (необязательно)", syn:["склад","складwb","warehousename","warehouse"]},
+    {k:"qty", label:"Остаток, шт", req:true, syn:["остаток","остатки","остатокшт","доступнодляпродажи","доступно","полноеколичество","вналичии","наличие","количество","колво","quantity","quantityfull","stock"]}
+  ],
+  orders: [
+    {k:"date", label:"Дата (необязательно)", syn:["дата","датазаказа","date","lastchangedate","день","период"]},
+    {k:"art", label:"Артикул", req:true, syn:["артикулпродавца","артикулпоставщика","supplierarticle","vendorcode","артикул","article","sku","модель","nmid","артикулwb"]},
+    {k:"size", label:"Размер (необязательно)", syn:["размер","техразмер","размерпродавца","techsize","size"]},
+    {k:"qty", label:"Количество (если нет — каждая строка = 1 шт)", syn:["количество","колво","заказано","заказалишт","заказали","заказы","quantity","qty","шт"]}
+  ]
+};
+var NAMES = {stock:"остатков", orders:"заказов"};
+var state = {stock:null, orders:null};
+var daysTouched = false;
+
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function norm(s){return String(s==null?"":s).toLowerCase().replace(/ё/g,"е").replace(/[^a-zа-я0-9]/g,"");}
+function fmt(n,d){return Number(n).toLocaleString("ru-RU",{maximumFractionDigits:d||0,minimumFractionDigits:0});}
+function num(v){
+  if(typeof v==="number") return isFinite(v)?v:NaN;
+  if(v==null) return NaN;
+  var s=String(v).replace(/[\s ]/g,"").replace(",",".").replace(/[^0-9.\-]/g,"");
+  if(s===""||s==="-"||s===".") return NaN;
+  return parseFloat(s);
+}
+function cleanKey(v){var s=String(v==null?"":v).trim(); if(/^\d+\.0+$/.test(s)) s=s.replace(/\.0+$/,""); return s;}
+function parseDate(v){
+  if(v==null||v==="") return null;
+  if(v instanceof Date) return isNaN(v)?null:Date.UTC(v.getFullYear(),v.getMonth(),v.getDate());
+  if(typeof v==="number"){ if(v>20000&&v<80000) return Math.round((v-25569))*86400000; return null; }
+  var s=String(v).trim(), m;
+  if((m=s.match(/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{2,4})/))){var y=+m[3]; if(y<100)y+=2000; return Date.UTC(y,+m[2]-1,+m[1]);}
+  if((m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return Date.UTC(+m[1],+m[2]-1,+m[3]);
+  if(/^\d{5}(\.\d+)?$/.test(s)) return parseDate(parseFloat(s));
+  return null;
+}
+
+/* ---------- чтение ---------- */
+function parseText(text){
+  text=String(text||"").replace(/^﻿/,"");
+  var lines=text.split(/\r?\n/).filter(function(l){return l.trim()!=="";});
+  if(!lines.length) return [];
+  var first=lines.slice(0,5).join("\n"), cands=["\t",";",","], best="\t", bc=-1;
+  cands.forEach(function(d){var c=first.split(d).length; if(c>bc){bc=c;best=d;}});
+  return lines.map(function(line){
+    var out=[],cur="",q=false;
+    for(var i=0;i<line.length;i++){
+      var ch=line[i];
+      if(q){ if(ch==='"'){ if(line[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=ch; }
+      else if(ch==='"') q=true;
+      else if(ch===best){out.push(cur);cur="";}
+      else cur+=ch;
+    }
+    out.push(cur);
+    return out.map(function(c){return c.trim();});
+  });
+}
+function decode(buf){
+  var t=new TextDecoder("utf-8").decode(buf);
+  if(t.indexOf("�")>=0){ try{ t=new TextDecoder("windows-1251").decode(buf);}catch(e){} }
+  return t;
+}
+function scoreHeader(h,syn){
+  var n=norm(h); if(!n) return 0; var best=0;
+  for(var i=0;i<syn.length;i++){
+    var s=syn[i], sc=0;
+    if(n===s) sc=100-i; else if(s.length>=3 && n.indexOf(s)>=0) sc=50-i;
+    if(sc>best) best=sc;
+  }
+  return best;
+}
+function findHeaderRow(rows,which){
+  var best=0,bi=0,lim=Math.min(rows.length,25);
+  for(var r=0;r<lim;r++){
+    var row=rows[r]||[], cnt=0;
+    FIELDS[which].forEach(function(f){ for(var c=0;c<row.length;c++){ if(scoreHeader(row[c],f.syn)>=40){cnt++;break;} } });
+    if(cnt>best){best=cnt;bi=r;}
+  }
+  return {row:bi,score:best};
+}
+function autoMap(headers,which){
+  var pairs=[], map={};
+  FIELDS[which].forEach(function(f){ headers.forEach(function(h,c){ var s=scoreHeader(h,f.syn); if(s>0) pairs.push({k:f.k,c:c,s:s}); }); });
+  pairs.sort(function(a,b){return b.s-a.s;});
+  var usedC={};
+  pairs.forEach(function(p){ if(map[p.k]==null && !usedC[p.c]){ map[p.k]=p.c; usedC[p.c]=1; } });
+  return map;
+}
+function load(which,rows,name){
+  clearMsg(which);
+  rows=(rows||[]).filter(function(r){return r && r.some(function(c){return String(c==null?"":c).trim()!=="";});});
+  if(rows.length<2){ state[which]=null; $("map-"+which).classList.add("hidden"); $("st-"+which).textContent="";
+    showMsg(which,"err","В файле "+NAMES[which]+" не нашлось данных: нужна строка с заголовками и хотя бы одна строка ниже. Проверьте, что выбран нужный лист или файл не пустой."); render(); return; }
+  var hr=findHeaderRow(rows,which);
+  var header=rows[hr.row].map(function(h,i){var s=String(h==null?"":h).trim(); return s||("Колонка "+(i+1));});
+  var data=rows.slice(hr.row+1);
+  var width=rows.reduce(function(m,r){return Math.max(m,r.length);},0);
+  for(var i=header.length;i<width;i++) header.push("Колонка "+(i+1));
+  state[which]={name:name,headers:header,rows:data,map:autoMap(header,which)};
+  $("st-"+which).className="status ok";
+  $("st-"+which).textContent="✓ "+name+": строк — "+fmt(data.length);
+  drawMap(which);
+  if(which==="orders") daysTouched=false;
+  render();
+}
+function readFile(which,file){
+  if(!file) return;
+  $("st-"+which).className="status"; $("st-"+which).textContent="Читаю "+file.name+"…";
+  var ext=(file.name.split(".").pop()||"").toLowerCase();
+  var fr=new FileReader();
+  fr.onerror=function(){showMsg(which,"err","Не удалось открыть файл. Попробуйте сохранить его заново или вставьте данные текстом.");};
+  fr.onload=function(){
+    try{
+      var buf=fr.result, rows;
+      if(ext==="csv"||ext==="txt"){ rows=parseText(decode(buf)); }
+      else{
+        if(typeof XLSX==="undefined"){ showMsg(which,"err","Не загрузился модуль чтения Excel (нет интернета?). Сохраните файл как CSV или вставьте таблицу текстом."); $("st-"+which).textContent=""; return; }
+        var wb=XLSX.read(new Uint8Array(buf),{type:"array"});
+        var best=null,bs=-1;
+        wb.SheetNames.forEach(function(sn){
+          var r=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:""});
+          var sc=findHeaderRow(r,which).score*100000+Math.min(r.length,99999);
+          if(r.length>1 && sc>bs){bs=sc;best=r;}
+        });
+        rows=best||[];
+      }
+      load(which,rows,file.name);
+    }catch(e){
+      state[which]=null; $("st-"+which).textContent="";
+      showMsg(which,"err","Файл не читается как таблица ("+esc(e.message||e)+"). Подойдут .xlsx, .xls, .csv — или вставьте данные текстом.");
+      render();
+    }
+  };
+  fr.readAsArrayBuffer(file);
+}
+
+/* ---------- выбор колонок ---------- */
+function drawMap(which){
+  var st=state[which], box=$("map-"+which), html='<div class="hint">Колонки определены автоматически — если что-то не так, выберите вручную:</div>';
+  FIELDS[which].forEach(function(f){
+    var sel=st.map[f.k];
+    html+='<label>'+esc(f.label)+(f.req?' *':'')+'</label><select data-w="'+which+'" data-k="'+f.k+'"><option value="">— нет такой колонки —</option>';
+    st.headers.forEach(function(h,i){
+      var ex=""; for(var r=0;r<Math.min(st.rows.length,5);r++){var v=st.rows[r][i]; if(v!==""&&v!=null){ex=String(v);break;}}
+      if(ex.length>18) ex=ex.slice(0,18)+"…";
+      html+='<option value="'+i+'"'+(sel===i?' selected':'')+'>'+esc(h)+(ex?' — напр. '+esc(ex):'')+'</option>';
+    });
+    html+='</select>';
+  });
+  box.innerHTML=html; box.classList.remove("hidden");
+}
+document.addEventListener("change",function(e){
+  var t=e.target;
+  if(t.matches("select[data-w]")){ var w=t.getAttribute("data-w"), k=t.getAttribute("data-k"); state[w].map[k]=t.value===""?null:+t.value; if(w==="orders"&&k==="date") daysTouched=false; render(); }
+});
+function clearMsg(w){$("msg-"+w).innerHTML="";}
+function showMsg(w,type,text){$("msg-"+w).innerHTML='<div class="msg '+type+'">'+text+'</div>';}
+
+/* ---------- расчёт ---------- */
+function compute(){
+  var S=state.stock, O=state.orders, notes=[];
+  var sm=S.map, om=O.map;
+  var useSize = sm.size!=null && om.size!=null;
+  if((sm.size!=null)!==(om.size!=null)) notes.push("Размер указан только в одном файле — считаю по артикулу целиком, без разбивки по размерам.");
+  function key(a,s){return useSize? a+"\u0001"+s : a;}
+
+  var items={}, badStock=0;
+  S.rows.forEach(function(r){
+    var a=cleanKey(r[sm.art]); if(!a) return;
+    var q=num(r[sm.qty]); if(isNaN(q)){badStock++; return;}
+    var sz=useSize?cleanKey(r[sm.size]).toUpperCase():"";
+    var k=key(a,sz);
+    var it=items[k]||(items[k]={art:a,size:sz,stock:0,wh:{},sold:0,inStock:true});
+    it.stock+=q;
+    if(sm.wh!=null){ var w=cleanKey(r[sm.wh])||"без склада"; it.wh[w]=(it.wh[w]||0)+q; }
+  });
+  if(badStock) notes.push("В остатках "+fmt(badStock)+" строк без числа в колонке остатка — пропущены.");
+
+  var minD=null,maxD=null,badO=0,matched=0,orderKeys={};
+  O.rows.forEach(function(r){
+    var a=cleanKey(r[om.art]); if(!a) return;
+    var q= om.qty!=null ? num(r[om.qty]) : 1;
+    if(isNaN(q)){badO++; return;}
+    if(om.date!=null){ var d=parseDate(r[om.date]); if(d!=null){ if(minD==null||d<minD)minD=d; if(maxD==null||d>maxD)maxD=d; } }
+    var sz=useSize?cleanKey(r[om.size]).toUpperCase():"";
+    var k=key(a,sz);
+    orderKeys[k]=1;
+    var it=items[k];
+    if(!it){ it=items[k]={art:a,size:sz,stock:0,wh:{},sold:0,inStock:false}; }
+    it.sold+=q;
+  });
+  if(badO) notes.push("В заказах "+fmt(badO)+" строк без числа в количестве — пропущены.");
+  var ok=Object.keys(orderKeys); ok.forEach(function(k){ if(items[k].inStock) matched++; });
+
+  var detected=null;
+  if(minD!=null) detected=Math.round((maxD-minD)/86400000)+1;
+  if(!daysTouched){
+    if(detected){ $("days").value=detected; $("days-hint").textContent="по датам: "+new Date(minD).toLocaleDateString("ru-RU",{timeZone:"UTC"})+" – "+new Date(maxD).toLocaleDateString("ru-RU",{timeZone:"UTC"}); }
+    else $("days-hint").textContent= om.date!=null ? "даты не распознаны — укажите вручную" : "укажите, за сколько дней выгрузка";
+  }
+  var days=Math.max(1,num($("days").value)||30);
+  if(detected && detected<14) notes.push("Заказы всего за "+detected+" дн. — для точности лучше выгрузить хотя бы месяц.");
+  var lead=Math.max(0,num($("lead").value)||0), cover=Math.max(1,num($("cover").value)||45);
+
+  var list=Object.keys(items).map(function(k){
+    var it=items[k];
+    it.daily=it.sold/days;
+    it.daysLeft= it.daily>0 ? it.stock/it.daily : Infinity;
+    it.months= it.daysLeft/30;
+    it.need= it.daily>0 ? Math.max(0,Math.ceil(it.daily*(lead+cover)-it.stock)) : 0;
+    if(it.daily>0 && it.stock<=0){ it.st=0; it.label="Закончился"; it.cls="red";
+      it.todo="Продаётся ~"+fmt(it.daily*7,1)+" шт/нед, а остатка нет. "+(it.need?"Дошить/дозаказать ~"+fmt(it.need)+" шт.":""); }
+    else if(it.daily>0 && it.daysLeft<=7){ it.st=1; it.label="Кончится за неделю"; it.cls="red";
+      it.todo="Хватит на ~"+fmt(it.daysLeft,0)+" дн. Дошить/дозаказать ~"+fmt(it.need)+" шт."; }
+    else if(it.daily>0 && it.daysLeft<=lead+7){ it.st=2; it.label="Пора дошить"; it.cls="org";
+      it.todo="Хватит на ~"+fmt(it.daysLeft,0)+" дн., а поставка "+lead+" дн. Заказать ~"+fmt(it.need)+" шт."; }
+    else if(it.stock>0 && it.daily<=0){ it.st=3; it.label="Неликвид: нет продаж"; it.cls="gry";
+      it.todo="За "+days+" дн. ни одного заказа, лежит "+fmt(it.stock)+" шт. Акция, распродажа или вывод со склада."; }
+    else if(it.stock>0 && it.months>3){ it.st=4; it.label="Неликвид > 3 мес"; it.cls="gry";
+      var extra=Math.floor(it.stock-it.daily*90);
+      it.todo="Запаса на ~"+fmt(it.months,1)+" мес. Лишнее сверх 3 мес. — ~"+fmt(extra)+" шт: не дошивать, снизить цену."; }
+    else if(it.stock>0){ it.st=5; it.label="Норма"; it.cls="grn"; it.todo="Запас в порядке."; }
+    else { it.st=6; it.label="Нет данных"; it.cls="gry"; it.todo="Нет ни остатка, ни заказов."; }
+    return it;
+  }).filter(function(it){return it.st<6;});
+
+  list.sort(function(a,b){
+    if(a.st!==b.st) return a.st-b.st;
+    if(a.st===3||a.st===4) return b.stock-a.stock;
+    if(a.st===5) return a.daysLeft-b.daysLeft;
+    return b.daily-a.daily;
+  });
+  return {list:list,notes:notes,matched:matched,orderArts:ok.length,stockArts:Object.keys(items).filter(function(k){return items[k].inStock;}).length,days:days,useSize:useSize};
+}
+
+/* ---------- вывод ---------- */
+function render(){
+  var box=$("result");
+  try{
+    if(!state.stock||!state.orders){ box.classList.add("hidden"); return; }
+    var miss=[];
+    ["stock","orders"].forEach(function(w){ FIELDS[w].forEach(function(f){ if(f.req && state[w].map[f.k]==null) miss.push("«"+f.label+"» в файле "+NAMES[w]); }); });
+    box.classList.remove("hidden");
+    if(miss.length){ box.innerHTML='<div class="msg warn">Не нашёл колонку: '+miss.join(", ")+'. Выберите её в списке под файлом — и расчёт появится.</div>'; return; }
+    var R=compute(), L=R.list;
+    if(!L.length){ box.innerHTML='<div class="msg err">Колонки выбраны, но посчитать нечего: ни в одной строке нет артикула с числом. Проверьте, те ли колонки выбраны для артикула и количества.</div>'; return; }
+
+    var c={red:0,org:0,gry:0,grn:0};
+    L.forEach(function(it){c[it.cls]++;});
+    var h='<h2>Итог по '+fmt(L.length)+' позициям'+(R.useSize?' (артикул + размер)':'')+'</h2>';
+    h+='<div class="sum"><div class="s-red"><b>'+c.red+'</b><span>закончились или кончатся за неделю</span></div>'+
+       '<div class="s-org"><b>'+c.org+'</b><span>пора дошить / дозаказать</span></div>'+
+       '<div class="s-gry"><b>'+c.gry+'</b><span>неликвид: запас > 3 мес или нет продаж</span></div>'+
+       '<div class="s-grn"><b>'+c.grn+'</b><span>в норме</span></div></div>';
+
+    var notes=R.notes.slice();
+    if(R.orderArts && R.matched/R.orderArts<0.3) notes.unshift("Совпало только "+R.matched+" из "+R.orderArts+" артикулов заказов с остатками. Похоже, в файлах разные артикулы (например, артикул продавца и артикул WB) — выберите одинаковую колонку в обоих файлах.");
+    notes.forEach(function(n){h+='<div class="msg warn">'+esc(n)+'</div>';});
+
+    h+='<p class="hint">Сначала самое срочное. Продажи в день = заказы ÷ '+R.days+' дн.; запас = остаток ÷ продажи в день.</p>';
+    h+='<table><thead><tr><th>Артикул</th><th>Статус</th><th style="text-align:right">Остаток</th><th style="text-align:right">Продаж/день</th><th style="text-align:right">Хватит на</th><th>Что делать</th></tr></thead><tbody>';
+    L.slice(0,LIMIT).forEach(function(it){
+      var whs=Object.keys(it.wh).filter(function(w){return it.wh[w]>0;}).sort(function(a,b){return it.wh[b]-it.wh[a];});
+      var whTxt=whs.slice(0,3).map(function(w){return esc(w)+": "+fmt(it.wh[w]);}).join(", ")+(whs.length>3?" и ещё "+(whs.length-3):"");
+      var left= it.daysLeft===Infinity ? (it.stock>0?"продаж нет":"—") : (it.daysLeft<60 ? fmt(it.daysLeft,0)+" дн." : fmt(it.months,1)+" мес.");
+      h+='<tr><td class="first"><div class="art">'+esc(it.art)+(it.size?' · '+esc(it.size):'')+'</div>'+(whTxt?'<div class="wh">'+whTxt+'</div>':'')+'</td>'+
+         '<td data-l="Статус"><span class="pill p-'+it.cls+'">'+it.label+'</span></td>'+
+         '<td class="n" data-l="Остаток">'+fmt(it.stock)+' шт</td>'+
+         '<td class="n" data-l="Продаж в день">'+fmt(it.daily,1)+'</td>'+
+         '<td class="n" data-l="Хватит на">'+left+'</td>'+
+         '<td class="todo">'+esc(it.todo)+'</td></tr>';
+    });
+    h+='</tbody></table>';
+    h+='<div class="paywall"><p>Это первые '+Math.min(LIMIT,L.length)+' из '+fmt(L.length)+', полная версия — после оплаты, напишите в Telegram.</p><a class="btn tg" href="'+TG+'" target="_blank" rel="noopener">Написать в Telegram</a></div>';
+    box.innerHTML=h;
+  }catch(e){
+    box.classList.remove("hidden");
+    box.innerHTML='<div class="msg err">Что-то пошло не так при расчёте ('+esc(e.message||e)+'). Проверьте выбор колонок или пришлите файл в Telegram — разберёмся.</div>';
+  }
+}
+
+/* ---------- пример ---------- */
+function demo(){
+  var models=["Платье миди","Худи оверсайз","Брюки палаццо","Футболка базовая","Костюм трикотаж","Рубашка лён","Юбка плиссе","Свитшот детский","Лонгслив","Шорты бермуды"];
+  var sizes=["42","44","46","48","50"], whs=["Коледино","Электросталь","Казань","Свой склад"];
+  var seed=7; function rnd(){seed=(seed*16807)%2147483647; return seed/2147483647;}
+  var stock=[["Артикул продавца","Размер","Склад","Остаток"]], orders=[["Дата","Артикул продавца","Размер","Количество"]];
+  var start=Date.UTC(2026,7,26), daysN=60;
+  models.forEach(function(m,mi){
+    var art="AS-"+(101+mi);
+    sizes.forEach(function(sz,si){
+      var speed=[0,0.05,0.3,0.8,1.6,3][Math.floor(rnd()*6)];
+      if(mi===2||mi===7) speed=speed*0.1;
+      var total=Math.round(speed*30*(0.2+rnd()*5));
+      if(rnd()<0.15) total=0;
+      var left=total;
+      whs.forEach(function(w,wi){ if(left<=0) return; var q=wi===3?left:Math.round(left*rnd()); if(q>0){stock.push([art,sz,w,q]); left-=q;} });
+      for(var d=0;d<daysN;d++){ if(rnd()<speed/2){ var dt=new Date(start+d*86400000); orders.push([dt.toLocaleDateString("ru-RU",{timeZone:"UTC"}),art,sz,1+(rnd()<0.3?1:0)]); } }
+    });
+  });
+  load("stock",stock,"пример — остатки");
+  load("orders",orders,"пример — заказы за 2 мес.");
+  $("result").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+/* ---------- события ---------- */
+["stock","orders"].forEach(function(w){
+  $("f-"+w).addEventListener("change",function(e){ readFile(w,e.target.files[0]); });
+});
+document.addEventListener("click",function(e){
+  var t=e.target, p=t.getAttribute("data-paste"), r=t.getAttribute("data-parse");
+  if(p){ $("paste-"+p).classList.toggle("hidden"); }
+  if(r){
+    try{
+      var txt=$("t-"+r).value;
+      if(!txt.trim()){ showMsg(r,"err","Поле пустое — вставьте таблицу из Excel (вместе со строкой заголовков)."); return; }
+      load(r,parseText(txt),"вставленные данные");
+    }catch(err){ showMsg(r,"err","Не получилось разобрать текст. Скопируйте ячейки прямо из Excel вместе с заголовками."); }
+  }
+});
+$("demo").addEventListener("click",demo);
+$("days").addEventListener("input",function(){daysTouched=true; render();});
+$("lead").addEventListener("input",render);
+$("cover").addEventListener("input",render);
+window.addEventListener("error",function(){ var b=$("result"); b.classList.remove("hidden"); b.innerHTML='<div class="msg err">Не удалось обработать данные. Проверьте файл или напишите в Telegram — посмотрим вместе.</div>'; });
+})();
+</script>
+</body>
+</html>
