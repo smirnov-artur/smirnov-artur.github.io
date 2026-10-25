@@ -1,0 +1,92 @@
+<!doctype html>
+<!-- 25.10: доступ аккаунтов ВК к приложению «g.a.d. parser» (54851171) для парсинга — Виктор даёт аккаунты, у каждого свой суточный лимит ВК.
+     Обменять код на токен со страницы ВК не даёт (Allow-Origin только своим доменам, проверено 25.10) — страница отдаёт строку
+     «gadvk <code> <device_id> <verifier>», её кидают в группу «g.a.d. | парсинг», rabota/zakazy/sokol-vk/vk_dostup.py меняет её на токен.
+     Код живёт 10 минут. verifier едет в state: возврат может открыться в другом браузере, localStorage не нужен.
+     Возврат ВК идёт на /works/ (единственный адрес в настройках приложения), оттуда строкой в <head> — сюда. -->
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>g.a.d. — доступ ВК</title>
+<style>
+:root{--bg:#f6f5f2;--fg:#16151a;--mut:#6b6872;--card:#fff;--line:#e3e0da;--acc:#2a5bd7;--ok:#1d7a46;--err:#b3261e}
+@media (prefers-color-scheme:dark){:root{--bg:#121115;--fg:#eceaf0;--mut:#9a97a3;--card:#1c1b21;--line:#2c2a33;--acc:#7aa2ff;--ok:#5cc98a;--err:#ff8a80}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:560px;margin:0 auto;padding:40px 16px}
+.logo{font-weight:700;letter-spacing:.02em;margin-bottom:28px}
+h1{font-size:24px;line-height:1.25;margin:0 0 12px}
+p{margin:0 0 14px;color:var(--mut)}
+ol{margin:0 0 22px;padding-left:20px}
+li{margin-bottom:6px}
+button{font:inherit;font-weight:600;border:0;border-radius:10px;padding:14px 20px;width:100%;cursor:pointer;background:var(--acc);color:#fff}
+button.vtor{background:transparent;color:var(--acc);border:1px solid var(--line);margin-top:10px}
+textarea{width:100%;min-height:120px;font:13px/1.4 ui-monospace,Consolas,monospace;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);resize:vertical;word-break:break-all}
+.ok{color:var(--ok);font-weight:600}
+.err{color:var(--err);font-weight:600}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<div class="logo">g.a.d.</div>
+
+<section id="start">
+<h1>Подключить аккаунт ВК к парсингу</h1>
+<ol>
+<li>Войди в ВК аккаунтом, который отдаёшь.</li>
+<li>Нажми кнопку, в окне ВК — «Разрешить».</li>
+<li>Скопируй строку, которую покажет страница, и сразу кинь её в группу «g.a.d. | парсинг»: строка действует 10 минут.</li>
+</ol>
+<p>Приложение просит одно право — «сообщества». Публиковать от аккаунта и читать его сообщения оно не может.</p>
+<button id="vojti">Войти через ВК</button>
+</section>
+
+<section id="gotovo" hidden>
+<h1 class="ok">Готово</h1>
+<p>Скопируй строку целиком и кинь в группу «g.a.d. | парсинг» в течение 10 минут.</p>
+<textarea id="stroka" readonly></textarea>
+<button id="kopi" style="margin-top:12px">Скопировать</button>
+<button class="vtor" id="esche">Следующий аккаунт</button>
+<p style="margin-top:14px">Перед следующим аккаунтом выйди из ВК или открой страницу в профиле браузера, где войдён другой.</p>
+</section>
+
+<section id="oshibka" hidden>
+<h1 class="err">Не получилось</h1>
+<p id="pochemu"></p>
+<button id="zanovo">Попробовать снова</button>
+</section>
+</main>
+<script>
+const APP = "54851171", RED = "https://smirnov-artur.github.io/works/";
+const b64 = a => btoa(String.fromCharCode(...new Uint8Array(a))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+const pokazat = id => ["start", "gotovo", "oshibka"].forEach(s => document.getElementById(s).hidden = s !== id);
+
+async function vojti() {
+  const ver = b64(crypto.getRandomValues(new Uint8Array(48)));
+  const ch = b64(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ver)));
+  location.href = "https://id.vk.ru/authorize?" + new URLSearchParams({response_type: "code", client_id: APP, scope: "groups",
+    redirect_uri: RED, state: "gadvk" + ver, code_challenge: ch, code_challenge_method: "S256"});
+}
+
+const q = new URLSearchParams(location.search);
+if (q.get("code") && (q.get("state") || "").startsWith("gadvk")) {
+  document.getElementById("stroka").value = ["gadvk", q.get("code"), q.get("device_id") || "-", q.get("state").slice(5)].join(" ");
+  pokazat("gotovo");
+} else if (q.get("error")) {
+  document.getElementById("pochemu").textContent = q.get("error") === "access_denied" ? "В окне ВК не нажали «Разрешить»." : "ВК ответил: " + (q.get("error_description") || q.get("error"));
+  pokazat("oshibka");
+}
+history.replaceState(null, "", location.pathname);   // повторная загрузка не покажет старый код
+
+document.getElementById("vojti").onclick = document.getElementById("zanovo").onclick = document.getElementById("esche").onclick = vojti;
+document.getElementById("kopi").onclick = async e => {
+  const t = document.getElementById("stroka");
+  try { await navigator.clipboard.writeText(t.value) } catch (_) { t.select(); document.execCommand("copy") }
+  e.target.textContent = "Скопировано";
+};
+</script>
+</body>
+</html>
