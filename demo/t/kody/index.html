@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Проверка кодов маркировки со сканера: GS, GTIN, дубли</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+<style>
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:#f5f6f8;color:#1f2430;font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  .wrap{max-width:780px;margin:0 auto;padding:20px 16px 32px}
+  h1{font-size:clamp(21px,5.4vw,30px);line-height:1.25;margin:8px 0 10px;font-weight:700;letter-spacing:-.01em}
+  .lead{margin:0 0 10px;color:#3d4454}
+  .privacy{display:inline-block;margin:4px 0 18px;padding:6px 10px;border-radius:8px;background:#e9f5ee;color:#1d6b40;font-size:13.5px}
+  .card{background:#fff;border:1px solid #e3e6eb;border-radius:14px;padding:16px;margin:0 0 14px}
+  .card h2{font-size:16px;margin:0 0 8px}
+  label.lbl{display:block;font-weight:600;margin:0 0 6px}
+  textarea{width:100%;min-height:190px;resize:vertical;padding:10px 12px;border:1px solid #cfd5de;border-radius:10px;
+    font:16px/1.45 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:#fcfcfd;color:#1f2430}
+  textarea:focus,select:focus,button:focus-visible,a.btn:focus-visible{outline:2px solid #8fb0ea;outline-offset:1px}
+  .hint{font-size:13px;color:#636b7a;margin:6px 0 0}
+  .counter{font-size:13px;color:#636b7a;margin-top:4px}
+  .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  button,.btn{appearance:none;border:1px solid #cfd5de;background:#fff;color:#1f2430;border-radius:10px;padding:9px 14px;
+    font:inherit;font-size:14.5px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;max-width:100%}
+  button:hover,.btn:hover{background:#f2f4f7}
+  .primary{background:#2d63c8;border-color:#2d63c8;color:#fff}
+  .primary:hover{background:#2556b0}
+  .file{position:relative;overflow:hidden}
+  .file input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+  .drop{border:2px dashed transparent;border-radius:16px;transition:border-color .15s}
+  .drop.over{border-color:#8fb0ea}
+  select{width:100%;max-width:100%;padding:9px 10px;border:1px solid #cfd5de;border-radius:10px;font:inherit;background:#fff}
+  .msg{border-radius:10px;padding:10px 12px;margin:0 0 14px;font-size:14.5px}
+  .msg.err{background:#fdecea;color:#8a1c12;border:1px solid #f5c6c0}
+  .msg.info{background:#eef3fc;color:#1e3f7a;border:1px solid #d3e0f7}
+  .hidden{display:none!important}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 4px}
+  .chip{border-radius:999px;padding:4px 11px;font-size:13.5px;font-weight:600}
+  .c-all{background:#eef0f4;color:#3d4454}
+  .c-ok{background:#e6f5ec;color:#1b6e3e}
+  .c-fix{background:#e7f0fb;color:#1d5a9e}
+  .c-warn{background:#fff4dc;color:#875a00}
+  .c-err{background:#fdecea;color:#a3241a}
+  .advice{margin:10px 0 0;padding:0 0 0 18px;font-size:14px;color:#3d4454}
+  .advice li{margin:4px 0}
+  .item{background:#fff;border:1px solid #e3e6eb;border-left:4px solid #c9ced8;border-radius:12px;padding:12px 14px;margin:0 0 10px}
+  .item.l-ok{border-left-color:#2f9d5c}.item.l-fix{border-left-color:#3a78c9}.item.l-warn{border-left-color:#d9a21b}.item.l-err{border-left-color:#d4483a}
+  .ihead{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:6px}
+  .num{font-weight:700;color:#636b7a;min-width:22px}
+  .tag{border-radius:999px;padding:2px 10px;font-size:13px;font-weight:600}
+  .t-ok{background:#e6f5ec;color:#1b6e3e}.t-fix{background:#e7f0fb;color:#1d5a9e}.t-warn{background:#fff4dc;color:#875a00}.t-err{background:#fdecea;color:#a3241a}
+  .cap{font-size:12.5px;color:#7a8190;margin:8px 0 3px}
+  .code{font:13px/1.55 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:#f6f7f9;border-radius:8px;padding:7px 9px;
+    word-break:break-all;overflow-wrap:anywhere;white-space:pre-wrap}
+  .ai{color:#2d63c8;font-weight:700}
+  .gs{display:inline-block;font:700 10.5px/1 -apple-system,"Segoe UI",Arial,sans-serif;padding:2px 4px;margin:0 2px;border-radius:4px;background:#dfe3ea;color:#3d4454;vertical-align:1px}
+  .gs-add{background:#2f9d5c;color:#fff}
+  .gs-text{background:#3a78c9;color:#fff}
+  mark.m-gs{background:#d9e6fb;color:#1d4f96;border-radius:3px;padding:0 1px}
+  mark.m-ru{background:#ffe7b3;color:#6b4700;border-radius:3px;padding:0 1px}
+  .parts{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:#525a69;margin:6px 0 0}
+  .parts b{color:#1f2430;font-weight:600}
+  .bad{color:#a3241a}
+  ul.iss{margin:8px 0 0;padding:0;list-style:none;font-size:14px}
+  ul.iss li{padding:3px 0 3px 22px;position:relative}
+  ul.iss li:before{position:absolute;left:2px;top:3px;font-weight:700}
+  li.i-err:before{content:"✕";color:#d4483a} li.i-warn:before{content:"!";color:#c28a00;left:6px}
+  li.i-fix:before{content:"↻";color:#3a78c9} li.i-info:before{content:"·";color:#8a91a0;left:6px}
+  li.i-ok:before{content:"✓";color:#2f9d5c}
+  .verdict{margin-top:8px;font-size:14px;font-weight:600}
+  .small{font-size:13px;color:#636b7a}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:#525a69;margin:8px 0 12px}
+  .pay{background:#fff;border:1px solid #e3e6eb;border-radius:14px;padding:16px;margin:16px 0 0;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+  .pay p{margin:0;flex:1 1 240px}
+  .tg{background:#2d63c8;border-color:#2d63c8;color:#fff;font-weight:600}
+  .tg:hover{background:#2556b0}
+  footer{text-align:center;margin:28px 0 6px;font-size:12px;color:#9aa0ab;letter-spacing:.08em}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Сканер теряет GS, а Ozon и WB не принимают коды маркировки? Проверим каждый код</h1>
+  <p class="lead">Пикните до 20 кодов Честного знака в поле, по одному в строке. Страница покажет, где пропал разделитель GS, где он пришёл текстом <code>\u001d</code> или другими символами, где не та длина или GTIN, и какой код площадка не примет как дубль.</p>
+  <div class="privacy">🔒 Всё считается прямо в браузере — файл не уходит с вашего компьютера.</div>
+
+  <div id="msg" class="msg hidden" role="status"></div>
+
+  <div class="card drop" id="drop">
+    <label class="lbl" for="inp">Коды со сканера</label>
+    <textarea id="inp" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Поставьте курсор сюда и сканируйте DataMatrix.&#10;Каждый код — с новой строки.&#10;&#10;0104601234567893215Lh7n0ZqwB4k91ee1092..."></textarea>
+    <div class="counter" id="counter">Строк: 0</div>
+    <p class="hint">Сканер в режиме клавиатуры обычно сам ставит перенос строки. Если он передаёт GS сочетанием Ctrl+], поле это поймает.</p>
+
+    <div id="colBox" class="hidden" style="margin-top:12px">
+      <label class="lbl" for="colSel">В какой колонке коды?</label>
+      <select id="colSel"></select>
+      <div class="hint" id="colHint"></div>
+    </div>
+
+    <div class="row">
+      <button class="primary" id="btnCheck" type="button">Проверить</button>
+      <span class="btn file">Загрузить файл (Excel, CSV, TXT)
+        <input type="file" id="file" accept=".xlsx,.xls,.csv,.txt,.tsv,text/plain,text/csv">
+      </span>
+      <button type="button" id="btnSample">Показать на примере</button>
+      <button type="button" id="btnClear">Очистить</button>
+    </div>
+  </div>
+
+  <div id="out" class="hidden">
+    <div class="card">
+      <h2>Итог</h2>
+      <div class="chips" id="chips"></div>
+      <div class="small" id="sumNote"></div>
+      <ul class="advice" id="advice"></ul>
+    </div>
+
+    <div class="legend">
+      <span><span class="gs">GS</span> разделитель на месте</span>
+      <span><span class="gs gs-add">GS</span> был потерян — восстановлен</span>
+      <span><span class="gs gs-text">GS</span> пришёл текстом — заменён</span>
+      <span><mark class="m-gs">\u001d</mark> GS текстом</span>
+      <span><mark class="m-ru">кириллица</mark> русская раскладка</span>
+    </div>
+
+    <div id="list"></div>
+
+    <div class="card" id="exportBox">
+      <h2>Исправленные коды</h2>
+      <p class="small" style="margin:0 0 8px">Только те, что можно сдавать: без ошибок и без дублей.</p>
+      <select id="fmt">
+        <option value="gs">С настоящим символом GS — для загрузки и программ</option>
+        <option value="u">С текстом \u001d вместо GS</option>
+        <option value="id">Только 01 + GTIN + 21 + серийный — для поиска</option>
+      </select>
+      <div class="row">
+        <button type="button" class="primary" id="btnCopyAll">Скопировать</button>
+        <button type="button" id="btnDownload">Скачать .txt</button>
+      </div>
+      <div class="hint" id="exportNote"></div>
+    </div>
+
+    <p class="small">Страница проверяет формат кода и дубли. Статус кода в Честном знаке (введён ли в оборот, чей он) отсюда не видно.</p>
+  </div>
+
+  <div class="pay">
+    <p>Это первые 20, полная версия — после оплаты, напишите в Telegram.</p>
+    <a class="btn tg" href="https://t.me/gonartur" target="_blank" rel="noopener">Написать в Telegram</a>
+  </div>
+
+  <footer>g.a.d.</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+var LIMIT = 20;
+var GS = "\x1D", TGS = ""; // TGS — внутренняя метка «GS пришёл текстом»
+
+var $ = function(id){ return document.getElementById(id); };
+var inp = $("inp");
+var results = [];
+var table = null; // {rows, header, name}
+
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+function showMsg(text, kind){ var m=$("msg"); m.className="msg "+(kind||"info"); m.innerHTML=text; }
+function hideMsg(){ $("msg").className="msg hidden"; $("msg").innerHTML=""; }
+window.addEventListener("error",function(){ showMsg("Что-то пошло не так при разборе. Попробуйте ещё раз или вставьте коды в поле вручную.","err"); });
+
+/* ---------- справочники ---------- */
+var TEXT_GS = [
+  {re:/\\+u001d/gi, name:"\\u001d"},
+  {re:/\\+x1d/gi, name:"\\x1d"},
+  {re:/_x001d_/gi, name:"_x001D_"},
+  {re:/&#29;|&#x1d;/gi, name:"&#29;"},
+  {re:/<GS>/gi, name:"<GS>"},
+  {re:/\[GS\]/gi, name:"[GS]"},
+  {re:/\{GS\}/gi, name:"{GS}"},
+  {re:/<FNC1>|\[FNC1\]/gi, name:"<FNC1>"},
+  {re:/\^\]/g, name:"^]"},
+  {re:/␝/g, name:"␝"},
+  {re:/è/g, name:"è"}
+];
+var HL = new RegExp(TEXT_GS.map(function(t){return t.re.source;}).join("|")+"|\\x1D|[\\u0400-\\u04FF\\u2116]+","gi");
+var CYR = /[Ѐ-ӿ№]/;
+var GS1 = /^[A-Za-z0-9!"%&'()*+,\-.\/:;<=>?_]*$/;
+var CODE_LIKE = /^["']?(?:\][A-Za-z]\d)?[\x1D]?01\d{14}21/;
+
+var RU = "ёйцукенгшщзхъфывапролджэячсмитьбю.ЁЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,\"№;:?/";
+var EN = "`qwertyuiop[]asdfghjkl;'zxcvbnm,./~QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>?@#$^&|";
+var R2E = {}, E2R = {};
+for (var i=0;i<RU.length;i++){ R2E[RU[i]]=EN[i]; E2R[EN[i]]=RU[i]; }
+function fromRu(s){ var o=""; for(var i=0;i<s.length;i++){ o += (R2E[s[i]]!==undefined)?R2E[s[i]]:s[i]; } return o; }
+function toRu(s){ var o=""; for(var i=0;i<s.length;i++){ o += (E2R[s[i]]!==undefined)?E2R[s[i]]:s[i]; } return o; }
+
+function gtinCheck(d13){ var s=0; for(var i=0;i<13;i++){ s += (+d13[i])*(i%2===0?3:1); } return (10 - s%10)%10; }
+
+/* ---------- разбор одного кода ---------- */
+function analyze(line, n){
+  var r = {n:n, issues:[], bounds:[], level:"ok"};
+  function add(l,t){ r.issues.push({lvl:l,text:t}); }
+  var s = line.replace(/^[  ]+|[  ]+$/g,"");
+  if (s.indexOf("\t")>=0){
+    var cells = s.split("\t").map(function(x){return x.trim();}).filter(Boolean);
+    s = cells.filter(function(x){return CODE_LIKE.test(x);})[0] || cells[0] || "";
+    add("info","В строке было несколько ячеек — взял ту, что похожа на код.");
+  }
+  r.shown = s;
+
+  var pm = s.match(/^\][A-Za-z]\d/);
+  if (pm){ s = s.slice(3); add("info","В начале был префикс «"+pm[0]+"» — служебная метка сканера, убрал."); }
+
+  if (CYR.test(s)){
+    s = fromRu(s); r.ru = true;
+    add("warn","Сканер печатал в русской раскладке — буквы пришли кириллицей. Перевёл обратно, но надёжнее переключить раскладку на английскую и пересканировать.");
+  }
+
+  var found = [];
+  TEXT_GS.forEach(function(t){ t.re.lastIndex=0; if (t.re.test(s)) found.push(t.name); t.re.lastIndex=0; s = s.replace(t.re, TGS); });
+  r.textGs = found;
+
+  if (/^[\x1D]/.test(s)){ s = s.replace(/^[\x1D]+/,""); add("info","В начале стоял GS (FNC1) — так бывает, убрал."); }
+  s = s.replace(/[\x1D]+$/,"");
+  if (/[\x00-\x1C\x1E\x1F\x7F]/.test(s)){ s = s.replace(/[\x00-\x1C\x1E\x1F\x7F]/g,""); add("warn","В коде были невидимые служебные символы — убрал."); }
+
+  if (!s){ add("err","Пустой скан."); return fin(r); }
+  if (/^\d{8}$|^\d{12,14}$/.test(s)){
+    add("err","Это обычный штрихкод товара ("+s.length+" цифр), а не код маркировки. Нужно сканировать квадратный DataMatrix Честного знака.");
+    r.why = "это не код маркировки"; return fin(r);
+  }
+  if (s.slice(0,2)!=="01"){
+    add("err","Код маркировки начинается с 01 и 14 цифр GTIN, а здесь начало другое. Это не полный код Честного знака или скан повреждён.");
+    r.why = "не код Честного знака"; return fin(r);
+  }
+  var gtin = s.slice(2,16);
+  if (!/^\d{14}$/.test(gtin)){ add("err","После 01 должно идти 14 цифр GTIN — здесь их меньше или есть буквы."); r.why="неверный GTIN"; return fin(r); }
+  r.gtin = gtin;
+  var cd = gtinCheck(gtin.slice(0,13));
+  if (cd !== +gtin[13]){
+    r.gtinBad = true;
+    add("err","GTIN "+gtin+" не сходится по контрольной цифре: последняя должна быть "+cd+", а пришла "+gtin[13]+". Скан повреждён — пересканируйте.");
+  }
+  if (s.slice(16,18)!=="21"){ add("err","После GTIN должно идти 21 и серийный номер — здесь другое. Код обрезан или повреждён."); r.why="нет серийного номера"; return fin(r); }
+
+  // два кода в одной строке
+  var re2 = /01(\d{14})21/g, mm;
+  while ((mm = re2.exec(s))){
+    if (mm.index>=24 && gtinCheck(mm[1].slice(0,13))===+mm[1][13]){
+      add("err","Похоже, два кода склеились в одну строку — между сканами не пришёл Enter. Отсканируйте их по отдельности.");
+      r.why="два кода в одной строке"; return fin(r);
+    }
+  }
+
+  var body = s.slice(18);
+  var tok = body.split(/([\x1D])/), parts=[], seps=[];
+  tok.forEach(function(t,i){ (i%2?seps:parts).push(t); });
+  function st(c){ return c===GS ? "real" : "text"; }
+
+  var serial, key=null, crypto=null, c93=null, extra=[], b=r.bounds, unparsed=false;
+  if (parts.length===1){
+    var f = parts[0], L = f.length, ok93=false;
+    if (L>=51 && f.substr(L-50,2)==="91" && f.substr(L-46,2)==="92"){ serial=f.slice(0,L-50); key=f.substr(L-48,4); crypto=f.slice(L-44); b.push("added","added"); }
+    else if (L>=21 && f.substr(13,2)==="91" && f.substr(19,2)==="92"){ serial=f.slice(0,13); key=f.substr(15,4); crypto=f.slice(21); b.push("added","added"); }
+    else {
+      [6,7,8,13].forEach(function(sl){ if(!ok93 && L===sl+6 && f.substr(sl,2)==="93"){ serial=f.slice(0,sl); c93=f.slice(sl+2); b.push("added"); ok93=true; } });
+      if (!ok93){ serial=f; if (L>20) unparsed=true; }
+    }
+  } else {
+    serial = parts[0]; var start = 1;
+    if (parts[1].slice(0,2)==="92" && serial.length>=7 && serial.substr(serial.length-6,2)==="91"){
+      key = serial.slice(-4); serial = serial.slice(0,-6); b.push("added", st(seps[0])); crypto = parts[1].slice(2); start = 2;
+    }
+    for (var k=start;k<parts.length;k++){
+      var p = parts[k], first = true;
+      while (p.length){
+        var state = first ? st(seps[k-1]) : "added"; first = false;
+        if (p.slice(0,2)==="91"){ key=p.substr(2,4); b.push(state); p=p.slice(6); }
+        else if (p.slice(0,2)==="92"){ crypto=p.slice(2); b.push(state); p=""; }
+        else if (p.slice(0,2)==="93"){ c93=p.substr(2,4); b.push(state); p=p.slice(6); }
+        else if (/^(310[0-5]|8005)/.test(p)){ extra.push({ai:p.slice(0,4), val:p.substr(4,6), state:state}); b.push(state); p=p.slice(10); }
+        else {
+          add("err","После разделителя идёт «"+esc(p.slice(0,8))+(p.length>8?"…":"")+"» — такого блока в коде Честного знака нет. Скан повреждён или GS стоит не на своём месте.");
+          r.why="код повреждён"; p="";
+        }
+      }
+    }
+  }
+  r.serial=serial; r.key=key; r.crypto=crypto; r.c93=c93; r.extra=extra;
+
+  if (!serial){ add("err","После 21 нет серийного номера."); r.why=r.why||"нет серийного номера"; }
+  else if (unparsed){
+    add("err","После 21 идёт "+serial.length+" символов одним куском — не получается найти, где кончается серийный номер и начинается ключ 91 и криптохвост 92. Скорее всего, скан обрезан или повреждён — пересканируйте.");
+    r.why=r.why||"не разобрать структуру";
+  } else if (!GS1.test(serial)){
+    add("err","В серийном номере есть символы, которых в коде маркировки не бывает: «"+esc(uniqBad(serial))+"». Проверьте раскладку и сканер.");
+    r.why=r.why||"недопустимые символы";
+  }
+
+  if (key!==null || crypto!==null){
+    if (key===null){ add("err","Есть криптохвост 92, но нет ключа 91."); r.why=r.why||"нет ключа 91"; }
+    else if (key.length!==4){ add("err","Ключ 91 — "+key.length+" символа(ов), а должно быть 4. Код обрезан."); r.why=r.why||"короткий ключ 91"; }
+    if (crypto===null){ add("err","Есть ключ 91, но нет криптохвоста 92 — скан обрезан."); r.why=r.why||"нет криптохвоста"; }
+    else if (crypto.length<44){ add("err","Криптохвост 92 — "+crypto.length+" символов вместо 44. Код обрезан, пересканируйте."); r.why=r.why||"обрезан криптохвост"; }
+    else if (crypto.length>44){ add("warn","Криптохвост 92 — "+crypto.length+" символов, обычно 44. Возможно, к коду прилипло лишнее."); r.why2="длинный криптохвост"; }
+    if ((key && !GS1.test(key)) || (crypto && !GS1.test(crypto))){ add("err","В ключе или криптохвосте есть недопустимые символы: «"+esc(uniqBad((key||"")+(crypto||"")))+"»."); r.why=r.why||"недопустимые символы"; }
+    if (serial && !unparsed && serial.length!==13){ add("warn","Серийный номер — "+serial.length+" симв. Для одежды, обуви, парфюма, лекарств обычно 13. Если у вас другая товарная группа, это может быть нормой."); r.why2=r.why2||"нестандартная длина серийного"; }
+  } else if (c93!==null){
+    if (c93.length!==4){ add("err","Криптохвост 93 — "+c93.length+" символа(ов), а должно быть 4."); r.why=r.why||"обрезан криптохвост 93"; }
+  } else if (serial && !unparsed){
+    add("warn","Нет криптохвоста (91/92 или 93) — пришла только часть кода. Сканер обрезал код или этикетка неполная. Для приёмки на Ozon и WB нужен полный код.");
+    r.why2="нет криптохвоста";
+  }
+
+  var added = b.filter(function(x){return x==="added";}).length;
+  var texted = b.filter(function(x){return x==="text";}).length;
+  if (added) add("fix", added===b.length
+      ? (b.length===1 ? "Пропал разделитель GS — поставил на место." : "Пропали оба разделителя GS — поставил на место по структуре кода.")
+      : "Пропал "+added+" из "+b.length+" разделителей GS — поставил на место.");
+  if (texted) add("fix","GS пришёл текстом "+found.map(function(x){return "«"+esc(x)+"»";}).join(", ")+" — заменил на настоящий символ GS.");
+
+  if (serial && !unparsed){
+    var bi = 0, fx = "01"+gtin+"21"+serial, fh = '<span class="ai">01</span>'+esc(gtin)+'<span class="ai">21</span>'+esc(serial);
+    function seg(ai,val){ var stt=b[bi++]||"real"; fx += GS+ai+val; fh += badge(stt)+'<span class="ai">'+ai+'</span>'+esc(val); }
+    if (key!==null) seg("91",key);
+    if (crypto!==null) seg("92",crypto);
+    if (c93!==null) seg("93",c93);
+    extra.forEach(function(e){ seg(e.ai,e.val); });
+    r.fixed = fx; r.fixedHtml = fh; r.id = "01"+gtin+"21"+serial;
+    r.changed = added>0 || texted>0 || r.ru;
+  }
+  return fin(r);
+}
+function uniqBad(s){ var o=""; for(var i=0;i<s.length;i++){ var c=s[i]; if(!GS1.test(c) && o.indexOf(c)<0) o+=c; } return o.replace(/ /g,"пробел"); }
+function badge(st){
+  if (st==="added") return '<span class="gs gs-add" title="Разделитель был потерян">GS</span>';
+  if (st==="text") return '<span class="gs gs-text" title="Разделитель пришёл текстом">GS</span>';
+  return '<span class="gs">GS</span>';
+}
+function fin(r){
+  var rank={info:0,ok:0,fix:1,warn:2,err:3}, names=["ok","fix","warn","err"], m=0;
+  r.issues.forEach(function(x){ m=Math.max(m,rank[x.lvl]); });
+  r.level = names[m]; return r;
+}
+function highlightRaw(s){
+  var out="", last=0, m; HL.lastIndex=0;
+  while ((m = HL.exec(s))){
+    out += esc(s.slice(last,m.index));
+    if (m[0]===GS) out += '<span class="gs">GS</span>';
+    else if (CYR.test(m[0])) out += '<mark class="m-ru">'+esc(m[0])+'</mark>';
+    else out += '<mark class="m-gs">'+esc(m[0])+'</mark>';
+    last = m.index + m[0].length;
+    if (m[0].length===0) HL.lastIndex++;
+  }
+  return out + esc(s.slice(last));
+}
+
+/* ---------- проверка всего поля ---------- */
+function nonEmptyLines(text){
+  return text.replace(/\r\n?/g,"\n").split("\n").filter(function(l){ return l.replace(/[\s\x1D]/g,"")!==""; });
+}
+function run(){
+  var lines = nonEmptyLines(inp.value);
+  if (!lines.length){ $("out").className="hidden"; showMsg("Поле пустое. Отсканируйте коды, вставьте их или загрузите файл.","info"); return; }
+  if (!$("msg").classList.contains("keep")) hideMsg();
+  var total = lines.length;
+  results = lines.slice(0,LIMIT).map(function(l,i){ return analyze(l,i+1); });
+
+  var seen = {};
+  results.forEach(function(r){
+    if (!r.id) return;
+    if (seen[r.id]){
+      var f = seen[r.id];
+      r.dupOf = f.n;
+      r.issues.unshift({lvl:"err", text:"Дубль строки "+f.n+". Площадка примет этот код только один раз — второй товар с таким же кодом не пройдёт приёмку. Проверьте, не отсканирован ли один товар дважды и нет ли одной этикетки на двух товарах."});
+      if (f.fixed && r.fixed && f.fixed!==r.fixed) r.issues.splice(1,0,{lvl:"warn", text:"Номер тот же, а хвост отличается от строки "+f.n+" — один из сканов повреждён."});
+      r.why = "дубль строки "+f.n; fin(r);
+    } else seen[r.id] = r;
+  });
+  render(total);
+}
+
+function verdict(r){
+  if (r.level==="ok") return "Ozon и WB: примут.";
+  if (r.level==="fix") return "Ozon и WB: примут исправленный код — без исправления он не пройдёт.";
+  if (r.level==="warn") return "Ozon и WB: под вопросом — "+(r.why2||"проверьте замечания выше")+".";
+  return "Ozon и WB: не примут — "+(r.why||"код с ошибкой")+".";
+}
+var TAG = {ok:["t-ok","Примут"], fix:["t-fix","Примут после исправления"], warn:["t-warn","Под вопросом"], err:["t-err","Не примут"]};
+
+function render(total){
+  var c={ok:0,fix:0,warn:0,err:0}, dups=0, miss=0, txt=0, ru=0;
+  results.forEach(function(r){ c[r.level]++; if(r.dupOf) dups++; if(r.bounds.indexOf("added")>=0) miss++; if(r.bounds.indexOf("text")>=0) txt++; if(r.ru) ru++; });
+  $("chips").innerHTML =
+    '<span class="chip c-all">Проверено: '+results.length+'</span>'+
+    (c.ok?'<span class="chip c-ok">В порядке: '+c.ok+'</span>':'')+
+    (c.fix?'<span class="chip c-fix">Исправить: '+c.fix+'</span>':'')+
+    (c.warn?'<span class="chip c-warn">Под вопросом: '+c.warn+'</span>':'')+
+    (c.err?'<span class="chip c-err">Не примут: '+c.err+'</span>':'')+
+    (dups?'<span class="chip c-err">из них дублей: '+dups+'</span>':'');
+  $("sumNote").textContent = total>LIMIT ? "Всего строк: "+total+", проверены первые "+LIMIT+". Дубли искались среди них." : "Дубли искались среди этих строк.";
+
+  var adv = [];
+  if (miss) adv.push("В "+miss+" код(ах) пропал GS. Обычное поле ввода не печатает этот символ. В настройках сканера включите замену GS на текст (например «\\u001d») или на Ctrl+] — нужные штрихкоды настройки есть в инструкции к сканеру.");
+  if (txt) adv.push("Сканер присылает GS текстом. Это нормально, если ваша программа меняет его обратно. На площадку сдавайте исправленный вариант — его можно скопировать ниже.");
+  if (ru) adv.push("Перед сканированием переключите раскладку на английскую — иначе буквы в коде превращаются в кириллицу.");
+  if (dups) adv.push("Дубли уберите до отгрузки: площадка примет только один экземпляр каждого кода.");
+  $("advice").innerHTML = adv.map(function(a){return "<li>"+esc(a)+"</li>";}).join("");
+
+  $("list").innerHTML = results.map(function(r,i){
+    var h = '<div class="item l-'+r.level+'"><div class="ihead"><span class="num">'+r.n+'</span><span class="tag '+TAG[r.level][0]+'">'+TAG[r.level][1]+'</span></div>';
+    var showFixed = r.fixed && r.changed;
+    h += '<div class="cap">'+(showFixed?"Как пришло со сканера":"Код")+'</div><div class="code">'+(r.shown?highlightRaw(r.shown):"<i>пусто</i>")+'</div>';
+    if (showFixed) h += '<div class="cap">Как должно быть</div><div class="code">'+r.fixedHtml+'</div>';
+    if (r.gtin){
+      h += '<div class="parts"><span>GTIN: <b class="'+(r.gtinBad?"bad":"")+'">'+esc(r.gtin)+(r.gtinBad?" ✕":" ✓")+'</b></span>';
+      if (r.serial) h += '<span>Серийный (21): <b>'+r.serial.length+' симв.</b></span>';
+      if (r.key!==null && r.key!==undefined) h += '<span>Ключ (91): <b class="'+(r.key.length!==4?"bad":"")+'">'+r.key.length+'</b></span>';
+      if (r.crypto!==null && r.crypto!==undefined) h += '<span>Криптохвост (92): <b class="'+(r.crypto.length<44?"bad":"")+'">'+r.crypto.length+'</b></span>';
+      if (r.c93!==null && r.c93!==undefined) h += '<span>Криптохвост (93): <b>'+r.c93.length+'</b></span>';
+      h += '</div>';
+    }
+    var iss = r.issues.slice();
+    if (!iss.some(function(x){return x.lvl!=="info";})) iss.push({lvl:"ok",text:"Структура в порядке: GTIN, серийный номер, разделители GS и криптохвост на месте."});
+    h += '<ul class="iss">'+iss.map(function(x){ return '<li class="i-'+x.lvl+'">'+(x.text.indexOf("<")>=0||x.text.indexOf("&")>=0?x.text:esc(x.text))+'</li>'; }).join("")+'</ul>';
+    h += '<div class="verdict">'+esc(verdict(r))+'</div>';
+    if (r.fixed && r.level!=="err") h += '<div class="row" style="margin-top:8px"><button type="button" data-copy="'+i+'">Скопировать код с GS</button></div>';
+    return h + '</div>';
+  }).join("");
+
+  var good = results.filter(function(r){ return r.fixed && r.level!=="err"; });
+  $("exportBox").className = good.length ? "card" : "card hidden";
+  $("exportNote").textContent = good.length ? "Готово к сдаче: "+good.length+" из "+results.length+"." : "";
+  $("out").className = "";
+}
+
+function exportText(){
+  var f = $("fmt").value;
+  return results.filter(function(r){ return r.fixed && r.level!=="err"; }).map(function(r){
+    if (f==="u") return r.fixed.split(GS).join("\\u001d");
+    if (f==="id") return r.id;
+    return r.fixed;
+  }).join("\r\n");
+}
+function copy(text, btn){
+  var done = function(){ if(btn){ var t=btn.textContent; btn.textContent="Скопировано ✓"; setTimeout(function(){btn.textContent=t;},1400);} };
+  if (navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(text).then(done, function(){ fallback(); }); }
+  else fallback();
+  function fallback(){
+    var ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); done(); }catch(e){ showMsg("Не получилось скопировать — воспользуйтесь кнопкой «Скачать .txt».","err"); }
+    document.body.removeChild(ta);
+  }
+}
+
+/* ---------- файлы ---------- */
+function decodeText(buf){
+  var t;
+  try { t = new TextDecoder("utf-8",{fatal:true}).decode(buf); }
+  catch(e){ try { t = new TextDecoder("windows-1251").decode(buf); } catch(e2){ t = new TextDecoder("utf-8").decode(buf); } }
+  return t.replace(/^﻿/,"");
+}
+function parseCSV(text, d){
+  var rows=[], row=[], cell="", q=false;
+  for (var i=0;i<text.length;i++){
+    var ch=text[i];
+    if (q){ if (ch==='"'){ if (text[i+1]==='"'){ cell+='"'; i++; } else q=false; } else cell+=ch; }
+    else if (ch==='"' && cell==="") q=true;
+    else if (ch===d){ row.push(cell); cell=""; }
+    else if (ch==="\n"){ row.push(cell); rows.push(row); row=[]; cell=""; }
+    else if (ch!=="\r") cell+=ch;
+  }
+  row.push(cell); rows.push(row); return rows;
+}
+function handleText(text, name){
+  if (!text.replace(/[\s\x1D]/g,"")){ showMsg("Файл «"+esc(name)+"» пустой — в нём нет ни одного кода.","err"); return; }
+  var lines = nonEmptyLines(text);
+  var codeLike = lines.filter(function(l){ return CODE_LIKE.test(l.trim()); }).length;
+  if (codeLike >= Math.max(1, lines.length*0.6) || !/[;,\t]/.test(lines[0])){
+    hideColBox(); inp.value = lines.join("\n");
+    showMsg("Из файла «"+esc(name)+"» взято строк: "+lines.length+".","info"); keepMsg(); run(); return;
+  }
+  var first = lines[0], cnt = {";":first.split(";").length, "\t":first.split("\t").length, ",":first.split(",").length};
+  var d = Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a];})[0];
+  useTable(parseCSV(text.replace(/\r\n?/g,"\n"), d), name, "");
+}
+function handleFile(file){
+  hideMsg();
+  if (!file) return;
+  if (file.size===0){ showMsg("Файл «"+esc(file.name)+"» пустой.","err"); return; }
+  var ext = (file.name.split(".").pop()||"").toLowerCase();
+  var fr = new FileReader();
+  fr.onerror = function(){ showMsg("Не удалось прочитать файл «"+esc(file.name)+"».","err"); };
+  fr.onload = function(){
+    try{
+      if (ext==="xlsx" || ext==="xls"){
+        if (typeof XLSX==="undefined"){ showMsg("Не загрузился модуль для чтения Excel (нужен интернет). Сохраните файл как CSV или вставьте коды в поле.","err"); return; }
+        var wb;
+        try { wb = XLSX.read(new Uint8Array(fr.result), {type:"array"}); }
+        catch(e){ showMsg("Файл «"+esc(file.name)+"» не открывается как Excel — возможно, он повреждён или это другой формат. Попробуйте сохранить его заново или выгрузить в CSV.","err"); return; }
+        var best=null;
+        wb.SheetNames.forEach(function(sn){
+          var rows = XLSX.utils.sheet_to_json(wb.Sheets[sn], {header:1, raw:true, defval:""});
+          rows = rows.filter(function(r){ return r.some(function(c){ return String(c).trim()!==""; }); });
+          var score = rows.reduce(function(a,r){ return a + r.filter(function(c){return CODE_LIKE.test(String(c).trim());}).length; },0);
+          if (rows.length && (!best || score>best.score)) best={rows:rows, sn:sn, score:score};
+        });
+        if (!best){ showMsg("В файле «"+esc(file.name)+"» нет данных — все листы пустые.","err"); return; }
+        useTable(best.rows, file.name, wb.SheetNames.length>1 ? best.sn : "");
+      } else {
+        handleText(decodeText(fr.result), file.name);
+      }
+    } catch(e){ showMsg("Не получилось разобрать файл «"+esc(file.name)+"». Вставьте коды в поле вручную или пришлите файл в Telegram — посмотрю.","err"); }
+  };
+  fr.readAsArrayBuffer(file);
+}
+function colName(i){ var s=""; i++; while(i>0){ var m=(i-1)%26; s=String.fromCharCode(65+m)+s; i=Math.floor((i-1)/26); } return s; }
+function useTable(rows, name, sheet){
+  rows = rows.map(function(r){ return r.map(function(c){ return c===null||c===undefined ? "" : String(c); }); })
+             .filter(function(r){ return r.some(function(c){ return c.trim()!==""; }); });
+  if (!rows.length){ showMsg("В файле «"+esc(name)+"» нет данных.","err"); return; }
+  var width = Math.max.apply(null, rows.map(function(r){return r.length;}));
+  var hasHeader = rows.length>1 && !rows[0].some(function(c){ return CODE_LIKE.test(c.trim()); });
+  var header = hasHeader ? rows[0] : null, data = hasHeader ? rows.slice(1) : rows;
+  table = {data:data, header:header, name:name, sheet:sheet};
+
+  var byContent=-1, bestCnt=0, strong=-1, weak=-1;
+  for (var i=0;i<width;i++){
+    var cnt = data.filter(function(r){ return CODE_LIKE.test((r[i]||"").trim()); }).length;
+    if (cnt>bestCnt){ bestCnt=cnt; byContent=i; }
+    var h = header ? String(header[i]||"") : "";
+    if (strong<0 && /маркир|datamatrix|data matrix|\bcis\b|киз|^\s*км\s*$|уит|честн/i.test(h)) strong=i;
+    if (weak<0 && /код|code/i.test(h)) weak=i;
+  }
+  var chosen = byContent>=0 ? byContent : (strong>=0 ? strong : weak);
+
+  if (width===1){ hideColBox(); fillFromColumn(0); return; }
+  var sel = $("colSel");
+  sel.innerHTML = (chosen<0 ? '<option value="">— выберите колонку —</option>' : "") +
+    Array.apply(null,{length:width}).map(function(_,i){
+      var title = header && String(header[i]||"").trim() ? "«"+String(header[i]).trim()+"»" : "Колонка "+colName(i);
+      var ex = ""; for (var j=0;j<data.length && !ex;j++){ ex=(data[j][i]||"").trim(); }
+      return '<option value="'+i+'"'+(i===chosen?" selected":"")+'>'+esc(title+(ex?" — "+ex.slice(0,22)+(ex.length>22?"…":""):""))+'</option>';
+    }).join("");
+  $("colBox").className = "";
+  if (chosen<0){
+    $("colHint").textContent = "Не нашёл колонку с кодами ни по названию, ни по содержимому — выберите её из списка.";
+    showMsg("В файле «"+esc(name)+"» колонки называются не так, как я ожидал. Выберите колонку с кодами маркировки.","info");
+    $("out").className="hidden";
+  } else {
+    $("colHint").textContent = byContent>=0 ? "Колонку с кодами нашёл по содержимому. Если не та — выберите другую." : "Колонку нашёл по названию. Если не та — выберите другую.";
+    fillFromColumn(chosen);
+  }
+}
+function fillFromColumn(i){
+  var vals = table.data.map(function(r){ return (r[i]||"").replace(/\r?\n/g," "); }).filter(function(v){ return v.replace(/[\s\x1D]/g,"")!==""; });
+  if (!vals.length){ showMsg("В выбранной колонке пусто. Выберите другую колонку.","err"); $("out").className="hidden"; return; }
+  inp.value = vals.join("\n");
+  var cl = vals.filter(function(v){ return CODE_LIKE.test(v.trim()); }).length;
+  var where = "Из файла «"+esc(table.name)+"»"+(table.sheet?", лист «"+esc(table.sheet)+"»":"")+": строк "+vals.length+".";
+  if (!cl && !vals.some(function(v){return /01\d{14}/.test(v);})) showMsg(where+" В этой колонке не видно кодов маркировки (они начинаются с 01 и 14 цифр). Если коды в другой колонке — выберите её выше.","err");
+  else showMsg(where,"info");
+  keepMsg(); run();
+}
+function keepMsg(){ var m=$("msg"); m.classList.add("keep"); setTimeout(function(){ m.classList.remove("keep"); },50); }
+function hideColBox(){ $("colBox").className="hidden"; table=null; }
+
+/* ---------- пример ---------- */
+function fake(n, seed, alpha){
+  var A = alpha || "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=", x = seed, o = "";
+  for (var i=0;i<n;i++){ x = (x*48271) % 2147483647; o += A[x % A.length]; }
+  return o;
+}
+function sample(){
+  var AL = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789";
+  var g1 = "0460700123456"; g1 += gtinCheck(g1);
+  var g2 = "0460700987654"; g2 += gtinCheck(g2);
+  var full = function(g,s,k,c,sep){ return "01"+g+"21"+s+sep+"91"+k+sep+"92"+c; };
+  var s1=fake(13,11,AL), s2=fake(13,23,AL), s3=fake(13,37,AL), s4=fake(13,41,AL), s5=fake(13,53,AL), s6=fake(13,67,AL), s7=fake(13,79,AL);
+  var c1=fake(44,101), c2=fake(44,203), c3=fake(44,307), c4=fake(44,401), c5=fake(44,509), c6=fake(44,601);
+  var badG = g1.slice(0,13)+((+g1[13]+3)%10);
+  return [
+    full(g1,s1,"ee10",c1,GS),
+    full(g1,s2,"ee10",c2,""),
+    full(g2,s3,"ee10",c3,"\\u001d"),
+    full(g2,s4,"ee10",c4,"<GS>"),
+    "01"+g1+"21"+toRu(s5+"91ee1092"+c5),
+    full(g1,s1,"ee10",c1,GS),
+    full(badG,s6,"ee10",c6,GS),
+    full(g2,s7,"ee10",c6.slice(0,30),GS),
+    g1.slice(1),
+    "01"+g2+"21"+s2
+  ].join("\n");
+}
+
+/* ---------- события ---------- */
+var timer=null, lastKey=0;
+function updCounter(){
+  var lines = nonEmptyLines(inp.value).length, gs = (inp.value.match(/\x1D/g)||[]).length;
+  $("counter").textContent = "Строк: "+lines+(lines>LIMIT?" (проверю первые "+LIMIT+")":"")+(gs?" · настоящих GS в поле: "+gs:"");
+}
+inp.addEventListener("input", function(){ updCounter(); clearTimeout(timer); timer=setTimeout(function(){ if(nonEmptyLines(inp.value).length) run(); }, 600); });
+inp.addEventListener("keydown", function(e){
+  var now = Date.now(), fast = now-lastKey < 60; lastKey = now;
+  var ins = null;
+  if (e.ctrlKey && !e.altKey && (e.code==="BracketRight" || e.key==="]")) ins = GS;
+  else if (e.key==="Tab" && !e.shiftKey && fast && inp.value) ins = "\n"; // Tab от сканера = следующий код
+  if (ins!==null){
+    e.preventDefault();
+    var a=inp.selectionStart, b=inp.selectionEnd;
+    inp.setRangeText(ins, a, b, "end");
+    inp.dispatchEvent(new Event("input"));
+  }
+});
+$("btnCheck").addEventListener("click", function(){ hideMsg(); run(); });
+$("btnSample").addEventListener("click", function(){ hideColBox(); hideMsg(); inp.value = sample(); updCounter(); run(); });
+$("btnClear").addEventListener("click", function(){ inp.value=""; hideColBox(); hideMsg(); updCounter(); $("out").className="hidden"; inp.focus(); });
+$("file").addEventListener("change", function(e){ handleFile(e.target.files[0]); e.target.value=""; });
+$("colSel").addEventListener("change", function(){ if (this.value!=="" && table) fillFromColumn(+this.value); });
+$("list").addEventListener("click", function(e){ var b=e.target.closest("[data-copy]"); if(b) copy(results[+b.getAttribute("data-copy")].fixed, b); });
+$("btnCopyAll").addEventListener("click", function(){ copy(exportText(), this); });
+$("btnDownload").addEventListener("click", function(){
+  var blob = new Blob([exportText()+"\r\n"], {type:"text/plain;charset=utf-8"});
+  var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "kody-ispravlennye.txt";
+  document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+});
+var drop = $("drop");
+["dragenter","dragover"].forEach(function(t){ drop.addEventListener(t,function(e){ e.preventDefault(); drop.classList.add("over"); }); });
+["dragleave","drop"].forEach(function(t){ drop.addEventListener(t,function(e){ e.preventDefault(); drop.classList.remove("over"); }); });
+drop.addEventListener("drop", function(e){ if (e.dataTransfer && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+updCounter();
+})();
+</script>
+</body>
+</html>
