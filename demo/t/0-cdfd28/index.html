@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Какие этикетки напечатаны, а какие нет — сборочные задания WB FBS</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:#f6f7f9;color:#1f2430;font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;overflow-x:hidden}
+  .wrap{max-width:860px;margin:0 auto;padding:24px 16px 40px}
+  h1{font-size:26px;line-height:1.25;margin:8px 0 10px;font-weight:700}
+  .lead{color:#4a5263;margin:0 0 6px}
+  .safe{display:inline-block;font-size:14px;color:#2d6a4f;background:#e8f5ee;border-radius:8px;padding:4px 10px;margin:6px 0 18px}
+  .card{background:#fff;border:1px solid #e3e6ec;border-radius:14px;padding:18px;margin:0 0 16px}
+  .card h2{font-size:18px;margin:0 0 10px}
+  .muted{color:#6b7385;font-size:14px}
+  .drop{border:2px dashed #c9cfda;border-radius:12px;padding:22px 14px;text-align:center;cursor:pointer;transition:.15s;background:#fbfcfd}
+  .drop.over{border-color:#3b6fd8;background:#f0f5ff}
+  .drop b{display:block;margin-bottom:4px}
+  input[type=file]{display:none}
+  textarea{width:100%;min-height:90px;border:1px solid #d5dae3;border-radius:10px;padding:10px;font:14px/1.4 ui-monospace,Consolas,monospace;resize:vertical;background:#fff}
+  .btn{display:inline-block;border:0;border-radius:10px;padding:10px 16px;font-size:15px;cursor:pointer;background:#3b6fd8;color:#fff;text-decoration:none}
+  .btn.ghost{background:#eef1f6;color:#1f2430}
+  .btn:hover{filter:brightness(.96)}
+  .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  details summary{cursor:pointer;color:#3b6fd8;font-size:15px}
+  .err{background:#fff3f2;border:1px solid #f3c7c3;color:#8a2a20;border-radius:10px;padding:12px 14px;margin:0 0 16px}
+  .warn{background:#fff9eb;border:1px solid #f1dfaa;color:#6b5210;border-radius:10px;padding:10px 14px;margin:10px 0 0;font-size:14px}
+  .map{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:10px}
+  .map label{display:block;font-size:14px;color:#4a5263}
+  .map select{width:100%;margin-top:3px;padding:8px;border:1px solid #d5dae3;border-radius:8px;font-size:14px;background:#fff;max-width:100%}
+  .map .need{color:#b3261e}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+  .stat{border-radius:12px;padding:12px;border:1px solid #e3e6ec;cursor:pointer;background:#fff}
+  .stat.on{outline:2px solid #3b6fd8}
+  .stat .n{font-size:26px;font-weight:700;line-height:1.1}
+  .stat .t{font-size:14px;color:#4a5263}
+  .s-ok{background:#eef8f1}.s-sup{background:#fff7e6}.s-print{background:#fdeeee}.s-new{background:#f2f4f8}.s-cancel{background:#f4f0fa}
+  .list{margin-top:14px}
+  .item{border:1px solid #e3e6ec;border-radius:12px;padding:12px;margin-bottom:8px;background:#fff;display:flex;gap:12px;align-items:flex-start}
+  .item .main{flex:1;min-width:0}
+  .item .top{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline}
+  .item .num{font-weight:700;word-break:break-all}
+  .item .art{color:#4a5263;word-break:break-word}
+  .item .meta{font-size:13px;color:#6b7385;word-break:break-word;margin-top:2px}
+  .tag{display:inline-block;font-size:13px;border-radius:999px;padding:2px 10px;margin:6px 6px 0 0}
+  .t-ok{background:#d9f0e1;color:#1e5e3a}.t-no{background:#fbdcdc;color:#8a2a20}
+  .t-sup{background:#dfe8fb;color:#244a96}.t-nosup{background:#eceef2;color:#4a5263}
+  .t-warn{background:#fff0c9;color:#6b5210}.t-cancel{background:#ece3f7;color:#55307e}
+  .advice{font-size:14px;margin-top:6px;color:#1f2430}
+  .chk{display:flex;flex-direction:column;align-items:center;font-size:12px;color:#6b7385;min-width:62px;text-align:center;cursor:pointer}
+  .chk input{width:22px;height:22px;margin:0 0 3px;cursor:pointer}
+  .group{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+  .group th,.group td{text-align:left;padding:7px 6px;border-bottom:1px solid #eef0f4;vertical-align:top;word-break:break-word}
+  .group th{color:#6b7385;font-weight:600}
+  .group td.c,.group th.c{text-align:center;white-space:nowrap}
+  .pay{background:#f0f5ff;border:1px solid #d5e2fb;border-radius:12px;padding:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+  .pay span{flex:1 1 220px}
+  footer{text-align:center;color:#9aa1b0;font-size:12px;margin-top:28px}
+  .hidden{display:none}
+  @media (max-width:480px){h1{font-size:22px}.card{padding:14px}.stat .n{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Распечатал этикетки — и уже не понять, по каким заданиям они есть, а что добавлено в поставку</h1>
+  <p class="lead">Загрузите выгрузку сборочных заданий WB (FBS) — страница разложит задания по полочкам: напечатано, не напечатано, в поставке, и подскажет, что сделать с каждым.</p>
+  <div class="safe">🔒 Всё считается прямо в браузере — файл не уходит с вашего компьютера.</div>
+
+  <div id="errBox" class="err hidden"></div>
+
+  <div class="card">
+    <h2>1. Ваша выгрузка сборочных заданий</h2>
+    <label class="drop" id="drop" for="file">
+      <b>Выберите файл или перетащите сюда</b>
+      <span class="muted">Excel (.xlsx, .xls) или CSV</span>
+    </label>
+    <input type="file" id="file" accept=".xlsx,.xls,.xlsm,.csv,.txt,.tsv">
+    <details style="margin-top:12px">
+      <summary>…или вставьте таблицу текстом (скопируйте строки из Excel вместе с заголовком)</summary>
+      <textarea id="paste" placeholder="Номер задания	Артикул продавца	Баркод	Размер	Статус	Номер поставки"></textarea>
+      <div class="row"><button class="btn" id="pasteBtn" type="button">Разобрать</button></div>
+    </details>
+    <div class="row"><button class="btn ghost" id="sampleBtn" type="button">Показать на примере</button></div>
+    <div id="fileInfo" class="muted" style="margin-top:8px"></div>
+  </div>
+
+  <div class="card">
+    <h2>2. Что уже распечатано <span class="muted" style="font-weight:400">(по желанию)</span></h2>
+    <p class="muted" style="margin:0 0 8px">Если в выгрузке есть колонка со стикером — страница возьмёт её сама. Ещё можно вставить номера заданий, по которым вы уже печатали этикетки (через пробел, запятую или с новой строки), или просто отметить галочкой в списке ниже — отметки запоминаются в этом браузере.</p>
+    <textarea id="printed" placeholder="Например: 1234567890 1234567891 1234567892"></textarea>
+    <div class="row"><button class="btn ghost" id="printedBtn" type="button">Учесть эти номера</button><button class="btn ghost" id="clearMarks" type="button">Сбросить мои галочки</button></div>
+  </div>
+
+  <div id="mapCard" class="card hidden">
+    <h2>3. Колонки</h2>
+    <p class="muted" style="margin:0">Нашёл по названиям. Если что-то не так — выберите нужную колонку из списка.</p>
+    <div class="map" id="map"></div>
+    <div id="mapWarn"></div>
+  </div>
+
+  <div id="result" class="hidden">
+    <div class="card">
+      <h2>Что с заданиями</h2>
+      <p class="muted" id="resNote" style="margin:0 0 10px"></p>
+      <div class="stats" id="stats"></div>
+      <div class="list" id="list"></div>
+    </div>
+    <div class="card">
+      <h2>По товарам</h2>
+      <p class="muted" style="margin:0">Сколько заданий по каждому артикулу и размеру и сколько из них ещё без этикетки или не в поставке.</p>
+      <div id="groups"></div>
+    </div>
+    <div class="pay">
+      <span>Это первые 20, полная версия — после оплаты, напишите в Telegram.</span>
+      <a class="btn" href="https://t.me/gonartur" target="_blank" rel="noopener">Написать в Telegram</a>
+    </div>
+  </div>
+
+  <footer>g.a.d.</footer>
+</div>
+
+<script>
+(function(){
+  var LIMIT = 20;
+  var FIELDS = [
+    {k:'task',   name:'Номер задания',    need:true,
+      syn:['номер сборочного задания','id сборочного задания','сборочное задание','номер задания','№ задания','n задания','id задания','задание','номер заказа','id заказа','заказ','order id','orderid','id'],
+      not:['статус','поставк','стикер','дата','баркод','штрих','артикул','сумм','цена']},
+    {k:'article',name:'Артикул продавца', syn:['артикул продавца','артикул поставщика','артикул','vendorcode','vendor code','supplierarticle','sa'], not:['дата']},
+    {k:'barcode',name:'Баркод',           syn:['баркод','штрихкод','штрих-код','barcode','шк'], not:['стикер']},
+    {k:'size',   name:'Размер',           syn:['размер','size','techsize'], not:[]},
+    {k:'name',   name:'Наименование',     syn:['наименование','название','предмет','товар','name'], not:['артикул','баркод']},
+    {k:'status', name:'Статус',           syn:['статус задания','статус','status','состояние'], not:['дата']},
+    {k:'supply', name:'Номер поставки',   syn:['номер поставки','id поставки','поставка','supply id','supplyid','supply'], not:['дата']},
+    {k:'sticker',name:'Стикер / отметка печати', syn:['стикер','этикетка','номер стикера','sticker','напечатан','печать'], not:['дата']}
+  ];
+  var MARK_KEY = 'gad_wb_printed_marks';
+
+  var state = {rows:[], headers:[], map:{}, printedList:{}, source:''};
+  var filter = 'all';
+
+  function $(id){return document.getElementById(id)}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function norm(s){return String(s==null?'':s).toLowerCase().replace(/ё/g,'е').replace(/[\s_]+/g,' ').replace(/^\s+|\s+$/g,'')}
+  function cell(v){
+    if(v==null) return '';
+    if(typeof v==='number'){ return Number.isInteger(v) ? v.toLocaleString('fullwide',{useGrouping:false}) : String(v); }
+    if(v instanceof Date) return v.toLocaleDateString('ru-RU');
+    return String(v).replace(/^\s+|\s+$/g,'');
+  }
+  function showErr(msg){var b=$('errBox'); if(!msg){b.classList.add('hidden');b.innerHTML='';return} b.innerHTML=msg; b.classList.remove('hidden'); b.scrollIntoView({behavior:'smooth',block:'nearest'})}
+  function loadMarks(){try{return JSON.parse(localStorage.getItem(MARK_KEY)||'{}')||{}}catch(e){return {}}}
+  function saveMarks(m){try{localStorage.setItem(MARK_KEY,JSON.stringify(m))}catch(e){}}
+  var marks = loadMarks();
+
+  // ---------- сопоставление колонок ----------
+  function scoreHeader(h, f){
+    var n = norm(h); if(!n) return 0;
+    for(var i=0;i<f.not.length;i++){ if(n.indexOf(f.not[i])>=0) return 0; }
+    var best=0;
+    f.syn.forEach(function(s){
+      if(n===s) best=Math.max(best,100+s.length);
+      else if(s.length>2 && n.indexOf(s)>=0) best=Math.max(best,s.length);
+    });
+    return best;
+  }
+  function autoMap(headers){
+    var cands=[];
+    headers.forEach(function(h,ci){ FIELDS.forEach(function(f){ var s=scoreHeader(h,f); if(s>0) cands.push({ci:ci,k:f.k,s:s}); }); });
+    cands.sort(function(a,b){return b.s-a.s});
+    var map={}, used={};
+    cands.forEach(function(c){ if(map[c.k]==null && !used[c.ci]){ map[c.k]=c.ci; used[c.ci]=1; } });
+    return map;
+  }
+  function findHeaderRow(aoa){
+    var best=-1, bestScore=0, lim=Math.min(aoa.length,20);
+    for(var r=0;r<lim;r++){
+      var row=aoa[r]||[], sc=0;
+      row.forEach(function(v){ var t=cell(v); if(!t) return; for(var i=0;i<FIELDS.length;i++){ if(scoreHeader(t,FIELDS[i])>0){sc++;break;} } });
+      if(sc>bestScore){bestScore=sc;best=r;}
+    }
+    if(best<0){ // нет знакомых названий — берём первую непустую строку
+      for(var r2=0;r2<aoa.length;r2++){ if((aoa[r2]||[]).some(function(v){return cell(v)!==''})) return r2; }
+    }
+    return best;
+  }
+
+  // ---------- загрузка ----------
+  function fromAoa(aoa, source){
+    showErr('');
+    aoa = (aoa||[]).filter(function(r){return r && r.some(function(v){return cell(v)!==''})});
+    if(!aoa.length){ fail('Файл пустой: в нём не нашлось ни одной заполненной строки. Проверьте, что выгрузили именно сборочные задания, и попробуйте ещё раз.'); return; }
+    var hr = findHeaderRow(aoa);
+    var headerRow = aoa[hr]||[];
+    var width = aoa.reduce(function(m,r){return Math.max(m,r.length)},0);
+    var headers=[];
+    for(var i=0;i<width;i++){ var h=cell(headerRow[i]); headers.push(h || ('Колонка '+(i+1))); }
+    var rows = aoa.slice(hr+1).map(function(r){ var o=[]; for(var i=0;i<width;i++) o.push(cell(r[i])); return o; });
+    if(!rows.length){ fail('В файле есть только строка заголовков, а самих заданий нет. Выгрузите сборочные задания за нужный период и загрузите снова.'); return; }
+    state.rows=rows; state.headers=headers; state.map=autoMap(headers); state.source=source;
+    $('fileInfo').textContent = source + ' — строк с данными: ' + rows.length;
+    renderMap(); compute();
+  }
+  function fail(msg){
+    showErr(msg); $('result').classList.add('hidden'); $('mapCard').classList.add('hidden');
+  }
+  function decodeText(buf){
+    var bytes=new Uint8Array(buf);
+    try{ return new TextDecoder('utf-8',{fatal:true}).decode(bytes).replace(/^﻿/,''); }
+    catch(e){ try{ return new TextDecoder('windows-1251').decode(bytes); }catch(e2){ return new TextDecoder().decode(bytes); } }
+  }
+  function parseText(text){
+    var lines = text.replace(/\r\n?/g,'\n').split('\n').filter(function(l){return l.replace(/\s/g,'')!==''});
+    if(!lines.length) return [];
+    var sample=lines.slice(0,10).join('\n'), cnt={'\t':0,';':0,',':0};
+    for(var d in cnt) cnt[d]=sample.split(d).length;
+    var del = cnt['\t']>lines.slice(0,10).length ? '\t' : (cnt[';']>=cnt[',']?';':',');
+    return lines.map(function(line){
+      var out=[], cur='', q=false;
+      for(var i=0;i<line.length;i++){
+        var ch=line[i];
+        if(q){ if(ch==='"'){ if(line[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=ch; }
+        else if(ch==='"' && cur==='') q=true;
+        else if(ch===del){ out.push(cur); cur=''; }
+        else cur+=ch;
+      }
+      out.push(cur); return out;
+    });
+  }
+  function handleFile(file){
+    if(!file) return;
+    if(file.size===0){ fail('Файл «'+esc(file.name)+'» пустой (0 байт). Выгрузите задания заново.'); return; }
+    var ext=(file.name.split('.').pop()||'').toLowerCase();
+    var rd=new FileReader();
+    rd.onerror=function(){ fail('Не получилось прочитать файл. Попробуйте сохранить его заново и загрузить ещё раз.'); };
+    rd.onload=function(e){
+      try{
+        if(ext==='csv'||ext==='txt'||ext==='tsv'){ fromAoa(parseText(decodeText(e.target.result)), file.name); return; }
+        if(typeof XLSX==='undefined'){ fail('Не загрузился модуль чтения Excel (нет интернета?). Можно сохранить файл как CSV или вставить таблицу текстом.'); return; }
+        var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array',cellDates:true});
+        if(!wb.SheetNames||!wb.SheetNames.length){ fail('В файле нет ни одного листа.'); return; }
+        // берём лист, где больше всего знакомых колонок
+        var bestAoa=null,bestSc=-1,bestName='';
+        wb.SheetNames.forEach(function(n){
+          var aoa=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:true,defval:''});
+          var hr=findHeaderRow(aoa), sc=0;
+          if(hr>=0){ sc=Object.keys(autoMap((aoa[hr]||[]).map(cell))).length*1000 + aoa.length; }
+          if(sc>bestSc){bestSc=sc;bestAoa=aoa;bestName=n;}
+        });
+        fromAoa(bestAoa, file.name+(wb.SheetNames.length>1?' (лист «'+bestName+'»)':''));
+      }catch(err){
+        fail('Не получилось разобрать файл «'+esc(file.name)+'». Похоже, он повреждён или это не таблица. Откройте его в Excel и сохраните как .xlsx или .csv — и загрузите снова.');
+      }
+    };
+    rd.readAsArrayBuffer(file);
+  }
+
+  // ---------- выбор колонок ----------
+  function renderMap(){
+    var html='';
+    FIELDS.forEach(function(f){
+      html+='<label>'+esc(f.name)+(f.need?' <span class="need">*</span>':'')+'<select data-k="'+f.k+'"><option value="">— нет такой колонки —</option>';
+      state.headers.forEach(function(h,i){ html+='<option value="'+i+'"'+(state.map[f.k]===i?' selected':'')+'>'+esc(h)+'</option>'; });
+      html+='</select></label>';
+    });
+    $('map').innerHTML=html;
+    $('mapCard').classList.remove('hidden');
+    Array.prototype.forEach.call($('map').querySelectorAll('select'),function(s){
+      s.addEventListener('change',function(){ var k=s.getAttribute('data-k'); if(s.value==='') delete state.map[k]; else state.map[k]=+s.value; compute(); });
+    });
+  }
+
+  // ---------- логика ----------
+  function isEmptyVal(v){ var n=norm(v); return n===''||n==='-'||n==='—'||n==='0'||n==='нет'||n==='null'||n==='не указан'||n==='false'; }
+  function statusKind(s){
+    var n=norm(s);
+    if(!n) return '';
+    if(/отмен|cancel|отказ|declined/.test(n)) return 'cancel';
+    if(/доставк|deliver|sorted|отсортир|принят|продан|sold|complete|выполн/.test(n)) return 'shipped';
+    if(/сборк|confirm|поставк/.test(n)) return 'supply';
+    if(/нов|new|waiting|ожида/.test(n)) return 'new';
+    return 'other';
+  }
+  function g(row,k){ var i=state.map[k]; return i==null?'':(row[i]||''); }
+
+  function compute(){
+    showErr('');
+    var warn=[];
+    if(state.map.task==null){
+      $('mapWarn').innerHTML='<div class="warn">Не нашёл колонку с номером сборочного задания. Выберите её в списке «Номер задания» выше — без неё не понять, какое задание напечатано.</div>';
+      $('result').classList.add('hidden'); return;
+    }
+    if(state.map.supply==null && state.map.status==null) warn.push('Нет ни колонки поставки, ни статуса — не смогу сказать, что уже в поставке. Выберите хотя бы одну из них.');
+    if(state.map.sticker==null && !Object.keys(state.printedList).length && !Object.keys(marks).length) warn.push('Колонки со стикером нет — отметки «напечатано» берутся из списка номеров в шаге 2 или из галочек в списке ниже.');
+
+    var all=state.rows.filter(function(r){return g(r,'task')!==''});
+    var skipped=state.rows.length-all.length;
+    if(!all.length){
+      $('mapWarn').innerHTML='<div class="warn">В выбранной колонке «Номер задания» пусто во всех строках. Похоже, выбрана не та колонка — выберите другую.</div>';
+      $('result').classList.add('hidden'); return;
+    }
+    $('mapWarn').innerHTML = warn.map(function(w){return '<div class="warn">'+esc(w)+'</div>'}).join('');
+
+    var counts={}; all.forEach(function(r){var t=g(r,'task'); counts[t]=(counts[t]||0)+1;});
+    var items=all.slice(0,LIMIT).map(function(r){
+      var task=g(r,'task'), st=g(r,'status'), sup=g(r,'supply'), stk=g(r,'sticker'), kind=statusKind(st);
+      var inSupply=false, supplyName='';
+      if(state.map.supply!=null && !isEmptyVal(sup)){ inSupply=true; supplyName=sup; }
+      else if(kind==='supply'||kind==='shipped'){ inSupply=true; }
+      var printed=false, how='';
+      if(marks[task]!=null){ printed=!!marks[task]; how=printed?'отмечено вами':''; }
+      else if(state.map.sticker!=null && !isEmptyVal(stk)){ printed=true; how='стикер в выгрузке'; }
+      else if(state.printedList[task]){ printed=true; how='есть в вашем списке'; }
+      var cat;
+      if(kind==='cancel') cat='cancel';
+      else if(printed && inSupply) cat='ok';
+      else if(printed && !inSupply) cat='sup';
+      else if(!printed && inSupply) cat='print';
+      else cat='new';
+      return {task:task,article:g(r,'article'),barcode:g(r,'barcode'),size:g(r,'size'),name:g(r,'name'),status:st,kind:kind,
+              inSupply:inSupply,supplyName:supplyName,printed:printed,how:how,cat:cat,dup:counts[task]>1};
+    });
+    render(items, all.length, skipped);
+  }
+
+  var CATS=[
+    {k:'all',  t:'Всего в показе', cls:''},
+    {k:'print',t:'В поставке, но этикетка не напечатана', cls:'s-print'},
+    {k:'sup',  t:'Напечатано, но не в поставке', cls:'s-sup'},
+    {k:'new',  t:'Не напечатано и не в поставке', cls:'s-new'},
+    {k:'ok',   t:'Готово: напечатано и в поставке', cls:'s-ok'},
+    {k:'cancel',t:'Отменены', cls:'s-cancel'}
+  ];
+  var ADVICE={
+    print:'→ Распечатайте этикетку, задание уже в поставке.',
+    sup:'→ Добавьте в поставку, этикетка уже есть.',
+    new:'→ Добавьте в поставку и распечатайте этикетку.',
+    ok:'✓ Ничего делать не нужно.',
+    cancel:'✕ Отменено — не собирайте, этикетку не клейте.'
+  };
+  var lastItems=[];
+
+  function render(items,total,skipped){
+    lastItems=items;
+    var c={all:items.length}; CATS.forEach(function(x){ if(x.k!=='all') c[x.k]=0; });
+    items.forEach(function(it){c[it.cat]++});
+    if(filter!=='all' && !c[filter]) filter='all';
+    var note='В файле заданий: '+total+'. Ниже — первые '+items.length+'.';
+    if(skipped) note+=' Строк без номера задания пропущено: '+skipped+'.';
+    $('resNote').textContent=note;
+    $('stats').innerHTML=CATS.filter(function(x){return x.k==='all'||c[x.k]>0}).map(function(x){
+      return '<div class="stat '+x.cls+(filter===x.k?' on':'')+'" data-f="'+x.k+'"><div class="n">'+c[x.k]+'</div><div class="t">'+esc(x.t)+'</div></div>';
+    }).join('');
+    Array.prototype.forEach.call($('stats').querySelectorAll('.stat'),function(el){
+      el.addEventListener('click',function(){filter=el.getAttribute('data-f'); render(lastItems,total,skipped);});
+    });
+
+    var shown=items.filter(function(it){return filter==='all'||it.cat===filter});
+    $('list').innerHTML=shown.map(function(it){
+      var meta=[]; if(it.name) meta.push(esc(it.name)); if(it.size) meta.push('размер '+esc(it.size)); if(it.barcode) meta.push('ШК '+esc(it.barcode)); if(it.status) meta.push('статус: '+esc(it.status));
+      var tags='';
+      tags+= it.printed ? '<span class="tag t-ok">Напечатано'+(it.how?' · '+esc(it.how):'')+'</span>' : '<span class="tag t-no">Не напечатано</span>';
+      tags+= it.inSupply ? '<span class="tag t-sup">В поставке'+(it.supplyName?' '+esc(it.supplyName):'')+'</span>' : '<span class="tag t-nosup">Не в поставке</span>';
+      if(it.kind==='cancel') tags+='<span class="tag t-cancel">Отменено</span>';
+      if(it.dup) tags+='<span class="tag t-warn">Задание повторяется в файле — проверьте, не напечатано ли дважды</span>';
+      return '<div class="item"><label class="chk"><input type="checkbox" data-t="'+esc(it.task)+'"'+(it.printed?' checked':'')+'>напечатано</label>'+
+        '<div class="main"><div class="top"><span class="num">№ '+esc(it.task)+'</span>'+(it.article?'<span class="art">'+esc(it.article)+'</span>':'')+'</div>'+
+        (meta.length?'<div class="meta">'+meta.join(' · ')+'</div>':'')+
+        '<div>'+tags+'</div><div class="advice">'+ADVICE[it.cat]+'</div></div></div>';
+    }).join('') || '<p class="muted">В этой группе пусто.</p>';
+    Array.prototype.forEach.call($('list').querySelectorAll('input[type=checkbox]'),function(cb){
+      cb.addEventListener('change',function(){ marks[cb.getAttribute('data-t')]=cb.checked; saveMarks(marks); compute(); });
+    });
+
+    // по товарам
+    var gr={}, order=[];
+    items.forEach(function(it){
+      if(it.cat==='cancel') return;
+      var key=(it.article||it.barcode||it.name||'без артикула')+'|'+(it.size||'');
+      if(!gr[key]){gr[key]={a:it.article||it.barcode||it.name||'без артикула',s:it.size,n:0,np:0,ns:0}; order.push(key);}
+      var x=gr[key]; x.n++; if(!it.printed) x.np++; if(!it.inSupply) x.ns++;
+    });
+    order.sort(function(a,b){return (gr[b].np+gr[b].ns)-(gr[a].np+gr[a].ns)});
+    $('groups').innerHTML = order.length ? '<table class="group"><thead><tr><th>Товар</th><th class="c">Заданий</th><th class="c">Без этикетки</th><th class="c">Не в поставке</th></tr></thead><tbody>'+
+      order.map(function(k){var x=gr[k]; return '<tr><td>'+esc(x.a)+(x.s?'<br><span class="muted">'+esc(x.s)+'</span>':'')+'</td><td class="c">'+x.n+'</td><td class="c">'+(x.np?'<b style="color:#b3261e">'+x.np+'</b>':'0')+'</td><td class="c">'+(x.ns?'<b style="color:#9a6b00">'+x.ns+'</b>':'0')+'</td></tr>';}).join('')+'</tbody></table>'
+      : '<p class="muted">Все показанные задания отменены.</p>';
+    $('result').classList.remove('hidden');
+  }
+
+  // ---------- события ----------
+  $('file').addEventListener('change',function(e){ handleFile(e.target.files[0]); e.target.value=''; });
+  var drop=$('drop');
+  ['dragenter','dragover'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('over')})});
+  ['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('over')})});
+  drop.addEventListener('drop',function(e){ var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]; if(f) handleFile(f); });
+  $('pasteBtn').addEventListener('click',function(){
+    var t=$('paste').value;
+    if(!t.replace(/\s/g,'')){ fail('Поле пустое — вставьте строки таблицы вместе с заголовком.'); return; }
+    try{ fromAoa(parseText(t),'Вставленные данные'); }catch(e){ fail('Не получилось разобрать вставленный текст. Скопируйте строки прямо из Excel вместе со строкой заголовков.'); }
+  });
+  $('printedBtn').addEventListener('click',function(){
+    state.printedList={};
+    ($('printed').value.match(/[^\s,;]+/g)||[]).forEach(function(x){state.printedList[x.trim()]=1});
+    if(state.rows.length) compute();
+  });
+  $('clearMarks').addEventListener('click',function(){ marks={}; saveMarks(marks); if(state.rows.length) compute(); });
+  $('sampleBtn').addEventListener('click',function(){
+    var s=[['№ задания','Артикул продавца','Баркод','Размер','Статус','Поставка','Стикер'],
+      ['3401928811','Платье-лён-беж','2041234567011','44','На сборке','WB-GI-1234567','231648 9921'],
+      ['3401928812','Платье-лён-беж','2041234567028','46','На сборке','WB-GI-1234567',''],
+      ['3401928813','Футболка-оверсайз-черн','2041234567035','M','Новое','',''],
+      ['3401928814','Футболка-оверсайз-черн','2041234567035','M','Новое','','231648 9924'],
+      ['3401928815','Шорты-джинс','2041234567042','48','Новое','',''],
+      ['3401928816','Платье-лён-беж','2041234567011','44','Отменено','',''],
+      ['3401928817','Шорты-джинс','2041234567042','48','В доставке','WB-GI-1229001','231648 9801'],
+      ['3401928813','Футболка-оверсайз-черн','2041234567035','M','Новое','','']];
+    fromAoa(s,'Пример выгрузки');
+  });
+})();
+</script>
+</body>
+</html>
