@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Где Озон докидывает скидку — и сколько можно отдать на рекламу</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:#f6f7f9;color:#1f2933;font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;overflow-x:hidden}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px 14px 40px}
+  h1{font-size:24px;line-height:1.25;margin:8px 0 8px;font-weight:700}
+  .lead{color:#52606d;margin:0 0 6px}
+  .safe{display:inline-block;background:#e8f5ee;color:#1e6b43;border-radius:8px;padding:4px 10px;font-size:13px;margin:6px 0 16px}
+  .card{background:#fff;border:1px solid #e4e7eb;border-radius:12px;padding:16px;margin:0 0 14px}
+  .card h2{font-size:17px;margin:0 0 10px}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .btn{display:inline-block;border:1px solid #cbd2d9;background:#fff;color:#1f2933;border-radius:9px;padding:9px 14px;font-size:15px;cursor:pointer;text-decoration:none}
+  .btn:hover{background:#f0f2f5}
+  .btn.primary{background:#2563eb;border-color:#2563eb;color:#fff}
+  .btn.primary:hover{background:#1d4fd8}
+  .drop{border:2px dashed #cbd2d9;border-radius:12px;padding:18px;text-align:center;color:#52606d;cursor:pointer}
+  .drop.over{border-color:#2563eb;background:#eef4ff}
+  .drop b{color:#1f2933}
+  textarea{width:100%;min-height:90px;border:1px solid #cbd2d9;border-radius:9px;padding:8px;font:13px/1.4 Consolas,monospace;resize:vertical}
+  details summary{cursor:pointer;color:#2563eb;margin-top:10px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px 14px}
+  label.f{display:flex;flex-direction:column;font-size:13px;color:#52606d;gap:3px;min-width:0}
+  label.f input,label.f select{font-size:15px;padding:7px 8px;border:1px solid #cbd2d9;border-radius:8px;background:#fff;color:#1f2933;width:100%;min-width:0}
+  label.f.miss select{border-color:#e0a100;background:#fffbea}
+  .hint{font-size:13px;color:#7b8794}
+  .msg{border-radius:10px;padding:12px 14px;margin:0 0 14px;font-size:14px}
+  .msg.err{background:#fdecec;color:#8a1c1c;border:1px solid #f5c2c2}
+  .msg.warn{background:#fff8e6;color:#7a5200;border:1px solid #f3dc9b}
+  .msg.info{background:#eef4ff;color:#1e3a8a;border:1px solid #c9d8fb}
+  .sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+  .sum .box{border-radius:10px;padding:12px 14px;border:1px solid}
+  .box.go{background:#ecf8f1;border-color:#bfe5cf}
+  .box.ok{background:#fff8e6;border-color:#f3dc9b}
+  .box.minus{background:#fdecec;border-color:#f5c2c2}
+  .box.nocost{background:#f3f4f6;border-color:#dde1e6}
+  .box .n{font-size:22px;font-weight:700}
+  .box .t{font-weight:600}
+  .box .l{font-size:13px;color:#52606d;margin-top:4px;overflow-wrap:anywhere}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{padding:8px 6px;border-bottom:1px solid #eef0f3;text-align:right;vertical-align:top}
+  th{font-size:12px;color:#52606d;font-weight:600;background:#fafbfc;position:sticky;top:0}
+  td.l,th.l{text-align:left}
+  td .nm{display:block;font-size:12px;color:#7b8794;overflow-wrap:anywhere}
+  td input.cost{width:90px;font-size:14px;padding:5px 6px;border:1px solid #cbd2d9;border-radius:7px;text-align:right}
+  td input.cost.empty{border-color:#e0a100;background:#fffbea}
+  .chip{display:inline-block;border-radius:20px;padding:1px 9px;font-size:12px;white-space:nowrap}
+  .c-g{background:#dcf3e5;color:#1e6b43}.c-y{background:#fff1c2;color:#7a5200}.c-r{background:#fbd9d9;color:#8a1c1c}.c-n{background:#eceff3;color:#3e4c59}
+  .pos{color:#1e6b43}.neg{color:#b42318}
+  .rate{font-weight:700}
+  .st{font-size:12px;white-space:normal}
+  tr.go td:first-child{box-shadow:inset 3px 0 #2fa66a}
+  tr.ok td:first-child{box-shadow:inset 3px 0 #e0a100}
+  tr.minus td:first-child{box-shadow:inset 3px 0 #d64545}
+  tr.nocost td:first-child{box-shadow:inset 3px 0 #b8c0ca}
+  .more{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:#fff;border:1px solid #e4e7eb;border-radius:12px;padding:14px 16px}
+  .foot{text-align:center;color:#9aa5b1;font-size:12px;margin-top:26px}
+  .hidden{display:none}
+  @media (max-width:760px){
+    h1{font-size:21px}
+    table,thead,tbody,tr,td{display:block;width:100%}
+    thead{display:none}
+    tr{border:1px solid #e4e7eb;border-radius:10px;margin:0 0 10px;padding:4px 10px;background:#fff}
+    tr.go td:first-child,tr.ok td:first-child,tr.minus td:first-child,tr.nocost td:first-child{box-shadow:none}
+    tr.go{border-left:4px solid #2fa66a}tr.ok{border-left:4px solid #e0a100}tr.minus{border-left:4px solid #d64545}tr.nocost{border-left:4px solid #b8c0ca}
+    td{display:flex;justify-content:space-between;gap:10px;text-align:right;border-bottom:1px dashed #eef0f3;padding:6px 0}
+    td:last-child{border-bottom:0}
+    td::before{content:attr(data-label);color:#7b8794;font-size:13px;text-align:left;flex:0 0 auto;max-width:48%}
+    td.l{text-align:right}
+    td.first{display:block;text-align:left;font-weight:600}
+    td.first::before{content:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Где Озон сам докидывает скидку — и сколько можно отдать на рекламу, чтобы не уйти в минус</h1>
+  <p class="lead">Загрузите выгрузку «Товары и цены» из личного кабинета Ozon. По каждому артикулу увидите: вашу цену и цену для покупателя, соинвест Озона, комиссию и логистику, маржу и максимальную ставку «оплаты за заказ», при которой остаётся ваша целевая маржа.</p>
+  <div class="safe">🔒 Всё считается прямо в браузере — файл не уходит с вашего компьютера.</div>
+
+  <div class="card">
+    <h2>1. Файл с товарами и ценами</h2>
+    <div class="drop" id="drop">
+      <b>Перетащите сюда файл</b> или нажмите, чтобы выбрать<br>
+      <span class="hint">Excel (.xlsx, .xls), CSV или текст. Два кабинета — загрузите файлы по очереди.</span>
+      <input type="file" id="file" accept=".xlsx,.xls,.csv,.txt,.tsv" class="hidden">
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" id="demoBtn" type="button">Показать на примере</button>
+      <span class="hint" id="fileInfo"></span>
+    </div>
+    <details>
+      <summary>Или вставить таблицу (скопировать из Excel)</summary>
+      <textarea id="paste" placeholder="Артикул	Ваша цена, ₽	Цена для покупателя, ₽	Комиссия FBO, %&#10;CASE-01	890	690	19"></textarea>
+      <button class="btn" id="pasteBtn" type="button" style="margin-top:6px">Посчитать</button>
+    </details>
+  </div>
+
+  <div id="msgs"></div>
+
+  <div class="card hidden" id="mapCard">
+    <h2>2. Какие колонки что означают</h2>
+    <p class="hint" style="margin:0 0 10px">Колонки подобраны по названиям. Если что-то не так или не нашлось — выберите вручную.</p>
+    <div class="row hidden" id="sheetRow" style="margin-bottom:10px"><label class="f" style="min-width:220px">Лист<select id="sheetSel"></select></label></div>
+    <div class="grid" id="mapGrid"></div>
+  </div>
+
+  <div class="card hidden" id="setCard">
+    <h2>3. Ваши условия</h2>
+    <div class="grid">
+      <label class="f">Целевая маржа, % от вашей цены<input id="sTarget" inputmode="decimal" value="20"></label>
+      <label class="f">«Высокий» соинвест — от, %<input id="sCo" inputmode="decimal" value="10"></label>
+      <label class="f">Комиссия, % — если нет в файле<input id="sComm" inputmode="decimal" placeholder="например 19"></label>
+      <label class="f">Логистика, ₽ за шт. — если нет в файле<input id="sLogi" inputmode="decimal" placeholder="например 90"></label>
+      <label class="f">Прочее, % (эквайринг, хранение, налог)<input id="sOther" inputmode="decimal" value="0"></label>
+    </div>
+    <p class="hint" style="margin:10px 0 0">Ставка «оплаты за заказ» считается в % от вашей цены. Себестоимость можно вписать прямо в таблице ниже.</p>
+  </div>
+
+  <div id="result"></div>
+
+  <div class="foot">g.a.d.</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var TG='https://t.me/gad_artur', LIMIT=20;
+
+var FIELDS=[
+  {k:'art',  t:'Артикул', re:[/^артикул$/,/артикул продавца/,/^артикул/,/offer.?id/,/артикул/]},
+  {k:'sku',  t:'Ozon SKU / ID', re:[/^sku$/,/ozon\s*sku/,/sku\s*id/,/^ozon\s*id/,/product\s*id/,/\bsku\b/,/ozon id/]},
+  {k:'name', t:'Название', re:[/наименован/,/название/,/^товар$/]},
+  {k:'old',  t:'Цена до скидки', re:[/до скидк/,/зачеркн/]},
+  {k:'buyer',t:'Цена для покупателя', re:[/для покупател/,/с учетом акци/,/ozon\s*карт|озон\s*карт/,/на витрин|на сайте/,/покупател/]},
+  {k:'price',t:'Ваша цена', req:true, re:[/ваша цена/,/цена продавца/,/текущая цена/,/цена с учетом скидк/,/цена продажи/,/^цена(\s*,|\s*₽|\s*руб|\s*\(|$)/]},
+  {k:'index',t:'Индекс цен', re:[/индекс/]},
+  {k:'comm', t:'Комиссия', re:[/комисс.*fbo.*%/,/fbo.*комисс.*%/,/комисс.*%/,/комисс.*fbo/,/комисс/]},
+  {k:'logi', t:'Логистика, ₽', re:[/логист.*fbo/,/логист/,/доставк/,/магистрал/]},
+  {k:'cost', t:'Себестоимость, ₽', re:[/себестоим/,/закуп/,/\bcost\b/]}
+];
+
+var S={wb:null,sheet:null,rows:null,hdr:0,headers:[],map:{},costs:{},fname:''};
+var $=function(id){return document.getElementById(id)};
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function norm(s){return String(s==null?'':s).toLowerCase().replace(/ё/g,'е').replace(/[\s ]+/g,' ').trim()}
+function num(v){
+  if(typeof v==='number')return isFinite(v)?v:null;
+  if(v==null)return null;
+  var s=String(v).replace(/[\s ]/g,'').replace(/руб\.?|₽|р\.|%/gi,'');
+  if(s.indexOf(',')>-1&&s.indexOf('.')>-1)s=s.replace(/,/g,'');else s=s.replace(',','.');
+  if(!/^-?\d*\.?\d+$/.test(s))return null;
+  return parseFloat(s);
+}
+function pct(v){
+  var n=num(v);if(n==null)return null;
+  if(typeof v==='string'&&v.indexOf('%')>-1)return n;
+  if(n>0&&n<1)return n*100;
+  return n;
+}
+function fm(n,d){if(n==null||!isFinite(n))return '—';return n.toLocaleString('ru-RU',{minimumFractionDigits:d||0,maximumFractionDigits:d||0})}
+function rub(n){return n==null?'—':fm(n,0)+' ₽'}
+function colName(i){var s='';i++;while(i>0){var m=(i-1)%26;s=String.fromCharCode(65+m)+s;i=Math.floor((i-1)/26)}return s}
+
+function msg(type,html){$('msgs').insertAdjacentHTML('beforeend','<div class="msg '+type+'">'+html+'</div>')}
+function clearMsg(){$('msgs').innerHTML=''}
+function fail(html){clearMsg();msg('err',html);$('mapCard').classList.add('hidden');$('setCard').classList.add('hidden');$('result').innerHTML=''}
+
+/* ---------- чтение ---------- */
+function handleFile(f){
+  if(!f)return;
+  S.fname=f.name;S.costs={};
+  $('fileInfo').textContent='Файл: '+f.name;
+  if(f.size===0){fail('Файл <b>'+esc(f.name)+'</b> пустой. Скачайте выгрузку заново: ЛК Ozon → Товары → Цены → «Скачать».');return}
+  var ext=(f.name.split('.').pop()||'').toLowerCase();
+  var rd=new FileReader();
+  rd.onerror=function(){fail('Не удалось прочитать файл. Попробуйте ещё раз или сохраните его как .xlsx.')};
+  if(ext==='csv'||ext==='txt'||ext==='tsv'){
+    rd.onload=function(){
+      var buf=new Uint8Array(rd.result),txt;
+      try{txt=new TextDecoder('utf-8',{fatal:true}).decode(buf)}catch(e){txt=new TextDecoder('windows-1251').decode(buf)}
+      loadRows(parseText(txt),null);
+    };
+    rd.readAsArrayBuffer(f);
+  }else{
+    if(typeof XLSX==='undefined'){fail('Не загрузился модуль чтения Excel (нет интернета?). Обновите страницу или вставьте таблицу через «Вставить таблицу».');return}
+    rd.onload=function(){
+      var wb;
+      try{wb=XLSX.read(new Uint8Array(rd.result),{type:'array'})}
+      catch(e){fail('Файл <b>'+esc(f.name)+'</b> не открылся как Excel. Возможно, он повреждён или защищён паролем. Откройте его в Excel и сохраните как .xlsx, либо скопируйте таблицу и вставьте ниже.');return}
+      loadWorkbook(wb);
+    };
+    rd.readAsArrayBuffer(f);
+  }
+}
+function parseText(txt){
+  txt=txt.replace(/^﻿/,'');
+  var lines=txt.split(/\r?\n/).filter(function(l){return l.trim()!==''});
+  if(!lines.length)return [];
+  var sample=lines.slice(0,10).join('\n'),cnt={'\t':0,';':0,',':0};
+  for(var d in cnt)cnt[d]=sample.split(d).length;
+  var del=cnt['\t']>lines.length?'\t':(cnt[';']>=cnt[',']?';':',');
+  return lines.map(function(l){
+    var out=[],cur='',q=false;
+    for(var i=0;i<l.length;i++){
+      var c=l[i];
+      if(q){if(c==='"'){if(l[i+1]==='"'){cur+='"';i++}else q=false}else cur+=c}
+      else if(c==='"')q=true;
+      else if(c===del){out.push(cur);cur=''}
+      else cur+=c;
+    }
+    out.push(cur);return out.map(function(x){return x.trim()});
+  });
+}
+function scoreRow(r){
+  var s=0;(r||[]).forEach(function(c){var n=norm(c);if(!n||n.length>80)return;
+    if(FIELDS.some(function(f){return f.re.some(function(re){return re.test(n)})}))s++});
+  return s;
+}
+function findHeader(rows){
+  var best=-1,bi=0;
+  for(var i=0;i<Math.min(rows.length,30);i++){var s=scoreRow(rows[i]);if(s>best){best=s;bi=i}}
+  return {i:bi,score:best};
+}
+function loadWorkbook(wb){
+  S.wb=wb;
+  var names=wb.SheetNames||[];
+  if(!names.length){fail('В файле нет ни одного листа.');return}
+  var best=names[0],bs=-1;
+  names.forEach(function(n){
+    var rows=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,defval:'',raw:true});
+    var s=findHeader(rows).score;if(s>bs){bs=s;best=n}
+  });
+  var sel=$('sheetSel');sel.innerHTML=names.map(function(n){return '<option'+(n===best?' selected':'')+'>'+esc(n)+'</option>'}).join('');
+  $('sheetRow').classList.toggle('hidden',names.length<2);
+  useSheet(best);
+}
+function useSheet(n){
+  S.sheet=n;
+  var rows=XLSX.utils.sheet_to_json(S.wb.Sheets[n],{header:1,defval:'',raw:true});
+  loadRows(rows,n);
+}
+function loadRows(rows,sheet){
+  if(!sheet){S.wb=null;$('sheetRow').classList.add('hidden')}
+  rows=(rows||[]).filter(function(r){return r&&r.some(function(c){return String(c).trim()!==''})});
+  if(!rows.length){fail('В файле нет данных — ни одной заполненной строки. Проверьте, что выгружали «Товары и цены», а не пустой шаблон.');return}
+  var h=findHeader(rows);
+  S.rows=rows;S.hdr=h.i;
+  var width=0;rows.forEach(function(r){if(r.length>width)width=r.length});
+  S.headers=[];
+  for(var i=0;i<width;i++){var t=String(rows[h.i][i]==null?'':rows[h.i][i]).trim();S.headers.push(t||('Колонка '+colName(i)))}
+  autoMap();
+  buildMapUI();
+  $('mapCard').classList.remove('hidden');$('setCard').classList.remove('hidden');
+  compute();
+}
+function autoMap(){
+  var used={},m={};
+  var H=S.headers.map(norm);
+  FIELDS.forEach(function(f){
+    m[f.k]=-1;
+    for(var r=0;r<f.re.length&&m[f.k]<0;r++){
+      for(var i=0;i<H.length;i++){if(!used[i]&&H[i].length<=80&&f.re[r].test(H[i])){m[f.k]=i;used[i]=1;break}}
+    }
+  });
+  // если ничего похожего на цену — берём первую числовую колонку как подсказку не будем: пусть выберет сам
+  S.map=m;
+}
+function buildMapUI(){
+  var opts=S.headers.map(function(h,i){return '<option value="'+i+'">'+colName(i)+': '+esc(h.length>50?h.slice(0,50)+'…':h)+'</option>'}).join('');
+  $('mapGrid').innerHTML=FIELDS.map(function(f){
+    var miss=f.req&&S.map[f.k]<0;
+    return '<label class="f'+(miss?' miss':'')+'">'+f.t+(f.req?' *':'')+'<select data-k="'+f.k+'"><option value="-1">— нет в файле —</option>'+opts+'</select></label>';
+  }).join('');
+  Array.prototype.forEach.call($('mapGrid').querySelectorAll('select'),function(s){
+    s.value=String(S.map[s.dataset.k]);
+    s.addEventListener('change',function(){S.map[s.dataset.k]=+s.value;s.parentNode.classList.toggle('miss',s.dataset.k==='price'&&+s.value<0);compute()});
+  });
+}
+
+/* ---------- расчёт ---------- */
+function cell(r,k){var i=S.map[k];return i>=0?r[i]:undefined}
+function idxChip(v){
+  if(v==null||String(v).trim()==='')return '<span class="chip c-n">нет</span>';
+  var n=norm(v);
+  var cls=/невыгод|красн|red|плох/.test(n)?'c-r':/умерен|желт|yellow|средн/.test(n)?'c-y':/выгод|зелен|green|хорош/.test(n)?'c-g':'c-n';
+  return '<span class="chip '+cls+'">'+esc(String(v).trim())+'</span>';
+}
+function settings(){
+  var g=function(id){var v=num($(id).value);return v};
+  return {target:g('sTarget')==null?20:g('sTarget'),co:g('sCo')==null?10:g('sCo'),comm:g('sComm'),logi:g('sLogi'),other:g('sOther')||0};
+}
+function getItems(){
+  var items=[],total=0,skipped=0;
+  var commHdr=S.map.comm>=0?norm(S.headers[S.map.comm]):'';
+  var commRub=/₽|руб/.test(commHdr)&&!/%/.test(commHdr);
+  for(var i=S.hdr+1;i<S.rows.length;i++){
+    var r=S.rows[i],p=num(cell(r,'price'));
+    if(p==null||p<=0){if(r.some(function(c){return String(c).trim()!==''}))skipped++;continue}
+    total++;
+    if(items.length>=LIMIT)continue;
+    var art=cell(r,'art'),key=String(art!=null&&art!==''?art:'row'+i);
+    var commV=cell(r,'comm');
+    items.push({key:key,art:art,sku:cell(r,'sku'),name:cell(r,'name'),p:p,old:num(cell(r,'old')),b:num(cell(r,'buyer')),
+      index:cell(r,'index'),comm:commRub?null:pct(commV),commRubV:commRub?num(commV):null,logi:num(cell(r,'logi')),cost:num(cell(r,'cost'))});
+  }
+  return {items:items,total:total,skipped:skipped};
+}
+function calc(it,st){
+  var o={};
+  o.co=it.b!=null&&it.b>0?Math.max(0,(it.p-it.b)/it.p*100):null;
+  var commRub=it.commRubV!=null?it.commRubV:(it.comm!=null?it.p*it.comm/100:(st.comm!=null?it.p*st.comm/100:null));
+  o.commPct=it.commRubV!=null?it.commRubV/it.p*100:(it.comm!=null?it.comm:st.comm);
+  o.commRub=commRub;o.commFromFile=it.comm!=null||it.commRubV!=null;
+  o.logi=it.logi!=null?it.logi:st.logi;o.logiFromFile=it.logi!=null;
+  var c=S.costs.hasOwnProperty(it.key)?S.costs[it.key]:it.cost;o.cost=c;
+  if(c==null){o.status='nocost';o.profit=null;o.m=null;o.rate=null;return o}
+  o.profit=it.p-(commRub||0)-(o.logi||0)-it.p*st.other/100-c;
+  o.m=o.profit/it.p*100;
+  o.rate=o.m-st.target;
+  if(o.rate<=0)o.status='minus';
+  else if(o.co!=null&&o.co>=st.co)o.status='go';
+  else o.status='ok';
+  return o;
+}
+var ST={go:'Сюда рекламу',ok:'Реклама — осторожно',minus:'Реклама в минус',nocost:'Нет себестоимости'};
+function label(it){var a=it.art!=null&&String(it.art).trim()!==''?String(it.art):(it.sku!=null&&String(it.sku)!==''?'SKU '+it.sku:'без артикула');return a}
+
+function compute(){
+  clearMsg();
+  if(!S.rows)return;
+  if(S.map.price<0){
+    msg('err','Не нашлась колонка с <b>вашей ценой</b>. Выберите её выше в поле «Ваша цена» — обычно она называется «Ваша цена», «Текущая цена» или «Цена с учётом скидки».');
+    $('result').innerHTML='';return;
+  }
+  var g=getItems();
+  if(!g.items.length){
+    msg('err','В колонке «'+esc(S.headers[S.map.price])+'» нет ни одной цены числом. Похоже, выбрана не та колонка — укажите правильную выше.');
+    $('result').innerHTML='';return;
+  }
+  var st=settings();
+  var warn=[];
+  if(S.map.buyer<0)warn.push('нет колонки «цена для покупателя» — соинвест Озона посчитать не из чего, выберите её выше');
+  if(S.map.comm<0&&st.comm==null)warn.push('нет комиссии ни в файле, ни в условиях — маржа завышена, впишите комиссию в п.3');
+  if(S.map.logi<0&&st.logi==null)warn.push('нет логистики — впишите среднюю стоимость в п.3, иначе маржа завышена');
+  if(warn.length)msg('warn','Обратите внимание: '+warn.join('; ')+'.');
+  render(g,st);
+}
+
+function rowHTML(it,o,st){
+  var nm=it.name?'<span class="nm">'+esc(String(it.name).slice(0,90))+'</span>':'';
+  var coTxt=o.co==null?'—':'<span class="'+(o.co>=st.co?'pos':'')+'">'+fm(o.co,1)+'%</span>';
+  var commTxt=o.commPct==null?'—':fm(o.commPct,1)+'% · '+rub(o.commRub)+(o.commFromFile?'':' <span class="hint">(из п.3)</span>');
+  var logiTxt=o.logi==null?'—':rub(o.logi)+(o.logiFromFile?'':' <span class="hint">(из п.3)</span>');
+  var mTxt=o.m==null?'—':'<span class="'+(o.m>=st.target?'pos':'neg')+'">'+rub(o.profit)+' · '+fm(o.m,1)+'%</span>';
+  var rTxt=o.rate==null?'<span class="hint">впишите себест.</span>':(o.rate>0?'<span class="rate pos">до '+fm(o.rate,1)+'%</span>':'<span class="rate neg">0% — нельзя</span>');
+  var cv=o.cost==null?'':String(o.cost);
+  return '<td class="l first" data-label="Артикул">'+esc(label(it))+nm+'</td>'+
+    '<td data-label="Ваша цена → для покупателя">'+rub(it.p)+' → '+(it.b==null?'—':rub(it.b))+'</td>'+
+    '<td data-label="Соинвест Озона">'+coTxt+'</td>'+
+    '<td data-label="Индекс цен">'+(S.map.index>=0?idxChip(it.index):'—')+'</td>'+
+    '<td data-label="Комиссия">'+commTxt+'</td>'+
+    '<td data-label="Логистика">'+logiTxt+'</td>'+
+    '<td data-label="Себестоимость, ₽"><input class="cost'+(cv===''?' empty':'')+'" data-key="'+esc(it.key)+'" inputmode="decimal" value="'+esc(cv)+'" placeholder="₽"></td>'+
+    '<td data-label="Маржа">'+mTxt+'</td>'+
+    '<td data-label="Макс. ставка «оплата за заказ»">'+rTxt+'</td>'+
+    '<td class="l" data-label="Вывод"><span class="st">'+ST[o.status]+'</span></td>';
+}
+function summaryHTML(list,st){
+  var gr={go:[],ok:[],minus:[],nocost:[]};
+  list.forEach(function(x){gr[x.o.status].push(x)});
+  var names=function(a){return a.slice(0,8).map(function(x){return esc(label(x.it))}).join(', ')+(a.length>8?' и ещё '+(a.length-8):'')};
+  var avg=function(a,f){var s=0,n=0;a.forEach(function(x){var v=f(x);if(v!=null){s+=v;n++}});return n?s/n:null};
+  var b=function(cls,title,a,text){return '<div class="box '+cls+'"><div class="n">'+a.length+'</div><div class="t">'+title+'</div><div class="l">'+text+(a.length?'<br>'+names(a):'')+'</div></div>'};
+  var goRate=avg(gr.go,function(x){return x.o.rate}),goCo=avg(gr.go,function(x){return x.o.co});
+  return '<div class="sum">'+
+    b('go','Сюда рекламу',gr.go,'Озон докидывает от '+fm(st.co)+'% и маржа выдерживает рекламу.'+(goRate!=null?' Средний соинвест '+fm(goCo,1)+'%, допустимая ставка в среднем до '+fm(goRate,1)+'%.':''))+
+    b('ok','Можно, но осторожно',gr.ok,'Маржа есть, но соинвест низкий или неизвестен — ставку держите ниже максимальной.')+
+    b('minus','Реклама в минус',gr.minus,'Даже без рекламы маржа ниже '+fm(st.target)+'%. «Оплату за заказ» не включать — сначала цена или себестоимость.')+
+    b('nocost','Нет себестоимости',gr.nocost,'Впишите себестоимость в таблице — вывод появится сразу.')+
+  '</div>';
+}
+function render(g,st){
+  var list=g.items.map(function(it){return {it:it,o:calc(it,st)}});
+  var h='<div class="card"><h2>Итог по первым '+list.length+(g.total>list.length?' из '+g.total:'')+' позициям'+(S.fname?' · '+esc(S.fname):'')+'</h2><div id="sumBox">'+summaryHTML(list,st)+'</div></div>';
+  h+='<div class="card"><h2>По каждому артикулу</h2><table><thead><tr>'+
+    '<th class="l">Артикул</th><th>Ваша цена → для покупателя</th><th>Соинвест Озона</th><th>Индекс цен</th><th>Комиссия</th><th>Логистика</th><th>Себестоимость</th><th>Маржа ₽ · %</th><th>Макс. ставка «оплата за заказ»</th><th class="l">Вывод</th>'+
+    '</tr></thead><tbody>';
+  list.forEach(function(x,i){h+='<tr class="'+x.o.status+'" data-i="'+i+'">'+rowHTML(x.it,x.o,st)+'</tr>'});
+  h+='</tbody></table>';
+  h+='<p class="hint" style="margin:10px 0 0">Соинвест = на сколько % цена для покупателя ниже вашей цены (эту разницу оплачивает Озон). Макс. ставка = ваша маржа − целевая '+fm(st.target)+'%: при такой ставке «оплаты за заказ» у вас остаётся ровно целевая маржа.</p></div>';
+  if(g.skipped>0)h+='<div class="msg info">Пропущено строк без цены: '+g.skipped+' (подписи, пустые или служебные строки).</div>';
+  h+='<div class="more"><span>Это первые 20, полная версия — после оплаты, напишите в Telegram.</span><a class="btn primary" href="'+TG+'" target="_blank" rel="noopener">Написать в Telegram</a></div>';
+  $('result').innerHTML=h;
+  S.list=list;
+  Array.prototype.forEach.call($('result').querySelectorAll('input.cost'),function(inp){
+    inp.addEventListener('input',function(){
+      var v=num(inp.value),k=inp.dataset.key;
+      if(inp.value.trim()==='')S.costs[k]=null;else if(v!=null)S.costs[k]=v;else return;
+      var st2=settings();
+      S.list.forEach(function(x,i){
+        if(x.it.key!==k)return;
+        x.o=calc(x.it,st2);
+        var tr=$('result').querySelector('tr[data-i="'+i+'"]');
+        tr.className=x.o.status;
+        var tds=tr.children;
+        var tmp=document.createElement('tr');tmp.innerHTML=rowHTML(x.it,x.o,st2);
+        [7,8,9].forEach(function(j){tds[j].innerHTML=tmp.children[j].innerHTML});
+      });
+      inp.classList.toggle('empty',inp.value.trim()==='');
+      $('sumBox').innerHTML=summaryHTML(S.list,st2);
+    });
+  });
+}
+
+/* ---------- пример ---------- */
+function demo(){
+  var H=['Артикул','Ozon SKU ID','Наименование товара','Цена до скидки, ₽','Ваша цена, ₽','Цена для покупателя, ₽','Индекс цен','Комиссия FBO, %','Логистика FBO, ₽','Себестоимость, ₽'];
+  var D=[
+    ['CASE-IP15-BLK',1489201331,'Чехол для iPhone 15 силиконовый, чёрный',1490,890,690,'Выгодный',0.19,76,180],
+    ['GLASS-IP14',1489201332,'Защитное стекло iPhone 14, 2 шт',990,490,412,'Выгодный',0.19,63,55],
+    ['CABLE-TC-1M',1489201333,'Кабель USB-C – USB-C 60W, 1 м',890,520,505,'Умеренный',0.22,63,140],
+    ['HOLDER-CAR-M',1489201334,'Держатель в авто магнитный',1990,1190,915,'Выгодный',0.2,98,420],
+    ['STRAP-AW-44',1489201335,'Ремешок Apple Watch 44 мм нейлон',1290,690,672,'Невыгодный',0.22,63,310],
+    ['STAND-TAB',1489201336,'Подставка для планшета алюминиевая',2490,1490,1160,'Выгодный',0.18,112,560],
+    ['KEYCH-AIRT',1489201337,'Брелок-чехол для AirTag',590,350,329,'Умеренный',0.22,58,95],
+    ['PWR-10K',1489201338,'Внешний аккумулятор 10000 мАч',2990,1790,1610,'Умеренный',0.17,112,980],
+    ['CASE-AIRP3',1489201339,'Чехол для AirPods 3 матовый',790,450,345,'Выгодный',0.2,63,''],
+    ['ORG-CABLE',1489201340,'Органайзер для проводов, 10 шт',490,290,288,'Без индекса',0.22,58,150],
+    ['RING-HLD',1489201341,'Кольцо-держатель для телефона',390,250,199,'Выгодный',0.22,58,''],
+    ['LENS-CLN',1489201342,'Набор для чистки экранов',690,390,382,'Невыгодный',0.2,63,120]
+  ];
+  S.fname='пример.xlsx';S.costs={};$('fileInfo').textContent='Показан пример — загрузите свой файл';
+  loadRows([H].concat(D),null);
+}
+
+/* ---------- события ---------- */
+var drop=$('drop'),fi=$('file');
+drop.addEventListener('click',function(){fi.click()});
+fi.addEventListener('change',function(){handleFile(fi.files[0]);fi.value=''});
+['dragenter','dragover'].forEach(function(e){drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.add('over')})});
+['dragleave','drop'].forEach(function(e){drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.remove('over')})});
+drop.addEventListener('drop',function(ev){var f=ev.dataTransfer&&ev.dataTransfer.files[0];if(f)handleFile(f)});
+$('demoBtn').addEventListener('click',demo);
+$('pasteBtn').addEventListener('click',function(){
+  var t=$('paste').value;
+  if(!t.trim()){fail('Поле пустое — скопируйте таблицу вместе со строкой заголовков и вставьте её.');return}
+  S.fname='';S.costs={};$('fileInfo').textContent='Данные из вставки';
+  loadRows(parseText(t),null);
+});
+$('sheetSel').addEventListener('change',function(){S.costs={};useSheet($('sheetSel').value)});
+['sTarget','sCo','sComm','sLogi','sOther'].forEach(function(id){$(id).addEventListener('input',compute)});
+window.addEventListener('error',function(){msg('err','Что-то пошло не так при расчёте. Попробуйте другой файл или напишите в <a href="'+TG+'" target="_blank" rel="noopener">Telegram</a>.')});
+})();
+</script>
+</body>
+</html>
