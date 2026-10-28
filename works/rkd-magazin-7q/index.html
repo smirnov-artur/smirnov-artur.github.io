@@ -554,18 +554,22 @@ function sizeBtns(t, sel, attr) {
 function openItem(id) {
   var t = T[id]; if (!t) return;
   var sel = autoIdx(t), x = (t.x || []).filter(function (i) { return T[i]; });
+  // «весь образ» — капсула, в которую входит вещь (если есть), её вещи первыми в ряду
+  var cap = D.kapsuly.filter(function (k) { return k.ids.indexOf(t.id) >= 0; })[0];
+  var lookX = cap ? cap.ids.filter(function (i) { return i !== t.id && T[i]; }) : x;
+  x = lookX.concat(x.filter(function (i) { return lookX.indexOf(i) < 0; }));
   var sim = x.length ? [] : D.tovary.filter(function (o) { return o.t === t.t && o.id !== t.id && (!st.size || fits(o, st.size)); }).slice(0, 6);
   var mi = mySizeIdx(t);
   var gal = '<div class="gal"><div class="track noscroll">' + t.f.map(function (i, k) { return ph(img(t, i, true), "", k === 0); }).join("") + '</div>'
     + (t.f.length > 1 ? '<span class="cnt">1 / ' + t.f.length + '</span><button class="ib gnav l" data-g="-1" aria-label="Предыдущее фото">' + IC.back + '</button><button class="ib gnav r" data-g="1" aria-label="Следующее фото">' + IC.next + "</button>" : "") + "</div>";
-  var lookSum = x.reduce(function (a, i) { return a + T[i].my; }, t.my);
+  var lookSum = lookX.reduce(function (a, i) { return a + T[i].my; }, t.my);
   var html = bar(t.t) + gal + '<div class="pad">'
     + '<h1 class="pname">' + esc(t.n) + "</h1>"
     + '<div class="price"><b>' + fmt(t.my) + '</b><span class="pct">−30 %</span></div>'
     + '<p class="wbp">на Wildberries <s>' + fmt(t.wb) + "</s></p>"
     + '<h2 class="h3" id="szh">Размер</h2><div class="sizes">' + sizeBtns(t, sel, "data-sz") + "</div>"
     + '<p class="hint' + (mi >= 0 ? " yes" : "") + '">' + (st.size ? (mi >= 0 ? "Ваш " + st.size + " есть — выбрали его" : "Вашего " + st.size + " сейчас нет. Есть только эти размеры") : "Показаны только размеры, которые есть в наличии") + "</p>"
-    + (x.length ? '<h2 class="h3">С чем носить</h2><div class="minis noscroll">' + x.map(function (i) { return miniHtml(T[i]); }).join("") + '</div><button class="btn line" data-lookadd>Весь образ в корзину · ' + fmt(lookSum) + "</button>"
+    + (x.length ? '<h2 class="h3">С чем носить</h2><div class="minis noscroll">' + x.map(function (i) { return miniHtml(T[i]); }).join("") + '</div>' + (lookX.length ? '<button class="btn line" data-lookadd>Весь образ в корзину · ' + veshi(lookX.length + 1) + ' · ' + fmt(lookSum) + "</button>" : "")
       : sim.length ? '<h2 class="h3">Ещё ' + esc(t.t.toLowerCase()) + '</h2><div class="minis noscroll">' + sim.map(miniHtml).join("") + "</div>" : "")
     + '<div class="perks">'
     + '<div class="perk">' + IC.hanger + '<div><b>Примерка перед покупкой</b><span>Берите до 10 вещей, оплачиваете только то, что оставили.</span></div></div>'
@@ -582,7 +586,7 @@ function openItem(id) {
     el.addEventListener("click", function (e) {
       var b = e.target.closest("[data-sz],[data-g],[data-lookadd]"); if (!b) return;
       if (b.dataset.g) { tr.scrollBy({ left: +b.dataset.g * tr.clientWidth, behavior: "smooth" }); return; }
-      if (b.hasAttribute("data-lookadd")) { addLook(t, sel, x); return; }
+      if (b.hasAttribute("data-lookadd")) { addLook(t, sel, lookX); return; }
       sel = +b.dataset.sz; hap("sel");
       el.querySelectorAll("[data-sz]").forEach(function (q) { q.setAttribute("aria-pressed", String(+q.dataset.sz === sel)); });
       sync();
