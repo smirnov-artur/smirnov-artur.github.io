@@ -19,7 +19,7 @@
 <style>
 :root{
   --bg:#F6F1EA; --paper:#FFFCF8; --sand:#ECE2D6; --sand2:#E2D5C6; --line:#E1D4C5;
-  --ink:#2A1F1B; --muted:#6A5C54; --wine:#7A1F2B; --wine2:#5F1621; --wine-soft:#F3E2DF;
+  --ink:#2A1F1B; --muted:#6A5C54; --wine:#BD0608; --wine2:#94050A; --wine-soft:#FBE3E1;
   --gold:#B08A57; --gold-ink:#86602F; --ok:#2F6B4F; --err:#9B1C1C;
   --st:env(safe-area-inset-top,0px); --sb:env(safe-area-inset-bottom,0px); --act-h:0px;
   --e1:0 1px 2px rgba(42,31,27,.06),0 1px 1px rgba(42,31,27,.04);
@@ -45,8 +45,9 @@ s{text-decoration-thickness:1.5px}
 /* шапка */
 .top{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:8px;padding:calc(var(--st) + 8px) 16px 8px;background:rgba(246,241,234,.93);-webkit-backdrop-filter:saturate(1.2) blur(12px);backdrop-filter:saturate(1.2) blur(12px);border-bottom:1px solid transparent;transition:border-color .2s}
 .top.sc{border-bottom-color:var(--line)}
-.brand{flex:1;min-width:0;font:600 clamp(19px,5.6vw,22px)/1.02 var(--serif);color:var(--wine);letter-spacing:.005em}
-.brand small{display:block;font:500 17px/1.2 var(--sans);color:var(--muted);letter-spacing:0;margin-top:2px}
+.brand{flex:1;min-width:0;display:flex;align-items:center;gap:10px}
+.logo{height:52px;width:auto;flex:none}
+.brand small{font:500 17px/1.15 var(--sans);color:var(--muted)}
 .ib{position:relative;flex:none;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--paper);border:1px solid var(--line);box-shadow:var(--e1);color:var(--ink)}
 .ib.wine{background:var(--wine);border-color:var(--wine);color:#fff}
 .ib:active{transform:scale(.96)}
@@ -62,6 +63,62 @@ s{text-decoration-thickness:1.5px}
 .ask{display:flex;align-items:center;gap:12px;width:calc(100% - 32px);margin:18px 16px 4px;min-height:64px;padding:8px 8px 8px 20px;border-radius:32px;background:var(--paper);border:1px solid var(--line);box-shadow:var(--e2);color:var(--muted)}
 .ask .t{flex:1;font-size:18px;line-height:1.25}
 .ask .ib{box-shadow:none}
+
+/* хозяйка магазина */
+.hi{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:start;margin:16px 16px 0}
+.hi-ava{width:96px;aspect-ratio:3/4;border-radius:16px;object-fit:cover;object-position:50% 0;background:var(--sand);box-shadow:var(--e2)}
+.bub{position:relative;min-height:64px;background:var(--paper);border:1px solid var(--line);border-radius:6px 20px 20px 20px;padding:13px 15px;box-shadow:var(--e1)}
+.bub p+p{margin-top:8px}
+.bub .say{animation:say .4s var(--ease) both}
+@keyframes say{from{opacity:0;transform:translateY(6px)}}
+.dots{display:inline-flex;gap:5px;padding:8px 2px}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--muted);opacity:.35;animation:dot 1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes dot{40%{opacity:1;transform:translateY(-3px)}}
+.hi-acts{grid-column:1/-1;display:grid;gap:8px}
+/* главный вход — голос: крупный микрофон рядом с репликой */
+.say-big{display:flex;align-items:center;gap:14px;width:100%;min-height:76px;padding:8px 20px 8px 8px;border-radius:40px;background:var(--wine);color:#fff;font:600 19px/1.2 var(--sans);box-shadow:var(--e2)}
+.say-big .mc{flex:none;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.18);animation:mc 2.2s infinite}
+@keyframes mc{0%{box-shadow:0 0 0 0 rgba(255,255,255,.45)}70%,100%{box-shadow:0 0 0 14px rgba(255,255,255,0)}}
+.say-big:active{background:var(--wine2)}
+.zv{position:absolute;top:-12px;right:-8px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--paper);border:1px solid var(--line);color:var(--muted);box-shadow:var(--e1)}
+.zv[aria-pressed="true"]{color:var(--wine)}
+.bub{padding-right:30px}
+.picks{grid-column:1/-1;display:flex;gap:12px;overflow-x:auto;margin:2px -16px 0;padding:0 16px 4px;scroll-snap-type:x mandatory;scroll-padding:0 16px}
+.picks .mini{flex-basis:40%}
+.dlg{display:flex;flex-direction:column;gap:10px;margin:2px 0 6px}
+.dlg .you{align-self:flex-end;max-width:85%;padding:10px 14px;border-radius:18px 18px 6px 18px;background:var(--ink);color:var(--bg);font:italic 500 21px/1.2 var(--serif)}
+.dlg .her{display:flex;gap:10px;align-items:flex-end;max-width:92%}
+.dlg .her img{flex:none;width:40px;height:40px;border-radius:50%;object-fit:cover}
+.dlg .her span{padding:10px 14px;border-radius:18px 18px 18px 6px;background:var(--paper);border:1px solid var(--line);color:var(--ink)}
+.dlg-caps{display:flex;gap:10px;overflow-x:auto;margin:2px -20px 8px;padding:0 20px 6px;scroll-snap-type:x mandatory;scroll-padding:0 20px}
+.dlg-caps .cap{flex:0 0 58%;box-shadow:var(--e1)}
+.dlg-caps .cap-n{font-size:22px}
+/* серии */
+.serii{display:flex;gap:12px;overflow-x:auto;padding:4px 16px 10px;scroll-snap-type:x mandatory;scroll-padding:0 16px}
+.ser{flex:0 0 46%;max-width:220px;scroll-snap-align:start;display:flex;flex-direction:column;text-align:left}
+.ser-ob{position:relative;display:block;aspect-ratio:3/4;border-radius:14px;overflow:hidden;background:var(--sand)}
+.ser-ob img{width:100%;height:100%;object-fit:cover}
+.ser-ob .play{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.88);color:var(--wine)}
+.ser-ob .tag{position:absolute;left:8px;top:8px;background:var(--wine);color:#fff}
+.ser-k{margin-top:8px;color:var(--gold-ink);font:500 17px/1.2 var(--sans)}
+.ser-n{font:600 22px/1.1 var(--serif)}
+.ser-hero{position:relative;aspect-ratio:3/4;max-height:70vh;margin:0 auto;overflow:hidden;background:#1d1512}
+.ser-hero img{width:100%;height:100%;object-fit:cover;opacity:.92}
+.ser-hero .play{position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.9);color:var(--wine)}
+.ser-hero p{position:absolute;left:16px;right:16px;bottom:16px;padding:12px 14px;border-radius:12px;background:rgba(30,20,17,.72);color:#fff;font-size:17px}
+/* к ней на примерку */
+.dop{grid-column:1/-1;margin:-4px 0 0;padding:10px 12px;border-radius:14px;background:var(--paper);border:1px dashed var(--sand2)}
+.dop>p{color:var(--muted);font-size:17px;margin-bottom:6px}
+.dop-r{display:grid;grid-template-columns:48px 1fr 48px;gap:10px;align-items:center;padding:6px 0}
+.dop-r .ph{aspect-ratio:3/4}
+.dop-r .nm{margin:0;min-height:0;font-size:17px}
+.dop-r .meta{color:var(--muted);font-size:17px}
+.plus{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--wine);color:#fff;font:600 26px/1 var(--sans)}
+/* заставка с логотипом — один раз за сеанс */
+#splash{position:fixed;inset:0;z-index:300;display:grid;place-items:center;background:var(--wine);transition:opacity .45s,visibility 0s .45s}
+#splash.off{opacity:0;visibility:hidden}
+.sp-logo{width:min(66vw,300px);aspect-ratio:480/281;background:#fff;-webkit-mask:url(logo.webp) center/contain no-repeat;mask:url(logo.webp) center/contain no-repeat}
 
 .sizecard{margin:14px 16px 0;padding:18px 16px 16px;background:var(--paper);border:1px solid var(--line);border-radius:20px}
 .sizecard h2{font:600 27px/1.1 var(--serif)}
@@ -86,6 +143,23 @@ s{text-decoration-thickness:1.5px}
 .cap-p{display:flex;align-items:baseline;gap:10px;margin-top:10px;flex-wrap:wrap}
 .cap-p b{font:600 21px/1.2 var(--sans)}
 .cap-p s{color:var(--muted);font-size:17px}
+.cap-p .zam{font-size:17px}
+/* обложка собранного образа — вещи рядом: верх крупно, низ и жакет справа */
+.kol{display:grid;gap:2px;aspect-ratio:4/5;background:var(--paper);overflow:hidden}
+.kol .ph{border-radius:0;height:100%;min-height:0;aspect-ratio:auto}
+.kol.k2{grid-template-columns:1fr 1fr;grid-template-rows:1fr}
+.kol.k3{grid-template-columns:3fr 2fr;grid-template-rows:1fr 1fr}
+.kol.k3 .ph:first-child{grid-row:span 2}
+.kol .ph:nth-child(2) img{object-position:50% 78%}
+.kol.look-hero{aspect-ratio:3/4}
+.btn.allcaps{width:calc(100% - 32px);margin:6px 16px 0}
+.capgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px 12px;padding:6px 16px 24px}
+.capgrid .cap{max-width:none;box-shadow:var(--e1)}
+.capgrid .cap-b{padding:10px 12px 12px}
+.capgrid .cap-n{font-size:22px}
+.capgrid .cap-o{font-size:17px;line-height:1.3}
+.capgrid .cap-p b{font-size:17px}
+.capgrid .cap-p s{display:none}
 
 /* каталог */
 .chips{position:sticky;top:calc(var(--st) + 64px);z-index:5;display:flex;gap:8px;overflow-x:auto;padding:10px 16px;background:rgba(246,241,234,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
@@ -104,6 +178,12 @@ s{text-decoration-thickness:1.5px}
 .pr{display:flex;flex-direction:column;margin-top:6px}
 .pr b{font:600 21px/1.2 var(--sans)}
 .pr span{font-size:17px;color:var(--muted)}
+.pr .zam,.zam{font:600 17px/1.25 var(--sans);color:var(--wine)}
+/* цена до входа */
+.lockp{margin-top:14px;padding:16px;border-radius:16px;background:var(--wine-soft);color:var(--wine2)}
+.lockp b{display:block;font:600 21px/1.2 var(--sans)}
+.lockp span{display:block;margin-top:6px;font-size:17px;color:var(--ink)}
+.lockp .btn{margin-top:14px}
 .empty{margin:8px 16px 24px;padding:22px 18px;border-radius:18px;background:var(--paper);border:1px dashed var(--sand2);color:var(--muted)}
 .empty b{display:block;color:var(--ink);font:600 24px/1.15 var(--serif);margin-bottom:6px}
 
@@ -181,7 +261,7 @@ html.tg .sbar .tt{text-align:left;padding-left:4px}
 .meter{display:flex;align-items:center;gap:12px;margin-top:14px;color:var(--muted)}
 .meter i{flex:1;height:6px;border-radius:3px;background:var(--sand);overflow:hidden}
 .meter i b{display:block;height:100%;background:var(--wine);border-radius:3px;transition:width .3s var(--ease)}
-.crow{display:grid;grid-template-columns:84px 1fr 48px;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);align-items:start}
+.crow{display:grid;grid-template-columns:84px 1fr 48px;row-gap:12px;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);align-items:start}
 .crow .ph{aspect-ratio:3/4}
 .crow .nm{margin-top:0;min-height:0}
 .crow .meta{color:var(--muted);font-size:17px;margin-top:4px}
@@ -225,16 +305,16 @@ html.tg .sbar .tt{text-align:left;padding-left:4px}
 html.tg #act{display:none!important}
 
 /* шторки */
-.sheet{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-end;justify-content:center;background:rgba(30,20,17,0);visibility:hidden;transition:background .25s,visibility 0s .3s}
+.sheet{position:fixed;inset:0;z-index:160;display:flex;align-items:flex-end;justify-content:center;background:rgba(30,20,17,0);visibility:hidden;transition:background .25s,visibility 0s .3s}
 .sheet.on{visibility:visible;background:rgba(30,20,17,.44);transition:background .25s}
 .sh-in{width:100%;max-width:560px;max-height:90vh;overflow-y:auto;background:var(--paper);border-radius:24px 24px 0 0;padding:10px 20px calc(22px + var(--sb));transform:translateY(100%);transition:transform .32s var(--ease);box-shadow:var(--e3)}
 .sheet.on .sh-in{transform:none}
 .grab{width:44px;height:5px;border-radius:3px;background:var(--sand2);margin:0 auto 14px}
 .sh-in h2{font:600 29px/1.1 var(--serif)}
 .sh-in>p{margin-top:6px;color:var(--muted)}
-.mic-big{width:104px;height:104px;border-radius:50%;background:var(--wine);color:#fff;display:grid;place-items:center;margin:18px auto 14px;box-shadow:0 0 0 0 rgba(122,31,43,.35)}
+.mic-big{width:104px;height:104px;border-radius:50%;background:var(--wine);color:#fff;display:grid;place-items:center;margin:18px auto 14px;box-shadow:0 0 0 0 rgba(189,6,8,.35)}
 .mic-big.rec{animation:pulse 1.4s infinite}
-@keyframes pulse{to{box-shadow:0 0 0 28px rgba(122,31,43,0)}}
+@keyframes pulse{to{box-shadow:0 0 0 28px rgba(189,6,8,0)}}
 .vstate{text-align:center;font-weight:600;font-size:19px}
 .vex{text-align:center;color:var(--muted);margin-top:6px}
 .vsaid{text-align:center;font:italic 500 26px/1.2 var(--serif);min-height:1.2em;margin-top:10px}
@@ -243,19 +323,34 @@ html.tg #act{display:none!important}
 .vform .btn{width:auto;flex:none}
 .quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .closer{display:block;margin:16px auto 0;min-height:48px;padding:0 20px;color:var(--muted);font-weight:500}
+/* знакомство */
+.vh-top{display:flex;gap:14px;align-items:center}
+.vh-top img{flex:none;width:64px;height:64px;border-radius:50%;object-fit:cover;box-shadow:var(--e1)}
+.vh-top p{margin-top:4px;color:var(--muted)}
+.chk-l{display:flex;gap:12px;align-items:center;margin-top:16px;min-height:48px;cursor:pointer}
+.chk-l input{flex:none;width:24px;height:24px;margin:0;accent-color:var(--wine)}
+.or{margin-top:20px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);text-align:center}
+.fine{margin-top:14px;color:var(--muted);font-size:17px;line-height:1.35}
+/* оплата */
+.paybox{margin-top:18px;padding:18px 16px;border-radius:16px;background:var(--paper);border:1.5px dashed var(--sand2)}
+.paybox b{display:block;font:600 24px/1.15 var(--serif)}
+.paybox>span{display:block;margin-top:6px;color:var(--muted)}
+.paym{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.paym span{padding:10px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--line);font-weight:600;font-size:17px}
 
 #toast{position:fixed;left:50%;bottom:calc(var(--act-h) + var(--sb) + 16px);z-index:200;transform:translate(-50%,16px);opacity:0;width:max-content;max-width:calc(100% - 32px);background:var(--ink);color:var(--bg);padding:14px 18px;border-radius:14px;font-size:17px;line-height:1.35;box-shadow:var(--e2);transition:opacity .25s,transform .25s var(--ease);pointer-events:none}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 
 /* шорткат font сбрасывает font-feature-settings — поэтому в самом конце: цифры в антикве ровные, а не «зо» */
-.brand,.hero h1,.pname,.found .said,.vsaid,.cap-n,.sec-h h2,.h3,.pageh,.done h1,.sh-in h2,.sbar .tt,.empty b,.sizecard h2{font-feature-settings:"lnum" 1}
+.brand,.hero h1,.pname,.found .said,.vsaid,.cap-n,.sec-h h2,.h3,.pageh,.done h1,.sh-in h2,.sbar .tt,.empty b,.sizecard h2,.paybox b,.dlg .you{font-feature-settings:"lnum" 1}
 @media (min-width:600px){.scr>*{max-width:560px;margin-left:auto;margin-right:auto}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;animation:none!important}.scr{transform:none;opacity:0}.scr.in{opacity:1}}
 </style>
 </head>
 <body>
+<div id="splash" aria-hidden="true"><span class="sp-logo"></span></div>
 <header class="top" id="top">
-  <div class="brand">Русский кружевной дом<small>одежда 48–82</small></div>
+  <div class="brand"><img class="logo" src="logo.webp" alt="Русский кружевной дом" width="89" height="52"><small>одежда 48–82</small></div>
   <button class="ib" data-voice aria-label="Поиск голосом"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
   <button class="ib" data-cart aria-label="Корзина"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="badge cart-n" hidden>0</span></button>
 </header>
@@ -264,17 +359,20 @@ html.tg #act{display:none!important}
   <section class="hero">
     <p class="kicker">Магазин в телефоне</p>
     <h1>Те же вещи, что на Wildberries, — <em>на 30 % дешевле</em></h1>
-    <p class="lead">Привезём на примерку: курьером по Москве или СДЭК в регионы. Платите только за то, что оставили.</p>
   </section>
-  <button class="ask" data-voice><span class="t">Скажите или напишите, что ищете</span><span class="ib wine" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span></button>
+  <section class="hi" id="hi" aria-live="polite"></section>
   <section class="sizecard" id="sizecard" hidden>
     <h2>Ваш размер</h2>
     <p>Выберите один раз — дальше покажем только то, что есть на вас.</p>
     <div class="szgrid" id="szgrid1"></div>
   </section>
 
-  <div class="sec-h"><h2>Образы целиком</h2><p>Дизайнер бренда собрала вещи, которые носят вместе</p></div>
+  <div class="sec-h"><h2>Образы целиком</h2><p>Вещи, которые носят вместе, — по цветам и на ваш размер</p></div>
   <div class="caps noscroll" id="caps"></div>
+  <button class="btn line allcaps" data-allcaps></button>
+
+  <div class="sec-h"><h2>Серии</h2><p>Сериал с нашими героинями: посмотрите серию — и возьмите вещи из неё</p></div>
+  <div class="serii noscroll" id="serii"></div>
 
   <div class="sec-h" id="cat"><h2>Каталог</h2></div>
   <div class="chips noscroll" id="chips"></div>
@@ -285,7 +383,7 @@ html.tg #act{display:none!important}
   <footer class="foot">
     <p><span class="tag">демо</span></p>
     <p id="srcnote"></p>
-    <p>Заказы в демо никуда не уходят.</p>
+    <p>В Telegram заказ уходит в чат магазина, в браузере — никуда. Оплата показана для примера, деньги не списываются.</p>
     <button class="linkbtn" id="a2hs" hidden>Добавить магазин на экран телефона</button>
   </footer>
 </main>
@@ -295,7 +393,7 @@ html.tg #act{display:none!important}
 <div class="sheet" id="shVoice" role="dialog" aria-modal="true" aria-labelledby="vTitle">
   <div class="sh-in">
     <div class="grab"></div>
-    <h2 id="vTitle">Что ищем?</h2>
+    <div class="vh-top"><img class="hz-lico" src="hozyajka-lico.webp" alt=""><h2 id="vTitle">Что ищем?</h2></div>
     <button class="mic-big" id="micBig" aria-label="Начать говорить"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
     <p class="vstate" id="vState">Нажмите и скажите</p>
     <p class="vex" id="vEx">Например: «тёплое на зиму, 60 размер»</p>
@@ -316,20 +414,53 @@ html.tg #act{display:none!important}
   </div>
 </div>
 
+<div class="sheet" id="shVhod" role="dialog" aria-modal="true" aria-labelledby="hTitle">
+  <div class="sh-in">
+    <div class="grab"></div>
+    <div class="vh-top"><img class="hz-lico" src="hozyajka-lico.webp" alt=""><div><h2 id="hTitle">Давайте познакомимся</h2><p id="hSub">Как вас зовут? С телефоном сразу открою цены.</p></div></div>
+    <form id="vhForm" novalidate>
+      <label class="fld" id="hN"><span id="hNameL">Как вас зовут</span><input id="hName" autocomplete="given-name"><span class="err">Напишите имя</span></label>
+      <label class="fld" id="hP"><span>Телефон — откроет цены</span><input id="hPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00"><span class="err">Нужен номер из 11 цифр — или оставьте пустым</span></label>
+      <button type="button" class="linkbtn" id="hTgPhone" hidden>Взять номер из Telegram</button>
+      <label class="fld"><span>Почта — если удобно</span><input id="hMail" type="email" inputmode="email" autocomplete="email"></label>
+      <label class="chk-l"><input type="checkbox" id="hNews" checked>Присылать новые модели и скидки</label>
+      <button class="btn wine" style="margin-top:14px">Готово</button>
+    </form>
+    <p class="or">Есть промокод? Цены откроются по нему</p>
+    <form class="promo" id="hPromoF"><input class="inp" id="hPromo" placeholder="Промокод" autocomplete="off" autocapitalize="characters"><button class="btn line">Применить</button></form>
+    <p class="hint" id="hPromoMsg" hidden></p>
+    <p class="fine">Нажимая «Готово», вы соглашаетесь на обработку персональных данных.</p>
+    <button class="closer" data-close id="hLater">Не сейчас</button>
+  </div>
+</div>
+
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script src="d.js"></script>
 <script>
 (function () {
 "use strict";
+/* ===== НАСТРОЙКА: кто встречает покупательниц =====
+   "pantera" — хозяйка-пантера (рисунки дочки Ирины Владимировны): на «ты», игриво;
+   "irina"   — Ирина Владимировна, дизайнер бренда: от первого лица, на «вы» по имени.
+   Посмотреть другой вариант без правки файла: ссылка с ?hoz=irina или ?hoz=pantera */
+var HOZYAJKA = "pantera";
+
 var D = window.D, T = {};
-D.tovary.forEach(function (t) { T[t.id] = t; });
+/* наша цена в d.js зашифрована (поле p), чтобы ценовые роботы не видели рублей; пара к shifr() в magazin_demo.py. Цены WB в d.js нет */
+function cena(id, s) { return ((parseInt(s, 36) ^ ((id % 99991) * 7919 % 262139)) - 1) / 3; }
+D.tovary.forEach(function (t) { t.my = cena(t.id + 7, t.p); T[t.id] = t; });
 var $ = function (s, r) { return (r || document).querySelector(s); };
 var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
 var fmt = function (n) { return n.toLocaleString("ru-RU") + " ₽"; };
 var pl = function (n, f) { var a = n % 10, b = n % 100; return f[a === 1 && b !== 11 ? 0 : a >= 2 && a <= 4 && (b < 10 || b >= 20) ? 1 : 2]; };
 var veshi = function (n) { return n + " " + pl(n, ["вещь", "вещи", "вещей"]); };
 var IC = {
+  micBig: '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+  play: '<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',
+  zvuk: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>',
+  tiho: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>',
+  mic: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
   back: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
   next: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
   bag: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>',
@@ -350,8 +481,82 @@ var store = {
   get: function (k, d) { try { var v = localStorage.getItem("rkd_" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
   set: function (k, v) { try { localStorage.setItem("rkd_" + k, JSON.stringify(v)); } catch (e) {} }
 };
-var st = { size: store.get("razmer", null), type: null, warm: null, color: null, words: [], said: "", dl: store.get("dostavka", "msk") };
-var cart = store.get("korzina", []).filter(function (c) { return T[c.id]; });
+var st = { size: store.get("razmer", null), type: null, warm: null, color: null, words: [], said: "", dl: store.get("dostavka", "msk"), opl: store.get("oplata", true) };
+var cart = store.get("korzina", []).filter(function (c) { return T[c.id] && szIdx(T[c.id], c) >= 0; });
+/* вход: имя, телефон, почта, промокод — до входа цен в рублях нет нигде */
+var vhod = store.get("vhod", null);
+/* прошлый визит и что тогда было в каталоге — для «давно вас не было, без вас появились новые» */
+var vizit = { prev: store.get("byla", 0), videla: store.get("videla", null), svezh: false, pechat: true };
+store.set("byla", Date.now()); store.set("videla", D.tovary.map(function (t) { return t.id; }));
+if (/[?&]vozvrat\b/.test(location.search)) {  // показ: вернулась Валентина, 60-й, не была 12 дней; ничего не сохраняем
+  vhod = { imya: "Валентина", tel: "+7 900 000-00-00", kod: "РКД-0000" }; st.size = st.size || 60;
+  vizit.prev = Date.now() - 12 * 864e5; vizit.videla = D.tovary.filter(function (t, i) { return i % 5; }).map(function (t) { return t.id; });
+}
+var K1 = /[?&]k=1\b/.test(location.search);  // открыт кнопкой «Магазин» под полем ввода бота — там работает sendData
+var ss = { get: function (k) { try { return sessionStorage.getItem("rkd_" + k); } catch (e) { return null; } }, set: function (k, v) { try { sessionStorage.setItem("rkd_" + k, v); } catch (e) {} } };
+function ssGet(k) { return ss.get(k); }
+function ssSet(k, v) { ss.set(k, v); }
+
+/* ---------- хозяйка: две роли, выбор — HOZYAJKA вверху скрипта ---------- */
+// «Ир», «Валь», «Наташ» — так пантера зовёт подругу; только для имён из списка, остальные — как написала
+var KOROTKO = { "ирина": "Ира", "валентина": "Валя", "наталья": "Наташа", "наталия": "Наташа", "елена": "Лена", "екатерина": "Катя", "татьяна": "Таня",
+  "светлана": "Света", "ольга": "Оля", "анна": "Аня", "мария": "Маша", "юлия": "Юля", "людмила": "Люда", "галина": "Галя", "надежда": "Надя",
+  "любовь": "Люба", "александра": "Саша", "евгения": "Женя", "валерия": "Лера", "виктория": "Вика", "анастасия": "Настя", "антонина": "Тоня",
+  "дарья": "Даша", "ксения": "Ксюша", "лидия": "Лида", "маргарита": "Рита", "елизавета": "Лиза", "зинаида": "Зина", "раиса": "Рая", "тамара": "Тома" };
+var KOR = {}; Object.keys(KOROTKO).forEach(function (k) { KOR[KOROTKO[k].toLowerCase()] = 1; });
+function zov(n) {
+  var k = KOROTKO[n.toLowerCase()] || (KOR[n.toLowerCase()] ? n : null);
+  return k ? k.replace(/а$/, "").replace(/я$/, "ь") : n;
+}
+var HOZ = {
+  pantera: {
+    ava: "hozyajka.webp", lico: "hozyajka-lico.webp", alt: "Хозяйка магазина — пантера", rate: 1.05, pitch: 0.85,
+    mic: "Нажми и скажи, что ищешь", nazhmi: "Нажми и скажи", slushayu: "Говори, я слушаю", znakom: "Познакомиться", telefon: "Открыть цены",
+    obrazy: "А вот образы с ними:", obraz: "Бери целиком — так и носят. Размер выбери у каждой вещи.",
+    seriya: "Серия скоро — смотри прямо здесь. А вещи из неё уже можно взять.",
+    vhod: { t: "Давай знакомиться", p: "Как тебя зовут? Оставишь телефон — сразу открою цены и промокод.", tel: "Оставь телефон — открою цены и твой промокод.", imya: "Как тебя зовут", ne: "Потом" },
+    privet: function (s) {
+      var na = s.sz ? " на твой " + s.sz + "-й" : "";
+      if (s.svezh && s.zov) return [s.zov + ", привет! Ну, чего натворила? Чего хочешь — давай найдём.",
+        (s.ceny ? "Цены открыла, промокод " + s.kod + " — твой. " : "Цены покажу, как оставишь телефон. ") + "Говори, не надо тыкать."];
+      if (s.svezh) return ["Готово, цены открыла! Промокод " + s.kod + " уже работает.", "Говори, что ищешь, — найдём."];
+      if (s.zov && s.dni >= 3) return [s.zov + ", привет! Давно тебя не было" + (s.nov ? " — а у нас без тебя новенькое." : "."),
+        s.sz ? (s.nov ? "Глянь, что пришло" : "Глянь, что есть") + na + ":" : "Скажи размер — покажу, что на тебя есть."];
+      if (s.zov) return [s.zov + ", снова ты! Рада.", s.sz ? (s.nov ? "Пока тебя не было, пришло новенькое" + na + ":" : "Присмотрела тебе" + na + ":") : "Говори, что ищем."];
+      return [s.dni >= 0 ? "О, снова ты! Заходи." : "Привет! Я тут за хозяйку.",
+        "Говори, что ищешь, — найдём на твой размер. Познакомимся — покажу цены: на 30 % ниже, чем на Wildberries."];
+    },
+    otvet: function (n, loose) {
+      var na = st.size ? " на твой " + st.size + "-й" : "";
+      if (!n) return "Такого сейчас нет" + na + ". Скажи по-другому — найдём.";
+      return (loose ? "Точно такого нет, но глянь похожее — " : "Нашла ") + veshi(n) + (st.warm === true ? " потеплее" : st.warm === false ? " полегче" : "") + na + (loose ? "." : ". Смотри!");
+    }
+  },
+  irina: {
+    ava: "hozyajka-irina.webp", lico: "hozyajka-irina-lico.webp", alt: "Ирина Владимировна, дизайнер бренда", rate: 0.95, pitch: 1,
+    mic: "Нажмите и скажите, что ищете", nazhmi: "Нажмите и скажите", slushayu: "Я вас слушаю", znakom: "Познакомиться", telefon: "Открыть цены",
+    obrazy: "А вот образы, которые я к ним собрала:", obraz: "Эту капсулу я шила, чтобы вещи носили вместе. Размер подберите у каждой.",
+    seriya: "Серия скоро — смотрите прямо здесь. А вещи из неё уже можно заказать.",
+    vhod: { t: "Давайте познакомимся", p: "Как вас зовут? С телефоном сразу открою цены и ваш промокод.", tel: "Оставьте телефон — открою цены и ваш промокод.", imya: "Как вас зовут", ne: "Не сейчас" },
+    privet: function (s) {
+      var na = s.sz ? " на ваш " + s.sz + "-й" : "";
+      if (s.svezh && s.imya) return [s.imya + ", здравствуйте! Я Ирина Владимировна — все эти вещи придумываю и шью сама.",
+        (s.ceny ? "Цены открыла, ваш промокод " + s.kod + " уже применён. " : "Цены покажу, когда оставите телефон. ") + "Расскажите, что ищете, — подберу."];
+      if (s.svezh) return ["Готово, цены открыла! Промокод " + s.kod + " уже применён.", "Расскажите, что ищете, — подберу."];
+      if (s.imya && s.dni >= 3) return [s.imya + ", здравствуйте! Давно вас не было" + (s.nov ? " — а я без вас сшила новые модели." : "."),
+        s.sz ? "Вот что есть" + na + ":" : "Подскажите размер — покажу, что есть на вас."];
+      if (s.imya) return [s.imya + ", с возвращением!", s.sz ? (s.nov ? "Пока вас не было, пришли новые модели" + na + ":" : "Присмотрела для вас" + na + ":") : "Расскажите, что ищете, — подберу."];
+      return [s.dni >= 0 ? "Здравствуйте, рада вас снова видеть!" : "Здравствуйте! Я Ирина Владимировна, дизайнер «Русского кружевного дома».",
+        "Расскажите, что ищете, — подберу на ваш размер. А познакомимся — покажу ваши цены: на 30 % ниже, чем на Wildberries."];
+    },
+    otvet: function (n, loose) {
+      var na = st.size ? " на ваш " + st.size + "-й" : "";
+      if (!n) return "Такого сейчас нет" + na + ". Скажите по-другому — подберу.";
+      return (loose ? "Точно такого нет, но вот похожее — " : "Нашла ") + veshi(n) + (st.warm === true ? " потеплее" : st.warm === false ? " полегче" : "") + na + (loose ? "." : ". Смотрите!");
+    }
+  }
+};
+var P = HOZ[(location.search.match(/[?&]hoz=(\w+)/) || [])[1]] || HOZ[HOZYAJKA] || HOZ.pantera;
 
 /* ---------- Telegram ---------- */
 var tg = window.Telegram && window.Telegram.WebApp;
@@ -368,7 +573,18 @@ if (TG) {
   tg.BackButton.onClick(function () { history.back(); });
   tg.MainButton.onClick(function () { if (curMain) curMain.fn(); });
   if (ver("6.9") && tg.CloudStorage) {
-    try { tg.CloudStorage.getItem("razmer", function (err, v) { if (!err && v && !st.size) { st.size = +v; store.set("razmer", st.size); renderHome(); } }); } catch (e) {}
+    // облако Telegram помнит её и на другом телефоне
+    try {
+      tg.CloudStorage.getItems(["razmer", "vhod", "byla"], function (err, v) {
+        if (err || !v) return;
+        var ch = false;
+        if (v.razmer && !st.size) { st.size = +v.razmer; store.set("razmer", st.size); ch = true; }
+        if (v.vhod && !vhod) { try { vhod = JSON.parse(v.vhod); store.set("vhod", vhod); ch = true; } catch (e) {} }
+        if (+v.byla > vizit.prev && Date.now() - v.byla > 6e4) { vizit.prev = +v.byla; ch = true; }
+        try { tg.CloudStorage.setItem("byla", String(Date.now())); } catch (e) {}
+        if (ch) { renderCaps(); renderHome(); }
+      });
+    } catch (e) {}
   }
 }
 function hap(k) {
@@ -393,6 +609,7 @@ function fits(t, s) { return t.s.some(function (z) { return z.a <= s && s <= z.b
 function mySizeIdx(t) { if (!st.size) return -1; for (var i = 0; i < t.s.length; i++) if (t.s[i].a <= st.size && st.size <= t.s[i].b) return i; return -1; }
 function autoIdx(t) { var i = mySizeIdx(t); if (i >= 0) return i; return !st.size && t.s.length === 1 ? 0 : -1; }
 function hay(t) { return (t.n + " " + t.q + " " + t.c).toLowerCase().replace(/ё/g, "е"); }
+function szIdx(t, c) { for (var i = 0; i < t.s.length; i++) if (t.s[i].l === c.l && t.s[i].r === c.r) return i; return -1; }
 function szLabel(z) { return z.l + (z.r ? ", " + z.r : ""); }
 var ROD = { "юбка": "юбки", "водолазка": "водолазки", "блуза": "блузы", "рубашка": "рубашки", "джемпер": "джемпера", "жакет": "жакета", "брюки": "брюк",
   "платье": "платья", "сарафан": "сарафана", "свитшот": "свитшота", "лонгслив": "лонгслива", "кюлоты": "кюлот", "шаровары": "шаровар", "туника": "туники",
@@ -400,7 +617,6 @@ var ROD = { "юбка": "юбки", "водолазка": "водолазки", 
 function rodit(t) { var w = short(t); return ROD[w] || w; }
 function short(t) { return t.n.split(/[ ,]/)[0].toLowerCase(); }
 function cartSum() { return cart.reduce(function (a, c) { return a + T[c.id].my; }, 0); }
-function cartWb() { return cart.reduce(function (a, c) { return a + T[c.id].wb; }, 0); }
 function saveCart() { store.set("korzina", cart); }
 function inCart(id, z) { return cart.some(function (c) { return c.id === id && c.l === z.l && c.r === z.r; }); }
 function addOne(t, z) {
@@ -429,10 +645,15 @@ function parse(text) {
   return r;
 }
 function applyQuery(text) {
+  var tx = text.toLowerCase().replace(/ё/g, "е");
+  if (/образ|капсул|комплект|костюм|сочета|с чем носить/.test(tx)) {
+    var c = null; CVK.forEach(function (x, i) { if (c == null && x[1].test(tx)) c = i; });
+    closeSheet(); hap("ok"); openCaps(c); return;
+  }
   var r = parse(text);
   st.said = text; st.type = r.type; st.warm = r.warm; st.color = r.color; st.words = r.words;
   if (r.size) setSize(r.size, true);
-  closeSheet(); renderCatalog(); hap("ok");
+  closeSheet(); renderCatalog(); hap("ok"); skazat(st.repl);
   setTimeout(function () { var y = $("#cat").getBoundingClientRect().top + scrollY - 70; scrollTo({ top: y, behavior: "smooth" }); }, 60);
 }
 
@@ -444,8 +665,17 @@ function list(withWords) {
   });
 }
 function cardHtml(t) {
-  return '<button class="card" data-open="' + t.id + '">' + ph(img(t, t.f[0])) + '<span class="off">−30 %</span><span class="nm">' + esc(t.n) + '</span><span class="pr"><b>' + fmt(t.my) + '</b><span>на WB <s>' + fmt(t.wb) + '</s></span></span></button>';
+  return '<button class="card" data-open="' + t.id + '">' + ph(img(t, t.f[0])) + '<span class="off">−30 %</span><span class="nm">' + esc(t.n) + '</span><span class="pr">'
+    + (ceny() ? "<b>" + fmt(t.my) + "</b>" : '<b class="zam">−30 % к цене WB</b><span>цена — после входа</span>') + "</span></button>";
 }
+/* цены открыты: вошла с телефоном или ввела промокод; одно имя цен не открывает */
+function ceny() { return !!(vhod && (vhod.tel || vhod.kod)); }
+/* цена в карточке и в образе: до входа — только «на 30 % дешевле» и кнопка знакомства; после — только её цена, без цены WB */
+function priceBlk(my, extra) {
+  if (!ceny()) return '<div class="lockp"><b>На 30 % дешевле, чем на Wildberries</b><span>Цену покажем, как познакомимся: один раз имя и телефон.</span><button class="btn wine" data-vhod>Показать мою цену</button></div>';
+  return '<div class="price"><b>' + fmt(my) + '</b><span class="pct">ваша цена</span></div>' + (vhod.kod ? '<p class="wbp">промокод ' + esc(vhod.kod) + " применён</p>" : "") + (extra || "");
+}
+function rubTail(n) { return ceny() ? " · " + fmt(n) : ""; }
 function renderCatalog() {
   var chips = '<button class="chip mysz" data-sizes>' + (st.size ? "Мой размер: " + st.size : "Мой размер ▾") + '</button>'
     + '<button class="chip" data-warm aria-pressed="' + (st.warm === true) + '">' + IC.snow + 'Тёплое</button>'
@@ -455,11 +685,17 @@ function renderCatalog() {
   var items = list(true), loose = false;
   if (!items.length && st.words.length) { items = list(false); loose = true; }
   var f = "";
-  if (st.said) f += '<span class="said">«' + esc(st.said) + '»</span>';
+  if (st.said) {
+    // хозяйка отвечает репликой и подборкой образов с найденными вещами
+    var ci = capsSorted().filter(function (i) { return D.kapsuly[i].ids.some(function (id) { return items.indexOf(T[id]) >= 0; }); }).slice(0, 4);
+    st.repl = P.otvet(items.length, loose) + (ci.length ? " " + P.obrazy : "");
+    f += '<div class="dlg"><span class="you">«' + esc(st.said) + '»</span><div class="her"><img src="' + P.lico + '" alt=""><span>' + esc(st.repl) + "</span></div></div>"
+      + (ci.length ? '<div class="dlg-caps noscroll">' + ci.map(capHtml).join("") + "</div>" : "");
+  }
   var bits = [];
   if (st.size) bits.push("на " + st.size + " размер");
   if (st.warm === true) bits.push("тёплое"); if (st.warm === false) bits.push("лёгкое");
-  f += '<div class="row"><span>' + (loose ? "Точно такого нет, вот похожее: " : "") + (items.length ? "Нашлось " + veshi(items.length) : "") + (bits.length ? " " + bits.join(", ") : "") + '</span>'
+  f += '<div class="row"><span>' + (st.said ? "" : (loose ? "Точно такого нет, вот похожее: " : "") + (items.length ? "Нашлось " + veshi(items.length) : "") + (bits.length ? " " + bits.join(", ") : "")) + '</span>'
     + (st.said || st.type || st.warm != null ? '<button class="linkbtn" data-reset>Сбросить</button>' : "") + "</div>";
   $("#found").innerHTML = f;
   $("#grid").innerHTML = items.map(cardHtml).join("");
@@ -469,11 +705,40 @@ function renderCatalog() {
   // чип раздела — в зону видимости
   var on = $('#chips [data-type][aria-pressed="true"]'); if (on && on.dataset.type) on.scrollIntoView({ block: "nearest", inline: "center" });
 }
-function renderCaps() {
-  $("#caps").innerHTML = D.kapsuly.map(function (k, i) {
-    var ts = k.ids.map(function (id) { return T[id]; }), my = ts.reduce(function (a, t) { return a + t.my; }, 0), wb = ts.reduce(function (a, t) { return a + t.wb; }, 0);
-    return '<button class="cap" data-cap="' + i + '">' + ph(img(T[k.f[0]], k.f[1], true)) + '<span class="cap-b"><span class="cap-n">' + esc(k.n) + '</span><span class="cap-o">' + esc(k.o) + '</span><span class="cap-p"><b>' + veshi(ts.length) + " · " + fmt(my) + '</b><s>' + fmt(wb) + '</s></span></span></button>';
+var CVK = [["Шоколад", /шоколад|коричн|кофейн/], ["Бордо", /бордо|бордов|красн/], ["Чёрный", /черн/], ["Серый", /(^|[^а-я])сер[аоуыи]/], ["Синий", /син/],
+  ["Голубой", /голуб/], ["Изумруд", /изумруд|зелен/], ["Молочный", /молоч|бел[аоуыи]/], ["Мёд", /желт/]];
+function capFits(k) { return !st.size || k.ids.every(function (id) { return fits(T[id], st.size); }); }
+/* номера образов: cv — цвет из CVK; где на её размер есть всё — первыми */
+function capsSorted(cv) {
+  var a = D.kapsuly.map(function (k, i) { return i; }).filter(function (i) { return cv == null || D.kapsuly[i].ids.some(function (id) { return CVK[cv][1].test(hay(T[id])); }); });
+  return a.filter(function (i) { return capFits(D.kapsuly[i]); }).concat(a.filter(function (i) { return !capFits(D.kapsuly[i]); }));
+}
+/* обложка: у ручного образа — фото с образом целиком, у собранного — вещи рядом */
+function capPhoto(k, cls, eager) {
+  if (!k.a) return ph(img(T[k.f[0]], k.f[1], true), cls, eager);
+  return '<span class="kol k' + k.ids.length + " " + (cls || "") + '">' + k.ids.map(function (id) { return ph(img(T[id], T[id].f[0]), "", eager); }).join("") + "</span>";
+}
+function capHtml(i) {
+  var k = D.kapsuly[i], ts = k.ids.map(function (id) { return T[id]; }), my = ts.reduce(function (a, t) { return a + t.my; }, 0);
+  return '<button class="cap" data-cap="' + i + '">' + capPhoto(k) + '<span class="cap-b"><span class="cap-n">' + esc(k.n) + '</span><span class="cap-o">' + esc(k.o) + '</span><span class="cap-p">'
+    + (ceny() ? "<b>" + veshi(ts.length) + " · " + fmt(my) + "</b>" : "<b>" + veshi(ts.length) + '</b><span class="zam">−30 % к WB</span>') + "</span></span></button>";
+}
+/* серии: обложка из рисунков, видео «скоро», вещи из серии */
+function renderSerii() {
+  $("#serii").innerHTML = (D.serii || []).map(function (s, i) {
+    return '<button class="ser" data-seriya="' + i + '"><span class="ser-ob"><img src="' + s.f + '" alt="" loading="lazy"><span class="tag">скоро</span><span class="play">' + IC.play + '</span></span>'
+      + '<span class="ser-k">Серия ' + (i + 1) + '</span><span class="ser-n">' + esc(s.n) + "</span></button>";
   }).join("");
+}
+function openSeriya(i) {
+  var s = D.serii[i];
+  push(bar("Серия " + (i + 1)) + '<div class="ser-hero"><img src="' + s.f + '" alt=""><span class="play">' + IC.play + "</span><p>" + P.seriya + "</p></div>"
+    + '<div class="pad"><p class="kicker">Серия ' + (i + 1) + '</p><h1 class="pname" style="margin-top:6px">' + esc(s.n) + '</h1><p class="lead">' + esc(s.o) + "</p>"
+    + '<h2 class="h3">Вещи из серии</h2><div class="minis noscroll">' + s.ids.map(function (id) { return miniHtml(T[id]); }).join("") + "</div></div>", homeMain);
+}
+function renderCaps() {
+  $("#caps").innerHTML = capsSorted().slice(0, 8).map(capHtml).join("");
+  $("[data-allcaps]").textContent = "Все образы · " + D.kapsuly.length;
 }
 function sizeGrid(el) {
   el.innerHTML = SIZES.map(function (s) { return '<button data-setsize="' + s + '" aria-pressed="' + (st.size === s) + '">' + s + "</button>"; }).join("");
@@ -481,8 +746,27 @@ function sizeGrid(el) {
 function renderHome() {
   $("#sizecard").hidden = !!st.size;
   sizeGrid($("#szgrid1"));
+  renderHi();
   renderCatalog();
   sync();
+}
+/* хозяйка: знакомство, «давно не было», подборка на её размер; главный вход — голос */
+function renderHi() {
+  var nm = vhod && vhod.imya, dni = vizit.prev ? (Date.now() - vizit.prev) / 864e5 : -1, sz = st.size;
+  var nov = vizit.videla ? D.tovary.filter(function (t) { return vizit.videla.indexOf(t.id) < 0 && (!sz || fits(t, sz)); }) : [];
+  var s = { imya: nm ? esc(nm) : "", zov: nm ? esc(zov(nm)) : "", kod: vhod && vhod.kod ? esc(vhod.kod) : "", ceny: ceny(), sz: sz, nov: nov.length > 0, dni: dni, svezh: vizit.svezh };
+  var lines = P.privet(s), picks = [];
+  if (nm && !vizit.svezh && sz) picks = (nov.length ? nov : D.tovary.filter(function (t) { return fits(t, sz); })).slice(0, 8);
+  vizit.repl = lines.join(" ").replace(/<[^>]+>/g, "");
+  var el = $("#hi"), txt = '<div class="say">' + lines.map(function (l) { return "<p>" + l + "</p>"; }).join("") + "</div>";
+  el.innerHTML = '<img class="hi-ava" src="' + P.ava + '" alt="' + P.alt + '">'
+    + '<div class="bub">' + (TTS ? '<button class="zv" data-zvuk aria-label="Голос хозяйки" aria-pressed="' + zvuk + '">' + (zvuk ? IC.zvuk : IC.tiho) + "</button>" : "")
+    + '<div class="txt">' + (vizit.pechat ? '<span class="dots" aria-label="печатает"><i></i><i></i><i></i></span>' : txt) + "</div></div>"
+    + '<div class="hi-acts"><button class="say-big" data-say><span class="mc">' + IC.micBig + "</span>" + P.mic + "</button>"
+    + (ceny() ? "" : '<button class="btn line" data-vhod>' + (nm ? P.telefon : P.znakom) + "</button>") + "</div>"
+    + (picks.length ? '<div class="picks noscroll">' + picks.map(miniHtml).join("") + "</div>" : "");
+  // первый показ — «печатает…», потом реплика
+  if (vizit.pechat) { vizit.pechat = false; setTimeout(function () { var b = el.querySelector(".txt"); if (b) b.innerHTML = txt; }, vizit.zaderzhka || 900); }
 }
 function setSize(s, quiet) {
   st.size = s; store.set("razmer", s);
@@ -523,7 +807,7 @@ function goHome() { if (stack.length) history.go(-stack.length); }
 function top() { return stack[stack.length - 1]; }
 
 function homeMain() {
-  return cart.length ? { text: "Примерка дома · " + veshi(cart.length) + " · " + fmt(cartSum()), fn: openCart } : null;
+  return cart.length ? { text: "Примерка дома · " + veshi(cart.length) + rubTail(cartSum()), fn: openCart } : null;
 }
 function sync() {
   var t = top(), m = t ? (t.main ? t.main() : null) : homeMain();
@@ -531,7 +815,7 @@ function sync() {
   if (TG) {
     try {
       stack.length ? tg.BackButton.show() : tg.BackButton.hide();
-      if (m) tg.MainButton.setParams({ text: m.text, color: "#7A1F2B", text_color: "#FFFFFF", is_active: true, is_visible: true, has_shine_effect: !!m.shine });
+      if (m) tg.MainButton.setParams({ text: m.text, color: "#BD0608", text_color: "#FFFFFF", is_active: true, is_visible: true, has_shine_effect: !!m.shine });
       else tg.MainButton.hide();
     } catch (e) {}
   } else {
@@ -559,7 +843,7 @@ function sizeBtns(t, sel, attr) {
 function openItem(id) {
   var t = T[id]; if (!t) return;
   var sel = autoIdx(t), x = (t.x || []).filter(function (i) { return T[i]; });
-  // «весь образ» — капсула, в которую входит вещь (если есть), её вещи первыми в ряду
+  // «весь образ» — первый образ, в который входит вещь (ручные — первыми), его вещи первыми в ряду
   var cap = D.kapsuly.filter(function (k) { return k.ids.indexOf(t.id) >= 0; })[0];
   var lookX = cap ? cap.ids.filter(function (i) { return i !== t.id && T[i]; }) : x;
   x = lookX.concat(x.filter(function (i) { return lookX.indexOf(i) < 0; }));
@@ -568,24 +852,24 @@ function openItem(id) {
   var gal = '<div class="gal"><div class="track noscroll">' + t.f.map(function (i, k) { return ph(img(t, i, true), "", k === 0); }).join("") + '</div>'
     + (t.f.length > 1 ? '<span class="cnt">1 / ' + t.f.length + '</span><button class="ib gnav l" data-g="-1" aria-label="Предыдущее фото">' + IC.back + '</button><button class="ib gnav r" data-g="1" aria-label="Следующее фото">' + IC.next + "</button>" : "") + "</div>";
   var lookSum = lookX.reduce(function (a, i) { return a + T[i].my; }, t.my);
-  var html = bar(t.t) + gal + '<div class="pad">'
-    + '<h1 class="pname">' + esc(t.n) + "</h1>"
-    + '<div class="price"><b>' + fmt(t.my) + '</b><span class="pct">−30 %</span></div>'
-    + '<p class="wbp">на Wildberries <s>' + fmt(t.wb) + "</s></p>"
-    + '<h2 class="h3" id="szh">Размер</h2><div class="sizes">' + sizeBtns(t, sel, "data-sz") + "</div>"
-    + '<p class="hint' + (mi >= 0 ? " yes" : "") + '">' + (st.size ? (mi >= 0 ? "Ваш " + st.size + " есть — выбрали его" : "Вашего " + st.size + " сейчас нет. Есть только эти размеры") : "Показаны только размеры, которые есть в наличии") + "</p>"
-    + (x.length ? '<h2 class="h3">С чем носить</h2><div class="minis noscroll">' + x.map(function (i) { return miniHtml(T[i]); }).join("") + '</div>' + (lookX.length ? '<button class="btn line" data-lookadd>Весь образ в корзину · ' + veshi(lookX.length + 1) + ' · ' + fmt(lookSum) + "</button>" : "")
-      : sim.length ? '<h2 class="h3">Ещё ' + esc(t.t.toLowerCase()) + '</h2><div class="minis noscroll">' + sim.map(miniHtml).join("") + "</div>" : "")
-    + '<div class="perks">'
-    + '<div class="perk">' + IC.hanger + '<div><b>Примерка перед покупкой</b><span>Берите до 10 вещей, оплачиваете только то, что оставили.</span></div></div>'
-    + '<div class="perk">' + IC.truck + '<div><b>Курьер по Москве или СДЭК</b><span>Срок и стоимость доставки покажем при оформлении.</span></div></div>'
-    + '<div class="perk">' + IC.tag + '<div><b>На 30 % ниже, чем на WB</b><span>Та же вещь от того же бренда, без наценки маркетплейса.</span></div></div>'
-    + "</div></div>";
-  push(html, function () {
+  function body() {
+    return '<h1 class="pname">' + esc(t.n) + "</h1>" + priceBlk(t.my)
+      + '<h2 class="h3" id="szh">Размер</h2><div class="sizes">' + sizeBtns(t, sel, "data-sz") + "</div>"
+      + '<p class="hint' + (mi >= 0 ? " yes" : "") + '">' + (st.size ? (mi >= 0 ? "Ваш " + st.size + " есть — выбрали его" : "Вашего " + st.size + " сейчас нет. Есть только эти размеры") : "Показаны только размеры, которые есть в наличии") + "</p>"
+      + (x.length ? '<h2 class="h3">С чем носить</h2><div class="minis noscroll">' + x.map(function (i) { return miniHtml(T[i]); }).join("") + '</div>' + (lookX.length ? '<button class="btn line" data-lookadd>Весь образ в корзину · ' + veshi(lookX.length + 1) + rubTail(lookSum) + "</button>" : "")
+        : sim.length ? '<h2 class="h3">Ещё ' + esc(t.t.toLowerCase()) + '</h2><div class="minis noscroll">' + sim.map(miniHtml).join("") + "</div>" : "")
+      + '<div class="perks">'
+      + '<div class="perk">' + IC.hanger + '<div><b>Примерка перед покупкой</b><span>Берите до 10 вещей. Платите сразу или после примерки — только за то, что оставили.</span></div></div>'
+      + '<div class="perk">' + IC.truck + '<div><b>Курьер по Москве или СДЭК</b><span>Срок и стоимость доставки покажем при оформлении.</span></div></div>'
+      + '<div class="perk">' + IC.tag + '<div><b>На 30 % ниже, чем на WB</b><span>Та же вещь от того же бренда, без наценки маркетплейса.</span></div></div>'
+      + "</div>";
+  }
+  push(bar(t.t) + gal + '<div class="pad">' + body() + "</div>", function () {
     var z = sel >= 0 ? t.s[sel] : null;
     if (z && inCart(t.id, z)) return { text: "В корзине ✓ · Открыть корзину", fn: openCart };
-    return { text: "В корзину · " + fmt(t.my), fn: add };
+    return { text: "В корзину" + rubTail(t.my), fn: add };
   }, function (el, o) {
+    o.re = function () { el.querySelector(".pad").innerHTML = body(); };
     var tr = el.querySelector(".track"), cnt = el.querySelector(".cnt");
     if (cnt) tr.addEventListener("scroll", function () { cnt.textContent = (Math.round(tr.scrollLeft / tr.clientWidth) + 1) + " / " + t.f.length; }, { passive: true });
     el.addEventListener("click", function (e) {
@@ -605,7 +889,7 @@ function openItem(id) {
   }
 }
 function miniHtml(t) {
-  return '<button class="mini" data-open="' + t.id + '">' + ph(img(t, t.f[0])) + '<span class="nm">' + esc(t.n) + '</span><span class="pr"><b>' + fmt(t.my) + "</b></span></button>";
+  return '<button class="mini" data-open="' + t.id + '">' + ph(img(t, t.f[0])) + '<span class="nm">' + esc(t.n) + '</span><span class="pr">' + (ceny() ? "<b>" + fmt(t.my) + "</b>" : '<span class="zam">−30 % к WB</span>') + "</span></button>";
 }
 /* весь образ одной кнопкой: свой размер берём сам; где не выбрать — экран образа с выбором */
 function addLook(t, sel, x) {
@@ -628,22 +912,27 @@ function openLook(k, pre) {
   var sel = {};
   k.ids.forEach(function (id) { sel[id] = pre && pre[id] != null && pre[id] >= 0 ? pre[id] : autoIdx(T[id]); });
   var ts = k.ids.map(function (id) { return T[id]; });
-  var wb = ts.reduce(function (a, t) { return a + t.wb; }, 0), my = ts.reduce(function (a, t) { return a + t.my; }, 0);
-  var html = bar("Образ") + ph(img(T[k.f[0]], k.f[1], true), "look-hero", true) + '<div class="pad">'
-    + '<p class="kicker">Образ целиком</p><h1 class="pname" style="margin-top:6px">' + esc(k.n) + '</h1><p class="lead">' + esc(k.o) + "</p>"
-    + '<div class="lp"></div>'
-    + ts.map(function (t) {
+  var my = ts.reduce(function (a, t) { return a + t.my; }, 0);
+  function rows() {
+    return ts.map(function (t) {
       var mi = mySizeIdx(t);
-      return '<div class="lrow"><button data-open="' + t.id + '" aria-label="' + esc(t.n) + '">' + ph(img(t, t.f[0])) + '</button><div><div class="nm" style="margin-top:0;min-height:0">' + esc(t.n) + '</div><div class="pr" style="flex-direction:row;gap:10px;align-items:baseline"><b>' + fmt(t.my) + '</b><span>на WB <s>' + fmt(t.wb) + '</s></span></div>'
+      return '<div class="lrow"><button data-open="' + t.id + '" aria-label="' + esc(t.n) + '">' + ph(img(t, t.f[0])) + '</button><div><div class="nm" style="margin-top:0;min-height:0">' + esc(t.n) + '</div><div class="pr" style="flex-direction:row;gap:10px;align-items:baseline">'
+        + (ceny() ? "<b>" + fmt(t.my) + "</b>" : '<span class="zam">на 30 % дешевле WB</span>') + "</div>"
         + '<div class="sizes" data-for="' + t.id + '">' + sizeBtns(t, sel[t.id], "data-lsz") + "</div>"
         + (st.size && mi < 0 ? '<p class="no">Вашего ' + st.size + " нет — можно взять соседний</p>" : "") + "</div></div>";
-    }).join("") + '<p class="lnote" role="status" hidden></p></div>';
+    }).join("");
+  }
+  var html = bar("Образ") + capPhoto(k, "look-hero", true) + '<div class="pad">'
+    + '<p class="kicker">Образ целиком</p><h1 class="pname" style="margin-top:6px">' + esc(k.n) + '</h1><p class="lead">' + esc(k.o) + "</p>"
+    + '<div class="dlg" style="margin-top:12px"><div class="her"><img src="' + P.lico + '" alt=""><span>' + P.obraz + "</span></div></div>"
+    + '<div class="lp"></div><div class="lrows">' + rows() + '</div><p class="lnote" role="status" hidden></p></div>';
   push(html, function () {
     var chosen = ts.filter(function (t) { return sel[t.id] >= 0; });
     if (!chosen.length) return { text: "Выберите размеры", fn: function () { hap("warn"); toast("Нажмите на размер у каждой вещи"); } };
-    return { text: "Образ в корзину · " + veshi(chosen.length) + " · " + fmt(chosen.reduce(function (a, t) { return a + t.my; }, 0)), fn: add };
-  }, function (el) {
+    return { text: "Образ в корзину · " + veshi(chosen.length) + rubTail(chosen.reduce(function (a, t) { return a + t.my; }, 0)), fn: add };
+  }, function (el, o) {
     lp(el);
+    o.re = function () { el.querySelector(".lrows").innerHTML = rows(); lp(el); };
     el.addEventListener("click", function (e) {
       var b = e.target.closest("[data-lsz]"); if (!b) return;
       var id = +b.closest("[data-for]").dataset.for, i = +b.dataset.lsz;
@@ -656,9 +945,8 @@ function openLook(k, pre) {
   function lp(el) {
     var ch = ts.filter(function (t) { return sel[t.id] >= 0; }), miss = ts.filter(function (t) { return sel[t.id] < 0; });
     var part = !!st.size && miss.length > 0 && ch.length > 0;
-    var pm = part ? ch.reduce(function (a, t) { return a + t.my; }, 0) : my, pw = part ? ch.reduce(function (a, t) { return a + t.wb; }, 0) : wb;
-    el.querySelector(".lp").innerHTML = '<div class="price"><b>' + fmt(pm) + '</b><span class="pct">−30 %</span></div><p class="wbp">на Wildberries <s>' + fmt(pw) + "</s></p>"
-      + (part ? '<p class="wbp">' + veshi(ch.length) + " из " + ts.length + " · весь образ " + fmt(my) + "</p>" : "");
+    var pm = part ? ch.reduce(function (a, t) { return a + t.my; }, 0) : my;
+    el.querySelector(".lp").innerHTML = priceBlk(pm, part ? '<p class="wbp">' + veshi(ch.length) + " из " + ts.length + " · весь образ " + fmt(my) + "</p>" : "");
     var note = el.querySelector(".lnote"), nm = miss.map(rodit);
     note.hidden = !(st.size && miss.length);
     if (!note.hidden) note.textContent = (nm.length > 1 ? nm.slice(0, -1).join(", ") + " и " + nm[nm.length - 1] : nm[0]).replace(/^./, function (c) { return c.toUpperCase(); })
@@ -673,6 +961,20 @@ function openLook(k, pre) {
     toast(n ? "В корзине " + veshi(n) + " из образа" + (skip.length ? ". Без размера: " + skip.map(short).join(", ") : "") : "Эти вещи уже в корзине", !!skip.length);
   }
 }
+/* все образы: цвета чипами, её размер — первыми */
+function openCaps(cv) {
+  var html = bar("Образы") + '<div class="pad"><h1 class="pageh">Образы целиком</h1><p class="lead">' + D.kapsuly.length + " образов из того, что есть в наличии."
+    + (st.size ? " Первыми — где всё есть на ваш " + st.size + "-й." : "") + '</p></div><div class="chips noscroll"></div><div class="capgrid"></div>';
+  push(html, homeMain, function (el, o) {
+    function draw() {
+      el.querySelector(".chips").innerHTML = '<button class="chip" data-cv="" aria-pressed="' + (cv == null) + '">Все</button>'
+        + CVK.map(function (x, i) { return capsSorted(i).length ? '<button class="chip" data-cv="' + i + '" aria-pressed="' + (cv === i) + '">' + x[0] + "</button>" : ""; }).join("");
+      el.querySelector(".capgrid").innerHTML = capsSorted(cv).map(capHtml).join("");
+    }
+    o.re = draw; draw();
+    el.addEventListener("click", function (e) { var b = e.target.closest("[data-cv]"); if (!b) return; cv = b.dataset.cv === "" ? null : +b.dataset.cv; hap("sel"); draw(); });
+  });
+}
 
 /* ---------- корзина: примерка дома ---------- */
 function openCart() {
@@ -682,11 +984,12 @@ function openCart() {
     el.addEventListener("click", function (e) {
       var d = e.target.closest("[data-del]");
       if (d) { cart.splice(+d.dataset.del, 1); saveCart(); hap("tap"); renderCart(el); sync(); return; }
-      if (e.target.closest("[data-promo]")) {
-        var v = el.querySelector("#promo").value.trim();
-        el.querySelector("#promoMsg").hidden = false;
-        el.querySelector("#promoMsg").textContent = v ? "В демо промокоды не проверяются. В магазине у новой и у постоянной покупательницы будут свои коды." : "Введите промокод";
-        hap("tap"); return;
+      if (e.target.closest("[data-promo]")) { primenitKod(el.querySelector("#promo").value, el.querySelector("#promoMsg")); return; }
+      var p = e.target.closest("[data-dop]");
+      if (p) {
+        var q = p.dataset.dop.split(":"), o = T[+q[0]], r = addOne(o, o.s[+q[1]]);
+        if (r < 0) { hap("warn"); toast("В примерку — до " + LIMIT + " вещей за раз"); return; }
+        saveCart(); hap("ok"); renderCart(el); sync(); toast("Привезём и это: " + short(o) + ", " + szLabel(o.s[+q[1]])); return;
       }
       if (e.target.closest("[data-gohome]")) goHome();
     });
@@ -694,26 +997,51 @@ function openCart() {
     renderCart(el);
   });
 }
-function cartMain() { return cart.length ? { text: "Оформить · " + veshi(cart.length) + " · " + fmt(cartSum()), fn: openForm, shine: true } : null; }
+function cartMain() {
+  if (!cart.length) return null;
+  if (!ceny()) return { text: "Показать мои цены", fn: openVhod };
+  return { text: "Оформить · " + veshi(cart.length) + " · " + fmt(cartSum()), fn: openForm, shine: true };
+}
+/* к вещи в корзине — 1–2 вещи из её образов (как девочки на примерке давали к брюкам юбку и футболку); размер — её или тот же, что у вещи */
+function kNej(t, z, uzhe) {
+  var ids = [];
+  D.kapsuly.forEach(function (k) { if (k.ids.indexOf(t.id) >= 0) ids = ids.concat(k.ids); });
+  ids = ids.concat(t.x || []);
+  var out = [];
+  ids.forEach(function (id) {
+    var o = T[id];
+    if (!o || id === t.id || uzhe[id] || out.length >= 2 || cart.some(function (c) { return c.id === id; })) return;
+    var i = mySizeIdx(o);
+    if (i < 0) for (var j = 0; j < o.s.length && i < 0; j++) if (o.s[j].a <= z.b && z.a <= o.s[j].b) i = j;
+    if (i >= 0) { out.push({ t: o, i: i }); uzhe[id] = 1; }
+  });
+  return out;
+}
 function renderCart(el) {
   var b = el.querySelector("#cartBody");
   if (!cart.length) {
     b.innerHTML = '<h1 class="pageh">Примерка дома</h1><div class="empty" style="margin:18px 0 0"><b>Пока пусто</b>Выберите вещи в каталоге или возьмите образ целиком — привезём на примерку.<button class="btn wine" data-gohome style="margin-top:16px">В каталог</button></div>';
     return;
   }
-  var sum = cartSum(), wb = cartWb();
-  b.innerHTML = '<h1 class="pageh">Примерка дома</h1><p class="lead">До ' + LIMIT + " вещей за раз. Примерите — и оплатите только то, что оставили.</p>"
+  var sum = cartSum(), kod = vhod && vhod.kod || "", uzhe = {};
+  b.innerHTML = '<h1 class="pageh">Примерка дома</h1><p class="lead">До ' + LIMIT + " вещей за раз. Примерите дома — и оставите то, что подошло.</p>"
     + '<div class="meter"><i><b style="width:' + (cart.length / LIMIT * 100) + '%"></b></i><span>' + cart.length + " из " + LIMIT + "</span></div>"
     + cart.map(function (c, i) {
-      var t = T[c.id];
-      return '<div class="crow"><button data-open="' + t.id + '" aria-label="' + esc(t.n) + '">' + ph(img(t, t.f[0])) + '</button><div><div class="nm">' + esc(t.n) + '</div><div class="meta">Размер ' + esc(szLabel(c)) + '</div><div class="pr"><b>' + fmt(t.my) + '</b><span>на WB <s>' + fmt(t.wb) + '</s></span></div></div><button class="del" data-del="' + i + '" aria-label="Убрать из корзины">' + IC.x + "</button></div>";
+      var t = T[c.id], dop = cart.length < LIMIT ? kNej(t, t.s[szIdx(t, c)], uzhe) : [];
+      return '<div class="crow"><button data-open="' + t.id + '" aria-label="' + esc(t.n) + '">' + ph(img(t, t.f[0])) + '</button><div><div class="nm">' + esc(t.n) + '</div><div class="meta">Размер ' + esc(szLabel(c)) + '</div><div class="pr">'
+        + (ceny() ? "<b>" + fmt(t.my) + "</b>" : '<span class="zam">на 30 % дешевле WB</span>') + '</div></div><button class="del" data-del="' + i + '" aria-label="Убрать из корзины">' + IC.x + "</button>"
+        + (dop.length ? '<div class="dop"><p>Привезём к ней на примерку</p>' + dop.map(function (d) {
+          return '<div class="dop-r"><button data-open="' + d.t.id + '" aria-label="' + esc(d.t.n) + '">' + ph(img(d.t, d.t.f[0])) + '</button><div><div class="nm">' + esc(d.t.n) + '</div><div class="meta">' + esc(szLabel(d.t.s[d.i])) + rubTail(d.t.my) + '</div></div><button class="plus" data-dop="' + d.t.id + ":" + d.i + '" aria-label="Привезти на примерку">+</button></div>';
+        }).join("") + "</div>" : "") + "</div>";
     }).join("")
     + '<h2 class="h3">Как привезти</h2>'
-    + '<label class="opt"><input type="radio" name="dl" value="msk"' + (st.dl === "msk" ? " checked" : "") + '><span><b>Курьер по Москве, с примеркой</b><span>Примерите при курьере и оплатите только то, что оставили.</span></span></label>'
+    + '<label class="opt"><input type="radio" name="dl" value="msk"' + (st.dl === "msk" ? " checked" : "") + '><span><b>Курьер по Москве, с примеркой</b><span>Примерите при курьере, оставите то, что подошло.</span></span></label>'
     + '<label class="opt"><input type="radio" name="dl" value="sdek"' + (st.dl === "sdek" ? " checked" : "") + '><span><b>СДЭК в регионы, с примеркой</b><span>Примерка в пункте выдачи, можно выкупить часть заказа.</span></span></label>'
     + '<p class="note">Срок и стоимость доставки покажем при оформлении.</p>'
-    + '<h2 class="h3">Промокод</h2><div class="promo"><input class="inp" id="promo" placeholder="Если есть" autocomplete="off" autocapitalize="characters"><button class="btn line" data-promo>Применить</button></div><p class="hint" id="promoMsg" hidden></p>'
-    + '<div class="sum"><div><span>' + veshi(cart.length) + "</span><span>" + fmt(sum) + "</span></div><div><span>На Wildberries</span><span><s>" + fmt(wb) + '</s></span></div><div class="gain"><span>Ваша выгода</span><span>' + fmt(wb - sum) + '</span></div><div class="tot"><span>К оплате, если оставите всё</span><span>' + fmt(sum) + "</span></div></div>";
+    + '<h2 class="h3">Промокод</h2><div class="promo"><input class="inp" id="promo" placeholder="Если есть" autocomplete="off" autocapitalize="characters" value="' + esc(kod) + '"><button class="btn line" data-promo>Применить</button></div>'
+    + '<p class="hint' + (kod ? " yes" : "") + '" id="promoMsg"' + (kod ? "" : " hidden") + ">" + (kod ? "Промокод применён — цены уже со скидкой" : "") + "</p>"
+    + (ceny() ? '<div class="sum"><div><span>' + veshi(cart.length) + "</span><span>" + fmt(sum) + '</span></div><div class="tot"><span>К оплате, если оставите всё</span><span>' + fmt(sum) + "</span></div></div>"
+      : priceBlk());
 }
 
 /* ---------- оформление ---------- */
@@ -724,37 +1052,65 @@ function phoneFmt(v) {
   return r;
 }
 function openForm() {
-  var u = TG && tg.initDataUnsafe && tg.initDataUnsafe.user, msk = st.dl === "msk";
+  // chat: открыт кнопкой меню бота — заказ уйдёт ссылкой в чат, адрес бот спросит там
+  var u = TG && tg.initDataUnsafe && tg.initDataUnsafe.user, msk = st.dl === "msk", chat = TG && !K1;
   var html = bar("Оформление") + '<div class="pad"><h1 class="pageh">Оформление</h1>'
     + '<p class="lead">' + (msk ? "Курьер по Москве с примеркой" : "СДЭК в регионы с примеркой") + " · " + veshi(cart.length) + " · " + fmt(cartSum()) + "</p>"
     + '<form id="ord" novalidate>'
-    + '<label class="fld" id="fN"><span>Имя</span><input id="fName" autocomplete="given-name" value="' + esc(u && u.first_name || "") + '"><span class="err">Как к вам обращаться?</span></label>'
-    + '<label class="fld" id="fP"><span>Телефон</span><input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00"><span class="err">Нужен номер из 11 цифр</span></label>'
-    + '<label class="fld" id="fA"><span>' + (msk ? "Адрес в Москве" : "Город и адрес пункта СДЭК") + '</span><textarea id="fAddr" rows="2" autocomplete="street-address" placeholder="' + (msk ? "Улица, дом, квартира" : "Например: Казань, ул. Баумана, 15") + '"></textarea><span class="err">Куда привезти?</span></label>'
+    + '<label class="fld" id="fN"><span>Имя</span><input id="fName" autocomplete="given-name" value="' + esc(vhod && vhod.imya || u && u.first_name || "") + '"><span class="err">Как к вам обращаться?</span></label>'
+    + '<label class="fld" id="fP"><span>Телефон</span><input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00" value="' + esc(vhod && vhod.tel ? phoneFmt(vhod.tel) : "") + '"><span class="err">Нужен номер из 11 цифр</span></label>'
+    + (chat ? "" : '<label class="fld" id="fA"><span>' + (msk ? "Адрес в Москве" : "Город и адрес пункта СДЭК") + '</span><textarea id="fAddr" rows="2" autocomplete="street-address" placeholder="' + (msk ? "Улица, дом, квартира" : "Например: Казань, ул. Баумана, 15") + '"></textarea><span class="err">Куда привезти?</span></label>')
     + '<label class="fld"><span>Комментарий, если нужно</span><textarea id="fCom" rows="2" placeholder="Удобное время, подъезд, домофон"></textarea></label>'
-    + '</form><p class="note">Срок и стоимость доставки рассчитаются по адресу — в рабочей версии они появятся здесь, до подтверждения.</p>'
-    + '<p class="hint"><span class="tag">демо</span> Заказ никуда не отправится, доставка не рассчитывается.</p></div>';
-  push(html, function () { return { text: "Подтвердить заказ", fn: submit }; }, function (el) {
+    + '<h2 class="h3">Как оплатить</h2>'
+    + '<label class="opt"><input type="radio" name="opl" value="1"' + (st.opl ? " checked" : "") + '><span><b>Сейчас — картой или СБП</b><span>Через Робокассу. За то, что не подойдёт на примерке, вернём деньги.</span></span></label>'
+    + '<label class="opt"><input type="radio" name="opl" value="0"' + (st.opl ? "" : " checked") + '><span><b>После примерки</b><span>' + (msk ? "Курьеру" : "В пункте СДЭК") + " — только за то, что оставите.</span></span></label>"
+    + "</form>"
+    + (chat ? '<p class="note">Адрес спросим в чате магазина — он откроется после подтверждения.</p>' : '<p class="note">Срок и стоимость доставки рассчитаются по адресу — в рабочей версии они появятся здесь, до подтверждения.</p>')
+    + (TG ? "" : '<p class="hint"><span class="tag">демо</span> Заказ никуда не отправится, доставка не рассчитывается.</p>') + "</div>";
+  push(html, function () { return st.opl ? { text: "Оплатить · " + fmt(cartSum()), fn: submit } : { text: "Подтвердить заказ", fn: submit }; }, function (el) {
     var p = el.querySelector("#fPhone");
     p.addEventListener("input", function () { p.value = phoneFmt(p.value); });
     el.querySelector("#ord").addEventListener("submit", function (e) { e.preventDefault(); submit(); });
+    el.addEventListener("change", function (e) { if (e.target.name === "opl") { st.opl = e.target.value === "1"; store.set("oplata", st.opl); hap("sel"); sync(); } });
   });
   function submit() {
-    var el = top().el, name = el.querySelector("#fName").value.trim(), phone = el.querySelector("#fPhone").value, addr = el.querySelector("#fAddr").value.trim();
-    var bad = [["#fN", name.length < 2], ["#fP", phone.replace(/\D/g, "").length !== 11], ["#fA", addr.length < 5]];
-    bad.forEach(function (b) { el.querySelector(b[0]).classList.toggle("bad", b[1]); });
+    var el = top().el, name = el.querySelector("#fName").value.trim(), phone = el.querySelector("#fPhone").value, fa = el.querySelector("#fAddr"), addr = fa ? fa.value.trim() : "";
+    var bad = [["#fN", name.length < 2], ["#fP", phone.replace(/\D/g, "").length !== 11], ["#fA", !!fa && addr.length < 5]];
+    bad.forEach(function (b) { var f = el.querySelector(b[0]); if (f) f.classList.toggle("bad", b[1]); });
     var first = bad.filter(function (b) { return b[1]; })[0];
     if (first) { hap("warn"); el.querySelector(first[0] + " input, " + first[0] + " textarea").focus(); return; }
-    var order = { name: name, phone: phone, addr: addr, n: cart.length, sum: cartSum(), wb: cartWb(), msk: msk };
-    cart = []; saveCart(); hap("ok");
-    pendingDone = order; goHome();
+    var o = { name: name, phone: "+" + phone.replace(/\D/g, ""), addr: addr, com: el.querySelector("#fCom").value.trim(), msk: msk, opl: st.opl, chat: chat,
+      n: cart.length, sum: cartSum(), items: cart.map(function (c) { var t = T[c.id]; return { t: t, i: szIdx(t, c) }; }) };
+    // вошла только по промокоду — имя и телефон из заказа тоже в базу
+    if (vhod && !vhod.tel) { vhod.imya = name; vhod.tel = o.phone; store.set("vhod", vhod); }
+    if (st.opl) openPay(o); else otpravit(o);
   }
 }
+/* оплата: в рабочей версии здесь форма Робокассы; в демо — только экран, без запросов */
+function openPay(o) {
+  push(bar("Оплата") + '<div class="pad"><h1 class="pageh">Оплата</h1><p class="lead">' + veshi(o.n) + " · " + fmt(o.sum) + "</p>"
+    + '<div class="paybox"><b>Здесь откроется оплата Робокассы</b><span>Картой, по СБП, SberPay или T-Pay — как удобно. Чек придёт на телефон, а за то, что не подойдёт на примерке, деньги вернутся.</span><div class="paym"><span>Карта</span><span>СБП</span><span>SberPay</span><span>T-Pay</span></div></div>'
+    + '<p class="hint"><span class="tag">демо</span> В рабочей версии здесь откроется оплата Робокассы. Сейчас деньги не списываются.</p></div>',
+    function () { return { text: "Дальше — без оплаты (демо)", fn: function () { otpravit(o); } }; });
+}
+/* заказ в бота: с клавиатуры бота — sendData одним сообщением; из кнопки меню — ссылкой t.me/…?start=z<телефон>_<вещи>[_o],
+   по 3 знака на вещь: номер в D.tovary (2 знака, 36-ричный) + номер размера (1 знак) — разбирает iz_ssylki в magazin_bot.py; вне Telegram — никуда */
+function otpravit(o) {
+  cart = []; saveCart(); hap("ok");
+  if (TG && K1) {
+    try { tg.sendData(JSON.stringify({ name: o.name, phone: o.phone, addr: o.addr, com: o.com, msk: o.msk, opl: o.opl, items: o.items.map(function (x) { return { a: x.t.a, o: x.t.s[x.i].o }; }) })); return; } catch (e) {}
+  }
+  if (o.chat) {
+    var kod = "z" + o.phone.slice(1) + "_" + o.items.map(function (x) { return ("0" + D.tovary.indexOf(x.t).toString(36)).slice(-2) + x.i.toString(36); }).join("") + (o.opl ? "_o" : "");
+    try { tg.openTelegramLink("https://t.me/rkd_magazin_bot?start=" + kod); } catch (e) {}
+  }
+  pendingDone = o; goHome();
+}
 function openDone(o) {
-  var html = '<div class="sbar"><span class="sp"></span><div class="tt">Готово</div><span class="sp"></span></div><div class="done"><div class="chk">' + IC.check + '</div><h1>Заказ принят</h1><span class="tag">демо</span>'
-    + "<p>Спасибо, " + esc(o.name) + "! В рабочей версии заказ сразу уйдёт в магазин, а вам придёт подтверждение.</p>"
-    + '<div class="sum"><div><span>' + veshi(o.n) + "</span><span>" + fmt(o.sum) + '</span></div><div class="gain"><span>Выгода против WB</span><span>' + fmt(o.wb - o.sum) + "</span></div><div><span>Доставка</span><span>" + (o.msk ? "курьер, Москва" : "СДЭК") + "</span></div><div><span>Телефон</span><span>" + esc(o.phone) + "</span></div></div>"
-    + '<p class="note" style="text-align:left">Это демонстрация: заказ никуда не отправлен, деньги не списываются.</p></div>';
+  var html = '<div class="sbar"><span class="sp"></span><div class="tt">Готово</div><span class="sp"></span></div><div class="done"><div class="chk">' + IC.check + "</div><h1>Заказ принят</h1>" + (o.chat ? "" : '<span class="tag">демо</span>')
+    + "<p>Спасибо, " + esc(o.name) + "! " + (o.chat ? "Заказ ушёл в чат магазина — там пришлём номер заказа и спросим адрес." : "В рабочей версии заказ сразу уйдёт в магазин, а вам придёт подтверждение.") + "</p>"
+    + '<div class="sum"><div><span>' + veshi(o.n) + "</span><span>" + fmt(o.sum) + "</span></div><div><span>Доставка</span><span>" + (o.msk ? "курьер, Москва" : "СДЭК") + "</span></div><div><span>Оплата</span><span>" + (o.opl ? "картой сейчас" : "после примерки") + "</span></div><div><span>Телефон</span><span>" + esc(phoneFmt(o.phone)) + "</span></div></div>"
+    + (o.chat ? "" : '<p class="note" style="text-align:left">Это демонстрация: заказ никуда не отправлен, деньги не списываются.</p>') + "</div>";
   push(html, function () { return { text: "Вернуться в магазин", fn: goHome }; });
 }
 
@@ -774,7 +1130,8 @@ if (!SR) {
 }
 function stopRec() { if (rec && recOn) try { rec.abort(); } catch (e) {} recOn = false; $("#micBig").classList.remove("rec"); }
 function startRec() {
-  if (recOn) { stopRec(); $("#vState").textContent = "Нажмите и скажите"; return; }
+  if (recOn) { stopRec(); $("#vState").textContent = P.nazhmi; return; }
+  if (TTS) try { TTS.cancel(); } catch (e) {}  // хозяйка замолкает, пока слушаем
   rec = new SR(); rec.lang = "ru-RU"; rec.interimResults = true; rec.maxAlternatives = 1; rec.continuous = false;
   var finalText = "";
   rec.onstart = function () { recOn = true; $("#micBig").classList.add("rec"); $("#vState").textContent = "Слушаю…"; $("#vSaid").textContent = ""; hap("tap"); };
@@ -789,23 +1146,92 @@ function startRec() {
   rec.onend = function () {
     recOn = false; $("#micBig").classList.remove("rec");
     if (finalText.trim()) { var f = finalText.trim(); $("#vState").textContent = "Ищем…"; setTimeout(function () { applyQuery(f); }, 450); }
-    else if ($("#vState").textContent === "Слушаю…") $("#vState").textContent = "Нажмите и скажите";
+    else if ($("#vState").textContent === "Слушаю…") $("#vState").textContent = P.nazhmi;
   };
   try { rec.start(); } catch (e) { $("#vState").textContent = "Микрофон занят. Напишите словами"; }
 }
 $("#micBig").addEventListener("click", startRec);
 $("#vForm").addEventListener("submit", function (e) { e.preventDefault(); var v = $("#vText").value.trim(); if (v) { $("#vText").blur(); applyQuery(v); } });
 
+/* ---------- знакомство: имя (и телефон — тогда цены и её промокод); можно пропустить ---------- */
+function openVhod() {
+  var u = TG && tg.initDataUnsafe && tg.initDataUnsafe.user;
+  if (!$("#hName").value) $("#hName").value = vhod && vhod.imya || u && u.first_name || "";
+  $("#hTitle").textContent = P.vhod.t; $("#hSub").textContent = vhod && vhod.imya ? P.vhod.tel : P.vhod.p; $("#hNameL").textContent = P.vhod.imya; $("#hLater").textContent = P.vhod.ne;
+  $("#hTgPhone").hidden = !(TG && ver("6.9") && tg.requestContact);
+  ssSet("vhod_pokazan", 1);
+  openSheet("#shVhod");
+}
+function voshla(v, msg) {
+  vhod = v; store.set("vhod", v); vizit.svezh = true;
+  if (TG && ver("6.9") && tg.CloudStorage) { try { tg.CloudStorage.setItem("vhod", JSON.stringify(v)); } catch (e) {} }
+  closeSheet(); hap("ok");
+  renderCaps(); renderSerii(); renderHome();
+  stack.forEach(function (o) { if (o.re) o.re(); if (o.cart) renderCart(o.el); });
+  sync();
+  if (stack.length) toast(msg, true); else scrollTo({ top: 0, behavior: "smooth" });
+  skazat(vizit.repl);  // после касания браузер даёт говорить
+}
+function primenitKod(v, msg) {
+  v = v.trim().toUpperCase(); msg.hidden = false; msg.classList.remove("yes");
+  // ponytail: в демо подходит любой код от 4 знаков; в рабочей версии код проверяет 1С
+  if (v.length < 4) { msg.textContent = v ? "Проверьте промокод" : "Введите промокод"; hap("warn"); return; }
+  if (ceny()) { vhod.kod = v; store.set("vhod", vhod); msg.textContent = "Промокод применён"; msg.classList.add("yes"); hap("ok"); return; }
+  var nv = vhod || {}; nv.kod = v;
+  voshla(nv, "Промокод " + v + " применён — цены открыты");
+}
+$("#hPhone").addEventListener("input", function () { this.value = phoneFmt(this.value); });
+$("#hTgPhone").addEventListener("click", function () {
+  try { tg.requestContact(function (ok, r) { var c = ok && r && r.responseUnsafe && r.responseUnsafe.contact; if (c) $("#hPhone").value = phoneFmt(c.phone_number); }); } catch (e) {}
+});
+$("#vhForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  var name = $("#hName").value.trim(), d = $("#hPhone").value.replace(/\D/g, ""), badN = name.length < 2, badP = d.length > 0 && d.length !== 11;
+  $("#hN").classList.toggle("bad", badN); $("#hP").classList.toggle("bad", badP);
+  if (badN || badP) { hap("warn"); (badN ? $("#hName") : $("#hPhone")).focus(); return; }
+  // без телефона — знакомы по имени, цены закрыты; с телефоном — цены и её промокод
+  var v = { imya: name, pochta: $("#hMail").value.trim(), rassylka: $("#hNews").checked, kogda: Date.now() };
+  if (d) { v.tel = "+" + d; v.kod = vhod && vhod.kod || "РКД-" + d.slice(-4); }
+  else if (vhod && vhod.kod) v.kod = vhod.kod;
+  // ponytail: в демо база только у неё в телефоне и в облаке Telegram; в рабочей версии — в 1С для рассылок
+  voshla(v, v.kod ? name + ", ваш промокод " + v.kod + " применён — цены открыты" : name + ", приятно познакомиться");
+});
+$("#hPromoF").addEventListener("submit", function (e) { e.preventDefault(); primenitKod($("#hPromo").value, $("#hPromoMsg")); });
+
+/* ---------- голос хозяйки: speechSynthesis браузера, только после касания (так требует браузер); звук выключается ---------- */
+var TTS = window.speechSynthesis && window.SpeechSynthesisUtterance ? window.speechSynthesis : null, zvuk = store.get("zvuk", true);
+function skazat(txt) {
+  if (!TTS || !zvuk || !txt) return;
+  try {
+    TTS.cancel();
+    var u = new SpeechSynthesisUtterance(txt.replace(/РКД-/g, "Р К Д ")), vs = TTS.getVoices().filter(function (v) { return /^ru/i.test(v.lang); });
+    var v = vs.filter(function (x) { return /milena|irina|svetlana|daria|google/i.test(x.name); })[0] || vs[0];
+    u.lang = "ru-RU"; if (v) u.voice = v; u.rate = P.rate; u.pitch = P.pitch;
+    TTS.speak(u);
+  } catch (e) {}
+}
+
 /* ---------- клики ---------- */
 document.addEventListener("click", function (e) {
-  var b = e.target.closest("[data-open],[data-cap],[data-cart],[data-back],[data-voice],[data-sizes],[data-setsize],[data-warm],[data-type],[data-reset],[data-q]");
+  var b = e.target.closest("[data-open],[data-cap],[data-cart],[data-back],[data-voice],[data-say],[data-vhod],[data-allcaps],[data-seriya],[data-zvuk],[data-sizes],[data-setsize],[data-warm],[data-type],[data-reset],[data-q]");
   if (!b) return;
   var d = b.dataset;
   if (d.open) { hap("tap"); openItem(+d.open); }
   else if (d.cap != null) { hap("tap"); openLook(D.kapsuly[+d.cap]); }
   else if (b.hasAttribute("data-cart")) { hap("tap"); openCart(); }
   else if (b.hasAttribute("data-back")) history.back();
-  else if (b.hasAttribute("data-voice")) { $("#vSaid").textContent = ""; if (SR) $("#vState").textContent = "Нажмите и скажите"; openSheet("#shVoice"); }
+  else if (b.hasAttribute("data-voice") || b.hasAttribute("data-say")) {
+    $("#vSaid").textContent = ""; if (SR) $("#vState").textContent = P.nazhmi; openSheet("#shVoice");
+    if (b.hasAttribute("data-say")) { if (SR) startRec(); else $("#vText").focus(); }  // «Сказать» у хозяйки — сразу слушаем
+  }
+  else if (b.hasAttribute("data-vhod")) openVhod();
+  else if (b.hasAttribute("data-allcaps")) { hap("tap"); openCaps(null); }
+  else if (d.seriya != null) { hap("tap"); openSeriya(+d.seriya); }
+  else if (b.hasAttribute("data-zvuk")) {
+    zvuk = !zvuk; store.set("zvuk", zvuk); hap("sel");
+    b.setAttribute("aria-pressed", String(zvuk)); b.innerHTML = zvuk ? IC.zvuk : IC.tiho;
+    if (zvuk) skazat(vizit.repl); else if (TTS) try { TTS.cancel(); } catch (e) {}
+  }
   else if (b.hasAttribute("data-sizes")) { sizeGrid($("#szgrid2")); openSheet("#shSize"); }
   else if (d.setsize) { setSize(+d.setsize); closeSheet(); }
   else if (b.hasAttribute("data-warm")) { st.warm = st.warm === true ? null : true; hap("sel"); renderCatalog(); }
@@ -827,10 +1253,20 @@ $("#a2hs").addEventListener("click", function () {
 
 /* ---------- старт ---------- */
 var k = D.kogda.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}:\d{2})/);
-$("#srcnote").textContent = "Вещи, фото и наличие — с витрины Wildberries для Москвы на " + (k ? k[3] + "." + k[2] + ", " + k[4] : D.kogda) + ". Цена «на WB» — цена для покупательницы в тот момент; наша — на 30 % ниже, округлена до 10 ₽.";
+$("#srcnote").textContent = "Вещи, фото и наличие — с витрины Wildberries для Москвы на " + (k ? k[3] + "." + k[2] + ", " + k[4] : D.kogda) + ". Наша цена — на 30 % ниже цены WB в тот момент, округлена до 10 ₽.";
+// хозяйка: лица в шторках, тексты голосового поиска
+Array.prototype.forEach.call(document.querySelectorAll(".hz-lico"), function (i) { i.src = P.lico; });
+$("#vTitle").textContent = P.slushayu; if (SR) $("#vState").textContent = P.nazhmi;
+// заставка с логотипом — один раз за сеанс
+var spl = !ssGet("splash");
+if (spl) { ssSet("splash", 1); setTimeout(function () { $("#splash").classList.add("off"); }, 1100); } else $("#splash").classList.add("off");
+vizit.zaderzhka = spl ? 1700 : 900;
 history.replaceState({ d: 0 }, "");
 renderCaps();
+renderSerii();
 renderHome();
+// новенькая — сразу знакомимся (можно пропустить), один раз за сеанс
+if (!vhod && !ssGet("vhod_pokazan")) setTimeout(function () { if (!vhod && !openSheetEl && !stack.length) openVhod(); }, vizit.zaderzhka + 1500);
 })();
 </script>
 </body>
