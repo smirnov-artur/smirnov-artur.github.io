@@ -175,6 +175,7 @@ html.tg .sbar .tt{text-align:left;padding-left:4px}
 .lrow .sz{min-height:52px}
 .lrow .sz b{font-size:18px}
 .no{margin-top:8px;color:var(--muted);font-size:17px}
+.lnote{position:sticky;bottom:-18px;z-index:2;margin-top:18px;padding:13px 16px;border-radius:14px;background:var(--wine-soft);color:var(--wine2);font-weight:500;font-size:17px;line-height:1.35;box-shadow:var(--e2)}
 
 /* корзина */
 .meter{display:flex;align-items:center;gap:12px;margin-top:14px;color:var(--muted)}
@@ -393,6 +394,10 @@ function mySizeIdx(t) { if (!st.size) return -1; for (var i = 0; i < t.s.length;
 function autoIdx(t) { var i = mySizeIdx(t); if (i >= 0) return i; return !st.size && t.s.length === 1 ? 0 : -1; }
 function hay(t) { return (t.n + " " + t.q + " " + t.c).toLowerCase().replace(/ё/g, "е"); }
 function szLabel(z) { return z.l + (z.r ? ", " + z.r : ""); }
+var ROD = { "юбка": "юбки", "водолазка": "водолазки", "блуза": "блузы", "рубашка": "рубашки", "джемпер": "джемпера", "жакет": "жакета", "брюки": "брюк",
+  "платье": "платья", "сарафан": "сарафана", "свитшот": "свитшота", "лонгслив": "лонгслива", "кюлоты": "кюлот", "шаровары": "шаровар", "туника": "туники",
+  "куртка-жакет": "куртки-жакета", "платье-рубашка": "платья-рубашки", "блуза-рубашка": "блузы-рубашки", "блуза-лонгслив": "блузы-лонгслива" };
+function rodit(t) { var w = short(t); return ROD[w] || w; }
 function short(t) { return t.n.split(/[ ,]/)[0].toLowerCase(); }
 function cartSum() { return cart.reduce(function (a, c) { return a + T[c.id].my; }, 0); }
 function cartWb() { return cart.reduce(function (a, c) { return a + T[c.id].wb; }, 0); }
@@ -626,26 +631,39 @@ function openLook(k, pre) {
   var wb = ts.reduce(function (a, t) { return a + t.wb; }, 0), my = ts.reduce(function (a, t) { return a + t.my; }, 0);
   var html = bar("Образ") + ph(img(T[k.f[0]], k.f[1], true), "look-hero", true) + '<div class="pad">'
     + '<p class="kicker">Образ целиком</p><h1 class="pname" style="margin-top:6px">' + esc(k.n) + '</h1><p class="lead">' + esc(k.o) + "</p>"
-    + '<div class="price"><b>' + fmt(my) + '</b><span class="pct">−30 %</span></div><p class="wbp">на Wildberries <s>' + fmt(wb) + "</s></p>"
+    + '<div class="lp"></div>'
     + ts.map(function (t) {
       var mi = mySizeIdx(t);
       return '<div class="lrow"><button data-open="' + t.id + '" aria-label="' + esc(t.n) + '">' + ph(img(t, t.f[0])) + '</button><div><div class="nm" style="margin-top:0;min-height:0">' + esc(t.n) + '</div><div class="pr" style="flex-direction:row;gap:10px;align-items:baseline"><b>' + fmt(t.my) + '</b><span>на WB <s>' + fmt(t.wb) + '</s></span></div>'
         + '<div class="sizes" data-for="' + t.id + '">' + sizeBtns(t, sel[t.id], "data-lsz") + "</div>"
         + (st.size && mi < 0 ? '<p class="no">Вашего ' + st.size + " нет — можно взять соседний</p>" : "") + "</div></div>";
-    }).join("") + "</div>";
+    }).join("") + '<p class="lnote" role="status" hidden></p></div>';
   push(html, function () {
     var chosen = ts.filter(function (t) { return sel[t.id] >= 0; });
     if (!chosen.length) return { text: "Выберите размеры", fn: function () { hap("warn"); toast("Нажмите на размер у каждой вещи"); } };
     return { text: "Образ в корзину · " + veshi(chosen.length) + " · " + fmt(chosen.reduce(function (a, t) { return a + t.my; }, 0)), fn: add };
   }, function (el) {
+    lp(el);
     el.addEventListener("click", function (e) {
       var b = e.target.closest("[data-lsz]"); if (!b) return;
       var id = +b.closest("[data-for]").dataset.for, i = +b.dataset.lsz;
       sel[id] = sel[id] === i ? -1 : i; hap("sel");
       b.closest("[data-for]").querySelectorAll("[data-lsz]").forEach(function (q) { q.setAttribute("aria-pressed", String(+q.dataset.lsz === sel[id])); });
-      sync();
+      lp(el); sync();
     });
   });
+  /* крупная цена — за то, что реально ляжет в корзину; если на её размер есть не всё — строка над кнопкой */
+  function lp(el) {
+    var ch = ts.filter(function (t) { return sel[t.id] >= 0; }), miss = ts.filter(function (t) { return sel[t.id] < 0; });
+    var part = !!st.size && miss.length > 0 && ch.length > 0;
+    var pm = part ? ch.reduce(function (a, t) { return a + t.my; }, 0) : my, pw = part ? ch.reduce(function (a, t) { return a + t.wb; }, 0) : wb;
+    el.querySelector(".lp").innerHTML = '<div class="price"><b>' + fmt(pm) + '</b><span class="pct">−30 %</span></div><p class="wbp">на Wildberries <s>' + fmt(pw) + "</s></p>"
+      + (part ? '<p class="wbp">' + veshi(ch.length) + " из " + ts.length + " · весь образ " + fmt(my) + "</p>" : "");
+    var note = el.querySelector(".lnote"), nm = miss.map(rodit);
+    note.hidden = !(st.size && miss.length);
+    if (!note.hidden) note.textContent = (nm.length > 1 ? nm.slice(0, -1).join(", ") + " и " + nm[nm.length - 1] : nm[0]).replace(/^./, function (c) { return c.toUpperCase(); })
+      + " нет на " + st.size + (ch.length ? " — добавим " + veshi(ch.length) + " из " + ts.length : " — выберите соседний размер у каждой вещи");
+  }
   function add() {
     var n = 0, full = false, skip = ts.filter(function (t) { return sel[t.id] < 0; });
     ts.forEach(function (t) { if (sel[t.id] >= 0) { var r = addOne(t, t.s[sel[t.id]]); if (r > 0) n++; if (r < 0) full = true; } });
