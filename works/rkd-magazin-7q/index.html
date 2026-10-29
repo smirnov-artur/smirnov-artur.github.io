@@ -428,7 +428,7 @@ html.tg #act{display:none!important}
   <footer class="foot">
     <p><span class="tag">демо</span></p>
     <p id="srcnote"></p>
-    <p>В Telegram заказ уходит в чат магазина, в браузере — никуда. Оплата показана для примера, деньги не списываются.</p>
+    <p>Заказ уходит в чат магазина в Telegram — там номер заказа и вопрос про адрес. Оплата картой показана для примера, деньги не списываются.</p>
     <button class="linkbtn" id="a2hs" hidden>Добавить магазин на экран телефона</button>
   </footer>
 </main>
@@ -1254,8 +1254,9 @@ function phoneFmt(v) {
   return r;
 }
 function openForm() {
-  // chat: открыт кнопкой меню бота — заказ уйдёт ссылкой в чат, адрес бот спросит там
-  var u = TG && tg.initDataUnsafe && tg.initDataUnsafe.user, msk = st.dl === "msk", chat = TG && !K1;
+  // chat: заказ уйдёт ссылкой в чат бота, адрес бот спросит там — из кнопки меню и из браузера (QR вкладыша, иконка на экране);
+  // только с клавиатуры бота (?k=1) — sendData одним сообщением
+  var u = TG && tg.initDataUnsafe && tg.initDataUnsafe.user, msk = st.dl === "msk", chat = !(TG && K1);
   var html = bar("Оформление") + '<div class="pad"><h1 class="pageh">Оформление</h1>'
     + '<p class="lead">' + (msk ? "Курьер по Москве с примеркой" : "СДЭК в регионы с примеркой") + " · " + veshi(cart.length) + " · " + fmt(cartSum()) + "</p>"
     + '<form id="ord" novalidate>'
@@ -1268,7 +1269,7 @@ function openForm() {
     + '<label class="opt"><input type="radio" name="opl" value="0"' + (st.opl ? "" : " checked") + '><span><b>После примерки</b><span>' + (msk ? "Курьеру" : "В пункте СДЭК") + " — только за то, что оставите.</span></span></label>"
     + "</form>"
     + (chat ? '<p class="note">Адрес спросим в чате магазина — он откроется после подтверждения.</p>' : '<p class="note">Срок и стоимость доставки рассчитаются по адресу — в рабочей версии они появятся здесь, до подтверждения.</p>')
-    + (TG ? "" : '<p class="hint"><span class="tag">демо</span> Заказ никуда не отправится, доставка не рассчитывается.</p>') + "</div>";
+    + "</div>";
   push(html, function () { return st.opl ? { text: "Оплатить · " + fmt(cartSum()), fn: submit } : { text: "Подтвердить заказ", fn: submit }; }, function (el) {
     var p = el.querySelector("#fPhone");
     p.addEventListener("input", function () { p.value = phoneFmt(p.value); });
@@ -1304,7 +1305,8 @@ function otpravit(o) {
   }
   if (o.chat) {
     var kod = "z" + o.phone.slice(1) + "_" + o.items.map(function (x) { return ("0" + D.tovary.indexOf(x.t).toString(36)).slice(-2) + x.i.toString(36); }).join("") + (o.opl ? "_o" : "");
-    try { tg.openTelegramLink("https://t.me/rkd_magazin_bot?start=" + kod); } catch (e) {}
+    var url = "https://t.me/rkd_magazin_bot?start=" + kod;
+    try { if (TG) tg.openTelegramLink(url); else if (!window.open(url, "_blank")) location.href = url; } catch (e) {}   // из браузера — Telegram в новой вкладке
   }
   pendingDone = o; goHome();
 }
