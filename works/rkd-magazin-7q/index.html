@@ -834,7 +834,9 @@ function renderHome() {
 }
 /* хозяйка: знакомство, «давно не было», подборка на её размер; главный вход — голос */
 function renderHi() {
-  var nm = vhod && vhod.imya, dni = vizit.prev ? (Date.now() - vizit.prev) / 864e5 : -1, sz = st.size;
+  // имя: как назвалась при знакомстве, а в Telegram — сразу из профиля (Ирина Владимировна: «Привет, <имя покупателя>!»)
+  var tgu = TG && tg.initDataUnsafe && tg.initDataUnsafe.user;
+  var nm = vhod && vhod.imya || tgu && tgu.first_name, dni = vizit.prev ? (Date.now() - vizit.prev) / 864e5 : -1, sz = st.size;
   var nov = vizit.videla ? D.tovary.filter(function (t) { return vizit.videla.indexOf(t.id) < 0 && (!sz || fits(t, sz)); }) : [];
   var pb = podbor();
   var s = { imya: nm ? esc(nm) : "", zov: nm ? esc(zov(nm)) : "", kod: vhod && vhod.kod ? esc(vhod.kod) : "", ceny: ceny(), sz: sz, nov: nov.length > 0, dni: dni, svezh: vizit.svezh, pb: pb };
@@ -1172,7 +1174,7 @@ function openPodbor() {
             + '</div><button class="linkbtn" data-psz="0">Пропустить</button></div>';
         } else {
           var p2 = { f: f, c: c }, ki = podborKaps(p2), vs = podborVeshi(D.tovary.filter(function (t) { return !st.size || fits(t, st.size); }), p2).slice(0, 10);
-          var nm = vhod && vhod.imya ? zov(vhod.imya) : "";
+          var tu = TG && tg.initDataUnsafe && tg.initDataUnsafe.user, nm = vhod && vhod.imya ? zov(vhod.imya) : tu && tu.first_name ? zov(tu.first_name) : "";
           rep = (nm ? nm + ", готово! " : "Готово! ") + ty("Ты — «" + f.n + "», цветотип — ", "У вас «" + f.n + "», цветотип — ") + c.n.toLowerCase() + ". "
             + ty("Собрала тебе образы — смотри ниже.", "Собрала для вас образы — смотрите ниже.");
           html = '<div class="pad pb-itog"><p class="pb-k">' + f.n + " · " + c.n + (st.size ? " · " + st.size + " размер" : "") + '</p><p class="lead">' + f.sovet + "</p><p class=\"lead\">"
@@ -1444,7 +1446,10 @@ function kl(s) {   // ключ предложения — как kl() в golos_h
 }
 function fajlyGolosa(txt) {
   if (!GOLOS) return null;
-  var ch = (txt.match(/[^.!?]+[.!?]*/g) || []).map(kl).filter(Boolean);
+  // имени нет в записанных — голосом просто «Привет!» / «Готово!», имя остаётся в тексте
+  var ch = (txt.match(/[^.!?]+[.!?]*/g) || []).map(kl).filter(Boolean).map(function (c) {
+    return GOLOS[c] ? c : /^привет, [^!]+!$|^[^,!]+, привет!$/.test(c) ? "привет!" : /^[^,!]+, готово!$/.test(c) ? "готово!" : c;
+  });
   return ch.length && ch.every(function (c) { return GOLOS[c]; }) ? ch.map(function (c) { return BAZA_3D + GOLOS[c]; }) : null;
 }
 function dalshe() {
