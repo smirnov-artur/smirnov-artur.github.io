@@ -297,6 +297,12 @@ html.tg .sbar .tt{text-align:left;padding-left:4px}
 .pan img{flex:none;width:100%;height:100%;object-fit:contain;scroll-snap-align:center}
 .pan video{flex:none;width:100%;height:100%;object-fit:contain}
 .mul{mix-blend-mode:multiply}
+.pan-dv{aspect-ratio:9/16;width:min(100%,calc((100svh - 330px) * 9 / 16));margin:0 auto}   /* обе строки кнопок над нижней кнопкой на первом экране */
+.pan-dv video{object-fit:cover}
+.pv{display:grid;gap:8px;padding:10px 16px 6px}
+.pv-r{display:flex;gap:8px;overflow-x:auto}
+.pv .chip{min-height:44px}
+.pv .chip[aria-pressed="true"]{background:var(--wine);color:#fff;border-color:var(--wine)}
 .pan-p{position:absolute;left:0;right:0;bottom:10px;text-align:center;font:500 15px/1 var(--sans);color:var(--muted)}
 .look-hero img{object-position:50% 8%}
 .lrow{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}
@@ -523,7 +529,7 @@ var HOZYAJKA = "pantera";
    BAZA_3D + "hozyajka.glb" — хозяйка; BAZA_3D + "kapsula-N.glb" — пантера в капсуле, N — поле m3d капсулы в d.js (magazin_demo.py, M3D_NOMER).
    Нет файла, нет WebGL — остаётся фото ===== */
 var BAZA_3D = "https://smirnov-artur.github.io/rkd-3d/";
-var VID = { "hozyajka-1": 1, "kapsula-1": 1, "kapsula-2": 1, "kapsula-3": 1, "kapsula-4": 1, "kapsula-5": 1, "kapsula-6": 1, "kapsula-7": 1, "kapsula-8": 1 }, VID_ALFA = !/iP(hone|ad|od)|Version\/[\d.]+ (Mobile\/\S+ )?Safari/.test(navigator.userAgent);
+var VID = { "hozyajka-dv": 1, "hozyajka-1": 1, "kapsula-1": 1, "kapsula-2": 1, "kapsula-3": 1, "kapsula-4": 1, "kapsula-5": 1, "kapsula-6": 1, "kapsula-7": 1, "kapsula-8": 1 }, VID_ALFA = !/iP(hone|ad|od)|Version\/[\d.]+ (Mobile\/\S+ )?Safari/.test(navigator.userAgent);
 
 var D = window.D, T = {};
 /* наша цена в d.js зашифрована (поле p), чтобы ценовые роботы не видели рублей; пара к shifr() в magazin_demo.py. Цены WB в d.js нет */
@@ -1094,9 +1100,45 @@ function vid(imya, cls, alt) {
   var b = BAZA_3D + "video/" + imya;
   return '<video class="' + cls + (VID_ALFA ? "" : " mul") + '" src="' + b + (VID_ALFA ? ".webm" : ".mp4") + '" poster="' + b + '.webp" autoplay muted loop playsinline aria-label="' + esc(alt) + '"></video>';
 }
-function avaHtml() { return P === HOZ.pantera && VID["hozyajka-1"] ? vid("hozyajka-1", "foto3d", P.alt) : '<img class="foto3d" src="' + P.ava + '" alt="' + P.alt + '">'; }
-/* пантера в образе — ролик-разворот; нет ролика — три стороны, листаются пальцем (картинки rkd-3d/kartinki, rabota/kartinki_panter.py) */
+function avaHtml() { return P === HOZ.pantera && VID["hozyajka-1"] ? vid(VID["hozyajka-dv"] ? "hozyajka-dv" : "hozyajka-1", "foto3d", P.alt) : '<img class="foto3d" src="' + P.ava + '" alt="' + P.alt + '">'; }
+/* склейка образа (rabota/video_sklejka.py): поворот туда и обратно 0–12 с, дальше походка и возврат в стойку (или позы на месте туда и обратно — у 1 и 7: на шаге Grok раскалывал юбку в брюки) — по кругу без скачка.
+   Сцены собраны заранее (video_kljuch.py --sceny): <imya>-<сцена>.mp4; «Сетка» — прозрачный ролик, как у простого разворота */
+var VID_DV = { "kapsula-1": "Позы", "kapsula-2": "Походка", "kapsula-3": "Походка", "kapsula-4": "Походка", "kapsula-5": "Походка", "kapsula-6": "Походка", "kapsula-7": "Позы", "kapsula-8": "Походка" }, SCENY = [["", "Сетка"], ["studiya", "Студия"], ["ulica", "Улица"], ["butik", "Бутик"], ["dom", "Дом"]], SCENA = "studiya", KUSKI = [["Поворот", 0], ["Походка", 12]];
+try { var sc0 = localStorage.getItem("rkd-scena"); if (sc0 != null) SCENA = sc0; } catch (x) {}
+function vidDvSrc(imya) {
+  var b = BAZA_3D + "video/" + imya;
+  return SCENA ? { src: b + "-" + SCENA + ".mp4", poster: b + "-" + SCENA + ".webp", mul: false }
+    : { src: b + (VID_ALFA ? ".webm" : ".mp4"), poster: b + ".webp", mul: !VID_ALFA };
+}
+function vidDv(imya, alt) {
+  var v = vidDvSrc(imya);
+  return '<video class="' + (v.mul ? "mul" : "") + '" data-imya="' + imya + '" src="' + v.src + '" poster="' + v.poster + '" autoplay muted loop playsinline aria-label="' + esc(alt) + '"></video>';
+}
+document.addEventListener("click", function (e) {
+  var b = e.target.closest("[data-kusok],[data-scena]"), lw = b && b.closest(".lw"), v = lw && lw.querySelector(".pan-dv video");
+  if (!v) return;
+  hap("tap");
+  if (b.hasAttribute("data-kusok")) { v.currentTime = KUSKI[+b.dataset.kusok][1]; v.play().catch(function () {}); return; }
+  SCENA = b.dataset.scena;
+  try { localStorage.setItem("rkd-scena", SCENA); } catch (x) {}
+  var t = v.currentTime, n = vidDvSrc(v.dataset.imya);
+  v.className = n.mul ? "mul" : ""; v.poster = n.poster; v.src = n.src;
+  v.addEventListener("loadedmetadata", function () { v.currentTime = t; v.play().catch(function () {}); }, { once: true });
+  lw.querySelectorAll("[data-scena]").forEach(function (c) { c.setAttribute("aria-pressed", c.dataset.scena === SCENA); });
+});
+document.addEventListener("timeupdate", function (e) {   // какой кусок идёт — та кнопка нажата
+  var v = e.target, lw = v.closest && v.closest(".lw");
+  if (!lw || !v.dataset.imya) return;
+  if (v.readyState < 2) return;   // новая сцена грузится с 0 — не сбивать кнопку, пока не перемотали
+  var i = v.currentTime >= KUSKI[1][1] ? 1 : 0;
+  lw.querySelectorAll("[data-kusok]").forEach(function (c) { c.setAttribute("aria-pressed", +c.dataset.kusok === i); });
+}, true);
+/* пантера в образе — цепочка движений со сценами; есть только разворот — он; нет ролика — три стороны, листаются пальцем (картинки rkd-3d/kartinki, rabota/kartinki_panter.py) */
 function panteraVobraze(k) {
+  var im = "kapsula-" + k.m3d;
+  if (VID_DV[im]) return '<div class="pan pan-dv">' + vidDv(im + "-dv", k.n + " на пантере") + "</div>"
+    + '<div class="pv"><div class="pv-r">' + KUSKI.map(function (n, i) { return '<button class="chip" data-kusok="' + i + '" aria-pressed="' + !i + '">' + (i ? VID_DV[im] : n[0]) + "</button>"; }).join("") + "</div>"
+    + '<div class="pv-r noscroll">' + SCENY.map(function (c) { return '<button class="chip" data-scena="' + c[0] + '" aria-pressed="' + (c[0] === SCENA) + '">' + c[1] + "</button>"; }).join("") + "</div></div>";
   if (VID["kapsula-" + k.m3d]) return '<div class="pan">' + vid("kapsula-" + k.m3d, "", k.n + " на пантере") + "</div>";
   return '<div class="pan noscroll">' + ["spered", "sboku", "szadi"].map(function (v, i) {
     return '<img src="' + BAZA_3D + "kartinki/kapsula-" + k.m3d + "-" + v + '.webp" alt="' + esc(k.n) + (i ? "" : " на пантере") + '"' + (i ? ' loading="lazy"' : "") + ">";
