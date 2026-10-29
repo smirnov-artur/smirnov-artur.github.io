@@ -5,7 +5,7 @@
 <script>
 /* 29.10: Telegram держит свёрнутый магазин открытым, а открытая раньше страница лежит в кэше — Дмитрий видел старое.
    versiya.txt — номер выкладки (менять при каждой). Не совпал с этим — грузим страницу заново мимо кэша; проверка при открытии и при каждом возврате в магазин */
-var VERSIYA = "2026-10-29-3";
+var VERSIYA = "2026-10-29-4";
 (function () {
   function proverit() {
     fetch("versiya.txt?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (v) {
@@ -1123,9 +1123,10 @@ function vid(imya, cls, alt) {
   return '<video class="' + cls + (VID_ALFA ? "" : " mul") + '" src="' + b + (VID_ALFA ? ".webm" : ".mp4") + '" poster="' + b + '.webp" autoplay muted loop playsinline aria-label="' + esc(alt) + '"></video>';
 }
 function avaHtml() { return P === HOZ.pantera && VID["hozyajka-1"] ? vid(VID["hozyajka-dv"] ? "hozyajka-dv" : "hozyajka-1", "foto3d", P.alt) : '<img class="foto3d" src="' + P.ava + '" alt="' + P.alt + '">'; }
-/* склейка образа (rabota/video_sklejka.py): поворот туда и обратно 0–12 с, дальше походка и возврат в стойку (или позы на месте туда и обратно — у 1 и 7: на шаге Grok раскалывал юбку в брюки) — по кругу без скачка.
+/* ролик образа (rabota/video_kljuch.py «kapsula-N-zh=поворот+походка+позы»): отдельные съёмки, походка и позы лицом к камере; на стыке пантера растворяется и проявляется, по кругу.
+   VID_DV: с какой секунды идёт каждый кусок — кнопки KUSKI (29.10 Артур: в «походке» крутилась — продление тащило поворот; «живости нет»).
    Сцены собраны заранее (video_kljuch.py --sceny): <imya>-<сцена>.mp4; «Сетка» — прозрачный ролик, как у простого разворота */
-var VID_DV = { "kapsula-1": "Позы", "kapsula-2": "Походка", "kapsula-3": "Походка", "kapsula-4": "Походка", "kapsula-5": "Походка", "kapsula-6": "Походка", "kapsula-7": "Позы", "kapsula-8": "Походка" }, SCENY = [["", "Сетка"], ["studiya", "Студия"], ["ulica", "Улица"], ["butik", "Бутик"], ["dom", "Дом"]], SCENA = "studiya", KUSKI = [["Поворот", 0], ["Походка", 12]];
+var VID_DV = {"kapsula-1": [0, 5.4, 11], "kapsula-2": [0, 5.4, 11], "kapsula-3": [0, 5.4, 11], "kapsula-4": [0, 5.4, 11], "kapsula-5": [0, 5.4, 11], "kapsula-6": [0, 5.4, 11], "kapsula-7": [0, 5.4, 11], "kapsula-8": [0, 5.4, 11]}, SCENY = [["", "Сетка"], ["studiya", "Студия"], ["ulica", "Улица"], ["butik", "Бутик"], ["dom", "Дом"]], SCENA = "studiya", KUSKI = ["Поворот", "Походка", "Позы"];
 try { var sc0 = localStorage.getItem("rkd-scena"); if (sc0 != null) SCENA = sc0; } catch (x) {}
 function vidDvSrc(imya) {
   var b = BAZA_3D + "video/" + imya;
@@ -1140,7 +1141,7 @@ document.addEventListener("click", function (e) {
   var b = e.target.closest("[data-kusok],[data-scena]"), lw = b && b.closest(".lw"), v = lw && lw.querySelector(".pan-dv video");
   if (!v) return;
   hap("tap");
-  if (b.hasAttribute("data-kusok")) { v.currentTime = KUSKI[+b.dataset.kusok][1]; v.play().catch(function () {}); return; }
+  if (b.hasAttribute("data-kusok")) { v.currentTime = VID_DV[v.dataset.imya.replace(/-zh$/, "")][+b.dataset.kusok] + 0.25; v.play().catch(function () {}); return; }
   SCENA = b.dataset.scena;
   try { localStorage.setItem("rkd-scena", SCENA); } catch (x) {}
   var t = v.currentTime, n = vidDvSrc(v.dataset.imya);
@@ -1152,14 +1153,15 @@ document.addEventListener("timeupdate", function (e) {   // какой кусо�
   var v = e.target, lw = v.closest && v.closest(".lw");
   if (!lw || !v.dataset.imya) return;
   if (v.readyState < 2) return;   // новая сцена грузится с 0 — не сбивать кнопку, пока не перемотали
-  var i = v.currentTime >= KUSKI[1][1] ? 1 : 0;
+  var tt = VID_DV[v.dataset.imya.replace(/-zh$/, "")] || [0], i = 0;
+  tt.forEach(function (x, n) { if (v.currentTime >= x) i = n; });
   lw.querySelectorAll("[data-kusok]").forEach(function (c) { c.setAttribute("aria-pressed", +c.dataset.kusok === i); });
 }, true);
 /* пантера в образе — цепочка движений со сценами; есть только разворот — он; нет ролика — три стороны, листаются пальцем (картинки rkd-3d/kartinki, rabota/kartinki_panter.py) */
 function panteraVobraze(k) {
   var im = "kapsula-" + k.m3d;
-  if (VID_DV[im]) return '<div class="pan pan-dv">' + vidDv(im + "-dv", k.n + " на пантере") + "</div>"
-    + '<div class="pv"><div class="pv-r">' + KUSKI.map(function (n, i) { return '<button class="chip" data-kusok="' + i + '" aria-pressed="' + !i + '">' + (i ? VID_DV[im] : n[0]) + "</button>"; }).join("") + "</div>"
+  if (VID_DV[im]) return '<div class="pan pan-dv">' + vidDv(im + "-zh", k.n + " на пантере") + "</div>"
+    + '<div class="pv"><div class="pv-r">' + VID_DV[im].map(function (x, i) { return '<button class="chip" data-kusok="' + i + '" aria-pressed="' + !i + '">' + KUSKI[i] + "</button>"; }).join("") + "</div>"
     + '<div class="pv-r noscroll">' + SCENY.map(function (c) { return '<button class="chip" data-scena="' + c[0] + '" aria-pressed="' + (c[0] === SCENA) + '">' + c[1] + "</button>"; }).join("") + "</div></div>";
   if (VID["kapsula-" + k.m3d]) return '<div class="pan">' + vid("kapsula-" + k.m3d, "", k.n + " на пантере") + "</div>";
   return '<div class="pan noscroll">' + ["spered", "sboku", "szadi"].map(function (v, i) {
