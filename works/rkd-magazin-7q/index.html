@@ -295,6 +295,8 @@ html.tg .sbar .tt{text-align:left;padding-left:4px}
 .look-hero{aspect-ratio:3/4;border-radius:0}
 .pan{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;aspect-ratio:3/4}
 .pan img{flex:none;width:100%;height:100%;object-fit:contain;scroll-snap-align:center}
+.pan video{flex:none;width:100%;height:100%;object-fit:contain}
+.mul{mix-blend-mode:multiply}
 .pan-p{position:absolute;left:0;right:0;bottom:10px;text-align:center;font:500 15px/1 var(--sans);color:var(--muted)}
 .look-hero img{object-position:50% 8%}
 .lrow{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}
@@ -521,6 +523,7 @@ var HOZYAJKA = "pantera";
    BAZA_3D + "hozyajka.glb" — хозяйка; BAZA_3D + "kapsula-N.glb" — пантера в капсуле, N — поле m3d капсулы в d.js (magazin_demo.py, M3D_NOMER).
    Нет файла, нет WebGL — остаётся фото ===== */
 var BAZA_3D = "https://smirnov-artur.github.io/rkd-3d/";
+var VID = { "hozyajka-1": 1, "kapsula-1": 1, "kapsula-2": 1, "kapsula-3": 1, "kapsula-4": 1, "kapsula-5": 1, "kapsula-6": 1, "kapsula-7": 1, "kapsula-8": 1 }, VID_ALFA = !/iP(hone|ad|od)|Version\/[\d.]+ (Mobile\/\S+ )?Safari/.test(navigator.userAgent);
 
 var D = window.D, T = {};
 /* наша цена в d.js зашифрована (поле p), чтобы ценовые роботы не видели рублей; пара к shifr() в magazin_demo.py. Цены WB в d.js нет */
@@ -815,7 +818,7 @@ function renderSerii() {
 function openSeriya(i) {
   var s = D.serii[i];
   push(bar("Серия " + (i + 1)) + '<div class="ser-hero"><img src="' + s.f + '" alt=""><span class="play">' + IC.play + "</span></div>"
-    + '<div class="stage ser-stage"><img class="foto3d" src="' + P.ava + '" alt="' + P.alt + '"><div class="stage-bub"><div class="bub"><p>' + P.seriya + "</p></div></div></div>"
+    + '<div class="stage ser-stage">' + avaHtml() + '<div class="stage-bub"><div class="bub"><p>' + P.seriya + "</p></div></div></div>"
     + '<div class="pad"><p class="kicker">Серия ' + (i + 1) + '</p><h1 class="pname" style="margin-top:6px">' + esc(s.n) + '</h1><p class="lead">' + esc(s.o) + "</p>"
     + '<h2 class="h3">Вещи из серии</h2><div class="minis noscroll">' + s.ids.map(function (id) { return miniHtml(T[id]); }).join("") + "</div></div>", homeMain, function (el, o) {
     hozyajka3D(el.querySelector(".ser-stage"), o, function (sc) { sc.derzhat("Flirty_Strut_inplace", 0); });
@@ -851,7 +854,7 @@ function renderHi() {
   }
   vizit.repl = lines.join(" ").replace(/<[^>]+>/g, "");
   var el = $("#hi"), txt = '<div class="say">' + lines.map(function (l) { return "<p>" + l + "</p>"; }).join("") + "</div>";
-  if (!$("#hiAva")) el.innerHTML = '<div class="stage" id="hiAva"><img class="foto3d" src="' + P.ava + '" alt="' + P.alt + '"><div class="stage-bub" id="hiBub"></div></div><div id="hiRest"></div>';
+  if (!$("#hiAva")) el.innerHTML = '<div class="stage" id="hiAva">' + avaHtml() + '<div class="stage-bub" id="hiBub"></div></div><div id="hiRest"></div>';
   $("#hiBub").innerHTML = '<div class="bub">' + (TTS || AUD ? '<button class="zv" data-zvuk aria-label="Голос хозяйки" aria-pressed="' + zvuk + '">' + (zvuk ? IC.zvuk : IC.tiho) + "</button>" : "")
     + '<div class="txt">' + (vizit.pechat ? '<span class="dots" aria-label="печатает"><i></i><i></i><i></i></span>' : txt) + "</div></div>";
   // не наряжали — главная кнопка ответ на её «Давай?»; наряжали — голос, а гардероб рядом
@@ -1086,8 +1089,15 @@ function openLook(k, pre) {
     toast(n ? "В корзине " + veshi(n) + " из образа" + (skip.length ? ". Без размера: " + skip.map(short).join(", ") : "") : "Эти вещи уже в корзине", !!skip.length);
   }
 }
-/* пантера в образе — три стороны, листаются пальцем (картинки rkd-3d/kartinki, rabota/kartinki_panter.py) */
+/* ролики на зелёном, вырезаны rabota/video_kljuch.py → rkd-3d/video. Прозрачный webm Safari не умеет — ему mp4 на белом, белое растворяется в сетке (multiply) */
+function vid(imya, cls, alt) {
+  var b = BAZA_3D + "video/" + imya;
+  return '<video class="' + cls + (VID_ALFA ? "" : " mul") + '" src="' + b + (VID_ALFA ? ".webm" : ".mp4") + '" poster="' + b + '.webp" autoplay muted loop playsinline aria-label="' + esc(alt) + '"></video>';
+}
+function avaHtml() { return P === HOZ.pantera && VID["hozyajka-1"] ? vid("hozyajka-1", "foto3d", P.alt) : '<img class="foto3d" src="' + P.ava + '" alt="' + P.alt + '">'; }
+/* пантера в образе — ролик-разворот; нет ролика — три стороны, листаются пальцем (картинки rkd-3d/kartinki, rabota/kartinki_panter.py) */
 function panteraVobraze(k) {
+  if (VID["kapsula-" + k.m3d]) return '<div class="pan">' + vid("kapsula-" + k.m3d, "", k.n + " на пантере") + "</div>";
   return '<div class="pan noscroll">' + ["spered", "sboku", "szadi"].map(function (v, i) {
     return '<img src="' + BAZA_3D + "kartinki/kapsula-" + k.m3d + "-" + v + '.webp" alt="' + esc(k.n) + (i ? "" : " на пантере") + '"' + (i ? ' loading="lazy"' : "") + ">";
   }).join("") + '</div><p class="pan-p">спереди · сбоку · сзади — листайте</p>';
@@ -1159,7 +1169,7 @@ function podborKaps(pb) {
 function openPodbor() {
   var pb = podbor(), f = pb && pb.f, c = pb && pb.c, shag = pb ? 3 : 0, sc = null;   // 0 фигура, 1 цветотип, 2 размер, 3 гардероб
   function ty(a, b) { return P === HOZ.irina ? b : a; }
-  push(bar(ty("Твой гардероб", "Ваш гардероб")) + '<div class="stage ser-stage pb-stage"><img class="foto3d" src="' + P.ava + '" alt="' + P.alt + '"><div class="stage-bub"><div class="bub"><div class="txt"></div></div></div></div><div class="pb"></div>',
+  push(bar(ty("Твой гардероб", "Ваш гардероб")) + '<div class="stage ser-stage pb-stage">' + avaHtml() + '<div class="stage-bub"><div class="bub"><div class="txt"></div></div></div></div><div class="pb"></div>',
     function () { return shag === 3 && !ceny() ? { text: "Открыть цены — на 30 % ниже WB", fn: openVhod } : homeMain(); },
     function (el, o) {
       hozyajka3D(el.querySelector(".pb-stage"), o, function (s) { sc = s; s.igrat("Wave_One_Hand", function () { rech(s); }); });
