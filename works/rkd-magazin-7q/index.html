@@ -293,6 +293,9 @@ html.tg .sbar .tt{text-align:left;padding-left:4px}
 
 /* образ */
 .look-hero{aspect-ratio:3/4;border-radius:0}
+.pan{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;aspect-ratio:3/4}
+.pan img{flex:none;width:100%;height:100%;object-fit:contain;scroll-snap-align:center}
+.pan-p{position:absolute;left:0;right:0;bottom:10px;text-align:center;font:500 15px/1 var(--sans);color:var(--muted)}
 .look-hero img{object-position:50% 8%}
 .lrow{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}
 .lrow .ph{aspect-ratio:3/4}
@@ -799,7 +802,7 @@ function capPhoto(k, cls, eager) {
 }
 function capHtml(i) {
   var k = D.kapsuly[i], ts = k.ids.map(function (id) { return T[id]; }), my = ts.reduce(function (a, t) { return a + t.my; }, 0);
-  return '<button class="cap" data-cap="' + i + '">' + capPhoto(k) + (glb3D(k) ? '<span class="tag3d">3D</span>' : "") + '<span class="cap-b"><span class="cap-n">' + esc(k.n) + '</span><span class="cap-o">' + esc(k.o) + '</span><span class="cap-p">'
+  return '<button class="cap" data-cap="' + i + '">' + capPhoto(k) + (k.m3d ? '<span class="tag3d">на пантере</span>' : "") + '<span class="cap-b"><span class="cap-n">' + esc(k.n) + '</span><span class="cap-o">' + esc(k.o) + '</span><span class="cap-p">'
     + (ceny() ? "<b>" + veshi(ts.length) + " · " + fmt(my) + "</b>" : "<b>" + veshi(ts.length) + '</b><span class="zam">−30 % к WB</span>') + "</span></span></button>";
 }
 /* серии: обложка из рисунков, видео «скоро», вещи из серии */
@@ -1018,7 +1021,7 @@ function openLook(k, pre) {
         + (st.size && mi < 0 ? '<p class="no">Вашего ' + st.size + " нет — можно взять соседний</p>" : "") + "</div></div>";
     }).join("");
   }
-  var html = bar("Образ") + '<div class="lw">' + capPhoto(k, "look-hero", true)
+  var html = bar("Образ") + '<div class="lw">' + (k.m3d ? panteraVobraze(k) : capPhoto(k, "look-hero", true))
     + '<div class="pod-kn"><button class="btn" data-hod aria-pressed="false">Пройтись</button><button class="btn" data-prohodka aria-pressed="false" hidden>Проходка</button><span>крутите пальцем</span></div></div><div class="pad">'
     + '<p class="kicker">Образ целиком</p><h1 class="pname" style="margin-top:6px">' + esc(k.n) + '</h1><p class="lead">' + esc(k.o) + "</p>"
     + '<div class="dlg" style="margin-top:12px"><div class="her"><img src="' + P.lico + '" alt=""><span>' + P.obraz + "</span></div></div>"
@@ -1082,6 +1085,12 @@ function openLook(k, pre) {
     hap(n ? "ok" : "warn");
     toast(n ? "В корзине " + veshi(n) + " из образа" + (skip.length ? ". Без размера: " + skip.map(short).join(", ") : "") : "Эти вещи уже в корзине", !!skip.length);
   }
+}
+/* пантера в образе — три стороны, листаются пальцем (картинки rkd-3d/kartinki, rabota/kartinki_panter.py) */
+function panteraVobraze(k) {
+  return '<div class="pan noscroll">' + ["spered", "sboku", "szadi"].map(function (v, i) {
+    return '<img src="' + BAZA_3D + "kartinki/kapsula-" + k.m3d + "-" + v + '.webp" alt="' + esc(k.n) + (i ? "" : " на пантере") + '"' + (i ? ' loading="lazy"' : "") + ">";
+  }).join("") + '</div><p class="pan-p">спереди · сбоку · сзади — листайте</p>';
 }
 /* все образы: цвета чипами, её размер — первыми */
 function openCaps(cv) {
@@ -1178,7 +1187,7 @@ function openPodbor() {
           rep = (nm ? nm + ", готово! " : "Готово! ") + ty("Ты — «" + f.n + "», цветотип — ", "У вас «" + f.n + "», цветотип — ") + c.n.toLowerCase() + ". "
             + ty("Собрала тебе образы — смотри ниже.", "Собрала для вас образы — смотрите ниже.");
           html = '<div class="pad pb-itog"><p class="pb-k">' + f.n + " · " + c.n + (st.size ? " · " + st.size + " размер" : "") + '</p><p class="lead">' + f.sovet + "</p><p class=\"lead\">"
-            + ty("Твои цвета: ", "Ваши цвета: ") + c.cveta + "." + (ki.some(function (i) { return glb3D(D.kapsuly[i]); }) ? ty(" Образы с меткой 3D я примерила на себя.", " Образы с меткой 3D — в движении.") : "") + "</p>"
+            + ty("Твои цвета: ", "Ваши цвета: ") + c.cveta + "." + (ki.some(function (i) { return D.kapsuly[i].m3d; }) ? ty(" Образы с меткой «на пантере» я примерила на себя.", " Образы с меткой «на пантере» — на хозяйке магазина.") : "") + "</p>"
             + '<h2 class="h3">Образы</h2></div><div class="capgrid">' + ki.map(capHtml).join("") + "</div>"
             + '<div class="pad">' + (vs.length ? '<h2 class="h3" style="margin-top:0">Вещи по отдельности</h2><div class="minis noscroll">' + vs.map(miniHtml).join("") + "</div>" : "")
             + '<button class="linkbtn" data-pzanovo>Пройти заново</button></div>';
@@ -1490,7 +1499,9 @@ function skazat(txt, bezDvizh) {
 }
 
 /* ---------- 3D: хозяйка и капсулы (three.js, лениво; нет WebGL, файла или ошибка — остаётся фото) ---------- */
-var GL_EST = (function () {
+// Артур 29.10: «3д анимации кринжовые… вещи тянутся по модели» — 3D выключено, пантера в образах картинками, дальше ролики
+var BEZ_3D = true;
+var GL_EST = !BEZ_3D && (function () {
   try { var c = document.createElement("canvas"); return !!(window.WebGLRenderingContext && (c.getContext("webgl2") || c.getContext("webgl"))); } catch (e) { return false; }
 })() && !(navigator.connection && navigator.connection.saveData);
 var TRI = null, GLB = {}, H3 = null, M3D = null, SPISOK = null;
