@@ -16,6 +16,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script type="importmap">{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"},
+  "integrity": {"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/utils/SkeletonUtils.js": "sha384-oipDsNi7yyq1H7gmTrR5wzMQeLavOwnYqWjajKnOmxVTgtE3xmr06+oQL1OOuXLI", "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/environments/RoomEnvironment.js": "sha384-ZGqh+dJjt6z9NHsWYYt+TPDFj8y+2If7naI6a6AkkyNZyH51CVS3HTWFh0njp4k6", "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js": "sha384-qlO/ZugKPxAQUAvTlQoo0QECzxJIJySZmCF/DHdb2Xn/hHndFwX/vfUAC9Hbk6LP", "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js": "sha384-oxY9vSeh7Mrt5WmhN8xfWoDRnmoW9krEiRBY7vJKaK90jMUidM0fhbUwcblpBgTu", "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/utils/BufferGeometryUtils.js": "sha384-jHGXS4+FuVOBnZkNme2ury3Ccg5DWDLYK22xX/WGdZCZsjRM4J+3n6Qc4CXx1Hjf", "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js": "sha384-61S/Nu32S3E5+n+KpCOTb2eRYps6fVKm+9Gz1QBvSePFthb46f063Aa/qe/lykFZ"}}</script>
 <style>
 :root{
   --bg:#F6F1EA; --paper:#FFFCF8; --sand:#ECE2D6; --sand2:#E2D5C6; --line:#E1D4C5;
@@ -65,8 +67,30 @@ s{text-decoration-thickness:1.5px}
 .ask .ib{box-shadow:none}
 
 /* хозяйка магазина */
-.hi{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:start;margin:16px 16px 0}
-.hi-ava{width:96px;aspect-ratio:3/4;border-radius:16px;object-fit:cover;object-position:50% 0;background:var(--sand);box-shadow:var(--e2)}
+.hi{margin:14px 0 0}
+/* сцена хозяйки во всю ширину: тёплый тёмный фон, пятно света за ней; фото — пока грузится 3D (и если 3D нет) */
+.stage{position:relative;height:clamp(380px,54svh,560px);overflow:hidden;
+  background:radial-gradient(ellipse 50% 46% at 33% 44%,rgba(255,196,140,.34),rgba(255,196,140,0) 72%),linear-gradient(180deg,#3a1d1b 0%,#6b2a25 100%)}
+.stage>.foto3d{position:absolute;left:0;top:0;width:64%;height:100%;object-fit:cover;object-position:50% 0}
+/* реплика справа сверху: хозяйка стоит левее (сдвиг кадра), голову не закрывает */
+.stage-bub{position:absolute;top:14px;right:12px;z-index:2;width:min(56%,260px);max-height:calc(100% - 64px);overflow-y:auto;scrollbar-width:none}
+.stage-bub .bub{box-shadow:0 12px 30px -12px rgba(0,0,0,.65)}
+.foto3d{width:100%;height:100%;object-fit:cover;object-position:50% 0;transition:opacity .5s}
+.c3d{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .5s}
+.v3d>.c3d{opacity:1}
+.v3d>.foto3d,.v3d>.ph,.v3d>.kol{opacity:0}
+/* подиум капсулы */
+.lw{position:relative;background:radial-gradient(ellipse at 50% 82%,#EEE3D5 0,#F6F1EA 70%)}
+.lw>.ph,.lw>.kol{transition:opacity .5s}
+.pod-kn{position:absolute;left:12px;right:12px;bottom:12px;z-index:2;display:none;align-items:center;gap:8px}
+.pod-kn span{margin-left:auto}
+.v3d>.pod-kn{display:flex}
+.pod-kn .btn{width:auto;min-height:50px;padding:8px 20px;background:var(--paper);color:var(--wine);border:1.5px solid var(--wine);box-shadow:var(--e1)}
+.pod-kn .btn[aria-pressed="true"]{background:var(--wine);color:#fff}
+.pod-kn span{padding:6px 10px;border-radius:10px;background:rgba(255,252,248,.86);color:var(--muted);font-size:17px}
+.tag3d{position:absolute;top:10px;right:10px;z-index:1;padding:6px 9px;border-radius:8px;background:var(--wine);color:#fff;font:600 17px/1 var(--sans)}
+.cap{position:relative}
+.ser-stage{height:clamp(360px,50svh,520px)}
 .bub{position:relative;min-height:64px;background:var(--paper);border:1px solid var(--line);border-radius:6px 20px 20px 20px;padding:13px 15px;box-shadow:var(--e1)}
 .bub p+p{margin-top:8px}
 .bub .say{animation:say .4s var(--ease) both}
@@ -75,16 +99,36 @@ s{text-decoration-thickness:1.5px}
 .dots i{width:8px;height:8px;border-radius:50%;background:var(--muted);opacity:.35;animation:dot 1s infinite}
 .dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
 @keyframes dot{40%{opacity:1;transform:translateY(-3px)}}
-.hi-acts{grid-column:1/-1;display:grid;gap:8px}
+.hi-acts{position:relative;z-index:3;display:grid;gap:8px;margin:-38px 16px 0}
 /* главный вход — голос: крупный микрофон рядом с репликой */
 .say-big{display:flex;align-items:center;gap:14px;width:100%;min-height:76px;padding:8px 20px 8px 8px;border-radius:40px;background:var(--wine);color:#fff;font:600 19px/1.2 var(--sans);box-shadow:var(--e2)}
 .say-big .mc{flex:none;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.18);animation:mc 2.2s infinite}
 @keyframes mc{0%{box-shadow:0 0 0 0 rgba(255,255,255,.45)}70%,100%{box-shadow:0 0 0 14px rgba(255,255,255,0)}}
 .say-big:active{background:var(--wine2)}
+.say-big small{display:block;margin-top:3px;font:400 15px/1.3 var(--sans);opacity:.88}
+/* приветствие её словами длинное — пузырь на главной шире, чтобы «Давай?» было видно без прокрутки */
+#hiAva .stage-bub{top:10px;width:min(62%,290px);max-height:calc(100% - 36px)}
+/* подбор гардероба: фигура, цветотип, размер */
+.pb-stage{height:clamp(250px,36svh,360px)}
+.pb-k{font:500 15px/1.3 var(--sans);color:var(--gold-ink);letter-spacing:.08em;text-transform:uppercase}
+.pb-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.pb-o{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:58px;padding:12px 8px;border:1px solid var(--line);border-radius:16px;background:var(--paper);box-shadow:var(--e1);font:600 18px/1.2 var(--sans);color:var(--ink);text-align:center}
+.pb-o small{font:400 15px/1.3 var(--sans);color:var(--muted)}
+.pb-o svg{width:46px;height:70px;color:var(--wine)}
+.pb-o:active,.pb-o[aria-pressed="true"]{border-color:var(--wine);box-shadow:0 0 0 2px var(--wine) inset}
+.pb-o:last-child:nth-child(odd){grid-column:1/-1}
+.pb-sw{display:flex;gap:4px;margin:4px 0 2px}
+.pb-sw i{width:22px;height:22px;border-radius:50%;border:1px solid rgba(42,31,27,.12)}
+.pb-sz{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.pb-sz button{min-height:52px;border:1px solid var(--line);border-radius:12px;background:var(--paper);font:600 18px/1 var(--sans)}
+.pb-sz button[aria-pressed="true"]{border-color:var(--wine);color:var(--wine)}
+.pb-itog{margin-top:6px}
+.pb-itog .h3{margin-top:22px}
+.pb .linkbtn{margin-top:18px}
 .zv{position:absolute;top:-12px;right:-8px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--paper);border:1px solid var(--line);color:var(--muted);box-shadow:var(--e1)}
 .zv[aria-pressed="true"]{color:var(--wine)}
 .bub{padding-right:30px}
-.picks{grid-column:1/-1;display:flex;gap:12px;overflow-x:auto;margin:2px -16px 0;padding:0 16px 4px;scroll-snap-type:x mandatory;scroll-padding:0 16px}
+.picks{display:flex;gap:12px;overflow-x:auto;margin:14px 0 0;padding:0 16px 4px;scroll-snap-type:x mandatory;scroll-padding:0 16px}
 .picks .mini{flex-basis:40%}
 .dlg{display:flex;flex-direction:column;gap:10px;margin:2px 0 6px}
 .dlg .you{align-self:flex-end;max-width:85%;padding:10px 14px;border-radius:18px 18px 6px 18px;background:var(--ink);color:var(--bg);font:italic 500 21px/1.2 var(--serif)}
@@ -445,6 +489,10 @@ html.tg #act{display:none!important}
    "irina"   — Ирина Владимировна, дизайнер бренда: от первого лица, на «вы» по имени.
    Посмотреть другой вариант без правки файла: ссылка с ?hoz=irina или ?hoz=pantera */
 var HOZYAJKA = "pantera";
+/* ===== НАСТРОЙКА: где лежит 3D. Всё 3D грузится только отсюда:
+   BAZA_3D + "hozyajka.glb" — хозяйка; BAZA_3D + "kapsula-N.glb" — пантера в капсуле, N — поле m3d капсулы в d.js (magazin_demo.py, M3D_NOMER).
+   Нет файла, нет WebGL — остаётся фото ===== */
+var BAZA_3D = "https://smirnov-artur.github.io/rkd-3d/";
 
 var D = window.D, T = {};
 /* наша цена в d.js зашифрована (поле p), чтобы ценовые роботы не видели рублей; пара к shifr() в magazin_demo.py. Цены WB в d.js нет */
@@ -498,33 +546,35 @@ function ssGet(k) { return ss.get(k); }
 function ssSet(k, v) { ss.set(k, v); }
 
 /* ---------- хозяйка: две роли, выбор — HOZYAJKA вверху скрипта ---------- */
-// «Ир», «Валь», «Наташ» — так пантера зовёт подругу; только для имён из списка, остальные — как написала
+// «Ира», «Валя», «Наташа» — так пантера зовёт подругу (Ирина Владимировна 28.10: «не Ир чего натворила? А привет Ира!»); остальные — как написала
 var KOROTKO = { "ирина": "Ира", "валентина": "Валя", "наталья": "Наташа", "наталия": "Наташа", "елена": "Лена", "екатерина": "Катя", "татьяна": "Таня",
   "светлана": "Света", "ольга": "Оля", "анна": "Аня", "мария": "Маша", "юлия": "Юля", "людмила": "Люда", "галина": "Галя", "надежда": "Надя",
   "любовь": "Люба", "александра": "Саша", "евгения": "Женя", "валерия": "Лера", "виктория": "Вика", "анастасия": "Настя", "антонина": "Тоня",
   "дарья": "Даша", "ксения": "Ксюша", "лидия": "Лида", "маргарита": "Рита", "елизавета": "Лиза", "зинаида": "Зина", "раиса": "Рая", "тамара": "Тома" };
-var KOR = {}; Object.keys(KOROTKO).forEach(function (k) { KOR[KOROTKO[k].toLowerCase()] = 1; });
 function zov(n) {
-  var k = KOROTKO[n.toLowerCase()] || (KOR[n.toLowerCase()] ? n : null);
-  return k ? k.replace(/а$/, "").replace(/я$/, "ь") : n;
+  return KOROTKO[n.toLowerCase()] || n;
 }
+// её словами: так хозяйка зовёт выбрать гардероб
+var IGRA = ["Мы можем сейчас выбрать тебе идеальный капсульный гардероб. С учётом типа твоей фигуры и цветотипа.",
+  "Это так увлекательно, как игра в куклы! Только наряжать будем тебя. Давай?"];
 var HOZ = {
   pantera: {
     ava: "hozyajka.webp", lico: "hozyajka-lico.webp", alt: "Хозяйка магазина — пантера", rate: 1.05, pitch: 0.85,
-    mic: "Нажми и скажи, что ищешь", nazhmi: "Нажми и скажи", slushayu: "Говори, я слушаю", znakom: "Познакомиться", telefon: "Открыть цены",
+    mic: "Нажми и скажи, что ищешь", nazhmi: "Нажми и скажи", slushayu: "Говори, я слушаю", znakom: "Открыть цены — на 30 % ниже WB", telefon: "Открыть цены — на 30 % ниже WB",
     obrazy: "А вот образы с ними:", obraz: "Бери целиком — так и носят. Размер выбери у каждой вещи.",
     seriya: "Серия скоро — смотри прямо здесь. А вещи из неё уже можно взять.",
     vhod: { t: "Давай знакомиться", p: "Как тебя зовут? Оставишь телефон — сразу открою цены и промокод.", tel: "Оставь телефон — открою цены и твой промокод.", imya: "Как тебя зовут", ne: "Потом" },
+    // приветствие и зов в подбор — словами Ирины Владимировны (28.10); прошла подбор — хозяйка помнит фигуру и цветотип
     privet: function (s) {
-      var na = s.sz ? " на твой " + s.sz + "-й" : "";
-      if (s.svezh && s.zov) return [s.zov + ", привет! Ну, чего натворила? Чего хочешь — давай найдём.",
-        (s.ceny ? "Цены открыла, промокод " + s.kod + " — твой. " : "Цены покажу, как оставишь телефон. ") + "Говори, не надо тыкать."];
-      if (s.svezh) return ["Готово, цены открыла! Промокод " + s.kod + " уже работает.", "Говори, что ищешь, — найдём."];
+      var na = s.sz ? " на твой " + s.sz + "-й" : "", pomnyu = s.pb ? "Я помню: ты — «" + s.pb.f.n + "», " + s.pb.c.n.toLowerCase() + ". " : "";
+      var cena = s.ceny ? "Цены открыла, промокод " + s.kod + " — твой." : "";
+      if (s.svezh) return s.pb ? [(s.zov ? "Привет, " + s.zov + "! " : "Готово! ") + (cena || "Приятно познакомиться."), "Твой гардероб по фигуре и цветотипу — по кнопке ниже. Или скажи, что ищешь."]
+        : [(s.zov ? "Привет, " + s.zov + "! " : "") + IGRA[0], IGRA[1]].concat(cena ? [cena] : []);
       if (s.zov && s.dni >= 3) return [s.zov + ", привет! Давно тебя не было" + (s.nov ? " — а у нас без тебя новенькое." : "."),
-        s.sz ? (s.nov ? "Глянь, что пришло" : "Глянь, что есть") + na + ":" : "Скажи размер — покажу, что на тебя есть."];
-      if (s.zov) return [s.zov + ", снова ты! Рада.", s.sz ? (s.nov ? "Пока тебя не было, пришло новенькое" + na + ":" : "Присмотрела тебе" + na + ":") : "Говори, что ищем."];
-      return [s.dni >= 0 ? "О, снова ты! Заходи." : "Привет! Я тут за хозяйку.",
-        "Говори, что ищешь, — найдём на твой размер. Познакомимся — покажу цены: на 30 % ниже, чем на Wildberries."];
+        s.pb ? pomnyu + (s.sz ? (s.nov ? "Глянь, что пришло" : "Глянь, что тебе пойдёт") + na + ":" : "Скажи размер — покажу, что на тебя есть.") : IGRA.join(" ")];
+      if (s.zov) return s.pb ? [s.zov + ", привет! Рада тебя видеть.", pomnyu + (s.sz ? (s.nov ? "Пока тебя не было, пришло новенькое" + na + ":" : "Присмотрела тебе" + na + ":") : "Говори, что ищем.")]
+        : ["Привет, " + s.zov + "! " + IGRA[0], IGRA[1]];
+      return s.pb ? ["О, снова ты! " + pomnyu, "Глянь свой гардероб — или скажи, что ищешь."] : ["Привет! " + IGRA[0], IGRA[1]];
     },
     otvet: function (n, loose) {
       var na = st.size ? " на твой " + st.size + "-й" : "";
@@ -534,20 +584,19 @@ var HOZ = {
   },
   irina: {
     ava: "hozyajka-irina.webp", lico: "hozyajka-irina-lico.webp", alt: "Ирина Владимировна, дизайнер бренда", rate: 0.95, pitch: 1,
-    mic: "Нажмите и скажите, что ищете", nazhmi: "Нажмите и скажите", slushayu: "Я вас слушаю", znakom: "Познакомиться", telefon: "Открыть цены",
+    mic: "Нажмите и скажите, что ищете", nazhmi: "Нажмите и скажите", slushayu: "Я вас слушаю", znakom: "Открыть цены — на 30 % ниже WB", telefon: "Открыть цены — на 30 % ниже WB",
     obrazy: "А вот образы, которые я к ним собрала:", obraz: "Эту капсулу я шила, чтобы вещи носили вместе. Размер подберите у каждой.",
     seriya: "Серия скоро — смотрите прямо здесь. А вещи из неё уже можно заказать.",
     vhod: { t: "Давайте познакомимся", p: "Как вас зовут? С телефоном сразу открою цены и ваш промокод.", tel: "Оставьте телефон — открою цены и ваш промокод.", imya: "Как вас зовут", ne: "Не сейчас" },
     privet: function (s) {
-      var na = s.sz ? " на ваш " + s.sz + "-й" : "";
-      if (s.svezh && s.imya) return [s.imya + ", здравствуйте! Я Ирина Владимировна — все эти вещи придумываю и шью сама.",
-        (s.ceny ? "Цены открыла, ваш промокод " + s.kod + " уже применён. " : "Цены покажу, когда оставите телефон. ") + "Расскажите, что ищете, — подберу."];
-      if (s.svezh) return ["Готово, цены открыла! Промокод " + s.kod + " уже применён.", "Расскажите, что ищете, — подберу."];
+      var na = s.sz ? " на ваш " + s.sz + "-й" : "", pomnyu = s.pb ? "Я помню: у вас «" + s.pb.f.n + "», цветотип — " + s.pb.c.n.toLowerCase() + ". " : "";
+      var igra = "Давайте подберём вам идеальный капсульный гардероб — с учётом типа фигуры и цветотипа. Это увлекательно, как игра в куклы, только наряжать будем вас. Начнём?";
+      var cena = s.ceny ? "Цены открыла, ваш промокод " + s.kod + " уже применён." : "";
+      if (s.svezh) return [(s.imya ? s.imya + ", здравствуйте! " : "Готово! ") + (cena || "Приятно познакомиться."), s.pb ? "Ваш гардероб по фигуре и цветотипу — по кнопке ниже." : igra];
       if (s.imya && s.dni >= 3) return [s.imya + ", здравствуйте! Давно вас не было" + (s.nov ? " — а я без вас сшила новые модели." : "."),
-        s.sz ? "Вот что есть" + na + ":" : "Подскажите размер — покажу, что есть на вас."];
-      if (s.imya) return [s.imya + ", с возвращением!", s.sz ? (s.nov ? "Пока вас не было, пришли новые модели" + na + ":" : "Присмотрела для вас" + na + ":") : "Расскажите, что ищете, — подберу."];
-      return [s.dni >= 0 ? "Здравствуйте, рада вас снова видеть!" : "Здравствуйте! Я Ирина Владимировна, дизайнер «Русского кружевного дома».",
-        "Расскажите, что ищете, — подберу на ваш размер. А познакомимся — покажу ваши цены: на 30 % ниже, чем на Wildberries."];
+        s.pb ? pomnyu + (s.sz ? "Вот что есть" + na + ":" : "Подскажите размер — покажу, что есть на вас.") : igra];
+      if (s.imya) return [s.imya + ", с возвращением!", s.pb ? pomnyu + (s.sz ? (s.nov ? "Пока вас не было, пришли новые модели" + na + ":" : "Присмотрела для вас" + na + ":") : "Расскажите, что ищете, — подберу.") : igra];
+      return [s.pb ? "Здравствуйте, рада вас снова видеть! " + pomnyu : "Здравствуйте! Я Ирина Владимировна, дизайнер бренда.", s.pb ? "Ваш гардероб — по кнопке ниже." : igra];
     },
     otvet: function (n, loose) {
       var na = st.size ? " на ваш " + st.size + "-й" : "";
@@ -653,7 +702,10 @@ function applyQuery(text) {
   var r = parse(text);
   st.said = text; st.type = r.type; st.warm = r.warm; st.color = r.color; st.words = r.words;
   if (r.size) setSize(r.size, true);
-  closeSheet(); renderCatalog(); hap("ok"); skazat(st.repl);
+  closeSheet(); renderCatalog(); hap("ok"); skazat(st.repl, true);
+  // услышала — кивает; нашла — радуется
+  var nashla = /^Нашла/.test(st.repl || "");
+  if (H3) H3.igrat("Agree_Gesture", nashla ? function () { H3.derzhat("Happy_Sway_Standing", 4500); } : null);
   setTimeout(function () { var y = $("#cat").getBoundingClientRect().top + scrollY - 70; scrollTo({ top: y, behavior: "smooth" }); }, 60);
 }
 
@@ -715,12 +767,12 @@ function capsSorted(cv) {
 }
 /* обложка: у ручного образа — фото с образом целиком, у собранного — вещи рядом */
 function capPhoto(k, cls, eager) {
-  if (!k.a) return ph(img(T[k.f[0]], k.f[1], true), cls, eager);
+  if (!k.k) return ph(img(T[k.f[0]], k.f[1], true), cls, eager);
   return '<span class="kol k' + k.ids.length + " " + (cls || "") + '">' + k.ids.map(function (id) { return ph(img(T[id], T[id].f[0]), "", eager); }).join("") + "</span>";
 }
 function capHtml(i) {
   var k = D.kapsuly[i], ts = k.ids.map(function (id) { return T[id]; }), my = ts.reduce(function (a, t) { return a + t.my; }, 0);
-  return '<button class="cap" data-cap="' + i + '">' + capPhoto(k) + '<span class="cap-b"><span class="cap-n">' + esc(k.n) + '</span><span class="cap-o">' + esc(k.o) + '</span><span class="cap-p">'
+  return '<button class="cap" data-cap="' + i + '">' + capPhoto(k) + (glb3D(k) ? '<span class="tag3d">3D</span>' : "") + '<span class="cap-b"><span class="cap-n">' + esc(k.n) + '</span><span class="cap-o">' + esc(k.o) + '</span><span class="cap-p">'
     + (ceny() ? "<b>" + veshi(ts.length) + " · " + fmt(my) + "</b>" : "<b>" + veshi(ts.length) + '</b><span class="zam">−30 % к WB</span>') + "</span></span></button>";
 }
 /* серии: обложка из рисунков, видео «скоро», вещи из серии */
@@ -732,9 +784,12 @@ function renderSerii() {
 }
 function openSeriya(i) {
   var s = D.serii[i];
-  push(bar("Серия " + (i + 1)) + '<div class="ser-hero"><img src="' + s.f + '" alt=""><span class="play">' + IC.play + "</span><p>" + P.seriya + "</p></div>"
+  push(bar("Серия " + (i + 1)) + '<div class="ser-hero"><img src="' + s.f + '" alt=""><span class="play">' + IC.play + "</span></div>"
+    + '<div class="stage ser-stage"><img class="foto3d" src="' + P.ava + '" alt="' + P.alt + '"><div class="stage-bub"><div class="bub"><p>' + P.seriya + "</p></div></div></div>"
     + '<div class="pad"><p class="kicker">Серия ' + (i + 1) + '</p><h1 class="pname" style="margin-top:6px">' + esc(s.n) + '</h1><p class="lead">' + esc(s.o) + "</p>"
-    + '<h2 class="h3">Вещи из серии</h2><div class="minis noscroll">' + s.ids.map(function (id) { return miniHtml(T[id]); }).join("") + "</div></div>", homeMain);
+    + '<h2 class="h3">Вещи из серии</h2><div class="minis noscroll">' + s.ids.map(function (id) { return miniHtml(T[id]); }).join("") + "</div></div>", homeMain, function (el, o) {
+    hozyajka3D(el.querySelector(".ser-stage"), o, function (sc) { sc.derzhat("Flirty_Strut_inplace", 0); });
+  });
 }
 function renderCaps() {
   $("#caps").innerHTML = capsSorted().slice(0, 8).map(capHtml).join("");
@@ -754,24 +809,36 @@ function renderHome() {
 function renderHi() {
   var nm = vhod && vhod.imya, dni = vizit.prev ? (Date.now() - vizit.prev) / 864e5 : -1, sz = st.size;
   var nov = vizit.videla ? D.tovary.filter(function (t) { return vizit.videla.indexOf(t.id) < 0 && (!sz || fits(t, sz)); }) : [];
-  var s = { imya: nm ? esc(nm) : "", zov: nm ? esc(zov(nm)) : "", kod: vhod && vhod.kod ? esc(vhod.kod) : "", ceny: ceny(), sz: sz, nov: nov.length > 0, dni: dni, svezh: vizit.svezh };
+  var pb = podbor();
+  var s = { imya: nm ? esc(nm) : "", zov: nm ? esc(zov(nm)) : "", kod: vhod && vhod.kod ? esc(vhod.kod) : "", ceny: ceny(), sz: sz, nov: nov.length > 0, dni: dni, svezh: vizit.svezh, pb: pb };
   var lines = P.privet(s), picks = [];
-  if (nm && !vizit.svezh && sz) picks = (nov.length ? nov : D.tovary.filter(function (t) { return fits(t, sz); })).slice(0, 8);
+  if (nm && !vizit.svezh && sz) {
+    picks = nov.length ? nov : D.tovary.filter(function (t) { return fits(t, sz); });
+    if (pb) picks = podborVeshi(picks, pb).concat(picks).filter(function (t, i, a) { return a.indexOf(t) === i; });   // подходящее ей — первым
+    picks = picks.slice(0, 8);
+  }
   vizit.repl = lines.join(" ").replace(/<[^>]+>/g, "");
   var el = $("#hi"), txt = '<div class="say">' + lines.map(function (l) { return "<p>" + l + "</p>"; }).join("") + "</div>";
-  el.innerHTML = '<img class="hi-ava" src="' + P.ava + '" alt="' + P.alt + '">'
-    + '<div class="bub">' + (TTS ? '<button class="zv" data-zvuk aria-label="Голос хозяйки" aria-pressed="' + zvuk + '">' + (zvuk ? IC.zvuk : IC.tiho) + "</button>" : "")
-    + '<div class="txt">' + (vizit.pechat ? '<span class="dots" aria-label="печатает"><i></i><i></i><i></i></span>' : txt) + "</div></div>"
-    + '<div class="hi-acts"><button class="say-big" data-say><span class="mc">' + IC.micBig + "</span>" + P.mic + "</button>"
+  if (!$("#hiAva")) el.innerHTML = '<div class="stage" id="hiAva"><img class="foto3d" src="' + P.ava + '" alt="' + P.alt + '"><div class="stage-bub" id="hiBub"></div></div><div id="hiRest"></div>';
+  $("#hiBub").innerHTML = '<div class="bub">' + (TTS ? '<button class="zv" data-zvuk aria-label="Голос хозяйки" aria-pressed="' + zvuk + '">' + (zvuk ? IC.zvuk : IC.tiho) + "</button>" : "")
+    + '<div class="txt">' + (vizit.pechat ? '<span class="dots" aria-label="печатает"><i></i><i></i><i></i></span>' : txt) + "</div></div>";
+  // не наряжали — главная кнопка ответ на её «Давай?»; наряжали — голос, а гардероб рядом
+  var davaj = '<button class="say-big" data-podbor><span class="mc">' + IC.hanger + "</span><span>" + (P === HOZ.irina ? "Начнём!" : "Давай!") + "<small>два вопроса — и гардероб готов</small></span></button>";
+  $("#hiRest").innerHTML = '<div class="hi-acts">' + (pb ? '<button class="say-big" data-say><span class="mc">' + IC.micBig + "</span>" + P.mic + "</button>"
+      + '<button class="btn line" data-podbor>' + (P === HOZ.irina ? "Ваш гардероб" : "Мой гардероб") + " · " + esc(pb.f.n) + ", " + esc(pb.c.n.toLowerCase()) + "</button>"
+      : davaj + '<button class="btn line" data-say>' + IC.mic + P.mic + "</button>")
     + (ceny() ? "" : '<button class="btn line" data-vhod>' + (nm ? P.telefon : P.znakom) + "</button>") + "</div>"
     + (picks.length ? '<div class="picks noscroll">' + picks.map(miniHtml).join("") + "</div>" : "");
-  // первый показ — «печатает…», потом реплика
-  if (vizit.pechat) { vizit.pechat = false; setTimeout(function () { var b = el.querySelector(".txt"); if (b) b.innerHTML = txt; }, vizit.zaderzhka || 900); }
+  // первый показ — «печатает…», потом реплика; хозяйка машет и говорит
+  if (vizit.pechat) {
+    vizit.pechat = false;
+    setTimeout(function () { var b = el.querySelector(".txt"); if (b) b.innerHTML = txt; vizit.napechatano = true; if (H3) H3.privet(); }, vizit.zaderzhka || 900);
+  }
 }
 function setSize(s, quiet) {
   st.size = s; store.set("razmer", s);
   if (TG && ver("6.9") && tg.CloudStorage) { try { tg.CloudStorage.setItem("razmer", s ? String(s) : ""); } catch (e) {} }
-  if (!quiet) hap("sel");
+  if (!quiet) { hap("sel"); if (H3) H3.igrat("Agree_Gesture"); }
   renderHome();
 }
 
@@ -795,7 +862,7 @@ function push(html, main, onmount) {
 addEventListener("popstate", function (e) {
   var d = (e.state && e.state.d) || 0;
   while (stack.length > d) {
-    var o = stack.pop(); o.el.classList.remove("in");
+    var o = stack.pop(); o.el.classList.remove("in"); if (o.ubrat) o.ubrat();
     (function (el) { setTimeout(function () { el.remove(); }, 360); })(o.el);
   }
   if (pendingDone && !stack.length) { var p = pendingDone; pendingDone = null; openDone(p); return; }
@@ -922,7 +989,8 @@ function openLook(k, pre) {
         + (st.size && mi < 0 ? '<p class="no">Вашего ' + st.size + " нет — можно взять соседний</p>" : "") + "</div></div>";
     }).join("");
   }
-  var html = bar("Образ") + capPhoto(k, "look-hero", true) + '<div class="pad">'
+  var html = bar("Образ") + '<div class="lw">' + capPhoto(k, "look-hero", true)
+    + '<div class="pod-kn"><button class="btn" data-hod aria-pressed="false">Пройтись</button><button class="btn" data-prohodka aria-pressed="false" hidden>Проходка</button><span>крутите пальцем</span></div></div><div class="pad">'
     + '<p class="kicker">Образ целиком</p><h1 class="pname" style="margin-top:6px">' + esc(k.n) + '</h1><p class="lead">' + esc(k.o) + "</p>"
     + '<div class="dlg" style="margin-top:12px"><div class="her"><img src="' + P.lico + '" alt=""><span>' + P.obraz + "</span></div></div>"
     + '<div class="lp"></div><div class="lrows">' + rows() + '</div><p class="lnote" role="status" hidden></p></div>';
@@ -933,6 +1001,31 @@ function openLook(k, pre) {
   }, function (el, o) {
     lp(el);
     o.re = function () { el.querySelector(".lrows").innerHTML = rows(); lp(el); };
+    // есть 3D этой капсулы — пантера в ней на подиуме. Есть клип разворота: «Пройтись» — разворот, «Проходка» — проходка;
+    // нет — одна кнопка «Пройтись» с проходкой
+    var lw = el.querySelector(".lw"), sc = null, hod = lw.querySelector("[data-hod]"), proh = lw.querySelector("[data-prohodka]");
+    spisok3D().then(function () {
+      var z = zapis3D(k);
+      if (!z || !el.isConnected) return;
+      sc = scena3D(lw, z.model, { podium: true, klipy: z.klipy, aktivno: function () { return top() === o; },
+        gotovo: function (s) { if (s.est("razvorot")) { proh.hidden = false; lw.querySelector(".pod-kn span").hidden = true; } } });
+      o.ubrat = function () { sc.ubrat(); };
+    });
+    function nazhata(b, on) { b.setAttribute("aria-pressed", String(on)); }
+    hod.addEventListener("click", function () {
+      if (!sc) return;
+      hap("sel"); nazhata(proh, false); proh.textContent = "Проходка";
+      if (sc.est("razvorot")) { nazhata(hod, true); sc.igrat("razvorot", function () { nazhata(hod, false); sc.pokoj(); }); return; }
+      var idet = hod.getAttribute("aria-pressed") !== "true";
+      nazhata(hod, idet); hod.textContent = idet ? "Стоп" : "Пройтись";
+      if (idet) sc.derzhat("Flirty_Strut_inplace", 0); else sc.pokoj();
+    });
+    proh.addEventListener("click", function () {
+      if (!sc) return;
+      var idet = proh.getAttribute("aria-pressed") !== "true";
+      hap("sel"); nazhata(hod, false); nazhata(proh, idet); proh.textContent = idet ? "Стоп" : "Проходка";
+      if (idet) sc.derzhat("Flirty_Strut_inplace", 0); else sc.pokoj();
+    });
     el.addEventListener("click", function (e) {
       var b = e.target.closest("[data-lsz]"); if (!b) return;
       var id = +b.closest("[data-for]").dataset.for, i = +b.dataset.lsz;
@@ -974,6 +1067,113 @@ function openCaps(cv) {
     o.re = draw; draw();
     el.addEventListener("click", function (e) { var b = e.target.closest("[data-cv]"); if (!b) return; cv = b.dataset.cv === "" ? null : +b.dataset.cv; hap("sel"); draw(); });
   });
+}
+
+/* ---------- подбор гардероба по фигуре и цветотипу (Ирина Владимировна 28.10: «как игра в куклы! Только наряжать будем тебя») ---------- */
+// da — что фигуре идёт, net — что спорит; ищем в названии и описании вещи
+var FIGURY = [
+  { k: "grusha", n: "Груша", o: "бёдра шире плеч", p: "M14 14H26C27 22 27 27 29 32C32 40 34 48 34 54H6C6 48 8 40 11 32C13 27 13 22 14 14Z",
+    da: /жакет|блуз|брош|джемпер|прям|широк|палаццо|длинн/, net: /кюлот|шаровар|аладдин|алладин/,
+    sovet: "Акцент наверх: жакеты, блузы, джемперы с брошью. Низ — прямой или широкий, миди и в пол." },
+  { k: "yabloko", n: "Яблоко", o: "объём в талии", p: "M13 14H27C33 22 35 32 32 42C30 48 29 51 28 54H12C11 51 10 48 8 42C5 32 7 22 13 14Z",
+    da: /удлин|рубашк|жакет|палаццо|прям|длинн|плать/, net: /пушист|травк|барашек|оверсайз|свитшот|кюлот/,
+    sovet: "Вертикали: удлинённые блузы, платья-рубашки, жакет нараспашку, палаццо. Пушистое и объёмное — не на талию." },
+  { k: "chasy", n: "Песочные часы", o: "талия видна, плечи и бёдра вровень", p: "M9 14H31C29 22 24 27 23 32C24 37 31 44 32 54H8C9 44 16 37 17 32C16 27 11 22 9 14Z",
+    da: /плать|жакет|прям|вельвет|делов/, net: /оверсайз|шаровар|аладдин|алладин|свитшот/,
+    sovet: "Талию показываем: платья, жакеты, прямые юбки, вельвет по фигуре. Мешковатое прячет линию." },
+  { k: "treug", n: "Треугольник", o: "плечи шире бёдер", p: "M6 14H34C31 24 27 30 26 36C25 44 26 50 26 54H14C14 50 15 44 14 36C13 30 9 24 6 14Z",
+    da: /широк|палаццо|кюлот|шаровар|аладдин|алладин|водолаз|лонгслив/, net: /жакет|барашек|брош|свитшот|оверсайз/,
+    sovet: "Объём — вниз: широкие юбки, палаццо, кюлоты, шаровары. Верх простой, без объёма на плечах." },
+  { k: "pryam", n: "Прямоугольник", o: "плечи, талия и бёдра почти вровень", p: "M11 14H29V54H11Z",
+    da: /жакет|водолаз|широк|палаццо|кюлот|брош|оверсайз/, net: /делов/,
+    sovet: "Слои и форма: жакет поверх водолазки, широкая юбка или палаццо, комплект из одной ткани." }
+];
+// da/net — по цвету вещи (поле c с витрины WB: бордо там «красный», молочный — «белый»)
+var CVETOTIPY = [
+  { k: "vesna", n: "Весна", o: "тёплая и светлая: золотистая кожа, светлые волосы и глаза", sw: ["#E3B04B", "#D8BFA0", "#8DB6D8", "#F1E6D2"],
+    da: /желт|беж|голуб/, net: /черн|сер/, cveta: "мёд, бежевый, голубой, тёплый молочный" },
+  { k: "leto", n: "Лето", o: "холодная и мягкая: кожа с розовинкой, русые или пепельные волосы", sw: ["#9DB7D2", "#A8A9AD", "#3E5788", "#F1ECE4"],
+    da: /голуб|сер|син|бел/, net: /желт|коричн|черн/, cveta: "голубой, серый, синий, молочный" },
+  { k: "osen", n: "Осень", o: "тёплая и глубокая: рыжие или каштановые волосы, карие или зелёные глаза", sw: ["#5A3826", "#7A1E24", "#1F5E4A", "#C9902E"],
+    da: /коричн|красн|зелен|желт|беж/, net: /голуб|черн|сер|бел/, cveta: "шоколад, бордо, изумруд, мёд" },
+  { k: "zima", n: "Зима", o: "холодная и контрастная: тёмные волосы, яркие глаза", sw: ["#1E1B1B", "#F3EEE6", "#1F3A7A", "#8A0F1E"],
+    da: /черн|бел|син|красн|зелен/, net: /желт|беж|коричн/, cveta: "чёрный, молочный, синий, бордо, изумруд" }
+];
+function poK(a, k) { return a.filter(function (x) { return x.k === k; })[0]; }
+function podbor() { var z = store.get("podbor", null), f = z && poK(FIGURY, z.f), c = z && poK(CVETOTIPY, z.c); return f && c ? { f: f, c: c } : null; }
+function ballV(t, pb) {
+  var h = hay(t), b = 0;
+  if (pb.c.da.test(t.c)) b += 2; else if (pb.c.net.test(t.c)) b -= 3;
+  if (pb.f.da.test(h)) b += 1;
+  if (pb.f.net.test(h)) b -= 2;
+  return b;
+}
+function podborVeshi(ts, pb) {
+  return ts.map(function (t) { return { t: t, b: ballV(t, pb) }; }).filter(function (x) { return x.b > 0; })
+    .sort(function (x, y) { return y.b - x.b; }).map(function (x) { return x.t; });
+}
+/* образы — по среднему баллу вещей: сперва подходящие, среди них — где на её размер есть всё; меньше 4 подходящих — добираем лучшими */
+function podborKaps(pb) {
+  var a = D.kapsuly.map(function (k, i) { var b = k.ids.map(function (id) { return ballV(T[id], pb); }); return { i: i, b: b.reduce(function (x, y) { return x + y; }, 0) / b.length, fit: +capFits(k) }; });
+  a.sort(function (x, y) { return ((y.b > 0) - (x.b > 0)) || (y.fit - x.fit) || (y.b - x.b); });
+  return a.slice(0, Math.min(8, Math.max(4, a.filter(function (x) { return x.b > 0; }).length))).map(function (x) { return x.i; });
+}
+function openPodbor() {
+  var pb = podbor(), f = pb && pb.f, c = pb && pb.c, shag = pb ? 3 : 0, sc = null;   // 0 фигура, 1 цветотип, 2 размер, 3 гардероб
+  function ty(a, b) { return P === HOZ.irina ? b : a; }
+  push(bar(ty("Твой гардероб", "Ваш гардероб")) + '<div class="stage ser-stage pb-stage"><img class="foto3d" src="' + P.ava + '" alt="' + P.alt + '"><div class="stage-bub"><div class="bub"><div class="txt"></div></div></div></div><div class="pb"></div>',
+    function () { return shag === 3 && !ceny() ? { text: "Открыть цены — на 30 % ниже WB", fn: openVhod } : homeMain(); },
+    function (el, o) {
+      hozyajka3D(el.querySelector(".pb-stage"), o, function (s) { sc = s; s.igrat("Wave_One_Hand", function () { s.govorit(o.repl); }); });
+      function draw(tiho) {
+        var rep, html;
+        if (shag === 0) {
+          rep = ty("Сначала фигура. Встань перед зеркалом: что шире — плечи или бёдра? Видна ли талия?", "Сначала фигура. Посмотрите в зеркало: что шире — плечи или бёдра? Видна ли талия?");
+          html = '<div class="pad"><p class="pb-k">Шаг 1 из 2 · фигура</p><div class="pb-opts">' + FIGURY.map(function (x) {
+            return '<button class="pb-o" data-pf="' + x.k + '"><svg viewBox="0 0 40 60" fill="currentColor" aria-hidden="true"><circle cx="20" cy="7" r="5"/><path d="' + x.p + '"/></svg>' + x.n + "<small>" + x.o + "</small></button>";
+          }).join("") + "</div></div>";
+        } else if (shag === 1) {
+          rep = ty("Теперь цветотип. Не уверена — глянь на вены на запястье: зеленоватые — весна или осень, синеватые — лето или зима.",
+            "Теперь цветотип. Подсказка: вены на запястье зеленоватые — весна или осень, синеватые — лето или зима.");
+          html = '<div class="pad"><p class="pb-k">Шаг 2 из 2 · цветотип</p><div class="pb-opts">' + CVETOTIPY.map(function (x) {
+            return '<button class="pb-o" data-pc="' + x.k + '"><span class="pb-sw" aria-hidden="true">' + x.sw.map(function (s) { return '<i style="background:' + s + '"></i>'; }).join("") + "</span>" + x.n + "<small>" + x.o + "</small></button>";
+          }).join("") + '</div><button class="linkbtn" data-pnazad>← Фигура</button></div>';
+        } else if (shag === 2) {
+          rep = ty("И размер — покажу только то, что на тебя есть.", "И размер — покажу только то, что на вас есть.");
+          html = '<div class="pad"><p class="pb-k">Размер</p><div class="pb-sz">' + SIZES.map(function (s) { return '<button data-psz="' + s + '">' + s + "</button>"; }).join("")
+            + '</div><button class="linkbtn" data-psz="0">Пропустить</button></div>';
+        } else {
+          var p2 = { f: f, c: c }, ki = podborKaps(p2), vs = podborVeshi(D.tovary.filter(function (t) { return !st.size || fits(t, st.size); }), p2).slice(0, 10);
+          var nm = vhod && vhod.imya ? zov(vhod.imya) : "";
+          rep = (nm ? nm + ", готово! " : "Готово! ") + ty("Ты — «" + f.n + "», цветотип — ", "У вас «" + f.n + "», цветотип — ") + c.n.toLowerCase() + ". "
+            + ty("Собрала тебе образы — смотри ниже.", "Собрала для вас образы — смотрите ниже.");
+          html = '<div class="pad pb-itog"><p class="pb-k">' + f.n + " · " + c.n + (st.size ? " · " + st.size + " размер" : "") + '</p><p class="lead">' + f.sovet + "</p><p class=\"lead\">"
+            + ty("Твои цвета: ", "Ваши цвета: ") + c.cveta + "." + (ki.some(function (i) { return glb3D(D.kapsuly[i]); }) ? ty(" Образы с меткой 3D я примерила на себя.", " Образы с меткой 3D — в движении.") : "") + "</p>"
+            + '<h2 class="h3">Образы</h2></div><div class="capgrid">' + ki.map(capHtml).join("") + "</div>"
+            + '<div class="pad">' + (vs.length ? '<h2 class="h3" style="margin-top:0">Вещи по отдельности</h2><div class="minis noscroll">' + vs.map(miniHtml).join("") + "</div>" : "")
+            + '<button class="linkbtn" data-pzanovo>Пройти заново</button></div>';
+        }
+        o.repl = rep;
+        el.querySelector(".txt").innerHTML = '<div class="say"><p>' + esc(rep) + "</p></div>";
+        el.querySelector(".pb").innerHTML = html;
+        if (!tiho) skazat(rep, true);   // руками говорит своя пантера на этом экране
+        sync();
+      }
+      o.re = function () { draw(true); };
+      draw();
+      el.addEventListener("click", function (e) {
+        var b = e.target.closest("[data-pf],[data-pc],[data-psz],[data-pnazad],[data-pzanovo]"); if (!b) return;
+        var d = b.dataset; hap("sel");
+        if (d.pf) { f = poK(FIGURY, d.pf); shag = 1; }
+        else if (d.pc) { c = poK(CVETOTIPY, d.pc); shag = st.size ? 3 : 2; }
+        else if (d.psz != null) { if (+d.psz) setSize(+d.psz, true); shag = 3; }
+        else { shag = 0; }
+        if (shag === 3) { store.set("podbor", { f: f.k, c: c.k, kogda: Date.now() }); renderHome(); hap("ok"); }
+        draw();
+        if (sc) sc.igrat("Agree_Gesture", function () { sc.govorit(o.repl); });
+        el.scrollTo({ top: 0, behavior: "smooth" });   // цены — главной кнопкой внизу, гардероб шторкой не закрываем
+      });
+    });
 }
 
 /* ---------- корзина: примерка дома ---------- */
@@ -1171,6 +1371,7 @@ function voshla(v, msg) {
   sync();
   if (stack.length) toast(msg, true); else scrollTo({ top: 0, behavior: "smooth" });
   skazat(vizit.repl);  // после касания браузер даёт говорить
+  if (H3) H3.igrat("Agree_Gesture", function () { H3.govorit(vizit.repl); });
 }
 function primenitKod(v, msg) {
   v = v.trim().toUpperCase(); msg.hidden = false; msg.classList.remove("yes");
@@ -1200,23 +1401,190 @@ $("#hPromoF").addEventListener("submit", function (e) { e.preventDefault(); prim
 
 /* ---------- голос хозяйки: speechSynthesis браузера, только после касания (так требует браузер); звук выключается ---------- */
 var TTS = window.speechSynthesis && window.SpeechSynthesisUtterance ? window.speechSynthesis : null, zvuk = store.get("zvuk", true);
-function skazat(txt) {
+function skazat(txt, bezDvizh) {
   if (!TTS || !zvuk || !txt) return;
   try {
     TTS.cancel();
     var u = new SpeechSynthesisUtterance(txt.replace(/РКД-/g, "Р К Д ")), vs = TTS.getVoices().filter(function (v) { return /^ru/i.test(v.lang); });
     var v = vs.filter(function (x) { return /milena|irina|svetlana|daria|google/i.test(x.name); })[0] || vs[0];
     u.lang = "ru-RU"; if (v) u.voice = v; u.rate = P.rate; u.pitch = P.pitch;
+    // пока звучит — хозяйка говорит руками
+    if (!bezDvizh) { u.onstart = function () { if (H3) H3.derzhat(H3.razgovor(), 0); }; u.onend = function () { if (H3) H3.pokoj(); }; }
     TTS.speak(u);
   } catch (e) {}
 }
 
+/* ---------- 3D: хозяйка и капсулы (three.js, лениво; нет WebGL, файла или ошибка — остаётся фото) ---------- */
+var GL_EST = (function () {
+  try { var c = document.createElement("canvas"); return !!(window.WebGLRenderingContext && (c.getContext("webgl2") || c.getContext("webgl"))); } catch (e) { return false; }
+})() && !(navigator.connection && navigator.connection.saveData);
+var TRI = null, GLB = {}, H3 = null, M3D = null, SPISOK = null;
+function tri() {
+  if (!TRI) TRI = Promise.all([import("three"), import("three/addons/loaders/GLTFLoader.js"), import("three/addons/controls/OrbitControls.js"),
+    import("three/addons/environments/RoomEnvironment.js"), import("three/addons/utils/SkeletonUtils.js")])
+    .then(function (m) { return { THREE: m[0], GLTFLoader: m[1].GLTFLoader, Orbit: m[2].OrbitControls, Room: m[3].RoomEnvironment, clone: m[4].clone }; });
+  return TRI;
+}
+/* BAZA_3D + "spisok.json" = {"hozyajka": {"model": "hozyajka.glb", "klipy": {"stojka": "hozyajka-stojka.glb", "razvorot": "hozyajka-razvorot.glb"}},
+   "kapsuly": {"<m3d>": {"model": "kapsula-N.glb", "klipy": {...}}}} — собирает rabota/vylozhit_3d.py. Клипы — отдельные glb только с костями и анимацией */
+function spisok3D() {
+  if (!SPISOK) SPISOK = (GL_EST ? fetch(BAZA_3D + "spisok.json").then(function (r) { return r.ok ? r.json() : null; }) : Promise.resolve(null))
+    .catch(function () { return null; }).then(function (s) { M3D = s; return s; });
+  return SPISOK;
+}
+function zapis3D(k) {   // k — капсула; null — хозяйка. Нет spisok.json — файлы по имени: <имя>.glb, <имя>-stojka.glb, <имя>-razvorot.glb
+  if (M3D) return k ? M3D.kapsuly && M3D.kapsuly[k.m3d] : M3D.hozyajka;
+  var imya = k ? (k.m3d ? "kapsula-" + k.m3d : null) : "hozyajka";
+  return imya && { model: imya + ".glb", klipy: { stojka: imya + "-stojka.glb", razvorot: imya + "-razvorot.glb" } };
+}
+function glb3D(k) { return GL_EST && !!zapis3D(k); }
+function zagruzitGlb(f) {
+  if (!GLB[f]) GLB[f] = tri().then(function (m) { return new Promise(function (ok, ne) { new m.GLTFLoader().load(BAZA_3D + f, ok, undefined, ne); }); });
+  return GLB[f];
+}
+/* сцена поверх фото в box. opt: podium — подиум под ногами; aktivno() — рисовать ли сейчас (экран сверху); gotovo(sc) — когда модель встала */
+function scena3D(box, f, opt) {
+  var sc = { zhiv: true, igrat: function () {}, derzhat: function () {}, pokoj: function () {}, govorit: function () {}, privet: function () {}, razgovor: function () { return "Idle"; },
+    ubrat: function () { sc.zhiv = false; } };
+  if (!GL_EST) return sc;
+  var klipy = opt.klipy || {}, kk = Object.keys(klipy);
+  Promise.all([tri(), zagruzitGlb(f)].concat(kk.map(function (k) {
+    return zagruzitGlb(klipy[k]).catch(function (e) { console.warn("3D: клип " + k + " не загрузился:", e && e.message); return null; });
+  }))).then(function (r) {
+    if (!sc.zhiv || !box.isConnected) return;
+    var m = r[0], THREE = m.THREE, g = r[1];
+    var canvas = document.createElement("canvas"); canvas.className = "c3d"; box.insertBefore(canvas, box.firstChild.nextSibling);
+    var ren = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, powerPreference: "low-power" });
+    ren.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    ren.outputColorSpace = THREE.SRGBColorSpace; ren.toneMapping = THREE.ACESFilmicToneMapping; ren.toneMappingExposure = 1.05;
+    ren.shadowMap.enabled = true; ren.shadowMap.type = THREE.PCFSoftShadowMap;
+    var scene = new THREE.Scene(), pm = new THREE.PMREMGenerator(ren);
+    scene.environment = pm.fromScene(new m.Room(), 0.04).texture; pm.dispose();
+    var cam = new THREE.PerspectiveCamera(30, 1, 0.05, 50);
+    var model = m.clone(g.scene);
+    model.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false; } });
+    scene.add(model);
+    var mix = new THREE.AnimationMixer(model), act = {};
+    g.animations.forEach(function (a) { act[a.name] = mix.clipAction(a); });
+    // отдельные клипы (тот же скелет): треки находят кости модели по имени
+    kk.forEach(function (k, i) { var c = r[2 + i]; if (c && c.animations && c.animations[0]) act[k] = mix.clipAction(c.animations[0]); });
+    sc.est = function (n) { return !!act[n]; };
+    // рамка по позе со скелетом (precise): простая рамка у модели со скелетом уводит камеру в ноги
+    var a0 = act.stojka || act.Idle || (g.animations[0] && act[g.animations[0].name]);   // у v2 нет Idle — рамка по стойке
+    if (a0) { a0.play(); mix.update(0); }
+    model.updateMatrixWorld(true);
+    var bx = new THREE.Box3().setFromObject(model, true), h = bx.max.y - bx.min.y, w = Math.max(bx.max.x - bx.min.x, bx.max.z - bx.min.z), podY = 0;
+    model.position.set(-(bx.min.x + bx.max.x) / 2, -bx.min.y, -(bx.min.z + bx.max.z) / 2);
+    if (opt.podium) {
+      podY = h * 0.035;
+      var pod = new THREE.Mesh(new THREE.CylinderGeometry(h * 0.3, h * 0.32, podY, 64),
+        new THREE.MeshStandardMaterial(opt.temno ? { color: 0x4a221e, roughness: 0.5, metalness: 0.15 } : { color: 0xEFE5D8, roughness: 0.8 }));
+      pod.position.y = podY / 2; pod.receiveShadow = true; scene.add(pod); model.position.y += podY;
+    }
+    var pol = new THREE.Mesh(new THREE.CircleGeometry(h * 1.2, 48), new THREE.ShadowMaterial({ opacity: 0.18 }));
+    pol.rotation.x = -Math.PI / 2; pol.position.y = podY + h * 0.001; pol.receiveShadow = true; scene.add(pol);
+    var svet = new THREE.DirectionalLight(0xfff4e8, 2.2);   // тёплый ключевой свет сверху-сбоку, мягкая тень на пол
+    svet.position.set(h * 0.75, h * 1.6, h * 1.1); svet.castShadow = true;
+    svet.shadow.mapSize.set(1024, 1024); svet.shadow.radius = 5; svet.shadow.bias = -0.0005;
+    Object.assign(svet.shadow.camera, { left: -h * 0.8, right: h * 0.8, top: h * 1.2, bottom: -h * 0.4, near: h * 0.1, far: h * 6 });
+    scene.add(svet, new THREE.HemisphereLight(0xffffff, opt.temno ? 0x6b2a25 : 0xd9cbbb, 0.6));
+    // контровой свет сзади: белый трикотаж и чёрная шкура отделяются от фона
+    var kontr = new THREE.DirectionalLight(0xffdcb8, opt.temno ? 3.2 : 1.4), kontr2 = new THREE.DirectionalLight(0xcdd6ff, opt.temno ? 1.8 : 0.7);
+    kontr.position.set(-h * 0.9, h * 1.3, -h * 1.4); kontr2.position.set(h * 1.0, h * 1.1, -h * 1.2);
+    scene.add(kontr, kontr2);
+    // крутить пальцем — только вокруг, без наклона, приближения и сдвига; вертикальный жест листает страницу
+    var ctl = new m.Orbit(cam, canvas); ctl.enableDamping = true; ctl.enablePan = false; ctl.enableZoom = false;
+    canvas.style.touchAction = "pan-y";
+    // отпустила — через 4 с хозяйка плавно поворачивается обратно лицом
+    var licom = 0, sph = new THREE.Spherical(), v3 = new THREE.Vector3();
+    ctl.addEventListener("start", function () { clearTimeout(licom); licom = -1; });
+    ctl.addEventListener("end", function () { licom = setTimeout(function () { licom = 0; }, 4000); });
+    var vys = h + podY;
+    function kadr() {   // вся фигура в кадре, с запасом на поднятую руку
+      var W = box.clientWidth, H = box.clientHeight; if (!W || !H) return;
+      ren.setSize(W, H, false); cam.aspect = W / H;
+      // запас по высоте — на поднятую руку (машет), по ширине — на размах рук в проходке
+      var t = Math.tan(cam.fov * Math.PI / 360), d = Math.max(vys * (opt.zapas || 1.26) / 2 / t, w * 1.7 / 2 / (t * cam.aspect)), cy = vys * 0.52;
+      // сдвиг кадра: фигура левее, справа место под реплику
+      if (opt.sdvig) cam.setViewOffset(W, H, W * opt.sdvig, 0, W, H); else cam.clearViewOffset();
+      ctl.minPolarAngle = 0; ctl.maxPolarAngle = Math.PI;
+      ctl.target.set(0, cy, 0); cam.position.set(0, cy + vys * 0.05, d); cam.near = d / 20; cam.far = d * 10; cam.updateProjectionMatrix();
+      ctl.update(); ctl.minPolarAngle = ctl.maxPolarAngle = ctl.getPolarAngle();
+    }
+    kadr();
+    // движения: плавный переход 0,4 с; покой — Idle и Idle_02 по очереди
+    var cur = null, potom = null, nazad = 0, pokojS = 0, govT = 0;
+    function play(n, raz) {
+      var a = act[n]; if (!a) return false;
+      if (a === cur && !raz) return true;
+      a.reset(); a.setLoop(raz ? THREE.LoopOnce : THREE.LoopRepeat, Infinity); a.clampWhenFinished = !!raz;
+      a.fadeIn(0.4).play(); if (cur && cur !== a) cur.fadeOut(0.4);
+      cur = a; return true;
+    }
+    // покой: женская стойка, если есть клип; иначе Idle и Idle_02 по очереди
+    sc.pokoj = function () { clearTimeout(nazad); potom = null; pokojS = performance.now(); play(act.stojka ? "stojka" : cur === act.Idle && act.Idle_02 ? "Idle_02" : act.Idle ? "Idle" : a0 && a0.getClip().name); };
+    sc.igrat = function (n, posle) { clearTimeout(nazad); if (play(n, true)) potom = posle || null; else if (posle) posle(); };   // один раз, потом posle или покой
+    sc.derzhat = function (n, ms) { clearTimeout(nazad); potom = null; if (play(n, false) && ms) nazad = setTimeout(sc.pokoj, ms); };   // ms=0 — пока не скажут
+    sc.razgovor = function () { govT++; return govT % 2 ? "Talk_with_Hands_Open" : "Stand_and_Chat"; };
+    sc.govorit = function (txt) { if (TTS && zvuk && TTS.speaking) return; sc.derzhat(sc.razgovor(), Math.max(2500, Math.min(7000, (txt || "").length * 55))); };
+    sc.privet = function () { sc.igrat("Wave_One_Hand", function () { sc.govorit(vizit.repl); }); };
+    mix.addEventListener("finished", function (e) { if (e.action === cur) { var p = potom; potom = null; if (p) p(); else sc.pokoj(); } });
+    sc.pokoj();
+    box.classList.add("v3d");
+    if (opt.gotovo) opt.gotovo(sc);
+    // рисуем ~30 к/с и только когда видно: блок на экране, вкладка открыта, экран сверху
+    var vidno = false, raf = 0, prev = 0, zhdu = 0;
+    function budit() { if (!raf && sc.zhiv) { prev = performance.now(); raf = requestAnimationFrame(tik); } }
+    function tik(now) {
+      raf = 0;
+      if (!sc.zhiv || !vidno || document.hidden) return;
+      if (opt.aktivno && !opt.aktivno()) { clearTimeout(zhdu); zhdu = setTimeout(budit, 400); return; }
+      raf = requestAnimationFrame(tik);
+      if (now - prev < 30) return;
+      var dt = Math.min((now - prev) / 1000, 0.1); prev = now;
+      if (cur && (cur === act.Idle || cur === act.Idle_02) && now - pokojS > 9000) sc.pokoj();
+      if (licom === 0 && Math.abs(ctl.getAzimuthalAngle()) > 0.01) {
+        sph.setFromVector3(v3.copy(cam.position).sub(ctl.target)); sph.theta *= 0.88; cam.position.setFromSpherical(sph).add(ctl.target);
+      }
+      mix.update(dt); ctl.update(); ren.render(scene, cam);
+      canvas.kadrov = (canvas.kadrov || 0) + 1;   // для проверки: рисует ли сцена, когда её не видно
+    }
+    var io = new IntersectionObserver(function (e) { vidno = e[e.length - 1].isIntersecting; budit(); });
+    io.observe(box);
+    var ro = window.ResizeObserver ? new ResizeObserver(function () { kadr(); }) : null;
+    if (ro) ro.observe(box);
+    document.addEventListener("visibilitychange", budit);
+    sc.ubrat = function () {
+      sc.zhiv = false; clearTimeout(nazad); clearTimeout(zhdu); if (raf) cancelAnimationFrame(raf);
+      io.disconnect(); if (ro) ro.disconnect(); document.removeEventListener("visibilitychange", budit);
+      ctl.dispose(); mix.stopAllAction(); ren.dispose(); ren.forceContextLoss();
+    };
+  }).catch(function (e) { box.classList.remove("v3d"); console.warn("3D не загрузилось, остаётся фото:", e && e.message); });
+  return sc;
+}
+/* хозяйка-пантера в блоке box (главная, серия); с Ириной Владимировной — её фото */
+function hozyajka3D(box, o, gotovo) {
+  if (P !== HOZ.pantera) return null;
+  spisok3D().then(function () {
+    var z = zapis3D(null);
+    if (!z || !box.isConnected) return;
+    var sc = scena3D(box, z.model, { podium: true, temno: true, sdvig: 0.2, zapas: 1.32, klipy: z.klipy, gotovo: gotovo,
+      aktivno: o ? function () { return top() === o; } : function () { return !stack.length; } });
+    if (o) o.ubrat = function () { sc.ubrat(); }; else H3 = sc;
+  });
+}
+function start3D() {
+  spisok3D().then(function () { renderCaps(); var t = top(); if (t && t.re) t.re(); });
+  hozyajka3D($("#hiAva"), null, function (sc) { if (vizit.napechatano) sc.privet(); });
+}
+
 /* ---------- клики ---------- */
 document.addEventListener("click", function (e) {
-  var b = e.target.closest("[data-open],[data-cap],[data-cart],[data-back],[data-voice],[data-say],[data-vhod],[data-allcaps],[data-seriya],[data-zvuk],[data-sizes],[data-setsize],[data-warm],[data-type],[data-reset],[data-q]");
+  var b = e.target.closest("[data-open],[data-cap],[data-cart],[data-back],[data-voice],[data-say],[data-vhod],[data-allcaps],[data-seriya],[data-zvuk],[data-sizes],[data-setsize],[data-warm],[data-type],[data-reset],[data-q],[data-podbor]");
   if (!b) return;
   var d = b.dataset;
-  if (d.open) { hap("tap"); openItem(+d.open); }
+  if (b.hasAttribute("data-podbor")) { hap("tap"); openPodbor(); }
+  else if (d.open) { hap("tap"); openItem(+d.open); }
   else if (d.cap != null) { hap("tap"); openLook(D.kapsuly[+d.cap]); }
   else if (b.hasAttribute("data-cart")) { hap("tap"); openCart(); }
   else if (b.hasAttribute("data-back")) history.back();
@@ -1265,8 +1633,10 @@ history.replaceState({ d: 0 }, "");
 renderCaps();
 renderSerii();
 renderHome();
-// новенькая — сразу знакомимся (можно пропустить), один раз за сеанс
-if (!vhod && !ssGet("vhod_pokazan")) setTimeout(function () { if (!vhod && !openSheetEl && !stack.length) openVhod(); }, vizit.zaderzhka + 1500);
+// 3D — после первого экрана: страница загрузилась, заставка ушла, браузер свободен
+addEventListener("load", function () { setTimeout(function () { if (window.requestIdleCallback) requestIdleCallback(start3D, { timeout: 2000 }); else start3D(); }, vizit.zaderzhka + 600); });
+// новенькая — сразу знакомимся (можно пропустить), один раз за сеанс; не наряжали — хозяйка зовёт в подбор, знакомство после него
+if (!vhod && !ssGet("vhod_pokazan") && podbor()) setTimeout(function () { if (!vhod && !openSheetEl && !stack.length) openVhod(); }, vizit.zaderzhka + 1500);
 })();
 </script>
 </body>
