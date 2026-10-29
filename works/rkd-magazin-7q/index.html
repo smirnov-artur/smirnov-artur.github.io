@@ -5,7 +5,7 @@
 <script>
 /* 29.10: Telegram держит свёрнутый магазин открытым, а открытая раньше страница лежит в кэше — Дмитрий видел старое.
    versiya.txt — номер выкладки (менять при каждой). Не совпал с этим — грузим страницу заново мимо кэша; проверка при открытии и при каждом возврате в магазин */
-var VERSIYA = "2026-10-29-2";
+var VERSIYA = "2026-10-29-3";
 (function () {
   function proverit() {
     fetch("versiya.txt?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (v) {
@@ -818,10 +818,11 @@ function renderCatalog() {
 var CVK = [["Шоколад", /шоколад|коричн|кофейн/], ["Бордо", /бордо|бордов|красн/], ["Чёрный", /черн/], ["Серый", /(^|[^а-я])сер[аоуыи]/], ["Синий", /син/],
   ["Голубой", /голуб/], ["Изумруд", /изумруд|зелен/], ["Молочный", /молоч|бел[аоуыи]/], ["Мёд", /желт/]];
 function capFits(k) { return !st.size || k.ids.every(function (id) { return fits(T[id], st.size); }); }
-/* номера образов: cv — цвет из CVK; где на её размер есть всё — первыми */
+/* номера образов: cv — цвет из CVK; первыми — с роликом пантеры, среди них и остальных — где на её размер есть всё */
+function naPantere(k) { return k.m3d ? 1 : 0; }
 function capsSorted(cv) {
   var a = D.kapsuly.map(function (k, i) { return i; }).filter(function (i) { return cv == null || D.kapsuly[i].ids.some(function (id) { return CVK[cv][1].test(hay(T[id])); }); });
-  return a.filter(function (i) { return capFits(D.kapsuly[i]); }).concat(a.filter(function (i) { return !capFits(D.kapsuly[i]); }));
+  return a.sort(function (x, y) { var kx = D.kapsuly[x], ky = D.kapsuly[y]; return (naPantere(ky) - naPantere(kx)) || (capFits(ky) - capFits(kx)) || (x - y); });
 }
 /* обложка: у ручного образа — фото с образом целиком, у собранного — вещи рядом */
 function capPhoto(k, cls, eager) {
@@ -882,10 +883,12 @@ function renderHi() {
   if (!$("#hiAva")) el.innerHTML = '<div class="stage" id="hiAva">' + avaHtml() + '<div class="stage-bub" id="hiBub"></div></div><div id="hiRest"></div>';
   $("#hiBub").innerHTML = '<div class="bub">' + (TTS || AUD ? '<button class="zv" data-zvuk aria-label="Голос хозяйки" aria-pressed="' + zvuk + '">' + (zvuk ? IC.zvuk : IC.tiho) + "</button>" : "")
     + '<div class="txt">' + (vizit.pechat ? '<span class="dots" aria-label="печатает"><i></i><i></i><i></i></span>' : txt) + "</div></div>";
-  // не наряжали — главная кнопка ответ на её «Давай?»; наряжали — голос, а гардероб рядом
+  // не наряжали — главная кнопка ответ на её «Давай?»; наряжали — её гардероб первым, голос ниже.
+  // 29.10 Дмитрий: у вернувшегося первым стоял микрофон, гардероб уходил под нижнюю кнопку Telegram — «не могу выйти на капсулы»
   var davaj = '<button class="say-big" data-podbor><span class="mc">' + IC.hanger + "</span><span>" + (P === HOZ.irina ? "Начнём!" : "Давай!") + "<small>два вопроса — и гардероб готов</small></span></button>";
-  $("#hiRest").innerHTML = '<div class="hi-acts">' + (pb ? '<button class="say-big" data-say><span class="mc">' + IC.micBig + "</span>" + P.mic + "</button>"
-      + '<button class="btn line" data-podbor>' + (P === HOZ.irina ? "Ваш гардероб" : "Мой гардероб") + " · " + esc(pb.f.n) + ", " + esc(pb.c.n.toLowerCase()) + "</button>"
+  $("#hiRest").innerHTML = '<div class="hi-acts">' + (pb ? '<button class="say-big" data-podbor><span class="mc">' + IC.hanger + "</span><span>" + (P === HOZ.irina ? "Ваш гардероб" : "Мой гардероб")
+        + "<small>" + esc(pb.f.n) + ", " + esc(pb.c.n.toLowerCase()) + " · образы на пантере</small></span></button>"
+      + '<button class="btn line" data-say>' + IC.mic + P.mic + "</button>"
       : davaj + '<button class="btn line" data-say>' + IC.mic + P.mic + "</button>")
     + (ceny() ? "" : '<button class="btn line" data-vhod>' + (nm ? P.telefon : P.znakom) + "</button>") + "</div>"
     + (picks.length ? '<div class="picks noscroll">' + picks.map(miniHtml).join("") + "</div>" : "");
@@ -1224,7 +1227,7 @@ function podborVeshi(ts, pb) {
 /* образы — по среднему баллу вещей: сперва подходящие, среди них — где на её размер есть всё; меньше 4 подходящих — добираем лучшими */
 function podborKaps(pb) {
   var a = D.kapsuly.map(function (k, i) { var b = k.ids.map(function (id) { return ballV(T[id], pb); }); return { i: i, b: b.reduce(function (x, y) { return x + y; }, 0) / b.length, fit: +capFits(k) }; });
-  a.sort(function (x, y) { return ((y.b > 0) - (x.b > 0)) || (y.fit - x.fit) || (y.b - x.b); });
+  a.sort(function (x, y) { return ((y.b > 0) - (x.b > 0)) || (naPantere(D.kapsuly[y.i]) - naPantere(D.kapsuly[x.i])) || (y.fit - x.fit) || (y.b - x.b); });
   return a.slice(0, Math.min(8, Math.max(4, a.filter(function (x) { return x.b > 0; }).length))).map(function (x) { return x.i; });
 }
 function openPodbor() {
@@ -1518,7 +1521,10 @@ var TTS = window.speechSynthesis && window.SpeechSynthesisUtterance ? window.spe
 var AUD = window.Audio ? new Audio() : null, GOLOS = null, OCHERED = [], AUD_DVIZH = false;
 if (AUD) {
   AUD.preload = "auto";
-  fetch(BAZA_3D + "golos/golos.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { GOLOS = j; }).catch(function () {});
+  fetch(BAZA_3D + "golos/golos.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+    GOLOS = j;
+    (fajlyGolosa(vizit.repl || "") || []).forEach(function (f) { fetch(f).catch(function () {}); });   // приветствие — в кэш заранее, первое касание играет сразу
+  }).catch(function () {});
   AUD.addEventListener("ended", dalshe); AUD.addEventListener("error", dalshe);
 }
 function kl(s) {   // ключ предложения — как kl() в golos_hozyajki.py
@@ -1535,7 +1541,7 @@ function fajlyGolosa(txt) {
 function dalshe() {
   var f = OCHERED.shift();
   if (!f) { if (AUD_DVIZH && H3) H3.pokoj(); return; }
-  AUD.src = f;
+  AUD.src = f; AUD.playbackRate = 1.12;   // 29.10 Дмитрий: «медленно говорит»; высота голоса не меняется
   try { var p = AUD.play(); if (p && p.catch) p.catch(function () { OCHERED = []; }); } catch (e) {}
 }
 function molchat() {
