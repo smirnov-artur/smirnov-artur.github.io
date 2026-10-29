@@ -560,7 +560,7 @@ var IGRA = ["Мы можем сейчас выбрать тебе идеальн
   "Это так увлекательно, как игра в куклы! Только наряжать будем тебя. Давай?"];
 var HOZ = {
   pantera: {
-    ava: "hozyajka.webp", lico: "hozyajka-lico.webp", alt: "Хозяйка магазина — пантера", rate: 1.05, pitch: 0.85,
+    ava: "hozyajka.webp", lico: "hozyajka-lico.webp", alt: "Хозяйка магазина — пантера", rate: 1, pitch: 1,
     mic: "Нажми и скажи, что ищешь", nazhmi: "Нажми и скажи", slushayu: "Говори, я слушаю", znakom: "Открыть цены — на 30 % ниже WB", telefon: "Открыть цены — на 30 % ниже WB",
     obrazy: "А вот образы с ними:", obraz: "Бери целиком — так и носят. Размер выбери у каждой вещи.",
     seriya: "Серия скоро — смотри прямо здесь. А вещи из неё уже можно взять.",
@@ -821,7 +821,7 @@ function renderHi() {
   vizit.repl = lines.join(" ").replace(/<[^>]+>/g, "");
   var el = $("#hi"), txt = '<div class="say">' + lines.map(function (l) { return "<p>" + l + "</p>"; }).join("") + "</div>";
   if (!$("#hiAva")) el.innerHTML = '<div class="stage" id="hiAva"><img class="foto3d" src="' + P.ava + '" alt="' + P.alt + '"><div class="stage-bub" id="hiBub"></div></div><div id="hiRest"></div>';
-  $("#hiBub").innerHTML = '<div class="bub">' + (TTS ? '<button class="zv" data-zvuk aria-label="Голос хозяйки" aria-pressed="' + zvuk + '">' + (zvuk ? IC.zvuk : IC.tiho) + "</button>" : "")
+  $("#hiBub").innerHTML = '<div class="bub">' + (TTS || AUD ? '<button class="zv" data-zvuk aria-label="Голос хозяйки" aria-pressed="' + zvuk + '">' + (zvuk ? IC.zvuk : IC.tiho) + "</button>" : "")
     + '<div class="txt">' + (vizit.pechat ? '<span class="dots" aria-label="печатает"><i></i><i></i><i></i></span>' : txt) + "</div></div>";
   // не наряжали — главная кнопка ответ на её «Давай?»; наряжали — голос, а гардероб рядом
   var davaj = '<button class="say-big" data-podbor><span class="mc">' + IC.hanger + "</span><span>" + (P === HOZ.irina ? "Начнём!" : "Давай!") + "<small>два вопроса — и гардероб готов</small></span></button>";
@@ -1125,7 +1125,8 @@ function openPodbor() {
   push(bar(ty("Твой гардероб", "Ваш гардероб")) + '<div class="stage ser-stage pb-stage"><img class="foto3d" src="' + P.ava + '" alt="' + P.alt + '"><div class="stage-bub"><div class="bub"><div class="txt"></div></div></div></div><div class="pb"></div>',
     function () { return shag === 3 && !ceny() ? { text: "Открыть цены — на 30 % ниже WB", fn: openVhod } : homeMain(); },
     function (el, o) {
-      hozyajka3D(el.querySelector(".pb-stage"), o, function (s) { sc = s; s.igrat("Wave_One_Hand", function () { s.govorit(o.repl); }); });
+      hozyajka3D(el.querySelector(".pb-stage"), o, function (s) { sc = s; s.igrat("Wave_One_Hand", function () { rech(s); }); });
+      function rech(s) { s.derzhat(s.razgovor(), Math.max(2500, Math.min(9000, o.repl.length * 60))); }   // руками — пока звучит реплика
       function draw(tiho) {
         var rep, html;
         if (shag === 0) {
@@ -1171,7 +1172,7 @@ function openPodbor() {
         else { shag = 0; }
         if (shag === 3) { store.set("podbor", { f: f.k, c: c.k, kogda: Date.now() }); renderHome(); hap("ok"); }
         draw();
-        if (sc) sc.igrat("Agree_Gesture", function () { sc.govorit(o.repl); });
+        if (sc) sc.igrat("Agree_Gesture", function () { rech(sc); });
         el.scrollTo({ top: 0, behavior: "smooth" });   // цены — главной кнопкой внизу, гардероб шторкой не закрываем
       });
     });
@@ -1332,7 +1333,7 @@ if (!SR) {
 function stopRec() { if (rec && recOn) try { rec.abort(); } catch (e) {} recOn = false; $("#micBig").classList.remove("rec"); }
 function startRec() {
   if (recOn) { stopRec(); $("#vState").textContent = P.nazhmi; return; }
-  if (TTS) try { TTS.cancel(); } catch (e) {}  // хозяйка замолкает, пока слушаем
+  molchat();  // хозяйка замолкает, пока слушаем
   rec = new SR(); rec.lang = "ru-RU"; rec.interimResults = true; rec.maxAlternatives = 1; rec.continuous = false;
   var finalText = "";
   rec.onstart = function () { recOn = true; $("#micBig").classList.add("rec"); $("#vState").textContent = "Слушаю…"; $("#vSaid").textContent = ""; hap("tap"); };
@@ -1400,14 +1401,54 @@ $("#vhForm").addEventListener("submit", function (e) {
 });
 $("#hPromoF").addEventListener("submit", function (e) { e.preventDefault(); primenitKod($("#hPromo").value, $("#hPromoMsg")); });
 
-/* ---------- голос хозяйки: speechSynthesis браузера, только после касания (так требует браузер); звук выключается ---------- */
+/* ---------- голос хозяйки, только после касания (так требует браузер); звук выключается.
+   Озвученное заранее женским нейроголосом (rabota/golos_hozyajki.py -> BAZA_3D/golos/): реплика режется на предложения,
+   все есть в golos.json — играем файлы одним плеером (iOS пускает его после первого касания); нет хоть одного — голос телефона, женский ---------- */
 var TTS = window.speechSynthesis && window.SpeechSynthesisUtterance ? window.speechSynthesis : null, zvuk = store.get("zvuk", true);
+var AUD = window.Audio ? new Audio() : null, GOLOS = null, OCHERED = [], AUD_DVIZH = false;
+if (AUD) {
+  AUD.preload = "auto";
+  fetch(BAZA_3D + "golos/golos.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { GOLOS = j; }).catch(function () {});
+  AUD.addEventListener("ended", dalshe); AUD.addEventListener("error", dalshe);
+}
+function kl(s) {   // ключ предложения — как kl() в golos_hozyajki.py
+  return s.replace(/[  ]/g, " ").toLowerCase().replace(/ё/g, "е").replace(/\s*[a-zа-я]{2,}-\d{2,}/g, "").replace(/[«»"]/g, "").replace(/\s+/g, " ").trim();
+}
+function fajlyGolosa(txt) {
+  if (!GOLOS) return null;
+  var ch = (txt.match(/[^.!?]+[.!?]*/g) || []).map(kl).filter(Boolean);
+  return ch.length && ch.every(function (c) { return GOLOS[c]; }) ? ch.map(function (c) { return BAZA_3D + GOLOS[c]; }) : null;
+}
+function dalshe() {
+  var f = OCHERED.shift();
+  if (!f) { if (AUD_DVIZH && H3) H3.pokoj(); return; }
+  AUD.src = f;
+  try { var p = AUD.play(); if (p && p.catch) p.catch(function () { OCHERED = []; }); } catch (e) {}
+}
+function molchat() {
+  OCHERED = [];
+  if (AUD) try { AUD.pause(); } catch (e) {}
+  if (TTS) try { TTS.cancel(); } catch (e) {}
+}
+// голос телефона: женский; Павел, Юрий и прочие мужские — только если других нет
+var ZHEN = ["svetlana", "dariya", "milena", "irina", "google", "katya", "alena", "ekaterina"], MUZH = /pavel|dmitr|yuri|maxim|artem|nikolai|male\b/i;
+function zhenskij(vs) {
+  for (var i = 0; i < ZHEN.length; i++) { var v = vs.filter(function (x) { return x.name.toLowerCase().indexOf(ZHEN[i]) >= 0; })[0]; if (v) return v; }
+  return vs.filter(function (x) { return !MUZH.test(x.name); })[0] || vs[0];
+}
 function skazat(txt, bezDvizh) {
-  if (!TTS || !zvuk || !txt) return;
+  if (!zvuk || !txt) return;
+  molchat();
+  var fs = fajlyGolosa(txt);
+  if (fs) {
+    OCHERED = fs; AUD_DVIZH = !bezDvizh;
+    if (!bezDvizh && H3) H3.derzhat(H3.razgovor(), 0);   // пока звучит — хозяйка говорит руками
+    dalshe(); return;
+  }
+  if (!TTS) return;
   try {
-    TTS.cancel();
     var u = new SpeechSynthesisUtterance(txt.replace(/РКД-/g, "Р К Д ")), vs = TTS.getVoices().filter(function (v) { return /^ru/i.test(v.lang); });
-    var v = vs.filter(function (x) { return /milena|irina|svetlana|daria|google/i.test(x.name); })[0] || vs[0];
+    var v = zhenskij(vs);
     u.lang = "ru-RU"; if (v) u.voice = v; u.rate = P.rate; u.pitch = P.pitch;
     // пока звучит — хозяйка говорит руками
     if (!bezDvizh) { u.onstart = function () { if (H3) H3.derzhat(H3.razgovor(), 0); }; u.onend = function () { if (H3) H3.pokoj(); }; }
@@ -1527,7 +1568,7 @@ function scena3D(box, f, opt) {
     sc.igrat = function (n, posle) { clearTimeout(nazad); if (play(n, true)) potom = posle || null; else if (posle) posle(); };   // один раз, потом posle или покой
     sc.derzhat = function (n, ms) { clearTimeout(nazad); potom = null; if (play(n, false) && ms) nazad = setTimeout(sc.pokoj, ms); };   // ms=0 — пока не скажут
     sc.razgovor = function () { govT++; return govT % 2 ? "Talk_with_Hands_Open" : "Stand_and_Chat"; };
-    sc.govorit = function (txt) { if (TTS && zvuk && TTS.speaking) return; sc.derzhat(sc.razgovor(), Math.max(2500, Math.min(7000, (txt || "").length * 55))); };
+    sc.govorit = function (txt) { if (zvuk && (TTS && TTS.speaking || AUD && !AUD.paused)) return; sc.derzhat(sc.razgovor(), Math.max(2500, Math.min(7000, (txt || "").length * 55))); };
     sc.privet = function () { sc.igrat("Wave_One_Hand", function () { sc.govorit(vizit.repl); }); };
     mix.addEventListener("finished", function (e) { if (e.action === cur) { var p = potom; potom = null; if (p) p(); else sc.pokoj(); } });
     sc.pokoj();
@@ -1599,7 +1640,7 @@ document.addEventListener("click", function (e) {
   else if (b.hasAttribute("data-zvuk")) {
     zvuk = !zvuk; store.set("zvuk", zvuk); hap("sel");
     b.setAttribute("aria-pressed", String(zvuk)); b.innerHTML = zvuk ? IC.zvuk : IC.tiho;
-    if (zvuk) skazat(vizit.repl); else if (TTS) try { TTS.cancel(); } catch (e) {}
+    if (zvuk) skazat(vizit.repl); else molchat();
   }
   else if (b.hasAttribute("data-sizes")) { sizeGrid($("#szgrid2")); openSheet("#shSize"); }
   else if (d.setsize) { setSize(+d.setsize); closeSheet(); }
