@@ -5,7 +5,7 @@
 <script>
 /* 29.10: Telegram держит свёрнутый магазин открытым, а открытая раньше страница лежит в кэше — Дмитрий видел старое.
    versiya.txt — номер выкладки (менять при каждой). Не совпал с этим — грузим страницу заново мимо кэша; проверка при открытии и при каждом возврате в магазин */
-var VERSIYA = "2026-10-31-4";
+var VERSIYA = "2026-10-31-5";
 (function () {
   function proverit() {
     fetch("versiya.txt?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (v) {
@@ -162,9 +162,9 @@ s{text-decoration-thickness:1.5px}
 .picks{display:flex;gap:12px;overflow-x:auto;margin:14px 0 0;padding:0 16px 4px;scroll-snap-type:x mandatory;scroll-padding:0 16px}
 .picks .mini{flex-basis:40%}
 .dlg{display:flex;flex-direction:column;gap:10px;margin:2px 0 6px}
-.primer{display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:100%;margin:16px 0 6px;padding:16px 18px;border:2px solid var(--wine);border-radius:18px;background:var(--wine-soft);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
-.primer b{font:600 21px/1.2 var(--sans);color:var(--wine2)}
-.primer span{font-size:17px;color:var(--muted)}
+.primer{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;margin:14px 0 16px;padding:10px 16px;border:0;border-radius:16px;background:var(--wine);color:#fff;font:inherit;text-align:center;box-shadow:var(--e1);cursor:pointer}
+.primer b{font:600 19px/1.2 var(--sans)}
+.primer span{font-size:15px;opacity:.85}
 .dlg .you{align-self:flex-end;max-width:85%;padding:10px 14px;border-radius:18px 18px 6px 18px;background:var(--ink);color:var(--bg);font:italic 500 21px/1.2 var(--serif)}
 .dlg .her{display:flex;gap:10px;align-items:flex-end;max-width:92%}
 .dlg .her img{flex:none;width:40px;height:40px;border-radius:50%;object-fit:cover}
@@ -482,8 +482,8 @@ html.tg #act{display:none!important}
 #tabbar button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:500 14px/1.1 var(--sans);color:var(--muted);text-align:center}
 #tabbar button svg{width:26px;height:26px}
 #tabbar button[aria-current="page"]{color:var(--ink);font-weight:700}
-#tabbar .tb-mic span.krug{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--ink);color:#fff;margin-top:-6px}
-#tabbar .tb-mic span.krug svg{width:24px;height:24px}
+#tabbar .tb-mic span.krug{display:block;width:26px;height:26px}
+#tabbar .tb-mic span.krug svg{width:26px;height:26px}
 #tabbar .badge{top:4px;right:calc(50% - 26px)}
 #act{bottom:calc(var(--tab-h) + var(--sb));padding-bottom:12px}
 .scr{padding-bottom:calc(var(--act-h) + var(--tab-h) + var(--sb) + 28px)}
@@ -1138,6 +1138,11 @@ function sizeBtns(t, sel, attr) {
     return '<button class="sz' + (i === mi ? " mine" : "") + '" ' + attr + '="' + i + '" aria-pressed="' + (i === sel) + '"><b>' + esc(z.l) + "</b>" + (z.r ? "<small>" + esc(z.r) + "</small>" : i === mi ? "<small>ваш</small>" : "") + "</button>";
   }).join("");
 }
+/* примерка в боте: он попросит её фото и пришлёт её в этой вещи или образе (Grok, только для показа) */
+function primerka(kod) {
+  hap("tap"); var url = "https://t.me/rkd_magazin_bot?start=" + kod;
+  try { if (TG) tg.openTelegramLink(url); else if (!window.open(url, "_blank")) location.href = url; } catch (x) {}
+}
 function openItem(id) {
   var t, sel, x, lookX, sim, mi, lookSum;
   // 29.10: вещь и её цвета — один экран, цвет переключается на месте, выбранный размер сохраняется, если он есть в новом цвете
@@ -1177,7 +1182,8 @@ function openItem(id) {
     return t.o && t.o.length ? '<h2 class="h3">О вещи</h2><ul class="ov">' + t.o.map(function (q) { return "<li>" + esc(q) + "</li>"; }).join("") + "</ul>" : "";
   }
   function body() {
-    return '<h1 class="pname">' + esc(t.b || t.n) + "</h1>" + cvRow() + priceBlk(t.my)
+    return '<button class="primer" data-primer-t="' + t.id + '"><b>✨ Примерь на себе</b><span>Пришли фото — покажу на тебе</span></button>'
+      + '<h1 class="pname">' + esc(t.b || t.n) + "</h1>" + cvRow() + priceBlk(t.my)
       + '<h2 class="h3" id="szh">Размер</h2><div class="sizes">' + sizeBtns(t, sel, "data-sz") + "</div>"
       + '<p class="hint' + (mi >= 0 ? " yes" : "") + '">' + (st.size ? (mi >= 0 ? "Ваш " + st.size + " есть — выбрали его" : "Вашего " + st.size + " сейчас нет. Есть только эти размеры") : "Показаны только размеры, которые есть в наличии") + "</p>"
       + rostHint()
@@ -1202,6 +1208,7 @@ function openItem(id) {
     }
     listat();
     el.addEventListener("click", function (e) {
+      if (e.target.closest("[data-primer-t]")) { primerka("pv_" + t.id); return; }
       var b = e.target.closest("[data-sz],[data-g],[data-lookadd],[data-cv]"); if (!b) return;
       if (b.dataset.cv) {
         if (+b.dataset.cv === t.id) return;
@@ -1262,9 +1269,9 @@ function openLook(k, pre) {
   var dobavleno = false;
   var html = bar("Образ") + '<div class="lw">' + (k.m3d ? panteraVobraze(k) : capPhoto(k, "look-hero", true))
     + '<div class="pod-kn"><button class="btn" data-hod aria-pressed="false">Пройтись</button><button class="btn" data-prohodka aria-pressed="false" hidden>Проходка</button><span>крутите пальцем</span></div></div><div class="pad">'
+    + (D.kapsuly.indexOf(k) >= 0 ? '<button class="primer" data-primer="' + D.kapsuly.indexOf(k) + '"><b>✨ Примерь на себе</b><span>Пришли фото — покажу на тебе</span></button>' : "")
     + '<p class="kicker">Образ целиком</p><h1 class="pname" style="margin-top:6px">' + esc(k.n) + '</h1><p class="lead">' + esc(k.o) + "</p>"
     + '<div class="dlg" style="margin-top:12px"><div class="her"><img src="' + P.lico + '" alt=""><span>' + P.obraz + "</span></div></div>"
-    + (D.kapsuly.indexOf(k) >= 0 ? '<button class="primer" data-primer="' + D.kapsuly.indexOf(k) + '"><b>✨ Примерь на себе</b><span>Пришли своё фото — покажу тебя в этом образе</span></button>' : "")
     + '<div class="lp"></div><div class="lrows">' + rows() + '</div><p class="lnote" role="status" hidden></p></div>';
   push(html, function () {
     if (dobavleno) return { text: "Перейти в корзину · " + veshi(cart.length) + rubTail(cartSum()), fn: openCart, shine: true };
@@ -1301,11 +1308,7 @@ function openLook(k, pre) {
     });
     el.addEventListener("click", function (e) {
       var pr = e.target.closest("[data-primer]");
-      if (pr) {   // примерка в боте: он попросит фото и пришлёт её в этом образе
-        hap("tap"); var url = "https://t.me/rkd_magazin_bot?start=pr_" + pr.dataset.primer;
-        try { if (TG) tg.openTelegramLink(url); else if (!window.open(url, "_blank")) location.href = url; } catch (x) {}
-        return;
-      }
+      if (pr) { primerka("pr_" + pr.dataset.primer); return; }
       var b = e.target.closest("[data-lsz]"); if (!b) return;
       var id = +b.closest("[data-for]").dataset.for, i = +b.dataset.lsz;
       sel[id] = sel[id] === i ? -1 : i; hap("sel"); dobavleno = false;
@@ -2089,7 +2092,7 @@ history.replaceState({ d: 0 }, "");
 renderCaps();
 renderSerii();
 renderHome();
-(function () { var c = location.search.match(/[?&]cap=(\d+)/); if (c && D.kapsuly[+c[1]]) openLook(D.kapsuly[+c[1]]); else if (/[?&]obrazy\b/.test(location.search)) openCaps(); })();
+(function () { var c = location.search.match(/[?&]cap=(\d+)/); if (c && D.kapsuly[+c[1]]) openLook(D.kapsuly[+c[1]]); else if ((c = location.search.match(/[?&]t=(\d+)/)) && T[+c[1]]) openItem(+c[1]); else if (/[?&]obrazy\b/.test(location.search)) openCaps(); })();
 // 3D — после первого экрана: страница загрузилась, заставка ушла, браузер свободен
 addEventListener("load", function () { setTimeout(function () { if (window.requestIdleCallback) requestIdleCallback(start3D, { timeout: 2000 }); else start3D(); }, vizit.zaderzhka + 600); });
 // новенькая — сразу знакомимся (можно пропустить), один раз за сеанс; не наряжали — хозяйка зовёт в подбор, знакомство после него
