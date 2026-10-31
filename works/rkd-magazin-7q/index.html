@@ -5,7 +5,7 @@
 <script>
 /* 29.10: Telegram держит свёрнутый магазин открытым, а открытая раньше страница лежит в кэше — Дмитрий видел старое.
    versiya.txt — номер выкладки (менять при каждой). Не совпал с этим — грузим страницу заново мимо кэша; проверка при открытии и при каждом возврате в магазин */
-var VERSIYA = "2026-10-31-1";
+var VERSIYA = "2026-10-31-2";
 (function () {
   function proverit() {
     fetch("versiya.txt?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (v) {
@@ -472,6 +472,25 @@ html.tg #act{display:none!important}
 .pb-cena .btn{margin-top:12px}
 .k-dop{margin-top:22px;padding:14px;border:1px dashed var(--line);border-radius:14px}
 .k-dop>p{font:600 19px/1.2 var(--sans);margin-bottom:6px}
+/* 31.10 Дмитрий: «они все привыкли к Валбарису», «нужна голосовая кнопка… вот я в корзине, дальше что?» — меню внизу на каждом экране */
+:root{--tab-h:66px}
+#tabbar{position:fixed;left:0;right:0;bottom:0;z-index:155;display:grid;grid-template-columns:repeat(4,1fr);height:calc(var(--tab-h) + var(--sb));padding-bottom:var(--sb);background:#fff;border-top:1px solid var(--line)}
+#tabbar button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:500 14px/1.1 var(--sans);color:var(--muted);text-align:center}
+#tabbar button svg{width:26px;height:26px}
+#tabbar button[aria-current="page"]{color:var(--ink);font-weight:700}
+#tabbar .tb-mic span.krug{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--ink);color:#fff;margin-top:-6px}
+#tabbar .tb-mic span.krug svg{width:24px;height:24px}
+#tabbar .badge{top:4px;right:calc(50% - 26px)}
+#act{bottom:calc(var(--tab-h) + var(--sb));padding-bottom:12px}
+.scr{padding-bottom:calc(var(--act-h) + var(--tab-h) + var(--sb) + 28px)}
+.foot{padding-bottom:calc(var(--act-h) + var(--tab-h) + var(--sb) + 28px)}
+#toast{bottom:calc(var(--act-h) + var(--tab-h) + var(--sb) + 16px)}
+.poisk{display:flex;gap:8px;margin:10px 16px 0}
+.poisk .inp{flex:1;min-height:52px}
+.poisk .ib{flex:none;width:52px;height:52px;border:1.5px solid var(--line);border-radius:14px}
+.hero{padding-top:10px}
+.hero h1{font-size:31px}
+#hiAva>.foto3d{height:min(170px,21svh)}
 .rost-hint{margin-top:10px;padding:12px 14px;border-radius:12px;background:var(--sand);font-size:17px;line-height:1.35}
 /* шорткат font сбрасывает font-feature-settings — поэтому в самом конце: цифры в антикве ровные, а не «зо» */
 .brand,.hero h1,.pname,.found .said,.vsaid,.cap-n,.sec-h h2,.h3,.pageh,.done h1,.sh-in h2,.sbar .tt,.empty b,.sizecard h2,.paybox b,.dlg .you{font-feature-settings:"lnum" 1}
@@ -507,13 +526,11 @@ body,.scr{background-color:#fff;background-image:var(--setka);background-size:24
 <div id="splash" aria-hidden="true"><span class="sp-logo"></span></div>
 <header class="top" id="top">
   <div class="brand"><img class="logo" src="logo.webp" alt="Русский кружевной дом" width="89" height="52"><small>одежда 48–82</small></div>
-  <button class="ib" data-voice aria-label="Поиск голосом"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
-  <button class="ib" data-cart aria-label="Корзина"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="badge cart-n" hidden>0</span></button>
 </header>
 
 <main class="wrap" id="home">
+  <form class="poisk" id="poiskF" role="search"><input class="inp" id="poiskI" placeholder="Найти: юбка, платье" enterkeyhint="search" autocomplete="off" aria-label="Что ищете"><button type="button" class="ib" data-voice aria-label="Сказать голосом"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button></form>
   <section class="hero">
-    <p class="kicker">Магазин в телефоне</p>
     <h1>Те же вещи, что на Wildberries, — <em>на 30 % дешевле</em></h1>
   </section>
   <section class="hi" id="hi" aria-live="polite"></section>
@@ -550,6 +567,12 @@ body,.scr{background-color:#fff;background-image:var(--setka);background-size:24
 </main>
 
 <div id="act"><button class="btn wine" id="actBtn"></button></div>
+<nav id="tabbar" aria-label="Меню">
+  <button data-tab="home" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Главная</button>
+  <button data-tab="kat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Каталог</button>
+  <button data-tab="golos" class="tb-mic"><span class="krug"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>Сказать</button>
+  <button data-tab="cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>Корзина<span class="badge cart-n" hidden>0</span></button>
+</nav>
 
 <div class="sheet" id="shVoice" role="dialog" aria-modal="true" aria-labelledby="vTitle">
   <div class="sh-in">
@@ -850,6 +873,12 @@ function parse(text) {
 }
 function applyQuery(text) {
   var tx = text.toLowerCase().replace(/ё/g, "е");
+  // 31.10 Дмитрий: «вот я в корзине, дальше что?» — голосом можно не только искать, но и идти дальше
+  if (!parse(text).type && !/\d{3}/.test(tx)) {
+    if (/дальше|оформ|заказ|купит|оплат/.test(tx) && cart.length) { closeSheet(); hap("ok"); if (top() && top().cart) openForm(); else openCart(); return; }
+    if (/корзин/.test(tx)) { closeSheet(); hap("ok"); openCart(); return; }
+    if (/назад|главн|домой|в начало/.test(tx)) { closeSheet(); hap("ok"); goHome(); return; }
+  }
   if (/образ|капсул|комплект|сочета|с чем носить/.test(tx)) {
     var c = null; CVK.forEach(function (x, i) { if (c == null && x[1].test(tx)) c = i; });
     closeSheet(); hap("ok"); openCaps(c); return;
@@ -1071,6 +1100,8 @@ function sync() {
     document.documentElement.style.setProperty("--act-h", m ? "82px" : "0px");
   }
   Array.prototype.forEach.call(document.querySelectorAll(".cart-n"), function (b) { b.textContent = cart.length; b.hidden = !cart.length; });
+  var tb = t && t.cart ? "cart" : !t ? tabGlavnaya() : "";
+  Array.prototype.forEach.call(document.querySelectorAll("#tabbar [data-tab]"), function (b) { if (b.dataset.tab === tb) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
 }
 $("#actBtn").addEventListener("click", function () { if (curMain) curMain.fn(); });
 
@@ -1131,7 +1162,7 @@ function openItem(id) {
       + '<p class="hint' + (mi >= 0 ? " yes" : "") + '">' + (st.size ? (mi >= 0 ? "Ваш " + st.size + " есть — выбрали его" : "Вашего " + st.size + " сейчас нет. Есть только эти размеры") : "Показаны только размеры, которые есть в наличии") + "</p>"
       + rostHint()
       + oVeshchi()
-      + (x.length ? '<h2 class="h3">С чем носить</h2><div class="minis noscroll">' + x.map(function (i) { return miniHtml(T[i]); }).join("") + '</div>' + (lookX.length ? '<button class="btn line" data-lookadd>Весь образ в корзину · ' + veshi(lookX.length + 1) + rubTail(lookSum) + "</button>" : "")
+      + (x.length ? '<h2 class="h3" id="sChem">С чем носить</h2><div class="minis noscroll">' + x.map(function (i) { return miniHtml(T[i]); }).join("") + '</div>' + (lookX.length ? '<button class="btn line" data-lookadd>Весь образ в корзину · ' + veshi(lookX.length + 1) + rubTail(lookSum) + "</button>" : "")
         : sim.length ? '<h2 class="h3">Ещё ' + esc(t.t.toLowerCase()) + '</h2><div class="minis noscroll">' + sim.map(miniHtml).join("") + "</div>" : "")
       + '<div class="perks">'
       + '<div class="perk">' + IC.hanger + '<div><b>Примерка перед покупкой</b><span>Берите до 10 вещей. Платите сразу или после примерки — только за то, что оставили.</span></div></div>'
@@ -1168,7 +1199,10 @@ function openItem(id) {
     if (sel < 0) { hap("warn"); toast("Выберите размер"); var h = top().el.querySelector("#szh"); if (h) h.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
     var r = addOne(t, t.s[sel]);
     if (r < 0) { hap("warn"); toast("В примерку — до " + LIMIT + " вещей за раз"); return; }
-    saveCart(); hap("ok"); toast("В корзине: " + short(t) + ", " + szLabel(t.s[sel])); sync();
+    saveCart(); hap("ok"); sync();
+    var sc = top().el.querySelector("#sChem");
+    toast("В корзине: " + short(t) + ", " + szLabel(t.s[sel]) + (sc ? ". Смотрите, что к ней подойдёт" : ""), !!sc);
+    if (sc) setTimeout(function () { var e2 = top().el; e2.scrollTo({ top: e2.scrollTop + sc.getBoundingClientRect().top - 84, behavior: "smooth" }); }, 350);
   }
 }
 function miniHtml(t) {
@@ -1554,7 +1588,7 @@ function renderCart(el) {
     + '<p class="hint' + (kod ? " yes" : "") + '" id="promoMsg"' + (kod ? "" : " hidden") + ">" + (kod ? "Промокод применён — цены уже со скидкой" : "") + "</p>"
     + (ceny() ? '<div class="sum"><div><span>' + veshi(cart.length) + "</span><span>" + fmt(sum) + '</span></div><div class="tot"><span>К оплате, если оставите всё</span><span>' + fmt(sum) + "</span></div></div>"
       : '<p class="note">Цены и сумму покажем на следующем шаге — как введёте телефон.</p>')
-    + '<button class="btn wine" data-oform style="margin-top:18px">Оформить заказ</button>';
+    + '<button class="btn line" data-gohome style="margin-top:18px">Выбрать ещё</button>';
 }
 
 /* ---------- оформление ---------- */
@@ -1991,6 +2025,18 @@ document.addEventListener("click", function (e) {
   else if (d.q) applyQuery(d.q);
 });
 $("#szReset").addEventListener("click", function () { setSize(null); closeSheet(); });
+$("#poiskF").addEventListener("submit", function (e) { e.preventDefault(); var v = $("#poiskI").value.trim(); if (v) { $("#poiskI").blur(); applyQuery(v); } });
+function tabGlavnaya() { var k = $("#katalog"); return !k.hidden && $("#cat").getBoundingClientRect().top < 200 ? "kat" : "home"; }
+addEventListener("scroll", function () { if (!stack.length) { var tb = tabGlavnaya(); Array.prototype.forEach.call(document.querySelectorAll("#tabbar [data-tab]"), function (b) { if (b.dataset.tab === tb) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); }); } }, { passive: true });
+function kKatalogu() { st.vseKat = true; renderCatalog(); scrollTo({ top: $("#cat").getBoundingClientRect().top + scrollY - 70, behavior: "smooth" }); }
+$("#tabbar").addEventListener("click", function (e) {
+  var b = e.target.closest("[data-tab]"); if (!b) return;
+  var k = b.dataset.tab; hap("tap");
+  if (k === "cart") { openCart(); return; }
+  if (k === "golos") { $("#vSaid").textContent = ""; openSheet("#shVoice"); if (SR) startRec(); else $("#vText").focus(); return; }
+  var sdelat = k === "kat" ? kKatalogu : function () { scrollTo({ top: 0, behavior: "smooth" }); };
+  if (stack.length) { goHome(); setTimeout(sdelat, 420); } else sdelat();
+});
 addEventListener("scroll", function () { $("#top").classList.toggle("sc", scrollY > 4); }, { passive: true });
 
 /* ---------- иконка на экран ---------- */
