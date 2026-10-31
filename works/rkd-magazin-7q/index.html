@@ -5,7 +5,7 @@
 <script>
 /* 29.10: Telegram держит свёрнутый магазин открытым, а открытая раньше страница лежит в кэше — Дмитрий видел старое.
    versiya.txt — номер выкладки (менять при каждой). Не совпал с этим — грузим страницу заново мимо кэша; проверка при открытии и при каждом возврате в магазин */
-var VERSIYA = "2026-10-31-2";
+var VERSIYA = "2026-10-31-3";
 (function () {
   function proverit() {
     fetch("versiya.txt?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (v) {
@@ -338,11 +338,12 @@ html.tg .sbar .tt{text-align:left;padding-left:4px}
 .pv .chip[aria-pressed="true"]{background:var(--wine);color:#fff;border-color:var(--wine)}
 .pan-p{position:absolute;left:0;right:0;bottom:10px;text-align:center;font:500 15px/1 var(--sans);color:var(--muted)}
 .look-hero img{object-position:50% 8%}
-.lrow{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}
+.lrow{display:grid;grid-template-columns:88px 1fr;gap:12px;padding:18px 0;border-bottom:1px solid var(--line);align-items:start}
 .lrow .ph{aspect-ratio:3/4}
-.lrow .sizes{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
-.lrow .sz{min-height:52px}
-.lrow .sz b{font-size:18px}
+.lrow .sizes{grid-template-columns:repeat(3,1fr);gap:6px}
+.lrow .sz{min-height:46px;padding:4px 2px;border-radius:12px}
+.lrow .sz b{font-size:16px}
+.lrow .sz small{font-size:14px}
 .no{margin-top:8px;color:var(--muted);font-size:17px}
 .lnote{position:sticky;bottom:-18px;z-index:2;margin-top:18px;padding:13px 16px;border-radius:14px;background:var(--wine-soft);color:var(--wine2);font-weight:500;font-size:17px;line-height:1.35;box-shadow:var(--e2)}
 
@@ -488,9 +489,16 @@ html.tg #act{display:none!important}
 .poisk{display:flex;gap:8px;margin:10px 16px 0}
 .poisk .inp{flex:1;min-height:52px}
 .poisk .ib{flex:none;width:52px;height:52px;border:1.5px solid var(--line);border-radius:14px}
-.hero{padding-top:10px}
-.hero h1{font-size:31px}
-#hiAva>.foto3d{height:min(170px,21svh)}
+.hero{padding-top:8px;padding-bottom:2px}
+.hero h1{font-size:25px;line-height:1.08}
+.hi{margin-top:8px}
+#hiAva{flex-direction:row;align-items:flex-end;gap:6px;padding:12px 12px 0 2px}
+#hiAva>.foto3d{order:0;flex:0 0 30%;width:30%;height:auto;max-height:210px}
+#hiAva .stage-bub{order:0;flex:1;min-width:0;align-self:flex-start;margin-bottom:12px}
+#hiAva .bub{border-radius:6px 20px 20px 20px}
+#hiAva .bub::after{display:none}
+#hiAva .say p{font-size:16px;line-height:1.35}
+.hi-acts{margin-top:10px}
 .rost-hint{margin-top:10px;padding:12px 14px;border-radius:12px;background:var(--sand);font-size:17px;line-height:1.35}
 /* шорткат font сбрасывает font-feature-settings — поэтому в самом конце: цифры в антикве ровные, а не «зо» */
 .brand,.hero h1,.pname,.found .said,.vsaid,.cap-n,.sec-h h2,.h3,.pageh,.done h1,.sh-in h2,.sbar .tt,.empty b,.sizecard h2,.paybox b,.dlg .you{font-feature-settings:"lnum" 1}
@@ -742,9 +750,9 @@ var HOZ = {
     vhod: { t: "Давай знакомиться", p: "Как тебя зовут? Оставишь телефон — сразу открою цены и промокод.", tel: "Оставь телефон — открою цены и твой промокод.", imya: "Как тебя зовут", ne: "Потом" },
     // приветствие и зов в подбор — словами Ирины Владимировны (28.10); прошла подбор — хозяйка помнит фигуру и цветотип
     privet: function (s) {
-      var na = s.sz ? " на твой " + s.sz + "-й" : "", pomnyu = s.pb ? "Я помню: ты — «" + s.pb.f.n + "», " + s.pb.c.n.toLowerCase() + ". " : "";
+      var na = s.sz ? " на твой " + s.sz + "-й" : "", pomnyu = pomnyuTxt(s.pb, false);
       var cena = s.ceny ? "Цены открыла, промокод " + s.kod + " — твой." : "";
-      if (s.svezh) return s.pb ? [(s.zov ? "Привет, " + s.zov + "! " : "Готово! ") + (cena || "Приятно познакомиться."), "Твой гардероб по фигуре и цветотипу — по кнопке ниже. Или скажи, что ищешь."]
+      if (s.svezh) return s.pb ? [(s.zov ? "Привет, " + s.zov + "! " : "Готово! ") + (cena || "Приятно познакомиться."), "Твой гардероб — по кнопке ниже. Или скажи, что ищешь."]
         : [(s.zov ? "Привет, " + s.zov + "! " : "") + IGRA[0], IGRA[1]].concat(cena ? [cena] : []);
       if (s.zov && s.dni >= 3) return [s.zov + ", привет! Давно тебя не было" + (s.nov ? " — а у нас без тебя новенькое." : "."),
         s.pb ? pomnyu + (s.sz ? (s.nov ? "Глянь, что пришло" : "Глянь, что тебе пойдёт") + na + ":" : "Скажи размер — покажу, что на тебя есть.") : IGRA.join(" ")];
@@ -765,10 +773,10 @@ var HOZ = {
     seriya: "Серия скоро — смотрите прямо здесь. А вещи из неё уже можно заказать.",
     vhod: { t: "Давайте познакомимся", p: "Как вас зовут? С телефоном сразу открою цены и ваш промокод.", tel: "Оставьте телефон — открою цены и ваш промокод.", imya: "Как вас зовут", ne: "Не сейчас" },
     privet: function (s) {
-      var na = s.sz ? " на ваш " + s.sz + "-й" : "", pomnyu = s.pb ? "Я помню: у вас «" + s.pb.f.n + "», цветотип — " + s.pb.c.n.toLowerCase() + ". " : "";
+      var na = s.sz ? " на ваш " + s.sz + "-й" : "", pomnyu = pomnyuTxt(s.pb, true);
       var igra = "Давайте подберём вам идеальный капсульный гардероб — с учётом типа фигуры и цветотипа. Это увлекательно, как игра в куклы, только наряжать будем вас. Начнём?";
       var cena = s.ceny ? "Цены открыла, ваш промокод " + s.kod + " уже применён." : "";
-      if (s.svezh) return [(s.imya ? s.imya + ", здравствуйте! " : "Готово! ") + (cena || "Приятно познакомиться."), s.pb ? "Ваш гардероб по фигуре и цветотипу — по кнопке ниже." : igra];
+      if (s.svezh) return [(s.imya ? s.imya + ", здравствуйте! " : "Готово! ") + (cena || "Приятно познакомиться."), s.pb ? "Ваш гардероб — по кнопке ниже." : igra];
       if (s.imya && s.dni >= 3) return [s.imya + ", здравствуйте! Давно вас не было" + (s.nov ? " — а я без вас сшила новые модели." : "."),
         s.pb ? pomnyu + (s.sz ? "Вот что есть" + na + ":" : "Подскажите размер — покажу, что есть на вас.") : igra];
       if (s.imya) return [s.imya + ", с возвращением!", s.pb ? pomnyu + (s.sz ? (s.nov ? "Пока вас не было, пришли новые модели" + na + ":" : "Присмотрела для вас" + na + ":") : "Расскажите, что ищете, — подберу.") : igra];
@@ -781,6 +789,15 @@ var HOZ = {
     }
   }
 };
+/* что хозяйка помнит из подбора; «Не знаю» (k = "x") — не называем */
+function pomnyuTxt(pb, vy) {
+  if (!pb) return "";
+  var f = pb.f.k !== "x" ? "«" + pb.f.n + "»" : "", c = pb.c.k !== "x" ? pb.c.n.toLowerCase() : "";
+  if (f && c) return vy ? "Я помню: у вас " + f + ", цветотип — " + c + ". " : "Я помню: ты — " + f + ", " + c + ". ";
+  if (f) return vy ? "Я помню: у вас " + f + ". " : "Я помню: ты — " + f + ". ";
+  if (c) return vy ? "Я помню ваши цвета — " + c + ". " : "Я помню твои цвета — " + c + ". ";
+  return "";
+}
 var P = HOZ[(location.search.match(/[?&]hoz=(\w+)/) || [])[1]] || HOZ[HOZYAJKA] || HOZ.pantera;
 
 /* ---------- Telegram ---------- */
@@ -888,7 +905,7 @@ function applyQuery(text) {
   var r = parse(text);
   st.said = text; st.type = r.type; st.warm = r.warm; st.color = r.color; st.cvf = null; st.words = r.words;
   if (r.size) setSize(r.size, true);
-  closeSheet(); renderCatalog(); hap("ok"); skazat(st.repl, true);
+  closeSheet(); renderCatalog(); hap("ok"); skazat(st.replGolos || st.repl, true);
   // услышала — кивает; нашла — радуется
   var nashla = /^Нашла/.test(st.repl || "");
   if (H3) H3.igrat("Agree_Gesture", nashla ? function () { H3.derzhat("Happy_Sway_Standing", 4500); } : null);
@@ -940,6 +957,7 @@ function renderCatalog() {
     // хозяйка отвечает репликой и подборкой образов с найденными вещами
     var ci = capsSorted().filter(function (i) { return D.kapsuly[i].ids.some(function (id) { return items.indexOf(T[id]) >= 0; }); }).slice(0, 4);
     st.repl = P.otvet(items.length, loose) + (ci.length ? " " + P.obrazy : "");
+    st.replGolos = (items.length ? (loose ? "Точно такого нет, но глянь похожее." : "Нашла! Смотри.") + (ci.length ? " " + P.obrazy : "") : "Такого сейчас нет. Скажи по-другому — найдём.");
     f += '<div class="dlg"><span class="you">«' + esc(st.said) + '»</span><div class="her"><img src="' + P.lico + '" alt=""><span>' + esc(st.repl) + "</span></div></div>"
       + (ci.length ? '<div class="dlg-caps noscroll">' + ci.map(capHtml).join("") + "</div>" : "");
   }
@@ -1033,9 +1051,8 @@ function renderHi() {
   var davaj = '<button class="say-big" data-podbor><span class="mc">' + IC.hanger + "</span><span>" + (P === HOZ.irina ? "Начнём!" : "Давай!") + "<small>" + (P === HOZ.irina ? "подберу одежду на вас" : "подберу одежду на тебя") + "</small></span></button>";
   var vse = '<button class="btn line" data-vsekat>Смотреть все вещи · ' + modeli(svernut(D.tovary).length) + "</button>";
   $("#hiRest").innerHTML = '<div class="hi-acts">' + (pb ? '<button class="say-big" data-podbor><span class="mc">' + IC.hanger + "</span><span>" + (P === HOZ.irina ? "Ваш гардероб" : "Мой гардероб")
-        + "<small>" + esc(pb.f.n) + ", " + esc(pb.c.n.toLowerCase()) + " · образы на пантере</small></span></button>"
-      + '<button class="btn line" data-say>' + IC.mic + P.mic + "</button>"
-      : davaj + '<button class="btn line" data-say>' + IC.mic + P.mic + "</button>")
+        + "<small>" + esc([pb.f.n ? "«" + pb.f.n + "»" : "", pb.c.n.toLowerCase(), st.size ? st.size + " размер" : ""].filter(Boolean).join(", ") || "подбор") + " · образы на пантере</small></span></button>"
+      : davaj)   // 31.10: «Нажми и скажи» на главной убрана — микрофон в строке поиска и «Сказать» в нижнем меню
     + vse + "</div>"
     + (picks.length ? '<div class="picks noscroll">' + picks.map(miniHtml).join("") + "</div>" : "");
   // первый показ — «печатает…», потом реплика; хозяйка машет и говорит
@@ -1446,7 +1463,7 @@ function openPodbor() {
         if (s === "sz") {
           rep = ty("Сначала размер — покажу только то, что на тебя есть.", "Сначала размер — покажу только то, что на вас есть.");
           html = '<div class="pad"><p class="pb-k">' + shapka() + 'размер</p><div class="pb-sz">' + SIZES.map(function (z) { return '<button data-psz="' + z + '" aria-pressed="' + (st.size === z) + '">' + z + "</button>"; }).join("")
-            + '</div><button class="btn line pb-skip" data-pskip>Не знаю размер — покажи всё</button>' + nazad() + "</div>";
+            + '</div><button class="btn line pb-skip" data-pskip>Не знаю размер</button>' + nazad() + "</div>";
         } else if (s === "rost") {
           rep = ty("Какой у тебя рост? Подскажу, какой длины будет вещь.", "Какой у вас рост? Подскажу, какой длины будет вещь.");
           html = '<div class="pad"><p class="pb-k">' + shapka() + 'рост</p><div class="pb-rost">' + ROSTY.map(function (r) { return '<button data-prost="' + r[0] + '" aria-pressed="' + (st.rost === r[0]) + '">' + r[1] + "</button>"; }).join("")
