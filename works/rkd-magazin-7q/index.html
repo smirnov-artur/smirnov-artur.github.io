@@ -5,7 +5,7 @@
 <script>
 /* 29.10: Telegram держит свёрнутый магазин открытым, а открытая раньше страница лежит в кэше — Дмитрий видел старое.
    versiya.txt — номер выкладки (менять при каждой). Не совпал с этим — грузим страницу заново мимо кэша; проверка при открытии и при каждом возврате в магазин */
-var VERSIYA = "2026-10-31-3";
+var VERSIYA = "2026-10-31-4";
 (function () {
   function proverit() {
     fetch("versiya.txt?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (v) {
@@ -162,6 +162,9 @@ s{text-decoration-thickness:1.5px}
 .picks{display:flex;gap:12px;overflow-x:auto;margin:14px 0 0;padding:0 16px 4px;scroll-snap-type:x mandatory;scroll-padding:0 16px}
 .picks .mini{flex-basis:40%}
 .dlg{display:flex;flex-direction:column;gap:10px;margin:2px 0 6px}
+.primer{display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:100%;margin:16px 0 6px;padding:16px 18px;border:2px solid var(--wine);border-radius:18px;background:var(--wine-soft);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.primer b{font:600 21px/1.2 var(--sans);color:var(--wine2)}
+.primer span{font-size:17px;color:var(--muted)}
 .dlg .you{align-self:flex-end;max-width:85%;padding:10px 14px;border-radius:18px 18px 6px 18px;background:var(--ink);color:var(--bg);font:italic 500 21px/1.2 var(--serif)}
 .dlg .her{display:flex;gap:10px;align-items:flex-end;max-width:92%}
 .dlg .her img{flex:none;width:40px;height:40px;border-radius:50%;object-fit:cover}
@@ -1261,6 +1264,7 @@ function openLook(k, pre) {
     + '<div class="pod-kn"><button class="btn" data-hod aria-pressed="false">Пройтись</button><button class="btn" data-prohodka aria-pressed="false" hidden>Проходка</button><span>крутите пальцем</span></div></div><div class="pad">'
     + '<p class="kicker">Образ целиком</p><h1 class="pname" style="margin-top:6px">' + esc(k.n) + '</h1><p class="lead">' + esc(k.o) + "</p>"
     + '<div class="dlg" style="margin-top:12px"><div class="her"><img src="' + P.lico + '" alt=""><span>' + P.obraz + "</span></div></div>"
+    + (D.kapsuly.indexOf(k) >= 0 ? '<button class="primer" data-primer="' + D.kapsuly.indexOf(k) + '"><b>✨ Примерь на себе</b><span>Пришли своё фото — покажу тебя в этом образе</span></button>' : "")
     + '<div class="lp"></div><div class="lrows">' + rows() + '</div><p class="lnote" role="status" hidden></p></div>';
   push(html, function () {
     if (dobavleno) return { text: "Перейти в корзину · " + veshi(cart.length) + rubTail(cartSum()), fn: openCart, shine: true };
@@ -1296,6 +1300,12 @@ function openLook(k, pre) {
       if (idet) sc.derzhat("Flirty_Strut_inplace", 0); else sc.pokoj();
     });
     el.addEventListener("click", function (e) {
+      var pr = e.target.closest("[data-primer]");
+      if (pr) {   // примерка в боте: он попросит фото и пришлёт её в этом образе
+        hap("tap"); var url = "https://t.me/rkd_magazin_bot?start=pr_" + pr.dataset.primer;
+        try { if (TG) tg.openTelegramLink(url); else if (!window.open(url, "_blank")) location.href = url; } catch (x) {}
+        return;
+      }
       var b = e.target.closest("[data-lsz]"); if (!b) return;
       var id = +b.closest("[data-for]").dataset.for, i = +b.dataset.lsz;
       sel[id] = sel[id] === i ? -1 : i; hap("sel"); dobavleno = false;
@@ -2079,6 +2089,7 @@ history.replaceState({ d: 0 }, "");
 renderCaps();
 renderSerii();
 renderHome();
+(function () { var c = location.search.match(/[?&]cap=(\d+)/); if (c && D.kapsuly[+c[1]]) openLook(D.kapsuly[+c[1]]); else if (/[?&]obrazy\b/.test(location.search)) openCaps(); })();
 // 3D — после первого экрана: страница загрузилась, заставка ушла, браузер свободен
 addEventListener("load", function () { setTimeout(function () { if (window.requestIdleCallback) requestIdleCallback(start3D, { timeout: 2000 }); else start3D(); }, vizit.zaderzhka + 600); });
 // новенькая — сразу знакомимся (можно пропустить), один раз за сеанс; не наряжали — хозяйка зовёт в подбор, знакомство после него
