@@ -5,7 +5,7 @@
 <script>
 /* 29.10: Telegram держит свёрнутый магазин открытым, а открытая раньше страница лежит в кэше — Дмитрий видел старое.
    versiya.txt — номер выкладки (менять при каждой). Не совпал с этим — грузим страницу заново мимо кэша; проверка при открытии и при каждом возврате в магазин */
-var VERSIYA = "2026-10-31-5";
+var VERSIYA = "2026-11-01-1";
 (function () {
   function proverit() {
     fetch("versiya.txt?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (v) {
@@ -320,6 +320,15 @@ html.tg .sbar .tt{text-align:left;padding-left:4px}
 .btn.wine{background:var(--wine);color:#fff;box-shadow:var(--e2)}
 .btn.wine:active{background:var(--wine2)}
 .btn.line{border:1.5px solid var(--wine);color:var(--wine);background:transparent}
+#prm{position:fixed;inset:0;z-index:300;display:flex;flex-direction:column;gap:12px;overflow:auto;padding:calc(12px + var(--st)) 16px calc(16px + var(--sb));background:var(--bg)}
+#prm[hidden]{display:none}
+#prm .prm-x{align-self:flex-end}
+#prm h2{font:600 26px/1.15 var(--sans);color:var(--ink)}
+#prm p{font-size:18px;line-height:1.35;color:var(--muted)}
+#prm .prm-kadr{border-radius:18px;overflow:hidden;background:#111}
+#prm .prm-kadr img,#prm .prm-kadr video{display:block;width:100%;max-height:60vh;object-fit:contain}
+#prm .prm-etap{font:600 20px/1.3 var(--sans);color:var(--ink);text-align:center}
+#prm .prm-pod{font-size:16px;text-align:center}
 .btn+.btn,.minis+.btn{margin-top:14px}
 .perks{margin-top:28px;padding:6px 0;border-top:1px solid var(--line)}
 .perk{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
@@ -1138,11 +1147,75 @@ function sizeBtns(t, sel, attr) {
     return '<button class="sz' + (i === mi ? " mine" : "") + '" ' + attr + '="' + i + '" aria-pressed="' + (i === sel) + '"><b>' + esc(z.l) + "</b>" + (z.r ? "<small>" + esc(z.r) + "</small>" : i === mi ? "<small>ваш</small>" : "") + "</button>";
   }).join("");
 }
-/* примерка в боте: он попросит её фото и пришлёт её в этой вещи или образе (Grok, только для показа) */
-function primerka(kod) {
-  hap("tap"); var url = "https://t.me/rkd_magazin_bot?start=" + kod;
-  try { if (TG) tg.openTelegramLink(url); else if (!window.open(url, "_blank")) location.href = url; } catch (x) {}
+/* примерка (Grok на ПК, только для показа). Артур 31.10: «почему фото просто вложить нельзя? почему открывается чат и нажимается старт?»
+   В Telegram — прямо здесь: фото -> наш сервер (rabota/zakazy/dmitry-ostatki/server/relay.py, всё в памяти) -> ПК примеряет -> сюда,
+   копия приходит в чат. Вне Telegram (нет подписи) — через бота. */
+var PROHOD = "https://201-24-117-125.sslip.io";
+function primerka(kod, nazv) {
+  hap("tap");
+  if (!(TG && tg.initData)) {
+    var url = "https://t.me/rkd_magazin_bot?start=" + kod;
+    try { if (TG) tg.openTelegramLink(url); else if (!window.open(url, "_blank")) location.href = url; } catch (x) {}
+    return;
+  }
+  var ETAPY = [[0, "📏 Снимаю мерки: плечи, грудь, талия, бёдра…"], [20, "🪡 Подгоняю по твоей фигуре…"], [45, "👗 Надеваю на тебя «" + nazv + "»…"],
+    [75, "✨ Уже чуть-чуть…"], [110, "Ещё минутку — навожу красоту…"]];
+  var el = $("#prm"), hod = 0;
+  if (!el) { el = document.createElement("div"); el.id = "prm"; document.body.appendChild(el); }
+  function ekran(html) { el.innerHTML = '<button class="ib prm-x" aria-label="Закрыть">' + IC.x + "</button>" + html; el.hidden = false; el.scrollTop = 0; }
+  function vybor() {
+    hod++;
+    ekran("<h2>Примерь на себе</h2><p>Выбери фото, где ты во весь рост, лучше на светлом фоне, — покажу тебя в «" + esc(nazv) + "». Это минуты две.</p>"
+      + '<label class="btn wine">📷 Выбрать фото<input type="file" accept="image/*" hidden></label>');
+  }
+  function beda(tx) { hap("warn"); ekran("<h2>Не вышло</h2><p>" + esc(tx) + '</p><button class="btn wine" data-prm-esche>Выбрать другое фото</button>'); }
+  function szhat(f) {   // до 1280 px — быстрее уходит с телефона
+    return new Promise(function (ok, ne) {
+      var im = new Image();
+      im.onload = function () {
+        var k = Math.min(1, 1280 / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement("canvas");
+        c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k);
+        c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); ok(c.toDataURL("image/jpeg", 0.88));
+      };
+      im.onerror = ne; im.src = URL.createObjectURL(f);
+    });
+  }
+  function start(f) {
+    var moj = ++hod, t0 = Date.now(), anim = false;
+    ekran('<div class="prm-kadr"><img src="' + URL.createObjectURL(f) + '" alt="Твоё фото"></div><p class="prm-etap" role="status">' + ETAPY[0][1]
+      + '</p><p class="prm-pod">Можно закрыть — фото придёт и в чат.</p>');
+    szhat(f).then(function (foto) {
+      return fetch(PROHOD + "/p", { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ init: tg.initData, kod: kod, foto: foto }) });
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (!d.id) throw new Error(d.oshibka || "нет id");
+      (function opros() {
+        if (moj !== hod) return;
+        fetch(PROHOD + "/s/" + d.id + (anim ? "?a" : ""), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (s) {
+          if (moj !== hod) return;
+          var sek = (Date.now() - t0) / 1000;
+          if (s.status === "gotovo") {
+            hap("ok");
+            return ekran('<div class="prm-kadr"><img src="data:image/jpeg;base64,' + s.rez + '" alt="Ты в новой вещи"></div><p class="prm-etap">' + esc(s.tekst || "Готово!")
+              + '</p><p class="prm-pod">Это фото уже в чате — можно сохранить.</p><button class="btn wine" data-prm-ok>Выбрать размер</button><button class="btn line" data-prm-esche>Примерить другое фото</button>');
+          }
+          if (s.status === "oshibka" || s.status === "net") return beda(s.tekst || "Не получилось примерить. Попробуй другое фото.");
+          if (s.status === "zhdet" && sek > 60) return beda("Примерка сейчас отдыхает — попробуй чуть позже.");
+          if (sek > 420) return beda("Что-то долго. Попробуй ещё раз чуть позже.");
+          if (s.anim && !anim) { anim = true; el.querySelector(".prm-kadr").innerHTML = '<video src="data:video/mp4;base64,' + s.anim + '" autoplay loop muted playsinline></video>'; }
+          var e = el.querySelector(".prm-etap"); if (e) e.textContent = ETAPY.filter(function (x) { return sek >= x[0]; }).pop()[1];
+          setTimeout(opros, 2500);
+        }).catch(function () { if (moj === hod) setTimeout(opros, 4000); });
+      })();
+    }).catch(function () { if (moj === hod) beda("Не получилось отправить фото. Проверь интернет и попробуй ещё раз."); });
+  }
+  el.onclick = function (e) {
+    if (e.target.closest(".prm-x,[data-prm-ok]")) { hod++; el.hidden = true; return; }
+    if (e.target.closest("[data-prm-esche]")) vybor();
+  };
+  el.onchange = function (e) { var f = e.target.files && e.target.files[0]; if (f) start(f); };
+  vybor();
 }
+addEventListener("popstate", function () { var p = $("#prm"); if (p) p.hidden = true; });   // «назад» телефона закрывает примерку
 function openItem(id) {
   var t, sel, x, lookX, sim, mi, lookSum;
   // 29.10: вещь и её цвета — один экран, цвет переключается на месте, выбранный размер сохраняется, если он есть в новом цвете
@@ -1208,7 +1281,7 @@ function openItem(id) {
     }
     listat();
     el.addEventListener("click", function (e) {
-      if (e.target.closest("[data-primer-t]")) { primerka("pv_" + t.id); return; }
+      if (e.target.closest("[data-primer-t]")) { primerka("pv_" + t.id, t.b || t.n); return; }
       var b = e.target.closest("[data-sz],[data-g],[data-lookadd],[data-cv]"); if (!b) return;
       if (b.dataset.cv) {
         if (+b.dataset.cv === t.id) return;
@@ -1308,7 +1381,7 @@ function openLook(k, pre) {
     });
     el.addEventListener("click", function (e) {
       var pr = e.target.closest("[data-primer]");
-      if (pr) { primerka("pr_" + pr.dataset.primer); return; }
+      if (pr) { primerka("pr_" + pr.dataset.primer, k.n); return; }
       var b = e.target.closest("[data-lsz]"); if (!b) return;
       var id = +b.closest("[data-for]").dataset.for, i = +b.dataset.lsz;
       sel[id] = sel[id] === i ? -1 : i; hap("sel"); dobavleno = false;
