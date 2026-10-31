@@ -5,7 +5,7 @@
 <script>
 /* 29.10: Telegram держит свёрнутый магазин открытым, а открытая раньше страница лежит в кэше — Дмитрий видел старое.
    versiya.txt — номер выкладки (менять при каждой). Не совпал с этим — грузим страницу заново мимо кэша; проверка при открытии и при каждом возврате в магазин */
-var VERSIYA = "2026-11-01-1";
+var VERSIYA = "2026-11-01-2";
 (function () {
   function proverit() {
     fetch("versiya.txt?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (v) {
@@ -1704,7 +1704,7 @@ function phoneFmt(v) {
 function openForm() {
   // chat: заказ уйдёт ссылкой в чат бота, адрес бот спросит там — из кнопки меню и из браузера (QR вкладыша, иконка на экране);
   // только с клавиатуры бота (?k=1) — sendData одним сообщением
-  var u = TG && tg.initDataUnsafe && tg.initDataUnsafe.user, msk = st.dl === "msk", chat = !(TG && K1);
+  var u = TG && tg.initDataUnsafe && tg.initDataUnsafe.user, msk = st.dl === "msk", srv = TG && !!tg.initData && !K1, chat = !(TG && K1) && !srv;
   var html = bar("Оформление") + '<div class="pad"><h1 class="pageh">Оформление</h1>'
     + '<p class="lead" id="ordLead">' + (msk ? "Курьер по Москве с примеркой" : "СДЭК в регионы с примеркой") + " · " + veshi(cart.length) + rubTail(cartSum()) + "</p>"
     + '<form id="ord" novalidate>'
@@ -1716,7 +1716,7 @@ function openForm() {
     + '<label class="opt"><input type="radio" name="opl" value="1"' + (st.opl ? " checked" : "") + '><span><b>Сейчас — картой или СБП</b><span>Через Робокассу. За то, что не подойдёт на примерке, вернём деньги.</span></span></label>'
     + '<label class="opt"><input type="radio" name="opl" value="0"' + (st.opl ? "" : " checked") + '><span><b>После примерки</b><span>' + (msk ? "Курьеру" : "В пункте СДЭК") + " — только за то, что оставите.</span></span></label>"
     + "</form>"
-    + (chat ? '<p class="note">Адрес спросим в чате магазина — он откроется после подтверждения.</p>' : '<p class="note">Срок и стоимость доставки рассчитаются по адресу — в рабочей версии они появятся здесь, до подтверждения.</p>')
+    + (chat ? '<p class="note">Адрес спросим в чате магазина — он откроется после подтверждения.</p>' : srv ? '<p class="note">Перед выездом позвоним и подтвердим примерку.</p>' : '<p class="note">Срок и стоимость доставки рассчитаются по адресу — в рабочей версии они появятся здесь, до подтверждения.</p>')
     + "</div>";
   var tel11 = function (el) { var q = el.querySelector("#fPhone"); return !!q && q.value.replace(/\D/g, "").length === 11; };
   push(html, function () { var ok = ceny() || (top() && tel11(top().el)); return st.opl ? { text: "Оплатить" + (ok ? " · " + fmt(cartSum()) : ""), fn: submit } : { text: "Подтвердить заказ", fn: submit }; }, function (el) {
@@ -1735,7 +1735,7 @@ function openForm() {
     bad.forEach(function (b) { var f = el.querySelector(b[0]); if (f) f.classList.toggle("bad", b[1]); });
     var first = bad.filter(function (b) { return b[1]; })[0];
     if (first) { hap("warn"); el.querySelector(first[0] + " input, " + first[0] + " textarea").focus(); return; }
-    var o = { name: name, phone: "+" + phone.replace(/\D/g, ""), addr: addr, com: el.querySelector("#fCom").value.trim(), msk: msk, opl: st.opl, chat: chat,
+    var o = { name: name, phone: "+" + phone.replace(/\D/g, ""), addr: addr, com: el.querySelector("#fCom").value.trim(), msk: msk, opl: st.opl, chat: chat, srv: srv,
       n: cart.length, sum: cartSum(), items: cart.map(function (c) { var t = T[c.id]; return { t: t, i: szIdx(t, c) }; }) };
     // вошла только по промокоду — имя и телефон из заказа тоже в базу
     if (!vhod || !vhod.tel) { vhod = vhod || {}; vhod.imya = name; vhod.tel = o.phone; vhod.kod = vhod.kod || "РКД-" + o.phone.slice(-4); vhod.kogda = Date.now(); store.set("vhod", vhod); }
@@ -1753,22 +1753,42 @@ function openPay(o) {
    по 3 знака на вещь: номер в D.tovary (2 знака, 36-ричный) + номер размера (1 знак) — разбирает iz_ssylki в magazin_bot.py; вне Telegram — никуда */
 function otpravit(o) {
   cart = []; saveCart(); hap("ok");
+  if (o.srv) {   // на наш сервер; не ушло — по-старому ссылкой в чат, чтобы заказ не потерялся
+    var zakaz = { name: o.name, phone: o.phone, addr: o.addr, com: o.com, msk: o.msk, opl: o.opl, items: o.items.map(function (x) { return { a: x.t.a, o: x.t.s[x.i].o }; }) };
+    o.zapros = fetch(PROHOD + "/z", { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ init: tg.initData, zakaz: zakaz }) })
+      .then(function (r) { return r.json(); }).then(function (d) { if (!d.id) throw new Error("нет id"); return d; })
+      .catch(function (e) { o.srv = false; o.chat = true; var url = "https://t.me/rkd_magazin_bot?start=" + zakazKod(o); try { tg.openTelegramLink(url); } catch (x) {} throw e; });
+    pendingDone = o; goHome(); return;
+  }
   if (TG && K1) {
     try { tg.sendData(JSON.stringify({ name: o.name, phone: o.phone, addr: o.addr, com: o.com, msk: o.msk, opl: o.opl, items: o.items.map(function (x) { return { a: x.t.a, o: x.t.s[x.i].o }; }) })); return; } catch (e) {}
   }
   if (o.chat) {
-    var kod = "z" + o.phone.slice(1) + "_" + o.items.map(function (x) { return ("0" + D.tovary.indexOf(x.t).toString(36)).slice(-2) + x.i.toString(36); }).join("") + (o.opl ? "_o" : "");
-    var url = "https://t.me/rkd_magazin_bot?start=" + kod;
+    var url = "https://t.me/rkd_magazin_bot?start=" + zakazKod(o);
     try { if (TG) tg.openTelegramLink(url); else if (!window.open(url, "_blank")) location.href = url; } catch (e) {}   // из браузера — Telegram в новой вкладке
   }
   pendingDone = o; goHome();
 }
+function zakazKod(o) {
+  return "z" + o.phone.slice(1) + "_" + o.items.map(function (x) { return ("0" + D.tovary.indexOf(x.t).toString(36)).slice(-2) + x.i.toString(36); }).join("") + (o.opl ? "_o" : "");
+}
 function openDone(o) {
-  var html = '<div class="sbar"><span class="sp"></span><div class="tt">Готово</div><span class="sp"></span></div><div class="done"><div class="chk">' + IC.check + "</div><h1>Заказ принят</h1>" + (o.chat ? "" : '<span class="tag">демо</span>')
-    + "<p>Спасибо, " + esc(o.name) + "! " + (o.chat ? "Заказ ушёл в чат магазина — там пришлём номер заказа и спросим адрес." : "В рабочей версии заказ сразу уйдёт в магазин, а вам придёт подтверждение.") + "</p>"
+  var html = '<div class="sbar"><span class="sp"></span><div class="tt">Готово</div><span class="sp"></span></div><div class="done"><div class="chk">' + IC.check + "</div><h1>Заказ принят</h1>" + (o.chat || o.srv ? "" : '<span class="tag">демо</span>')
+    + "<p>Спасибо, " + esc(o.name) + "! " + (o.srv ? '<span id="dnN" role="status">Записываем заказ…</span>' : o.chat ? "Заказ ушёл в чат магазина — там пришлём номер заказа и спросим адрес." : "В рабочей версии заказ сразу уйдёт в магазин, а вам придёт подтверждение.") + "</p>"
     + '<div class="sum"><div><span>' + veshi(o.n) + "</span><span>" + fmt(o.sum) + "</span></div><div><span>Доставка</span><span>" + (o.msk ? "курьер, Москва" : "СДЭК") + "</span></div><div><span>Оплата</span><span>" + (o.opl ? "картой сейчас" : "после примерки") + "</span></div><div><span>Телефон</span><span>" + esc(phoneFmt(o.phone)) + "</span></div></div>"
-    + (o.chat ? "" : '<p class="note" style="text-align:left">Это демонстрация: заказ никуда не отправлен, деньги не списываются.</p>') + "</div>";
+    + (o.chat || o.srv ? "" : '<p class="note" style="text-align:left">Это демонстрация: заказ никуда не отправлен, деньги не списываются.</p>') + "</div>";
   push(html, function () { return { text: "Вернуться в магазин", fn: goHome }; });
+  if (o.zapros) o.zapros.then(function (d) {   // номер из 1С; ПК выключен — заказ ждёт на сервере, менеджер позвонит
+    var t0 = Date.now(), n = $("#dnN");
+    if (n && !d.pk) n.textContent = "Заказ записан. Менеджер позвонит и подтвердит примерку.";
+    (function opros() {
+      fetch(PROHOD + "/s/" + d.id, { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (s) {
+        var n = $("#dnN"); if (!n) return;
+        if (s.status === "gotovo" || s.status === "oshibka") { n.textContent = s.tekst || "Заказ принят. Менеджер позвонит."; return; }
+        if (Date.now() - t0 < 90000) setTimeout(opros, 2500); else n.textContent = "Заказ записан. Менеджер позвонит и подтвердит примерку.";
+      }).catch(function () { if (Date.now() - t0 < 90000) setTimeout(opros, 4000); });
+    })();
+  }, function () { var n = $("#dnN"); if (n) n.textContent = "Открываем чат магазина — заказ уйдёт туда."; });
 }
 
 /* ---------- шторки: голос и размер ---------- */
