@@ -1,33 +1,35 @@
 /* «ИИ-сотрудник» — все цены и статусы подключений страницы в одном месте.
-   Цены решены владельцем (бриф 01.11.2026). Меняете число здесь — таблица цен,
+   Цены решены владельцем (бриф 01.11.2026, вторая версия по разбору рынка — тот же день). Меняете число здесь — таблица цен,
    сетка подключений и калькулятор пересчитываются сами. Сеть не нужна.
 
    Статусы: rabotaet — работает; demo — проверено на демо; podvas — подключим под вас (dni — срок). */
 window.CENY = {
   podklyuchenie: {
-    baza: 39900,        // одна учётная система (rabotaet/demo), один канал, роль «Продавец», тест на ваших прошлых переписках, неделя подсказчика
+    baza: 39900,        // основа для 1С:УНФ и систем «под вас»: один канал, роль «Продавец», тест на ваших переписках, неделя подсказчика
+                        // у 1С:УТ/КА/ERP своя основа — uchet[].baza
     kanal: 4900,        // каждый следующий готовый канал (rabotaet)
     uchetPodVas: 19900, // учётная система со статусом podvas
     rol: 9900,          // каждая роль сверх «Продавца»
     kanalPodVas: 9900,  // каждый канал со статусом podvas (MAX, Авито, ВК, почта, WhatsApp, виджет)
   },
-  pilot: { cena: 64900, nedel: 2, garantiya: 95 },
+  pilot: { cena: 64900, nedel: 2, garantiya: 95, vpered: 0.5, otchetDen: 7 },   // половина вперёд, половина после отчёта на 7-й день
   mesyac: {
     prodavec: [[1000, 19900], [3000, 29900], [10000, 49900]], // [до диалогов в месяц, ₽]; больше — договоримся
-    marketplejsy: [[1000, 6900], [5000, 11900]],             // [до ответов в месяц, ₽]
+    marketplejsy: [[1000, 3900], [5000, 7900]],              // [до ответов в месяц, ₽]
     buhgalter: 9900,
     zakupki: 7900,
     kanal: 1900,        // первый канал включён, каждый следующий
   },
+  skidkaZaGod: 0.2,     // −20 % на подписку при оплате за год
 
   vznosy: 1.3,          // зарплата × 1,3 — взносы работодателя
   dnejVMesyace: 30,     // клиенты пишут каждый день, и в выходные тоже
   chasovNedelya: 40,    // сколько часов в неделю сейчас отвечают люди (5/2 по 8 ч) — для строки «ночью и в выходные»
-  poUmolchaniyu: { vDen: 30, lyudi: 1, zp: 70000, uchet: 'unf', kanaly: ['tg'] },
+  poUmolchaniyu: { vDen: 30, lyudi: 1, zp: 100000, uchet: 'unf', kanaly: ['tg'] },   // зарплата: медиана hh.ru 103 300 ₽ (9 мес. 2026), округлили вниз
 
   uchet: [
     { k: 'unf', n: '1С:УНФ', s: 'rabotaet' },
-    { k: 'ut', n: '1С:УТ, КА, ERP', s: 'demo', prim: 'заказ и счёт прошли на демо-базе' },
+    { k: 'ut', n: '1С:УТ, КА, ERP', s: 'demo', prim: 'заказ и счёт прошли на демо-базе', baza: 59900 },   // сложнее — своя основа
     { k: 'rozn', n: '1С:Розница', s: 'podvas', dni: '3–7' },
     { k: 'bp', n: '1С:Бухгалтерия', s: 'podvas', dni: '3–7' },
     { k: 'ms', n: 'МойСклад', s: 'podvas', dni: '3–7' },
@@ -55,9 +57,9 @@ window.CENY = {
   ],
 };
 
-/* Расчёт. v = { vDen, lyudi, zp, uchet, kanaly: [k…], roli: { marketplejsy: 0|1000|5000, buhgalter: bool, zakupki: bool } }
-   Подключение = база + система «под вас» + готовые каналы сверх первого × 4 900 + каналы «под вас» × 9 900 + доп. роли × 9 900.
-   В месяц     = Продавец по ступени диалогов + роли + каналы сверх первого × 1 900.
+/* Расчёт. v = { vDen, lyudi, zp, uchet, kanaly: [k…], roli: { marketplejsy: 0|1000|5000, buhgalter: bool, zakupki: bool }, god: bool }
+   Подключение = основа выбранной системы + система «под вас» + готовые каналы сверх первого × 4 900 + каналы «под вас» × 9 900 + доп. роли × 9 900.
+   В месяц     = Продавец по ступени диалогов + роли + каналы сверх первого × 1 900; за год — минус 20 %.
    Отдел       = люди × зарплата × 1,3.   Экономия = отдел − в месяц.   За год = экономия × 12 − подключение.
    Окупится    = подключение ÷ (экономия ÷ 30), в днях. */
 window.CENY.poschitat = function (v, C = window.CENY) {
@@ -69,7 +71,7 @@ window.CENY.poschitat = function (v, C = window.CENY) {
   const podvas = kan.filter(k => k.s === 'podvas');
   const kanalov = Math.max(1, kan.length);
 
-  const podkl = [['База', P.baza]];
+  const podkl = [['Основа · ' + (sys.s === 'podvas' ? 'учётная система' : sys.n), sys.baza || P.baza]];
   if (sys.s === 'podvas') podkl.push([sys.n + ' — под вас', P.uchetPodVas]);
   if (gotovyh > 1) podkl.push(['Готовые каналы сверх первого: ' + (gotovyh - 1), (gotovyh - 1) * P.kanal]);
   podvas.forEach(k => podkl.push([k.n + ' — под вас', P.kanalPodVas]));
@@ -83,11 +85,13 @@ window.CENY.poschitat = function (v, C = window.CENY) {
   if (kanalov > 1) mes.push(['Каналы сверх первого: ' + (kanalov - 1), (kanalov - 1) * M.kanal]);
 
   const podklSum = sum(podkl);
-  const mesyac = stupen ? sum(mes) : null;                  // null — больше 10 000 диалогов: договоримся
+  const polnaya = stupen ? sum(mes) : null;                 // null — больше 10 000 диалогов: договоримся
+  const skidka = v.god && polnaya !== null ? Math.round(polnaya * C.skidkaZaGod) : 0;
+  const mesyac = polnaya === null ? null : polnaya - skidka;
   const otdel = v.lyudi * v.zp * C.vznosy;
   const ekon = mesyac === null ? null : otdel - mesyac;
   return {
-    dialogov, podkl, podklSum, mes, mesyac, otdel, ekon,
+    dialogov, podkl, podklSum, mes, polnaya, skidka, mesyac, otdel, ekon,
     god: ekon === null ? null : ekon * 12 - podklSum,
     dnej: ekon > 0 ? Math.ceil(podklSum / (ekon / C.dnejVMesyace)) : null,
   };

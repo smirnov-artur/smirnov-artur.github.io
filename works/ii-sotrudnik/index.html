@@ -394,6 +394,43 @@ footer a{display:inline-block;padding:11px 0}
 .bar span{display:block;color:var(--acc);font-weight:600}
 .bar .btn{min-height:48px;padding:0 16px;font-size:16px;flex:none}
 @media (min-width:1041px){.bar{display:none}}
+
+/* чем отличается */
+.vs{width:100%;max-width:980px;border-collapse:collapse;margin-top:30px;font-size:17.5px}
+.vs th,.vs td{text-align:left;vertical-align:top;padding:15px 16px 15px 0;border-bottom:1px solid var(--line)}
+.vs thead th{font:600 13px var(--head);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid var(--line2)}
+.vs thead th:last-child{color:var(--acc)}
+.vs tbody th{font-weight:600;color:var(--hi);width:46%}
+.vs td{color:var(--dim)}
+.vs td.y{color:var(--acc);font-weight:700}
+.vs tbody tr:nth-child(n+4) td:not(.y){color:#FF8F73}
+.vs-note{margin-top:14px;font-size:15px;color:var(--dim);max-width:720px}
+@media (max-width:560px){.vs{font-size:16px}.vs th,.vs td{padding:13px 10px 13px 0}.vs tbody th{width:auto}}
+/* без риска */
+.risk{margin-top:28px;display:grid;grid-template-columns:200px 1fr;gap:12px 32px;padding-top:24px;border-top:2px solid var(--ink)}
+.risk h3{font:700 22px var(--head);color:var(--ink);letter-spacing:-.02em}
+.risk ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:20px 36px}
+.risk li{padding-left:16px;border-left:3px solid var(--acc)}
+.risk b{display:block;font-size:18px;color:var(--ink);margin-bottom:2px}
+.risk span{font-size:16.5px;color:var(--ink2)}
+@media (max-width:860px){.risk{grid-template-columns:1fr}.risk ul{grid-template-columns:1fr}}
+.pt tr.god th small span{font-weight:700;color:var(--ink)}
+.pt tr.god td{color:#1F7A44}
+/* оплата помесячно / за год */
+.pay{display:grid;grid-template-columns:1fr 1fr;border:1.5px solid var(--line2);border-radius:var(--r2);overflow:hidden;margin-bottom:20px}
+.pay label{cursor:pointer}
+.pay input{position:absolute;opacity:0;width:1px;height:1px}
+.pay span{display:flex;align-items:center;justify-content:center;min-height:50px;font-weight:700;font-size:16.5px;color:var(--fg);padding:0 8px;text-align:center}
+.pay input:checked+span{background:var(--acc);color:#111}
+.pay input:focus-visible+span{outline:3px solid var(--acc);outline-offset:-3px}
+.hint a{color:var(--ink);text-underline-offset:3px;display:inline-block;padding:12px 0;margin:-12px 0}
+/* шаги с днями */
+.steps i{display:block;font:600 12.5px var(--head);font-style:normal;letter-spacing:.06em;text-transform:uppercase;color:var(--acc);margin-bottom:8px}
+/* доверие */
+.trust{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px;margin:0 auto 30px;max-width:860px;font-size:16.5px;color:var(--fg)}
+.trust li{display:flex;align-items:flex-start;gap:10px}
+.trust li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--acc);margin-top:.6em}
+@media (max-width:560px){.trust{flex-direction:column;align-items:flex-start;text-align:left}}
 </style>
 </head>
 <body>
@@ -421,7 +458,7 @@ footer a{display:inline-block;padding:11px 0}
       <div><dt>Подключение</dt><dd class="num">от <span data-c="podklyuchenie.baza">39 900 ₽</span> <small>разово</small></dd></div>
       <div><dt>Работа</dt><dd class="num">от <span data-c="mesyac.prodavec.0.1">19 900 ₽</span> <small>в месяц</small></dd></div>
     </dl>
-    <p class="pilot-line"><b>Пилот на 2 недели — <span data-c="pilot.cena">64 900 ₽</span>.</b> Меньше 95 % верных ответов — вернём деньги.</p>
+    <p class="pilot-line"><b>Сначала бесплатно</b> прогоним 20 ваших прошлых обращений и покажем, как ответил бы сотрудник. <b>Пилот на 2 недели — <span data-c="pilot.cena">64 900 ₽</span></b>, половина — после отчёта на 7-⁠й день. Меньше 95 % верных ответов — вернём деньги.</p>
     <div class="cta">
       <a class="btn btn-acc" href="https://t.me/romashka_zapchasti_bot" target="_blank" rel="noopener">Написать Ивану <span class="arr" aria-hidden="true">→</span></a>
       <a class="btn btn-line" href="#raschet">Посчитать для своей фирмы</a>
@@ -444,6 +481,24 @@ footer a{display:inline-block;padding:11px 0}
     <figcaption>Переписка с нашего стенда 1 ноября. Покупателя играл наш тест, цифры — из 1С.</figcaption>
   </figure>
 </div>
+
+<section id="otlichie" class="w" aria-labelledby="h-otl">
+  <span class="kicker">Чем отличается</span>
+  <h2 id="h-otl">Доводит до проведённого заказа и счёта</h2>
+  <p class="sub">На рынке ИИ в чатах останавливается на заявке в CRM или на черновике заказа, который потом проводит человек. Здесь заказ проведён в 1С, счёт у клиента, оплату сотрудник дожмёт.</p>
+  <table class="vs">
+    <thead><tr><th scope="col">Шаг продажи</th><th scope="col">ИИ в чатах обычно</th><th scope="col">Иван</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Отвечает по прайсу и описаниям</th><td>да</td><td class="y">да</td></tr>
+      <tr><th scope="row">Называет остаток и цену из учёта</th><td>иногда</td><td class="y">да</td></tr>
+      <tr><th scope="row">Оформляет заказ</th><td>заявка в CRM или черновик</td><td class="y">да</td></tr>
+      <tr><th scope="row">Проводит заказ в 1С</th><td>проводит человек</td><td class="y">да</td></tr>
+      <tr><th scope="row">Присылает счёт из 1С в чат</th><td>нет</td><td class="y">да</td></tr>
+      <tr><th scope="row">Дожимает оплату, видит долг, делает акт сверки</th><td>нет</td><td class="y">да</td></tr>
+    </tbody>
+  </table>
+  <p class="vs-note">Сравнивали по сайтам сервисов и интеграторов в ноябре 2026 года. Их продукты руками не пробовали.</p>
+</section>
 
 <section id="kulisy" class="w" aria-labelledby="h-kul">
   <span class="kicker">За кулисами этой переписки</span>
@@ -592,7 +647,8 @@ footer a{display:inline-block;padding:11px 0}
       <div class="pt">
         <h3>Подключение, разово</h3>
         <table class="tab">
-          <tr><th scope="row">Основа<small>одна учётная система из «работает» или «проверено на демо», один канал, роль «Продавец», тест на ваших прошлых переписках, неделя подсказчика</small></th><td data-c="podklyuchenie.baza">39 900 ₽</td></tr>
+          <tr><th scope="row">Основа для 1С:УНФ<small>один канал, роль «Продавец», тест на ваших переписках, неделя подсказчика</small></th><td data-c="podklyuchenie.baza">39 900 ₽</td></tr>
+          <tr><th scope="row">Основа для 1С:УТ, КА, ERP<small>то же, конфигурации сложнее</small></th><td data-c="uchet.1.baza">59 900 ₽</td></tr>
           <tr><th scope="row">Каждый следующий готовый канал</th><td>+<span data-c="podklyuchenie.kanal">4 900 ₽</span></td></tr>
           <tr><th scope="row">Каждый канал «под вас»<small>MAX, Авито, ВКонтакте, почта, WhatsApp, виджет</small></th><td>+<span data-c="podklyuchenie.kanalPodVas">9 900 ₽</span></td></tr>
           <tr><th scope="row">Учётная система «под вас»</th><td>+<span data-c="podklyuchenie.uchetPodVas">19 900 ₽</span></td></tr>
@@ -613,13 +669,23 @@ footer a{display:inline-block;padding:11px 0}
           <tr><th scope="row">Бухгалтер</th><td data-c="mesyac.buhgalter">9 900 ₽</td></tr>
           <tr><th scope="row">Закупки</th><td data-c="mesyac.zakupki">7 900 ₽</td></tr>
           <tr><th scope="row">Каналы<small>первый входит в цену</small></th><td>+<span data-c="mesyac.kanal">1 900 ₽</span> за каждый</td></tr>
+          <tr class="god"><th scope="row">Оплата за год<small>например, Продавец — <span data-c="mesyac.prodavec.0.1" data-k="0.8">15 920 ₽</span> в месяц вместо <span data-c="mesyac.prodavec.0.1">19 900 ₽</span></small></th><td>−<span data-p="skidkaZaGod">20 %</span> на подписку</td></tr>
         </table>
       </div>
     </div>
     <div class="pilot" id="pilot">
       <div class="big"><span data-c="pilot.cena">64 900 ₽</span><small>пилот на 2 недели</small></div>
-      <p><b>Подключение и две недели работы.</b> Меньше 95 % верных ответов за пилот — возвращаем деньги. Продолжаете — пилот засчитываем в подключение.</p>
+      <p><b>Подключение и две недели работы.</b> <span data-c="pilot.cena" data-k="0.5">32 450 ₽</span> вперёд, <span data-c="pilot.cena" data-k="0.5">32 450 ₽</span> — после отчёта на 7-⁠й день. Меньше 95 % верных ответов — возвращаем деньги. Продолжаете — пилот засчитываем в подключение.</p>
       <a class="btn btn-acc" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Хочу пилот</a>
+    </div>
+    <div class="risk" id="bez-riska">
+      <h3>Без риска</h3>
+      <ul>
+        <li><b>Бесплатный тест</b><span>Прогоняем 20 ваших прошлых обращений и показываем, как ответил бы сотрудник. До всякой оплаты.</span></li>
+        <li><b>Пилот — половина после отчёта</b><span>Вторую половину платите, когда на 7-⁠й день увидели, сколько ответов верные.</span></li>
+        <li><b>Меньше 95 % — деньги назад</b><span>Если за пилот верных ответов меньше 95 %, возвращаем оплату.</span></li>
+        <li><b>Первая неделя — под вашим контролем</b><span>Ответы готовит сотрудник, а отправляет ваш человек.</span></li>
+      </ul>
     </div>
   </section>
 
@@ -642,9 +708,9 @@ footer a{display:inline-block;padding:11px 0}
             <div class="fl"><span id="l-lyudi">Сколько человек</span>
               <div class="step" role="group" aria-labelledby="l-lyudi"><button type="button" data-d="-1" aria-label="Меньше">−</button><input id="lyudi" type="number" min="0" max="50" value="1" inputmode="numeric" aria-labelledby="l-lyudi"><button type="button" data-d="1" aria-label="Больше">+</button></div></div>
             <label class="fl" for="zp">Зарплата одного в месяц
-              <span class="money"><input id="zp" type="text" value="70 000" inputmode="numeric" autocomplete="off"><span>₽</span></span></label>
+              <span class="money"><input id="zp" type="text" value="100 000" inputmode="numeric" autocomplete="off"><span>₽</span></span></label>
           </div>
-          <p class="hint">Взносы работодателя считаем сами: зарплата × 1,3.</p>
+          <p class="hint">Взносы работодателя считаем сами: зарплата × 1,3. Сто тысяч по умолчанию — потому что медиана предлагаемой зарплаты менеджера по продажам на hh.ru — 103 300 ₽ за 9 месяцев 2026 года (<a href="https://www.cnews.ru/news/line/2026-10-07_hhru_nazval_navykiza_kotorye" target="_blank" rel="noopener">источник</a>).</p>
         </fieldset>
         <fieldset class="q">
           <legend><span class="qn">3</span>Где ведёте учёт?</legend>
@@ -663,13 +729,17 @@ footer a{display:inline-block;padding:11px 0}
 
       <aside class="itog" id="itog" aria-label="Итог расчёта">
         <div aria-live="polite">
+          <div class="pay" role="radiogroup" aria-label="Как платить за работу">
+            <label><input type="radio" name="opl" value="mes" checked><span>Помесячно</span></label>
+            <label><input type="radio" name="opl" value="god"><span>За год −20 %</span></label>
+          </div>
           <div class="sums">
             <div><span>Подключение, разово</span><b class="num" id="r-podkl">39 900 ₽</b></div>
             <div><span>Работа, в месяц</span><b class="num" id="r-mes">19 900 ₽</b><small id="r-mes-n"></small></div>
           </div>
           <dl class="cmp">
             <div><dt>Ваш отдел сейчас<small id="r-otdel-f">1 × 70 000 × 1,3</small></dt><dd class="num" id="r-otdel">91 000 ₽</dd></div>
-            <div><dt>Экономия в месяц</dt><dd class="num save" id="r-ekon">71 100 ₽</dd><dd class="nt">считаем, что сотрудник берёт на себя переписку этих людей</dd></div>
+            <div><dt>Экономия в месяц</dt><dd class="num save" id="r-ekon">71 100 ₽</dd><dd class="nt">считаем, что сотрудник берёт на себя переписку этих людей</dd></div>
             <div><dt>За первый год<small>за вычетом подключения</small></dt><dd class="num" id="r-god">813 300 ₽</dd></div>
             <div><dt>Подключение окупится</dt><dd class="num" id="r-okup">за 17 дней</dd></div>
           </dl>
@@ -678,14 +748,14 @@ footer a{display:inline-block;padding:11px 0}
         <details class="how">
           <summary>Как посчитано</summary>
           <table class="tab" id="r-razb"></table>
-          <p>Экономия = отдел − работа в месяц. За год = экономия × 12 − подключение. Окупится = подключение ÷ экономию за день. Считаем, что переписку с клиентами целиком берёт сотрудник; если людей оставляете — уменьшите их число в вопросе 2.</p>
+          <p>Экономия = отдел − работа в месяц. За год = экономия × 12 − подключение. Окупится = подключение ÷ экономию за день. Если людей оставляете — уменьшите их число в вопросе 2.</p>
         </details>
         <a class="btn btn-acc" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Обсудить подключение</a>
         <p class="alt"><a href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">Написать в MAX</a><a id="r-mail" href="mailto:paladei702@gmail.com">Отправить расчёт письмом</a></p>
         <div class="offer">
           <b>Сначала проверить?</b>
-          <p>Пилот — <span data-c="pilot.cena">64 900 ₽</span> за 2 недели. Меньше 95 % верных ответов — вернём деньги.</p>
-          <a class="btn btn-acc" href="#pilot">Про пилот</a>
+          <p>Бесплатно прогоним 20 ваших прошлых обращений. Пилот — <span data-c="pilot.cena">64 900 ₽</span> за 2 недели, половина после отчёта на 7-⁠й день. Меньше 95 % верных ответов — вернём деньги.</p>
+          <a class="btn btn-acc" href="#bez-riska">Как без риска</a>
         </div>
       </aside>
     </div>
@@ -694,13 +764,13 @@ footer a{display:inline-block;padding:11px 0}
 
 <section id="start" class="w" aria-labelledby="h-st">
   <span class="kicker">Как подключаем</span>
-  <h2 id="h-st">От разговора до «пусть работает сам»</h2>
+  <h2 id="h-st">Пять шагов, две недели пилота</h2>
   <ol class="steps">
-    <li><b>Разговор</b><span>Какая у вас учётная система, где пишут клиенты, какую скидку можно давать без вас.</span></li>
-    <li><b>Тест на ваших переписках</b><span>Прогоняем сотрудника по вашим прошлым перепискам — видно, как он ответил бы вашим клиентам.</span></li>
-    <li><b>Подключение</b><span>Учётная система и каналы. «Под вас»: каналы — 1–⁠3 дня, учётные системы — 3–⁠7 дней.</span></li>
-    <li><b>Неделя подсказчика</b><span>Ответы готовит сотрудник, отправляет ваш человек. Считаем совпадение.</span></li>
-    <li><b>Работает сам</b><span>Совпадение 95 % и выше — включаете одной кнопкой.</span></li>
+    <li><i>до оплаты</i><b>Разговор и бесплатный тест</b><span>Какая у вас 1С, где пишут клиенты, какую скидку можно давать без вас. Прогоняем 20 ваших прошлых обращений — видно, как ответил бы сотрудник.</span></li>
+    <li><i>день 0</i><b>Договор и половина оплаты</b><span>Договор пилота с поручением на обработку персональных данных.</span></li>
+    <li><i>перед стартом</i><b>Установка в вашу 1С</b><span>Расширение: в конфигурации ничего не меняется, снимается одной кнопкой. Базу в интернет не открываем — 1С сама стучится к нам. Система «под вас» — ещё 3–⁠7 дней.</span></li>
+    <li><i>дни 1–⁠7</i><b>Неделя подсказчика</b><span>Ответы готовит сотрудник, отправляет ваш человек. На 7-⁠й день — отчёт: сколько ответов верные. После него — вторая половина оплаты.</span></li>
+    <li><i>дни 8–⁠14</i><b>Неделя сам и отчёт</b><span>Сотрудник отвечает сам, вы видите всё в Telegram. В конце — отчёт за пилот. Меньше 95 % верных — вернём деньги.</span></li>
   </ol>
 </section>
 
@@ -709,24 +779,32 @@ footer a{display:inline-block;padding:11px 0}
   <h2 id="h-faq">Что обычно спрашивают</h2>
   <div class="faq">
     <details>
+      <summary>Безопасно пускать его в нашу 1С?</summary>
+      <p>Он работает через расширение: в конфигурации ничего не меняется, снимается одной кнопкой. Делать может только узкие вещи — найти товар и клиента, создать и провести заказ, выставить счёт. Свой код в вашей 1С выполнить не может. Базу в интернет не открываем: 1С сама стучится к нам за задачами.</p>
+    </details>
+    <details>
+      <summary>Что будет, если он ошибётся?</summary>
+      <p>Цифру, которой нет в 1С, он не отправит — это проверяет код, а не нейросеть. Скидку сверх ваших правил, спорную оплату, крупный заказ отдаёт вам. Первую неделю ответы отправляет ваш человек. Если за пилот верных ответов меньше 95 %, вернём деньги.</p>
+    </details>
+    <details>
+      <summary>Какая 1С подходит?</summary>
+      <p>1С:УНФ — работает. 1С:УТ, КА и ERP — проверено на демо-базе: заказ и счёт прошли. 1С:Розница и Бухгалтерия — подключим под вас за 3–⁠7 дней. Если у вас не 1С, а МойСклад, Битрикс24, amoCRM, RetailCRM, InSales или Google-таблица — тоже под вас, 3–⁠7 дней.</p>
+    </details>
+    <details>
+      <summary>Где хранятся данные и что с 152-ФЗ?</summary>
+      <p>Имена, телефоны, почты и ИНН физлиц до нейросети не доходят — вместо них метки. Работаем по договору с поручением на обработку персональных данных. Договор и политику обработки пришлём по запросу.</p>
+    </details>
+    <details>
+      <summary>Можно выключить в любой момент?</summary>
+      <p>Да. Расширение снимается одной кнопкой. А если хотите ответить клиенту сами — просто напишите ему: сотрудник в этом чате замолчит на 12 часов.</p>
+    </details>
+    <details>
+      <summary>Что если сервис ляжет?</summary>
+      <p>Покупатель получит «уточню», вам придёт сообщение, а когда всё снова заработает — сотрудник допишет ответ сам, с настоящими цифрами. Проверяли на 11 сбоях — 11 из 11.</p>
+    </details>
+    <details>
       <summary>Клиент поймёт, что пишет не человек?</summary>
       <p>Пишет как ваш менеджер: коротко и по делу. Если клиент всерьёз спросит «вы бот?», врать не будет. На стенде ответил так: «я цифровой сотрудник, не человек… если надо с живым — скажите, позову».</p>
-    </details>
-    <details>
-      <summary>Что будет, если 1С выключена или зависла?</summary>
-      <p>Ничего не выдумает. Клиенту напишет «уточню», а когда 1С снова на связи — допишет сам, с настоящими цифрами. Проверяли на 11 сбоях — 11 из 11.</p>
-    </details>
-    <details>
-      <summary>Можно вмешаться в разговор?</summary>
-      <p>В любой момент. Написали клиенту сами — сотрудник в этом чате молчит 12 часов. Всё, что решаете только вы, приходит вам в Telegram с кнопками.</p>
-    </details>
-    <details>
-      <summary>Нашу 1С придётся выставлять в интернет?</summary>
-      <p>Нет. Базу в интернет не публикуем: 1С сама забирает задачи с нашего сервера.</p>
-    </details>
-    <details>
-      <summary>У нас не 1С, а CRM или таблица</summary>
-      <p>МойСклад, Битрикс24, amoCRM, RetailCRM, InSales, Google-таблица — подключим под вас за 3–⁠7 дней. Честный статус каждой системы — в разделе «Подключения».</p>
     </details>
   </div>
 </section>
@@ -734,6 +812,11 @@ footer a{display:inline-block;padding:11px 0}
 <section class="w kontakt" id="kontakty" aria-labelledby="h-kont">
   <h2 id="h-kont">Обсудить подключение</h2>
   <p class="sub">Напишите, какая у вас учётная система и где пишут клиенты. Отвечу сам.</p>
+  <ul class="trust">
+    <li>Работаем по договору</li>
+    <li>Самозанятый — чек «Мой налог» на каждую оплату</li>
+    <li>Договор пилота и политику обработки персональных данных пришлём по запросу</li>
+  </ul>
   <div class="cta">
     <a class="btn btn-acc" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Telegram @smirnovarturr</a>
     <a class="btn btn-line" href="https://max.ru/u/f9LHodD0cOIMR2bjYkF5W52F58UVcSSkA4J80AyBbUl_fCEugAMeFqDb4LQ" target="_blank" rel="noopener">MAX</a>
@@ -764,8 +847,9 @@ const stTxt = x => STATUS[x.s] + (x.dni ? ' — ' + nr(x.dni) + NB + 'дн.' : '
 /* цифры в тексте — из ceny.js */
 document.querySelectorAll('[data-c]').forEach(el => {
   const v = el.dataset.c.split('.').reduce((o, k) => o?.[k], C);
-  if (typeof v === 'number') el.textContent = rub(v);
+  if (typeof v === 'number') el.textContent = rub(v * (+el.dataset.k || 1));   // data-k — множитель: половина пилота, цена за год
 });
+document.querySelectorAll('[data-p]').forEach(el => { el.textContent = Math.round(C[el.dataset.p] * 100) + NB + '%'; });
 
 /* сетка подключений */
 // «под вас» с одним сроком — одной строкой списком, остальные — по строке на пункт
@@ -804,6 +888,7 @@ function vvod() {
     zp: +$('zp').value.replace(/\D/g, '') || 0,
     uchet: document.querySelector('input[name=uchet]:checked').value,
     kanaly: [...document.querySelectorAll('input[name=kanal]:checked')].map(i => i.value),
+    god: document.querySelector('input[name=opl]:checked').value === 'god',
     roli: { marketplejsy: on('marketplejsy') ? +document.querySelector('input[name=mp]:checked').value : 0, buhgalter: on('buhgalter'), zakupki: on('zakupki') },
   };
 }
@@ -819,7 +904,8 @@ function obnovit() {
 
   $('r-podkl').textContent = rub(R.podklSum);
   $('r-mes').textContent = R.mesyac === null ? 'договоримся' : rub(R.mesyac);
-  $('r-mes-n').textContent = R.mesyac === null ? `больше ${nf.format(C.mesyac.prodavec.at(-1)[0])} диалогов в месяц` : '';
+  $('r-mes-n').textContent = R.mesyac === null ? `больше ${nf.format(C.mesyac.prodavec.at(-1)[0])} диалогов в месяц`
+    : v.god ? `вместо ${rub(R.polnaya)} · за год сразу ${rub(R.mesyac * 12)}` : '';
   $('r-otdel').textContent = rub(R.otdel);
   $('r-otdel-f').textContent = `${v.lyudi} × ${nf.format(v.zp)} × ${String(C.vznosy).replace('.', ',')}`;
 
@@ -837,6 +923,7 @@ function obnovit() {
   const row = ([t, x]) => `<tr><td>${t}</td><td>${rub(x)}</td></tr>`;
   $('r-razb').innerHTML = `<tr class="h"><td colspan="2">Подключение</td></tr>${R.podkl.map(row).join('')}`
     + `<tr class="h"><td colspan="2">В месяц</td></tr>${R.mesyac === null ? '<tr><td>Продавец, больше 10 000 диалогов</td><td>договоримся</td></tr>' + R.mes.slice(1).map(row).join('') : R.mes.map(row).join('')}`
+    + (R.skidka ? `<tr><td>Скидка за год −${Math.round(C.skidkaZaGod * 100)}${NB}%</td><td>−${rub(R.skidka)}</td></tr>` : '')
     + `<tr class="h"><td colspan="2">Отдел сейчас</td></tr><tr><td>${v.lyudi} чел. × ${rub(v.zp)} × ${String(C.vznosy).replace('.', ',')} (взносы)</td><td>${rub(R.otdel)}</td></tr>`;
 
   $('b-sum').textContent = `${rub(R.podklSum)} + ${R.mesyac === null ? 'договоримся' : rub(R.mesyac) + '/мес'}`;
@@ -844,12 +931,13 @@ function obnovit() {
 
   const n = k => C[k].filter(x => (k === 'kanaly' ? v.kanaly : [v.uchet]).includes(x.k)).map(x => x.n).join(', ') || '—';
   const roli = ['Продавец'].concat(C.roli.filter(x => v.roli[x.k]).map(x => x.n)).join(', ');
-  const tekst = `Здравствуйте! Посчитал на странице ИИ-сотрудника:\n— обращений в день: ${v.vDen}\n— отвечают сейчас: ${v.lyudi} чел., зарплата ${nf.format(v.zp)} ₽\n— учёт: ${n('uchet')}\n— каналы: ${n('kanaly')}\n— роли: ${roli}\n\nПодключение: ${nf.format(R.podklSum)} ₽, в месяц: ${R.mesyac === null ? 'договоримся' : nf.format(R.mesyac) + ' ₽'}.\nХочу обсудить.`;
+  const tekst = `Здравствуйте! Посчитал на странице ИИ-сотрудника:\n— обращений в день: ${v.vDen}\n— отвечают сейчас: ${v.lyudi} чел., зарплата ${nf.format(v.zp)} ₽\n— учёт: ${n('uchet')}\n— каналы: ${n('kanaly')}\n— роли: ${roli}\n— оплата: ${v.god ? 'за год' : 'помесячно'}\n\nПодключение: ${nf.format(R.podklSum)} ₽, в месяц: ${R.mesyac === null ? 'договоримся' : nf.format(R.mesyac) + ' ₽'}.\nХочу обсудить.`;
   $('r-mail').href = 'mailto:paladei702@gmail.com?subject=' + encodeURIComponent('ИИ-сотрудник — расчёт') + '&body=' + encodeURIComponent(tekst);
 }
 window.obnovit = obnovit;
 $('calc').addEventListener('input', obnovit);
 $('calc').addEventListener('change', obnovit);
+document.querySelectorAll('input[name=opl]').forEach(i => i.addEventListener('change', obnovit));
 $('zp').addEventListener('change', e => { e.target.value = nf.format(+e.target.value.replace(/\D/g, '') || 0); });
 obnovit();
 
