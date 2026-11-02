@@ -5,7 +5,7 @@
 <script>
 /* 29.10: Telegram держит свёрнутый магазин открытым, а открытая раньше страница лежит в кэше — Дмитрий видел старое.
    versiya.txt — номер выкладки (менять при каждой). Не совпал с этим — грузим страницу заново мимо кэша; проверка при открытии и при каждом возврате в магазин */
-var VERSIYA = "2026-11-01-2";
+var VERSIYA = "2026-11-02-1";
 (function () {
   function proverit() {
     fetch("versiya.txt?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (v) {
@@ -755,7 +755,7 @@ var IGRA = ["Мы можем сейчас выбрать тебе идеальн
   "Это так увлекательно, как игра в куклы! Только наряжать будем тебя. Давай?"];
 var HOZ = {
   pantera: {
-    ava: "hozyajka.webp", lico: "hozyajka-lico.webp", alt: "Хозяйка магазина — пантера", rate: 1, pitch: 1,
+    ava: "hozyajka.webp", lico: "hozyajka-lico.webp", alt: "Хозяйка магазина — пантера", rate: 1.3, pitch: 1,
     mic: "Нажми и скажи, что ищешь", nazhmi: "Нажми и скажи", slushayu: "Говори, я слушаю", znakom: "Открыть цены — на 30 % ниже WB", telefon: "Открыть цены — на 30 % ниже WB",
     obrazy: "А вот образы с ними:", obraz: "Бери целиком — так и носят. Размер у каждой вещи можно поменять ниже.",
     seriya: "Серия скоро — смотри прямо здесь. А вещи из неё уже можно взять.",
@@ -779,7 +779,7 @@ var HOZ = {
     }
   },
   irina: {
-    ava: "hozyajka-irina.webp", lico: "hozyajka-irina-lico.webp", alt: "Ирина Владимировна, дизайнер бренда", rate: 0.95, pitch: 1,
+    ava: "hozyajka-irina.webp", lico: "hozyajka-irina-lico.webp", alt: "Ирина Владимировна, дизайнер бренда", rate: 1.25, pitch: 1,
     mic: "Нажмите и скажите, что ищете", nazhmi: "Нажмите и скажите", slushayu: "Я вас слушаю", znakom: "Открыть цены — на 30 % ниже WB", telefon: "Открыть цены — на 30 % ниже WB",
     obrazy: "А вот образы, которые я к ним собрала:", obraz: "Эту капсулу я шила, чтобы вещи носили вместе. Размер у каждой вещи можно поменять ниже.",
     seriya: "Серия скоро — смотрите прямо здесь. А вещи из неё уже можно заказать.",
@@ -1903,7 +1903,7 @@ function fajlyGolosa(txt) {
 function dalshe() {
   var f = OCHERED.shift();
   if (!f) { if (AUD_DVIZH && H3) H3.pokoj(); return; }
-  AUD.src = f; AUD.playbackRate = 1.12;   // 29.10 Дмитрий: «медленно говорит»; высота голоса не меняется
+  AUD.src = f; AUD.playbackRate = 1.45;   // 29.10 Дмитрий: «медленно говорит» (1.12); 02.11: «Скорость речи можешь быстрее сделать сильно. А то долго»; высота голоса не меняется
   try { var p = AUD.play(); if (p && p.catch) p.catch(function () { OCHERED = []; }); } catch (e) {}
 }
 function molchat() {
