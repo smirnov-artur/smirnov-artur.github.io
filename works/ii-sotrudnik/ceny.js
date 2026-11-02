@@ -7,8 +7,8 @@ window.CENY = {
   rabochihDnej: 22,
   poUmolchaniyu: {invoices: 20, minutes: 12, rate: 500},
   uchet: [
-    {n: '1С:УНФ', s: 'rabotaet'},
-    {n: '1С:УТ, КА, ERP', s: 'demo', prim: 'заказ и счёт прошли на демо-базе'},
+    {n: '1С:УНФ', s: 'rabotaet', prim: 'заказ и счёт из 1С — проверено'},
+    {n: '1С:УТ, КА, ERP', s: 'demo', prim: 'цены, остатки и ответы — на демо-базе УТ 11.5; заказ и счёт — после проверки на копии вашей базы'},
   ],
   kanaly: [
     {n: 'Telegram', s: 'rabotaet'},
