@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Счёт по заявке на стройматериалы — из вашей 1С за 2 минуты — g.a.d.</title>
+<meta name="description" content="ИИ-оператор 1С для оптовиков стройматериалов: заявка покупателя → проведённый заказ и счёт PDF из вашей 1С, менеджер проверяет и отправляет. Первые три компании — подключение и 2 недели бесплатно, дальше 9 900 ₽/мес.">
+<link rel="canonical" href="https://smirnov-artur.github.io/works/ii-sotrudnik/strojmaterialy/">
+<meta property="og:title" content="Счёт по заявке на стройматериалы — из вашей 1С за 2 минуты"><meta property="og:description" content="ИИ-оператор 1С для оптовиков стройматериалов: заявка покупателя → проведённый заказ и счёт PDF из вашей 1С, менеджер проверяет и отправляет. Первые три компании — подключение и 2 недели бесплатно, дальше 9 900 ₽/мес."><meta property="og:type" content="website">
+<meta property="og:image" content="https://smirnov-artur.github.io/works/ii-sotrudnik/schet-asfr-000437.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..700&display=swap" rel="stylesheet">
+<style>
+/* «Папка сделки»: страница — деловой документ, продукт — настоящие файлы прогона 02.11.
+   Жёлтый — только главное действие на экране. Шкала шрифта: 14 / 16 / 18 / 20 / 32 / 46. */
+:root{
+  --page:#FFFFFF; --desk:#ECEEF0; --slot:#F5F6F7;
+  --ink:#15171A; --ink2:#454A52; --meta:#5B616A;
+  --rule:#D6D9DD; --rule2:#AEB4BB;
+  --act:#FFD43B; --act-h:#F2C200; --act-line:#D9AE00;
+  --link:#1A56B8; --ok:#1E7B3A; --bad:#9A2A1F;
+  --r:4px; --r-btn:6px;
+  --e1:0 0 0 1px rgba(21,23,26,.10),0 1px 2px rgba(21,23,26,.06);
+  --e2:0 0 0 1px rgba(21,23,26,.12),0 2px 4px rgba(21,23,26,.05),0 14px 30px -12px rgba(21,23,26,.25);
+  --f:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{font:400 18px/1.55 var(--f);color:var(--ink);background:var(--page);font-variant-numeric:tabular-nums lining-nums;-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-underline-offset:3px;text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:2px}
+img{display:block;max-width:100%;height:auto}
+.w{max-width:1280px;margin:0 auto;padding:0 20px}
+@media (min-width:760px){.w{padding:0 40px}}
+.nb{white-space:nowrap}
+[id]{scroll-margin-top:16px}
+
+/* шапка */
+.top{border-bottom:1px solid var(--rule)}
+.top .w{display:flex;align-items:center;gap:28px;min-height:64px}
+.brand{display:flex;align-items:baseline;gap:12px;text-decoration:none;color:var(--ink)}
+.brand b{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.brand span{font-size:16px;color:var(--meta);padding-left:12px;border-left:1px solid var(--rule2)}
+.top nav{display:flex;gap:26px;margin-left:auto;font-size:16px}
+.top nav a{color:var(--ink2);text-decoration:none;padding:10px 0}
+.top nav a:hover{color:var(--ink)}
+.top .btn{min-height:44px;font-size:16px;padding:0 16px}
+@media (max-width:999px){.top nav{display:none}.top .btn{margin-left:auto}}
+@media (max-width:420px){.brand span{display:none}}
+
+/* кнопки: одна жёлтая на экран */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border-radius:var(--r-btn);font:600 18px/1.2 var(--f);text-decoration:none;color:var(--ink);border:1px solid var(--rule2);background:#fff;text-align:center}
+.btn:hover{border-color:var(--ink)}
+.btn-act{background:var(--act);border-color:var(--act-line)}
+.btn-act:hover{background:var(--act-h);border-color:var(--act-line)}
+
+/* первый экран */
+.hero{display:grid;row-gap:28px;padding-top:32px;padding-bottom:64px}
+.intro .what{font-size:16px;font-weight:500;color:var(--ink2);margin-bottom:12px}
+h1{font-size:clamp(32px,1.6vw + 25px,46px);line-height:1.1;font-weight:650;letter-spacing:-.02em;text-wrap:balance;padding-bottom:20px;border-bottom:2px solid var(--ink)}
+.lead{font-size:20px;margin-top:20px}
+.aud{font-size:16px;color:var(--ink2);margin-top:12px}
+.terms{display:grid;grid-template-columns:minmax(118px,32%) 1fr;font-size:16px}
+.terms dt,.terms dd{padding:12px 0;border-top:1px solid var(--rule)}
+.terms dt{font-weight:600;padding-right:16px}
+.terms dd{color:var(--ink2)}
+.terms dd b{color:var(--ink);font-weight:650;font-size:18px}
+.terms dt:last-of-type,.terms dd:last-of-type{border-bottom:1px solid var(--rule)}
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px}
+.cta .alt{font-weight:600;font-size:18px;padding:12px 0}
+.note{font-size:16px;color:var(--meta);margin-top:14px;max-width:540px}
+.trust{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:16px;color:var(--ink2);padding-top:16px;border-top:1px solid var(--rule)}
+.trust b{grid-row:span 2;color:var(--ink);font-weight:650}
+@media (max-width:520px){.cta .btn-act{width:100%}.trust{grid-template-columns:1fr}.trust b{grid-row:auto}}
+
+/* стол с документами прогона */
+.desk{background:var(--desk);padding:20px 16px 18px;margin:0 -20px}
+.paper{background:#fff;border-radius:var(--r);box-shadow:var(--e2);padding:14px 16px 16px;font-size:16px;line-height:1.5;position:relative;z-index:2}
+.paper header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:14px;color:var(--meta);margin-bottom:6px}
+.paper header b{color:var(--ink);font-weight:650}
+.paper .from{font-size:14px;color:var(--ink2);margin-bottom:8px}
+.paper .txt{white-space:pre-line}
+.att{display:flex;align-items:center;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid var(--rule);font-size:16px}
+.att i{font-style:normal;font:700 11px/1 var(--f);letter-spacing:.04em;color:#fff;background:#B3261E;border-radius:2px;padding:5px 5px 4px}
+.invoice{display:block;background:#fff;box-shadow:var(--e1);padding:10px;margin:14px 0;position:relative;z-index:1}
+.tl{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);margin-top:18px;border-top:2px solid var(--ink)}
+.tl li{padding-top:8px;font-size:14px;color:var(--meta);line-height:1.35}
+.tl li+li{padding-left:12px;border-left:1px solid var(--rule2)}
+.tl b{display:block;font-size:18px;color:var(--ink);font-weight:650}
+.desk figcaption{font-size:14px;color:var(--meta);margin-top:14px}
+.desk figcaption a{font-weight:600}
+@media (min-width:760px){.desk{margin:0;border-radius:6px;padding:24px}}
+@media (min-width:1000px){
+  .hero{grid-template-columns:minmax(0,44fr) minmax(0,56fr);column-gap:48px;grid-template-rows:auto auto auto auto 1fr;align-items:start;padding-top:44px}
+  .intro{grid-area:1/1}.cta-box{grid-area:2/1}.terms{grid-area:3/1}.trust{grid-area:4/1}
+  .desk{grid-area:1/2/6/3}
+  .letter{width:66%}
+  .invoice{margin:-34px 0 0}
+  .reply{width:64%;margin-top:-62px}
+}
+
+/* разделы */
+.sec{padding-top:24px;padding-bottom:72px}
+h2{font-size:clamp(26px,.8vw + 21px,32px);line-height:1.15;font-weight:650;letter-spacing:-.015em;padding-bottom:14px;border-bottom:2px solid var(--ink);text-wrap:balance}
+h2 .n{color:var(--meta);font-weight:500;margin-right:.35em}
+h3{font-size:20px;line-height:1.3;font-weight:650;margin-bottom:8px}
+.sub{color:var(--ink2);max-width:760px;margin-top:16px}
+.small{font-size:16px;color:var(--meta)}
+.vs-note{font-size:16px;color:var(--meta);margin-top:20px;padding-top:12px;border-top:1px solid var(--rule);max-width:900px}
+
+/* таблицы-документы */
+.tbl{width:100%;border-collapse:collapse;margin-top:28px;font-size:18px}
+.tbl th,.tbl td{text-align:left;vertical-align:top;padding:16px 20px 16px 0;border-bottom:1px solid var(--rule)}
+.tbl thead th{font-size:14px;font-weight:600;color:var(--meta);padding-top:0;padding-bottom:10px;border-bottom:1px solid var(--ink)}
+.tbl tbody th{font-weight:600}
+.tbl caption{text-align:left;font-weight:650;font-size:20px;padding-bottom:10px}
+.tbl .m{color:var(--meta)}
+.tbl .ev{color:var(--ink2);font-size:16px}
+.tbl .ev em,.tbl em.ok{font-style:normal;color:var(--ok);font-weight:600}
+.tbl tr.we th,.tbl tr.we td{background:#FFF8D6}
+.tbl tr.we th{padding-left:12px}
+@media (max-width:759px){
+  .tbl thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .tbl tr{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;font-size:16px;padding:16px 0;border-bottom:1px solid var(--rule)}
+  .tbl tbody th,.tbl td{display:block;border:0;padding:0;width:auto!important}
+  .tbl tbody th{grid-column:1/-1;margin-bottom:2px;font-size:18px}
+  .tbl td[data-l]::before{content:attr(data-l) ": ";color:var(--meta)}
+  .tbl td.full{grid-column:1/-1}
+  .tbl .ev{grid-column:1/-1;margin-top:6px;padding-left:12px;border-left:2px solid var(--rule2)}
+  .tbl tr.we{padding:16px 12px;background:#FFF8D6}
+  .tbl tr.we th,.tbl tr.we td{background:none;padding-left:0}
+}
+.steps-tbl tbody th{width:28%}
+.steps-tbl .now,.steps-tbl .iv{width:13%}
+.steps-tbl .iv{font-weight:650}
+
+.arts{display:grid;gap:28px;margin-top:36px}
+@media (min-width:1000px){.arts{grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:40px;align-items:start}}
+.slot{aspect-ratio:16/10;display:grid;place-items:center;text-align:center;padding:24px;background:var(--slot);border:1.5px dashed var(--rule2);border-radius:var(--r);color:var(--meta);font-size:16px}
+.slot b{display:block;color:var(--ink);font-size:18px;font-weight:650;margin-bottom:6px}
+.arts figcaption{font-size:14px;color:var(--meta);margin-top:10px}
+.log summary{cursor:pointer;font-weight:650;font-size:18px;padding:12px 0;border-top:2px solid var(--ink);list-style-position:inside}
+.log p{font-size:16px;color:var(--ink2);margin:4px 0 10px}
+.log table{width:100%;border-collapse:collapse;font-size:14px}
+.log td{padding:7px 10px 7px 0;border-top:1px solid var(--rule);vertical-align:top;color:var(--ink2)}
+.log td:first-child{font-family:var(--mono);color:var(--ink);white-space:nowrap}
+
+.two{display:grid;gap:40px;margin-top:8px}
+@media (min-width:1000px){.two{grid-template-columns:1fr 1fr;gap:56px}}
+.facts{margin-top:28px;display:grid;gap:16px}
+@media (min-width:1000px){.facts{grid-template-columns:1fr 1fr;gap:40px}}
+.facts p{font-size:16px;color:var(--ink2);padding-top:12px;border-top:1px solid var(--rule)}
+.facts b{display:block;color:var(--ink);font-size:18px;font-weight:650;margin-bottom:4px}
+
+ol.plan{list-style:none;counter-reset:p;margin-top:24px;max-width:860px}
+ol.plan li{counter-increment:p;display:grid;grid-template-columns:44px 1fr;padding:14px 0;border-bottom:1px solid var(--rule)}
+ol.plan li::before{content:counter(p) ".";font-weight:650;color:var(--meta)}
+ol.plan b{font-weight:650}
+ol.plan span{display:block;color:var(--ink2);font-size:16px;margin-top:2px}
+.contacts{margin-top:28px;display:grid;gap:12px}
+.contacts .cta{margin-top:4px}
+
+/* расчёт */
+.calc{display:grid;gap:32px;margin-top:28px}
+@media (min-width:1000px){.calc{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start}}
+.calc fieldset{border:0;padding:14px 0;border-bottom:1px solid var(--rule)}
+.calc legend{font-weight:650;font-size:18px;padding:0}
+.calc label{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;color:var(--ink2);font-size:16px;margin-top:6px}
+.calc .in{display:inline-flex;align-items:center;gap:8px;color:var(--ink);min-width:184px}
+.calc input{font:600 20px var(--f);width:130px;min-height:48px;padding:0 12px;border:1px solid var(--rule2);border-radius:var(--r);background:#fff;color:var(--ink);font-variant-numeric:tabular-nums}
+.calc input[aria-invalid="true"]{border-color:var(--bad)}
+.hint{min-height:1.4em;color:var(--bad);font-size:16px;margin-top:8px}
+.itog{background:var(--desk);border-radius:6px;padding:24px}
+.itog dl{display:grid;grid-template-columns:1fr auto}
+.itog dt,.itog dd{padding:12px 0;border-bottom:1px solid var(--rule2)}
+.itog dt{color:var(--ink2);font-size:16px;padding-right:16px}
+.itog dt:has(+ dd + dd.sm),.itog dd:has(+ dd.sm){border-bottom:0}
+.itog dd{font-weight:650;font-size:20px;text-align:right;white-space:nowrap}
+.itog dd.sm{grid-column:1/-1;text-align:left;font-weight:400;font-size:14px;color:var(--meta);padding-top:0;white-space:normal}
+.itog p{font-size:16px;color:var(--ink2);margin-top:14px}
+.itog details{margin-top:12px;font-size:16px;color:var(--ink2)}
+.itog summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.itog .cta{margin-top:18px}
+
+/* вопросы */
+.faq{margin-top:20px;max-width:900px}
+.faq details{border-bottom:1px solid var(--rule)}
+.faq summary{cursor:pointer;font-weight:650;font-size:18px;padding:16px 0;list-style-position:inside}
+.faq p{color:var(--ink2);padding:0 0 18px;font-size:18px}
+
+.who{display:grid;gap:28px;margin-top:24px}
+@media (min-width:1000px){.who{grid-template-columns:1fr 1fr;gap:56px}}
+.who p+p{margin-top:12px}
+
+footer{border-top:1px solid var(--rule);padding:20px 0 40px;font-size:14px;color:var(--meta)}
+footer .w{display:flex;flex-wrap:wrap;gap:8px 20px}
+
+.nisha-ex{margin-top:0}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="w">
+    <a class="brand" href="../"><b>g.a.d.</b><span>Артур Смирнов</span></a>
+    <nav aria-label="Разделы"><a href="../#dokazatelstvo">Как работает</a><a href="../#vmesto">Вместо чего</a><a href="../#programmistu">Для программиста 1С</a><a href="../#voprosy">Вопросы</a></nav>
+    <a class="btn" href="#nachat">Прислать заявку</a>
+  </div>
+</header>
+<main>
+<div class="w hero">
+  <div class="intro">
+    <p class="what">Для оптовиков стройматериалов</p>
+    <h1>Счёт по заявке на стройматериалы — из вашей 1С за 2 минуты</h1>
+    <p class="lead">Иван находит каждую позицию заявки в вашей 1С, проверяет цены и остатки, проводит заказ и готовит ответ со счётом PDF. Ваш менеджер проверяет и нажимает «Отправить».</p>
+    <p class="aud">Заказ и счёт сейчас — в 1С:УНФ; УТ 11, КА и ERP — после проверки на копии вашей базы.</p>
+  </div>
+  <div class="cta-box">
+    <div class="cta"><a class="btn btn-act" href="mailto:paladei702@gmail.com?subject=Заявка%20и%20прайс%20—%20Стройматериалы">Переслать одну заявку</a><a class="alt" href="../">Как это работает</a></div>
+    <p class="note">Перешлите одну заявку покупателя и ваш прайс — реквизиты можно стереть. Пришлём счёт по вашим ценам.</p>
+  </div>
+  <figure class="desk" aria-label="Пример заявки в вашей отрасли">
+    <article class="paper nisha-ex">
+      <header><b>Пример заявки</b><span>Стройматериалы</span></header>
+      <p class="from">Дмитрий, прораб ООО «Ремстрой»</p>
+      <p class="txt">Добрый день! Счёт на ООО «Ремстрой»:
+1. Гипсокартон 12,5 мм 1200×2500 — 120 листов
+2. Профиль ПП 60×27, 3 м — 300 шт
+3. Саморезы 3,5×25 — 10 кг
+4. Штукатурка гипсовая 30 кг — 40 мешков
+С доставкой на объект в Химки — когда сможете?</p>
+    </article>
+    <figcaption>Так обычно пишут покупатели в вашей отрасли. Пример, а не прогон: на ваших позициях проверим по вашей заявке и прайсу.</figcaption>
+  </figure>
+  <dl class="terms">
+    <dt>Первые три компании</dt><dd>Подключение и 2&nbsp;недели — бесплатно. Иван готовит ответы и счета, ваш менеджер проверяет и отправляет.</dd>
+    <dt>Оставляете</dt><dd><b class="nb">9&nbsp;900&nbsp;₽/мес.</b> Цену фиксируем в договоре на год.</dd>
+    <dt>Не подошло</dt><dd>Ничего не платите.</dd>
+  </dl>
+</div>
+
+<section class="w sec" aria-labelledby="h-b">
+  <h2 id="h-b"><span class="n">1.</span>Где у вас уходит время</h2>
+  <div class="facts"><p><b>Листы, мешки, поддоны, метры</b>Ошибка в единице — неверная сумма и новый счёт. Иван берёт единицы и цены из карточек вашей 1С.</p><p><b>Доставка: вес, машина, адрес</b>Доставку Иван считает только по вашим правилам. Машину или срок, которых в правилах нет, он передаёт менеджеру и не обещает сам.</p><p><b>Понедельник утром — все заявки сразу</b>Прорабы присылают списки к началу недели. Менеджеры тонут в счетах, а покупатели ждут.</p></div>
+</section>
+
+<section class="w sec" aria-labelledby="h-p">
+  <h2 id="h-p"><span class="n">2.</span>Как это выглядит на деле</h2>
+  <p class="sub">Живой прогон на учебной 1С:УНФ 2 ноября, на запчастях: заявка на две позиции — заказ проведён, счёт PDF через 55&nbsp;с, черновик ответа через 65&nbsp;с. Заявка подана текстом в чат, покупатель заранее привязан к чату.</p>
+  <div class="arts">
+    <a class="invoice" href="../schet-asfr-000437.pdf" aria-label="Открыть счёт АСФР-000437, PDF"><img src="../schet-asfr-000437.png" width="1572" height="1122" alt="Счёт на оплату № АСФР-000437 от 02.11.2026 из учебной 1С:УНФ, реквизиты поставщика скрыты. Итого 23 160,00, НДС 22 % 4 176,40."></a>
+    <div>
+      <p class="small">Настоящая печатная форма 1С, реквизиты поставщика скрыты. Что ещё проверено, какие 1С и каналы подключаем и что нужно от вашего программиста — <a href="../#provereno">на основной странице</a>.</p>
+    </div>
+  </div>
+</section>
+
+<section id="nachat" class="w sec" aria-labelledby="h-na">
+  <h2 id="h-na"><span class="n">3.</span>Как начать</h2>
+  <ol class="plan">
+    <li><div><b>Одна заявка и прайс</b><span>Перешлите заявку покупателя и ваш прайс, реквизиты можно стереть. Пришлём счёт по вашим ценам.</span></div></li>
+    <li><div><b>Две недели на ваших заявках</b><span>Подключаем 1С на копии базы, потом на рабочей. Каждый ответ и счёт уходит только после кнопки «Отправить» у менеджера в Telegram.</span></div></li>
+    <li><div><b>Решаете, оставлять ли</b><span>Оставляете — 9&nbsp;900&nbsp;₽/мес с третьей недели. Не подошло — ничего не платите.</span></div></li>
+  </ol>
+  <div class="contacts">
+    <p>Почта: <a href="mailto:paladei702@gmail.com?subject=Заявка%20и%20прайс%20—%20Стройматериалы">paladei702@gmail.com</a> · Telegram: <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">@smirnovarturr</a>. Отвечаю сам — Артур Смирнов, g.a.d., самозанятый, договор и чек на каждую оплату.</p>
+    <div class="cta"><a class="btn btn-act" href="mailto:paladei702@gmail.com?subject=Заявка%20и%20прайс%20—%20Стройматериалы">Переслать одну заявку</a><a class="alt" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Сначала обсудить в Telegram</a></div>
+  </div>
+</section>
+</main>
+<footer>
+  <div class="w"><span>g.a.d. © 2026</span><span>Отрасли: <a href="../krepezh/">Крепёж и метизы</a> · <a href="../santehnika/">Сантехника</a> · <a href="../elektrika/">Электротехника и кабель</a> · <a href="../zapchasti-spectehniki/">Запчасти спецтехники</a> · <a href="../podshipniki-rti/">Подшипники и РТИ</a> · <a href="../produkty/">Продукты питания</a> · <a href="../upakovka/">Упаковка</a></span><span>Яндекс Метрика — только с вашего согласия · <a href="../politika.html">Политика обработки данных</a></span></div>
+</footer>
+<!-- Yandex.Metrika 114021303 — грузится только после согласия на cookie (152-ФЗ) -->
+<div id="gad-ck" hidden style="position:fixed;left:12px;right:12px;bottom:12px;z-index:9999;max-width:560px;margin:0 auto;background:#fff;color:#16181d;border:1px solid #d6d3cc;border-radius:12px;padding:14px 16px;font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.18)">
+Сайт использует cookie Яндекс Метрики, чтобы считать посещения. Подробнее — в <a href="../politika.html" style="color:inherit">политике обработки данных</a>.
+<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button type="button" data-ck="1" style="font:inherit;font-weight:700;padding:8px 14px;border-radius:8px;border:0;background:#f2c230;color:#16181d;cursor:pointer">Принять</button><button type="button" data-ck="0" style="font:inherit;padding:8px 14px;border-radius:8px;border:1px solid #16181d;background:#fff;color:#16181d;cursor:pointer">Только обязательные</button></div></div>
+<script>
+(function(){
+  var K='gad_ck', v=null;
+  try { v = localStorage.getItem(K); } catch (e) {}
+  function ymLoad(){
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=114021303', 'ym');
+    ym(114021303, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  }
+  if (v === '1') { ymLoad(); return; }
+  if (v === '0') return;
+  function show(){
+    var b = document.getElementById('gad-ck'); if (!b) return;
+    b.hidden = false;
+    b.addEventListener('click', function(ev){
+      var a = ev.target.getAttribute && ev.target.getAttribute('data-ck'); if (a === null) return;
+      try { localStorage.setItem(K, a); } catch (e) {}
+      b.hidden = true; if (a === '1') ymLoad();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', show); else show();
+})();
+</script>
+<!-- /Yandex.Metrika -->
+
+</body>
+</html>
