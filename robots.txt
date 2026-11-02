@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+User-agent: Yandex
+Allow: /
+Clean-param: src /works/ii-sotrudnik/
+
+Sitemap: https://smirnov-artur.github.io/sitemap.xml
