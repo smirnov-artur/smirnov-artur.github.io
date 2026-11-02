@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Магазин</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="tovary.js"></script>
+<style>
+:root{--bg:var(--tg-theme-bg-color,#fff);--tx:var(--tg-theme-text-color,#1b1b1b);--hint:var(--tg-theme-hint-color,#8a8a8a);
+--btn:var(--tg-theme-button-color,#2f6fdf);--btx:var(--tg-theme-button-text-color,#fff);--sec:var(--tg-theme-secondary-bg-color,#f2f3f5)}
+*{box-sizing:border-box}body{margin:0;font:15px/1.35 -apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--tx)}
+html,body{overflow-x:hidden}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 12px;border-bottom:1px solid var(--sec);display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}
+header h1{font-size:17px;margin:0;flex:1 0 100%}
+.prim{flex:1 0 100%;font-size:12px;color:#8a5a00;background:#fff4d6;border-radius:8px;padding:4px 8px}
+.skuprim{font-size:12px;color:var(--hint);margin:-4px 0 6px}
+.card{min-width:0}.nm{overflow-wrap:anywhere}
+.tab{border:0;background:var(--sec);color:var(--tx);padding:7px 10px;border-radius:16px;font-size:13px}
+.tab.on{background:var(--btn);color:var(--btx)}
+.kat{display:flex;gap:6px;overflow-x:auto;padding:8px 12px}
+.kat button{white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;padding:10px 12px 90px}
+.card{background:var(--sec);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.ph{aspect-ratio:1;background:#ddd center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:#999;font-size:12px}
+.card .b{padding:8px;display:flex;flex-direction:column;gap:4px;flex:1}
+.nm{font-size:14px}.hr{font-size:12px;color:var(--hint)}
+.pr{font-weight:600}.os{font-size:12px}.os.malo{color:#d27a00}.os.net{color:#c62828}
+.dl{display:flex;flex-wrap:wrap;gap:4px}
+.dl button{border:1px solid var(--hint);background:var(--bg);color:var(--tx);border-radius:7px;padding:4px 6px;font-size:12px}
+.dl button.on{border-color:var(--btn);background:var(--btn);color:var(--btx)}
+.dl button.net{opacity:.45;text-decoration:line-through}
+.ad{margin-top:auto;border:0;border-radius:8px;padding:8px;background:var(--btn);color:var(--btx);font-size:14px}
+.ad:disabled{opacity:.4}
+.qty{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
+.qty button{width:34px;height:32px;border:0;border-radius:8px;background:var(--btn);color:var(--btx);font-size:18px}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:10px 12px;background:var(--bg);border-top:1px solid var(--sec)}
+.bar button,.big{width:100%;border:0;border-radius:10px;padding:13px;background:var(--btn);color:var(--btx);font-size:16px}
+.pane{padding:12px 12px 100px}
+.row{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--sec)}
+label{display:block;margin:10px 0 4px;font-size:13px;color:var(--hint)}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--sec);border-radius:8px;background:var(--bg);color:var(--tx);font-size:15px}
+.note{background:var(--sec);border-radius:10px;padding:10px;font-size:13px;margin:10px 0}
+.log{font:13px/1.4 ui-monospace,Consolas,monospace;background:var(--sec);border-radius:10px;padding:10px;white-space:pre-wrap}
+.ok{color:#2e7d32}.warn{color:#c62828}
+.hide{display:none}
+#zanovo{margin-left:auto}
+.msg{white-space:pre-wrap;background:#e7f3ff;color:#1b1b1b;border-radius:10px;padding:10px;font-size:14px}
+h3{margin:16px 0 6px}
+</style>
+</head>
+<body>
+<header><h1 id="tt">Магазин</h1><div id="prim" class="prim" hidden></div>
+<button class="tab on" data-v="katalog">Каталог</button>
+<button class="tab" data-v="korzina">Корзина <span id="kc"></span></button>
+<button class="tab" data-v="zhurnal">Маркет</button>
+<button class="tab" id="zanovo">Начать заново</button></header>
+
+<section id="v-katalog"><div class="kat" id="kats"></div><div class="grid" id="grid"></div></section>
+<section id="v-korzina" class="pane hide"></section>
+<section id="v-oformit" class="pane hide"></section>
+<section id="v-zhurnal" class="pane hide"></section>
+<section id="v-gotovo" class="pane hide"></section>
+<div class="bar hide" id="bar"><button id="barbtn"></button></div>
+
+<script>
+const tg = window.Telegram && Telegram.WebApp; if (tg) { tg.ready(); tg.expand(); }
+const K = window.KATALOG || {magazin:"Магазин", tovary:[]};
+document.getElementById("tt").textContent = K.magazin; document.title = K.magazin;
+if (K.primechanie) { const pr = document.getElementById("prim"); pr.textContent = K.primechanie; pr.hidden = false; }
+const LS = "demo-shop:" + K.magazin;
+const rub = n => n.toLocaleString("ru-RU",{maximumFractionDigits:2}) + " ₽";
+const esc = s => String(s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+// Остатки: из каталога → поверх то, что прислал бот в ссылке (#s=id:n,...) → поверх заказы на этом телефоне
+// Остатки живут только пока страница открыта: каждое новое открытие начинается с остатков из УТ.
+let st = {ost:{}, zhurnal:[], nomer:1000};
+const hs = new URLSearchParams(location.hash.slice(1));
+if (hs.get("s") !== null) {             // бот — главный источник остатков
+  st.ost = {};
+  hs.get("s").split(",").filter(Boolean).forEach(p => { const i = p.lastIndexOf(":"); st.ost[decodeURIComponent(p.slice(0,i))] = +p.slice(i+1); });
+  if (hs.get("n")) st.nomer = +hs.get("n");
+}
+const ostatok = t => (t.id in st.ost ? st.ost[t.id] : t.ostatok);
+// Остаток для Маркета. razmer: SKU размера и его остаток; model: SKU = артикул, сумма всех размеров модели.
+const REZHIM = (K.market && K.market.rezhim) || "razmer";
+const model = t => t.artikul || t.model || t.id;
+function dlyaMarketa(prodano){        // вызывать ПОСЛЕ уменьшения st.ost
+  if (REZHIM === "model") {
+    const zadety=[...new Set(K.tovary.filter(t=>t.id in prodano).map(model))];
+    return zadety.map(m=>{ const vse=K.tovary.filter(t=>model(t)===m);
+      const stalo=vse.reduce((a,t)=>a+ostatok(t),0), bylo=stalo+vse.reduce((a,t)=>a+(prodano[t.id]||0),0);
+      return {sku:m, bylo, stalo, podpis: vse.length>1 ? "все варианты: "+vse.map(t=>(t.harakteristika||"—")+" "+ostatok(t)).join(", ") : ""}; });
+  }
+  return K.tovary.filter(t=>t.id in prodano).map(t=>({sku:t.sku||t.id, bylo:ostatok(t)+prodano[t.id], stalo:ostatok(t), podpis:t.harakteristika||""}));
+}
+const save = () => {};
+const cBota = !!(tg && tg.initData);   // открыт кнопкой бота — тогда заказ уходит боту
+let korz = {}; let kat = ""; const vybor = {};
+
+function vid(v){ document.querySelectorAll("section").forEach(s=>s.classList.add("hide"));
+  document.getElementById("v-"+v).classList.remove("hide");
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on", b.dataset.v===v));
+  ({katalog:risKatalog, korzina:risKorzina, oformit:risOformit, zhurnal:risZhurnal})[v]?.(); window.scrollTo(0,0); }
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>vid(b.dataset.v));
+
+function bar(text, fn){ const b=document.getElementById("bar"); if(!text){b.classList.add("hide");return;}
+  b.classList.remove("hide"); const x=document.getElementById("barbtn"); x.textContent=text; x.onclick=fn; }
+const vKorzine = () => Object.values(korz).reduce((a,b)=>a+b,0);
+const summa = () => K.tovary.reduce((a,t)=>a+(korz[t.id]||0)*t.cena,0);
+function schet(){ const n=vKorzine(); document.getElementById("kc").textContent = n? "("+n+")":""; }
+
+function risKatalog(){
+  const kats=[...new Set(K.tovary.map(t=>t.kategoriya).filter(Boolean))];
+  document.getElementById("kats").innerHTML = kats.length>1 ? ["",...kats].map(k=>`<button class="tab ${k===kat?"on":""}" data-k="${esc(k)}">${esc(k||"Все")}</button>`).join("") : "";
+  document.querySelectorAll("#kats button").forEach(b=>b.onclick=()=>{kat=b.dataset.k;risKatalog();});
+  // одна карточка на модель, вариант (цвет или длина) выбирается на карточке; «110–125 см» — одно значение длины
+  const modeli=[]; const poM={};
+  K.tovary.filter(t=>!kat||t.kategoriya===kat).forEach(t=>{const m=model(t); if(!poM[m]){poM[m]=[];modeli.push(m);} poM[m].push(t);});
+  const estM = m => poM[m].some(t=>ostatok(t)>0);
+  modeli.sort((a,b)=>estM(b)-estM(a));
+  document.getElementById("grid").innerHTML = modeli.map(m=>{
+    const vse=poM[m];
+    if(!vse.some(t=>t.id===vybor[m])) vybor[m]=(vse.find(t=>ostatok(t)>0)||vse[0]).id;
+    const t=vse.find(x=>x.id===vybor[m]);
+    const o=ostatok(t), v=korz[t.id]||0;
+    const os = o<=0?'<span class="os net">нет в наличии</span>': o<=3?`<span class="os malo">осталось ${o} шт</span>`:`<span class="os">в наличии ${o} шт</span>`;
+    const f=(t.foto&&t.foto[0])?t:vse.find(x=>x.foto&&x.foto[0]);  // фото выбранного варианта (цвета), иначе модели
+    const ph = f ? `style="background-image:url('${esc(f.foto[0])}')"` : "";
+    const dl = vse.length>1 || t.harakteristika ? `<div class="dl">${vse.map(x=>`<button class="${x.id===t.id?"on":""} ${ostatok(x)<=0?"net":""}" data-d="${esc(x.id)}" data-mm="${esc(m)}">${esc(x.harakteristika||"—")}</button>`).join("")}</div>` : "";
+    const kn = v? `<div class="qty"><button data-m="${esc(t.id)}">−</button><b>${v}</b><button data-p="${esc(t.id)}" ${v>=o?"disabled":""}>+</button></div>`
+                : `<button class="ad" data-p="${esc(t.id)}" ${o<=0?"disabled":""}>В корзину</button>`;
+    return `<div class="card"><div class="ph" ${ph}>${ph?"":"нет фото"}</div><div class="b">
+      <div class="nm">${esc(t.nazvanie)}</div>${dl}
+      ${t.artikul?`<div class="hr">арт. ${esc(t.artikul)}</div>`:""}<div class="pr">${rub(t.cena)}</div>${os}${kn}</div></div>`;}).join("")
+    || '<div class="note">Каталог пуст: не загружен tovary.js.</div>';
+  document.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{vybor[b.dataset.mm]=b.dataset.d; risKatalog();});
+  document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{const t=K.tovary.find(x=>x.id===b.dataset.p); if((korz[t.id]||0)<ostatok(t)){korz[t.id]=(korz[t.id]||0)+1; tg?.HapticFeedback?.selectionChanged();} schet(); risKatalog();});
+  document.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{const id=b.dataset.m; korz[id]--; if(korz[id]<=0) delete korz[id]; schet(); risKatalog();});
+  bar(vKorzine()? `Корзина · ${rub(summa())}` : "", ()=>vid("korzina"));
+}
+
+function risKorzina(){
+  const el=document.getElementById("v-korzina"); const st_=K.tovary.filter(t=>korz[t.id]);
+  if(!st_.length){ el.innerHTML='<div class="note">Корзина пуста.</div>'; bar("К каталогу",()=>vid("katalog")); return; }
+  el.innerHTML = st_.map(t=>`<div class="row"><span>${esc(t.nazvanie)}${t.harakteristika?", "+esc(t.harakteristika):""}<br><span class="hr">${korz[t.id]} × ${rub(t.cena)}</span></span><b>${rub(korz[t.id]*t.cena)}</b></div>`).join("")
+    + `<div class="row"><b>Итого</b><b>${rub(summa())}</b></div>`;
+  bar("Оформить заказ", ()=>vid("oformit"));
+}
+
+function risOformit(){
+  const u = tg?.initDataUnsafe?.user;
+  document.getElementById("v-oformit").innerHTML = `
+    <label>Имя</label><input id="f-imya" value="${esc(u? [u.first_name,u.last_name].filter(Boolean).join(" "):"")}">
+    <label>Телефон</label><input id="f-tel" type="tel" placeholder="+7">
+    <label>Доставка</label><select id="f-dost"><option>Курьер по Москве</option><option>Пункт выдачи</option><option>Самовывоз</option></select>
+    <label>Комментарий</label><textarea id="f-kom" rows="2"></textarea>
+    <label>Оплата</label><select id="f-opl"><option>Картой онлайн</option><option>При получении</option></select>
+    <div class="note">Демо: оплата — заглушка, деньги не списываются. В рабочей версии здесь подключается платёжка.</div>
+    <div class="row"><b>К оплате</b><b>${rub(summa())}</b></div>`;
+  bar("Подтвердить заказ", oformit);
+}
+
+function oformit(){
+  const g = id => document.getElementById(id).value.trim();
+  if(!g("f-imya")||!g("f-tel")){ (tg?.showAlert ? tg.showAlert("Заполните имя и телефон") : alert("Заполните имя и телефон")); return; }
+  // проверка остатка в момент заказа
+  for (const id in korz){ const t=K.tovary.find(x=>x.id===id); if(korz[id]>ostatok(t)){ alert(`«${t.nazvanie}» осталось ${ostatok(t)} шт`); return; } }
+  st.nomer++; const nomer=st.nomer, vremya=new Date().toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"});
+  const stroki=[];
+  for (const id in korz){ const t=K.tovary.find(x=>x.id===id); st.ost[id]=ostatok(t)-korz[id]; stroki.push({t, kol:korz[id]}); }
+  const mk = dlyaMarketa({...korz});
+  st.zhurnal.unshift({nomer, vremya, mk});
+  const zakaz = {n:nomer, i:Object.entries(korz), c:{imya:g("f-imya"), tel:g("f-tel"), dost:g("f-dost"), opl:g("f-opl"), kom:g("f-kom").slice(0,300)}, s:summa()};
+  save();
+  const el=document.getElementById("v-gotovo");
+  const soobsh = `🛒 Новый заказ №${nomer} из Телеграма
+`
+    + stroki.map(r=>`• ${r.t.nazvanie}${r.t.harakteristika?", "+r.t.harakteristika:""} (арт. ${r.t.artikul}) × ${r.kol} = ${rub(r.kol*r.t.cena)}`).join("\n")
+    + `
+Итого: ${rub(zakaz.s)}
+
+Покупатель: ${zakaz.c.imya} ${zakaz.c.tel}
+Доставка: ${zakaz.c.dost}
+Оплата: ${zakaz.c.opl}`
+    + (zakaz.c.kom?`
+Комментарий: ${zakaz.c.kom}`:"")
+    + `
+
+Остаток на Яндекс Маркете:
+` + mk.map(strokaMk).join("\n");
+  el.innerHTML = `<h2 class="ok">Заказ №${nomer} принят</h2>
+    ${stroki.map(r=>`<div class="row"><span>${esc(r.t.nazvanie)}${r.t.harakteristika?", "+esc(r.t.harakteristika):""} × ${r.kol}</span><b>${rub(r.kol*r.t.cena)}</b></div>`).join("")}
+    <div class="row"><b>Итого</b><b>${rub(zakaz.s)}</b></div>
+    <h3>Что ушло на Яндекс Маркет</h3><div class="log">${mk.map(r=>esc(strokaMk(r))).join("\n")}</div>
+    <div class="hr">В рабочей версии этот остаток сразу уходит в ваш кабинет Маркета через API.</div>
+    ${cBota?"":`<h3>Сообщение продавцу</h3><div class="hr">В рабочей версии этот заказ сразу придёт вам сообщением в Телеграм:</div><div class="msg">${esc(soobsh)}</div>`}`;
+  korz={}; schet(); vid("gotovo"); bar("В каталог", ()=>vid("katalog"));
+  // Заказ продавцу: через бота (если магазин открыт кнопкой бота) — Telegram закроет окно и бот пришлёт подтверждение
+  if (cBota && typeof tg.sendData==="function") { try { setTimeout(()=>tg.sendData(JSON.stringify(zakaz)), 1500); } catch(e) {} }
+}
+
+const strokaMk = r => `SKU ${r.sku}: остаток ${r.bylo} → ${r.stalo}` + (r.stalo===0?" (закончился, снят с продажи)":"");
+function risZhurnal(){
+  document.getElementById("v-zhurnal").innerHTML = `<h3>Что ушло на Яндекс Маркет</h3>
+   <div class="hr">В рабочей версии каждая строка сразу уходит в ваш кабинет Маркета через API.</div>
+   ${K.market && K.market.podpis_sku ? `<div class="skuprim" style="margin:4px 0 6px">${esc(K.market.podpis_sku)}</div>` : ""}
+   <div class="log">${st.zhurnal.length? st.zhurnal.map(z=>`Заказ №${z.nomer}, ${z.vremya}
+`+z.mk.map(r=>esc(strokaMk(r))).join("\n")).join("\n\n") : "Заказов пока не было. Оформите заказ — здесь появится строка «SKU …: остаток N → N−1»."}</div>`;
+  bar("", null);
+}
+function zanovo(){ st={ost:{}, zhurnal:[], nomer:1000}; korz={}; for(const k in vybor) delete vybor[k]; kat="";
+  if(location.hash) history.replaceState(null,"",location.pathname+location.search); schet(); vid("katalog"); }
+document.getElementById("zanovo").onclick=zanovo;
+risKatalog();
+</script>
+</body>
+</html>
