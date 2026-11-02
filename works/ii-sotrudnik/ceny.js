@@ -1,7 +1,6 @@
 /* Условия первых трёх компаний и калькулятор времени. Без старых тарифов и доплат. */
 window.CENY = {
   pervye3: {nedel: 2, cena: 9900, mest: 3},
-  partnery: {dolya: 0.25},
   test: {obrascheniy: 20},
   demo: {minut: 2},
   rabochihDnej: 22,
