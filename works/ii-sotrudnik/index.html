@@ -836,6 +836,16 @@ footer a{display:inline-block;padding:11px 0}
   <a class="btn btn-acc" href="#itog" tabindex="-1">Итог</a>
 </div>
 
+<script>
+// 02.11: метка источника страницы → в ссылку на демо-бота (VK режет t.me в клипах, ведём на страницу ?src=vk_…); start ≤ 64 знаков
+(() => {
+  const s = new URLSearchParams(location.search).get('src');
+  const metka = s && /^[A-Za-z0-9_-]{1,59}$/.test(s) ? 'site_' + s : 'site';
+  document.querySelectorAll('a[href^="https://t.me/romashka_zapchasti_bot"]').forEach(a => {
+    a.href = 'https://t.me/romashka_zapchasti_bot?start=' + metka;
+  });
+})();
+</script>
 <script src="ceny.js"></script>
 <script>
 (() => {
