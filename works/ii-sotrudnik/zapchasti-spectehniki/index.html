@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Счёт по заявке на запчасти — из вашей 1С за 2 минуты — g.a.d.</title>
-<meta name="description" content="ИИ-оператор 1С для поставщиков запчастей для спецтехники: заявка покупателя → проведённый заказ и счёт PDF из вашей 1С, менеджер проверяет и отправляет. Первые три компании — подключение и 2 недели бесплатно, дальше 9 900 ₽/мес до 1 000 обращений.">
+<title>ИИ-менеджер для поставщиков запчастей для спецтехники: сделка от заявки до оплаты в 1С — g.a.d.</title>
+<meta name="description" content="ИИ-менеджер по продажам для поставщиков запчастей для спецтехники: отвечает покупателю, проводит заказ, выставляет счёт PDF и отвечает про долг в вашей 1С; менеджер проверяет и отправляет. Первые три компании — подключение и 2 недели бесплатно, дальше 9 900 ₽/мес до 1 000 обращений.">
 <link rel="canonical" href="https://smirnov-artur.github.io/works/ii-sotrudnik/zapchasti-spectehniki/">
-<meta property="og:title" content="Счёт по заявке на запчасти — из вашей 1С за 2 минуты"><meta property="og:description" content="ИИ-оператор 1С для поставщиков запчастей для спецтехники: заявка покупателя → проведённый заказ и счёт PDF из вашей 1С, менеджер проверяет и отправляет. Первые три компании — подключение и 2 недели бесплатно, дальше 9 900 ₽/мес до 1 000 обращений."><meta property="og:type" content="website">
+<meta property="og:title" content="ИИ-менеджер для поставщиков запчастей для спецтехники: сделка от заявки до оплаты в 1С"><meta property="og:description" content="ИИ-менеджер по продажам для поставщиков запчастей для спецтехники: отвечает покупателю, проводит заказ, выставляет счёт PDF и отвечает про долг в вашей 1С; менеджер проверяет и отправляет. Первые три компании — подключение и 2 недели бесплатно, дальше 9 900 ₽/мес до 1 000 обращений."><meta property="og:type" content="website">
 <meta property="og:image" content="https://smirnov-artur.github.io/works/ii-sotrudnik/schet-asfr-000471.png">
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -103,6 +103,19 @@ h1{font-size:clamp(32px,1.6vw + 25px,46px);line-height:1.1;font-weight:650;lette
   .invoice{margin:-34px 0 0}
   .reply{width:64%;margin-top:-62px}
 }
+
+/* цепочка сделки на первом экране */
+.sdelka ol{list-style:none;display:grid;gap:12px;counter-reset:z}
+@media (min-width:600px){.sdelka ol{grid-template-columns:1fr 1fr}.sdelka li.wide{grid-column:1/-1}}
+.sdelka li{background:#fff;border-radius:var(--r);box-shadow:var(--e2);padding:12px 14px 14px;font-size:15px;line-height:1.45;min-width:0}
+.sdelka li header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px 12px;font-size:14px;color:var(--meta);margin-bottom:6px}
+.sdelka li header b{color:var(--ink);font-weight:650;font-size:16px}
+.sdelka li header b::before{counter-increment:z;content:counter(z) ". ";color:var(--meta)}
+.sdelka .from{font-size:14px;color:var(--ink2);margin-bottom:4px}
+.sdelka .txt{white-space:pre-line}
+.sdelka img{width:100%;border:1px solid var(--rule)}
+.sdelka li.pilot{background:var(--slot);box-shadow:none;border:1.5px dashed var(--rule2);color:var(--ink2)}
+.sdelka .tag{font-size:13px;font-weight:600;color:var(--meta);border:1px solid var(--rule2);border-radius:3px;padding:1px 6px}
 
 /* разделы */
 .sec{padding-top:24px;padding-bottom:72px}
@@ -214,25 +227,30 @@ footer .w{display:flex;flex-wrap:wrap;gap:8px 20px}
 <main>
 <div class="w hero">
   <div class="intro">
-    <p class="what">Для поставщиков запчастей для спецтехники</p>
-    <h1>Счёт по заявке на запчасти — из вашей 1С за 2 минуты</h1>
-    <p class="lead">Иван находит каждую позицию заявки в вашей 1С, проверяет цены и остатки, проводит заказ и готовит ответ со счётом PDF. Ваш менеджер проверяет и нажимает «Отправить».</p>
-    <p class="aud">Заказ и счёт сейчас — в 1С:УНФ; УТ 11, КА и ERP — после проверки на копии вашей базы.</p>
+    <p class="what">Запчасти спецтехники · ИИ-менеджер по продажам</p>
+    <h1>Ведёт сделку от&nbsp;заявки до&nbsp;оплаты — в&nbsp;вашей&nbsp;1С</h1>
+    <p class="lead">Делает работу менеджера: отвечает покупателю с ценами и остатками, проводит заказ, выставляет счёт PDF, отвечает про долг. Каждое сообщение проверяет и отправляет ваш менеджер.</p>
+    <p class="aud">Вместо оператора 1С или помощника менеджера — это около 70&nbsp;000&nbsp;₽ на руки в месяц. Заказ и счёт — в 1С:УНФ; УТ 11, КА и ERP — после проверки на копии.</p>
   </div>
   <div class="cta-box">
     <div class="cta"><a class="btn btn-act" href="mailto:paladei702@gmail.com?subject=Одна%20заявка%20—%20Запчасти%20спецтехники">Переслать одну заявку</a><a class="alt" href="../">Как это работает</a></div>
     <p class="note">Перешлите одну заявку как есть — цены нужны только на её позиции, реквизиты можно стереть. Счёт-образец пришлём в тот же день. Или <a href="https://t.me/romashka_zapchasti_bot?start=site_zapchasti-spectehniki" target="_blank" rel="noopener">напишите демо-боту как покупатель</a> — он на учебном прайсе запчастей и отвечает днём, например: «счёт на 10 шт 32/925994».</p>
   </div>
-  <figure class="desk" aria-label="Пример заявки в вашей отрасли">
-    <article class="paper nisha-ex">
-      <header><b>Заявка покупателя</b><span>Запчасти спецтехники</span></header>
-      <p class="from">Ольга, снабжение ООО «Стройтех»</p>
-      <p class="txt">Добрый день!
+  <figure class="desk sdelka" aria-label="Сделка по заявке в вашей отрасли">
+    <ol>
+      <li class="wide"><header><b>Заявка покупателя</b><span>Запчасти спецтехники</span></header>
+        <p class="from">Ольга, снабжение ООО «Стройтех»</p>
+        <p class="txt">Добрый день!
 Выставьте, пожалуйста, счёт на ООО «Стройтех»:
 1. Фильтр масляный 320/04133 — 10 шт.
 2. Фильтр топливный 333/D7404 — 4 шт.
-Реквизиты у вас есть, оплатим сегодня.</p>
-    </article>
+Реквизиты у вас есть, оплатим сегодня.</p></li>
+      <li><header><b>Ответ с ценами и остатками</b></header><p>Каждая позиция — по вашей 1С; чего нет — так и пишет.</p></li>
+      <li><header><b>Заказ проведён в 1С</b></header><p>Покупатель, позиции и цены — из базы.</p></li>
+      <li><header><b>Счёт PDF по заказу</b></header><p>Уходит покупателю после кнопки менеджера.</p></li>
+      <li class="pilot"><header><b>Напоминание об оплате</b><span class="tag">в пилоте</span></header><p>По вашим правилам: срок, часы, сколько раз.</p></li>
+      <li class="pilot wide"><header><b>Долг и акт сверки</b><span class="tag">долг — проверено, акт PDF — в пилоте</span></header><p>«Сколько мы должны?» — Иван отвечает по данным 1С. <a href="../">Вся цепочка со снимками 1С</a></p></li>
+    </ol>
     <figcaption>Это заявка из живого прогона — что из неё получилось, ниже.</figcaption>
   </figure>
   <dl class="terms">
