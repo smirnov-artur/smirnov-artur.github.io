@@ -289,13 +289,18 @@ footer .w{display:flex;flex-wrap:wrap;gap:8px 20px}
   <h2 id="h-dok"><span class="n">1.</span>Как ведёт сделку</h2>
   <p class="sub">Не выгрузка и не чат-бот: выгрузка отдаёт данные, а Иван делает работу менеджера — от ответа покупателю до оплаты. Решение об отправке остаётся у вашего менеджера.</p>
   <table class="tbl steps-tbl">
-    <thead><tr><th scope="col">Шаг по заявке</th><th scope="col">Сейчас вручную</th><th scope="col">С Иваном</th><th scope="col">Что было в прогоне 2 ноября</th></tr></thead>
+    <thead><tr><th scope="col">Шаг по заявке</th><th scope="col">Сейчас вручную</th><th scope="col">С Иваном</th><th scope="col">Что было в прогонах на стенде</th></tr></thead>
     <tbody>
       <tr><th scope="row">Разобрать заявку и список товаров</th><td class="now m" data-l="Сейчас">менеджер</td><td class="iv" data-l="С Иваном">Иван</td><td class="ev">Две позиции из текста заявки: <span class="nb">320/04133 — 4&nbsp;шт,</span> <span class="nb">333/D7404 — 4&nbsp;шт.</span></td></tr>
       <tr><th scope="row">Найти цены и остатки в 1С</th><td class="now m" data-l="Сейчас">менеджер</td><td class="iv" data-l="С Иваном">Иван</td><td class="ev">Цены из 1С: <span class="nb">1&nbsp;850,00</span> и <span class="nb">1&nbsp;165,00&nbsp;₽.</span> Покупатель — ООО Стройтех, ИНН&nbsp;7701234567 (заранее привязан к чату).</td></tr>
       <tr><th scope="row">Подготовить заказ и счёт PDF</th><td class="now m" data-l="Сейчас">менеджер</td><td class="iv" data-l="С Иваном">Иван</td><td class="ev">Заказ покупателя АСФР-000471 — <em>проведён</em>. Счёт PDF на <span class="nb">12&nbsp;060,00&nbsp;₽,</span> в&nbsp;т.&nbsp;ч. НДС&nbsp;22&nbsp;% — <span class="nb">2&nbsp;174,76.</span> Через 41&nbsp;с.</td></tr>
       <tr><th scope="row">Проверить и отправить покупателю</th><td class="now m" data-l="Сейчас">менеджер</td><td class="iv" data-l="С Иваном">ваш менеджер</td><td class="ev">Ответ со счётом готов через 47&nbsp;с — его текст на первом экране.</td></tr>
       <tr><th scope="row">Ответить про долг</th><td class="now m" data-l="Сейчас">менеджер или бухгалтер</td><td class="iv" data-l="С Иваном">Иван</td><td class="ev">По данным 1С — проверено на нашем стенде. Акт сверки PDF и напоминания об оплате — в пилоте.</td></tr>
+      <tr><th scope="row">Найти деталь по фото</th><td class="now m" data-l="Сейчас">менеджер</td><td class="iv" data-l="С Иваном">Иван</td><td class="ev">Покупатель прислал фото детали — Иван нашёл позицию в 1С: «есть, 14&nbsp;шт по 1&nbsp;850», и аналог из остатков по 990. Прогон 30.10.</td></tr>
+      <tr><th scope="row">Не хватает на складе</th><td class="now m" data-l="Сейчас">менеджер</td><td class="iv" data-l="С Иваном">Иван</td><td class="ev">Оригинала 14&nbsp;шт — остальные 16 предложил аналогом из остатков 1С, счёт АСФР-000107 на <span class="nb">41&nbsp;740&nbsp;₽.</span> Прогон 31.10.</td></tr>
+      <tr><th scope="row">Скидка сверх лимита</th><td class="now m" data-l="Сейчас">менеджер или руководитель</td><td class="iv" data-l="С Иваном">Иван → вам</td><td class="ev">Просили 10&nbsp;% при лимите 5&nbsp;% — лишнего не пообещал, прислал вам на решение кнопками, счёт выставил на 5&nbsp;%. Прогоны 28.10 и 02.11.</td></tr>
+      <tr><th scope="row">Претензия покупателя</th><td class="now m" data-l="Сейчас">менеджер</td><td class="iv" data-l="С Иваном">Иван</td><td class="ev">Требовали 20&nbsp;% за простой — сверил заказ и оплату в 1С, лишнего не обещал, вам — сводка с фактами. Прогоны 31.10 и 02.11.</td></tr>
+      <tr><th scope="row">Что заказать у поставщиков</th><td class="now m" data-l="Сейчас">руководитель</td><td class="iv" data-l="С Иваном">Иван, утром</td><td class="ev">Сводка руководителю по остаткам и спросу: на 03.11 — заказать у 3 поставщиков на <span class="nb">53&nbsp;540&nbsp;₽.</span> Сам заказ поставщику — в пилоте.</td></tr>
     </tbody>
   </table>
 
@@ -314,7 +319,7 @@ footer .w{display:flex;flex-wrap:wrap;gap:8px 20px}
     <tbody>
       <tr><th scope="row">Напоминания об оплате</th><td class="full">Пишет покупателю по неоплаченному счёту: срок, часы и число напоминаний — ваши</td><td data-l="Статус">в пилоте</td></tr>
       <tr><th scope="row">Акт сверки PDF</th><td class="full">Собирает по данным 1С и присылает покупателю по запросу</td><td data-l="Статус">в пилоте</td></tr>
-      <tr><th scope="row">КП и скидки</th><td class="full">Готовит коммерческое предложение по вашим ценам; скидку выше вашего порога согласует руководитель</td><td data-l="Статус">в пилоте</td></tr>
+      <tr><th scope="row">КП</th><td class="full">Готовит коммерческое предложение по вашим ценам и скидкам; скидку выше лимита уже сейчас присылает вам на решение</td><td data-l="Статус">в пилоте</td></tr>
       <tr><th scope="row">Договор поставки</th><td class="full">Заполняет ваш шаблон договора данными покупателя из 1С</td><td data-l="Статус">в пилоте</td></tr>
       <tr><th scope="row">УПД и ЭДО</th><td class="full">Готовит УПД по отгрузке и отправляет через Диадок или СБИС после подтверждения менеджера</td><td data-l="Статус">в пилоте</td></tr>
       <tr><th scope="row">Формирование машин</th><td class="full">Собирает оплаченные заказы в рейсы по адресам и весу</td><td data-l="Статус">в пилоте</td></tr>
