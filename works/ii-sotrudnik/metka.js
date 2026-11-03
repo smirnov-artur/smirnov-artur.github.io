@@ -24,6 +24,8 @@
   a.href = 'https://gad-production.ru' + put + location.search + location.hash;
   a.textContent = 'gad-production.ru';
   a.style.cssText = 'color:#FFD43B;font-weight:700';
+  const w = document.querySelector('.intro .what');  // в надзаголовок — без сдвига первого экрана (кнопка над плашкой cookie)
+  if (w) { a.style.color = 'inherit'; w.textContent = ''; w.append('Страница переехала на ', a); return; }
   d.append('Страница переехала на ', a);
   document.body.prepend(d);
 })();
