@@ -5,7 +5,7 @@
 <script>
 /* 29.10: Telegram держит свёрнутый магазин открытым, а открытая раньше страница лежит в кэше — Дмитрий видел старое.
    versiya.txt — номер выкладки (менять при каждой). Не совпал с этим — грузим страницу заново мимо кэша; проверка при открытии и при каждом возврате в магазин */
-var VERSIYA = "2026-11-02-1";
+var VERSIYA = "2026-11-03-1";
 (function () {
   function proverit() {
     fetch("versiya.txt?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (v) {
@@ -563,7 +563,7 @@ body,.scr{background-color:#fff;background-image:var(--setka);background-size:24
   <div class="sec-h"><h2>Что у нас есть</h2><p>Все разделы — всё, что сейчас в наличии</p></div>
   <div class="rzd" id="razdely"></div>
 
-  <div class="sec-h"><h2>Образы целиком</h2><p>Вещи, которые носят вместе, — по цветам и на ваш размер</p></div>
+  <div class="sec-h"><h2>Образы целиком</h2><p>Как собирает дизайнер бренда Ирина Владимировна — с наших съёмок, на ваш размер</p></div>
   <div class="caps noscroll" id="caps"></div>
   <button class="btn line allcaps" data-allcaps></button>
 
