@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ИИ-агент для 1С: счёт по заявке покупателя за 2 минуты — g.a.d.</title>
-<meta name="description" content="Заявка покупателя → проведённый заказ, счёт PDF из вашей 1С и готовый ответ за 2 минуты. Менеджер проверяет и отправляет. Первым трём компаниям подключение и 2 недели бесплатно, дальше 9 900 ₽/мес до 1 000 обращений.">
+<title>ИИ-агент для 1С: ведёт сделку от заявки до оплаты — g.a.d.</title>
+<meta name="description" content="ИИ-менеджер по продажам в вашей 1С: ответ покупателю с ценами и остатками, проведённый заказ, счёт PDF, ответ про долг по данным 1С. Менеджер проверяет и отправляет. Первым трём компаниям подключение и 2 недели бесплатно, дальше 9 900 ₽/мес до 1 000 обращений.">
 <link rel="canonical" href="https://smirnov-artur.github.io/works/ii-sotrudnik/">
-<meta property="og:title" content="Заявка покупателя → счёт из вашей 1С за 2 минуты">
+<meta property="og:title" content="ИИ-менеджер по продажам в вашей 1С: ведёт сделку от заявки до оплаты">
 <meta property="og:description" content="Живой прогон на учебной 1С:УНФ: счёт PDF через 41 секунду, ответ покупателю через 47. Первым трём компаниям подключение и 2 недели бесплатно.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://smirnov-artur.github.io/works/ii-sotrudnik/schet-asfr-000471.png">
@@ -106,6 +106,19 @@ h1{font-size:clamp(32px,1.6vw + 25px,46px);line-height:1.1;font-weight:650;lette
   .invoice{margin:-34px 0 0}
   .reply{width:64%;margin-top:-62px}
 }
+
+/* цепочка сделки на первом экране */
+.sdelka ol{list-style:none;display:grid;gap:12px;counter-reset:z}
+@media (min-width:600px){.sdelka ol{grid-template-columns:1fr 1fr}.sdelka li.wide{grid-column:1/-1}}
+.sdelka li{background:#fff;border-radius:var(--r);box-shadow:var(--e2);padding:12px 14px 14px;font-size:15px;line-height:1.45;min-width:0}
+.sdelka li header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px 12px;font-size:14px;color:var(--meta);margin-bottom:6px}
+.sdelka li header b{color:var(--ink);font-weight:650;font-size:16px}
+.sdelka li header b::before{counter-increment:z;content:counter(z) ". ";color:var(--meta)}
+.sdelka .from{font-size:14px;color:var(--ink2);margin-bottom:4px}
+.sdelka .txt{white-space:pre-line}
+.sdelka img{width:100%;border:1px solid var(--rule)}
+.sdelka li.pilot{background:var(--slot);box-shadow:none;border:1.5px dashed var(--rule2);color:var(--ink2)}
+.sdelka .tag{font-size:13px;font-weight:600;color:var(--meta);border:1px solid var(--rule2);border-radius:3px;padding:1px 6px}
 
 /* разделы */
 .sec{padding-top:24px;padding-bottom:72px}
@@ -223,10 +236,10 @@ footer .w{display:flex;flex-wrap:wrap;gap:8px 20px}
 <main>
 <div class="w hero">
   <div class="intro">
-    <p class="what">ИИ-оператор 1С для отдела продаж</p>
-    <h1>Заявка покупателя → счёт из&nbsp;вашей&nbsp;1С за&nbsp;2&nbsp;минуты</h1>
-    <p class="lead">Иван находит товары в вашей 1С, проверяет цены и остатки, проводит заказ и готовит ответ со счётом PDF. Ваш менеджер проверяет и нажимает «Отправить».</p>
-    <p class="aud">Оптовым компаниям, где счета по заявкам выписывают вручную менеджеры или оператор 1С: запчасти, крепёж, сантехника, электрика, стройматериалы. Заказ и счёт сейчас — в 1С:УНФ; УТ 11, КА и ERP — после проверки на копии вашей базы.</p>
+    <p class="what">ИИ-менеджер по продажам в вашей 1С</p>
+    <h1>Ведёт сделку от&nbsp;заявки до&nbsp;оплаты — в&nbsp;вашей&nbsp;1С</h1>
+    <p class="lead">Делает работу менеджера: отвечает покупателю с ценами и остатками, проводит заказ, выставляет счёт PDF, отвечает про долг. Каждое сообщение проверяет и отправляет ваш менеджер.</p>
+    <p class="aud">Вместо оператора 1С или помощника менеджера — это около 70&nbsp;000&nbsp;₽ на руки в месяц. Заказ и счёт — в 1С:УНФ; УТ 11, КА и ERP — после проверки на копии.</p>
   </div>
 
   <div class="cta-box">
@@ -237,45 +250,26 @@ footer .w{display:flex;flex-wrap:wrap;gap:8px 20px}
     <p class="note">Перешлите одну заявку как есть на <a href="mailto:paladei702@gmail.com?subject=%D0%9E%D0%B4%D0%BD%D0%B0%20%D0%B7%D0%B0%D1%8F%D0%B2%D0%BA%D0%B0&body=%D0%A5%D0%BE%D1%87%D1%83%20%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%B8%D1%82%D1%8C%20%D0%BE%D0%B4%D0%BD%D1%83%20%D0%B7%D0%B0%D1%8F%D0%B2%D0%BA%D1%83.%0D%0A%0D%0A%D0%9C%D0%BE%D1%8F%20%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F%201%D0%A1%3A%0D%0A%0D%0A%D0%9E%D1%82%D0%BA%D1%83%D0%B4%D0%B0%20%D0%BF%D1%80%D0%B8%D1%85%D0%BE%D0%B4%D1%8F%D1%82%20%D0%B7%D0%B0%D1%8F%D0%B2%D0%BA%D0%B8%3A%0D%0A%0D%0A%D0%97%D0%B0%D1%8F%D0%B2%D0%BA%D1%83%20%D0%B8%20%D1%86%D0%B5%D0%BD%D1%8B%20%D0%BD%D0%B0%20%D0%B5%D1%91%20%D0%BF%D0%BE%D0%B7%D0%B8%D1%86%D0%B8%D0%B8%20%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D1%83%20%D0%BA%20%D0%BF%D0%B8%D1%81%D1%8C%D0%BC%D1%83.%20%D0%A0%D0%B5%D0%BA%D0%B2%D0%B8%D0%B7%D0%B8%D1%82%D1%8B%20%D0%BF%D0%BE%D0%BA%D1%83%D0%BF%D0%B0%D1%82%D0%B5%D0%BB%D1%8F%20%D1%83%D0%B4%D0%B0%D0%BB%D0%B5%D0%BD%D1%8B.">paladei702@gmail.com</a> — цены нужны только на её позиции, реквизиты можно стереть. Счёт-образец пришлём в тот же день. Демо-бот отвечает днём, в рабочее время. Для подробной проверки — бесплатный тест на 20 прошлых переписках, <a href="primer-testa.html">пример отчёта</a>.</p>
   </div>
 
-  <figure class="desk" aria-label="Прогон на учебной 1С 2 ноября: заявка, счёт по заказу из 1С и ответ">
-    <article class="paper letter">
-      <header><b>Заявка покупателя</b><time datetime="2026-11-02T20:39:26+03:00">02.11, 20:39:26</time></header>
-      <p class="from">Ольга, отдел снабжения ООО «Стройтех»</p>
-      <p class="txt">Добрый день!
-Выставьте, пожалуйста, счёт на ООО «Стройтех»:
-1. Фильтр масляный 320/04133 — 4 шт.
-2. Фильтр топливный 333/D7404 — 4 шт.
-Реквизиты у вас есть, оплатим сегодня.</p>
-    </article>
-
-    <a class="invoice" href="schet-asfr-000471.pdf" aria-label="Открыть счёт АСФР-000471, PDF">
-      <img src="schet-asfr-000471.png" width="1573" height="1115" alt="Счёт на оплату № АСФР-000471 от 02.11.2026 — PDF по проведённому заказу 1С. Поставщик ООО «Ромашка-Запчасти» (ИНН, КПП и расчётный счёт скрыты), покупатель ООО Стройтех. Фильтр масляный 320/04133 — 4 шт по 1 850,00; фильтр топливный 333/D7404 — 4 шт по 1 165,00. Итого 12 060,00, в том числе НДС 22 % 2 174,76.">
-    </a>
-
-    <article class="paper reply">
-      <header><b>Ответ Ивана</b><span>через 47 с</span></header>
-      <p class="txt">Добрый день, Ольга!
-
-Счёт № АСФР-000471 от 02.11.2026 на ООО «Стройтех» — во вложении.
-
-320/04133 — Фильтр масляный JCB 3CX/4CX Dieselmax — 4 шт × 1 850 ₽ = 7 400 ₽
-333/D7404 — Фильтр топливный JCB основной — 4 шт × 1 165 ₽ = 4 660 ₽
-
-Итого: 12 060 ₽, в том числе НДС 22 % — 2 174,76 ₽.
-
-Оплата сегодня — отгрузим завтра, 3 ноября; самовывоз с 9:00 до 18:00, Москва, ул. Складская, 7.
-
-С уважением,
-Иван, отдел продаж Ромашка-Запчасти</p>
-      <p class="att"><i aria-hidden="true">PDF</i>Счёт АСФР-000471.pdf</p>
-    </article>
-
-    <ol class="tl" aria-label="Время прогона">
-      <li><b>20:39:26</b>заявка</li>
-      <li><b>+41 с</b>счёт PDF по заказу</li>
-      <li><b>+47 с</b>ответ готов</li>
+  <figure class="desk sdelka" aria-label="Сделка на учебной 1С:УНФ: заявка, ответ, заказ, счёт, оплата">
+    <ol>
+      <li><header><b>Заявка покупателя</b><time datetime="2026-11-02T20:39:26+03:00">02.11, 20:39</time></header>
+        <p class="from">Ольга, снабжение ООО «Стройтех»</p>
+        <p class="txt">Выставьте счёт: фильтр масляный 320/04133 —  , фильтр топливный 333/D7404 —   Оплатим сегодня.</p></li>
+      <li><header><b>Ответ с ценой</b><span>через 47 с</span></header>
+        <p class="txt">320/04133 — 4 ×   ₽ =   ₽
+333/D7404 — 4 ×   ₽ =   ₽
+Итого 1  ₽, в т. ч. НДС 2  —  ,7 . Оплата сегодня — отгрузим завтра.</p>
+        <p class="att"><i aria-hidden="true">PDF</i>Счёт АСФР-000471.pdf</p></li>
+      <li class="wide"><header><b>Заказ проведён в 1С</b><span>АСФР-000471</span></header>
+        <a href="zakaz-asfr-000471-1s.png"><img src="zakaz-asfr-000471-1s.png" width="1210" height="178" alt="Окно учебной 1С:УНФ, журнал «Заказы покупателей»: заказ АСФР-000471, 20:39, покупатель ООО Стройтех, сумма 1 ,00"></a></li>
+      <li><header><b>Счёт PDF по заказу</b><span>через 41 с</span></header>
+        <a href="schet-asfr-000471.pdf"><img src="schet-asfr-000471.png" width="1573" height="1115" alt="Счёт на оплату № АСФР-000471 от 02.11.2026: два фильтра, итого 1 ,00, НДС 2   ,76. Реквизиты поставщика скрыты."></a></li>
+      <li class="pilot" id="zveno-oplata"><header><b>Напоминание об оплате</b><span class="tag">в пилоте</span></header>
+        <p>Счёт не оплачен в срок — Иван пишет покупателю по вашим правилам: когда, кому и сколько раз, без выходных и ночи.</p></li>
+      <li class="pilot wide" id="zveno-akt"><header><b>Долг и акт сверки</b><span class="tag">долг — проверено, акт PDF — в пилоте</span></header>
+        <p>Покупатель спрашивает «сколько мы должны?» — Иван отвечает по данным вашей 1С. Акт сверки собирает по тем же данным, отправку PDF включаем в пилоте.</p></li>
     </ol>
-    <figcaption>Живой прогон на учебной 1С:УНФ 2 ноября, так отвечает живой демо-бот. Заказ проведён в 1С; счёт PDF собран по этому заказу — позиции, цены, НДС и реквизиты из базы; ответ — дословно, менеджер проверяет его и нажимает «Отправить». Заявка подана текстом в чат, почта в прогоне не участвовала, покупатель заранее привязан к чату. Реквизиты поставщика в счёте скрыты. <a href="schet-asfr-000471.pdf">Открыть счёт PDF</a></figcaption>
+    <figcaption>Учебная 1С:УНФ, прогон 2 ноября: заказ проведён, счёт PDF собран по этому заказу — позиции, цены, НДС и реквизиты из базы. Заявка подана текстом в чат, покупатель заранее привязан. Реквизиты поставщика скрыты. <a href="schet-asfr-000471.pdf">Открыть счёт PDF</a></figcaption>
   </figure>
 
   <dl class="terms">
@@ -292,8 +286,8 @@ footer .w{display:flex;flex-wrap:wrap;gap:8px 20px}
 </div>
 
 <section id="dokazatelstvo" class="w sec" aria-labelledby="h-dok">
-  <h2 id="h-dok"><span class="n">1.</span>Доводит до проведённого заказа и счёта</h2>
-  <p class="sub">Не загрузка заказа и не чат-бот: вся работа по заявке делается в вашей 1С, а решение об отправке остаётся у менеджера.</p>
+  <h2 id="h-dok"><span class="n">1.</span>Как ведёт сделку</h2>
+  <p class="sub">Не выгрузка и не чат-бот: выгрузка отдаёт данные, а Иван делает работу менеджера — от ответа покупателю до оплаты. Решение об отправке остаётся у вашего менеджера.</p>
   <table class="tbl steps-tbl">
     <thead><tr><th scope="col">Шаг по заявке</th><th scope="col">Сейчас вручную</th><th scope="col">С Иваном</th><th scope="col">Что было в прогоне 2 ноября</th></tr></thead>
     <tbody>
@@ -301,28 +295,44 @@ footer .w{display:flex;flex-wrap:wrap;gap:8px 20px}
       <tr><th scope="row">Найти цены и остатки в 1С</th><td class="now m" data-l="Сейчас">менеджер</td><td class="iv" data-l="С Иваном">Иван</td><td class="ev">Цены из 1С: <span class="nb">1&nbsp;850,00</span> и <span class="nb">1&nbsp;165,00&nbsp;₽.</span> Покупатель — ООО Стройтех, ИНН&nbsp;7701234567 (заранее привязан к чату).</td></tr>
       <tr><th scope="row">Подготовить заказ и счёт PDF</th><td class="now m" data-l="Сейчас">менеджер</td><td class="iv" data-l="С Иваном">Иван</td><td class="ev">Заказ покупателя АСФР-000471 — <em>проведён</em>. Счёт PDF на <span class="nb">12&nbsp;060,00&nbsp;₽,</span> в&nbsp;т.&nbsp;ч. НДС&nbsp;22&nbsp;% — <span class="nb">2&nbsp;174,76.</span> Через 41&nbsp;с.</td></tr>
       <tr><th scope="row">Проверить и отправить покупателю</th><td class="now m" data-l="Сейчас">менеджер</td><td class="iv" data-l="С Иваном">ваш менеджер</td><td class="ev">Ответ со счётом готов через 47&nbsp;с — его текст на первом экране.</td></tr>
+      <tr><th scope="row">Ответить про долг</th><td class="now m" data-l="Сейчас">менеджер или бухгалтер</td><td class="iv" data-l="С Иваном">Иван</td><td class="ev">По данным 1С — проверено на нашем стенде. Акт сверки PDF и напоминания об оплате — в пилоте.</td></tr>
     </tbody>
   </table>
 
   <div class="arts">
-    <figure>
-      <a href="zakaz-asfr-000471-1s.png"><img src="zakaz-asfr-000471-1s.png" width="1210" height="178" loading="lazy" style="width:100%;height:auto;border:1px solid var(--rule2);border-radius:var(--r)" alt="Окно учебной 1С:УНФ, журнал «Заказы покупателей»: заказ АСФР-000471, 20:39, покупатель ООО Стройтех, сумма 12 060,00"></a>
-      <figcaption>Так заказ выглядит в 1С: журнал «Заказы покупателей» учебной 1С:УНФ, заказ АСФР-000471 из прогона 2 ноября, 20:39. Снимок окна без правок, соседние строки обрезаны. <a href="zakaz-asfr-000471-1s.png">Открыть крупно</a></figcaption>
-    </figure>
     <div>
       <p class="vs-note">Заказ и счёт показаны на учебной базе. Срок на первом экране — ориентир для типовой заявки; время и точность на вашем потоке проверим в тесте. Клиентских кейсов пока нет.</p>
     </div>
   </div>
 </section>
 
+<section id="pilot" class="w sec" aria-labelledby="h-pilot">
+  <h2 id="h-pilot">Что ещё подключаем в пилоте</h2>
+  <p class="sub">Работу менеджера дальше счёта включаем по одной, на копии вашей базы и по вашим правилам. Пока на нашем стенде это не проверено — помечено «в пилоте».</p>
+  <table class="tbl">
+    <thead><tr><th scope="col">Что делает Иван</th><th scope="col">Как</th><th scope="col">Статус</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Напоминания об оплате</th><td class="full">Пишет покупателю по неоплаченному счёту: срок, часы и число напоминаний — ваши</td><td data-l="Статус">в пилоте</td></tr>
+      <tr><th scope="row">Акт сверки PDF</th><td class="full">Собирает по данным 1С и присылает покупателю по запросу</td><td data-l="Статус">в пилоте</td></tr>
+      <tr><th scope="row">КП и скидки</th><td class="full">Готовит коммерческое предложение по вашим ценам; скидку выше вашего порога согласует руководитель</td><td data-l="Статус">в пилоте</td></tr>
+      <tr><th scope="row">Договор поставки</th><td class="full">Заполняет ваш шаблон договора данными покупателя из 1С</td><td data-l="Статус">в пилоте</td></tr>
+      <tr><th scope="row">УПД и ЭДО</th><td class="full">Готовит УПД по отгрузке и отправляет через Диадок или СБИС после подтверждения менеджера</td><td data-l="Статус">в пилоте</td></tr>
+      <tr><th scope="row">Формирование машин</th><td class="full">Собирает оплаченные заказы в рейсы по адресам и весу</td><td data-l="Статус">в пилоте</td></tr>
+      <tr><th scope="row">Сверка оплат из выписки</th><td class="full">Разносит оплаты из выписки банка по заказам в 1С; спорные платежи — человеку</td><td data-l="Статус">в пилоте</td></tr>
+      <tr><th scope="row">Заказ поставщику</th><td class="full">Когда остатка не хватает — готовит заказ поставщику на согласование</td><td data-l="Статус">в пилоте</td></tr>
+    </tbody>
+  </table>
+</section>
+
 <section id="vmesto" class="w sec" aria-labelledby="h-vm">
   <h2 id="h-vm"><span class="n">2.</span>Вместо чего</h2>
-  <p class="sub">С чем обычно сравнивают: нанять ещё одного человека, поставить загрузку заказа из письма или чат-бота.</p>
+  <p class="sub">С чем обычно сравнивают: нанять ещё одного человека, выгрузку или загрузку заказа из письма, чат-бота. Выгрузка и расширение отдают данные — Иван делает работу менеджера.</p>
   <table class="tbl">
     <thead><tr><th scope="col">Как решают сейчас</th><th scope="col">Сколько стоит</th><th scope="col">Что остаётся на вас</th></tr></thead>
     <tbody>
       <tr><th scope="row">Нанять оператора 1С или помощника менеджера</th><td data-l="Цена">около 70&nbsp;000&nbsp;₽ на руки в месяц (медиана), с налогами — около 100&nbsp;000&nbsp;₽</td><td class="full">Найм и обучение. Один человек — одна заявка за раз, остальные ждут.</td></tr>
       <tr><th scope="row">Менеджеры выписывают сами</th><td data-l="Цена">их время: 20&nbsp;счетов в&nbsp;день × 12&nbsp;мин × 22&nbsp;дня ≈ 88&nbsp;ч (пример)</td><td class="full">Пока менеджер ищет позиции и печатает счёт, он не продаёт. <a href="#raschet">Посчитать со своими цифрами</a></td></tr>
+      <tr><th scope="row">Выгрузка цен и остатков на сайт, в прайс или мессенджер</th><td data-l="Цена">обычно уже есть</td><td class="full">Покупатель видит цифры, а ответить, провести заказ, выставить счёт и дожать оплату — по-прежнему менеджер.</td></tr>
       <tr><th scope="row">Загрузка заказа из письма</th><td data-l="Цена">от 3&nbsp;000&nbsp;₽/мес и установка</td><td class="full">Заказ заполняется сам, а счёт и ответ покупателю — менеджер.</td></tr>
       <tr><th scope="row">Чат-бот на сайт или в мессенджер</th><td data-l="Цена">3&nbsp;000–13&nbsp;000&nbsp;₽/мес</td><td class="full">Без подключения к 1С отвечает по загруженным материалам; работа с вашей базой, заказом и счётом зависит от интеграции. <a href="sravnenie/">Сравнить решения по функциям</a></td></tr>
       <tr><th scope="row">ИИ-агент с подключением к 1С</th><td data-l="Цена">6&nbsp;790–12&nbsp;790&nbsp;₽ на 1&nbsp;000 обращений в месяц, плюс специалист 1С на подключение</td><td class="full">Для подключения нужен специалист 1С, стоимость его работы в тарифе не указана. <a href="sravnenie/">Сравнение</a></td></tr>
