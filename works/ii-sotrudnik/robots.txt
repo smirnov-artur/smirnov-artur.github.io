@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /integratoram/
+
+User-agent: Yandex
+Allow: /
+Disallow: /integratoram/
+Clean-param: src /
+
+Sitemap: https://gad-production.ru/sitemap.xml

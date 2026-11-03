@@ -13,3 +13,17 @@
     a.href = u.href;
   });
 })();
+
+// pereezd 03.11: на github.io — строка сверху «страница переехала» на тот же путь домена, с той же меткой ?src=
+(() => {
+  if (!/github\.io$/.test(location.hostname)) return;
+  const put = location.pathname.replace(/^\/works\/ii-sotrudnik\//, '/');
+  const d = document.createElement('div');
+  d.style.cssText = 'background:#15171A;color:#fff;font:14px/1.3 system-ui,sans-serif;padding:6px 12px;text-align:center';
+  const a = document.createElement('a');
+  a.href = 'https://gad-production.ru' + put + location.search + location.hash;
+  a.textContent = 'gad-production.ru';
+  a.style.cssText = 'color:#FFD43B;font-weight:700';
+  d.append('Страница переехала на ', a);
+  document.body.prepend(d);
+})();
