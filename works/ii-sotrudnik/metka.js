@@ -29,3 +29,15 @@
   d.append('Страница переехала на ', a);
   document.body.prepend(d);
 })();
+
+// 04.11: письмо со страницы несёт адрес страницы и метку — видно, откуда пришёл человек (Метрика видит только согласившихся с cookie)
+(() => {
+  const s = new URLSearchParams(location.search).get('src');
+  const otkuda = 'Со страницы: ' + location.host + location.pathname + (s && /^[A-Za-z0-9_-]{1,59}$/.test(s) ? '?src=' + s : '');
+  document.querySelectorAll('a[href^="mailto:"]').forEach(a => {
+    if (a.id === 'r-mail') return;  // письмо калькулятора собирает свой текст
+    const h = a.getAttribute('href');
+    const kon = encodeURIComponent('\r\n\r\n' + otkuda);
+    a.href = h.includes('body=') ? h + kon : h + (h.includes('?') ? '&' : '?') + 'body=' + encodeURIComponent(otkuda);
+  });
+})();
