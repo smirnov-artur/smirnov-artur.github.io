@@ -49,7 +49,11 @@ img{display:block;max-width:100%;height:auto}
 .top nav a{color:var(--ink2);text-decoration:none;padding:10px 0}
 .top nav a:hover{color:var(--ink)}
 .top .btn{min-height:44px;font-size:16px;padding:0 16px}
-@media (max-width:999px){.top nav{display:none}.top .btn{margin-left:auto}}
+.top .rol{color:var(--ink2);text-decoration:none;padding:10px 10px;font-size:16px}.top .btn{white-space:nowrap}
+@media (max-width:400px){.top .rol{padding:10px 6px}.top .btn{padding:0 12px}}
+@media (max-width:374px){.top .rol{padding:10px 4px;font-size:15px}.top .btn{padding:0 10px;font-size:15px}}
+@media (min-width:1000px){.top .rol{display:none}}
+@media (max-width:999px){.top nav{display:none}.top .rol{margin-left:auto}}
 @media (max-width:420px){.brand span{display:none}}
 
 /* кнопки: одна жёлтая на экран */
@@ -221,7 +225,8 @@ footer .w{display:flex;flex-wrap:wrap;gap:8px 20px}
 <header class="top">
   <div class="w">
     <a class="brand" href="../"><b>g.a.d.</b><span>Артур Смирнов</span></a>
-    <nav aria-label="Разделы"><a href="../#dokazatelstvo">Как работает</a><a href="../#vmesto">Вместо чего</a><a href="../#ceny">Цены</a><a href="../#raschet">Расчёт</a><a href="../#programmistu">Для программиста 1С</a><a href="../#voprosy">Вопросы</a></nav>
+    <nav aria-label="Разделы"><a href="#roliki">Ролики</a><a href="../#dokazatelstvo">Как работает</a><a href="../#vmesto">Вместо чего</a><a href="../#ceny">Цены</a><a href="../#raschet">Расчёт</a><a href="../#programmistu">Для программиста 1С</a><a href="../#voprosy">Вопросы</a></nav>
+    <a class="rol" href="#roliki">Ролики</a>
     <a class="btn" href="#nachat">Показать на базе</a>
   </div>
 </header>
@@ -234,8 +239,9 @@ footer .w{display:flex;flex-wrap:wrap;gap:8px 20px}
     <p class="aud">Вместо оператора 1С — около 70&nbsp;000&nbsp;₽ на руки в месяц. Не коробка: настраиваем под вашу базу.</p>
   </div>
   <div class="cta-box">
-    <div class="cta"><a class="btn btn-act" href="mailto:artur@gad-production.ru?subject=%D0%9F%D0%BE%D0%BA%D0%B0%D0%B7%D0%B0%D1%82%D1%8C%20%D0%98%D0%B2%D0%B0%D0%BD%D0%B0%20%D0%BD%D0%B0%20%D0%BD%D0%B0%D1%88%D0%B5%D0%B9%20%D0%B1%D0%B0%D0%B7%D0%B5%20%E2%80%94%20%D0%9F%D0%BE%D0%B4%D1%88%D0%B8%D0%BF%D0%BD%D0%B8%D0%BA%D0%B8%20%D0%B8%20%D0%A0%D0%A2%D0%98&amp;body=%D0%A5%D0%BE%D1%82%D0%B8%D0%BC%20%D0%BF%D0%BE%D1%81%D0%BC%D0%BE%D1%82%D1%80%D0%B5%D1%82%D1%8C%20%D0%98%D0%B2%D0%B0%D0%BD%D0%B0%20%D0%BD%D0%B0%20%D0%BD%D0%B0%D1%88%D0%B5%D0%B9%20%D0%B1%D0%B0%D0%B7%D0%B5.%0D%0A%0D%0A%D0%9A%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F%20%D0%B8%20%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%8F%201%D0%A1%3A%0D%0A%0D%0A%D0%A1%D0%BA%D0%BE%D0%BB%D1%8C%D0%BA%D0%BE%20%D1%81%D1%87%D0%B5%D1%82%D0%BE%D0%B2%20%D0%B2%20%D0%B4%D0%B5%D0%BD%D1%8C%3A%0D%0A%0D%0A%D0%9E%D1%82%D0%BA%D1%83%D0%B4%D0%B0%20%D0%BF%D1%80%D0%B8%D1%85%D0%BE%D0%B4%D1%8F%D1%82%20%D0%B7%D0%B0%D1%8F%D0%B2%D0%BA%D0%B8%20%28%D0%BF%D0%BE%D1%87%D1%82%D0%B0%2C%20Telegram%2C%20%D0%B7%D0%B2%D0%BE%D0%BD%D0%BA%D0%B8%29%3A%0D%0A%0D%0A%D0%9A%D0%B0%D0%BA%20%D1%83%D0%B4%D0%BE%D0%B1%D0%BD%D0%B5%D0%B5%3A%20%D0%B2%D1%8B%D0%B3%D1%80%D1%83%D0%B7%D0%B8%D0%BC%20%D0%B2%D0%B0%D1%88%D0%B5%D0%B9%20%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%BE%D0%B9%20%D1%81%D0%B0%D0%BC%D0%B8%20%D0%B8%D0%BB%D0%B8%20%D0%B4%D0%B0%D0%B4%D0%B8%D0%BC%20%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF">Показать на моей базе</a><a class="alt" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">или напишите в Telegram</a></div>
-    <p class="note">Пришлём обработку для 1С: нажмёте кнопку — она выгрузит товары, цены, остатки и покупателей-организации, контакты людей не выгружаются. Пришлёте файл — покажем Ивана на ваших данных и назовём итоговую цену; для типовой УНФ или УТ&nbsp;11 обычно за 2 рабочих дня. Не хотите сами — дайте доступ на 5 минут, при вас: откроем только обработку, постоянный доступ не нужен. Без выгрузки — <a href="mailto:artur@gad-production.ru?subject=Одна%20заявка%20—%20Подшипники%20и%20РТИ">перешлите одну заявку</a>, счёт-образец пришлём в тот же день. Или <a href="https://t.me/romashka_zapchasti_bot?start=site_podshipniki-rti" target="_blank" rel="noopener">напишите Ивану как покупатель</a> — он на учебном прайсе запчастей и отвечает днём, например: «счёт на 10 шт 32/925994».</p>
+    <div class="cta"><a class="btn btn-act" href="mailto:artur@gad-production.ru?subject=%D0%9F%D0%BE%D0%BA%D0%B0%D0%B7%D0%B0%D1%82%D1%8C%20%D0%98%D0%B2%D0%B0%D0%BD%D0%B0%20%D0%BD%D0%B0%20%D0%BD%D0%B0%D1%88%D0%B5%D0%B9%20%D0%B1%D0%B0%D0%B7%D0%B5%20%E2%80%94%20%D0%9F%D0%BE%D0%B4%D1%88%D0%B8%D0%BF%D0%BD%D0%B8%D0%BA%D0%B8%20%D0%B8%20%D0%A0%D0%A2%D0%98&amp;body=%D0%A5%D0%BE%D1%82%D0%B8%D0%BC%20%D0%BF%D0%BE%D1%81%D0%BC%D0%BE%D1%82%D1%80%D0%B5%D1%82%D1%8C%20%D0%98%D0%B2%D0%B0%D0%BD%D0%B0%20%D0%BD%D0%B0%20%D0%BD%D0%B0%D1%88%D0%B5%D0%B9%20%D0%B1%D0%B0%D0%B7%D0%B5.%0D%0A%0D%0A%D0%9A%D0%B0%D0%BA%D0%B0%D1%8F%201%D0%A1%20%28%D0%A3%D0%9D%D0%A4%2C%20%D0%A3%D0%A2%2C%20%D0%B4%D1%80%D1%83%D0%B3%D0%B0%D1%8F%29%3A%0D%0A%0D%0A%D0%A1%D0%BA%D0%BE%D0%BB%D1%8C%D0%BA%D0%BE%20%D1%81%D1%87%D0%B5%D1%82%D0%BE%D0%B2%20%D0%B2%20%D0%B4%D0%B5%D0%BD%D1%8C%3A%0D%0A%0D%0A%D0%9E%D1%82%D0%BA%D1%83%D0%B4%D0%B0%20%D0%BF%D1%80%D0%B8%D1%85%D0%BE%D0%B4%D1%8F%D1%82%20%D0%B7%D0%B0%D1%8F%D0%B2%D0%BA%D0%B8%20%28%D0%BF%D0%BE%D1%87%D1%82%D0%B0%2C%20Telegram%2C%20%D0%B7%D0%B2%D0%BE%D0%BD%D0%BA%D0%B8%29%3A">Показать на моей базе</a><a class="alt" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">или напишите в Telegram</a></div>
+    <p class="note">Напишите, какая у вас 1С, — пришлём обработку: одна кнопка выгрузит товары, цены, остатки и покупателей-организации, без контактов людей. До передачи файла подпишем соглашение о конфиденциальности. Покажем Ивана на этих данных и назовём цену; для типовой УНФ или УТ&nbsp;11 — обычно за 2 рабочих дня. Не хотите сами — дайте доступ на 5 минут, при вас: откроем только обработку. Можно начать с <a href="mailto:artur@gad-production.ru?subject=Одна%20заявка%20—%20Подшипники%20и%20РТИ">одной заявки</a> — счёт-образец пришлём в тот же день.</p>
+    <p class="note">Или <a href="https://t.me/romashka_zapchasti_bot?start=site_podshipniki-rti" target="_blank" rel="noopener">напишите Ивану как покупатель</a> в Telegram — он на учебном прайсе запчастей и отвечает днём, например: «счёт на 10 шт 32/925994».</p>
   </div>
   <figure class="desk sdelka" aria-label="Сделка по заявке в вашей отрасли">
     <ol>
@@ -251,7 +257,7 @@ footer .w{display:flex;flex-wrap:wrap;gap:8px 20px}
       <li><header><b>Заказ проведён в 1С</b></header><p>Покупатель, позиции и цены — из базы.</p></li>
       <li><header><b>Счёт PDF по заказу</b></header><p>Уходит покупателю после кнопки менеджера.</p></li>
       <li class="pilot"><header><b>Напоминание об оплате</b><span class="tag">в пилоте</span></header><p>По вашим правилам: срок, часы, сколько раз.</p></li>
-      <li class="pilot wide"><header><b>Долг и акт сверки</b><span class="tag">долг — проверено, акт PDF — в пилоте</span></header><p>«Сколько мы должны?» — Иван отвечает по данным 1С. <a href="../">Вся цепочка со снимками 1С</a></p></li>
+      <li class="pilot wide"><header><b>Долг и акт сверки</b><span class="tag">долг — проверено, акт PDF — в пилоте</span></header><p>«Сколько мы должны?» — Иван отвечает по данным 1С. <a href="../#primer-sdelki">Снимки заказа и счёта в 1С</a></p></li>
     </ol>
     <figcaption>Так обычно пишут покупатели в вашей отрасли. Пример, а не прогон: на ваших позициях покажем по выгрузке из вашей базы.</figcaption>
   </figure>
@@ -268,7 +274,7 @@ footer .w{display:flex;flex-wrap:wrap;gap:8px 20px}
   <div class="facts"><p><b>Один подшипник — два обозначения</b>6205-2RS и 180205 — по сути одно и то же. Связь Иван берёт из вашей 1С, если она там заведена; если нет — спрашивает менеджера.</p><p><b>Тысячи похожих размеров</b>Кольца и манжеты отличаются одной цифрой. Иван ищет точное совпадение и не подставляет «примерно такое же».</p><p><b>«Есть в наличии? Какой срок?»</b>Наличие Иван берёт из остатков 1С. Срок поставки под заказ называет, только если он есть в ваших правилах.</p></div>
 </section>
 
-<section class="w sec" aria-labelledby="h-p">
+<section class="w sec" id="roliki" aria-labelledby="h-p">
   <h2 id="h-p"><span class="n">2.</span>Как это выглядит на деле</h2>
   <p class="sub">Живой прогон на учебной 1С:УНФ 2 ноября, на запчастях, — так отвечает Иван в Telegram: заявка на две позиции — заказ проведён, счёт PDF через 41&nbsp;с, ответ покупателю через 47&nbsp;с. Заявка подана текстом в чат, покупатель заранее привязан к чату.</p>
   <p class="small"><a href="https://yadi.sk/i/BDiPE4aKqtaCaw" target="_blank" rel="noopener">Ролик «Заявка → счёт», 33 с</a> — учебная база, ускоренный показ.</p>
@@ -290,7 +296,7 @@ footer .w{display:flex;flex-wrap:wrap;gap:8px 20px}
   </ol>
   <div class="contacts">
     <p>Почта: <a href="mailto:artur@gad-production.ru?subject=Одна%20заявка%20—%20Подшипники%20и%20РТИ">artur@gad-production.ru</a> · Telegram: <a href="https://t.me/smirnovarturr" target="_blank" rel="noopener">@smirnovarturr</a>. Отвечаю сам — Артур Смирнов, g.a.d. Договор — с самозанятым исполнителем, реквизиты в договоре; на каждую оплату — чек «Мой налог».</p>
-    <div class="cta"><a class="btn btn-act" href="mailto:artur@gad-production.ru?subject=%D0%9F%D0%BE%D0%BA%D0%B0%D0%B7%D0%B0%D1%82%D1%8C%20%D0%98%D0%B2%D0%B0%D0%BD%D0%B0%20%D0%BD%D0%B0%20%D0%BD%D0%B0%D1%88%D0%B5%D0%B9%20%D0%B1%D0%B0%D0%B7%D0%B5%20%E2%80%94%20%D0%9F%D0%BE%D0%B4%D1%88%D0%B8%D0%BF%D0%BD%D0%B8%D0%BA%D0%B8%20%D0%B8%20%D0%A0%D0%A2%D0%98&amp;body=%D0%A5%D0%BE%D1%82%D0%B8%D0%BC%20%D0%BF%D0%BE%D1%81%D0%BC%D0%BE%D1%82%D1%80%D0%B5%D1%82%D1%8C%20%D0%98%D0%B2%D0%B0%D0%BD%D0%B0%20%D0%BD%D0%B0%20%D0%BD%D0%B0%D1%88%D0%B5%D0%B9%20%D0%B1%D0%B0%D0%B7%D0%B5.%0D%0A%0D%0A%D0%9A%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F%20%D0%B8%20%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%8F%201%D0%A1%3A%0D%0A%0D%0A%D0%A1%D0%BA%D0%BE%D0%BB%D1%8C%D0%BA%D0%BE%20%D1%81%D1%87%D0%B5%D1%82%D0%BE%D0%B2%20%D0%B2%20%D0%B4%D0%B5%D0%BD%D1%8C%3A%0D%0A%0D%0A%D0%9E%D1%82%D0%BA%D1%83%D0%B4%D0%B0%20%D0%BF%D1%80%D0%B8%D1%85%D0%BE%D0%B4%D1%8F%D1%82%20%D0%B7%D0%B0%D1%8F%D0%B2%D0%BA%D0%B8%20%28%D0%BF%D0%BE%D1%87%D1%82%D0%B0%2C%20Telegram%2C%20%D0%B7%D0%B2%D0%BE%D0%BD%D0%BA%D0%B8%29%3A%0D%0A%0D%0A%D0%9A%D0%B0%D0%BA%20%D1%83%D0%B4%D0%BE%D0%B1%D0%BD%D0%B5%D0%B5%3A%20%D0%B2%D1%8B%D0%B3%D1%80%D1%83%D0%B7%D0%B8%D0%BC%20%D0%B2%D0%B0%D1%88%D0%B5%D0%B9%20%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%BE%D0%B9%20%D1%81%D0%B0%D0%BC%D0%B8%20%D0%B8%D0%BB%D0%B8%20%D0%B4%D0%B0%D0%B4%D0%B8%D0%BC%20%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF">Показать на моей базе</a><a class="alt" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Сначала обсудить в Telegram</a></div>
+    <div class="cta"><a class="btn btn-act" href="mailto:artur@gad-production.ru?subject=%D0%9F%D0%BE%D0%BA%D0%B0%D0%B7%D0%B0%D1%82%D1%8C%20%D0%98%D0%B2%D0%B0%D0%BD%D0%B0%20%D0%BD%D0%B0%20%D0%BD%D0%B0%D1%88%D0%B5%D0%B9%20%D0%B1%D0%B0%D0%B7%D0%B5%20%E2%80%94%20%D0%9F%D0%BE%D0%B4%D1%88%D0%B8%D0%BF%D0%BD%D0%B8%D0%BA%D0%B8%20%D0%B8%20%D0%A0%D0%A2%D0%98&amp;body=%D0%A5%D0%BE%D1%82%D0%B8%D0%BC%20%D0%BF%D0%BE%D1%81%D0%BC%D0%BE%D1%82%D1%80%D0%B5%D1%82%D1%8C%20%D0%98%D0%B2%D0%B0%D0%BD%D0%B0%20%D0%BD%D0%B0%20%D0%BD%D0%B0%D1%88%D0%B5%D0%B9%20%D0%B1%D0%B0%D0%B7%D0%B5.%0D%0A%0D%0A%D0%9A%D0%B0%D0%BA%D0%B0%D1%8F%201%D0%A1%20%28%D0%A3%D0%9D%D0%A4%2C%20%D0%A3%D0%A2%2C%20%D0%B4%D1%80%D1%83%D0%B3%D0%B0%D1%8F%29%3A%0D%0A%0D%0A%D0%A1%D0%BA%D0%BE%D0%BB%D1%8C%D0%BA%D0%BE%20%D1%81%D1%87%D0%B5%D1%82%D0%BE%D0%B2%20%D0%B2%20%D0%B4%D0%B5%D0%BD%D1%8C%3A%0D%0A%0D%0A%D0%9E%D1%82%D0%BA%D1%83%D0%B4%D0%B0%20%D0%BF%D1%80%D0%B8%D1%85%D0%BE%D0%B4%D1%8F%D1%82%20%D0%B7%D0%B0%D1%8F%D0%B2%D0%BA%D0%B8%20%28%D0%BF%D0%BE%D1%87%D1%82%D0%B0%2C%20Telegram%2C%20%D0%B7%D0%B2%D0%BE%D0%BD%D0%BA%D0%B8%29%3A">Показать на моей базе</a><a class="alt" href="https://t.me/smirnovarturr" target="_blank" rel="noopener">Сначала обсудить в Telegram</a></div>
   </div>
 </section>
 </main>
