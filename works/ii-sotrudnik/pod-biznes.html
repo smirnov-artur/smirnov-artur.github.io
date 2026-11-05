@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g.a.d. production · под ваш бизнес</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+/* Раздел «Под ваш бизнес» + «Копия вашего сотрудника» (Артур 05.11 ~11:20–11:35: манеры общения, копия менеджера,
+   акции и условия конкретной компании — как Витя наговорил в ГС). Концепт, наружу только после «да» Артура. */
+:root{
+  --night:#0A1422; --night2:#0E1B2D; --line:#22344C; --ink:#ECF1F6; --mute:#93A5B9;
+  --lamp:#FFC83D; --lamp-ink:#1C1500;
+  --display:"Unbounded",system-ui,sans-serif;
+  --body:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --tg:"Segoe UI",Roboto,system-ui,Arial,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+html,body{overflow-x:clip}
+body{background:var(--night);color:var(--ink);font:400 17px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--lamp);outline-offset:3px;border-radius:6px}
+
+.nav{display:flex;align-items:center;gap:28px;max-width:1360px;margin:0 auto;padding:0 32px;height:64px}
+.logo{font:600 18px/1 var(--display);letter-spacing:-.01em;text-decoration:none}
+.logo span{color:var(--mute);font-weight:500}
+.nav nav{display:flex;gap:26px;margin-left:auto;font-size:15px;color:var(--mute)}
+.nav nav a{text-decoration:none}
+.nav .pis{font-size:15px;font-weight:600;text-decoration:none;padding:9px 16px;border:1px solid var(--line);border-radius:999px}
+
+.sek{max-width:1180px;margin:0 auto;padding:72px 32px}
+.eye{font-size:15px;font-weight:500;color:var(--lamp);margin-bottom:12px}
+h2{font:600 clamp(26px,2.6vw,38px)/1.14 var(--display);letter-spacing:-.03em;max-width:20ch}
+.lead{margin-top:16px;font-size:18px;line-height:1.5;color:#C9D4E0;max-width:60ch}
+
+/* выбор бизнеса */
+.biz{display:flex;gap:10px;margin:34px 0 22px;flex-wrap:wrap}
+.biz button{display:flex;align-items:center;gap:9px;min-height:46px;padding:0 18px;border-radius:999px;border:1px solid var(--line);color:#C9D4E0;font-size:16px;font-weight:500;transition:background .2s,border-color .2s,color .2s}
+.biz button i{font-size:20px}
+.biz button:hover{border-color:#3A5070;color:var(--ink)}
+.biz button[aria-selected=true]{background:var(--ink);border-color:var(--ink);color:var(--night)}
+
+.stol{display:grid;grid-template-columns:minmax(0,370px) minmax(0,1fr);gap:22px;align-items:stretch}
+
+/* правила компании */
+.pravila{background:var(--night2);border:1px solid var(--line);border-radius:18px;padding:24px 22px;display:flex;flex-direction:column}
+.pravila .firma{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.pravila .firma b{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:22px;color:#fff;flex:none}
+.pravila .firma span{font-weight:600;font-size:17px;line-height:1.25}
+.pravila .firma small{display:block;color:var(--mute);font-weight:400;font-size:14px}
+.pravila h3{font-size:14px;font-weight:500;color:var(--mute);margin:18px 0 10px}
+.pravila ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.pravila li{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:12px;border:1px solid transparent;font-size:15.5px;line-height:1.35;color:#D5DEE8;transition:background .35s,border-color .35s,color .35s}
+.pravila li i{font-size:20px;color:var(--mute);margin-top:-1px;transition:color .35s}
+.pravila li.on{background:rgba(255,200,61,.12);border-color:rgba(255,200,61,.55);color:#fff}
+.pravila li.on i{color:var(--lamp)}
+.pravila li.byl i{color:var(--lamp)}
+.pravila .zamok{margin-top:auto;padding-top:18px;font-size:14px;color:var(--mute);display:flex;gap:8px;align-items:flex-start}
+.pravila .zamok i{font-size:18px;color:#3DDC84;margin-top:1px}
+
+/* манеры + чат */
+.chat{display:flex;flex-direction:column;min-width:0}
+.man{display:flex;gap:6px;padding:5px;border-radius:14px;background:var(--night2);border:1px solid var(--line);margin-bottom:12px;overflow-x:auto;scrollbar-width:none}
+.man::-webkit-scrollbar{display:none}
+.man button{flex:1 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 14px;border-radius:10px;font-size:15.5px;font-weight:500;color:#C9D4E0;white-space:nowrap;transition:background .2s,color .2s}
+.man button[aria-selected=true]{background:var(--lamp);color:var(--lamp-ink)}
+.man .av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;color:#fff;background:#4E7AC7}
+.man button[aria-selected=true] .av{box-shadow:0 0 0 2px var(--lamp-ink)}
+.man small{font-size:12.5px;opacity:.75;font-weight:400}
+
+.tg{position:relative;flex:1;min-height:440px;border-radius:16px;overflow:hidden;background:#fff;display:flex;flex-direction:column;font-family:var(--tg);color:#000;box-shadow:0 30px 70px -30px rgba(0,0,0,.8)}
+.tg-head{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid #E7E7E7;background:#fff;z-index:2}
+.tg-head .av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:600;font-size:15px;flex:none}
+.tg-head .nm{flex:1;min-width:0;font-weight:600;font-size:15px;line-height:1.25}
+.tg-head .nm small{display:block;font-weight:400;font-size:13px;color:#3390EC}
+.tg-head i{font-size:20px;color:#8A8F95;margin-left:14px}
+.tg-msgs{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:5px;padding:14px 16px 16px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' fill='none' stroke='%23315c2e' stroke-opacity='.12' stroke-width='1.6' stroke-linecap='round'%3E%3Ccircle cx='22' cy='24' r='9'/%3E%3Cpath d='M70 14l4 9 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z'/%3E%3Cpath d='M122 30c6-8 18-2 12 8l-8 10-8-10c-4-5 0-11 4-8z'/%3E%3Crect x='18' y='92' width='20' height='14' rx='3'/%3E%3Cpath d='M20 94l8 6 8-6'/%3E%3Cpath d='M64 102c0-8 12-8 12 0s12 8 12 0'/%3E%3Ccircle cx='126' cy='108' r='5'/%3E%3Cpath d='M40 140l6 6 10-12'/%3E%3Cpath d='M102 140h20M112 130v20'/%3E%3C/svg%3E"),linear-gradient(155deg,#dbddbb 0%,#a8c99b 38%,#d5d88d 68%,#88b884 100%)}
+.tg-in{display:flex;align-items:center;gap:14px;padding:12px 16px;border-top:1px solid #E7E7E7;color:#9AA0A6;font-size:15px;background:#fff}
+.tg-in span{flex:1}
+.tg-in i{font-size:21px}
+.td-date{align-self:center;background:rgba(74,104,57,.38);color:#fff;font-size:13px;font-weight:600;padding:3px 10px;border-radius:12px;margin-bottom:6px}
+.b{max-width:min(440px,86%);padding:7px 11px 7px 12px;border-radius:15px;box-shadow:0 1px 1.5px rgba(16,35,47,.15);font-size:15.5px;line-height:1.38;position:relative;transition:box-shadow .4s}
+.b.i{align-self:flex-start;background:#fff;border-bottom-left-radius:5px}
+.b.o{align-self:flex-end;background:#EFFDDE;border-bottom-right-radius:5px}
+.b .t{float:right;margin:8px -2px -5px 12px;font-size:12px;color:#A1AAB3;line-height:1}
+.b.o .t{color:#5DC452}
+.b.pop{animation:pop .45s cubic-bezier(.16,1,.3,1)}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.b.pravilo{box-shadow:0 1px 1.5px rgba(16,35,47,.15),0 0 0 2px var(--lamp)}
+.typ{align-self:flex-end;display:flex;gap:4px;padding:12px 14px;border-radius:15px;border-bottom-right-radius:5px;background:#EFFDDE;box-shadow:0 1px 1.5px rgba(16,35,47,.15)}
+.typ span{width:7px;height:7px;border-radius:50%;background:#5DC452;animation:typ 1s infinite}
+.typ span:nth-child(2){animation-delay:.15s}.typ span:nth-child(3){animation-delay:.3s}
+@keyframes typ{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-3px)}}
+.podpis{margin-top:10px;font-size:14px;color:var(--mute);display:flex;gap:8px;align-items:center}
+.podpis i{color:var(--lamp);font-size:17px}
+
+/* копия сотрудника */
+.kop{border-top:1px solid var(--line)}
+.ugad{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:34px}
+.ug{display:flex;flex-direction:column;gap:12px}
+.ug .tg{min-height:0;flex:none}
+.ug .tg-msgs{min-height:330px}
+.ug button.kto{min-height:52px;border-radius:999px;border:1px solid var(--line);font-weight:600;font-size:16px;transition:background .2s,border-color .2s}
+.ug button.kto:hover{border-color:#3A5070}
+.ug .otvet{display:none;align-items:center;gap:10px;min-height:52px;padding:0 18px;border-radius:999px;font-weight:600;font-size:16px}
+.ug .otvet.zhiv{background:#1B2B40;color:var(--ink)}
+.ug .otvet.kopiya{background:var(--lamp);color:var(--lamp-ink)}
+.otkryto .ug button.kto{display:none}
+.otkryto .ug .otvet{display:flex}
+.razgadka{display:none;margin-top:22px;padding:20px 22px;border-radius:16px;background:var(--night2);border:1px solid var(--line);font-size:17px;line-height:1.5;color:#D5DEE8;max-width:820px}
+.razgadka b{color:var(--ink)}
+.otkryto .razgadka{display:block;animation:pop .5s cubic-bezier(.16,1,.3,1)}
+
+.shagi{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:46px;counter-reset:sh}
+.shag{padding:22px;border-radius:16px;border:1px solid var(--line)}
+.shag::before{counter-increment:sh;content:counter(sh);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--lamp);color:var(--lamp-ink);font:600 15px/1 var(--display);margin-bottom:14px}
+.shag h3{font-size:18px;font-weight:600;margin-bottom:8px}
+.shag p{font-size:15.5px;line-height:1.45;color:#C9D4E0}
+.ushel{margin-top:40px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;padding:28px 30px;border-radius:20px;background:linear-gradient(120deg,#16263C,#0E1B2D);border:1px solid var(--line)}
+.ushel p{font:600 clamp(19px,1.7vw,24px)/1.3 var(--display);letter-spacing:-.02em;max-width:30ch}
+.ushel p span{color:var(--lamp)}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:54px;padding:0 26px;border-radius:999px;background:var(--lamp);color:var(--lamp-ink);font:600 17px/1 var(--body);text-decoration:none;white-space:nowrap}
+.btn:hover{background:#FFD566}
+
+@media (max-width:860px){
+  .nav nav{display:none}.nav .pis{margin-left:auto}
+  .nav{padding:0 16px;height:58px}
+  .sek{padding:52px 16px}
+  .lead{font-size:16.5px}
+  .biz{flex-wrap:nowrap;overflow-x:auto;margin:26px -16px 16px;padding:0 16px;scrollbar-width:none}
+  .biz::-webkit-scrollbar{display:none}
+  .biz button{flex:none}
+  .stol{grid-template-columns:1fr}
+  .chat{order:1}.pravila{order:2;padding:20px 18px}
+  .man{margin:0 -16px 12px;border-radius:0;border-left:0;border-right:0}
+  .man button{flex:none}
+  .tg{min-height:420px;border-radius:14px}
+  .ugad{grid-template-columns:1fr}
+  .shagi{grid-template-columns:1fr}
+  .ushel{padding:22px 20px}
+  .btn{width:100%;justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* агент «Иван» вместо курсора (Артур 05.11: «не хочу курсор… агент топает, видит уведомление») */
+.agent{position:absolute;left:0;top:0;width:62px;height:110px;z-index:50;pointer-events:none;transition:transform .8s cubic-bezier(.45,.05,.55,.95)}
+.agent.hid{opacity:0}
+.ag-fig{display:block;overflow:visible;transition:transform .2s;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35))}
+.ag-fig *{transform-box:view-box}
+.agent.vpravo .ag-fig,.agent.zam .ag-fig{transform:scaleX(-1)}
+.ag-noga{transform-origin:36px 72px;transition:transform .25s}
+.ag-ruka{transform-origin:36px 38px;transition:transform .25s}
+.ag-telo{transform-origin:35px 118px}
+.ag-glaz{transform-origin:28.2px 17.4px;animation:morg 4.2s infinite}
+@keyframes morg{0%,94%,100%{transform:none}97%{transform:scaleY(.1)}}
+.agent.idet .ag-noga.per{animation:shagA .44s ease-in-out infinite alternate}
+.agent.idet .ag-noga.zad{animation:shagB .44s ease-in-out infinite alternate}
+.agent.idet .ag-ruka.per{animation:shagB .44s ease-in-out infinite alternate}
+.agent.idet .ag-ruka.zad{animation:shagA .44s ease-in-out infinite alternate}
+.agent.idet .ag-telo{animation:bob .22s ease-in-out infinite alternate}
+@keyframes shagA{from{transform:rotate(27deg)}to{transform:rotate(-27deg)}}
+@keyframes shagB{from{transform:rotate(-27deg)}to{transform:rotate(27deg)}}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-2.2px)}}
+.agent.tap .ag-ruka.per{transform:rotate(108deg)}
+.agent.rab .ag-ruka.per{animation:pech .2s ease-in-out infinite alternate}
+.agent.rab .ag-ruka.zad{transform:rotate(60deg)}
+@keyframes pech{from{transform:rotate(98deg)}to{transform:rotate(114deg)}}
+.agent.mashet .ag-ruka.per{animation:mah .32s ease-in-out infinite alternate}
+@keyframes mah{from{transform:rotate(118deg)}to{transform:rotate(158deg)}}
+.agent.zam .ag-telo{animation:vzdr .35s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes vzdr{0%{transform:translateY(0)}40%{transform:translateY(-6px) scaleY(1.03)}100%{transform:none}}
+.ag-pill{position:absolute;left:31px;top:-24px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;white-space:nowrap;background:rgba(10,20,34,.92);color:#fff;font:600 15px/1 var(--body);padding:6px 11px 6px 9px;border-radius:999px;box-shadow:0 4px 12px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.12)}
+.ag-pill i{width:8px;height:8px;border-radius:50%;background:#3DDC84;box-shadow:0 0 0 3px rgba(61,220,132,.22)}
+.ag-zam{position:absolute;left:31px;top:-62px;width:30px;height:30px;margin-left:-15px;border-radius:50%;background:var(--lamp);color:var(--lamp-ink);font:800 19px/30px var(--body);text-align:center;opacity:0;transform:scale(.3) translateY(10px);transition:opacity .2s,transform .35s cubic-bezier(.3,1.6,.5,1);box-shadow:0 6px 14px rgba(0,0,0,.35)}
+.ag-zam::after{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-5px;border:5px solid transparent;border-bottom:0;border-top-color:var(--lamp)}
+.agent.zam .ag-zam{opacity:1;transform:none}
+.agent.klik::before{content:"";position:absolute;left:-10px;top:8px;width:36px;height:36px;border-radius:50%;border:3px solid var(--lamp);animation:klik .6s ease-out both}
+@keyframes klik{0%{opacity:1;transform:scale(.3)}100%{opacity:0;transform:scale(1.8)}}
+
+.agent{transition:transform .8s cubic-bezier(.45,.05,.55,.95)}
+/* «язык и тело» */
+.telo-s{padding-bottom:40px}
+.telo-s h2{max-width:22ch;font-size:clamp(28px,3.2vw,46px)}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:36px}
+.vs-k{display:flex;flex-direction:column;gap:14px}
+.vs-h{display:flex;align-items:center;gap:14px;min-height:76px}
+.vs-h b{display:block;font-size:19px;font-weight:600}
+.vs-h small{display:block;font-size:15.5px;color:var(--mute);margin-top:2px}
+.oblako{width:64px;height:64px;border-radius:22px 22px 22px 6px;background:#1B2B40;display:grid;place-items:center;color:#5E7590;font-size:32px;flex:none;animation:plyv 3.2s ease-in-out infinite}
+@keyframes plyv{50%{transform:translateY(-6px)}}
+.figurka{width:64px;height:76px;flex:none;display:grid;place-items:end center}
+.figurka svg{width:43px;height:76px}
+.nash .vs-h small{color:var(--lamp)}
+.vs .tg{min-height:0;flex:1}
+.vs .tg-msgs{min-height:300px}
+.b.bot{background:#F1F3F5}
+.b.sys{align-self:center;background:rgba(74,104,57,.38);color:#fff;font-size:13px;font-weight:600;box-shadow:none;padding:3px 10px;border-radius:12px}
+.b.doc{display:flex;align-items:center;gap:11px}
+.b.doc .di{width:42px;height:42px;border-radius:50%;background:#4FAE4E;color:#fff;display:grid;place-items:center;font-size:20px;flex:none}
+.b.doc small{display:block;color:#8A9AA8;font-size:12.5px}
+.t3{font:600 clamp(22px,2vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin-top:64px;max-width:26ch}
+.vkl-w{margin-top:26px;overflow-x:auto;scrollbar-width:none;border-radius:18px;background:var(--night2);border:1px solid var(--line)}
+.vkl-w::-webkit-scrollbar{display:none}
+.vkl{position:relative;min-width:860px;padding:14px 14px 0}
+.vkl-r{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.vk{display:flex;align-items:center;gap:10px;height:52px;padding:0 14px;border-radius:12px 12px 4px 4px;background:#132238;color:#9FB0C3;font-size:15.5px;font-weight:500;white-space:nowrap;border:1px solid transparent;transition:background .3s,color .3s,border-color .3s}
+.vk .zn{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font:700 12px/1 Arial,sans-serif;color:#fff;flex:none}
+.vk.on{background:#fff;color:#0A1422;border-color:var(--lamp);box-shadow:0 0 0 3px rgba(255,200,61,.25)}
+.vk.byl::after{content:"✓";margin-left:auto;color:#3DDC84;font-weight:700}
+.vk.on.byl::after{color:#1BB08C}
+.dor{position:relative;height:122px}
+.dor .agent{top:0}
+.ekr{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:22px;margin-top:16px;align-items:stretch}
+.ekr-l{padding:26px 28px;border-radius:18px;background:linear-gradient(120deg,#16263C,#0E1B2D);border:1px solid var(--line);min-height:190px;display:flex;flex-direction:column;justify-content:center}
+.ekr-ap{font-size:15px;color:var(--lamp);font-weight:500;display:flex;align-items:center;gap:8px}
+.ekr-t{margin-top:10px;font:600 clamp(20px,1.9vw,28px)/1.25 var(--display);letter-spacing:-.02em}
+.ekr-t.pop{animation:pop .5s cubic-bezier(.16,1,.3,1)}
+.sdel{list-style:none;padding:20px 22px;border-radius:18px;border:1px solid var(--line);display:flex;flex-direction:column;gap:9px;font-size:16px}
+.sdel li{display:flex;gap:10px;align-items:center;color:#D5DEE8;animation:pop .45s cubic-bezier(.16,1,.3,1)}
+.sdel li i{color:#3DDC84;font-size:19px}
+.sdel .pust{color:var(--mute);animation:none}
+.nikogda{margin-top:34px;font:600 clamp(22px,2.2vw,32px)/1.2 var(--display);letter-spacing:-.02em}
+.nikogda span{color:var(--lamp)}
+@media (max-width:860px){
+  .vs{grid-template-columns:1fr}
+  .ekr{grid-template-columns:1fr}
+  .vkl{min-width:780px}
+  .t3{margin-top:48px}
+}
+
+/* «перенос»: голова вашего человека → в агента (Артур 05.11 ~15:10) */
+.perenos{margin-top:46px;border-radius:20px;border:1px solid var(--line);background:radial-gradient(ellipse at 50% 130%,#1A2D47 0%,var(--night2) 62%);padding:20px 24px 8px;overflow:hidden}
+.per-top{display:flex;align-items:center;justify-content:space-between;gap:14px 24px;flex-wrap:wrap}
+.per-top p{font-size:16.5px;line-height:1.45;color:#C9D4E0;max-width:50ch}
+.per-top p b{color:var(--ink);font-weight:600}
+.per-kto{display:flex;gap:4px;padding:4px;border-radius:999px;background:var(--night);border:1px solid var(--line)}
+.per-kto button{min-height:42px;padding:0 18px;border-radius:999px;font-size:15px;font-weight:500;color:#C9D4E0;transition:background .2s,color .2s}
+.per-kto button[aria-selected=true]{background:var(--lamp);color:var(--lamp-ink)}
+.scena{position:relative;height:340px}
+.fig{position:absolute;bottom:26px;width:96px;height:170px}
+.fig svg{display:block;width:96px;height:170px;overflow:visible;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35))}
+.fig.chel{left:12%}.fig.agn{right:12%}
+.fig .tag{position:absolute;left:-6px;top:-34px;display:flex;align-items:center;gap:6px;white-space:nowrap;padding:6px 11px 6px 10px;border-radius:999px;background:rgba(10,20,34,.92);color:#fff;font:600 14px/1 var(--body);box-shadow:0 4px 12px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.12);transition:box-shadow .4s}
+.fig .tag i{width:8px;height:8px;border-radius:50%;background:#3DDC84;box-shadow:0 0 0 3px rgba(61,220,132,.22)}
+.fig.agn .tag{left:auto;right:-6px}
+.fig.chel .tag i{background:#8FA3BA;box-shadow:none}
+.fig.agn.nov .tag{box-shadow:0 4px 12px rgba(0,0,0,.35),0 0 0 2px var(--lamp)}
+.fig .pol{position:absolute;left:50%;bottom:-6px;width:70px;height:10px;margin-left:-35px;border-radius:50%;background:radial-gradient(rgba(0,0,0,.45),transparent 70%)}
+.fig.agn.vspyh::after{content:"";position:absolute;left:50%;top:6px;width:44px;height:44px;margin-left:-22px;border-radius:50%;border:3px solid var(--lamp);animation:klik .7s ease-out both}
+.dug{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.dug path{fill:none;stroke:var(--lamp);stroke-width:2;stroke-dasharray:3 9;stroke-linecap:round;opacity:0;transition:opacity .5s}
+.dug.on path{opacity:.55}
+.puz{position:absolute;max-width:340px;padding:6px 10px;border-radius:13px 13px 13px 4px;background:#fff;color:#111;font:14px/1.3 var(--tg);box-shadow:0 4px 14px rgba(0,0,0,.3);white-space:normal}
+.puz.otv{border-radius:13px 13px 4px 13px;background:#EFFDDE}
+.puz.otv.typ{display:flex;gap:4px;padding:10px 12px}
+.puz.otv.typ span{width:6px;height:6px;border-radius:50%;background:#5DC452;animation:typ 1s infinite}
+.puz.otv.typ span:nth-child(2){animation-delay:.15s}.puz.otv.typ span:nth-child(3){animation-delay:.3s}
+.mozg{position:absolute;left:0;top:0;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;display:grid;place-items:center;font-size:30px;color:#FFA3C2;background:radial-gradient(circle at 40% 35%,#4A2340,#1B1426 75%);box-shadow:0 0 0 2px rgba(255,200,61,.7),0 0 30px 8px rgba(255,170,90,.35);opacity:0;pointer-events:none}
+.mozg-t{position:absolute;left:50%;bottom:62px;transform:translateX(-50%);white-space:nowrap;font-size:13px;font-weight:500;color:var(--lamp)}
+.shag{transition:border-color .4s,background .4s}
+.shag.on{border-color:rgba(255,200,61,.7);background:rgba(255,200,61,.06)}
+@media (max-width:860px){
+  .perenos{padding:18px 16px 4px;margin-left:-4px;margin-right:-4px}
+  .per-kto{width:100%}.per-kto button{flex:1}
+  .scena{height:330px}
+  .fig,.fig svg{width:62px;height:110px}
+  .fig.chel{left:5%}.fig.agn{right:5%}
+  .fig .tag{font-size:12.5px;padding:5px 9px 5px 8px}
+  .puz{max-width:168px;font-size:13px}
+  .mozg{width:44px;height:44px;margin:-22px 0 0 -22px;font-size:25px}
+  .mozg-t{bottom:54px;font-size:12px}
+}
+</style>
+</head>
+<body>
+<header class="nav">
+  <a class="logo" href="index.html">g.a.d. <span>production</span></a>
+  <nav aria-label="Разделы"><a href="#">Что умеет</a><a href="#">Как подключаем</a><a href="#">Цены</a><a href="#">Вопросы</a></nav>
+  <a class="pis" href="https://t.me/gonartur" target="_blank" rel="noopener">Написать</a>
+</header>
+
+<main>
+<section class="sek telo-s" id="telo">
+  <p class="eye">Почему не очередной чат-бот</p>
+  <h2>Мы дали ИИ не только язык человека. Мы дали ему тело.</h2>
+  <p class="lead">Все уже подключали ИИ-ботов и привыкли: это вежливый чат, который ничего не может. Мы разобрали свои переписки целиком и нашли главную причину. Люди не хотят говорить с ботом. Они хотят говорить с человеком, который их понимает и пишет как человек.</p>
+
+  <div class="vs">
+    <div class="vs-k bot">
+      <div class="vs-h"><span class="oblako"><i class="ph-fill ph-chat-circle-dots"></i></span><div><b>Бот, к которому все привыкли</b><small>Язык есть. Рук нет.</small></div></div>
+      <div class="tg">
+        <div class="tg-head"><span class="av" style="background:linear-gradient(#A3B1C2,#6E7F93)">РЗ</span><span class="nm">Ромашка-Запчасти · бот<small>бот</small></span><i class="ph ph-dots-three-vertical"></i></div>
+        <div class="tg-msgs">
+          <div class="b o">здравствуйте, нужен счёт на 4 масляных фильтра JCB, оплатим сегодня<span class="t">09:14 ✓✓</span></div>
+          <div class="b i bot">Здравствуйте! 😊 Я виртуальный помощник компании «Ромашка-Запчасти». Чем я могу вам помочь?<span class="t">09:14</span></div>
+          <div class="b o">счёт на 4 фильтра<span class="t">09:15 ✓✓</span></div>
+          <div class="b i bot">К сожалению, я не могу выставить счёт. Оставьте, пожалуйста, ваш номер телефона, и менеджер свяжется с вами в рабочее время.<span class="t">09:15</span></div>
+          <div class="b sys">Диалог завершён</div>
+        </div>
+      </div>
+    </div>
+    <div class="vs-k nash">
+      <div class="vs-h"><span class="figurka"><svg class="ag-fig" viewBox="0 0 70 124" width="43" height="76" aria-hidden="true">
+  <ellipse class="ag-ten" cx="34" cy="119.5" rx="17" ry="3" fill="rgba(0,0,0,.3)"/>
+  <g class="ag-telo">
+    <g class="ag-ruka zad"><rect x="32" y="35" width="8" height="28" rx="4" fill="#D99A12"/><circle cx="36" cy="64" r="4.1" fill="#DDA982"/></g>
+    <g class="ag-noga zad"><rect x="31.5" y="68" width="9" height="44" rx="4.5" fill="#1C2533"/><rect x="23.5" y="108.5" width="18" height="8.5" rx="4.2" fill="#DCE2E8"/><rect x="23.5" y="114.6" width="18" height="2.4" rx="1.2" fill="#8E99A6"/></g>
+    <g class="ag-noga per"><rect x="31.5" y="68" width="9" height="44" rx="4.5" fill="#2A3A52"/><rect x="23.5" y="108.5" width="18" height="8.5" rx="4.2" fill="#F7F9FB"/><rect x="23.5" y="114.6" width="18" height="2.4" rx="1.2" fill="#AEB8C4"/></g>
+    <path d="M40 29c7.5 0 11.5 5.5 10 12.5l-1.2 2.5-7.8-3.6z" fill="#E09F10"/>
+    <rect x="23" y="31.5" width="26.5" height="45.5" rx="10.5" fill="#FFC83D"/>
+    <rect x="23" y="70" width="26.5" height="7" rx="3.5" fill="#EDAE22"/>
+    <path d="M26.5 60h13a2.4 2.4 0 0 1 2.4 2.4V68H24.1v-5.6A2.4 2.4 0 0 1 26.5 60z" fill="#F2B52C"/>
+    <path d="M34 33l-3.4 13.4" stroke="#1B2230" stroke-width=".9"/>
+    <rect x="26.3" y="45.6" width="8.2" height="10.4" rx="1.5" fill="#fff"/>
+    <rect x="27.8" y="48.2" width="5.2" height="1.7" rx=".85" fill="#0A1422"/>
+    <rect x="27.8" y="51.3" width="3.6" height="1.3" rx=".65" fill="#93A5B9"/>
+    <rect x="32.5" y="24.5" width="7" height="9" rx="2.2" fill="#DDA982"/>
+    <circle cx="35.5" cy="16.5" r="12.5" fill="#F1C6A0"/>
+    <path d="M23.6 18.2 21.3 21.4l2.6.9z" fill="#E7B58F"/>
+    <path d="M23.3 14.6C23.4 6.6 29.4 3 36.5 3.2c7.6.2 13 5.3 12.5 13.3-.2 4.5-1.4 8-3.2 10.5-.2-4-1.5-6.4-3.6-7.4l-.7-6.2c-5.5.4-11-1.4-14.1-2.8-1.2 1.8-2.5 3.2-4.1 4z" fill="#2B1E16"/>
+    <ellipse class="ag-glaz" cx="28.2" cy="17.4" rx="1.45" ry="1.85" fill="#141A24"/>
+    <path d="M26.1 13.9q2.3-1.2 4.6-.2" stroke="#2B1E16" stroke-width="1.15" stroke-linecap="round" fill="none"/>
+    <path d="M25 24.1q2.1 1.4 4.1.1" stroke="#B4604A" stroke-width="1" stroke-linecap="round" fill="none"/>
+    <path d="M42.6 14.6C43.6 3.6 31 1.6 28 6.3" stroke="#1B2230" stroke-width="2.3" stroke-linecap="round" fill="none"/>
+    <rect x="39" y="13.6" width="7.2" height="10.4" rx="3.3" fill="#1B2230"/>
+    <g class="ag-ruka per"><rect x="32" y="35" width="8" height="28" rx="4" fill="#FFD05A" stroke="#E2A417" stroke-width=".5"/><rect x="32" y="56.5" width="8" height="4.5" rx="2.2" fill="#EDAE22"/><circle cx="36" cy="64" r="4.3" fill="#F1C6A0"/></g>
+  </g>
+</svg></span><div><b>Наш сотрудник</b><small>Пишет как человек. И делает сам.</small></div></div>
+      <div class="tg">
+        <div class="tg-head"><span class="av" style="background:linear-gradient(#FFD36A,#F2A93B)">РЗ</span><span class="nm">Ромашка-Запчасти<small>в сети</small></span><i class="ph ph-dots-three-vertical"></i></div>
+        <div class="tg-msgs">
+          <div class="b o">здравствуйте, нужен счёт на 4 масляных фильтра JCB, оплатим сегодня<span class="t">09:14 ✓✓</span></div>
+          <div class="b i">добрый) да, 4 шт есть<span class="t">09:15</span></div>
+          <div class="b i doc"><span class="di"><i class="ph-fill ph-file-pdf"></i></span><span>Счёт АСФР-000512.pdf<small>84,5 КБ</small></span><span class="t">09:15</span></div>
+          <div class="b i">7 400 с ндс. оплатите до 14 — сегодня отгрузим<span class="t">09:15</span></div>
+          <div class="b o">супер, спасибо!<span class="t">09:16 ✓✓</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="t3">Язык — половина. Вторая половина — тело.</h3>
+  <p class="lead">Он работает в каждой вкладке вашей системы: 1С, почта, мессенджеры, банк, ЭДО. Сам идёт туда, где нужна работа, и доводит её до конца.</p>
+  <div class="vkl-w"><div class="vkl" id="vkl">
+    <div class="vkl-r" id="vkl-r"></div>
+    <div class="dor" id="dor"><div class="agent" id="ag2"><svg class="ag-fig" viewBox="0 0 70 124" width="62" height="110" aria-hidden="true">
+  <ellipse class="ag-ten" cx="34" cy="119.5" rx="17" ry="3" fill="rgba(0,0,0,.3)"/>
+  <g class="ag-telo">
+    <g class="ag-ruka zad"><rect x="32" y="35" width="8" height="28" rx="4" fill="#D99A12"/><circle cx="36" cy="64" r="4.1" fill="#DDA982"/></g>
+    <g class="ag-noga zad"><rect x="31.5" y="68" width="9" height="44" rx="4.5" fill="#1C2533"/><rect x="23.5" y="108.5" width="18" height="8.5" rx="4.2" fill="#DCE2E8"/><rect x="23.5" y="114.6" width="18" height="2.4" rx="1.2" fill="#8E99A6"/></g>
+    <g class="ag-noga per"><rect x="31.5" y="68" width="9" height="44" rx="4.5" fill="#2A3A52"/><rect x="23.5" y="108.5" width="18" height="8.5" rx="4.2" fill="#F7F9FB"/><rect x="23.5" y="114.6" width="18" height="2.4" rx="1.2" fill="#AEB8C4"/></g>
+    <path d="M40 29c7.5 0 11.5 5.5 10 12.5l-1.2 2.5-7.8-3.6z" fill="#E09F10"/>
+    <rect x="23" y="31.5" width="26.5" height="45.5" rx="10.5" fill="#FFC83D"/>
+    <rect x="23" y="70" width="26.5" height="7" rx="3.5" fill="#EDAE22"/>
+    <path d="M26.5 60h13a2.4 2.4 0 0 1 2.4 2.4V68H24.1v-5.6A2.4 2.4 0 0 1 26.5 60z" fill="#F2B52C"/>
+    <path d="M34 33l-3.4 13.4" stroke="#1B2230" stroke-width=".9"/>
+    <rect x="26.3" y="45.6" width="8.2" height="10.4" rx="1.5" fill="#fff"/>
+    <rect x="27.8" y="48.2" width="5.2" height="1.7" rx=".85" fill="#0A1422"/>
+    <rect x="27.8" y="51.3" width="3.6" height="1.3" rx=".65" fill="#93A5B9"/>
+    <rect x="32.5" y="24.5" width="7" height="9" rx="2.2" fill="#DDA982"/>
+    <circle cx="35.5" cy="16.5" r="12.5" fill="#F1C6A0"/>
+    <path d="M23.6 18.2 21.3 21.4l2.6.9z" fill="#E7B58F"/>
+    <path d="M23.3 14.6C23.4 6.6 29.4 3 36.5 3.2c7.6.2 13 5.3 12.5 13.3-.2 4.5-1.4 8-3.2 10.5-.2-4-1.5-6.4-3.6-7.4l-.7-6.2c-5.5.4-11-1.4-14.1-2.8-1.2 1.8-2.5 3.2-4.1 4z" fill="#2B1E16"/>
+    <ellipse class="ag-glaz" cx="28.2" cy="17.4" rx="1.45" ry="1.85" fill="#141A24"/>
+    <path d="M26.1 13.9q2.3-1.2 4.6-.2" stroke="#2B1E16" stroke-width="1.15" stroke-linecap="round" fill="none"/>
+    <path d="M25 24.1q2.1 1.4 4.1.1" stroke="#B4604A" stroke-width="1" stroke-linecap="round" fill="none"/>
+    <path d="M42.6 14.6C43.6 3.6 31 1.6 28 6.3" stroke="#1B2230" stroke-width="2.3" stroke-linecap="round" fill="none"/>
+    <rect x="39" y="13.6" width="7.2" height="10.4" rx="3.3" fill="#1B2230"/>
+    <g class="ag-ruka per"><rect x="32" y="35" width="8" height="28" rx="4" fill="#FFD05A" stroke="#E2A417" stroke-width=".5"/><rect x="32" y="56.5" width="8" height="4.5" rx="2.2" fill="#EDAE22"/><circle cx="36" cy="64" r="4.3" fill="#F1C6A0"/></g>
+  </g>
+</svg><span class="ag-pill"><i></i>Иван</span><span class="ag-zam">!</span></div></div>
+  </div></div>
+  <div class="ekr">
+    <div class="ekr-l"><span class="ekr-ap" id="ekr-ap"></span><p class="ekr-t" id="ekr-t"></p></div>
+    <ul class="sdel" id="sdel"><li class="pust">Здесь будет то, что он сделал сам</li></ul>
+  </div>
+  <p class="nikogda">Никогда не забудет ни одного вашего клиента. <span>И ни одной оплаты.</span></p>
+</section>
+
+<section class="sek" id="pod-biznes">
+  <p class="eye">Под ваш бизнес</p>
+  <h2>Ваши цены, ваши акции, ваша манера.</h2>
+  <p class="lead">Один и тот же вопрос клиента — в каждой компании свой ответ. Сотрудник знает правила именно вашей фирмы и сам вплетает их в разговор: акцию, рассрочку, бесплатный замер. А пишет так, как пишут ваши люди.</p>
+
+  <div class="biz" role="tablist" aria-label="Бизнес" id="biz"></div>
+
+  <div class="stol">
+    <aside class="pravila" aria-live="polite">
+      <div class="firma"><b id="f-ic"></b><span id="f-nm"></span></div>
+      <h3>Что он знает о вашей компании</h3>
+      <ul id="pr"></ul>
+      <p class="zamok"><i class="ph-fill ph-shield-check"></i><span id="f-zam"></span></p>
+    </aside>
+    <div class="chat">
+      <div class="man" role="tablist" aria-label="Манера общения" id="man"></div>
+      <div class="tg">
+        <div class="tg-head"><span class="av" id="k-av"></span><span class="nm"><span id="k-nm"></span><small id="k-st">в сети</small></span><i class="ph ph-magnifying-glass"></i><i class="ph ph-phone"></i><i class="ph ph-dots-three-vertical"></i></div>
+        <div class="tg-msgs" id="msgs"></div>
+        <div class="tg-in"><i class="ph ph-paperclip"></i><span>Написать сообщение…</span><i class="ph ph-smiley"></i><i class="ph ph-microphone"></i></div>
+      </div>
+      <p class="podpis"><i class="ph-fill ph-lightning"></i><span>Жёлтой рамкой — где он сам применил правило вашей компании</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="sek kop" id="kopiya">
+  <p class="eye">Копия вашего сотрудника</p>
+  <h2>Ваш лучший менеджер, только без выходных.</h2>
+  <p class="lead">Даёте переписки сотрудника — получаете ИИ-сотрудника, который пишет как он. Клиент спорит о цене. Один ответ написал живой Андрей, второй — его копия. Угадаете?</p>
+
+  <div class="ugad" id="ugad">
+    <div class="ug">
+      <div class="tg">
+        <div class="tg-head"><span class="av" style="background:linear-gradient(#72D5FD,#2A9EF1)">М</span><span class="nm">Марина<small>в сети</small></span><i class="ph ph-dots-three-vertical"></i></div>
+        <div class="tg-msgs" data-ug="0"></div>
+      </div>
+      <button class="kto" type="button">Это живой Андрей</button>
+      <span class="otvet kopiya"><i class="ph-fill ph-sparkle"></i>Это копия Андрея</span>
+    </div>
+    <div class="ug">
+      <div class="tg">
+        <div class="tg-head"><span class="av" style="background:linear-gradient(#72D5FD,#2A9EF1)">М</span><span class="nm">Марина<small>в сети</small></span><i class="ph ph-dots-three-vertical"></i></div>
+        <div class="tg-msgs" data-ug="1"></div>
+      </div>
+      <button class="kto" type="button">Это живой Андрей</button>
+      <span class="otvet zhiv"><i class="ph ph-user"></i>Это живой Андрей</span>
+    </div>
+  </div>
+  <p class="razgadka">Слева — копия. Она училась на <b>переписках Андрея</b>: как он здоровается, когда ставит скобку, что отвечает на «дорого» и «подумаю», что предлагает в довесок. Акцию на второй монтаж она взяла из правил компании — так, как это сделал бы он.</p>
+
+  <div class="perenos" id="perenos">
+    <div class="per-top">
+      <p><b>Берём вашего человека — и переносим его голову в агента.</b> Манеру, обороты, кому какие скидки. Тело — наше: он работает в 1С, почте и банке сам.</p>
+      <div class="per-kto" role="tablist" aria-label="Чью копию делаем" id="per-kto">
+        <button type="button" role="tab" aria-selected="true" data-k="men">Сотрудника</button>
+        <button type="button" role="tab" aria-selected="false" data-k="vy">Вас самих</button>
+      </div>
+    </div>
+    <div class="scena" id="scena" aria-hidden="true">
+      <svg class="dug" id="dug"><path d=""/></svg>
+      <div class="fig chel" id="chel"><span class="pol"></span><span class="tag"><i></i><span id="chel-t">Андрей · менеджер</span></span></div>
+      <div class="fig agn" id="agn"><span class="pol"></span><span class="tag"><i></i><span id="agn-t">Иван</span></span></div>
+      <div class="mozg" id="mozg"><i class="ph-fill ph-brain"></i><span class="mozg-t" id="mozg-t">манера Андрея</span></div>
+    </div>
+  </div>
+
+  <div class="shagi">
+    <div class="shag"><h3>Даёте переписки</h3><p>Telegram, WhatsApp, почта, выгрузка из 1С или CRM. Хватит года работы одного человека.</p></div>
+    <div class="shag"><h3>За ночь он учится</h3><p>Манера, обороты, «ты» или «вы». Цены, скидки и кому их даёт. Что отвечает на «дорого», «подумаю», «у других дешевле».</p></div>
+    <div class="shag"><h3>Неделю — вместе с вами</h3><p>Пишет черновики, вы правите одним нажатием. Дальше сам, а спорное приносит вам в Telegram.</p></div>
+  </div>
+
+  <div class="ushel">
+    <p>Ушёл в отпуск или уволился — <span>копия осталась</span>. Помнит всех его клиентов и пишет так же.</p>
+    <a class="btn" href="https://t.me/gonartur" target="_blank" rel="noopener">Сделать копию моего менеджера <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+  </div>
+</section>
+</main>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  // бизнесы: правила компании, клиент, ответы в четырёх манерах; [текст, № правила] — правило подсвечивается
+  const BIZ = [
+    {id: 'klimat', ic: 'ph-snowflake', nm: 'Кондиционеры', firma: 'Климат «Прохлада»', gorod: 'продажа и монтаж, Краснодар', cv: '#2A9EF1',
+     kto: 'Андрей', zam: 'Скидку больше 5 % не даст без вашего «да» — спросит вас в Telegram.',
+     pr: [['ph-percent', 'Второй кондиционер — монтаж на 10 % дешевле'], ['ph-ruler', 'Замер по городу бесплатно'], ['ph-calendar-check', 'Монтаж за 2–3 дня'], ['ph-credit-card', 'Рассрочка 0 % на 6 месяцев']],
+     kl: ['Марина', 'М', 'linear-gradient(#72D5FD,#2A9EF1)', 'добрый день, сколько стоит кондиционер в спальню 15 м² с установкой?'],
+     m: {
+       kop: [['добрый день)'], ['на 15 м² берите 07-ку, Ballu или Midea, с монтажом выйдет 38–42 тыс'], ['если ещё в зал думаете, второй поставим с монтажом на 10% дешевле', 0], ['замерщик приедет бесплатно, записать на завтра?', 1]],
+       del: [['Здравствуйте! Для спальни 15 м² подойдёт сплит-система 2,1 кВт (модель 07).'], ['Стоимость с монтажом — от 38 000 ₽, монтаж в течение 2–3 дней.', 2], ['Действует рассрочка 0 % на 6 месяцев.', 3], ['Выезд замерщика бесплатный. Удобно завтра?', 1]],
+       tep: [['Здравствуйте! Спальня — самое важное, чтобы спалось хорошо)'], ['возьмём тихую модель, 19 дБ, ночью её не слышно'], ['с установкой около 38 тысяч, можно в рассрочку без переплаты', 3], ['а в зале летом не жарко? второй монтируем на 10% дешевле', 0]],
+       kor: [['38 тыс с монтажом'], ['ставим за 2–3 дня', 2], ['замер бесплатно, завтра удобно?', 1]]
+     }},
+    {id: 'spec', ic: 'ph-gear-six', nm: 'Запчасти для спецтехники', firma: '«СпецДеталь»', gorod: 'запчасти JCB, CAT, Komatsu', cv: '#E07B39',
+     kto: 'Павел', zam: 'Скидку больше 3 % не даст без вашего «да» — спросит вас в Telegram.',
+     pr: [['ph-file-text', 'Постоянным — цены по договору'], ['ph-truck', 'Оплата до 14:00 — отгрузка в тот же день'], ['ph-package', 'От 15 000 ₽ — доставка до ТК бесплатно'], ['ph-arrows-left-right', 'Нет в наличии — аналог с той же гарантией']],
+     kl: ['Игорь · СтройМех', 'ИС', 'linear-gradient(#FFB86C,#E07B39)', 'фильтры топливные на JCB 3CX есть? нужно 6 шт'],
+     m: {
+       kop: [['добрый) оригинала JCB сейчас только 2'], ['есть Fleetguard, один в один, гарантия та же, 6 шт на складе', 3], ['по вашему договору 1 870 за шт', 0], ['если масляные тоже берёте, выйдет за 15 тыс, тогда до ТК довезём бесплатно', 2], ['оплатите до 14 — сегодня отгрузим', 1]],
+       del: [['Здравствуйте! Оригинальных фильтров JCB в наличии 2 шт.'], ['Предлагаем аналог Fleetguard FS19732 — 6 шт, гарантия как на оригинал.', 3], ['Цена по вашему договору — 1 870 ₽/шт.', 0], ['При оплате до 14:00 отгрузим сегодня.', 1]],
+       tep: [['Добрый день! Техника стоит или это на плановое ТО?'], ['оригинала 2 шт, но есть Fleetguard, своим сами его ставим, гарантия та же', 3], ['по договору 1 870, 6 шт на складе', 0], ['успеете оплатить до 14 — сегодня же уедет к вам', 1]],
+       kor: [['аналог Fleetguard, 6 шт', 3], ['1 870 по договору', 0], ['оплата до 14 — отгрузка сегодня', 1]]
+     }},
+    {id: 'mebel', ic: 'ph-armchair', nm: 'Мебель на заказ', firma: '«Дом Кухни»', gorod: 'кухни и шкафы на заказ', cv: '#8E6CC9',
+     kto: 'Ольга', zam: 'Скидку больше 7 % не даст без вашего «да» — спросит вас в Telegram.',
+     pr: [['ph-cube', 'Замер и 3D-проект бесплатно'], ['ph-percent', 'К кухне столешница из камня на 15 % дешевле'], ['ph-clock', 'Изготовление 25 дней, предоплата 50 %'], ['ph-tag', 'До 30 ноября техника Bosch по закупочной цене']],
+     kl: ['Анна', 'А', 'linear-gradient(#F3A1C8,#D1588F)', 'сколько примерно стоит кухня 3 метра?'],
+     m: {
+       kop: [['здравствуйте) 3 метра у нас обычно 180–260 тыс, зависит от фасадов'], ['давайте замерщик приедет и проект в 3D нарисуем, это бесплатно, сразу увидите точную цену', 0], ['и сейчас к кухне столешница из камня на 15% дешевле, многие берут', 1]],
+       del: [['Здравствуйте! Кухня 3 м — от 180 000 до 260 000 ₽ в зависимости от фасадов и фурнитуры.'], ['Замер и 3D-проект — бесплатно.', 0], ['Изготовление — 25 дней, предоплата 50 %.', 2], ['До 30 ноября техника Bosch — по закупочной цене.', 3]],
+       tep: [['Здравствуйте! Как здорово, что взялись за кухню)'], ['3 метра обычно 180–260 тыс, фасады лучше смотреть вживую, покажем образцы'], ['замер и проект в 3D бесплатно, приедем когда вам удобно', 0], ['и до конца месяца Bosch по закупке, на кухне это заметная экономия', 3]],
+       kor: [['180–260 тыс'], ['замер и 3D бесплатно', 0], ['когда удобно приехать?']]
+     }},
+    {id: 'avto', ic: 'ph-car', nm: 'Автосервис', firma: 'Автосервис «Мотор 24»', gorod: 'ремонт и ТО', cv: '#2DBE60',
+     kto: 'Дмитрий', zam: 'Скидку больше 10 % не даст без вашего «да» — спросит вас в Telegram.',
+     pr: [['ph-magnifying-glass', 'Диагностика бесплатно при ремонте у нас'], ['ph-calendar-check', 'Окно для записи — в течение суток'], ['ph-drop', 'Постоянным — мойка в подарок'], ['ph-shield-check', 'Гарантия на работы 12 месяцев']],
+     kl: ['Виктор', 'В', 'linear-gradient(#9BE38F,#3BAF4A)', 'стучит что-то спереди на кочках, сколько стоит посмотреть?'],
+     m: {
+       kop: [['добрый, похоже на стойки стабилизатора или втулки'], ['посмотрим бесплатно, если чинить у нас будете', 0], ['завтра в 10 или в 16 окно есть, записать?', 1]],
+       del: [['Здравствуйте! По описанию — вероятно, стойки стабилизатора или сайлентблоки.'], ['Диагностика подвески — бесплатно при ремонте у нас.', 0], ['Гарантия на работы — 12 месяцев.', 3], ['Ближайшие окна: завтра в 10:00 или 16:00.', 1]],
+       tep: [['Здравствуйте! Хорошо, что сразу написали, с подвеской лучше не тянуть'], ['диагностику сделаем бесплатно, если ремонт у нас', 0], ['вы у нас в марте масло меняли, так что мойка в подарок)', 2], ['завтра 10:00 или 16:00 — как удобнее?', 1]],
+       kor: [['диагностика бесплатно при ремонте', 0], ['завтра 10 или 16?', 1]]
+     }}
+  ];
+  const MAN = [['kop', ''], ['del', 'Деловой'], ['tep', 'Тёплый'], ['kor', 'Коротко']];
+  let bi = 0, mi = 0, sam = false, run = 0, auto = null;
+
+  $('#biz').innerHTML = BIZ.map((b, i) => `<button type="button" role="tab" aria-selected="${i === 0}" data-i="${i}"><i class="ph ${b.ic}"></i>${b.nm}</button>`).join('');
+  const knopkiMan = () => {
+    const b = BIZ[bi];
+    $('#man').innerHTML = MAN.map(([k, nm], i) => `<button type="button" role="tab" aria-selected="${i === mi}" data-i="${i}">` +
+      (k === 'kop' ? `<span class="av" style="background:${b.cv}">${b.kto[0]}</span>Как ${b.kto}<small>копия менеджера</small>` : nm) + '</button>').join('');
+  };
+  const chas = (m) => { const t = 9 * 60 + 14 + m; return String(Math.floor(t / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0'); };
+  const zhdat = ms => new Promise(r => setTimeout(r, ms));
+
+  async function igrat() {
+    const moj = ++run, b = BIZ[bi], seq = b.m[MAN[mi][0]];
+    $('#f-ic').innerHTML = `<i class="ph-fill ${b.ic}"></i>`; $('#f-ic').style.background = b.cv;
+    $('#f-nm').innerHTML = `${b.firma}<small>${b.gorod}</small>`;
+    $('#f-zam').textContent = b.zam;
+    $('#pr').innerHTML = b.pr.map(([ic, t]) => `<li><i class="ph ${ic}"></i><span>${t}</span></li>`).join('');
+    $('#k-av').textContent = b.kl[1]; $('#k-av').style.background = b.kl[2]; $('#k-nm').textContent = b.kl[0]; $('#k-st').textContent = 'в сети';
+    const box = $('#msgs');
+    box.innerHTML = `<span class="td-date">сегодня</span><div class="b i pop">${b.kl[3]}<span class="t">${chas(0)}</span></div>`;
+    const li = $$('#pr li');
+    await zhdat(900);
+    for (let k = 0; k < seq.length; k++) {
+      if (moj !== run) return;
+      const [t, r] = seq[k];
+      const typ = document.createElement('div'); typ.className = 'typ'; typ.innerHTML = '<span></span><span></span><span></span>';
+      box.appendChild(typ); $('#k-st').textContent = 'печатает…';
+      await zhdat(Math.min(1500, 500 + t.length * 14));
+      if (moj !== run) return;
+      typ.remove();
+      const el = document.createElement('div'); el.className = 'b o pop' + (r != null ? ' pravilo' : '');
+      el.innerHTML = t + `<span class="t">${chas(1)} ✓✓</span>`; box.appendChild(el);
+      li.forEach(x => x.classList.remove('on'));
+      if (r != null && li[r]) li[r].classList.add('on', 'byl');
+      await zhdat(650);
+    }
+    $('#k-st').textContent = 'в сети';
+    await zhdat(1200); if (moj !== run) return;
+    li.forEach(x => x.classList.remove('on'));
+    if (!sam) auto = setTimeout(() => { if (moj !== run || sam) return; mi = (mi + 1) % MAN.length; if (mi === 0) bi = (bi + 1) % BIZ.length; obnovit(); }, 2600);
+  }
+  function obnovit() {
+    clearTimeout(auto);
+    $$('#biz button').forEach((x, i) => x.setAttribute('aria-selected', i === bi));
+    knopkiMan(); igrat();
+    if (sam) { $('#biz [aria-selected=true]').scrollIntoView({block: 'nearest', inline: 'center', behavior: 'smooth'}); $('#man [aria-selected=true]').scrollIntoView({block: 'nearest', inline: 'center', behavior: 'smooth'}); }
+  }
+  $('#biz').addEventListener('click', e => { const x = e.target.closest('button'); if (!x) return; sam = true; bi = +x.dataset.i; mi = 0; obnovit(); });
+  $('#man').addEventListener('click', e => { const x = e.target.closest('button'); if (!x) return; sam = true; mi = +x.dataset.i; obnovit(); });
+
+  // «угадайте»: слева копия, справа живой
+  const UG = [
+    [['понимаю вас)'], ['там точно с монтажом цена? у нас в 38 уже всё входит: трасса 5 м, кронштейны, вакуумирование'], ['плюс гарантия на монтаж 3 года, обычно дают год'], ['и если в зал тоже думаете, второй монтируем на 10% дешевле']],
+    [['понимаю)'], ['а там с монтажом? у нас в 38 всё: трасса 5 м, кронштейны, вакуумирование'], ['и гарантия на монтаж 3 года, у них обычно год'], ['если ещё в зал надумаете, второй с монтажом на 10% дешевле сделаем, так выгоднее выйдет']]
+  ];
+  $$('[data-ug]').forEach(box => {
+    const seq = UG[+box.dataset.ug];
+    box.innerHTML = '<span class="td-date">вчера</span><div class="b i">что-то дорого, в соседнем магазине такой же на 6 тысяч дешевле<span class="t">18:42</span></div>' +
+      seq.map(([t]) => `<div class="b o">${t}<span class="t">18:44 ✓✓</span></div>`).join('');
+  });
+  $$('#ugad button.kto').forEach(x => x.addEventListener('click', () => $('#kopiya').classList.add('otkryto')));
+
+  // запуск, когда раздел виден; ?bi=&mi=&ug=1 — стоп-кадр для проверки
+  const q = new URLSearchParams(location.search);
+  if (q.has('bi')) { sam = true; bi = +q.get('bi'); mi = +(q.get('mi') || 0); }
+  if (q.has('ug')) $('#kopiya').classList.add('otkryto');
+  knopkiMan();
+  $$('#biz button').forEach((x, i) => x.setAttribute('aria-selected', i === bi));
+  let poshlo = q.has('bi'); if (poshlo) igrat();
+  new IntersectionObserver(es => { if (!poshlo && es[0].isIntersecting) { poshlo = true; igrat(); } }, {threshold: .35}).observe($('.stol'));
+})();
+</script>
+<script>
+(() => {
+  // «Тело»: Иван ходит по вкладкам системы и делает работу сам
+  const $ = q => document.querySelector(q);
+  const VK = [['1С:Предприятие', '1С', '#E8B400'], ['Почта', '@', '#FC3F1D'], ['Telegram', '➤', '#2AABEE'], ['Т-Бизнес', 'Т', '#FFDD2D'], ['Диадок', 'Д', '#1BB08C'], ['Клиенты', '★', '#8E6CC9']];
+  const SH = [
+    [0, 'Собрал КП на 1 400 позиций: остатки, цены по договору, сроки', 'КП на 1 400 позиций'],
+    [0, 'Нашёл в базе, у каких поставщиков есть 24 позиции под заказ', 'Поставщики найдены'],
+    [1, 'Запросил у поставщиков актуальные цены и сроки', 'Цены и сроки запрошены'],
+    [1, 'Отправил клиенту КП и счёт — к 9 утра, как обещал', 'КП и счёт у клиента'],
+    [2, 'Согласовал с клиентом скидку — в пределах ваших правил', 'Скидка согласована'],
+    [4, 'Отправил договор на подпись и проверил, что он действительно подписан', 'Договор подписан — проверено'],
+    [3, 'Напомнил про оплату и сам увидел платёж в банке', 'Оплата пришла'],
+    [5, 'Помнит, кто что берёт и у какой фирмы. Через месяц напишет сам', 'Забытых клиентов: 0']
+  ];
+  $('#vkl-r').innerHTML = VK.map(([nm, zn, c], i) => `<span class="vk" data-i="${i}"><span class="zn" style="background:${c};${c === '#FFDD2D' || c === '#E8B400' ? 'color:#1C1500' : ''}">${zn}</span>${nm}</span>`).join('');
+  const ag = $('#ag2'), dor = $('#dor'), vkl = $('#vkl');
+  let p = null, k = -1, tm = null;
+  function kuda(i) {   // рука Ивана — под серединой вкладки
+    const t = vkl.querySelectorAll('.vk')[i], r0 = vkl.getBoundingClientRect(), r = t.getBoundingClientRect();
+    return [r.left - r0.left + r.width / 2, 6];
+  }
+  function idti(q, poza) {
+    const d = p ? Math.abs(q[0] - p[0]) : 0, dur = d > 4 ? Math.min(1.1, Math.max(.45, d / 650)) : 0;
+    ag.style.transitionDuration = dur + 's';
+    ag.style.transform = `translate(${q[0] - 8}px,${q[1]}px)`;
+    ag.classList.remove('tap', 'rab', 'zam');
+    if (dur) { ag.classList.add('idet'); ag.classList.toggle('vpravo', q[0] > p[0]); }
+    p = q;
+    setTimeout(() => { ag.classList.remove('idet', 'vpravo'); ag.classList.add(poza); }, dur * 1000);
+    return dur;
+  }
+  function shag() {
+    k = (k + 1) % SH.length;
+    if (k === 0) { $('#sdel').innerHTML = ''; vkl.querySelectorAll('.vk').forEach(t => t.classList.remove('byl')); }
+    const [i, tekst, gotovo] = SH[k];
+    vkl.querySelectorAll('.vk').forEach((t, j) => t.classList.toggle('on', j === i));
+    const w = vkl.parentElement, t = vkl.querySelectorAll('.vk')[i];
+    if (w.scrollWidth > w.clientWidth) w.scrollTo({left: t.offsetLeft - w.clientWidth / 2 + t.offsetWidth / 2, behavior: 'smooth'});
+    const dur = idti(kuda(i), 'tap');
+    setTimeout(() => {
+      ag.classList.remove('tap'); ag.classList.add('rab');
+      $('#ekr-ap').innerHTML = `<i class="ph-fill ph-arrow-square-out"></i>${VK[i][0]}`;
+      const e = $('#ekr-t'); e.textContent = tekst; e.classList.remove('pop'); void e.offsetWidth; e.classList.add('pop');
+      const li = document.createElement('li'); li.innerHTML = `<i class="ph-fill ph-check-circle"></i>${gotovo}`; $('#sdel').appendChild(li);
+      vkl.querySelectorAll('.vk')[i].classList.add('byl');
+    }, dur * 1000 + 250);
+    tm = setTimeout(shag, k === SH.length - 1 ? 5200 : 2900);
+  }
+  const q = new URLSearchParams(location.search);
+  if (q.has('telo')) {   // стоп-кадр для проверки: ?telo=N — сразу N шагов
+    const n = +q.get('telo'); ag.style.transition = 'none';
+    for (let j = 0; j <= n; j++) { k = j - 1; const [i, tekst, gotovo] = SH[j]; vkl.querySelectorAll('.vk').forEach((t, x) => t.classList.toggle('on', x === i)); idti(kuda(i), 'rab'); $('#ekr-ap').textContent = VK[i][0]; $('#ekr-t').textContent = tekst; if (j === 0) $('#sdel').innerHTML = ''; const li = document.createElement('li'); li.innerHTML = `<i class="ph-fill ph-check-circle"></i>${gotovo}`; $('#sdel').appendChild(li); vkl.querySelectorAll('.vk')[i].classList.add('byl'); }
+    return;
+  }
+  let poshlo = false;
+  new IntersectionObserver(es => { if (!poshlo && es[0].isIntersecting) { poshlo = true; shag(); } }, {threshold: .4}).observe(vkl);
+  addEventListener('resize', () => { if (k >= 0) { ag.style.transitionDuration = '0s'; p = kuda(SH[k][0]); ag.style.transform = `translate(${p[0] - 8}px,${p[1]}px)`; } });
+})();
+</script>
+<script>
+/* «перенос»: фразы человека → в голову → мозг → по дуге в Ивана → Иван пишет его манерой. ?mozg=3 — стоп-кадр конца */
+(() => {
+  const $ = s => document.querySelector(s);
+  const scena = $('#scena'), chel = $('#chel'), agn = $('#agn'), mozg = $('#mozg'), dug = $('#dug'), shagi = [...document.querySelectorAll('.shag')];
+  const KTO = {
+    men: {kto: 'Андрей · менеджер', m: 'манера Андрея', pill: 'Иван · пишет как Андрей', pillM: 'Иван · как Андрей', tors: '#5B8DEF', ten: '#4373D8', volos: '#6B4A2E',
+          fr: ['понимаю)', 'а там с монтажом? у нас в 38 всё входит', 'второй на 10% дешевле сделаем'],
+          otv: 'понимаю) а там с монтажом? у нас в 38 уже всё входит'},
+    vy: {kto: 'Вы · хозяин', m: 'ваши решения', pill: 'Иван · решает как вы', pillM: 'Иван · как вы', tors: '#46566F', ten: '#36445A', volos: '#3A2A1E',
+         fr: ['постоянным — 5% сразу', 'по оплате не торопим, знаем вас', 'привезём сами, не переживайте'],
+         otv: 'вы у нас давно, так что 5% сразу) по оплате не торопим'}
+  };
+  // фигуры: Иван — копия с соседнего блока, человек — тот же рисунок без гарнитуры и бейджа, в своей одежде
+  const ivan = document.querySelector('#ag2 svg');
+  const svgIvan = ivan.cloneNode(true); svgIvan.removeAttribute('width'); svgIvan.removeAttribute('height'); svgIvan.querySelector('.ag-ten').remove();
+  agn.prepend(svgIvan);
+  const svgChel = ivan.cloneNode(true); svgChel.removeAttribute('width'); svgChel.removeAttribute('height'); svgChel.querySelector('.ag-ten').remove();
+  svgChel.querySelectorAll('[stroke="#1B2230"], rect[fill="#1B2230"], rect[fill="#fff"], rect[fill="#0A1422"], rect[fill="#93A5B9"]').forEach(e => e.remove());
+  chel.prepend(svgChel);
+  const ODEZHDA = {'#FFC83D': 'tors', '#FFD05A': 'tors', '#EDAE22': 'ten', '#F2B52C': 'ten', '#E09F10': 'ten', '#D99A12': 'ten', '#E2A417': 'ten', '#2B1E16': 'volos'};
+  svgChel.querySelectorAll('[fill],[stroke]').forEach(e => { for (const a of ['fill', 'stroke']) { const v = e.getAttribute(a); if (v && ODEZHDA[v.toUpperCase()]) e.dataset[a] = ODEZHDA[v.toUpperCase()]; } });
+  let kto = 'men';
+  function odet() {
+    const d = KTO[kto];
+    svgChel.querySelectorAll('[data-fill],[data-stroke]').forEach(e => { if (e.dataset.fill) e.setAttribute('fill', d[e.dataset.fill]); if (e.dataset.stroke) e.setAttribute('stroke', d[e.dataset.stroke]); });
+    $('#chel-t').textContent = d.kto; $('#mozg-t').textContent = d.m;
+  }
+
+  const golova = el => { const r = el.getBoundingClientRect(), s = scena.getBoundingClientRect(); return [r.left - s.left + r.width * 35.5 / 70, r.top - s.top + r.height * 16.5 / 124]; };
+  const zhdi = ms => new Promise(r => setTimeout(r, ms));
+  let token = 0;
+  const pusk = async (t, f) => { if (t !== token) throw 0; const r = await f(); if (t !== token) throw 0; return r; };   // и до, и после ожидания
+  function puz(tekst, x, y, otv) {
+    const b = document.createElement('div'); b.className = 'puz' + (otv ? ' otv' : '');
+    if (tekst === null) { b.classList.add('typ'); b.innerHTML = '<span></span><span></span><span></span>'; } else b.textContent = tekst;
+    b.style.left = x + 'px'; b.style.top = y + 'px'; scena.appendChild(b); return b;
+  }
+  function etap(n) { shagi.forEach((e, i) => e.classList.toggle('on', i === n - 1)); }
+  function sbros() {
+    scena.querySelectorAll('.puz').forEach(b => b.remove());
+    mozg.getAnimations().forEach(a => a.cancel()); mozg.style.opacity = 0;
+    dug.classList.remove('on'); agn.classList.remove('nov', 'vspyh'); $('#agn-t').textContent = 'Иван'; etap(0);
+  }
+  function duga() {
+    const w = scena.clientWidth, a = golova(chel), b = golova(agn);
+    const v = innerWidth < 860 ? 76 : 100, A = [a[0], a[1] - v], B = [b[0], b[1] - v], C = [(A[0] + B[0]) / 2, Math.max(30, Math.min(A[1], B[1]) - 90)];
+    dug.setAttribute('viewBox', `0 0 ${w} ${scena.clientHeight}`);
+    dug.querySelector('path').setAttribute('d', `M${A} Q${C} ${B}`);
+    return [A, B, C];
+  }
+  function kOtvetu(p) {
+    const r = agn.getBoundingClientRect(), sc = scena.getBoundingClientRect(), b = golova(agn);
+    if (innerWidth < 860) { p.style.left = Math.max(8, r.right - sc.left + 4 - p.offsetWidth) + 'px'; p.style.top = (r.top - sc.top - 44 - p.offsetHeight) + 'px'; }
+    else { p.style.left = Math.max(8, b[0] - 60 - p.offsetWidth) + 'px'; p.style.top = (b[1] - 6) + 'px'; }
+  }
+  const podpis = d => innerWidth < 860 ? d.pillM : d.pill;
+  function konec() {   // стоп-кадр: копия уже в Иване
+    const d = KTO[kto], [, B] = duga(), b = golova(agn), mob = innerWidth < 860;
+    agn.classList.add('nov'); $('#agn-t').textContent = podpis(d);
+    kOtvetu(puz(d.otv, 0, 0, true));
+  }
+
+  async function cikl(t) {
+    const d = KTO[kto], mob = innerWidth < 860;
+    sbros();
+    const g = golova(chel), [A, B, C] = duga();
+    // 1. его переписки
+    etap(1);
+    const puzy = [];
+    for (let i = 0; i < 3; i++) {
+      await pusk(t, () => zhdi(i ? 520 : 300));
+      const prev = puzy[i - 1], y = prev ? prev.offsetTop + prev.offsetHeight + 8 : 8;
+      const p = puz(d.fr[i], g[0] + (mob ? 34 : 96), y);
+      p.animate([{opacity: 0, transform: 'translateY(10px) scale(.96)'}, {opacity: 1, transform: 'none'}], {duration: 380, easing: 'cubic-bezier(.16,1,.3,1)'}); puzy.push(p);
+    }
+    await pusk(t, () => zhdi(1300));
+    // 2. за ночь он учится: фразы уходят в голову, загорается мозг и летит по дуге
+    etap(2);
+    puzy.forEach((p, i) => {
+      const r = p.getBoundingClientRect(), s = scena.getBoundingClientRect();
+      const dx = g[0] - (r.left - s.left + r.width / 2), dy = g[1] - (r.top - s.top + r.height / 2);
+      p.animate([{transform: 'none', opacity: 1}, {transform: `translate(${dx}px,${dy}px) scale(.15)`, opacity: 0}], {duration: 650, delay: i * 140, easing: 'cubic-bezier(.55,0,.8,.4)', fill: 'forwards'});
+    });
+    await pusk(t, () => zhdi(950));
+    mozg.style.opacity = 1;
+    await mozg.animate([{transform: `translate(${g[0]}px,${g[1]}px) scale(.2)`, opacity: 0}, {transform: `translate(${A[0]}px,${A[1]}px) scale(1)`, opacity: 1}], {duration: 520, easing: 'cubic-bezier(.3,1.5,.5,1)', fill: 'forwards'}).finished;
+    await pusk(t, () => zhdi(650));
+    dug.classList.add('on');
+    const tochki = []; for (let i = 0; i <= 16; i++) { const u = i / 16, x = (1 - u) ** 2 * A[0] + 2 * (1 - u) * u * C[0] + u * u * B[0], y = (1 - u) ** 2 * A[1] + 2 * (1 - u) * u * C[1] + u * u * B[1]; tochki.push({transform: `translate(${x}px,${y}px) scale(${1 + .18 * Math.sin(Math.PI * u)})`}); }
+    await pusk(t, () => mozg.animate(tochki, {duration: 1500, easing: 'cubic-bezier(.45,.05,.55,.95)', fill: 'forwards'}).finished);
+    // 3. в Иване: вспышка, новая подпись, ответ его манерой
+    etap(3);
+    const b = golova(agn);
+    await pusk(t, () => mozg.animate([{transform: `translate(${B[0]}px,${B[1]}px) scale(1)`, opacity: 1}, {transform: `translate(${b[0]}px,${b[1]}px) scale(.2)`, opacity: 0}], {duration: 380, easing: 'ease-in', fill: 'forwards'}).finished);
+    dug.classList.remove('on'); agn.classList.remove('vspyh'); void agn.offsetWidth; agn.classList.add('vspyh', 'nov'); $('#agn-t').textContent = podpis(d);
+    await pusk(t, () => zhdi(700));
+    const typ = puz(null, 0, 0, true); kOtvetu(typ);
+    await pusk(t, () => zhdi(1100));
+    typ.remove();
+    const otv = puz(d.otv, 0, 0, true); kOtvetu(otv);
+    otv.animate([{opacity: 0, transform: 'translateY(8px)'}, {opacity: 1, transform: 'none'}], {duration: 400, easing: 'cubic-bezier(.16,1,.3,1)'});
+    await pusk(t, () => zhdi(3400));
+  }
+  let vidno = false;
+  const q = new URLSearchParams(location.search);
+  const stop = q.has('mozg') || matchMedia('(prefers-reduced-motion: reduce)').matches;   // без движения — сразу конец
+  async function igrat() {
+    const t = ++token;
+    try { while (vidno && t === token) await cikl(t); }
+    catch (e) { if (e !== 0 && !(e && e.name === 'AbortError')) throw e; }   // прервали переключателем или ушли со сцены
+  }
+  $('#per-kto').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    kto = b.dataset.k; $('#per-kto').querySelectorAll('button').forEach(x => x.setAttribute('aria-selected', x === b));
+    odet(); token++; sbros();
+    if (stop) konec(); else if (vidno) igrat();
+  });
+  odet();
+  if (stop) { if (q.get('kto') === 'vy') $('#per-kto [data-k=vy]').click(); else konec(); return; }
+  new IntersectionObserver(es => { const v = es[0].isIntersecting; if (v && !vidno) { vidno = true; igrat(); } else if (!v && vidno) { vidno = false; token++; sbros(); } }, {threshold: .45}).observe(scena);
+  addEventListener('resize', () => { if (vidno) { token++; igrat(); } });
+})();
+</script>
+<script>
+/* Вставка в главную (index.html v9): ?vstavka=telo или ?vstavka=pod-biznes,kopiya — только эти разделы, без шапки, фон прозрачный,
+   высоту сообщает родителю, ссылки открывает в верхнем окне. */
+(() => { const v = new URLSearchParams(location.search).get('vstavka'); if (!v) return;
+  const ids = v.split(','), sek = [...document.querySelectorAll('main > section')];
+  document.querySelector('.nav').style.display = 'none';
+  document.documentElement.style.background = document.body.style.background = 'transparent';
+  sek.forEach(s => { if (!ids.includes(s.id)) s.style.display = 'none'; });
+  document.querySelectorAll('a[href]').forEach(a => { if (!a.target) a.target = '_top'; });
+  const vid = sek.filter(s => s.style.display !== 'none');
+  const post = () => parent.postMessage({vstavka: v, h: Math.ceil(vid[vid.length - 1].getBoundingClientRect().bottom + scrollY)}, '*');
+  new ResizeObserver(post).observe(document.body); addEventListener('load', post); post(); })();
+</script>
+</body>
+</html>
