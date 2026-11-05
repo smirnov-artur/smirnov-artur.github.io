@@ -13,7 +13,7 @@
 <link rel="icon" href="https://gad-production.ru/favicon.svg" type="image/svg+xml"><link rel="icon" href="https://gad-production.ru/favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="https://gad-production.ru/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
 <style>
@@ -22,49 +22,50 @@
    переезжает в раздел, который в кадре, и играет его шаги; в остальных — обложка razd/<раздел>-w|m.jpg.
    Собирается _agent/sborka_razdely.py из этого шаблона и экранов программ index-v7-do-razdelov.html. */
 :root{
-  --night:#0A1422; --line:#22344C; --ink:#ECF1F6; --mute:#93A5B9; --soft:#C9D4E0;
-  --lamp:#FFC83D; --lamp-ink:#1C1500;
-  --display:"Unbounded",system-ui,sans-serif;
-  --body:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --page:#FFFFFF; --desk:#ECEEF0; --slot:#F5F6F7;
+  --ink:#15171A; --ink2:#454A52; --meta:#5B616A; --rule:#D6D9DD; --rule2:#AEB4BB;
+  --act:#FFD43B; --act-h:#F2C200; --act-line:#D9AE00; --link:#1A56B8; --ok:#1E7B3A; --stop:#B3261E;
+  --e1:0 0 0 1px rgba(21,23,26,.10),0 1px 2px rgba(21,23,26,.06);
+  --e2:0 0 0 1px rgba(21,23,26,.12),0 2px 4px rgba(21,23,26,.05),0 18px 40px -16px rgba(21,23,26,.28);
+  /* старые имена — для экранов программ внутри сцены */
+  --night:#FFFFFF; --line:#D6D9DD; --mute:#5B616A; --soft:#454A52; --lamp:#FFD43B; --lamp-ink:#15171A;
+  --f:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --display:var(--f); --body:var(--f);
+  --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
   --os:"Segoe UI",system-ui,Arial,sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 html,body{overflow-x:clip}
-body{background:var(--night);color:var(--ink);font:400 17px/1.5 var(--body);-webkit-font-smoothing:antialiased;min-height:100dvh}
+body{background:var(--page);color:var(--ink);font:400 17px/1.55 var(--f);font-variant-numeric:tabular-nums lining-nums;-webkit-font-smoothing:antialiased;min-height:100dvh}
 a{color:inherit}
-:focus-visible{outline:2px solid var(--lamp);outline-offset:3px;border-radius:4px}
+:focus-visible{outline:2px solid var(--link);outline-offset:3px;border-radius:4px}
 
 /* шапка */
-.nav{display:flex;align-items:center;gap:28px;max-width:1360px;margin:0 auto;padding:0 32px;height:64px}
-.logo{font:600 18px/1 var(--display);letter-spacing:-.01em;text-decoration:none}
+.nav{display:flex;align-items:center;gap:28px;max-width:1280px;margin:0 auto;padding:0 40px;height:64px;border-bottom:1px solid var(--rule)}
+.logo{font:700 19px/1 var(--f);letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
 .logo span{color:var(--mute);font-weight:500}
-.nav nav{display:flex;gap:26px;margin-left:auto;font-size:15px;color:var(--mute)}
+.nav nav{display:flex;gap:26px;margin-left:auto;font-size:15px;color:var(--ink2)}
 .nav nav a{text-decoration:none}
 .nav nav a:hover{color:var(--ink)}
-.nav .pis{font-size:15px;font-weight:600;text-decoration:none;padding:9px 16px;border:1px solid var(--line);border-radius:999px}
+.nav .pis{font-size:15px;font-weight:600;text-decoration:none;padding:10px 16px;border:1px solid var(--rule2);border-radius:6px;color:var(--ink)}
 
-/* ===== v9: одна страница — ночь Ивана. Фон страницы светлеет от ночи к рассвету ===== */
-body{background:linear-gradient(180deg,#0A1422 0%,#0A1422 30%,#0E192D 55%,#16192E 75%,#2A2133 92%,#3A2A30 100%)}
-.hero{position:relative;max-width:1400px;margin:0 auto;padding:18px 32px 36px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px 36px}
-.hero::before{content:"";position:absolute;left:10%;top:18%;width:80%;height:80%;background:radial-gradient(50% 45% at 50% 55%,rgba(255,200,61,.13),rgba(255,200,61,0) 70%);pointer-events:none;z-index:-1}
-.eye{display:inline-flex;align-items:center;gap:10px;font:500 14px/1 var(--mono);color:var(--lamp);margin-bottom:16px}
-.eye i{width:8px;height:8px;border-radius:50%;background:#3DDC84;box-shadow:0 0 0 4px rgba(61,220,132,.18)}
-h1{font:600 clamp(34px,3.8vw,56px)/1.06 var(--display);letter-spacing:-.035em}
-h1 .rot{display:block;color:var(--lamp);min-height:1.06em}
-h1 .rot span{display:inline-block;animation:rot .6s cubic-bezier(.16,1,.3,1)}
-@keyframes rot{from{opacity:0;transform:translateY(.3em);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
-.h-pr{align-self:end}
-.sub{font-size:16.5px;line-height:1.5;color:var(--soft);margin-bottom:18px}
+/* ===== v10 «Папка сделки» (work/dizajn-audit): светлая страница, Golos Text, пункты с чёртой, жёлтое — только действие ===== */
+.hero{max-width:1280px;margin:0 auto;padding:28px 40px 56px;display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:24px 40px}
+.eye{font:500 15px/1.3 var(--f);color:var(--meta);margin-bottom:12px}
+.eye i{display:none}
+h1{font:650 clamp(30px,1.6vw + 25px,46px)/1.1 var(--f);letter-spacing:-.02em;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+h1 .rot{display:block;color:var(--ink2);min-height:1.1em}
+h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
+@keyframes rot{from{opacity:0;transform:translateY(.25em)}to{opacity:1;transform:none}}
+.h-pr{align-self:end;padding-bottom:4px}
+.sub{font-size:16px;line-height:1.5;color:var(--ink2);margin-bottom:16px}
 .ctas{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--lamp);color:var(--lamp-ink);font:600 17px/1 var(--body);text-decoration:none;box-shadow:0 10px 30px -10px rgba(255,200,61,.55)}
-.btn:hover{background:#FFD566}
-.ghost{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:16px;color:var(--soft);text-decoration:none}
-.ghost:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:6px;background:var(--act);border:1px solid var(--act-line);color:var(--ink);font:600 17px/1.2 var(--f);text-decoration:none}
+.btn:hover{background:var(--act-h)}
+.ghost{display:inline-flex;align-items:center;gap:6px;font-weight:500;font-size:16px;color:var(--link);text-decoration:underline;text-underline-offset:3px}
 .hero .ekran-w{width:min(100%,calc((100dvh - 330px) * 1.6));min-width:min(100%,640px);justify-self:start}
-/* телефон хозяина: Иван пишет отчёт по ходу ночи */
-.tel{width:270px;height:100%;max-height:600px;min-height:470px;border-radius:40px;background:#07090D;padding:10px;box-shadow:0 40px 80px -24px rgba(0,0,0,.9),0 0 0 2px #2A2F38}
+.tel{width:270px;height:100%;max-height:600px;min-height:470px;border-radius:40px;background:#111317;padding:10px;box-shadow:var(--e2)}
 .tel-s{height:100%;border-radius:31px;overflow:hidden;background:#fff;display:flex;flex-direction:column;font:14px/1.35 Roboto,"Segoe UI",Arial,sans-serif;color:#000}
 .tel-sb{height:28px;flex:none;display:flex;justify-content:space-between;align-items:center;padding:0 22px;font-size:12px;font-weight:600}
 .tel-h{flex:none;display:flex;align-items:center;gap:10px;padding:4px 12px 8px;border-bottom:1px solid #EAEAEA}
@@ -83,47 +84,53 @@ h1 .rot span{display:inline-block;animation:rot .6s cubic-bezier(.16,1,.3,1)}
 .tel-m .ya time{color:#5DC452}
 .tel-in{flex:none;height:42px;border-top:1px solid #EAEAEA;display:flex;align-items:center;gap:10px;padding:0 14px;color:#9AA0A6;font-size:13px}
 
-/* главы ночи */
-.glava{max-width:1400px;margin:0 auto;padding:110px 32px 40px;scroll-margin-top:0}
-.g-head{display:flex;align-items:flex-end;gap:28px;flex-wrap:wrap;margin-bottom:22px}
-.g-vr{font:600 clamp(64px,9vw,138px)/.82 var(--mono);color:transparent;-webkit-text-stroke:1.5px rgba(255,200,61,.6);letter-spacing:-.04em}
-.g-num{display:block;font:500 14px/1 var(--mono);color:var(--lamp);margin-bottom:12px}
-.glava h2{font:600 clamp(26px,2.9vw,44px)/1.1 var(--display);letter-spacing:-.025em;max-width:22ch}
-.put{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;color:var(--mute);font-size:14px}
-.put span{border:1px solid var(--line);border-radius:999px;padding:4px 12px;color:var(--soft)}
-.g-tit{display:flex;align-items:baseline;gap:14px;min-height:64px;margin-bottom:14px}
-.g-tit time{font:500 15px var(--mono);color:var(--lamp);flex:none}
-.g-tit div{animation:rot .5s cubic-bezier(.16,1,.3,1)}
-.g-tit b{display:block;font-size:21px;font-weight:600;color:var(--ink);line-height:1.25}
-.g-tit span{display:block;font-size:15.5px;color:var(--soft);margin-top:3px;max-width:90ch}
-.glava .ekran-w{width:min(100%,calc((100dvh - 190px) * 1.6));margin:0 auto}
-.shagi{list-style:none;display:flex;gap:6px;margin:16px auto 0;width:min(100%,calc((100dvh - 190px) * 1.6))}
+/* главы: пункты договора */
+.glava{max-width:1280px;margin:0 auto;padding:80px 40px 24px;scroll-margin-top:0}
+.g-head{display:grid;grid-template-columns:auto 1fr;column-gap:6px;align-items:baseline;margin-bottom:16px}
+.g-head>div{display:contents}
+.g-head h2,.g-head .bez,.g-head .put{grid-column:1/-1}
+.g-vr{display:inline;font:500 16px/1 var(--f);color:var(--meta)}
+.g-vr::after{content:" · "}
+.g-num{display:inline;font:500 16px/1 var(--f);color:var(--meta)}
+.g-head h2{margin-top:10px;font:650 clamp(25px,.8vw + 21px,32px)/1.15 var(--f);letter-spacing:-.015em;padding-bottom:12px;border-bottom:2px solid var(--ink)}
+.bez{margin-top:12px;font-size:16px;line-height:1.5;color:var(--ink2);max-width:72ch}
+.bez b{color:var(--stop);font-weight:600}
+.put{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px;color:var(--meta);font-size:15px}
+.put span{color:var(--ink2)}
+.g-tit{display:flex;align-items:baseline;gap:14px;min-height:62px;margin-bottom:12px;padding:12px 16px;background:var(--slot);border-left:2px solid var(--ink)}
+.g-tit time{font:600 15px var(--f);color:var(--meta);flex:none}
+.g-tit div{animation:rot .45s cubic-bezier(.16,1,.3,1)}
+.g-tit b{display:block;font-size:18px;font-weight:600;color:var(--ink);line-height:1.3}
+.g-tit span{display:block;font-size:16px;color:var(--ink2);margin-top:2px;max-width:90ch}
+.glava .ekran-w{width:min(100%,calc((100dvh - 200px) * 1.6));margin:0 auto}
+.shagi{list-style:none;display:flex;gap:4px;margin:14px auto 0;width:min(100%,calc((100dvh - 200px) * 1.6))}
 .shagi li{flex:1;min-width:0}
-.shagi button{all:unset;box-sizing:border-box;display:block;width:100%;position:relative;padding:10px 10px 14px;border-radius:10px;cursor:pointer;transition:background .3s}
-.shagi button:hover{background:rgba(255,255,255,.04)}
-.shagi button:focus-visible{outline:2px solid var(--lamp)}
-.shagi button::before{content:"";position:absolute;left:10px;right:10px;bottom:6px;height:3px;border-radius:2px;background:rgba(255,255,255,.1)}
-.shagi time{display:block;font:500 12px/1 var(--mono);color:var(--mute)}
-.shagi b{display:block;font-size:13.5px;font-weight:500;color:var(--mute);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.shagi .pr{position:absolute;left:10px;right:10px;bottom:6px;height:3px;border-radius:2px;background:var(--lamp);transform-origin:left;transform:scaleX(0)}
-.shagi .on time{color:var(--lamp)}.shagi .on b{color:var(--ink)}
+.shagi button{all:unset;box-sizing:border-box;display:block;width:100%;position:relative;padding:10px 8px 14px;border-radius:4px;cursor:pointer}
+.shagi button:hover{background:var(--slot)}
+.shagi button:focus-visible{outline:2px solid var(--link)}
+.shagi button::before{content:"";position:absolute;left:8px;right:8px;bottom:6px;height:2px;background:var(--rule)}
+.shagi time{display:block;font:500 14px/1 var(--f);color:var(--meta)}
+.shagi b{display:block;font-size:14px;font-weight:500;color:var(--meta);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shagi .pr{position:absolute;left:8px;right:8px;bottom:6px;height:2px;background:var(--ink);transform-origin:left;transform:scaleX(0)}
+.shagi .on time,.shagi .on b{color:var(--ink)}.shagi .on b{font-weight:600}
 .shagi .on .pr{animation:pr var(--d,3s) linear forwards}
-.shagi .byl .pr{transform:none;background:rgba(255,200,61,.45)}
+.shagi .byl .pr{transform:none;background:var(--rule2)}
 @keyframes pr{to{transform:scaleX(1)}}
-.ekran{position:relative;aspect-ratio:16/10;border-radius:14px;overflow:hidden;background:#05080F;box-shadow:0 50px 110px -40px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.1),0 0 0 8px #111824,0 0 0 9px rgba(255,255,255,.08),0 0 120px -30px rgba(255,200,61,.25)}
+.ekran{position:relative;aspect-ratio:16/10;border-radius:6px;overflow:hidden;background:var(--desk);box-shadow:var(--e2)}
 .obl,.obl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:left top}
 .cam{position:absolute;inset:0;overflow:hidden;background:#000}
 .stage{position:absolute;left:0;top:0;width:1440px;height:900px;transform-origin:0 0;transition:transform .85s cubic-bezier(.65,0,.35,1);font:13px/1.35 var(--os);color:#111;overflow:hidden}
 .instant .stage,.instant .stage *{transition:none!important;animation:none!important}
+.vstavka{border-top:1px solid var(--rule);margin-top:72px}
 .vstavka iframe{display:block;width:100%;height:900px;border:0;background:transparent}
-.final{max-width:1000px;margin:0 auto;padding:150px 32px 130px;text-align:center}
-.final h2{font:600 clamp(32px,4vw,60px)/1.06 var(--display);letter-spacing:-.035em}
-.final h2 span{color:var(--lamp)}
-.final p{color:var(--soft);font-size:18px;margin:18px auto 30px;max-width:46ch}
-.final .ctas{justify-content:center}
-.podval{max-width:1400px;margin:0 auto;padding:22px 32px 40px;color:var(--mute);font-size:14px;line-height:1.7;border-top:1px solid rgba(255,255,255,.08)}
+.final{max-width:1280px;margin:72px auto 0;padding:72px 40px 96px;border-top:1px solid var(--rule)}
+.final h2{font:650 clamp(30px,1.6vw + 25px,46px)/1.1 var(--f);letter-spacing:-.02em;padding-bottom:18px;border-bottom:2px solid var(--ink);max-width:22ch}
+.final h2 span{color:var(--ink2)}
+.final h2 br{display:none}
+.final p{color:var(--ink2);font-size:18px;margin:18px 0 26px;max-width:60ch}
+.podval{max-width:1280px;margin:0 auto;padding:22px 40px 40px;color:var(--meta);font-size:14px;line-height:1.7;border-top:1px solid var(--rule)}
 .podval .w{display:flex;flex-wrap:wrap;gap:6px 22px;margin-bottom:8px}
-.podval a{color:var(--soft)}
+.podval a{color:var(--link)}
 
 /* ===== экраны программ (из v7) ===== */
 /* ===== рабочий стол Windows 11 ===== */
@@ -581,8 +588,8 @@ h1 .rot span{display:inline-block;animation:rot .6s cubic-bezier(.16,1,.3,1)}
 
 @media (max-width:999px){
   .nav nav{display:none}.nav .pis{margin-left:auto}
-  .nav{padding:0 16px;height:58px}
-  .hero{display:flex;flex-direction:column;gap:14px;padding:6px 16px 30px}
+  .nav{padding:0 20px;height:58px}
+  .hero{display:flex;flex-direction:column;gap:14px;padding:16px 20px 30px}
   .h-txt,.h-pr{display:contents}
   .eye{order:0;margin:0}
   h1{order:1;font-size:clamp(28px,8vw,40px)}
@@ -595,16 +602,15 @@ h1 .rot span{display:inline-block;animation:rot .6s cubic-bezier(.16,1,.3,1)}
   .ctas{order:5;flex-direction:column;align-items:stretch;gap:14px}
   .btn{justify-content:center}.ghost{justify-content:center}
   .ym-txt,.ym-rep{max-width:560px!important}
-  .glava{padding:72px 16px 24px}
-  .g-head{gap:6px 16px}
+  .glava{padding:56px 20px 16px}
   .g-tit{min-height:92px}
   .g-tit b{font-size:18px}.g-tit span{font-size:15px}
   .glava .ekran-w,.shagi{width:100%}
-  .ekran{aspect-ratio:4/5;border-radius:12px}
+  .ekran{aspect-ratio:4/5;border-radius:6px}
   .shagi{overflow-x:auto;scrollbar-width:none;gap:2px}
   .shagi li{flex:none;width:112px}
-  .final{padding:96px 16px 80px}
-  .podval{padding:20px 16px 32px;flex-wrap:wrap}
+  .final{padding:56px 20px 64px}
+  .podval{padding:20px 20px 32px}
   .td-col{width:520px;margin-left:-260px}.td-col .b{font-size:17px;max-width:420px}
   /* большое КП на телефоне: окна 2×2 и 1С под ними — в кадре [360,0,720,900] */
   .w4-o{width:350px;height:272px}
@@ -978,6 +984,7 @@ h1 .rot span{display:inline-block;animation:rot .6s cubic-bezier(.16,1,.3,1)}
 
 <section class="glava" id="r1">
   <div class="g-head"><span class="g-vr">23:30</span><div><span class="g-num">01 · продажа в чате</span><h2>«Нам как в прошлый раз» — и счёт через минуту</h2>
+    <p class="bez"><b>Без Ивана:</b> менеджер увидит сообщение в 9:30 — Сергей к тому времени купит у тех, кто ответил ночью.</p>
     <div class="put"><span>Telegram</span>→<span>проверка в 1С</span>→<span>счёт</span>→<span>оплата</span>→<span>УПД в Диадок</span></div></div></div>
   <div class="g-tit" aria-live="polite"></div>
   <div class="ekran-w"><div class="ekran"><picture class="obl"><source media="(max-width:999px)" srcset="razd/r1-m.jpg"><img src="razd/r1-w.jpg" alt="" decoding="async"></picture></div></div>
@@ -986,6 +993,7 @@ h1 .rot span{display:inline-block;animation:rot .6s cubic-bezier(.16,1,.3,1)}
 
 <section class="glava" id="r3">
   <div class="g-head"><span class="g-vr">00:10</span><div><span class="g-num">02 · большое КП</span><h2>200 страниц к 9 утра? Он позвал ещё троих себя</h2>
+    <p class="bez"><b>Без Ивана:</b> 200 страниц — два дня работы отдела. К 9 утра КП не будет, заказ уйдёт другим.</p>
     <div class="put"><span>почта</span>→<span>PDF</span>→<span>четыре Ивана</span>→<span>КП в 1С</span></div></div></div>
   <div class="g-tit" aria-live="polite"></div>
   <div class="ekran-w"><div class="ekran"><picture class="obl"><source media="(max-width:999px)" srcset="razd/r3-m.jpg"><img src="razd/r3-w.jpg" alt="" decoding="async"></picture></div></div>
@@ -994,6 +1002,7 @@ h1 .rot span{display:inline-block;animation:rot .6s cubic-bezier(.16,1,.3,1)}
 
 <section class="glava" id="r2">
   <div class="g-head"><span class="g-vr">02:04</span><div><span class="g-num">03 · новый клиент</span><h2>Незнакомая компания в 2 ночи — уже в базе</h2>
+    <p class="bez"><b>Без Ивана:</b> письмо в 2 ночи прочитают к обеду. Клиента в базе нет, контакты — в чьей-то почте.</p>
     <div class="put"><span>почта</span>→<span>поиск в 1С</span>→<span>карточка и контакт</span>→<span>ответ</span></div></div></div>
   <div class="g-tit" aria-live="polite"></div>
   <div class="ekran-w"><div class="ekran"><picture class="obl"><source media="(max-width:999px)" srcset="razd/r2-m.jpg"><img src="razd/r2-w.jpg" alt="" decoding="async"></picture></div></div>
@@ -1002,6 +1011,7 @@ h1 .rot span{display:inline-block;animation:rot .6s cubic-bezier(.16,1,.3,1)}
 
 <section class="glava" id="r4">
   <div class="g-head"><span class="g-vr">04:32</span><div><span class="g-num">04 · поставщики</span><h2>Нет на складе — сам спросил у поставщиков</h2>
+    <p class="bez"><b>Без Ивана:</b> поставщикам напишут утром, ответы — к вечеру. КП уйдёт со старыми ценами.</p>
     <div class="put"><span>1С</span>→<span>письма поставщикам</span>→<span>ответы</span>→<span>цена в КП</span></div></div></div>
   <div class="g-tit" aria-live="polite"></div>
   <div class="ekran-w"><div class="ekran"><picture class="obl"><source media="(max-width:999px)" srcset="razd/r4-m.jpg"><img src="razd/r4-w.jpg" alt="" decoding="async"></picture></div></div>
@@ -1012,7 +1022,7 @@ h1 .rot span{display:inline-block;animation:rot .6s cubic-bezier(.16,1,.3,1)}
 
 <section class="final">
   <h2>09:00. Вы проснулись —<br><span>всё уже сделано.</span></h2>
-  <p>Покажем, что Иван возьмёт на себя в вашей компании.</p>
+  <p>Подключаем к вашей 1С и переписке, учим на ваших диалогах. Первым трём компаниям — подключение и 2 недели бесплатно, дальше от 9 900 ₽ в месяц.</p>
   <div class="ctas">
     <a class="btn" href="https://t.me/gonartur" target="_blank" rel="noopener">Разобрать мою компанию <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
   </div>
@@ -1170,7 +1180,7 @@ h1 .rot span{display:inline-block;animation:rot .6s cubic-bezier(.16,1,.3,1)}
   const REP = 'Андрей, добрый вечер! Спецификацию получили, 200 страниц, серьезно) Посчитаем за ночь, к 9 утра пришлем КП с ценами и сроками. Аналоги, если будут, отметим отдельно.';
   const RAZD = {
     r0: [
-      {r: 'r1', s: '23:30 · Сергей пишет в Telegram', hook: 'Сам отвечает в Telegram', k: [Object.assign(STOL('23:29'), {t: 1100}), ...UV('tg', '23:30', {t: 1000})]},
+      {r: 'r1', s: '23:30 · Сергей пишет в Telegram', hook: 'Сам отвечает в Telegram', k: [...UV('tg', '23:30', {t: 1100})]},
       {r: 'r1', s: '23:30 · сверяет его номер с карточкой в 1С', hook: 'Сам сверяет клиента в 1С', k: [{w: 'tg', tg: 6, info: 1, cam: F, camM: [900, 60, 540, 675], kur: '#w-tg .ti-r.hl', klik: 1, clk: '23:30', t: 1900},
            {w: '1c', f1c: 'klient', ot: 3, do: 9.5, tk: 2, pz: 600, tg: 6, clk: '23:30'}]},
       {r: 'r1', s: '23:31 · заказ как в октябре, счёт № 2 — Сергею в чат', hook: 'Сам выставляет счёт', msg: ['23:32', 'сергей из стройтех-снаба повторил заказ, счёт на 12 060 отправил', 'r1'], k: [{w: '1c', f1c: 'zakaz', ot: 7.5, do: 11.5, pz: 400, tg: 6, clk: '23:31'},
@@ -1259,7 +1269,8 @@ h1 .rot span{display:inline-block;animation:rot .6s cubic-bezier(.16,1,.3,1)}
   Object.values(RAZD).flat().forEach(s => s.k.forEach(b => { if (!b.f1c) return;
     const {ot, d, pts} = tochki(b), xs = pts.map(q => q.x), ys = pts.map(q => q.y), x0 = xs[0], cy = (Math.min(...ys) + Math.max(...ys)) / 2;
     const cx = Math.max(x0 - 260, Math.min(x0 + 330, (Math.min(...xs) + Math.max(...xs)) / 2));
-    Object.assign(b, {t: Math.round((d - ot) / (b.tk || TEMP1C[b.f1c]) * 1000) + (b.pz != null ? b.pz : 1800), kur: [x0, ys[0]], klik: 0, p: 'tap', cam: F, camM: [cx - 390, cy - 487, 780, 975]}); }));
+    const vx = xs.filter(x => x <= 1440), cw = Math.min(1440, Math.max(1040, Math.max(...vx) - Math.min(...vx) + 420)), cxw = (Math.min(...vx) + Math.max(...vx)) / 2;
+    Object.assign(b, {t: Math.round((d - ot) / (b.tk || TEMP1C[b.f1c]) * 1000) + (b.pz != null ? b.pz : 1800), kur: [x0, ys[0]], klik: 0, p: 'tap', cam: [cxw - cw / 2, cy - cw / 3.2, cw, cw / 1.6], camM: [cx - 390, cy - 487, 780, 975]}); }));
 
   /* ---------- применить кадр ---------- */
   function kamera(r) {
@@ -1399,7 +1410,7 @@ h1 .rot span{display:inline-block;animation:rot .6s cubic-bezier(.16,1,.3,1)}
     const anim = !tiho && !akt.stop;
     pokazat(f.b, anim);
     if (!anim) return;
-    tm = setTimeout(() => { let m = n + 1; if (m >= akt.flat.length) { m = 0; vhod(); } kadr(m); }, f.b.t || 1500);
+    tm = setTimeout(() => { let m = n + 1; if (m >= akt.flat.length) { m = 0; vhod(); if (akt.id === 'r0') agent([720, 520], '', 0, false); } kadr(m); }, f.b.t || 1500);
   }
   function perejti(si) { akt.si = -1; kadr(akt.flat.findIndex(f => f.si === si)); }
   function stop() { clearTimeout(tm); RT.forEach(clearTimeout); RT = []; w4(0); $$('#stage video').forEach(v => v.pause()); if (akt) akt.spit = true; }
@@ -1408,7 +1419,7 @@ h1 .rot span{display:inline-block;animation:rot .6s cubic-bezier(.16,1,.3,1)}
     $('#' + id + ' .ekran').appendChild(cam);
     akt = {id, flat: [], si: -1, stop: !!opt.stop};
     RAZD[id].forEach((s, i) => s.k.forEach(b => akt.flat.push({b, si: i})));
-    vhod();
+    vhod(); if (id === 'r0') agent([720, 520], '', 0, false);   // на первом экране Иван уже за столом — действие с первой секунды
     kadr(opt.k != null ? opt.k : akt.flat.findIndex(f => f.si === si));
   }
   new ResizeObserver(() => camR && kamera(camR)).observe(cam);

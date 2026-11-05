@@ -771,6 +771,12 @@ h2{font:600 clamp(26px,2.6vw,38px)/1.14 var(--display);letter-spacing:-.03em;max
    высоту сообщает родителю, ссылки открывает в верхнем окне. */
 (() => { const v = new URLSearchParams(location.search).get('vstavka'); if (!v) return;
   const ids = v.split(','), sek = [...document.querySelectorAll('main > section')];
+  // svetlaya: на главной v10 страница светлая («Папка сделки») — те же разделы в светлой теме, Golos Text, жёлтое только на кнопках
+  const st = document.querySelector('style');
+  st.textContent = st.textContent.replace(/color:var\(--lamp\)/g, 'color:var(--ink)').replace(/#0E1B2D|#16263C|#1B2B40|#132238|#1A2D47|#0A1422|#1B1426/gi, '#F5F6F7')
+    .replace(/rgba\(255,255,255,\.12\)/g, 'rgba(21,23,26,.12)')
+    .replace(/color:#(C9D4E0|D5DEE8)/gi, 'color:#454A52').replace(/color:#9FB0C3|color:rgba\(255,200,61,\.(7|55)\)/gi, 'color:#5B616A').replace(/color:#3DDC84/gi, 'color:#1E7B3A')
+    + ':root{--night:#FFFFFF;--night2:#F5F6F7;--line:#D6D9DD;--ink:#15171A;--mute:#5B616A;--lamp:#FFD43B;--lamp-ink:#15171A;--display:"Golos Text",system-ui,sans-serif;--mono:ui-monospace,Consolas,monospace}h2,h3{font-weight:650!important;letter-spacing:-.02em}h2{border-bottom:2px solid #15171A;padding-bottom:12px}';
   document.querySelector('.nav').style.display = 'none';
   document.documentElement.style.background = document.body.style.background = 'transparent';
   sek.forEach(s => { if (!ids.includes(s.id)) s.style.display = 'none'; });
