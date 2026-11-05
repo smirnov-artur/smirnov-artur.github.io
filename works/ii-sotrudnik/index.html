@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Иван — ИИ-сотрудник · g.a.d. production</title>
+<title>ИИ-сотрудник: пишет клиентам и сам работает в 1С · g.a.d. production</title>
 <meta name="description" content="ИИ-сотрудник Иван пишет клиентам как живой человек и сам делает работу в ваших программах: 1С, CRM, почта, мессенджеры, банк, ЭДО. Проверяет и заводит клиентов, выставляет счета, считает большие КП, спрашивает поставщиков, проводит оплаты.">
 <link rel="canonical" href="https://gad-production.ru/">
 <meta property="og:title" content="Иван — ИИ-сотрудник: пишет как человек, работает руками">
@@ -52,7 +52,7 @@ a{color:inherit}
 
 /* ===== v10 «Папка сделки» (work/dizajn-audit): светлая страница, Golos Text, пункты с чёртой, жёлтое — только действие ===== */
 .hero{max-width:1280px;margin:0 auto;padding:28px 40px 56px;display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:24px 40px}
-.eye{font:500 15px/1.3 var(--f);color:var(--meta);margin-bottom:12px}
+.eye{display:block;font:500 15px/1.3 var(--f);letter-spacing:0;color:var(--meta);margin-bottom:12px}
 .eye i{display:none}
 h1{font:650 clamp(30px,1.6vw + 25px,46px)/1.1 var(--f);letter-spacing:-.02em;padding-bottom:18px;border-bottom:2px solid var(--ink)}
 h1 .rot{display:block;color:var(--ink2);min-height:1.1em}
@@ -127,6 +127,7 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
 .final h2{font:650 clamp(30px,1.6vw + 25px,46px)/1.1 var(--f);letter-spacing:-.02em;padding-bottom:18px;border-bottom:2px solid var(--ink);max-width:22ch}
 .final h2 span{color:var(--ink2)}
 .final h2 br{display:none}
+.mezh{padding-bottom:0}.mezh+.glava{padding-top:40px}
 .final p{color:var(--ink2);font-size:18px;margin:18px 0 26px;max-width:60ch}
 .podval{max-width:1280px;margin:0 auto;padding:22px 40px 40px;color:var(--meta);font-size:14px;line-height:1.7;border-top:1px solid var(--rule)}
 .podval .w{display:flex;flex-wrap:wrap;gap:6px 22px;margin-bottom:8px}
@@ -586,12 +587,31 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
 .w4-itog p b{font:600 34px/1 var(--mono);min-width:120px}
 .w4-itog .da b{color:#3DDC84}.w4-itog .net b{color:var(--lamp)}
 
+/* глава 05 «днём»: второй чат (Руслан · ДорСтрой), договор в Диадоке, сообщение контрагенту */
+.td-left{display:flex;flex-direction:column}.td-left>*{flex:none}.td-srow{order:-2}#tg-c-rus.on{order:-1}
+.td.rus #td-col{display:none}.td:not(.rus) #td-col-r{display:none}
+.dd:not(.dog) #dd-dog,.dd:not(.dog) .dd-dogdoc,.dd.dog .dd-doc:not(.dd-dogdoc){display:none}
+.dd.dog #dd-upd td{background:none}
+.dd.dog #dd-upd .dd-st .a{display:none}.dd.dog #dd-upd .dd-st .b2{display:inline}.dd.dog #dd-upd .dd-st i{background:#1BB08C}
+.dd-msg{display:none;border:2px solid #1BB08C;padding:14px 20px}
+.dd-msg.on{display:block;animation:pop .45s cubic-bezier(.16,1,.3,1)}
+.dd-msg>b{font-size:15px;font-weight:600}
+.dd-msg .txt{min-height:48px;margin:8px 0 12px;font-size:17px;line-height:1.45}
+.dd-msg-n{display:flex;align-items:center;gap:12px;font-size:15px}
+.dd-msg .otp{background:#1BB08C;color:#fff;border-radius:8px;padding:8px 18px;font-weight:600}
+.dd-msg .ok{display:none;color:#0B7A5E;align-items:center;gap:6px}
+.dd-msg.ok .otp{display:none}.dd-msg.ok .ok{display:inline-flex}
+.dd-pf.dg{display:block;font-size:14px;line-height:1.5;color:#222}
+.dd-pf.dg b{display:block;text-align:center;font-size:17px}
+.dd-pf.dg small{display:block;text-align:center;color:#555;margin-bottom:10px}
+.dd-pf.dg p{margin-bottom:8px}
+
 @media (max-width:999px){
   .nav nav{display:none}.nav .pis{margin-left:auto}
   .nav{padding:0 20px;height:58px}
   .hero{display:flex;flex-direction:column;gap:14px;padding:16px 20px 30px}
   .h-txt,.h-pr{display:contents}
-  .eye{order:0;margin:0}
+  .eye{margin:0 0 14px}
   h1{order:1;font-size:clamp(28px,8vw,40px)}
   h1 .rot{min-height:2.12em}
   .hero .ekran-w{order:2;width:100%;min-width:0}
@@ -625,6 +645,7 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
   .w4-k{font-size:21px}
   .w4-itog{width:640px;margin-left:-320px;font-size:24px}
   .w4-itog h3{font-size:34px}.w4-itog p b{font-size:40px}
+  .dd-msg .txt,.dd-pf.dg p{max-width:560px}.dd-pf.dg b,.dd-pf.dg small{text-align:left}   /* глава 05: кадр телефона 600 px — текст не режется */
 }
 @media (prefers-reduced-motion:reduce){.stage,.stage *{transition:none!important;animation:none!important}.shagi .on .pr{animation:none;transform:scaleX(1)}}
 
@@ -640,8 +661,7 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
 <main>
 <section class="hero" id="r0">
   <div class="h-txt">
-    <p class="eye"><i></i>ИИ-сотрудник Иван · одна его ночь</p>
-    <h1>Пишет как человек.<span class="rot" id="rot"><span>Работает руками.</span></span></h1>
+    <h1><span class="eye">ИИ-сотрудник Иван · одна его ночь</span>Пишет как человек.<span class="rot" id="rot"><span>Работает руками.</span></span></h1>
   </div>
   <div class="h-pr">
     <p class="sub">Не чат-бот. Сам ведёт клиентов и делает работу в 1С, CRM, почте, банке и ЭДО.</p>
@@ -830,10 +850,33 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
               <div class="dd-btns"><span>Скачать<i class="ph ph-caret-down"></i></span><span>Согласовать<i class="ph ph-caret-down"></i></span><span>Аннулировать</span><span>Переслать</span><span><i class="ph ph-printer"></i></span></div>
               <table class="dd-tab">
                 <tr><th style="width:28%">Получатель ⌄</th><th style="width:38%">☐ Документы ⌄</th><th>Статус</th><th style="width:100px">Дата</th></tr>
+                <tr class="nov" id="dd-dog"><td>ООО "СК СЕВЕРНЫЙ"</td><td class="doc">Договор поставки № 14 от 05.11.26<small><s>Неформализованный документ · 6 стр.</s></small><span class="dd-tag">Отгрузка после подписи</span></td><td><span class="dd-st"><i></i><span class="a">Ожидается подпись контрагента</span><span class="b2">Подписан контрагентом</span></span></td><td>05.11.26</td></tr>
                 <tr class="nov" id="dd-upd"><td>ООО "СТРОЙТЕХ-СНАБ"</td><td class="doc">УПД №2 от 05.11.26<small>12 060,00 ₽ <s>НДС: 2 174,76 ₽ со счетом-фактурой</s></small><span class="dd-tag">Отгрузка сегодня</span></td><td><span class="dd-st"><i></i><span class="a">Ожидается подпись контрагента</span><span class="b2">Подписан контрагентом</span></span></td><td>05.11.26</td></tr>
                 <tr><td>ООО "ПРОМКОМПЛЕКТ"</td><td class="doc">Акт сверки за октябрь 2026<small><s>Неформализованный документ</s></small></td><td><span class="dd-st"><i></i>Ожидается подпись контрагента</span></td><td>01.11.26</td></tr>
                 <tr><td>ООО "СТРОЙТЕХ-СНАБ"</td><td class="doc">УПД №1 от 23.10.26<small>12 060,00 ₽ <s>НДС: 2 174,76 ₽ со счетом-фактурой</s></small></td><td><span class="dd-st"><i style="background:#1BB08C"></i>Документооборот завершен</span></td><td>23.10.26</td></tr>
               </table>
+            </div>
+            <div class="dd-doc dd-dogdoc">
+              <div class="dd-card">
+                <h1>Исходящий договор № 14 от 05.11.26</h1>
+                <div class="dd-lnk"><span><i class="ph ph-buildings"></i>ООО "СК СЕВЕРНЫЙ"</span><span><i class="ph ph-files"></i>Пакет из 1 документа</span><span><i class="ph ph-house-line"></i>Головное подразделение</span></div>
+                <div class="dd-sum">Договор поставки запчастей · 6 страниц</div>
+                <span class="dd-pill"><i class="ph ph-clock a"></i><span class="a">Ожидается подпись контрагента</span><i class="ph ph-check-circle b2"></i><span class="b2">Подписан контрагентом</span></span>
+              </div>
+              <div class="dd-card dd-ist">
+                <h3>История</h3>
+                <div class="dd-org">ООО "РОМАШКА-ЗАПЧАСТИ"</div>
+                <div class="dd-ev"><i class="ph ph-seal-check"></i><span>Петров И. С. подписал и отправил документ</span><small>Директор · 5 ноября 2026, 12:44</small></div>
+                <div class="dd-org">ООО "СК СЕВЕРНЫЙ"</div>
+                <div class="dd-ev"><i class="ph ph-tray-arrow-down"></i><span>Документ получен</span><small>5 ноября 2026, 12:44</small></div>
+                <div class="dd-ev nov"><i class="ph ph-seal-check"></i><span>Морозов Д. В. подписал документ</span><small>Генеральный директор · 5 ноября 2026, 16:18</small></div>
+              </div>
+              <div class="dd-card dd-msg" id="dd-msg" data-txt="Андрей, добрый день! Договор ждёт подписи Дмитрия Владимировича. Как подпишет — сразу ставим отгрузку, первая машина завтра."><b>Сообщение для ООО "СК СЕВЕРНЫЙ"</b><div class="txt"></div><div class="dd-msg-n"><span class="otp">Отправить</span><span class="ok"><i class="ph ph-check-circle"></i>Сообщение отправлено · 15:31</span></div></div>
+              <div class="dd-card dd-pf dg"><b>ДОГОВОР ПОСТАВКИ № 14</b><small>г. Москва · 5 ноября 2026 г.</small>
+                <p>ООО «Ромашка-Запчасти», именуемое в дальнейшем «Поставщик», в лице директора Петрова И. С., и ООО «СК Северный», именуемое в дальнейшем «Покупатель», в лице генерального директора Морозова Д. В., заключили настоящий договор о нижеследующем.</p>
+                <p>1. Поставщик передаёт Покупателю запчасти для спецтехники по коммерческому предложению № 3 от 05.11.2026 — 1 400 позиций.</p>
+                <p>2. Оплата: 50 % — в течение 3 банковских дней после подписания, остаток — в течение 5 дней после отгрузки.</p>
+              </div>
             </div>
             <div class="dd-doc">
               <div class="dd-card">
@@ -881,10 +924,10 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
           <div class="td-chat"><span class="av" style="background:linear-gradient(#FF885E,#FF516A)">ИП</span><span class="tx"><span class="nm"><span>Игорь Петров</span><em>16:40</em></span><span class="ls"><span><span class="ok">✓✓</span>счёт во вложении, оплатите до пятницы</span></span></span></div>
           <div class="td-chat"><span class="av" style="background:linear-gradient(#72D5FD,#2A9EF1)">ВМ</span><span class="tx"><span class="nm"><span>Вера · Метиз-Центр</span><em>15:15</em></span><span class="ls"><span>спасибо, всё получили</span></span></span></div>
           <div class="td-chat"><span class="av" style="background:linear-gradient(#A0DE7E,#54CB68)">АГ</span><span class="tx"><span class="nm"><span>Алексей · ГорКомплект</span><em>14:58</em></span><span class="ls"><span><span class="ok">✓✓</span>собрал как в прошлый раз, счёт ниже</span></span></span></div>
-          <div class="td-chat"><span class="av" style="background:linear-gradient(#E0A2F3,#D669ED)">РЗ</span><span class="tx"><span class="nm"><span>Руслан · Запад-Строй</span><em>13:21</em></span><span class="ls"><span>понял, тогда во вторник</span></span></span></div>
+          <div class="td-chat" id="tg-c-rus"><span class="av" style="background:linear-gradient(#E0A2F3,#D669ED)">РД</span><span class="tx"><span class="nm"><span>Руслан · ДорСтрой</span><em id="tg-c-rus-t">28.10</em></span><span class="ls"><span id="tg-c-rus-l">забрали, спасибо. оплатим во вторник</span></span></span></div>
         </div>
         <div class="td-right">
-          <div class="td-head"><span><span class="nm">Сергей · Стройтех-Снаб</span><small id="tg-st">был(а) недавно</small></span><span class="ic"><i class="ph ph-magnifying-glass"></i><i class="ph ph-phone"></i><i class="ph ph-sidebar-simple"></i><i class="ph ph-dots-three-vertical"></i></span></div>
+          <div class="td-head"><span><span class="nm" id="tg-hn">Сергей · Стройтех-Снаб</span><small id="tg-st">был(а) недавно</small></span><span class="ic"><i class="ph ph-magnifying-glass"></i><i class="ph ph-phone"></i><i class="ph ph-sidebar-simple"></i><i class="ph ph-dots-three-vertical"></i></span></div>
           <div class="td-msgs"><div class="td-col" id="td-col">
             <span class="td-date">22 октября</span>
             <div class="b i">добрый день, нам масляные 320/04133 и топливные 333/D7404, по 4 шт<span class="t">11:02</span></div>
@@ -897,6 +940,18 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
             <div class="b o zz" data-b="12">12 060 с ндс. оплатите до обеда по вашему, и сегодня же отгрузим<span class="t">23:32 ✓✓</span></div>
             <div class="b o zz" data-b="13">кстати топливных сейчас 14 на складе, если вдруг надо больше, скажите<span class="t">23:32 ✓✓</span></div>
             <div class="b i zz" data-b="14">супер, спасибо!<span class="t">23:33</span></div>
+          </div><div class="td-col" id="td-col-r">
+            <span class="td-date">28 октября</span>
+            <div class="b o">Руслан, добрый! зубья, пальцы и втулки собрали, накладная во вложении<span class="t">14:31 ✓✓</span></div>
+            <div class="b i">забрали, спасибо. оплатим во вторник<span class="t">14:52</span></div>
+            <div class="b o">договорились)<span class="t">14:53 ✓✓</span></div>
+            <span class="td-date zz" data-b="1">5 ноября</span>
+            <div class="b o zz" data-b="1">Руслан, добрый день)<span class="t">11:02 ✓✓</span></div>
+            <div class="b o zz" data-b="2">по отгрузке от 28 октября оплату пока не видим, 18 580<span class="t">11:02 ✓✓</span></div>
+            <div class="b o zz" data-b="3">всё в силе? если что-то поменялось, скажите, подстроимся<span class="t">11:03 ✓✓</span></div>
+            <div class="b i zz" data-b="4">ой, бухгалтер на больничном была. сегодня оплатим, извините<span class="t">11:17</span></div>
+            <div class="b o zz" data-b="5">ничего страшного, спасибо)<span class="t">11:18 ✓✓</span></div>
+            <div class="b o zz" data-b="6">оплату получили, спасибо!<span class="t">14:11 ✓✓</span></div>
           </div></div>
           <div class="td-in"><i class="ph ph-paperclip"></i><span>Написать сообщение…</span><i class="ph ph-smiley"></i><i class="ph ph-microphone"></i></div>
         </div>
@@ -918,6 +973,7 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
         <video class="real" data-f="kp2" src="1c/kp2.mp4" poster="1c/kp2.jpg" muted playsinline preload="auto"></video>
         <video class="real" data-f="postuplenie" src="1c/postuplenie.mp4" poster="1c/postuplenie.jpg" muted playsinline preload="auto"></video>
         <video class="real" data-f="novyj" src="1c/novyj.mp4" poster="1c/novyj.jpg" muted playsinline preload="auto"></video>
+        <video class="real" data-f="dolg" src="1c/dolg.mp4" poster="1c/dolg.jpg" muted playsinline preload="auto"></video>
       </section>
 
       <!-- ===== большое КП: четыре окна Ивана, находки — в окно 1С ===== -->
@@ -931,6 +987,7 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
       <div class="toast uv" data-uv="ym"><header><b class="ya">Я</b>Яндекс Почта<span style="margin-left:auto">сейчас</span></header><div class="tw"><span class="tav" style="background:#4E7AC7">АК</span><div><strong>Андрей Ковалёв</strong>Запрос КП к утру — запчасти на ТО парка<span class="tat"><i class="ph ph-paperclip"></i>Спецификация_ТО_парк_2027.pdf · 200 стр.</span></div></div></div>
       <div class="toast uv" data-uv="tg"><header><b class="tgi"><i class="ph-fill ph-paper-plane-tilt"></i></b>Telegram<span style="margin-left:auto">сейчас</span></header><div class="tw"><span class="tav" style="background:linear-gradient(#FF885E,#FF516A)">СС</span><div><strong>Сергей · Стройтех-Снаб</strong>доброе утро) нам как в прошлый раз, масляные 4 и топливные 4. сегодня оплатим</div></div></div>
       <div class="toast uv" data-uv="ym2"><header><b class="ya">Я</b>Яндекс Почта<span style="margin-left:auto">сейчас</span></header><div class="tw"><span class="tav" style="background:#8E6CC9">ОД</span><div><strong>Ольга Демидова, ТК «Урал-Снаб»</strong>Заявка на 40 позиций, нужен счёт<span class="tat"><i class="ph ph-paperclip"></i>Заявка_40поз.xlsx</span></div></div></div>
+      <div class="toast uv" data-uv="tb2"><header><b>Т</b>Т-Бизнес<span style="margin-left:auto">сейчас</span></header><strong>Поступление +18 580,00 ₽</strong>ООО «ДорСтрой» · Оплата по накладной № 2 от 28.10</div>
       <div class="toast uv" data-uv="tb" id="toast"><header><b>Т</b>Т-Бизнес<span style="margin-left:auto">сейчас</span></header><strong>Поступление +12 060,00 ₽</strong>ООО «Стройтех-Снаб» · Оплата по счету № 2</div>
 
       <!-- панель задач -->
@@ -1018,10 +1075,24 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
   <ol class="shagi"></ol>
 </section>
 
+<section class="final mezh" id="utro9">
+  <h2>09:00. Вы проснулись — <br><span>всё уже сделано.</span></h2>
+  <p>А днём, пока вы на встречах, он помнит про каждого клиента.</p>
+</section>
+
+<section class="glava" id="r5">
+  <div class="g-head"><span class="g-vr">11:00</span><div><span class="g-num">05 · днём</span><h2>Не оплатили, не подписали — он не забудет</h2>
+    <p class="bez"><b>Без Ивана:</b> про долг вспомнят в конце месяца, а неподписанный договор неделю ждёт в Диадоке — и отгрузка вместе с ним.</p>
+    <div class="put"><span>1С: кто должен</span>→<span>Telegram</span>→<span>оплата</span>→<span>договор в Диадок</span>→<span>подписан</span></div></div></div>
+  <div class="g-tit" aria-live="polite"></div>
+  <div class="ekran-w"><div class="ekran"><picture class="obl"><source media="(max-width:999px)" srcset="razd/r5-m.jpg"><img src="razd/r5-w.jpg" alt="" decoding="async"></picture></div></div>
+  <ol class="shagi"></ol>
+</section>
+
 <section class="vstavka" id="pb-v"><iframe data-v="pod-biznes,kopiya" src="pod-biznes.html?vstavka=pod-biznes,kopiya" title="Под ваш бизнес и копия сотрудника" scrolling="no"></iframe></section>
 
 <section class="final">
-  <h2>09:00. Вы проснулись —<br><span>всё уже сделано.</span></h2>
+  <h2>Каждый клиент для него — <br><span>единственный.</span></h2>
   <p>Подключаем к вашей 1С и переписке, учим на ваших диалогах. Первым трём компаниям — подключение и 2 недели бесплатно, дальше от 9 900 ₽ в месяц.</p>
   <div class="ctas">
     <a class="btn" href="https://t.me/gonartur" target="_blank" rel="noopener">Разобрать мою компанию <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
@@ -1093,8 +1164,8 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
 
 
   /* ---------- 1С: ролики настоящего веб-клиента и дорожки руки из записи (1c/<место>.json, время — секунды ролика) ---------- */
-  /*RUKA*/const RUKA = {"klient":{"dlit":19.28,"ruka":[{"t":0.47,"x":1203,"y":100,"p":"tap","k":1},{"t":0.91,"x":1177,"y":100,"p":"rab","k":0},{"t":3.2,"x":620,"y":171,"p":"tap","k":1},{"t":6.37,"x":460,"y":528,"p":"tap","k":0},{"t":7.21,"x":1056,"y":493,"p":"tap","k":0},{"t":8.04,"x":1468,"y":288,"p":"tap","k":0},{"t":8.86,"x":396,"y":87,"p":"tap","k":1},{"t":11.43,"x":1240,"y":219,"p":"tap","k":1},{"t":13.02,"x":674,"y":501,"p":"tap","k":1},{"t":13.73,"x":849,"y":614,"p":"tap","k":1},{"t":15.84,"x":664,"y":256,"p":"tap","k":1}]},"zakaz":{"dlit":14.69,"ruka":[{"t":0.33,"x":324,"y":370,"p":"tap","k":1},{"t":1.15,"x":462,"y":438,"p":"rab","k":0},{"t":4.35,"x":672,"y":438,"p":"rab","k":0},{"t":4.78,"x":324,"y":370,"p":"tap","k":1},{"t":5.74,"x":462,"y":466,"p":"rab","k":0},{"t":8.09,"x":672,"y":466,"p":"rab","k":0},{"t":8.77,"x":458,"y":810,"p":"tap","k":1},{"t":9.58,"x":585,"y":128,"p":"tap","k":1}]},"ostatki":{"dlit":8.46,"ruka":[{"t":0.41,"x":783,"y":370,"p":"tap","k":1},{"t":3.62,"x":441,"y":324,"p":"tap","k":1},{"t":4.56,"x":441,"y":352,"p":"tap","k":1},{"t":5.53,"x":441,"y":464,"p":"tap","k":1}]},"kp":{"dlit":23.4,"ruka":[{"t":0.0,"x":324,"y":370,"p":"tap","k":1},{"t":0.56,"x":462,"y":718,"p":"rab","k":0},{"t":2.9,"x":672,"y":718,"p":"rab","k":0},{"t":3.32,"x":324,"y":370,"p":"tap","k":1},{"t":4.0,"x":462,"y":718,"p":"rab","k":0},{"t":6.18,"x":672,"y":718,"p":"rab","k":0},{"t":6.57,"x":324,"y":370,"p":"tap","k":1},{"t":7.21,"x":462,"y":718,"p":"rab","k":0},{"t":9.51,"x":672,"y":718,"p":"rab","k":0},{"t":9.95,"x":324,"y":370,"p":"tap","k":1},{"t":10.59,"x":462,"y":718,"p":"rab","k":0},{"t":12.81,"x":672,"y":718,"p":"rab","k":0},{"t":13.2,"x":324,"y":370,"p":"tap","k":1},{"t":13.82,"x":462,"y":718,"p":"rab","k":0},{"t":15.85,"x":672,"y":718,"p":"rab","k":0},{"t":16.25,"x":324,"y":370,"p":"tap","k":1},{"t":16.84,"x":462,"y":718,"p":"rab","k":0},{"t":18.98,"x":672,"y":718,"p":"rab","k":0},{"t":19.34,"x":458,"y":810,"p":"tap","k":1},{"t":19.81,"x":481,"y":128,"p":"tap","k":1}]},"postav":{"dlit":8.17,"ruka":[{"t":0.4,"x":740,"y":207,"p":"tap","k":1},{"t":3.26,"x":491,"y":644,"p":"tap","k":1},{"t":5.0,"x":491,"y":728,"p":"tap","k":1}]},"kp2":{"dlit":13.31,"ruka":[{"t":0.41,"x":504,"y":720,"p":"tap","k":1},{"t":1.62,"x":810,"y":720,"p":"tap","k":1},{"t":2.18,"x":343,"y":582,"p":"rab","k":0},{"t":2.88,"x":458,"y":810,"p":"tap","k":1},{"t":3.31,"x":335,"y":810,"p":"rab","k":0},{"t":8.53,"x":481,"y":128,"p":"tap","k":1},{"t":10.25,"x":810,"y":580,"p":"tap","k":1}]},"postuplenie":{"dlit":14.35,"ruka":[{"t":0.38,"x":682,"y":100,"p":"tap","k":1},{"t":1.59,"x":715,"y":227,"p":"tap","k":1},{"t":4.43,"x":934,"y":196,"p":"tap","k":1},{"t":4.8,"x":906,"y":196,"p":"rab","k":0},{"t":5.57,"x":1120,"y":812,"p":"tap","k":1},{"t":5.89,"x":885,"y":812,"p":"rab","k":0},{"t":9.55,"x":585,"y":128,"p":"tap","k":1}]},"novyj":{"dlit":36.37,"ruka":[{"t":0.1,"x":1203,"y":100,"p":"tap","k":1},{"t":0.47,"x":1177,"y":100,"p":"rab","k":0},{"t":4.14,"x":600,"y":300,"p":"tap","k":0},{"t":4.84,"x":309,"y":100,"p":"tap","k":1},{"t":8.07,"x":604,"y":234,"p":"tap","k":1},{"t":8.45,"x":454,"y":234,"p":"rab","k":0},{"t":10.13,"x":460,"y":528,"p":"tap","k":1},{"t":10.52,"x":431,"y":528,"p":"rab","k":0},{"t":12.84,"x":470,"y":564,"p":"tap","k":1},{"t":13.3,"x":431,"y":564,"p":"rab","k":0},{"t":14.98,"x":930,"y":452,"p":"tap","k":1},{"t":16.92,"x":868,"y":478,"p":"tap","k":1},{"t":20.64,"x":584,"y":330,"p":"tap","k":1},{"t":21.03,"x":455,"y":330,"p":"rab","k":0},{"t":22.96,"x":494,"y":544,"p":"tap","k":1},{"t":23.45,"x":475,"y":544,"p":"rab","k":0},{"t":26.17,"x":505,"y":580,"p":"tap","k":1},{"t":26.57,"x":475,"y":580,"p":"rab","k":0},{"t":28.6,"x":1086,"y":620,"p":"tap","k":1},{"t":29.0,"x":1020,"y":620,"p":"rab","k":0},{"t":30.43,"x":356,"y":258,"p":"tap","k":1}]}};/*/RUKA*/
-  const TEMP1C = {klient: 1.6, zakaz: 1.5, ostatki: 1.2, kp: 2.2, postav: 1.2, kp2: 1.5, postuplenie: 1.6, novyj: 2};   // на сайте быстрее записи
+  /*RUKA*/const RUKA = {"klient":{"dlit":19.28,"ruka":[{"t":0.47,"x":1203,"y":100,"p":"tap","k":1},{"t":0.91,"x":1177,"y":100,"p":"rab","k":0},{"t":3.2,"x":620,"y":171,"p":"tap","k":1},{"t":6.37,"x":460,"y":528,"p":"tap","k":0},{"t":7.21,"x":1056,"y":493,"p":"tap","k":0},{"t":8.04,"x":1468,"y":288,"p":"tap","k":0},{"t":8.86,"x":396,"y":87,"p":"tap","k":1},{"t":11.43,"x":1240,"y":219,"p":"tap","k":1},{"t":13.02,"x":674,"y":501,"p":"tap","k":1},{"t":13.73,"x":849,"y":614,"p":"tap","k":1},{"t":15.84,"x":664,"y":256,"p":"tap","k":1}]},"zakaz":{"dlit":14.69,"ruka":[{"t":0.33,"x":324,"y":370,"p":"tap","k":1},{"t":1.15,"x":462,"y":438,"p":"rab","k":0},{"t":4.35,"x":672,"y":438,"p":"rab","k":0},{"t":4.78,"x":324,"y":370,"p":"tap","k":1},{"t":5.74,"x":462,"y":466,"p":"rab","k":0},{"t":8.09,"x":672,"y":466,"p":"rab","k":0},{"t":8.77,"x":458,"y":810,"p":"tap","k":1},{"t":9.58,"x":585,"y":128,"p":"tap","k":1}]},"ostatki":{"dlit":8.46,"ruka":[{"t":0.41,"x":783,"y":370,"p":"tap","k":1},{"t":3.62,"x":441,"y":324,"p":"tap","k":1},{"t":4.56,"x":441,"y":352,"p":"tap","k":1},{"t":5.53,"x":441,"y":464,"p":"tap","k":1}]},"kp":{"dlit":23.4,"ruka":[{"t":0.0,"x":324,"y":370,"p":"tap","k":1},{"t":0.56,"x":462,"y":718,"p":"rab","k":0},{"t":2.9,"x":672,"y":718,"p":"rab","k":0},{"t":3.32,"x":324,"y":370,"p":"tap","k":1},{"t":4.0,"x":462,"y":718,"p":"rab","k":0},{"t":6.18,"x":672,"y":718,"p":"rab","k":0},{"t":6.57,"x":324,"y":370,"p":"tap","k":1},{"t":7.21,"x":462,"y":718,"p":"rab","k":0},{"t":9.51,"x":672,"y":718,"p":"rab","k":0},{"t":9.95,"x":324,"y":370,"p":"tap","k":1},{"t":10.59,"x":462,"y":718,"p":"rab","k":0},{"t":12.81,"x":672,"y":718,"p":"rab","k":0},{"t":13.2,"x":324,"y":370,"p":"tap","k":1},{"t":13.82,"x":462,"y":718,"p":"rab","k":0},{"t":15.85,"x":672,"y":718,"p":"rab","k":0},{"t":16.25,"x":324,"y":370,"p":"tap","k":1},{"t":16.84,"x":462,"y":718,"p":"rab","k":0},{"t":18.98,"x":672,"y":718,"p":"rab","k":0},{"t":19.34,"x":458,"y":810,"p":"tap","k":1},{"t":19.81,"x":481,"y":128,"p":"tap","k":1}]},"postav":{"dlit":8.17,"ruka":[{"t":0.4,"x":740,"y":207,"p":"tap","k":1},{"t":3.26,"x":491,"y":644,"p":"tap","k":1},{"t":5.0,"x":491,"y":728,"p":"tap","k":1}]},"kp2":{"dlit":13.31,"ruka":[{"t":0.41,"x":504,"y":720,"p":"tap","k":1},{"t":1.62,"x":810,"y":720,"p":"tap","k":1},{"t":2.18,"x":343,"y":582,"p":"rab","k":0},{"t":2.88,"x":458,"y":810,"p":"tap","k":1},{"t":3.31,"x":335,"y":810,"p":"rab","k":0},{"t":8.53,"x":481,"y":128,"p":"tap","k":1},{"t":10.25,"x":810,"y":580,"p":"tap","k":1}]},"postuplenie":{"dlit":14.35,"ruka":[{"t":0.38,"x":682,"y":100,"p":"tap","k":1},{"t":1.59,"x":715,"y":227,"p":"tap","k":1},{"t":4.43,"x":934,"y":196,"p":"tap","k":1},{"t":4.8,"x":906,"y":196,"p":"rab","k":0},{"t":5.57,"x":1120,"y":812,"p":"tap","k":1},{"t":5.89,"x":885,"y":812,"p":"rab","k":0},{"t":9.55,"x":585,"y":128,"p":"tap","k":1}]},"novyj":{"dlit":36.37,"ruka":[{"t":0.1,"x":1203,"y":100,"p":"tap","k":1},{"t":0.47,"x":1177,"y":100,"p":"rab","k":0},{"t":4.14,"x":600,"y":300,"p":"tap","k":0},{"t":4.84,"x":309,"y":100,"p":"tap","k":1},{"t":8.07,"x":604,"y":234,"p":"tap","k":1},{"t":8.45,"x":454,"y":234,"p":"rab","k":0},{"t":10.13,"x":460,"y":528,"p":"tap","k":1},{"t":10.52,"x":431,"y":528,"p":"rab","k":0},{"t":12.84,"x":470,"y":564,"p":"tap","k":1},{"t":13.3,"x":431,"y":564,"p":"rab","k":0},{"t":14.98,"x":930,"y":452,"p":"tap","k":1},{"t":16.92,"x":868,"y":478,"p":"tap","k":1},{"t":20.64,"x":584,"y":330,"p":"tap","k":1},{"t":21.03,"x":455,"y":330,"p":"rab","k":0},{"t":22.96,"x":494,"y":544,"p":"tap","k":1},{"t":23.45,"x":475,"y":544,"p":"rab","k":0},{"t":26.17,"x":505,"y":580,"p":"tap","k":1},{"t":26.57,"x":475,"y":580,"p":"rab","k":0},{"t":28.6,"x":1086,"y":620,"p":"tap","k":1},{"t":29.0,"x":1020,"y":620,"p":"rab","k":0},{"t":30.43,"x":356,"y":258,"p":"tap","k":1}]},"dolg":{"dlit":8.13,"ruka":[{"t":0.37,"x":412,"y":256,"p":"tap","k":1},{"t":2.78,"x":351,"y":206,"p":"tap","k":1},{"t":4.9,"x":556,"y":322,"p":"tap","k":0}]}};/*/RUKA*/
+  const TEMP1C = {klient: 1.6, zakaz: 1.5, ostatki: 1.2, kp: 2.2, postav: 1.2, kp2: 1.5, postuplenie: 1.6, novyj: 2, dolg: 1.5};   // на сайте быстрее записи
   const wide = matchMedia('(min-width:1000px)');
   let RT = [], agP = null, agT = null, camR = null, kamS = null, typTimer = null;
   const shag1c = (a, q) => { const d = a ? Math.hypot(q[0] - a[0], q[1] - a[1]) : 0; return d > 4 ? Math.min(1.1, Math.max(.45, d / 750)) : 0; };   // как в agent()
@@ -1263,8 +1334,25 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
            {w: 'br', tab: 'ym', ym: 'utro', let: 'zt', hl: 1, utro: 1, cam: LET, camM: LETm, kur: '#ym-let-zt .ym-txt mark:last-of-type', kd: [75, 4], kdM: [10, 52], clk: '07:53', t: 3200}]},
       {time: '07:58', h: 'Новую цену — в КП с наценкой', d: '33 000 + 25 % = 41 250 ₽, «под заказ, 7 дней». В 08:58 КП уйдёт клиенту.',
        k: [{w: '1c', f1c: 'kp2', ym: 'utro', utro: 1, clk: '07:58'}]}
+    ],
+    r5: [
+      {time: '11:00', h: 'Смотрит в 1С, кто должен', d: 'Отчёт «Долги»: «Стройтех-Снаб» оплатил, «ДорСтрой» с 28 октября должен 18 580 ₽. Обещали во вторник.',
+       k: [STOL('10:59'), {w: '1c', f1c: 'dolg', tk: 1.5, pz: 1500, clk: '11:00'}]},
+      {time: '11:02', h: 'Напоминает Руслану — по-человечески', d: 'Без «уважаемый клиент» и угроз. Через 15 минут: «бухгалтер болела, сегодня оплатим».',
+       k: [TGo(1, '11:02', {kur: [1180, 740], kurM: [1060, 730], t: 1300}), TGo(2, '11:02', {t: 1500}), TGo(3, '11:03', {t: 1700}), TGo(4, '11:17', {p: 'tap', t: 2200}), TGo(5, '11:18', {t: 1500})]},
+      {time: '12:44', h: '«Северный» берёт — договор в Диадок', d: 'Андрей согласовал КП и попросил договор. Иван собрал договор поставки, подписал и отправил.',
+       k: [{w: 'br', tab: 'dd', dog: 1, cam: F, camM: [585, 120, 730, 912], kur: '#dd-dog .doc', kd: [100, 40], klik: 1, clk: '12:44', t: 2800}]},
+      {time: '14:10', h: '«ДорСтрой» оплатил', d: 'Пуш из банка: +18 580 ₽ по накладной от 28 октября. Иван поблагодарил Руслана.',
+       k: [...UV('tb2', '14:10', {w: 'tg', tg: 5}), TGo(6, '14:11', {t: 1800})]},
+      {time: '15:30', h: 'Договор не подписан — пишет прямо в Диадоке', d: 'Статус «ожидается подпись». Андрею: как директор подпишет — сразу ставим отгрузку.',
+       k: [{w: 'br', tab: 'dd', dog: 1, otkr: 1, cam: F, camM: [262, 60, 600, 750], kur: '.dd-dogdoc .dd-pill', kd: [135, 0], clk: '15:30', t: 1800},
+           {w: 'br', tab: 'dd', dog: 1, otkr: 1, pis: 1, cam: F, camM: [262, 200, 600, 750], kur: '#dd-msg .txt', kd: [120, 30], kdM: [60, 78], p: 'rab', clk: '15:31', t: 3400},
+           {w: 'br', tab: 'dd', dog: 1, otkr: 1, pis: 2, cam: F, camM: [262, 200, 600, 750], kur: '#dd-msg .otp', klik: 1, clk: '15:31', t: 1500}]},
+      {time: '16:18', h: 'Подписан. Отгрузка — завтра', d: 'Директор «Северного» подписал в 16:18. Иван поставил отгрузку на 6 ноября.',
+       k: [{w: 'br', tab: 'dd', dog: 1, podp: 1, pis: 2, cam: F, camM: [262, 60, 600, 750], kur: '.dd-dogdoc .dd-pill', kd: [135, 0], clk: '16:18', t: 3200}]}
     ]
   };
+  RAZD.r5.forEach(s => s.k.forEach(b => Object.assign(b, {chat: 'rus', utro: 1, den: 1})));   // день: светлые обои, дата 05.11, открыт чат Руслана
   // кадры 1С: длятся, пока идёт ролик (+ пауза на итог); Иван встаёт в первую точку; телефон смотрит на зону ввода
   Object.values(RAZD).flat().forEach(s => s.k.forEach(b => { if (!b.f1c) return;
     const {ot, d, pts} = tochki(b), xs = pts.map(q => q.x), ys = pts.map(q => q.y), x0 = xs[0], cy = (Math.min(...ys) + Math.max(...ys)) / 2;
@@ -1294,7 +1382,7 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
     if (b.tab) {
       $$('.br-tab').forEach(t => t.classList.toggle('on', t.dataset.tab === b.tab));
       $$('.br-page').forEach(p => p.classList.toggle('on', p.dataset.page === b.tab));
-      $('#url').innerHTML = {ym: 'mail.yandex.ru<s>/?uid=1130000067234815#' + (b.let ? 'message' : 'inbox') + '</s>', pdf: 'Файл<s>  D:/Почта/Спецификация_ТО_парк_2027.pdf</s>', tb: 'business.tbank.ru<s>/main</s>', dd: b.podp ? 'diadoc.kontur.ru<s>/a7f0c2e1/Document/Show?letterId=5c2e9f10</s>' : 'diadoc.kontur.ru<s>/a7f0c2e1/Folder/Outbox</s>'}[b.tab];
+      $('#url').innerHTML = {ym: 'mail.yandex.ru<s>/?uid=1130000067234815#' + (b.let ? 'message' : 'inbox') + '</s>', pdf: 'Файл<s>  D:/Почта/Спецификация_ТО_парк_2027.pdf</s>', tb: 'business.tbank.ru<s>/main</s>', dd: b.podp || b.otkr ? 'diadoc.kontur.ru<s>/a7f0c2e1/Document/Show?letterId=5c2e9f10</s>' : 'diadoc.kontur.ru<s>/a7f0c2e1/Folder/Outbox</s>'}[b.tab];
     }
     // почта
     const ym = b.ym || 'vecher', nov = {vecher: '1', noch: '1', utro: '3'}[ym];
@@ -1316,19 +1404,23 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
       $$('.sheet').forEach(s => { const on = +s.dataset.n === b.pdf; s.classList.toggle('on', on); s.classList.toggle('ush', !on && +s.dataset.n < b.pdf); });
       $$('.pdf-side .th').forEach(t => t.classList.toggle('on', +t.dataset.n === b.pdf));
     }
-    // Telegram: пузыри до b.tg, новые — после «печатает…»; в списке чатов — последнее сообщение
-    const tg = b.tg || 0;
-    const novye = [];
-    $$('#td-col [data-b]').forEach(e => { const on = +e.dataset.b <= tg, was = !e.classList.contains('zz'); e.classList.toggle('zz', !on); if (on && !was) novye.push(e); });
-    if (anim && novye.length) {
-      if (b.typ) { const tp = document.createElement('div'); tp.className = 'typ' + (novye[0].classList.contains('o') ? ' o' : ''); tp.innerHTML = '<span></span><span></span><span></span>';
-        novye[0].before(tp); novye.forEach(e => e.classList.add('zz'));
-        RT.push(setTimeout(() => { tp.remove(); novye.forEach(e => { e.classList.remove('zz', 'pop'); void e.offsetWidth; e.classList.add('pop'); }); }, 650)); RT.push(setTimeout(() => tp.remove(), 700)); }
-      else novye.forEach(e => { e.classList.remove('pop'); void e.offsetWidth; e.classList.add('pop'); });
-    }
-    const vis = $$('#td-col .b').filter(e => !e.classList.contains('zz') && e.dataset.b), last = vis[vis.length - 1];
-    $('#tg-c-serg-l').textContent = last ? (last.classList.contains('o') ? 'Вы: ' : '') + (last.querySelector('b') ? last.querySelector('b').textContent : last.firstChild.textContent) : 'нам как в прошлый раз…';
-    $('#tg-c-serg-t').textContent = last ? last.querySelector('.t').textContent.slice(0, 5) : '23:30';
+    // Telegram: открытый чат — Сергей (ночь) или Руслан (b.chat === 'rus', днём); пузыри до b.tg, новые — после «печатает…»
+    const rus = b.chat === 'rus';
+    $('#w-tg .td').classList.toggle('rus', rus); $('#tg-c-serg').classList.toggle('on', !rus); $('#tg-c-rus').classList.toggle('on', rus);
+    $('#tg-hn').textContent = rus ? 'Руслан · ДорСтрой' : 'Сергей · Стройтех-Снаб';
+    [['#td-col', rus ? 99 : b.tg || 0, !rus, 'serg', 'нам как в прошлый раз…', '23:30'], ['#td-col-r', rus ? b.tg || 0 : 0, rus, 'rus', 'забрали, спасибо. оплатим во вторник', '28.10']].forEach(([col, tg, otkryt, id, net, netT]) => {
+      const novye = [];
+      $$(col + ' [data-b]').forEach(e => { const on = +e.dataset.b <= tg, was = !e.classList.contains('zz'); e.classList.toggle('zz', !on); if (on && !was) novye.push(e); });
+      if (anim && otkryt && novye.length) {
+        if (b.typ) { const tp = document.createElement('div'); tp.className = 'typ' + (novye[0].classList.contains('o') ? ' o' : ''); tp.innerHTML = '<span></span><span></span><span></span>';
+          novye[0].before(tp); novye.forEach(e => e.classList.add('zz'));
+          RT.push(setTimeout(() => { tp.remove(); novye.forEach(e => { e.classList.remove('zz', 'pop'); void e.offsetWidth; e.classList.add('pop'); }); }, 650)); RT.push(setTimeout(() => tp.remove(), 700)); }
+        else novye.forEach(e => { e.classList.remove('pop'); void e.offsetWidth; e.classList.add('pop'); });
+      }
+      const vis = $$(col + ' .b').filter(e => !e.classList.contains('zz') && e.dataset.b), last = vis[vis.length - 1];
+      $('#tg-c-' + id + '-l').textContent = last ? (last.classList.contains('o') ? 'Вы: ' : '') + (last.querySelector('b') ? last.querySelector('b').textContent : last.firstChild.textContent) : net;
+      $('#tg-c-' + id + '-t').textContent = last ? last.querySelector('.t').textContent.slice(0, 5) : netT;
+    });
     $('#tg-st').textContent = 'в сети';
     $('#w-tg .td').classList.toggle('info', !!b.info);
     // 1С
@@ -1338,13 +1430,17 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
     const bk = b.bank || 0;
     $('#tb-op-new').classList.toggle('zz', bk < 1); $('#tb-op-new').classList.toggle('st', bk > 1);
     $('#tb-bal').textContent = bk < 1 ? '1 272 256,40 ₽' : '1 284 316,40 ₽';
-    $('#dd').classList.toggle('otkr', !!b.podp);
+    $('#dd').classList.toggle('dog', !!b.dog); $('#dd').classList.toggle('otkr', !!(b.podp || b.otkr));
+    const ms = $('#dd-msg'), mt = ms.querySelector('.txt'), MT = ms.dataset.txt;
+    ms.classList.toggle('on', !!b.pis); ms.classList.toggle('ok', b.pis === 2);
+    if (b.pis === 1 && anim) { let k = 0; mt.textContent = ''; typTimer = setInterval(() => { k += 3; mt.textContent = MT.slice(0, k); if (k >= MT.length) clearInterval(typTimer); }, 30); }
+    else mt.textContent = b.pis ? MT : '';
     $('#dd').classList.remove('podp'); if (b.podp) { if (anim) RT.push(setTimeout(() => $('#dd').classList.add('podp'), 1100)); else $('#dd').classList.add('podp'); }
     w4(b.w4 || 0, anim);
     // камера, часы, Иван
     kamera(wide.matches ? b.cam : b.camM);
     const tc = $('#tel-clk'); if (tc) tc.textContent = b.clk;
-    $('#clk').textContent = b.clk; $('#clk-d').textContent = +b.clk.slice(0, 2) >= 12 ? '04.11.2026' : '05.11.2026';
+    $('#clk').textContent = b.clk; $('#clk-d').textContent = b.den || +b.clk.slice(0, 2) < 12 ? '05.11.2026' : '04.11.2026';
     const kk = !wide.matches && b.kurM !== undefined ? b.kurM : b.kur;
     const kd = (!wide.matches && b.kdM) || b.kd || [0, 0];   // смещение от элемента, чтобы Иван не закрывал подсвеченное
     if (b.zam) agent(agP || [720, 520], 'zam', 0, anim);
@@ -1373,7 +1469,7 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
   const tiho = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const MINI = {r1: ['пишет в Telegram', 'кто пишет', 'сверка в 1С', 'заказ и счёт', 'ответ Сергею', 'оплата', 'в 1С', 'УПД'],
     r2: ['письмо', 'подпись', 'поиск в 1С', 'контакт', 'ответ'], r3: ['письмо', 'ответ «к 9»', 'делит на 4', 'находки в 1С', 'остатки', 'строки КП', 'итог', 'КП ушло'],
-    r4: ['кто возил', 'письма', 'ответы', 'цена в КП']};
+    r4: ['кто возил', 'письма', 'ответы', 'цена в КП'], r5: ['кто должен', 'напомнил', 'договор', 'оплата', 'не подписан', 'подписан']};
   const dlit = (id, si) => RAZD[id][si].k.reduce((a, b) => a + (b.t || 1500), 0);
   Object.keys(RAZD).forEach(id => {
     const ol = $('#' + id + ' .shagi'); if (!ol) return;   // r0 — первый экран, шагов-списка нет (вместо него отчёт)
