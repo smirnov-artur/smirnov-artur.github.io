@@ -606,6 +606,44 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
 .dd-pf.dg small{display:block;text-align:center;color:#555;margin-bottom:10px}
 .dd-pf.dg p{margin-bottom:8px}
 
+/* калькулятор: ввод слева, «Расчёт» документом справа */
+.kalk{max-width:1280px;margin:72px auto 0;padding:72px 40px 0;border-top:1px solid var(--rule)}
+.kalk>h2{font:650 clamp(30px,1.6vw + 25px,46px)/1.1 var(--f);letter-spacing:-.02em;padding-bottom:18px;border-bottom:2px solid var(--ink);max-width:22ch}
+.kalk>p{color:var(--ink2);font-size:18px;margin:18px 0 0;max-width:62ch}
+.k-w{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,520px);gap:40px;margin-top:36px;align-items:start}
+.k-in{display:flex;flex-direction:column;gap:30px}
+.k-q b{display:block;font:600 18px/1.3 var(--f);margin-bottom:12px}
+.k-q small{display:block;color:var(--meta);font-size:14px;margin-top:8px}
+.k-zayav{display:flex;align-items:center;gap:18px}
+.k-zayav input[type=range]{flex:1;accent-color:var(--ink);height:28px}
+.k-zayav output{font:650 32px/1 var(--f);font-variant-numeric:tabular-nums;min-width:3ch;text-align:right}
+.k-chips{display:flex;flex-wrap:wrap;gap:8px}
+.k-chips button{min-height:42px;padding:0 14px;border:1px solid var(--rule2);border-radius:4px;background:var(--page);font:500 15px/1 var(--f);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.k-chips button[aria-pressed=true]{border-color:var(--ink);box-shadow:inset 0 -3px var(--ink);font-weight:600}
+.k-chips button i{font-size:14px;color:var(--meta)}
+.k-sys{display:flex;gap:8px}
+.k-sys input{flex:1;min-width:0;min-height:46px;padding:0 14px;border:1px solid var(--rule2);border-radius:4px;font:400 16px var(--f);color:var(--ink);background:var(--page)}
+.k-sys input:focus{outline:2px solid var(--ink);outline-offset:1px}
+.k-sys button{min-height:46px;padding:0 16px;border:1px solid var(--ink);border-radius:4px;background:var(--page);font:600 15px var(--f);cursor:pointer}
+.k-otv{margin-top:10px;font-size:15px;color:var(--ink2);min-height:22px}
+.k-otv b{display:inline;font:inherit;font-weight:600;margin:0;color:var(--ink)}
+.k-doc{background:var(--page);box-shadow:var(--e2);border-radius:4px;padding:28px 30px 24px;font-size:15px;position:sticky;top:20px}
+.k-doc h3{font:650 22px/1.2 var(--f);padding-bottom:10px;border-bottom:2px solid var(--ink)}
+.k-doc h3 small{display:block;font:400 14px var(--f);color:var(--meta);margin-top:4px}
+.k-doc table{width:100%;border-collapse:collapse;margin-top:12px;font-variant-numeric:tabular-nums}
+.k-doc td{padding:9px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+.k-doc td:last-child{text-align:right;white-space:nowrap;padding-left:14px;font-weight:600}
+.k-doc td small{display:block;color:var(--meta);font-size:13px;margin-top:2px}
+.k-doc td small.ok{color:var(--ok)}
+.k-doc tr.razd td{text-align:left!important;font-weight:500!important;padding-top:16px;border-bottom:0;color:var(--meta);font-size:13px;font-weight:500}
+.k-doc tr.itog td{border-bottom:0;border-top:2px solid var(--ink);font:650 20px/1.2 var(--f);padding-top:12px}
+.k-doc tr.itog2 td{border-bottom:0;font:600 16px/1.2 var(--f);padding-top:4px}
+.k-sr{margin-top:16px;padding:12px 14px;background:var(--slot);font-size:14px;line-height:1.45;color:var(--ink2)}
+.k-sr b{color:var(--ink)}
+.k-doc .btn{width:100%;margin-top:18px}
+.k-kop{display:block;margin-top:8px;font-size:13px;color:var(--meta);text-align:center;min-height:18px}
+@media (max-width:999px){.kalk{padding:56px 20px 0}.k-w{grid-template-columns:1fr;gap:28px}.k-doc{position:static;padding:22px 18px}.k-zayav output{font-size:28px}}
+
 @media (max-width:999px){
   .nav nav{display:none}.nav .pis{margin-left:auto}
   .nav{padding:0 20px;height:58px}
@@ -649,12 +687,113 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
 }
 @media (prefers-reduced-motion:reduce){.stage,.stage *{transition:none!important;animation:none!important}.shagi .on .pr{animation:none;transform:scaleX(1)}}
 
+/* rabota-75: экран главы на «столе» — серая полоса от края до края, экран по высоте окна, шире колонки текста */
+.stol{position:relative;margin-top:24px;padding:28px 0 20px;--sw:min(calc(100vw - 96px),calc((100dvh - 210px) * 1.6),1600px)}
+.stol::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;margin-left:-50vw;background:var(--desk)}
+.stol>.g-tit,.glava .stol>.ekran-w,.stol>.shagi,.stol>.pasp{width:var(--sw);margin-left:calc(50% - var(--sw) / 2);margin-right:0}
+.stol>.g-tit{background:var(--page);box-shadow:var(--e1)}
+.stol .shagi button:hover{background:var(--page)}
+.pasp{margin-top:8px;font-size:14px;line-height:1.45;color:var(--meta)}
+.pasp b{font-weight:600;color:var(--ink2)}
+/* главы разные */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:0 40px;margin-top:6px;max-width:980px}
+.vs-k h3{font:600 16px/1.3 var(--f);padding-bottom:8px;border-bottom:1px solid var(--rule2);margin-bottom:10px}
+.vs-k.iv h3{border-bottom:2px solid var(--ink)}
+.vs-k p{font-size:16px;line-height:1.5;color:var(--ink2);margin-top:6px}
+.vs-k p b{font-weight:600;color:var(--ink);margin-right:6px}
+.vs-k:not(.iv) h3{color:var(--stop)}
+.cif{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 40px;margin-top:8px;max-width:980px}
+.cif div{display:flex;flex-direction:column-reverse;padding-top:4px}
+.cif dd{font:650 clamp(44px,3vw + 20px,72px)/1 var(--f);letter-spacing:-.03em}
+.cif dt{font-size:15px;line-height:1.4;color:var(--meta);margin-top:8px;max-width:24ch}
+.g-cif .bez{margin-top:18px}
+.zo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:2px;max-width:1100px}
+.zo>div{padding:12px 20px 4px 0}
+.zo>div+div{padding-left:20px;border-left:1px solid var(--rule)}
+.zo time{display:block;font:600 14px/1.2 var(--f);color:var(--meta);margin-bottom:6px}
+.zo p{font-size:16px;line-height:1.5;color:var(--ink2)}
+.zo p b{font-weight:600;color:var(--ink)}
+.g-zo .bez{margin-top:14px}
+/* кто подключает */
+.kto{max-width:1280px;margin:72px auto 0;padding:72px 40px 0;border-top:1px solid var(--rule)}
+.kto>h2{font:650 clamp(30px,1.6vw + 25px,46px)/1.1 var(--f);letter-spacing:-.02em;padding-bottom:18px;border-bottom:2px solid var(--ink);max-width:22ch}
+.kto-w{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px 64px;margin-top:32px;align-items:start}
+.kto-im{font-size:16px;color:var(--meta)}.kto-im b{display:block;font:650 26px/1.2 var(--f);color:var(--ink);margin-bottom:2px}
+.kto-o>p:not(.kto-im){font-size:17px;color:var(--ink2);margin-top:16px;max-width:44ch}
+.kto-usl{list-style:none;margin-top:18px;border-top:1px solid var(--rule)}
+.kto-usl li{padding:11px 0;border-bottom:1px solid var(--rule);font-size:16px}
+.kto-usl li b{font-weight:600}
+.kto-o .ghost{margin-top:20px}
+.kto-r h3{font:600 18px/1.3 var(--f);margin-bottom:6px}
+.kto-r>p{font-size:15px;color:var(--meta)}
+.kto-r ol{list-style:none;margin-top:14px;border-top:2px solid var(--ink)}
+.kto-r li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;padding:12px 0;border-bottom:1px solid var(--rule);font-size:16px;line-height:1.45}
+.kto-r li time{color:var(--meta);font-size:15px;white-space:nowrap}
+@media (max-width:999px){
+  .stol{--sw:100%;margin-top:18px;padding:16px 0 14px}
+  .vs,.cif{grid-template-columns:1fr;gap:18px}
+  .cif{grid-template-columns:repeat(3,minmax(0,1fr));gap:0 14px}.cif dd{font-size:40px}.cif dt{font-size:13.5px}
+  .zo{grid-template-columns:1fr}.zo>div+div{padding-left:0;border-left:0;border-top:1px solid var(--rule)}
+  .kto{padding:56px 20px 0}.kto-w{grid-template-columns:1fr}
+}
+@media (min-width:1600px){.nav,.hero,.glava,.kalk,.final,.podval,.kto{max-width:1440px}}
+/* rabota-75b: Excel склада «Машины на 5 ноября» и подсказка часов Windows */
+.ico-xl{width:24px;height:24px;border-radius:5px;background:#107C41;color:#fff;font:700 13px/24px Arial,sans-serif;text-align:center}
+.xl{position:absolute;inset:0;display:flex;flex-direction:column;background:#fff;font:15px/1.3 "Segoe UI",Calibri,Arial,sans-serif;color:#1F1F1F}
+.xl-tit{flex:none;height:38px;background:#107C41;color:#fff;display:flex;align-items:center;gap:14px;padding:0 0 0 12px;font-size:13px}
+.xl-logo{width:20px;height:20px;border-radius:3px;background:#fff;color:#107C41;font:700 12px/20px Arial;text-align:center}
+.xl-nm{flex:1;text-align:center}
+.xl-srch{width:300px;height:26px;border-radius:4px;background:rgba(255,255,255,.18);display:flex;align-items:center;gap:8px;padding:0 10px;color:rgba(255,255,255,.85)}
+.xl-tit .ctl{display:flex}.xl-tit .ctl span{width:46px;text-align:center}
+.xl-menu{flex:none;height:32px;background:#107C41;display:flex;align-items:flex-end;gap:2px;padding:0 10px;font-size:13px;color:#fff}
+.xl-menu span{padding:6px 12px}.xl-menu .on{background:#F3F3F3;color:#107C41;border-radius:4px 4px 0 0;font-weight:600}
+.xl-rib{flex:none;height:64px;background:#F3F3F3;border-bottom:1px solid #D4D4D4;display:flex;align-items:center;gap:22px;padding:0 16px;font-size:12px;color:#444}
+.xl-rib span{display:flex;flex-direction:column;align-items:center;gap:3px}.xl-rib i{font-size:22px;color:#107C41}
+.xl-rib .f{flex-direction:row;gap:6px;padding:4px 8px;border:1px solid #C8C8C8;background:#fff;border-radius:2px;font-size:13px}
+.xl-fx{flex:none;height:32px;display:flex;align-items:center;border-bottom:1px solid #D4D4D4;font-size:14px}
+.xl-nb{width:96px;height:100%;display:grid;place-items:center;border-right:1px solid #D4D4D4}
+.xl-fxi{width:44px;text-align:center;color:#777;font-style:italic;border-right:1px solid #D4D4D4}
+.xl-fv{padding:0 10px;white-space:nowrap;overflow:hidden}
+.xl-g{flex:1;overflow:hidden}
+.xl-g table{border-collapse:collapse;table-layout:fixed;width:100%}
+.xl-g th{background:#F3F3F3;color:#555;font-weight:400;font-size:13px;border:1px solid #D4D4D4;height:26px}
+.xl-g td{border:1px solid #E1E1E1;padding:0 8px;height:42px;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xl-g .xl-h td{font-weight:700;background:#E2EFDA}
+.xl-g tr.r3 td{height:66px;white-space:normal;line-height:1.3}
+.xl-z{position:relative}.xl-z i{position:absolute;left:3px;top:6px;bottom:6px;width:60%;background:linear-gradient(90deg,#63BE7B,#C6E7CF);transition:width .6s}
+.xl-z span{position:relative}
+#xl-f3 b{display:block;font-weight:400;background:#FFF2CC}
+#w-xl[data-xl="1"] #xl-f3,#w-xl[data-xl="2"] #xl-f3{outline:2px solid #107C41;outline-offset:-2px}
+#w-xl[data-xl="0"] #xl-z3{outline:2px solid #107C41;outline-offset:-2px}
+.xl-sh{flex:none;height:30px;background:#F3F3F3;border-top:1px solid #D4D4D4;display:flex;align-items:stretch;padding-left:60px;font-size:13px}
+.xl-sh span{padding:6px 16px;color:#444}.xl-sh .on{background:#fff;color:#107C41;font-weight:600;border-bottom:2px solid #107C41}
+.xl-st{flex:none;height:24px;background:#F3F3F3;border-top:1px solid #E1E1E1;display:flex;align-items:center;gap:24px;padding:0 14px;font-size:12px;color:#555}
+.xl-st .r{margin-left:auto}
+.tz-tip{position:absolute;right:6px;bottom:56px;z-index:40;width:360px;padding:12px 16px;border-radius:8px;background:#2C2C2C;border:1px solid #444;color:#fff;
+  font:16px/1.4 "Segoe UI",Arial,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.45);opacity:0;transform:translateY(6px);transition:opacity .3s,transform .3s}
+.tz-tip.on{opacity:1;transform:none}
+.tz-tip p+p{margin-top:10px}.tz-tip small{display:block;font-size:13px;color:#BDBDBD}.tz-tip b{font-weight:600}
+.tz-tip p.vl b{color:#FFD43B}
+.k-baz{display:flex;align-items:center;gap:0}
+.k-baz button{width:46px;height:46px;border:1px solid var(--rule2);background:var(--page);font:500 22px/1 var(--f);color:var(--ink);cursor:pointer}
+.k-baz button:first-child{border-radius:4px 0 0 4px}.k-baz button:last-child{border-radius:0 4px 4px 0}
+.k-baz button:disabled{color:var(--rule2);cursor:default}
+.k-baz output{min-width:64px;height:46px;display:grid;place-items:center;border-top:1px solid var(--rule2);border-bottom:1px solid var(--rule2);font:650 22px/1 var(--f)}
+#k-bq[hidden]{display:none}
+.k-rab button i{font-style:normal;font-size:13px;color:var(--meta);margin-left:2px}
+.k-rab button[aria-pressed=true] i{color:var(--ink)}
+.k-baz-t{margin:0 0 14px!important}
+.k-gr{margin-top:14px}.k-gr:first-child{margin-top:0}
+.k-gr>span{display:block;font:600 14px/1.3 var(--f);color:var(--meta);margin-bottom:8px}
+#k-rf{margin-top:16px}
+.k-rab button i{white-space:nowrap}
+@media (max-width:999px){.k-rab .k-chips button{width:100%;justify-content:space-between;text-align:left;padding:8px 14px;line-height:1.3}}
 </style>
 </head>
 <body>
 <header class="nav">
   <a class="logo" href="#">g.a.d. <span>production</span></a>
-  <nav aria-label="Разделы"><a href="#telo-v">Язык и тело</a><a href="#r1">Как он работает</a><a href="#pb-v">Под ваш бизнес</a></nav>
+  <nav aria-label="Разделы"><a href="#telo-v">Язык и тело</a><a href="#r1">Как он работает</a><a href="#pb-v">Под ваш бизнес</a><a href="#kalk">Цены</a></nav>
   <a class="pis" href="https://t.me/gonartur" target="_blank" rel="noopener">Написать</a>
 </header>
 
@@ -937,7 +1076,7 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
             <div class="b o zz" data-b="9">Сергей, доброе)<span class="t">23:31 ✓✓</span></div>
             <div class="b o zz" data-b="10">собрал как в октябре, цены те же<span class="t">23:31 ✓✓</span></div>
             <div class="b o doc zz" data-b="11"><span class="di"><i class="ph-fill ph-file-pdf"></i></span><span><b>Счет на оплату № 2 от 04.11.2026.pdf</b><small>84,5 КБ</small></span><span class="t">23:32 ✓✓</span></div>
-            <div class="b o zz" data-b="12">12 060 с ндс. оплатите до обеда по вашему, и сегодня же отгрузим<span class="t">23:32 ✓✓</span></div>
+            <div class="b o zz" data-b="12">12 060 с ндс. если оплатите до 13:00 мск (у вас это 20:00), сегодня же отгрузим — машина в тк уходит в 14<span class="t">23:32 ✓✓</span></div>
             <div class="b o zz" data-b="13">кстати топливных сейчас 14 на складе, если вдруг надо больше, скажите<span class="t">23:32 ✓✓</span></div>
             <div class="b i zz" data-b="14">супер, спасибо!<span class="t">23:33</span></div>
           </div><div class="td-col" id="td-col-r">
@@ -990,6 +1129,22 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
       <div class="toast uv" data-uv="tb2"><header><b>Т</b>Т-Бизнес<span style="margin-left:auto">сейчас</span></header><strong>Поступление +18 580,00 ₽</strong>ООО «ДорСтрой» · Оплата по накладной № 2 от 28.10</div>
       <div class="toast uv" data-uv="tb" id="toast"><header><b>Т</b>Т-Бизнес<span style="margin-left:auto">сейчас</span></header><strong>Поступление +12 060,00 ₽</strong>ООО «Стройтех-Снаб» · Оплата по счету № 2</div>
 
+      <!-- Excel склада: машины на завтра, расписаны вечером -->
+      <section class="win" id="w-xl" data-xl="0"><div class="xl">
+        <div class="xl-tit"><span class="xl-logo">X</span><i class="ph ph-floppy-disk"></i><i class="ph ph-arrow-counter-clockwise"></i><span class="xl-nm">Машины на 5 ноября.xlsx · Сохранено</span><span class="xl-srch"><i class="ph ph-magnifying-glass"></i>Поиск</span><span class="ctl"><span>─</span><span>▢</span><span>✕</span></span></div>
+        <div class="xl-menu"><span>Файл</span><span class="on">Главная</span><span>Вставка</span><span>Разметка страницы</span><span>Формулы</span><span>Данные</span><span>Рецензирование</span><span>Вид</span></div>
+        <div class="xl-rib"><span><i class="ph ph-clipboard-text"></i>Вставить</span><span class="f">Calibri</span><span class="f">11</span><span class="f"><b>Ж</b> <i style="font-size:13px;color:#333">К</i> <u>Ч</u></span><span><i class="ph ph-text-align-left"></i>Выравнивание</span><span><i class="ph ph-chart-bar-horizontal"></i>Условное форматирование</span><span><i class="ph ph-funnel"></i>Сортировка и фильтр</span></div>
+        <div class="xl-fx"><span class="xl-nb" id="xl-nb">E3</span><span class="xl-fxi">fx</span><span class="xl-fv" id="xl-fv">900 из 1 500 кг</span></div>
+        <div class="xl-g"><table><colgroup><col style="width:44px"><col style="width:190px"><col style="width:120px"><col style="width:300px"><col style="width:90px"><col style="width:230px"><col></colgroup>
+          <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr>
+          <tr class="xl-h"><th>1</th><td>Машина</td><td>Водитель</td><td>Куда</td><td>Выезд</td><td>Загрузка</td><td>Заказы</td></tr>
+          <tr><th>2</th><td>Газель А412КМ</td><td>Николай</td><td>Москва, 6 адресов</td><td>09:00</td><td class="xl-z"><i style="width:92%"></i><span>1 380 из 1 500 кг</span></td><td>СтройМир, ГорКомплект, Метиз-Центр, ещё 3</td></tr><tr class="r3"><th>3</th><td>Газель В735ОР</td><td>Павел</td><td>Терминал «Деловых линий», межгород</td><td>14:00</td><td class="xl-z" id="xl-z3"><i></i><span>900 из 1 500 кг</span></td><td id="xl-f3">ТехноСнаб — Самара; Метиз-Центр — Казань<b id="xl-f3n"></b></td></tr><tr><th>4</th><td>Ларгус Е208НТ</td><td>Артём</td><td>Подольск, Чехов</td><td>11:00</td><td class="xl-z"><i style="width:87%"></i><span>520 из 600 кг</span></td><td>Запад-Строй, Игорь Петров</td></tr><tr><th>5</th><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><th>6</th><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><th>7</th><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><th>8</th><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><th>9</th><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><th>10</th><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><th>11</th><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><th>12</th><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><th>13</th><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><th>14</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        </table></div>
+        <div class="xl-sh"><span class="on">5 ноября (чт)</span><span>6 ноября (пт)</span><span>4 ноября (ср)</span><span>+</span></div>
+        <div class="xl-st"><span>Готово</span><span class="r">Склад · Николай, изменено сегодня в 18:40</span><span>140 %</span></div>
+      </div></section>
+      <div class="tz-tip" id="tz-tip"><p><small>Москва</small>среда, 4 ноября 2026 г., <b>23:31</b></p><p class="vl"><small>Владивосток · Сергей</small>четверг, 5 ноября, <b>06:31</b></p></div>
+
       <!-- панель задач -->
       <div class="tbar">
         <span class="ic"><span class="win-logo"><b></b><b></b><b></b><b></b></span></span>
@@ -997,7 +1152,7 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
         <span class="ic run"><span class="ico-folder"></span></span>
         <span class="ic run" id="ti-br"><span class="ico-chrome"></span></span>
         <span class="ic run" id="ti-tg"><span class="ico-tg"><i class="ph-fill ph-paper-plane-tilt"></i></span></span>
-        <span class="ic run" id="ti-1c"><span class="ico-1c">1С</span></span>
+        <span class="ic run" id="ti-1c"><span class="ico-1c">1С</span></span><span class="ic run" id="ti-xl"><span class="ico-xl">X</span></span>
         <span class="tray"><span>РУС</span><i class="ph ph-wifi-high"></i><i class="ph ph-speaker-high"></i><span class="clk"><b id="clk">22:46</b><span id="clk-d">04.11.2026</span></span></span>
       </div>
 
@@ -1039,40 +1194,60 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
 
 <section class="vstavka" id="telo-v"><iframe data-v="telo" src="pod-biznes.html?vstavka=telo" title="Язык и тело" scrolling="no"></iframe></section>
 
-<section class="glava" id="r1">
+<section class="glava g-vs" id="r1">
   <div class="g-head"><span class="g-vr">23:30</span><div><span class="g-num">01 · продажа в чате</span><h2>«Нам как в прошлый раз» — и счёт через минуту</h2>
-    <p class="bez"><b>Без Ивана:</b> менеджер увидит сообщение в 9:30 — Сергей к тому времени купит у тех, кто ответил ночью.</p>
-    <div class="put"><span>Telegram</span>→<span>проверка в 1С</span>→<span>счёт</span>→<span>оплата</span>→<span>УПД в Диадок</span></div></div></div>
+</div></div>
+  <div class="vs">
+    <div class="vs-k"><h3>Без Ивана</h3><p><b>09:30</b>менеджер увидит сообщение.</p><p>Сергей к тому времени купит у тех, кто ответил ночью.</p></div>
+    <div class="vs-k iv"><h3>С Иваном</h3><p><b>23:31</b>счёт № 2 у Сергея в чате, место в машине на 14:00 — за ним.</p><p><b>08:47</b>оплата, <b>08:55</b>УПД в Диадоке — отгрузка сегодня.</p></div>
+  </div>
+  <div class="stol">
   <div class="g-tit" aria-live="polite"></div>
   <div class="ekran-w"><div class="ekran"><picture class="obl"><source media="(max-width:999px)" srcset="razd/r1-m.jpg"><img src="razd/r1-w.jpg" alt="" decoding="async"></picture></div></div>
   <ol class="shagi"></ol>
+  <p class="pasp"><b>Окна 1С</b> — запись настоящей 1С:УНФ, тестовая база. Telegram, Excel, банк и Диадок — схемы интерфейсов, компании и люди выдуманы.</p>
+  </div>
 </section>
 
-<section class="glava" id="r3">
+<section class="glava g-cif" id="r3">
   <div class="g-head"><span class="g-vr">00:10</span><div><span class="g-num">02 · большое КП</span><h2>200 страниц к 9 утра? Он позвал ещё троих себя</h2>
-    <p class="bez"><b>Без Ивана:</b> 200 страниц — два дня работы отдела. К 9 утра КП не будет, заказ уйдёт другим.</p>
-    <div class="put"><span>почта</span>→<span>PDF</span>→<span>четыре Ивана</span>→<span>КП в 1С</span></div></div></div>
+</div></div>
+  <dl class="cif"><div><dt>позиций в спецификации на 200 страниц</dt><dd>1 400</dd></div><div><dt>Ивана разбирали её одновременно</dt><dd>4</dd></div><div><dt>КП ушло клиенту — обещали к 9</dt><dd>08:58</dd></div></dl>
+  <p class="bez"><b>Без Ивана:</b> 200 страниц — два дня работы отдела. К 9 утра КП не будет, заказ уйдёт другим.</p>
+  <div class="stol">
   <div class="g-tit" aria-live="polite"></div>
   <div class="ekran-w"><div class="ekran"><picture class="obl"><source media="(max-width:999px)" srcset="razd/r3-m.jpg"><img src="razd/r3-w.jpg" alt="" decoding="async"></picture></div></div>
   <ol class="shagi"></ol>
+  <p class="pasp"><b>Окна 1С</b> — запись настоящей 1С:УНФ, тестовая база. Почта, PDF и окна четырёх Иванов — схемы, компании выдуманы.</p>
+  </div>
 </section>
 
-<section class="glava" id="r2">
+<section class="glava g-tiho" id="r2">
   <div class="g-head"><span class="g-vr">02:04</span><div><span class="g-num">03 · новый клиент</span><h2>Незнакомая компания в 2 ночи — уже в базе</h2>
-    <p class="bez"><b>Без Ивана:</b> письмо в 2 ночи прочитают к обеду. Клиента в базе нет, контакты — в чьей-то почте.</p>
-    <div class="put"><span>почта</span>→<span>поиск в 1С</span>→<span>карточка и контакт</span>→<span>ответ</span></div></div></div>
+</div></div>
+  <div class="stol">
   <div class="g-tit" aria-live="polite"></div>
   <div class="ekran-w"><div class="ekran"><picture class="obl"><source media="(max-width:999px)" srcset="razd/r2-m.jpg"><img src="razd/r2-w.jpg" alt="" decoding="async"></picture></div></div>
   <ol class="shagi"></ol>
+  <p class="pasp"><b>Карточка в 1С</b> — запись настоящей 1С:УНФ, тестовая база. Почта — схема, компания и люди выдуманы.</p>
+  </div>
 </section>
 
-<section class="glava" id="r4">
+<section class="glava g-zo" id="r4">
   <div class="g-head"><span class="g-vr">04:32</span><div><span class="g-num">04 · поставщики</span><h2>Нет на складе — сам спросил у поставщиков</h2>
-    <p class="bez"><b>Без Ивана:</b> поставщикам напишут утром, ответы — к вечеру. КП уйдёт со старыми ценами.</p>
-    <div class="put"><span>1С</span>→<span>письма поставщикам</span>→<span>ответы</span>→<span>цена в КП</span></div></div></div>
+</div></div>
+  <div class="zo">
+    <div><time>04:36 · спросил</time><p>Трём поставщикам, каждому про его позиции: <b>есть ли, какая цена, какой срок</b>. Ответ — до 8:00.</p></div>
+    <div><time>07:52 · ответили</time><p>«ЗапчастьТрейд»: распределитель 25/220994 — <b>33 000 ₽</b> вместо 31 120, срок 7 дней.</p></div>
+    <div><time>07:58 · в КП</time><p><b>41 250 ₽</b> с наценкой 25 %, «под заказ, 7 дней». В 08:58 КП ушло клиенту.</p></div>
+  </div>
+  <p class="bez"><b>Без Ивана:</b> поставщикам напишут утром, ответы — к вечеру. КП уйдёт со старыми ценами.</p>
+  <div class="stol">
   <div class="g-tit" aria-live="polite"></div>
   <div class="ekran-w"><div class="ekran"><picture class="obl"><source media="(max-width:999px)" srcset="razd/r4-m.jpg"><img src="razd/r4-w.jpg" alt="" decoding="async"></picture></div></div>
   <ol class="shagi"></ol>
+  <p class="pasp"><b>Окна 1С</b> — запись настоящей 1С:УНФ, тестовая база. Почта — схема, поставщики выдуманы.</p>
+  </div>
 </section>
 
 <section class="final mezh" id="utro9">
@@ -1084,16 +1259,77 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
   <div class="g-head"><span class="g-vr">11:00</span><div><span class="g-num">05 · днём</span><h2>Не оплатили, не подписали — он не забудет</h2>
     <p class="bez"><b>Без Ивана:</b> про долг вспомнят в конце месяца, а неподписанный договор неделю ждёт в Диадоке — и отгрузка вместе с ним.</p>
     <div class="put"><span>1С: кто должен</span>→<span>Telegram</span>→<span>оплата</span>→<span>договор в Диадок</span>→<span>подписан</span></div></div></div>
+  <div class="stol">
   <div class="g-tit" aria-live="polite"></div>
   <div class="ekran-w"><div class="ekran"><picture class="obl"><source media="(max-width:999px)" srcset="razd/r5-m.jpg"><img src="razd/r5-w.jpg" alt="" decoding="async"></picture></div></div>
   <ol class="shagi"></ol>
+  <p class="pasp"><b>Отчёт «Долги»</b> — запись настоящей облачной 1С:УНФ, тестовая база. Telegram, банк и Диадок — схемы, компании и люди выдуманы.</p>
+  </div>
 </section>
 
 <section class="vstavka" id="pb-v"><iframe data-v="pod-biznes,kopiya" src="pod-biznes.html?vstavka=pod-biznes,kopiya" title="Под ваш бизнес и копия сотрудника" scrolling="no"></iframe></section>
 
+<section class="kalk" id="kalk">
+  <h2>Посчитайте своего Ивана</h2>
+  <p>Подвигайте, впишите свою программу — ориентир справа меняется сразу. Подключаем любую систему: по API, обменом файлами, через почту или прямо в интерфейсе, как сотрудник.</p>
+  <div class="k-w">
+    <div class="k-in">
+      <div class="k-q"><b>Сколько заявок в день?</b>
+        <div class="k-zayav"><input type="range" id="k-z" min="5" max="600" step="5" value="20" aria-label="Заявок в день"><output id="k-zo">20</output></div>
+        <small id="k-zs">≈ 440 обращений в месяц — один покупатель за сутки в одном канале</small></div>
+      <div class="k-q"><b>Где пишут клиенты?</b>
+        <div class="k-chips" id="k-kan"></div>
+        <small>Первый канал в цене, каждый следующий — +2 900 ₽ в месяц</small></div>
+      <div class="k-q"><b>Что ещё он делает?</b>
+        <small class="k-baz-t">В базовой цене — ответы клиентам, карточка клиента в 1С, заказ и счёт, вечерний отчёт вам и кабинет с аналитикой: обращения, время ответа, сколько дошло до оплаты, что спрашивали, а на складе не было. Остальное — по выбору, все работы сразу — пакетом 59 900 ₽ в месяц. Работает уже сейчас — заказ, счёт и оплата в 1С:УНФ; остальное настраиваем под ваш процесс после разбора базы.</small>
+        <div class="k-rab" id="k-rab"></div>
+        <form class="k-sys" id="k-rf" autocomplete="off"><input id="k-ri" placeholder="Своя работа, например «закрывать месяц по складу»" aria-label="Своя работа"><button type="submit">Добавить</button></form></div>
+      <div class="k-q"><b>В каких программах он работает?</b>
+        <div class="k-chips" id="k-sist"></div>
+        <form class="k-sys" id="k-sf" autocomplete="off"><input id="k-si" list="k-dl" placeholder="Своя программа, например Мегаплан" aria-label="Своя программа"><button type="submit">Добавить</button></form>
+        <datalist id="k-dl"></datalist>
+        <p class="k-otv" id="k-otv" aria-live="polite"></p></div>
+      <div class="k-q" id="k-bq"><b>Сколько баз 1С?</b>
+        <div class="k-baz"><button type="button" id="k-bm" aria-label="Меньше баз">−</button><output id="k-bo">1</output><button type="button" id="k-bp" aria-label="Больше баз">+</button></div>
+        <small>Несколько фирм, ИП или филиалов в разных базах. Каждая следующая — +4 900 ₽ в месяц, подключение на 30 % дешевле первой.</small></div>
+    </div>
+    <div class="k-doc" aria-live="polite">
+      <h3>Ориентир<small id="k-dt"></small></h3>
+      <table id="k-tab"></table>
+      <div class="k-sr" id="k-sr"></div>
+      <a class="btn" id="k-btn" href="https://t.me/gonartur" target="_blank" rel="noopener">Разобрать мою базу <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+      <span class="k-kop" id="k-kop"></span>
+    </div>
+  </div>
+</section>
+
+<section class="kto" id="kto">
+  <h2>Кто подключает</h2>
+  <div class="kto-w">
+    <div class="kto-o">
+      <p class="kto-im"><b>Артур Гончаров</b>g.a.d. production</p>
+      <p>Подключает и ведёт сам. Пишете ему напрямую в Telegram — без менеджеров и колл-центра.</p>
+      <ul class="kto-usl"><li><b>ИП</b> — договор, счёт и акт, без НДС</li><li><b>Договор</b> — что делаем, сроки и цена</li></ul>
+      <a class="ghost" href="https://t.me/gonartur" target="_blank" rel="noopener">Написать Артуру <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+    </div>
+    <div class="kto-r">
+      <h3>Последние оплаченные работы с 1С</h3>
+      <p>Названия компаний не публикуем.</p>
+      <ol>
+        <li><span>Обработка 1С: цены и партии в заявление на вывоз для ГИИС ДМДК</span><time>ноябрь</time></li>
+        <li><span>Наборы в 1С:УНФ и коды «Честного знака»</span><time>ноябрь</time></li>
+        <li><span>Обмен интернет-магазина на InSales с 1С</span><time>октябрь</time></li>
+        <li><span>ПиОТ на два ИП в 1С:Розница</span><time>октябрь</time></li>
+        <li><span>1С и касса aQsi — две работы</span><time>октябрь</time></li>
+        <li><span>1С: дубль эквайринга, долг поставщикам, сверка СБП</span><time>октябрь</time></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
 <section class="final">
   <h2>Каждый клиент для него — <br><span>единственный.</span></h2>
-  <p>Подключаем к вашей 1С и переписке, учим на ваших диалогах. Первым трём компаниям — подключение и 2 недели бесплатно, дальше от 9 900 ₽ в месяц.</p>
+  <p>Подключаем к вашей 1С и переписке, учим на ваших диалогах. Первым трём компаниям — подключение и 2 недели бесплатно, дальше от 14 900 ₽ в месяц.</p>
   <div class="ctas">
     <a class="btn" href="https://t.me/gonartur" target="_blank" rel="noopener">Разобрать мою компанию <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
   </div>
@@ -1169,7 +1405,8 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
   const wide = matchMedia('(min-width:1000px)');
   let RT = [], agP = null, agT = null, camR = null, kamS = null, typTimer = null;
   const shag1c = (a, q) => { const d = a ? Math.hypot(q[0] - a[0], q[1] - a[1]) : 0; return d > 4 ? Math.min(1.1, Math.max(.45, d / 750)) : 0; };   // как в agent()
-  const vKadre = p => !kamS || (p[0] > -kamS.tx / kamS.s + 40 && p[0] < (kamS.W - kamS.tx) / kamS.s - 110);
+  const vKadre = p => !kamS || (p[0] > -kamS.tx / kamS.s + 40 && p[0] < (kamS.W - kamS.tx) / kamS.s - 110 && p[1] > -kamS.ty / kamS.s + 50 && p[1] < (kamS.H - kamS.ty) / kamS.s - 130);
+  const K1M = p => [p[0] - 285, p[1] - 230, 420, 525];   // телефон: окно 1С крупно, рука в кадре
   const tochki = b => { const r = RUKA[b.f1c], ot = b.ot || 0, d = b.do || r.dlit; return {r, ot, d, pts: r.ruka.filter(q => q.t >= ot && q.t < d)}; };
   function igrat1c(b, anim) {
     // ролик с b.ot (или с начала), Иван дошёл до первой точки и повторяет руку из записи; b.do — где остановить
@@ -1185,7 +1422,7 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
     if (b.do) RT.push(setTimeout(() => v.pause(), (w + (d - ot) / k) * 1000));
     let pr = pts.length ? [pts[0].x, pts[0].y] : null;
     pts.forEach(q => { const p = [q.x, q.y], dur = shag1c(pr, p); pr = p;
-      RT.push(setTimeout(() => { if (!wide.matches && !vKadre(p)) kamera([p[0] - 390, 120, 780, 975]); agent(p, q.p, q.k, true); }, (w + Math.max(0, (q.t - ot) / k - dur)) * 1000)); });
+      RT.push(setTimeout(() => { if (!wide.matches && !vKadre(p)) kamera(K1M(p)); agent(p, q.p, q.k, true); }, (w + Math.max(0, (q.t - ot) / k - dur)) * 1000)); });
   }
 
   /* ---------- большое КП: четыре окна Ивана, находки летят в окно 1С ---------- */
@@ -1249,6 +1486,7 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
   const UV = (uv, clk, x) => [Object.assign({uv, zam: 1, cam: F, camM: TOSTm, clk, t: 1300}, x), Object.assign({uv, kur: TOST, p: 'tapR', klik: 1, cam: F, camM: TOSTm, clk, t: 1100}, x)];
   const TGo = (tg, clk, x) => Object.assign({w: 'tg', tg, typ: 1, cam: TG, camM: TGm, p: 'rab', clk, t: 1400}, x);
   const REP = 'Андрей, добрый вечер! Спецификацию получили, 200 страниц, серьезно) Посчитаем за ночь, к 9 утра пришлем КП с ценами и сроками. Аналоги, если будут, отметим отдельно.';
+  const XL3 = '+ Стройтех-Снаб — Владивосток, 8 фильтров, ~12 кг, после оплаты';
   const RAZD = {
     r0: [
       {r: 'r1', s: '23:30 · Сергей пишет в Telegram', hook: 'Сам отвечает в Telegram', k: [...UV('tg', '23:30', {t: 1100})]},
@@ -1276,7 +1514,12 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
        k: [{w: '1c', f1c: 'klient', tg: 6, clk: '23:30'}]},
       {time: '23:31', h: 'Повторяет заказ и выставляет счёт', d: 'Те же позиции и цены, что в октябре → «Провести». Счёт № 2 на 12 060 ₽.',
        k: [{w: '1c', f1c: 'zakaz', tg: 6, clk: '23:31'}]},
-      {time: '23:31', h: 'Отвечает Сергею', d: 'По одному сообщению, как живой менеджер. Счёт — PDF прямо в чат. И подсказал: топливных на складе 14, если надо больше.',
+      {time: '23:31', h: 'Смотрит машины на завтра и время у Сергея', d: 'Во Владивостоке уже 06:31 четверга — для Сергея «сегодня» это 5 ноября. В Excel склада «Машины на 5 ноября» Газель к терминалу ТК уходит в 14:00, загружена на 60 % — фильтры влезут. Дописал заказ.',
+       k: [{w: 'tg', tg: 6, tz: 1, cam: [760, 475, 680, 425], camM: [900, 225, 540, 675], kur: '#clk', kd: [-70, -6], clk: '23:31', t: 2800},
+           {w: 'xl', cam: F, camM: [700, 120, 560, 700], kur: '#xl-z3', kd: [60, 58], klik: 1, clk: '23:31', t: 2600},
+           {w: 'xl', xl: 1, cam: [480, 60, 960, 600], camM: [880, 120, 560, 700], kur: '#xl-f3', kd: [175, 22], kdM: [150, 22], p: 'rab', clk: '23:31', t: 3000},
+           {w: 'xl', xl: 2, cam: [480, 60, 960, 600], camM: [700, 120, 560, 700], kur: '#xl-z3', kd: [60, 58], clk: '23:31', t: 2000}]},
+      {time: '23:31', h: 'Отвечает Сергею', d: 'По одному сообщению, как живой менеджер. Счёт — PDF прямо в чат, срок оплаты — по Москве и по его времени. И подсказал: топливных на складе 14.',
        k: [TGo(9, '23:31', {kur: [1180, 740], kurM: [1060, 730], t: 1500}), TGo(10, '23:31'), TGo(11, '23:32'), TGo(12, '23:32', {t: 1500}), TGo(13, '23:32', {t: 1500}), TGo(14, '23:33', {p: 'tap', t: 2000})]},
       {time: '08:47', h: 'Утром приходит оплата', d: 'Пуш из банка: +12 060 ₽ от «Стройтех-Снаб» по счёту № 2.',
        k: [...UV('tb', '08:47', {w: 'tg', tg: 14, utro: 1}),
@@ -1358,7 +1601,7 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
     const {ot, d, pts} = tochki(b), xs = pts.map(q => q.x), ys = pts.map(q => q.y), x0 = xs[0], cy = (Math.min(...ys) + Math.max(...ys)) / 2;
     const cx = Math.max(x0 - 260, Math.min(x0 + 330, (Math.min(...xs) + Math.max(...xs)) / 2));
     const vx = xs.filter(x => x <= 1440), cw = Math.min(1440, Math.max(1040, Math.max(...vx) - Math.min(...vx) + 420)), cxw = (Math.min(...vx) + Math.max(...vx)) / 2;
-    Object.assign(b, {t: Math.round((d - ot) / (b.tk || TEMP1C[b.f1c]) * 1000) + (b.pz != null ? b.pz : 1800), kur: [x0, ys[0]], klik: 0, p: 'tap', cam: [cxw - cw / 2, cy - cw / 3.2, cw, cw / 1.6], camM: [cx - 390, cy - 487, 780, 975]}); }));
+    Object.assign(b, {t: Math.round((d - ot) / (b.tk || TEMP1C[b.f1c]) * 1000) + (b.pz != null ? b.pz : 1800), kur: [x0, ys[0]], klik: 0, p: 'tap', cam: [cxw - cw / 2, cy - cw / 3.2, cw, cw / 1.6], camM: K1M([x0, ys[0]])}); }));
 
   /* ---------- применить кадр ---------- */
   function kamera(r) {
@@ -1368,7 +1611,7 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
     let s = Math.max(s0, Math.min(W / r[2], H / r[3]));
     let tx = W / 2 - (r[0] + r[2] / 2) * s, ty = H / 2 - (r[1] + r[3] / 2) * s;
     tx = Math.min(0, Math.max(W - 1440 * s, tx)); ty = Math.min(0, Math.max(H - 900 * s, ty));
-    stage.style.transform = `translate(${tx}px,${ty}px) scale(${s})`; kamS = {tx, s, W};
+    stage.style.transform = `translate(${tx}px,${ty}px) scale(${s})`; kamS = {tx, ty, s, W, H};
   }
   // центр элемента в координатах сцены (без учёта transform окон)
   const pt = el => { let e = typeof el === 'string' ? stage.querySelector(el) : el, x = e.offsetWidth / 2, y = e.offsetHeight / 2; while (e && e !== stage) { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; } return [x, y]; };
@@ -1377,7 +1620,13 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
     RT.forEach(clearTimeout); RT = []; clearInterval(typTimer); clearTimeout(typTimer);
     stage.classList.toggle('utro', !!b.utro);
     $$('.win').forEach(w => w.classList.toggle('on', !!b.w && w.id === 'w-' + b.w));
-    ['br', 'tg', '1c'].forEach(k => $('#ti-' + k).classList.toggle('on', b.w === k));
+    ['br', 'tg', '1c', 'xl'].forEach(k => $('#ti-' + k).classList.toggle('on', b.w === k));
+    $('#tz-tip').classList.toggle('on', !!b.tz);
+    { const xl = b.xl || 0, n3 = $('#xl-f3n'), T = XL3; $('#w-xl').dataset.xl = xl;
+      $('#xl-z3 i').style.width = xl >= 2 ? '61%' : '60%'; $('#xl-z3 span').textContent = (xl >= 2 ? '912' : '900') + ' из 1 500 кг';
+      $('#xl-nb').textContent = xl ? 'F3' : 'E3'; const fv = $('#xl-fv'), S0 = 'ТехноСнаб — Самара; Метиз-Центр — Казань';
+      if (xl === 1 && anim) { let k = 0; n3.textContent = ''; typTimer = setInterval(() => { k += 2; n3.textContent = T.slice(0, k); fv.textContent = S0 + ' ' + n3.textContent; if (k >= T.length) clearInterval(typTimer); }, 40); }
+      else { n3.textContent = xl ? T : ''; fv.textContent = xl ? S0 + ' ' + T : (xl >= 2 ? '912' : '900') + ' из 1 500 кг'; } }
     $$('.uv').forEach(t => t.classList.toggle('on', t.dataset.uv === b.uv));
     if (b.tab) {
       $$('.br-tab').forEach(t => t.classList.toggle('on', t.dataset.tab === b.tab));
@@ -1467,7 +1716,7 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
 
   /* ---------- проигрыватель разделов ---------- */
   const tiho = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const MINI = {r1: ['пишет в Telegram', 'кто пишет', 'сверка в 1С', 'заказ и счёт', 'ответ Сергею', 'оплата', 'в 1С', 'УПД'],
+  const MINI = {r1: ['пишет в Telegram', 'кто пишет', 'сверка в 1С', 'заказ и счёт', 'машины и время', 'ответ Сергею', 'оплата', 'в 1С', 'УПД'],
     r2: ['письмо', 'подпись', 'поиск в 1С', 'контакт', 'ответ'], r3: ['письмо', 'ответ «к 9»', 'делит на 4', 'находки в 1С', 'остатки', 'строки КП', 'итог', 'КП ушло'],
     r4: ['кто возил', 'письма', 'ответы', 'цена в КП'], r5: ['кто должен', 'напомнил', 'договор', 'оплата', 'не подписан', 'подписан']};
   const dlit = (id, si) => RAZD[id][si].k.reduce((a, b) => a + (b.t || 1500), 0);
@@ -1519,6 +1768,95 @@ h1 .rot span{display:inline-block;animation:rot .5s cubic-bezier(.16,1,.3,1)}
     kadr(opt.k != null ? opt.k : akt.flat.findIndex(f => f.si === si));
   }
   new ResizeObserver(() => camR && kamera(camR)).observe(cam);
+
+  /* ---------- калькулятор (цены — «ИИ-компания — экономика и цены», раздел 1) ---------- */
+  (() => {
+    const K = {dnej: 22, kanal: 2900, baza: 4900, prog: 2900, bazaSkidka: .7,
+      // работы сверх базовой (ответы, клиент в 1С, заказ и счёт): [название, ₽/мес, глава]
+      paket: 59900,
+      // работа → система, без которой её не сделать (добавляется в «программы» и в подключение)
+      nuzhno: {'Выписка банка: разнос оплат': ['Банк: выписка и платежи', 'api'], 'Оплата поставщикам: платёжки на согласование': ['Банк: выписка и платежи', 'api'],
+        'Диадок / СБИС: УПД, счета-фактуры, подписи': ['Диадок / СБИС', 'edo'], 'Ozon и WB: заказы, остатки, цены': ['Ozon и WB', 'api'],
+        'Честный знак: коды в документах': ['Честный знак', 'api'], 'Машины и рейсы': ['Excel / Google', 'fajl']},
+      rab: [['Продажи', [['Большие КП и спецификации', 14900], ['Возврат пропавших клиентов и допродажа', 4900], ['Проверка контрагента: ЕГРЮЛ, суды, долги', 2900]]],
+        ['Документы и ЭДО', [['Договоры по шаблону и проверка правок', 4900], ['Диадок / СБИС: УПД, счета-фактуры, подписи', 4900], ['Акты сверки', 2900]]],
+        ['Деньги', [['Выписка банка: разнос оплат', 4900], ['Долги: напоминания и дожим', 4900], ['Оплата поставщикам: платёжки на согласование', 4900]]],
+        ['Закупки и склад', [['Запросы поставщикам: цены и сроки', 4900], ['Заказы поставщикам по остаткам', 4900], ['Поступления: накладные поставщиков в 1С', 4900], ['Резервы и перемещения', 2900]]],
+        ['Логистика', [['Машины и рейсы', 4900], ['Отправки через ТК и трек клиенту', 2900]]],
+        ['Маркетплейсы и маркировка', [['Ozon и WB: заказы, остатки, цены', 4900], ['Честный знак: коды в документах', 4900]]]], stupeni: [[500, 14900], [1500, 29900], [3000, 49900]], menedzher: 100000, minNaZayavku: 12,
+      // форматы подключения: цена разово, срок, работает ли уже у нас
+      fmt: {
+        unf: {f: 'модулем в 1С', c: 24900, dni: '1–3 дня', ok: 'уже работает: заказ, счёт, оплата'},
+        t1c: {f: 'модулем в 1С', c: 24900, dni: '1–3 дня'},
+        erp: {f: 'модулем в 1С, по оценке доработок', c: 49900, ot: 1, dni: 'от 3 дней'},
+        fresh: {f: 'через веб-клиент 1С, как сотрудник', c: 49900, ot: 1, dni: 'от 5 дней'},
+        api: {f: 'по API', c: 19900, ot: 1, dni: '2–5 дней'},
+        edo: {f: 'по API оператора ЭДО', c: 19900, ot: 1, dni: '2–5 дней'},
+        fajl: {f: 'обменом файлами', c: 9900, ot: 1, dni: '1–2 дня'},
+        ui: {f: 'прямо в интерфейсе, как сотрудник', c: 49900, ot: 1, dni: '3–7 дней'}},
+      sist: [['1С:УНФ', 'unf'], ['1С:УТ 11', 't1c'], ['1С:Бухгалтерия', 't1c'], ['1С:КА / ERP', 'erp'], ['1С:Фреш', 'fresh'], ['МойСклад', 'api'], ['Битрикс24', 'api'],
+        ['amoCRM', 'api'], ['RetailCRM', 'api'], ['Ozon и WB', 'api'], ['Диадок / СБИС', 'edo'], ['Excel / Google', 'fajl']],
+      kan: [['Telegram', 1], ['WhatsApp'], ['MAX'], ['Авито'], ['ВКонтакте'], ['Почта'], ['Виджет на сайте'], ['Чаты Ozon и WB']]};
+    const UZNAT = [[/унф|нашей фирм/i, 'unf'], [/erp|ерп|комплексн|(^|[\s:])ка([\s/]|$)|доработ/i, 'erp'], [/фреш|fresh|облач|онлайн|аренд/i, 'fresh'],
+      [/1с|1c|бухгалт|торговл|(^|[\s:])ут([\s\d]|$)|розниц|зуп/i, 't1c'], [/диадок|сбис|контур|тензор|эдо/i, 'edo'],
+      [/excel|эксель|google|гугл|таблиц|csv|xml/i, 'fajl'],
+      [/склад|битрикс|bitrix|amocrm|(^|\s)амо(\s|срм|crm|$)|retail|ритейл|insales|инсейлс|tilda|тильда|ozon|озон|wb|wildberr|вайлдберр|мегаплан|yclients|iiko|айко|keeper|эвотор|evotor|банк|точка|альф|тинькоф|сбер|1cbit|shop|магазин|api|crm|срм/i, 'api']];
+    const rub = n => n.toLocaleString('ru-RU') + ' ₽';
+    const st = {z: 20, kan: new Set(['Telegram']), sist: [['1С:УНФ', 'unf']], baz: 1, rab: new Set(), svoi: []};
+    const is1c = k => ['unf', 't1c', 'erp', 'fresh'].includes(k);
+    const bazy = n => n + ' ' + (n % 10 === 1 && n % 100 !== 11 ? 'база' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'базы' : 'баз');
+    const $k = s => document.querySelector(s);
+    const knopki = (el, spisok, on, klik) => { el.innerHTML = spisok.map(n => '<button type="button" aria-pressed="' + on(n) + '">' + n + '</button>').join('');
+      [...el.children].forEach((b, i) => b.onclick = () => klik(spisok[i])); };
+    function ris() {
+      const obr = st.z * K.dnej, stup = K.stupeni.find(([g]) => obr <= g), mes = stup ? stup[1] : null;
+      $k('#k-zo').textContent = st.z;
+      $k('#k-zs').textContent = '≈ ' + obr.toLocaleString('ru-RU') + ' обращений в месяц — один покупатель за сутки в одном канале';
+      knopki($k('#k-kan'), K.kan.map(x => x[0]), n => st.kan.has(n), n => { if (st.kan.has(n) && st.kan.size > 1) st.kan.delete(n); else st.kan.add(n); ris(); });
+      const imena = st.sist.map(x => x[0]), vse = [...K.sist.map(x => x[0]), ...imena.filter(n => !K.sist.some(x => x[0] === n))];
+      knopki($k('#k-sist'), vse, n => imena.includes(n), n => { const i = st.sist.findIndex(x => x[0] === n);
+        if (i >= 0) { if (st.sist.length > 1) st.sist.splice(i, 1); } else st.sist.push(K.sist.find(x => x[0] === n)); ris(); });
+      const odin = st.sist.find(([, k]) => is1c(k)), dopB = odin ? st.baz - 1 : 0, dopP = Math.max(0, st.sist.length - 1);
+      $k('#k-bq').hidden = !odin; $k('#k-bo').textContent = st.baz; $k('#k-bm').disabled = st.baz <= 1; $k('#k-bp').disabled = st.baz >= 10;
+      $k('#k-rab').innerHTML = K.rab.map(([g, sp]) => '<div class="k-gr"><span>' + g + '</span><div class="k-chips">' + sp.map(([n, c]) => '<button type="button" aria-pressed="' + st.rab.has(n) + '" data-n="' + n + '">' + n + '<i>+' + rub(c) + '</i></button>').join('') + '</div></div>').join('');
+      $k('#k-rab').querySelectorAll('button').forEach(b => b.onclick = () => { const n = b.dataset.n; if (st.rab.has(n)) st.rab.delete(n); else { st.rab.add(n);
+        const nz = K.nuzhno[n]; if (nz && !st.sist.some(x => x[0] === nz[0])) { st.sist.push(nz); $k('#k-otv').innerHTML = '«' + n + '» — добавили <b>' + nz[0] + '</b> в программы: без неё эту работу не сделать.'; } } ris(); });
+      const rab = K.rab.flatMap(([g, sp]) => sp.map(x => [g, ...x])).filter(x => st.rab.has(x[1])), sumRab = rab.reduce((a, x) => a + x[2], 0), paket = sumRab > K.paket, vRab = paket ? K.paket : sumRab;
+      const dop = Math.max(0, st.kan.size - 1), vMes = mes == null ? null : mes + dop * K.kanal + dopB * K.baza + dopP * K.prog + vRab;
+      let razovo = 0, ot = false;
+      const r = ['<tr class="razd"><td colspan="2">Каждый месяц</td></tr>',
+        '<tr><td>Иван, до ' + (stup ? stup[0].toLocaleString('ru-RU') : '3 000+') + ' обращений<small>' + obr.toLocaleString('ru-RU') + ' в месяц: ответы, клиент в 1С, заказ и счёт, кабинет с аналитикой</small></td><td>' + (mes == null ? 'по договору' : 'от ' + rub(mes)) + '</td></tr>',
+        '<tr><td>Каналы: ' + [...st.kan].join(', ') + '<small>' + (dop ? 'первый в цене, ещё ' + dop + ' × 2 900 ₽' : 'один канал — в цене') + '</small></td><td>' + (dop ? rub(dop * K.kanal) : '0 ₽') + '</td></tr>',
+        ...K.rab.map(([g]) => { const x = rab.filter(y => y[0] === g); return x.length ? '<tr><td>' + g + '<small>' + x.map(y => y[1]).join(' · ') + ' — настроим под ваш процесс</small></td><td>' + rub(x.reduce((a, y) => a + y[2], 0)) + '</td></tr>' : ''; }),
+        ...(paket ? ['<tr><td>Все работы — пакетом<small>по отдельности ' + rub(sumRab) + ', пакетом ' + rub(K.paket) + '</small></td><td>−' + rub(sumRab - K.paket) + '</td></tr>'] : []),
+        ...st.svoi.map(n => '<tr><td>' + n + '<small>ваша работа — оценим после разбора базы</small></td><td>по оценке</td></tr>'),
+        ...(dopB ? ['<tr><td>Ещё ' + bazy(dopB) + ' 1С<small>каждая следующая — 4 900 ₽</small></td><td>' + rub(dopB * K.baza) + '</td></tr>'] : []),
+        ...(dopP ? ['<tr><td>Ещё программ: ' + dopP + '<small>сопровождение обмена — 2 900 ₽ за каждую</small></td><td>' + rub(dopP * K.prog) + '</td></tr>'] : []),
+        '<tr class="razd"><td colspan="2">Подключение, один раз</td></tr>'];
+      st.sist.forEach(([n, k]) => { const f = K.fmt[k]; razovo += f.c; ot = ot || !!f.ot;
+        r.push('<tr><td>' + n + ' — ' + f.f + '<small' + (f.ok ? ' class="ok">' + f.ok : '>подключим под вас за ' + f.dni) + '</small></td><td>' + (f.ot ? 'от ' : '') + rub(f.c) + '</td></tr>'); });
+      if (dopB) { const f = K.fmt[odin[1]], c = Math.round(f.c * K.bazaSkidka / 100) * 100; razovo += dopB * c; ot = ot || !!f.ot;
+        r.push('<tr><td>Ещё ' + bazy(dopB) + ' ' + odin[0] + '<small>по ' + rub(c) + ' — та же конфигурация, на 30 % дешевле первой</small></td><td>' + (f.ot ? 'от ' : '') + rub(dopB * c) + '</td></tr>'); }
+      r.push('<tr class="itog"><td>В месяц</td><td>' + (vMes == null ? 'по договору' : 'от ' + rub(vMes)) + '</td></tr>',
+        '<tr class="itog2"><td>Подключение</td><td>' + (ot ? 'от ' : '') + rub(razovo) + '</td></tr>');
+      $k('#k-tab').innerHTML = r.join('');
+      const chas = Math.round(st.z * K.minNaZayavku * K.dnej / 60);
+      $k('#k-sr').innerHTML = 'Точную цену называем после разбора вашей базы — она зависит от сложности бизнеса. Столько заявок руками — <b>' + chas.toLocaleString('ru-RU') + ' ч в месяц</b> работы менеджера (по 12 минут на заявку). Менеджер с налогами — около <b>' + rub(K.menedzher) + '</b> в месяц и не отвечает ночью. Первым трём компаниям типовое подключение 1С — 0 ₽ и 2 недели бесплатно.';
+      $k('#k-dt').textContent = 'от ' + new Date().toLocaleDateString('ru-RU') + ' · без НДС';
+      st.tekst = 'Ориентир g.a.d.: ' + st.z + ' заявок в день; каналы — ' + [...st.kan].join(', ') + '; системы — ' + st.sist.map(x => x[0]).join(', ') + (dopB ? '; баз 1С — ' + st.baz : '') + (rab.length ? '; ещё делает — ' + rab.map(x => x[1]).join(', ') : '') + (st.svoi.length ? '; своё — ' + st.svoi.join(', ') : '') + '. Ориентир: в месяц ' + (vMes == null ? 'по договору' : 'от ' + rub(vMes)) + ', подключение ' + (ot ? 'от ' : '') + rub(razovo) + '.';
+    }
+    $k('#k-z').oninput = e => { st.z = +e.target.value; ris(); };
+    $k('#k-rf').onsubmit = e => { e.preventDefault(); const v = $k('#k-ri').value.trim().replace(/[<&]/g, '').slice(0, 60); if (v && !st.svoi.includes(v)) st.svoi.push(v); $k('#k-ri').value = ''; ris(); };
+    $k('#k-bm').onclick = () => { st.baz = Math.max(1, st.baz - 1); ris(); }; $k('#k-bp').onclick = () => { st.baz = Math.min(10, st.baz + 1); ris(); };
+    $k('#k-dl').innerHTML = ['Мегаплан', 'Битрикс24', 'iiko', 'YCLIENTS', 'Эвотор', 'InSales', 'Tilda', '1С:Розница', '1С:ЗУП', 'Т-Банк', 'Точка', 'СБИС', 'Excel'].map(n => '<option value="' + n + '">').join('');
+    $k('#k-sf').onsubmit = e => { e.preventDefault(); const v = $k('#k-si').value.trim().slice(0, 40); if (!v) return;
+      const k = (UZNAT.find(([re]) => re.test(v)) || [0, 'ui'])[1], f = K.fmt[k];
+      if (!st.sist.some(x => x[0].toLowerCase() === v.toLowerCase())) st.sist.push([v, k]);
+      $k('#k-otv').innerHTML = '<b>' + v.replace(/[<&]/g, '') + '</b> — подключим ' + f.f + ', ' + f.dni + '.' + (k === 'ui' ? ' Без API тоже можно: Иван работает в программе как человек — открывает, заполняет, проводит.' : '');
+      $k('#k-si').value = ''; ris(); };
+    $k('#k-btn').addEventListener('click', () => { try { navigator.clipboard.writeText(st.tekst); $k('#k-kop').textContent = 'Ориентир скопирован — вставьте его в чат'; } catch (e) {} });
+    ris();
+  })();
   window.RAZD = RAZD; window.zapusk = zapusk;
 
   const params = new URLSearchParams(location.search);

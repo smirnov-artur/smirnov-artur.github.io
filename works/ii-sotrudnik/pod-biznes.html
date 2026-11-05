@@ -715,7 +715,7 @@ h2{font:600 clamp(26px,2.6vw,38px)/1.14 var(--display);letter-spacing:-.03em;max
     for (let i = 0; i < 3; i++) {
       await pusk(t, () => zhdi(i ? 520 : 300));
       const prev = puzy[i - 1], y = prev ? prev.offsetTop + prev.offsetHeight + 8 : 8;
-      const p = puz(d.fr[i], g[0] + (mob ? 34 : 96), y);
+      const p = puz(d.fr[i], g[0] + (mob ? 34 : 118), y);
       p.animate([{opacity: 0, transform: 'translateY(10px) scale(.96)'}, {opacity: 1, transform: 'none'}], {duration: 380, easing: 'cubic-bezier(.16,1,.3,1)'}); puzy.push(p);
     }
     await pusk(t, () => zhdi(1300));
@@ -782,7 +782,14 @@ h2{font:600 clamp(26px,2.6vw,38px)/1.14 var(--display);letter-spacing:-.03em;max
     + '.biz button[aria-selected=true],.man button[aria-selected=true],.per-kto button[aria-selected=true]{background:#fff!important;color:#15171A!important;border-color:#15171A!important;box-shadow:inset 0 -3px #15171A}'
     + '.man button[aria-selected=true] .av{box-shadow:none}.vk.on{border-color:#15171A!important;box-shadow:none!important}'
     + '.ug .otvet.kopiya{background:#F5F6F7!important;color:#15171A!important;border:1px solid #15171A}'
-    + '.shag::before{background:none!important;color:#15171A!important;border:2px solid #15171A;border-radius:4px!important}';
+    + '.shag::before{background:none!important;color:#15171A!important;border:2px solid #15171A;border-radius:4px!important}'
+    // rabota-75: три шага — внутри блока «перенос», подписью под сценой (горят по ходу анимации), пунктами договора без карточек
+    + '.perenos .shagi{margin:4px 0 18px;gap:0 28px}.perenos .scena{height:290px}'
+    + '.perenos .shag{border:0!important;border-top:2px solid #D6D9DD!important;border-radius:0!important;padding:12px 0 0!important;background:none!important}'
+    + '.perenos .shag.on{border-top-color:#15171A!important}.perenos .shag::before{content:counter(sh) "."!important;display:inline!important;width:auto!important;height:auto!important;border:0!important;margin:0 6px 0 0!important;font:650 18px/1 var(--display)!important}'
+    + '.perenos .shag h3{display:inline;font-size:18px}.perenos .shag p{margin-top:6px;font-size:15px}'
+    + '@media (max-width:860px){.perenos .scena{height:300px}.perenos .shagi{gap:14px}}';
+  { const ps = document.querySelector('#kopiya .shagi'), pr = document.getElementById('perenos'); if (ps && pr) pr.appendChild(ps); }
   document.querySelector('.nav').style.display = 'none';
   document.documentElement.style.background = document.body.style.background = 'transparent';
   sek.forEach(s => { if (!ids.includes(s.id)) s.style.display = 'none'; });
