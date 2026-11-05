@@ -276,6 +276,21 @@ h2{font:600 clamp(26px,2.6vw,38px)/1.14 var(--display);letter-spacing:-.03em;max
   .mozg{width:44px;height:44px;margin:-22px 0 0 -22px;font-size:25px}
   .mozg-t{bottom:54px;font-size:12px}
 }
+/* rabota-76i: что выдаёт бота → как пишет Иван */
+.vyd{width:100%;max-width:980px;margin:22px 0 8px;border-collapse:collapse;font-size:16px;line-height:1.45}
+.vyd th{text-align:left;font-weight:600;font-size:14px;color:var(--mute);padding:0 16px 8px 0;border-bottom:2px solid currentColor}
+.vyd td{padding:10px 16px 10px 0;border-bottom:1px solid var(--line);vertical-align:top;width:50%}
+.vyd td:first-child{color:var(--mute);text-decoration:line-through;text-decoration-color:rgba(179,38,30,.55)}
+.vyd-p{margin:26px 0 12px;font-weight:600}
+@media (max-width:620px){.vyd{font-size:14px}.vyd td{padding:8px 10px 8px 0}}
+/* rabota-76: три вида бота */
+.bot-vk{display:flex;gap:6px;margin:0 0 10px;flex-wrap:wrap}
+.bot-vk button{font:500 14px/1 var(--display,inherit);padding:9px 12px;border-radius:6px;border:1px solid var(--line);background:transparent;color:inherit;cursor:pointer}
+.bot-vk button[aria-selected=true]{border-color:currentColor;box-shadow:inset 0 -3px currentColor;font-weight:600}
+.bot-vk button:focus-visible{outline:2px solid #1A56B8}
+#bot-m{min-height:430px}
+#bot-m .kn{display:flex;flex-wrap:wrap;gap:5px;align-self:flex-start;max-width:85%;margin:-2px 0 4px}
+#bot-m .kn span{padding:7px 11px;border-radius:8px;background:rgba(255,255,255,.92);color:#2A7AB8;font-size:13px;font-weight:500;box-shadow:0 1px 1px rgba(0,0,0,.12)}
 </style>
 </head>
 <body>
@@ -287,21 +302,19 @@ h2{font:600 clamp(26px,2.6vw,38px)/1.14 var(--display);letter-spacing:-.03em;max
 
 <main>
 <section class="sek telo-s" id="telo">
-  <p class="eye">Почему не очередной чат-бот</p>
-  <h2>Мы дали ИИ не только язык человека. Мы дали ему тело.</h2>
-  <p class="lead">ИИ-бот — вежливый чат, который ничего не может. А люди хотят говорить с человеком: чтобы понял, ответил по-человечески и сделал.</p>
+  <p class="eye">Что мы поняли · 1</p>
+  <h2>Люди за секунду чувствуют бота — и уходят.</h2>
+  <p class="lead">Мы разобрали больше сотни настоящих переписок покупателей с продавцами. Бота выдают одни и те же мелочи, а покупатель хочет, чтобы по ту сторону сидел человек: понял, ответил по-человечески и сделал. На этом мы и учили Ивана.</p>
+  <table class="vyd"><thead><tr><th>Что выдаёт бота</th><th>Как пишет Иван</th></tr></thead><tbody><tr><td>«Здравствуйте! Я виртуальный помощник. Чем могу помочь?»</td><td>Сразу отвечает на вопрос. Представляется по имени, как ваш сотрудник</td></tr><tr><td>Меню и кнопки вместо ответа</td><td>Понимает обычную речь, голосовые и фото</td></tr><tr><td>Абзац на полэкрана, списки, эмодзи</td><td>Коротко, по одному сообщению на мысль — как занятой менеджер</td></tr><tr><td>Ответ через секунду</td><td>Пауза и «печатает…», как у человека</td></tr><tr><td>Не помнит, что клиент брал в прошлый раз</td><td>Помнит клиента и его заказы — смотрит в 1С</td></tr><tr><td>Со всеми одинаково, канцеляритом</td><td>Пишет манерой вашего лучшего менеджера — учится на его переписках</td></tr></tbody></table>
+  <p class="vyd-p">Одно и то же сообщение клиента — три бота, к которым все привыкли, и Иван:</p>
 
   <div class="vs">
     <div class="vs-k bot">
       <div class="vs-h"><span class="oblako"><i class="ph-fill ph-chat-circle-dots"></i></span><div><b>Бот, к которому все привыкли</b><small>Язык есть. Рук нет.</small></div></div>
+      <div class="bot-vk" role="tablist" aria-label="Какой бот"><button type="button" role="tab" aria-selected="true" data-v="knopki">Кнопки</button><button type="button" role="tab" aria-selected="false" data-v="shablon">Шаблон</button><button type="button" role="tab" aria-selected="false" data-v="vremya">«В рабочее время»</button></div>
       <div class="tg">
         <div class="tg-head"><span class="av" style="background:linear-gradient(#A3B1C2,#6E7F93)">РЗ</span><span class="nm">Ромашка-Запчасти · бот<small>бот</small></span><i class="ph ph-dots-three-vertical"></i></div>
-        <div class="tg-msgs">
-          <div class="b o">здравствуйте, нужен счёт на 4 масляных фильтра JCB, оплатим сегодня<span class="t">09:14 ✓✓</span></div>
-          <div class="b i bot">Здравствуйте! 😊 Я виртуальный помощник компании «Ромашка-Запчасти». Чем я могу вам помочь?<span class="t">09:14</span></div>
-          <div class="b o">счёт на 4 фильтра<span class="t">09:15 ✓✓</span></div>
-          <div class="b i bot">К сожалению, я не могу выставить счёт. Оставьте, пожалуйста, ваш номер телефона, и менеджер свяжется с вами в рабочее время.<span class="t">09:15</span></div>
-          <div class="b sys">Диалог завершён</div>
+        <div class="tg-msgs" id="bot-m"><div class="b o">здравствуйте, нужен счёт на 4 масляных фильтра JCB, оплатим сегодня<span class="t">09:14 ✓✓</span></div><div class="b i bot">Добро пожаловать в «Ромашка-Запчасти»! Выберите раздел 👇<span class="t">09:14</span></div><div class="kn"><span>Каталог</span><span>Доставка и оплата</span><span>Акции</span><span>Связаться с менеджером</span></div><div class="b o">мне счёт на 4 фильтра<span class="t">09:15 ✓✓</span></div><div class="b i bot">Извините, я вас не понял 😔 Выберите раздел из меню.<span class="t">09:15</span></div><div class="b sys">Клиент покинул чат</div>
         </div>
       </div>
     </div>
@@ -767,6 +780,17 @@ h2{font:600 clamp(26px,2.6vw,38px)/1.14 var(--display);letter-spacing:-.03em;max
 })();
 </script>
 <script>
+/* rabota-76: вкладки бота — по кругу каждые 6 с, пока блок на экране; клик — остановить на выбранном */
+(() => { const V = {"knopki": "<div class=\"b o\">здравствуйте, нужен счёт на 4 масляных фильтра JCB, оплатим сегодня<span class=\"t\">09:14 ✓✓</span></div><div class=\"b i bot\">Добро пожаловать в «Ромашка-Запчасти»! Выберите раздел 👇<span class=\"t\">09:14</span></div><div class=\"kn\"><span>Каталог</span><span>Доставка и оплата</span><span>Акции</span><span>Связаться с менеджером</span></div><div class=\"b o\">мне счёт на 4 фильтра<span class=\"t\">09:15 ✓✓</span></div><div class=\"b i bot\">Извините, я вас не понял 😔 Выберите раздел из меню.<span class=\"t\">09:15</span></div><div class=\"b sys\">Клиент покинул чат</div>", "shablon": "<div class=\"b o\">здравствуйте, нужен счёт на 4 масляных фильтра JCB, оплатим сегодня<span class=\"t\">09:14 ✓✓</span></div><div class=\"b i bot\">Здравствуйте! 😊 Благодарим за обращение в компанию «Ромашка-Запчасти»! Масляные фильтры — важная часть обслуживания вашей техники 🚜 Для оформления счёта, пожалуйста, укажите: 1) модель техники; 2) наименование организации; 3) ИНН и КПП; 4) адрес доставки. Менеджер проверит наличие и свяжется с вами! ✨<span class=\"t\">09:14</span></div><div class=\"b o\">вы бот что ли<span class=\"t\">09:15 ✓✓</span></div><div class=\"b i bot\">Я — виртуальный ассистент на базе искусственного интеллекта. Чем ещё я могу помочь? 😊<span class=\"t\">09:15</span></div><div class=\"b sys\">Клиент покинул чат</div>", "vremya": "<div class=\"b o\">здравствуйте, нужен счёт на 4 масляных фильтра JCB, оплатим сегодня<span class=\"t\">09:14 ✓✓</span></div><div class=\"b i bot\">Здравствуйте! 😊 Я виртуальный помощник компании «Ромашка-Запчасти». Чем я могу вам помочь?<span class=\"t\">09:14</span></div><div class=\"b o\">счёт на 4 фильтра<span class=\"t\">09:15 ✓✓</span></div><div class=\"b i bot\">К сожалению, я не могу выставить счёт. Оставьте, пожалуйста, ваш номер телефона, и менеджер свяжется с вами в рабочее время.<span class=\"t\">09:15</span></div><div class=\"b sys\">Диалог завершён</div>"};
+  const m = document.getElementById('bot-m'), vk = [...document.querySelectorAll('.bot-vk button')]; if (!m) return;
+  let n = 0, tm = null, sam = false;
+  const pok = k => { n = k; vk.forEach((b, i) => b.setAttribute('aria-selected', i === k)); m.innerHTML = V[vk[k].dataset.v]; };
+  vk.forEach((b, i) => b.onclick = () => { sam = true; clearInterval(tm); pok(i); });
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  new IntersectionObserver(es => es.forEach(x => { clearInterval(tm); if (x.isIntersecting && !sam) tm = setInterval(() => pok((n + 1) % vk.length), 6000); }), {threshold: .4}).observe(m);
+})();
+</script>
+<script>
 /* Вставка в главную (index.html v9): ?vstavka=telo или ?vstavka=pod-biznes,kopiya — только эти разделы, без шапки, фон прозрачный,
    высоту сообщает родителю, ссылки открывает в верхнем окне. */
 (() => { const v = new URLSearchParams(location.search).get('vstavka'); if (!v) return;
@@ -788,7 +812,8 @@ h2{font:600 clamp(26px,2.6vw,38px)/1.14 var(--display);letter-spacing:-.03em;max
     + '.perenos .shag{border:0!important;border-top:2px solid #D6D9DD!important;border-radius:0!important;padding:12px 0 0!important;background:none!important}'
     + '.perenos .shag.on{border-top-color:#15171A!important}.perenos .shag::before{content:counter(sh) "."!important;display:inline!important;width:auto!important;height:auto!important;border:0!important;margin:0 6px 0 0!important;font:650 18px/1 var(--display)!important}'
     + '.perenos .shag h3{display:inline;font-size:18px}.perenos .shag p{margin-top:6px;font-size:15px}'
-    + '@media (max-width:860px){.perenos .scena{height:300px}.perenos .shagi{gap:14px}}';
+    + '@media (max-width:860px){.perenos .scena{height:300px}.perenos .shagi{gap:14px}}'
+    + '#telo .t3,#telo .t3+.lead,#telo .vkl-w,#telo .ekr,#telo .nikogda,#perenos{display:none!important}';   // rabota-76: и сцена «перенос» с тремя шагами — они в «Как начинаем»;: «тело» — разделом каналов на главной
   { const ps = document.querySelector('#kopiya .shagi'), pr = document.getElementById('perenos'); if (ps && pr) pr.appendChild(ps); }
   document.querySelector('.nav').style.display = 'none';
   document.documentElement.style.background = document.body.style.background = 'transparent';
