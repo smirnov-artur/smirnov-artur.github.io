@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Доставка: Иван сам считает машины · ИИ-сотрудник Иван · g.a.d. production</title>
+<meta name="description" content="Иван считает вес и поддоны, ставит рейс своей машине, а если своих не хватает — спрашивает перевозчиков цену наличными и через фирму с НДС, выбирает и пишет клиенту точное время. Посмотрите по шагам.">
+<link rel="canonical" href="https://gad-production.ru/dostavka.html">
+<meta property="og:title" content="Доставка: Иван сам считает машины · ИИ-сотрудник Иван · g.a.d. production">
+<meta property="og:description" content="Иван считает вес и поддоны, ставит рейс своей машине, а если своих не хватает — спрашивает перевозчиков цену наличными и через фирму с НДС, выбирает и пишет клиенту точное время. Посмотрите по шагам.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://gad-production.ru/razd/r0-w.jpg">
+<link rel="icon" href="https://gad-production.ru/favicon.svg" type="image/svg+xml"><link rel="icon" href="https://gad-production.ru/favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="https://gad-production.ru/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="obshchee.css?v=78">
+<style>
+/* схемы рядом с телефоном (на телефоне — под перепиской) */
+.viz{border:1px solid var(--rule2);border-radius:6px;padding:12px 16px 14px;background:var(--page)}
+.viz-z{font-size:15px;font-weight:650;color:var(--meta);margin-bottom:10px}
+.viz-i{margin-top:12px;font-size:17px;font-weight:650;color:var(--ink)}
+.kal-r{display:flex;gap:4px}
+.kal-r span{flex:1;min-width:0;padding:6px 2px;border-radius:4px;background:#EEF0F2;text-align:center;font-size:12px;line-height:1.2;color:var(--meta);animation:viz-in .35s both;animation-delay:calc(var(--i) * 160ms)}
+.kal-r b{display:block;font-size:18px;color:var(--ink)}
+.kal-r span[class],.kal-r span[class] b{color:#fff}
+.po+.po{margin-top:12px}
+.po-t{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:16px;color:var(--ink2)}
+.po-t b{color:var(--ink);white-space:nowrap}
+.po-b{position:relative;height:16px;margin-top:4px;border-radius:3px;background:#EEF0F2}
+.po-f{position:absolute;left:0;top:0;bottom:0;border-radius:3px;transform-origin:left;animation:po-in .9s ease-out both;animation-delay:calc(var(--i) * 300ms)}
+.po-lin{position:absolute;top:-4px;bottom:-4px;width:3px;margin-left:-1px;background:var(--ink)}
+.po small{display:block;font-size:14px;color:var(--meta);margin-top:3px}
+.po-f{background:#3A8EDB}
+.viz .b-and{background:#3A8EDB}.viz .b-ok{background:#4C9A55}.viz .b-ceh{background:#C2410C}.viz .b-ser{background:#9AA1A8}
+.ka{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+.ka-k{position:relative;padding:10px 34px 10px 12px;border:1px solid var(--rule2);border-radius:6px;animation:viz-in .4s both;animation-delay:calc(var(--i) * 250ms)}
+.ka-k small{display:block;font-size:14px;color:var(--meta)}
+.ka-k b{display:block;font:650 20px/1.25 var(--f);margin-top:2px}
+.ka-k span{display:block;font-size:15px;color:var(--ink2);margin-top:3px}
+.ka-k>i{position:absolute;top:8px;right:10px;font-style:normal;font-weight:700;font-size:19px}
+.ka-k.da{border-color:#4C9A55;background:#F3FAF3}.ka-k.da>i{color:#2F7D3A}
+.ka-k.net{background:#FBF4F2}.ka-k.net b{color:var(--ink2)}.ka-k.net>i{color:#9A3412}
+@keyframes viz-in{from{opacity:0;transform:translateY(6px)}}
+@keyframes po-in{from{transform:scaleX(0)}}
+/* «фото» от людей */
+.ph{width:100%;height:100%;position:relative;overflow:hidden}
+.ph em{position:absolute;right:8px;bottom:6px;font-style:normal;font-size:12px;font-weight:650;padding:2px 6px;border-radius:3px;background:#FFD43B;color:#3b2f00}
+.poddon{background:linear-gradient(#cfd4d9,#9aa1a8);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:22px}
+.pd{position:relative;display:grid;grid-template-columns:repeat(2,96px);gap:3px 4px;padding:4px}
+.pd i{height:15px;border-radius:7px;background:linear-gradient(90deg,#d8a31a 0 60%,#7a6a3a 60% 62%,#c5ccd3 62%,#f7f9fb 80%,#aab3bc)}
+.pd::after{content:"";position:absolute;inset:0;border-radius:4px;background:linear-gradient(115deg,rgba(255,255,255,.55),rgba(255,255,255,.12) 45%,rgba(255,255,255,.45));border:1px solid rgba(255,255,255,.8)}
+.pd-o{display:block;width:204px;height:12px;background:repeating-linear-gradient(90deg,#a7743a 0 30px,#7a5326 30px 36px)}
+.znak{background:repeating-linear-gradient(0deg,#b07f5e 0 13px,#d8d2c8 13px 15px);display:grid;place-items:center}
+.znak div{background:#1d4ed8;color:#fff;border:3px solid #fff;border-radius:4px;padding:8px 18px;text-align:center;box-shadow:0 3px 8px rgba(0,0,0,.35)}
+.znak b{display:block;font-size:24px;letter-spacing:.08em}
+.znak span{display:block;font-size:13px;line-height:1.35}
+@media (prefers-reduced-motion:reduce){.pk-poyasn *{animation:none!important}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <a class="logo" href="index.html">g.a.d. <span>production</span></a>
+  <nav aria-label="Страницы"><a href="perepiska.html">Переписка</a><a href="rabota-v-1c.html">Работа в 1С</a><a href="index.html#umeet">Что умеет</a><a href="podklyuchenie.html">Подключение</a><a href="ceny.html">Цены</a></nav>
+  <a class="pis" href="https://t.me/gonartur" target="_blank" rel="noopener">Написать</a>
+</header>
+<main>
+<section class="blok">
+  <p class="krosh"><a href="index.html">ИИ-сотрудник Иван</a> · Что умеет</p>
+  <h1>Доставка: Иван сам считает машины</h1>
+  <p class="lid">Сколько весит груз, влезет ли он в свою машину, успеет ли она до закрытия склада клиента, сколько возьмёт чужая — наличными и через фирму. <b>Иван считает это сам, договаривается с водителем и перевозчиком и пишет клиенту точное время.</b></p>
+</section>
+
+<section class="blok" id="pokaz">
+  <h2>Посмотрите по шагам</h2>
+  <p class="lid">На экране — телефон Ивана: кладовщик, клиент, водитель и перевозчики. Рядом — что он думает и схема его расчёта. Шаги идут сами; можно листать кнопками и остановить паузой.</p>
+  <div class="pokaz" data-pokaz="dostavka"></div>
+</section>
+
+<section class="blok">
+  <h2>Почему так</h2>
+  <ul class="uch">
+    <li><b>Думает на шаги вперёд</b><p>Считает вес по упаковке и спрашивает про погрузчик и часы приёмки до того, как заказать машину. Машина не простаивает у закрытых ворот.</p></li>
+    <li><b>Договаривается с людьми внутри компании</b><p>Кладовщик упаковывает к сроку, водитель знает, кому звонить на месте. Перевозчику Иван отвечает, даже когда выбрал другого.</p></li>
+    <li><b>Не теряет клиента из-за сроков</b><p>Клиент заранее знает время каждой машины и ставит людей на приёмку. Обещал написать до 15:00 — написал в 14:31.</p></li>
+  </ul>
+</section>
+
+<section class="blok">
+  <h2>Ещё посмотреть</h2>
+  <ul class="dveri">
+    <li><a href="proizvodstvo.html"><b>Оплатили — Иван доводит заказ до отгрузки</b><span>Тот же заказ раньше: склад, коллеги, загрузка цеха, директор и разговор с клиентом о сроках.</span><em>Посмотреть →</em></a></li>
+    <li><a href="perepiska.html"><b>Как Иван переписывается</b><span>Ждёт, пока клиент допишет, печатает со скоростью человека, понимает голосовые и фото.</span><em>Посмотреть →</em></a></li>
+    <li><a href="rabota-v-1c.html"><b>Как Иван работает в 1С</b><span>Клиент, склад, цены, заказ, счёт и оплата по выписке — в настоящей 1С.</span><em>Посмотреть →</em></a></li>
+  </ul>
+</section>
+
+<section class="blok">
+  <h2>Проверьте Ивана на своих переписках</h2>
+  <p class="lid">Пришлите 3–5 скриншотов переписок с клиентами — покажем рядом, как ответил бы Иван. Бесплатно.</p>
+  <div class="ctas"><a class="btn" href="https://t.me/gonartur" target="_blank" rel="noopener">Прислать переписки на тест</a></div>
+</section>
+</main>
+<footer class="podval">
+  <div class="w"><span>По 1С: <a href="1c-unf/">УНФ</a> · <a href="1c-ut/">УТ 11</a> · <a href="1c-ka-erp/">КА и ERP</a> · <a href="1c-fresh/">Фреш</a> · <a href="sravnenie/">Сравнение с Jivo, Salebot, Intly</a></span><span>Отрасли: <a href="krepezh/">Крепёж</a> · <a href="santehnika/">Сантехника</a> · <a href="elektrika/">Электрика</a> · <a href="zapchasti-spectehniki/">Запчасти</a> · <a href="strojmaterialy/">Стройматериалы</a> · <a href="podshipniki-rti/">Подшипники и РТИ</a> · <a href="produkty/">Продукты</a> · <a href="upakovka/">Упаковка</a></span></div>
+  <div class="w"><span>g.a.d. production © 2026</span><a href="https://t.me/gonartur" target="_blank" rel="noopener">Telegram</a><a href="mailto:artur@gad-production.ru">artur@gad-production.ru</a><span>Яндекс Метрика — только с вашего согласия · <a href="politika.html">Политика обработки данных</a></span><a href="https://smirnov-artur.github.io/works/">Все работы</a></div>
+</footer>
+<!-- Yandex.Metrika 114021303 — грузится только после согласия на cookie (152‑ФЗ) -->
+<div id="gad-ck" hidden style="position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;max-width:640px;margin:0 auto;background:#fff;color:#16181d;border:1px solid #d6d3cc;border-radius:10px;padding:8px 10px;font:13px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.16)"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><span style="flex:1 1 200px">Cookie Яндекс Метрики — считаем посещения. <a href="politika.html" style="color:inherit">Политика данных</a></span><span style="display:flex;gap:6px"><button type="button" data-ck="1" style="font:inherit;font-weight:700;padding:8px 14px;border-radius:8px;border:0;background:#f2c230;color:#16181d;cursor:pointer">Принять</button><button type="button" data-ck="0" style="font:inherit;padding:8px 12px;border-radius:8px;border:1px solid #16181d;background:#fff;color:#16181d;cursor:pointer">Только обязательные</button></span></div></div>
+<script>
+(function(){
+  var K='gad_ck', v=null;
+  try { v = localStorage.getItem(K); } catch (e) {}
+  function ymLoad(){
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=114021303', 'ym');
+    ym(114021303, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  }
+  if (v === '1') { ymLoad(); return; }
+  if (v === '0') return;
+  function show(){
+    var b = document.getElementById('gad-ck'); if (!b) return;
+    b.hidden = false;
+    b.addEventListener('click', function(ev){
+      var a = ev.target.getAttribute && ev.target.getAttribute('data-ck'); if (a === null) return;
+      try { localStorage.setItem(K, a); } catch (e) {}
+      b.hidden = true; if (a === '1') ymLoad();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', show); else show();
+})();
+</script>
+<script src="metka.js"></script>
+
+<script>
+(() => {
+// схемы: polosy — полосы по весу или цене (черта — предел), dni — шкала времени, karty — карточки с ✓/✕
+const viz = (zag, telo, itog) => '<div class="viz">' + (zag ? '<p class="viz-z">' + zag + '</p>' : '') + telo + (itog ? '<p class="viz-i">' + itog + '</p>' : '') + '</div>';
+const polosy = (zag, max, lin, ryady, itog) => viz(zag, ryady.map(([p, z, v, c, pr], j) =>
+  '<div class="po"><div class="po-t"><span>' + p + '</span><b>' + z + '</b></div><div class="po-b"><i class="po-f' + (c ? ' ' + c : '') + '" style="width:' + (v / max * 100) + '%;--i:' + j + '"></i>' +
+  (lin ? '<i class="po-lin" style="left:' + (lin / max * 100) + '%"></i>' : '') + '</div>' + (pr ? '<small>' + pr + '</small>' : '') + '</div>').join(''), itog);
+const dni = (zag, kl, itog) => viz(zag, '<div class="kal-r">' + kl.map(([b, c, t], j) => '<span' + (c ? ' class="' + c + '"' : '') + ' style="--i:' + j + '"><b>' + b + '</b>' + (t || '') + '</span>').join('') + '</div>', itog);
+const karty = (zag, kk, itog) => viz(zag, '<div class="ka">' + kk.map(([m, z, b, t], j) =>
+  '<div class="ka-k' + (m ? ' ' + m : '') + '" style="--i:' + j + '">' + (m === 'da' ? '<i>✓</i>' : m === 'net' ? '<i>✕</i>' : '') + '<small>' + z + '</small><b>' + b + '</b>' + (t ? '<span>' + t + '</span>' : '') + '</div>').join('') + '</div>', itog);
+// «фото» от людей
+const poddon = '<div class="ph poddon"><div class="pd">' + '<i></i>'.repeat(8) + '</div><b class="pd-o"></b><em>8 шт · ≈ 540 кг</em></div>';
+const znak = '<div class="ph znak"><div><b>СКЛАД</b><span>приём грузов</span><span>пн–пт 8:00–18:00</span></div></div>';
+
+window.POKAZ = window.POKAZ || {};
+window.POKAZ.dostavka = {
+  metka: 'Настраиваем под ваш процесс при подключении — так Иван работает у вас после настройки',
+  vr: '12:20', den: '5 ноября, четверг', bez1c: true,
+  chaty: {
+    viktor: {imya: 'Виктор · склад', podp: 'кладовщик', kanal: 'Telegram · рабочий', my: 'i', kto: 'Виктор', cvet: '#5B7A3A'},
+    andrej: {imya: 'Андрей · СК «Северный»', podp: 'клиент, снабжение', kanal: 'Telegram', my: 'i', kto: 'Андрей'},
+    sasha: {imya: 'Саша · водитель', podp: 'водитель, наша Газель', kanal: 'Telegram · рабочий', my: 'i', kto: 'Саша', cvet: '#2F3A48'},
+    karpov: {imya: 'Игорь · перевозчик', podp: 'ИП Карпов, машина 3 т', kanal: 'Telegram', my: 'i', kto: 'Игорь', cvet: '#B4541A'},
+    volga: {imya: 'Наталья · «Волга-Транзит»', podp: 'диспетчер перевозчика', kanal: 'Telegram', my: 'i', kto: 'Наталья', ona: true, cvet: '#7A5BB8'}
+  },
+  final: 'Две машины, груз под договором, клиент знает время — до обещанных 15:00',
+  shagi: [
+    {kr: 'Груз', chat: 'viktor', zag: 'Считает вес и машины',
+      op: '16 цилиндров едут завтра, 24 — 17 ноября; Иван считает вес по упаковке, а не на глаз.',
+      poyasn: polosy('Вес груза и Газель (черта — её предел 1 500 кг)', 1800, 1500, [
+        ['Завтра: 16 шт, 2 поддона', '≈ 1 070 кг', 1070, 'b-ok', 'влезает в Газель'],
+        ['17.11: 24 шт, 3 поддона', '≈ 1 610 кг', 1610, 'b-ceh', 'тяжелее Газели — нужна машина от 3 т']]),
+      sob: [
+        ['mysl', '8 цилиндров на поддон — около 540 кг.'],
+        ['mysl', 'Завтра 2 поддона, 1 070 кг — Газель берёт. 17-го 3 поддона, 1 610 кг — уже нет.'],
+        ['i', 'Виктор, на завтра 16 цилиндров для Северного, 2 поддона', '12:20'],
+        ['prochital'],
+        ['zhdat', 3, 'Виктор упаковывает поддон'],
+        ['foto', poddon, 'вот так упакую, уголки на штоки', '12:26'],
+        ['mysl', 'Хорошо: шток поцарапают — цилиндр потечёт. Везти без перегрузки.'],
+        ['i', 'отлично, к 12:00 у ворот', '12:27']],
+      itog: 'Завтра хватит Газели, 17-го — нужна машина больше'},
+
+    {kr: 'Приёмка', chat: 'andrej', zag: 'Как примут груз',
+      op: 'Поддон по 540 кг руками не снять — Иван спрашивает про погрузчик и часы приёмки.',
+      poyasn: karty('Приёмка у «Северного»', [['da', 'Погрузчик', 'Есть', 'гидроборт не нужен'], ['da', 'Приём грузов', 'до 18:00', 'на воротах Михалыч']]),
+      sob: [
+        ['mysl', 'Нет погрузчика — нужна машина с гидробортом. Склад закрыт — водитель простоит до утра.'],
+        ['i', 'Андрей, на базе есть погрузчик?', '12:35'],
+        ['i', 'и до скольки принимаете?', '12:35'],
+        ['prochital'],
+        ['zhdat', 3, 'Андрей фотографирует табличку на складе'],
+        ['foto', znak, 'погрузчик есть, на воротах Михалыч', '12:44'],
+        ['mysl', 'Погрузчик есть, приём до 18:00 — подойдёт обычный тент.'],
+        ['i', 'спасибо, время машин — до 15:00', '12:46']],
+      itog: 'Погрузчик есть, приём до 18:00'},
+
+    {kr: 'Своя машина', chat: 'sasha', zag: 'Завтра — своя Газель',
+      op: 'Иван смотрит рейсы Газели и считает, успеет ли она до закрытия склада.',
+      poyasn: dni('Завтра, 6 ноября: Ярославль, 270 км', [['12:30', 'b-and', 'выезд'], ['4,5 ч', 'b-ser', 'в пути'], ['17:00', 'b-ok', 'на базе'], ['18:00', '', 'закрытие']], 'Час в запасе'),
+      sob: [
+        ['mysl', 'Газель к 12:00 вернётся из Подольска. До базы 270 км — 4,5 часа.'],
+        ['mysl', 'Выезд 12:30 — там в 17:00. Час запаса.'],
+        ['i', 'Саша, завтра после Подольска — Ярославль, 2 поддона', '13:00'],
+        ['i', 'выезд 12:30, принимают до 18', '13:01'],
+        ['prochital'],
+        ['k', 'успею, к 17 буду', '13:07'],
+        ['mysl', 'Пусть позвонит за час — погрузчик будет ждать у ворот.'],
+        ['i', 'на воротах Михалыч, позвони ему за час', '13:08']],
+      itog: 'Завтра 16 цилиндров едут своей машиной'},
+
+    {kr: 'Перевозчики', chat: 'karpov', zag: 'Своей не хватит — перевозчик',
+      op: 'На 17-е Газели мало — Иван ставит заявку на бирже грузоперевозок и спрашивает цену двумя способами.',
+      poyasn: polosy('Ответы на заявку, 17.11', 26000, 0, [
+        ['Сборный груз через ТК', '14 800 ₽', 14800, 'b-ser', '3–4 дня, перегрузка на терминале'],
+        ['ИП Карпов, наличными', '19 000 ₽', 19000, 'b-ser', 'без документов'],
+        ['«Волга-Транзит», с НДС', '23 900 ₽', 23900, 'b-and', 'по договору-заявке'],
+        ['ИП Карпов, с НДС', '24 500 ₽', 24500, 'b-ser', 'по счёту']]),
+      sob: [
+        ['mysl', 'Два рейса Газелью — два дня Саши. Проще одна машина на 3–5 т.'],
+        ['zhdat', 5, 'Иван ставит заявку на бирже грузоперевозок'],
+        ['i', 'Игорь, 17.11 в Ярославль, 3 поддона 1,6 т', '13:20'],
+        ['i', 'сколько наличными и сколько с ндс?', '13:20'],
+        ['prochital'],
+        ['k', 'нал 19 000, с ндс 24 500', '13:27'],
+        ['mysl', 'Ответили ещё двое. Сравню всех.'],
+        ['i', 'спасибо, до 15:00 отвечу', '13:29']],
+      itog: 'Четыре цены — от 14 800 до 24 500 ₽'},
+
+    {kr: 'Выбор', chat: 'volga', zag: 'Выбирает не только по цене',
+      op: 'Наличные дешевле только на бумаге — Иван считает, во что обходится каждый вариант.',
+      poyasn: polosy('Сколько стоит на самом деле', 26000, 0, [
+        ['«Волга-Транзит», с НДС', '23 900 ₽', 23900, 'b-ser', ''],
+        ['минус НДС к вычету 4 310 ₽', '19 590 ₽', 19590, 'b-and', 'с договором: перевозчик отвечает за груз на 1,6 млн ₽'],
+        ['Наличными', '19 000 ₽', 19000, 'b-ceh', 'без договора: за груз никто не отвечает']], 'Разница 590 ₽ — берём «Волга-Транзит»'),
+      sob: [
+        ['mysl', 'Сборный — 3–4 дня и перегрузка. К 17-му не успеем, штоки поцарапают.'],
+        ['mysl', '«Волга-Транзит»: 23 900 с НДС, НДС вернём — выходит 19 590. Почти как наличные, но с договором.'],
+        ['mysl', 'Груз на 1,6 млн. По открытым реестрам фирме 9 лет, судов по грузам нет.'],
+        ['i', 'Наталья, берём ваше предложение на 17.11', '14:05'],
+        ['i', 'пришлите договор-заявку', '14:06'],
+        ['prochital'],
+        ['doc', 'Договор-заявка 17.11.pdf', 'PDF · 112 КБ', '14:14', 'k', {idet: 'Наталья отправляет договор-заявку', gotovo: 'Договор-заявка в чате'}],
+        ['k', 'машина 5 т, номер пришлю 16-го', '14:15']],
+      itog: '«Волга-Транзит», по договору-заявке'},
+
+    {kr: 'Клиенту', chat: 'andrej', zag: 'Пишет Андрею время машин',
+      op: 'Коротко: какая машина и во сколько будет на базе.',
+      poyasn: karty('Две машины Андрею', [['da', '6 ноября · наша Газель', '16 шт · к 17:00', 'водитель Саша'], ['da', '17 ноября · 5 т, «Волга-Транзит»', '24 шт · к 14:00', 'номер машины — 16-го']]),
+      sob: [
+        ['mysl', 'Андрею важно одно: когда держать людей и погрузчик.'],
+        ['i', 'Андрей, по доставке', '14:30'],
+        ['i', 'завтра 16 шт, наша Газель, у вас около 17:00', '14:30'],
+        ['i', '17.11 — 24 шт, машина 5 т, к 14:00', '14:31'],
+        ['prochital'],
+        ['k', 'отлично, предупрежу Михалыча', '14:36'],
+        ['mysl', 'Теперь Игорю: спасибо, в этот раз взяли другую машину.']],
+      itog: 'Андрей знает время обеих машин'}
+  ]
+};
+})();
+</script>
+<script src="1c/ruka.js?v=78"></script>
+<script src="pokaz.js?v=78"></script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кабинет руководителя: видно, что делает каждый сотрудник · ИИ-сотрудник Иван · g.a.d. production</title>
+<meta name="description" content="Вечером Иван присылает руководителю отчёт в Telegram, спорное — сообщением с кнопками «да / нет / свой ответ». Имя, правила и манеру общения задаёте в кабинете. Делаем мини-приложение: кто из сотрудников чем занят прямо сейчас.">
+<link rel="canonical" href="https://gad-production.ru/kabinet.html">
+<meta property="og:title" content="Кабинет руководителя: видно, что делает каждый сотрудник · ИИ-сотрудник Иван · g.a.d. production">
+<meta property="og:description" content="Вечером Иван присылает руководителю отчёт в Telegram, спорное — сообщением с кнопками «да / нет / свой ответ». Имя, правила и манеру общения задаёте в кабинете. Делаем мини-приложение: кто из сотрудников чем занят прямо сейчас.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://gad-production.ru/razd/r0-w.jpg">
+<link rel="icon" href="https://gad-production.ru/favicon.svg" type="image/svg+xml"><link rel="icon" href="https://gad-production.ru/favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="https://gad-production.ru/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="obshchee.css?v=78">
+<style>
+.hero-k{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,410px);grid-template-rows:auto 1fr;grid-template-areas:"t f" "l f";gap:28px 64px;align-items:start;padding-top:44px}
+.hero-k>.t{grid-area:t}.hero-k>.ma{grid-area:f}.hero-k>.ma-chto{grid-area:l}
+.nm{display:inline-grid;place-items:center;flex:none;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font:650 14px/1 var(--f)}
+.ma-chto{list-style:none;max-width:58ch;border-top:2px solid var(--ink)}
+.ma-chto li{display:grid;grid-template-columns:26px minmax(0,1fr);gap:14px;padding:14px 0;border-bottom:1px solid var(--rule)}
+.ma-chto b{display:block;font:650 19px/1.3 var(--f)}
+.ma-chto span:not(.nm){display:block;margin-top:4px;color:var(--ink2);font-size:17px}
+.ma .pk-metka{margin:0 0 12px}
+.ma figcaption{font-size:15px;color:var(--meta);margin-top:10px;line-height:1.45}
+/* мини-приложение в рамке телефона */
+.ma-tel{border:8px solid #1d1f22;border-radius:26px;background:var(--slot);overflow:hidden;box-shadow:var(--e2);font-size:16px;line-height:1.4}
+.ma-sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:14px 16px;background:#fff;border-bottom:1px solid var(--rule)}
+.ma-sh b{font:650 20px/1.2 var(--f)}
+.ma-sh small{font-size:15px;color:var(--meta);text-align:right}
+.ma-tel h3{display:flex;align-items:center;gap:8px;font:650 15px/1.2 var(--f);color:var(--ink2);padding:12px 16px 7px}
+.ma-tel h3 .nm{width:22px;height:22px;font-size:12px}
+.ma-cifry{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));background:#fff;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.ma-cifry div{padding:8px 16px 10px}
+.ma-cifry div+div{border-left:1px solid var(--rule)}
+.ma-cifry b{display:block;font:650 30px/1.1 var(--f)}
+.ma-cifry span{font-size:14px;color:var(--meta)}
+.ma-cifry .zhd b{color:#9A3412}
+.ma-lyudi{list-style:none;background:#fff;border-top:1px solid var(--rule)}
+.ma-lyudi li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;padding:11px 16px;border-bottom:1px solid var(--rule)}
+.ma-ava{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:650;font-size:18px;background:#3A8EDB}
+.ma-lyudi b{font-size:18px}
+.ma-lyudi small{font-size:15px;color:var(--meta);margin-left:6px}
+.ma-st{margin-top:3px;font-size:16px;color:var(--ink);min-height:27px}
+.ma-st.nov{animation:poyav .6s ease-out both}
+.pl{display:inline-flex;align-items:center;gap:5px;padding:2px 10px;border-radius:999px;font-size:15px;font-weight:650;margin-right:6px}
+.pl-pish{background:#E3EEFB;color:var(--link)}
+.pl-zhd{background:#FBE7D3;color:#9A3412}
+.pl-del{background:#E2F3E6;color:var(--ok)}
+.tch{display:inline-flex;gap:2px}
+.tch i{width:4px;height:4px;border-radius:50%;background:currentColor;animation:tch 1.2s infinite}
+.tch i:nth-child(2){animation-delay:.2s}.tch i:nth-child(3){animation-delay:.4s}
+@keyframes tch{0%,60%,100%{opacity:.25}30%{opacity:1}}
+.ma-vopr{margin:0 12px 10px;padding:12px 14px;background:#fff;border:1px solid var(--rule2);border-radius:10px}
+.ma-vopr p{font-size:16px}
+.ma-kn{display:flex;gap:6px;margin-top:10px}
+.ma-kn span,.puz .kn i{flex:1;text-align:center;padding:9px 4px;border-radius:8px;background:#EAF2FB;color:var(--link);font-weight:600;font-size:15px;font-style:normal;white-space:nowrap}
+.ma-lenta{list-style:none;background:#fff;border-top:1px solid var(--rule)}
+.ma-lenta li{display:grid;grid-template-columns:48px minmax(0,1fr);gap:8px;padding:9px 16px;border-bottom:1px solid var(--rule);font-size:16px}
+.ma-lenta time{color:var(--meta);font-variant-numeric:tabular-nums}
+.ma-niz{display:flex;background:#fff;border-top:1px solid var(--rule);margin-top:12px}
+.ma-niz span{flex:1;text-align:center;padding:12px 2px;font-size:14px;color:var(--meta)}
+.ma-niz .tut{color:var(--ink);font-weight:650;box-shadow:inset 0 3px var(--ink)}
+/* показ: сообщения в несколько строк и кнопки под вопросом, как в Telegram */
+.pokaz .puz{white-space:pre-line}
+.puz:has(.kn){min-width:80%}
+.puz .kn{display:flex;gap:6px;clear:both;padding-top:8px;white-space:normal}
+/* имя сотрудника — как поля в кабинете */
+.imya-r{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,460px);gap:28px 56px;align-items:start;margin-top:8px}
+.forma{border:1px solid var(--rule2);border-radius:6px;padding:20px 22px;background:var(--page);box-shadow:var(--e1)}
+.forma h3{font:650 20px/1.3 var(--f)}
+.forma .pole{margin-top:14px;font-size:15px;color:var(--meta)}
+.forma .pole div{margin-top:4px;padding:10px 12px;border:1px solid var(--rule2);border-radius:4px;font-size:18px;color:var(--ink);background:#fff}
+.forma .pole.glav div{border:2px solid var(--ink)}
+@media (max-width:999px){.hero-k{grid-template-columns:1fr;grid-template-rows:none;grid-template-areas:"t" "f" "l";padding-top:28px}.imya-r{grid-template-columns:1fr}.ma-tel{max-width:410px;margin:0 auto}}
+@media (prefers-reduced-motion:reduce){.ma-st.nov,.tch i{animation:none}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <a class="logo" href="index.html">g.a.d. <span>production</span></a>
+  <nav aria-label="Страницы"><a href="perepiska.html">Переписка</a><a href="rabota-v-1c.html">Работа в 1С</a><a href="index.html#umeet">Что умеет</a><a href="podklyuchenie.html">Подключение</a><a href="ceny.html">Цены</a></nav>
+  <a class="pis" href="https://t.me/gonartur" target="_blank" rel="noopener">Написать</a>
+</header>
+<main>
+<section class="blok hero-k">
+  <div class="t">
+    <p class="krosh"><a href="index.html">ИИ-сотрудник Иван</a> · Кабинет руководителя</p>
+    <h1>Кабинет руководителя: видно, что делает каждый сотрудник</h1>
+    <p class="lid">Вы не на работе — и всё равно знаете, что происходит. <b>Один экран в Telegram: кто чем занят, что ждёт вашего решения, цифры дня.</b></p>
+  </div>
+  <figure class="ma">
+    <p class="pk-metka">мини-приложение в Telegram · делаем — покажем первым клиентам</p>
+    <div class="ma-tel" aria-label="Пример мини-приложения: команда сотрудников и их статусы">
+      <div class="ma-sh"><b>Команда</b><small>сегодня, 5 ноября</small></div>
+      <h3><span class="nm">1</span>Цифры дня</h3>
+      <div class="ma-cifry"><div><b>27</b><span>клиентов</span></div><div><b>6</b><span>заказов</span></div><div class="zhd"><b>2</b><span>ждут вас</span></div></div>
+      <h3><span class="nm">2</span>Сейчас</h3>
+      <ul class="ma-lyudi">
+        <li data-st="пишет|Сергею · Стройтех-Снаб~ждёт|ответа Андрея · Северный~сверяет|оплату по выписке~отвечает|Ольге · Урал-Снаб"><span class="ma-ava">И</span><div><b>Иван</b><small>продажи</small><p class="ma-st"></p></div></li>
+        <li data-st="ждёт|ответа «ГидроСнаба» · 40 мин~сравнивает|трёх поставщиков~напомнила|«ГидроСнабу»"><span class="ma-ava" style="background:#3F8F4E">М</span><div><b>Мария</b><small>закупки</small><p class="ma-st"></p></div></li>
+        <li data-st="готовит|УПД · заказ № 2~кладёт|УПД на подпись~сверяет|акт с ДорСтроем"><span class="ma-ava" style="background:#9A5B2E">В</span><div><b>Вера</b><small>документы</small><p class="ma-st"></p></div></li>
+      </ul>
+      <h3><span class="nm">3</span>Ждут вашего решения</h3>
+      <div class="ma-vopr"><p><b>Иван:</b> «Северный» просит отсрочку 30 дней, по правилам — 14</p><div class="ma-kn"><span>Да</span><span>Нет</span><span>Свой ответ</span></div></div>
+      <div class="ma-vopr"><p><b>Мария:</b> распределитель за 3 дня вместо 7, но на 2 400 ₽ дороже. Берём?</p><div class="ma-kn"><span>Да</span><span>Нет</span><span>Свой ответ</span></div></div>
+      <h3><span class="nm">4</span>Лента за день</h3>
+      <ol class="ma-lenta">
+        <li><time>18:40</time><span>Мария: распределитель у ЗапчастьТрейд — 7 дней</span></li>
+        <li><time>11:04</time><span>Иван напомнил ДорСтрою о 18 580 ₽</span></li>
+        <li><time>08:52</time><span>Иван отметил оплату Стройтех-Снаб</span></li>
+      </ol>
+      <div class="ma-niz"><span class="tut">Команда</span><span>Лента</span><span>Вопросы</span><span>Цифры</span></div>
+    </div>
+    <figcaption>Пример на учебной базе «Ромашка-Запчасти». Строки «сейчас» сменяются раз в несколько секунд; наведите на телефон — остановятся.</figcaption>
+  </figure>
+  <ul class="ma-chto">
+    <li><span class="nm">1</span><div><b>Цифры дня</b><span>Сколько клиентов, сколько заказов, сколько вопросов ждут вас.</span></div></li>
+    <li><span class="nm">2</span><div><b>Кто чем занят прямо сейчас</b><span>Синее — пишет клиенту, оранжевое — ждёт ответа, зелёное — делает работу.</span></div></li>
+    <li><span class="nm">3</span><div><b>Что ждёт вашего решения</b><span>Отсрочка, скидка, другой поставщик — кнопкой, с телефона.</span></div></li>
+    <li><span class="nm">4</span><div><b>Лента за день</b><span>Что сделано и когда: оплаты, счета, напоминания.</span></div></li>
+  </ul>
+</section>
+
+<section class="blok" id="pokaz">
+  <h2>Уже сейчас: отчёт и вопросы в Telegram</h2>
+  <p class="lid">На экране телефон руководителя — Олега. Вечер, он дома. Сообщения Ивана слева. В последнем шаге — телефон Ивана: он передаёт решение клиенту. Шаги идут сами; можно листать кнопками и остановить паузой.</p>
+  <div class="pokaz" data-pokaz="kabinet"></div>
+</section>
+
+<section class="blok" id="neskolko">
+  <h2>Несколько сотрудников — у каждого своё</h2>
+  <p class="lid">Можно одного Ивана, можно команду. У каждого своя работа, свои права в 1С и свои правила. <b>Руководитель видит всех на одном экране.</b></p>
+  <ul class="uch">
+    <li><b>Иван — продажи</b><p>Переписывается с клиентами, заводит клиента в 1С, делает заказ и счёт, отмечает оплату по выписке. Работает сейчас.</p></li>
+    <li><b>Мария — закупки</b><p>Спрашивает цену и срок у поставщиков, напоминает молчащим, сравнивает и приносит вам выбор. Настраиваем под ваш процесс.</p></li>
+    <li><b>Вера — документы</b><p>Готовит счета, акты сверки и УПД и кладёт на подпись вашему бухгалтеру. Подписывает человек. Настраиваем под ваш процесс.</p></li>
+  </ul>
+</section>
+
+<section class="blok" id="imya">
+  <h2>Имя — какое захотите</h2>
+  <div class="imya-r">
+    <div>
+      <p class="lid">Иван — это пример. В кабинете вы сами пишете имя и должность: Мария, Пётр Сергеевич — как привыкли ваши клиенты. <b>Так сотрудник представляется в переписке.</b></p>
+      <p class="lid">Там же — ваша компания, чем она занимается и кто руководитель: к нему сотрудник идёт за решением.</p>
+    </div>
+    <div class="forma" aria-label="Пример: поля кабинета «Компания и сотрудник»">
+      <h3>Компания и сотрудник</h3>
+      <div class="pole glav">Имя сотрудника<div>Иван</div></div>
+      <div class="pole">Должность<div>менеджер по продажам</div></div>
+      <div class="pole">Компания<div>Ромашка-Запчасти</div></div>
+      <div class="pole">Руководитель<div>Олег</div></div>
+      <div class="pole">Чем занимается компания<div>запчасти для спецтехники JCB, опт и розница</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="blok" id="nastrojki">
+  <h2>Что ещё вы задаёте в кабинете</h2>
+  <p class="lid">Кабинет открывается в браузере. <b>Изменения действуют со следующего сообщения клиента.</b></p>
+  <table class="tabl">
+    <thead><tr><th>Раздел</th><th>Что задаёте</th></tr></thead>
+    <tbody>
+      <tr><td>Подключение 1С</td><td>Адрес, который вставляют в настройку вашей 1С, и кнопка «Проверить связь». Сразу видно: «1С на связи» или нет.</td></tr>
+      <tr><td>Манера общения</td><td>В каждой паре выбираете одно: настойчивее или мягче, короче или подробнее, на «ты» или на «вы», сам предлагает аналоги или отвечает только на вопрос.</td></tr>
+      <tr><td>Правила владельца</td><td>Одно правило на строку: что сотрудник решает сам, а что согласует с вами. Например: «отсрочка до 14 дней — сам, больше — спросить Олега».</td></tr>
+      <tr><td>Образцы речи</td><td>2–5 сообщений ваших менеджеров из настоящей переписки. Сотрудник пишет в той же манере.</td></tr>
+      <tr><td>Роли и каналы</td><td>Что у сотрудника включено: например, закупки или бухгалтерия, каналы MAX, Авито, ВКонтакте, почта.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="blok">
+  <h2>Почему так</h2>
+  <ul class="uch">
+    <li><b>Видно с телефона</b><p>Отчёт и вопросы приходят в Telegram — он у руководителя всегда с собой. Заходить в программу не нужно.</p></li>
+    <li><b>Спорное — одной кнопкой</b><p>«Да», «нет» или «свой ответ». Свой ответ сотрудник передаёт клиенту как есть, от себя ничего не добавляет.</p></li>
+    <li><b>Правила пишете вы</b><p>Что сотрудник решает сам, а что спрашивает, записано в кабинете вашими словами. Поменяли правило — со следующего сообщения он работает по-новому.</p></li>
+  </ul>
+</section>
+
+<section class="blok">
+  <h2>Ещё посмотреть</h2>
+  <ul class="dveri">
+    <li><a href="reshaete-vy.html"><b>Главное решаете вы</b><span>Иван работает по вашему регламенту: что решает сам, а что приходит вам с кнопками.</span><em>Посмотреть →</em></a></li>
+    <li><a href="perepiska.html"><b>Как Иван переписывается</b><span>Пауза, «печатает…» со скоростью человека, по одному сообщению. Понимает голосовые и фото.</span><em>Посмотреть →</em></a></li>
+    <li><a href="analitika.html"><b>Кто перестал брать и почему</b><span>Иван сравнивает 1С и переписки, называет причину и предлагает, как вернуть клиента.</span><em>Посмотреть →</em></a></li>
+    <li><a href="index.html#umeet"><b>Что ещё умеет Иван</b><span>1С, поставщики, доставка, производство, проверка новых компаний.</span><em>Все возможности →</em></a></li>
+  </ul>
+</section>
+
+<section class="blok">
+  <h2>Проверьте Ивана на своих переписках</h2>
+  <p class="lid">Пришлите 3–5 скриншотов переписок с клиентами — покажем рядом, как ответил бы Иван. Бесплатно.</p>
+  <div class="ctas"><a class="btn" href="https://t.me/gonartur" target="_blank" rel="noopener">Прислать переписки на тест</a></div>
+</section>
+</main>
+<footer class="podval">
+  <div class="w"><span>По 1С: <a href="1c-unf/">УНФ</a> · <a href="1c-ut/">УТ 11</a> · <a href="1c-ka-erp/">КА и ERP</a> · <a href="1c-fresh/">Фреш</a> · <a href="sravnenie/">Сравнение с Jivo, Salebot, Intly</a></span><span>Отрасли: <a href="krepezh/">Крепёж</a> · <a href="santehnika/">Сантехника</a> · <a href="elektrika/">Электрика</a> · <a href="zapchasti-spectehniki/">Запчасти</a> · <a href="strojmaterialy/">Стройматериалы</a> · <a href="podshipniki-rti/">Подшипники и РТИ</a> · <a href="produkty/">Продукты</a> · <a href="upakovka/">Упаковка</a></span></div>
+  <div class="w"><span>g.a.d. production © 2026</span><a href="https://t.me/gonartur" target="_blank" rel="noopener">Telegram</a><a href="mailto:artur@gad-production.ru">artur@gad-production.ru</a><span>Яндекс Метрика — только с вашего согласия · <a href="politika.html">Политика обработки данных</a></span><a href="https://smirnov-artur.github.io/works/">Все работы</a></div>
+</footer>
+<!-- Yandex.Metrika 114021303 — грузится только после согласия на cookie (152‑ФЗ) -->
+<div id="gad-ck" hidden style="position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;max-width:640px;margin:0 auto;background:#fff;color:#16181d;border:1px solid #d6d3cc;border-radius:10px;padding:8px 10px;font:13px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.16)"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><span style="flex:1 1 200px">Cookie Яндекс Метрики — считаем посещения. <a href="politika.html" style="color:inherit">Политика данных</a></span><span style="display:flex;gap:6px"><button type="button" data-ck="1" style="font:inherit;font-weight:700;padding:8px 14px;border-radius:8px;border:0;background:#f2c230;color:#16181d;cursor:pointer">Принять</button><button type="button" data-ck="0" style="font:inherit;padding:8px 12px;border-radius:8px;border:1px solid #16181d;background:#fff;color:#16181d;cursor:pointer">Только обязательные</button></span></div></div>
+<script>
+(function(){
+  var K='gad_ck', v=null;
+  try { v = localStorage.getItem(K); } catch (e) {}
+  function ymLoad(){
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=114021303', 'ym');
+    ym(114021303, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  }
+  if (v === '1') { ymLoad(); return; }
+  if (v === '0') return;
+  function show(){
+    var b = document.getElementById('gad-ck'); if (!b) return;
+    b.hidden = false;
+    b.addEventListener('click', function(ev){
+      var a = ev.target.getAttribute && ev.target.getAttribute('data-ck'); if (a === null) return;
+      try { localStorage.setItem(K, a); } catch (e) {}
+      b.hidden = true; if (a === '1') ymLoad();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', show); else show();
+})();
+</script>
+<script src="metka.js"></script>
+
+<script>
+window.POKAZ = {
+  kabinet: {
+    metka: 'Работает сейчас: отчёт вечером и вопросы с кнопками приходят руководителю в Telegram.',
+    bez1c: true, vr: '19:00',
+    chaty: {
+      oleg: {imya: 'Иван', podp: 'менеджер', kanal: 'Telegram', my: 'k', kto: 'Олег'},
+      andrej: {imya: 'Андрей · Северный', podp: 'клиент', kanal: 'Telegram · клиент', my: 'i', kto: 'Андрей'}
+    },
+    final: 'Олег был не на работе — и решил главное за минуту, с телефона',
+    shagi: [
+      {kr: 'Отчёт', chat: 'oleg', zag: 'Отчёт в 19:00', op: 'Олег дома. Иван пишет коротко: деньги, что сделано, кто чего ждёт.',
+        sob: [['mysl', 'Олег читает с телефона. Сначала деньги, потом кто чего ждёт.'],
+          ['dumaet', 3, 'Иван сверяет цифры отчёта с 1С и выпиской'],
+          ['i', 'Олег, добрый вечер. итоги дня', '19:00'],
+          ['i', '27 клиентов · 6 заказов\n4 оплачены, сверил по выписке\nСтройтех-Снаб +12 060 ₽, отгрузили\nДорСтрой должен 18 580 ₽ — обещали в пятницу', '19:01']],
+        itog: 'Весь день — в одном сообщении'},
+      {kr: 'Спорное', chat: 'oleg', zag: 'Спорное — Олегу', op: 'Андрей из СК «Северный» просит отсрочку 30 дней. Иван может дать 14 — больше только с «да» руководителя.',
+        sob: [['mysl', 'В правилах: отсрочка до 14 дней — сам, больше — спросить Олега.'],
+          ['dumaet', 2],
+          ['i', 'Северный просит отсрочку 30 дней\nпо правилам — 14\nдолгов нет, парк 38 машин', '19:03'],
+          ['i', 'дать 30? ⟦да|нет|свой ответ⟧', '19:03', {podp: 'Под вопросом кнопки: да, нет, свой ответ'}]],
+        itog: 'Ответить можно одной кнопкой'},
+      {kr: 'Олег решает', chat: 'oleg', zag: 'Олег отвечает с телефона', op: 'Нажимает «свой ответ» и пишет условие.',
+        sob: [['k', '21 день, если подтвердят до пятницы', '19:12'], ['prochital'],
+          ['mysl', 'Передам Андрею слово в слово. От себя — ничего.'],
+          ['dumaet', 2], ['i', 'хорошо, так и передам', '19:13']],
+        itog: 'Решение — за минуту, из дома'},
+      {kr: 'Клиенту', chat: 'andrej', zag: 'Иван передаёт клиенту', op: 'Телефон Ивана: его сообщения справа. Ровно то, что решил Олег.',
+        sob: [['mysl', 'Андрей просил 30. Говорю честно: сколько можем и при каком условии.'],
+          ['i', 'Андрей, добрый вечер! по отсрочке: 21 день, если подтвердите заказ до пятницы', '19:15'],
+          ['zhdat', 4, 'Андрей пока не открыл чат'], ['prochital'],
+          ['k', 'ок, подходит. завтра подтвердим', '19:31'],
+          ['mysl', 'Завтра в обед проверю подтверждение. Олег увидит это в утреннем отчёте.']],
+        itog: 'Андрей согласен'}
+    ]}
+};
+(() => {   // мини-приложение: строки «сейчас» сменяются по одной раз в 5,5 с, пауза при наведении
+  const ram = document.querySelector('.ma-tel'), ll = [...ram.querySelectorAll('.ma-lyudi li')];
+  const TIP = {'пишет': 'pish', 'отвечает': 'pish', 'ждёт': 'zhd'};
+  const ris = li => {
+    const [g, t] = li.dataset.st.split('~')[li.k || 0].split('|'), p = li.querySelector('.ma-st'), tip = TIP[g] || 'del';
+    p.innerHTML = '<span class="pl pl-' + tip + '">' + g + (tip === 'pish' ? ' <i class="tch"><i></i><i></i><i></i></i>' : '') + '</span>' + t;
+    p.classList.remove('nov'); void p.offsetWidth; p.classList.add('nov');
+  };
+  ll.forEach(ris);
+  let n = 0, stop = false;
+  ram.addEventListener('mouseenter', () => stop = true);
+  ram.addEventListener('mouseleave', () => stop = false);
+  setInterval(() => {
+    if (stop || document.hidden) return;
+    const li = ll[n++ % ll.length];
+    li.k = ((li.k || 0) + 1) % li.dataset.st.split('~').length;
+    ris(li);
+  }, 5500);
+})();
+// кнопки под вопросом в показе: «… ⟦да|нет|свой ответ⟧» → кнопки, как в Telegram (ponytail: пока у движка нет своих кнопок)
+new MutationObserver(() => document.querySelectorAll('.pokaz .puz').forEach(p => {
+  const t = [...p.childNodes].find(n => n.nodeType === 3 && n.data.includes('⟦'));
+  if (!t) return;
+  const [a, k] = t.data.split('⟦');
+  t.data = a;
+  const kn = document.createElement('span'); kn.className = 'kn';
+  kn.innerHTML = k.replace('⟧', '').split('|').map(x => '<i>' + x + '</i>').join('');
+  p.append(kn);
+})).observe(document.querySelector('.pokaz'), {childList: true, subtree: true});
+</script>
+<script src="1c/ruka.js?v=78"></script>
+<script src="pokaz.js?v=78"></script>
+</body>
+</html>

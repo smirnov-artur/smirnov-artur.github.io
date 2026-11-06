@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Как Иван работает в 1С: склад, цены, заказ, счёт и оплата · ИИ-сотрудник Иван · g.a.d. production</title>
+<meta name="description" content="Посмотрите по шагам в настоящей 1С:УНФ, как ИИ-сотрудник Иван находит клиента, проверяет остатки на складе, цены и скидки, оформляет заказ и счёт, отмечает оплату по выписке и следит за долгами.">
+<link rel="canonical" href="https://gad-production.ru/rabota-v-1c.html">
+<meta property="og:title" content="Как Иван работает в 1С: склад, цены, заказ, счёт и оплата · ИИ-сотрудник Иван · g.a.d. production">
+<meta property="og:description" content="Посмотрите по шагам в настоящей 1С:УНФ, как ИИ-сотрудник Иван находит клиента, проверяет остатки на складе, цены и скидки, оформляет заказ и счёт, отмечает оплату по выписке и следит за долгами.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://gad-production.ru/razd/r0-w.jpg">
+<link rel="icon" href="https://gad-production.ru/favicon.svg" type="image/svg+xml"><link rel="icon" href="https://gad-production.ru/favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="https://gad-production.ru/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="obshchee.css?v=78">
+</head>
+<body>
+<header class="nav">
+  <a class="logo" href="index.html">g.a.d. <span>production</span></a>
+  <nav aria-label="Страницы"><a href="perepiska.html">Переписка</a><a href="rabota-v-1c.html" aria-current=page>Работа в 1С</a><a href="index.html#umeet">Что умеет</a><a href="podklyuchenie.html">Подключение</a><a href="ceny.html">Цены</a></nav>
+  <a class="pis" href="https://t.me/gonartur" target="_blank" rel="noopener">Написать</a>
+</header>
+<main>
+<section class="blok">
+  <p class="krosh"><a href="index.html">ИИ-сотрудник Иван</a> · Работа в 1С</p>
+  <h1>Как Иван работает в 1С</h1>
+  <p class="lid">Иван идёт туда же, куда ваш менеджер: карточка клиента, склад, цены и скидки, заказ, счёт, оплата по выписке банка. <b>Ниже — один заказ по шагам, медленно.</b></p>
+</section>
+
+<section class="blok" id="pokaz">
+  <h2>Один заказ — от сообщения до оплаты</h2>
+  <p class="lid">Слева — что делает Иван и как он думает. Справа — телефон клиента или 1С. Шаги идут сами; можно листать кнопками и ставить на паузу.</p>
+  <div class="pokaz" data-pokaz="zakaz1c"></div>
+</section>
+
+<section class="blok" id="kak">
+  <h2>Как Иван попадает в вашу 1С</h2>
+  <p class="lid">Так же, как новый сотрудник: ему заводят пользователя и дают права. <b>Базу в интернет не открываем.</b></p>
+  <ol class="plan">
+    <li><span class="pn">1</span><div><b>В 1С ставится обработка</b><p>Она сама обращается к нашему серверу. Иван делает только то, что вы разрешили: например, найти или завести клиента, посмотреть историю и долг, создать заказ и счёт. Произвольных запросов к базе нет.</p></div></li>
+    <li><span class="pn">2</span><div><b>Отдельный пользователь «Иван»</b><p>Права задаёте вы обычными ролями 1С. Например: создавать заказы и счета можно, удалять, платить и подписывать — нельзя. В закрытый период он не попадёт.</p></div></li>
+    <li><span class="pn">3</span><div><b>Всё видно в журнале</b><p>Каждое действие — в журнале регистрации 1С под пользователем «Иван». Его документы помечены «Создан ИИ-сотрудником». Ошибку правят, как обычный документ.</p></div></li>
+    <li><span class="pn">4</span><div><b>Остановить — одна галочка</b><p>Снять пользователю «Иван» вход в программу. Ответы клиентам выключаем по вашему сообщению.</p></div></li>
+  </ol>
+  <div class="ctas"><a class="ghost" href="podklyuchenie.html">Подробно: безопасность и подключение →</a></div>
+</section>
+
+<section class="blok" id="kakie">
+  <h2>С какими 1С работает Иван</h2>
+  <table class="tabl">
+    <thead><tr><th>Программа</th><th>Как подключаем</th></tr></thead>
+    <tbody>
+      <tr><td>1С:Управление нашей фирмой (УНФ)</td><td><b>Работает сейчас.</b> Все записи на этой странице — из УНФ.</td></tr>
+      <tr><td>1С:Управление торговлей 11</td><td>Типовая — подключаем. Сначала проверяем на копии вашей базы.</td></tr>
+      <tr><td>1С:Бухгалтерия</td><td>Типовая — подключаем. Сначала проверяем на копии вашей базы.</td></tr>
+      <tr><td>Комплексная автоматизация, ERP, сильно доработанные базы</td><td>После оценки: смотрим вашу базу и говорим честно, что получится.</td></tr>
+      <tr><td>1С:Фреш (1С в облаке)</td><td>Через веб-клиент.</td></tr>
+    </tbody>
+  </table>
+  <p class="lid" style="font-size:18px">Файловая или серверная — неважно. Важно одно: 1С с обработкой должна быть запущена на сервере или компьютере, который не выключают на ночь.</p>
+</section>
+
+<section class="blok">
+  <h2>Ещё посмотреть</h2>
+  <ul class="dveri">
+    <li><a href="perepiska.html"><b>Как Иван переписывается</b><span>Ждёт, пока клиент допишет. Печатает со скоростью человека. Понимает голосовые и фото. Молчит, когда клиенту ответили вы.</span><em>Посмотреть →</em></a></li>
+    <li><a href="index.html#umeet"><b>Что ещё умеет Иван</b><span>Новые клиенты, большие спецификации, подключение и цены — каждая возможность на своей странице.</span><em>Посмотреть →</em></a></li>
+  </ul>
+</section>
+
+<section class="blok">
+  <h2>Проверьте Ивана на своих переписках</h2>
+  <p class="lid">Пришлите 3–5 скриншотов переписок с клиентами — покажем рядом, как ответил бы Иван. Бесплатно. Если нужно, сначала подпишем NDA.</p>
+  <div class="ctas"><a class="btn" href="https://t.me/gonartur" target="_blank" rel="noopener">Прислать переписки на тест</a></div>
+</section>
+</main>
+<footer class="podval">
+  <div class="w"><span>По 1С: <a href="1c-unf/">УНФ</a> · <a href="1c-ut/">УТ 11</a> · <a href="1c-ka-erp/">КА и ERP</a> · <a href="1c-fresh/">Фреш</a> · <a href="sravnenie/">Сравнение с Jivo, Salebot, Intly</a></span><span>Отрасли: <a href="krepezh/">Крепёж</a> · <a href="santehnika/">Сантехника</a> · <a href="elektrika/">Электрика</a> · <a href="zapchasti-spectehniki/">Запчасти</a> · <a href="strojmaterialy/">Стройматериалы</a> · <a href="podshipniki-rti/">Подшипники и РТИ</a> · <a href="produkty/">Продукты</a> · <a href="upakovka/">Упаковка</a></span></div>
+  <div class="w"><span>g.a.d. production © 2026</span><a href="https://t.me/gonartur" target="_blank" rel="noopener">Telegram</a><a href="mailto:artur@gad-production.ru">artur@gad-production.ru</a><span>Яндекс Метрика — только с вашего согласия · <a href="politika.html">Политика обработки данных</a></span><a href="https://smirnov-artur.github.io/works/">Все работы</a></div>
+</footer>
+<!-- Yandex.Metrika 114021303 — грузится только после согласия на cookie (152‑ФЗ) -->
+<div id="gad-ck" hidden style="position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;max-width:640px;margin:0 auto;background:#fff;color:#16181d;border:1px solid #d6d3cc;border-radius:10px;padding:8px 10px;font:13px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.16)"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><span style="flex:1 1 200px">Cookie Яндекс Метрики — считаем посещения. <a href="politika.html" style="color:inherit">Политика данных</a></span><span style="display:flex;gap:6px"><button type="button" data-ck="1" style="font:inherit;font-weight:700;padding:8px 14px;border-radius:8px;border:0;background:#f2c230;color:#16181d;cursor:pointer">Принять</button><button type="button" data-ck="0" style="font:inherit;padding:8px 12px;border-radius:8px;border:1px solid #16181d;background:#fff;color:#16181d;cursor:pointer">Только обязательные</button></span></div></div>
+<script>
+(function(){
+  var K='gad_ck', v=null;
+  try { v = localStorage.getItem(K); } catch (e) {}
+  function ymLoad(){
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=114021303', 'ym');
+    ym(114021303, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  }
+  if (v === '1') { ymLoad(); return; }
+  if (v === '0') return;
+  function show(){
+    var b = document.getElementById('gad-ck'); if (!b) return;
+    b.hidden = false;
+    b.addEventListener('click', function(ev){
+      var a = ev.target.getAttribute && ev.target.getAttribute('data-ck'); if (a === null) return;
+      try { localStorage.setItem(K, a); } catch (e) {}
+      b.hidden = true; if (a === '1') ymLoad();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', show); else show();
+})();
+</script>
+<script src="metka.js"></script>
+
+<script>
+window.POKAZ = {
+  zakaz1c: {
+    metka: 'Склад, цены, заказ, счёт и оплата в 1С:УНФ — работает сейчас. Запись учебной базы.',
+    kto: 'Сергей', chatImya: 'Иван', chatPodp: 'менеджер · Ромашка-Запчасти', kanal: 'Telegram', vr: '23:30',
+    chaty: {
+      oleg: {imya: 'Олег · руководитель', podp: 'в сети', kanal: 'Telegram · вопросы Ивана', my: 'i', kto: 'Олег'}
+    },
+    final: 'Один заказ в 1С: от сообщения ночью до оплаты утром',
+    shagi: [
+      {kr: 'Клиент написал', zag: '23:30. Пишет Сергей', op: 'Постоянный клиент из Хабаровска просит фильтры «как в прошлый раз».',
+        sob: [['k', 'доброе утро) нам как в прошлый раз, масляные 4 и топливные 4. сегодня оплатим', '23:30'], ['prochital'],
+          ['mysl', 'Постоянный клиент, у него уже утро. Менеджеры спят — отвечаю я.'],
+          ['mysl', '«Сегодня оплатим» — значит, счёт нужен сейчас, а не утром. Но сначала всё проверю в 1С.']],
+        itog: 'Иван идёт в 1С'},
+      {kr: 'Находит клиента', zag: 'Находит Сергея в 1С', op: 'Сверяет телефон и смотрит, что Сергей брал в октябре.',
+        sob: [['mysl', '«Как в прошлый раз» — значит, уже покупал. Найду прошлый заказ, переспрашивать не буду.'], ['mysl', 'Сначала проверю, что это он: телефон в Telegram должен совпасть с карточкой.'],
+          ['1c', 'klient', [[0, 'Ищет «Стройтех» среди покупателей'], [3.1, 'Нашёл «Стройтех-Снаб»'], [6.2, 'Телефон тот же, что в Telegram'], [7.9, 'Последняя покупка — 23 октября'], [13.9, 'Октябрьский заказ — 12 060 ₽']]]],
+        itog: 'В октябре брал по 4 масляных и топливных'},
+      {kr: 'Склад', zag: 'Смотрит остатки на складе', op: 'Сколько фильтров на складе и почём — прямо в списке товаров.',
+        sob: [['mysl', 'Проверю склад: хватит ли на 4 + 4.'],
+          ['1c', 'sklad', [[0, 'Идёт на склад: Склад → Номенклатура'], [4.35, 'Все товары: остаток и цена'], [6.45, 'Масляный 320/04133 — 6 шт по 1 850 ₽'], [8.45, 'Топливный 333/D7404 — 18 шт по 1 165 ₽']]],
+          ['mysl', 'Масляных 6: отдам 4 — останется 2. Утром скажу Олегу, что пора дозаказать.'],
+          ['mysl', 'Топливных 18 — останется 14, хватит.']],
+        itog: 'Масляных 6, топливных 18 — хватает'},
+      {kr: 'Цены и скидки', zag: 'Проверяет цену и скидку', op: 'Цена — из 1С; дешевле — только по правилу, сверх правила решает руководитель.',
+        sob: [['mysl', 'Проверю цену для Сергея и с какого количества дешевле.'],
+          ['1c', 'ceny', [[0, 'Карточка: фильтр масляный 320/04133'], [2.85, 'Розничная цена — 1 850 ₽'], [4.85, 'На складе 6 шт, все свободны'], [8.25, 'Продажи → Виды цен'], [10.55, '«Оптовая» — от 10 шт, на 5 % дешевле']]],
+          ['mysl', '4 штуки — до оптовой не дотягивает, цена розничная. Скажу, что от 10 штук будет по 1 757,50 ₽.'],
+          ['mysl', 'Масляных на складе 6 — десять только после дозаказа, поэтому «скажите заранее». Скидку сверх правила — только через Олега.'],
+          ['i', 'Сергей, доброе) собираю как в октябре, цены те же', '23:31'],
+          ['i', 'кстати, от 10 штук масляные будут по 1 757,50 — если понадобится больше, скажите заранее', '23:31']],
+        itog: 'Цена розничная. Про опт Сергей знает'},
+      {kr: 'Заказ', zag: 'Оформляет заказ', op: 'Те же фильтры по 4 штуки, цены подставляет 1С.',
+        sob: [['mysl', 'Цены пусть подставит 1С — так не ошибусь ни на рубль.'],
+          ['1c', 'zakaz', [[0, 'Масляные 320/04133 — 4 шт'], [4.7, 'Топливные 333/D7404 — 4 шт'], [8.0, 'Итого 12 060 ₽ с НДС'], [9.5, 'Проводит заказ № 2']]],
+          ['mysl', 'В 1С 12 060 ₽ — эту же сумму и напишу Сергею.']],
+        itog: 'Заказ № 2 — 12 060 ₽'},
+      {kr: 'Счёт', zag: 'Печатает и шлёт счёт', op: 'Счёт — из того же заказа, Сергею уходит PDF.',
+        sob: [['mysl', 'Счёт делаю из заказа № 2 — сумма и реквизиты сойдутся сами.'],
+          ['1c', 'schet', [[0, 'Открывает печать заказа № 2'], [1, 'Выбирает «Счёт на оплату»'], [3.2, 'Счёт № 2: «Ромашка» → «Стройтех-Снаб»'], [4.6, 'Итого 12 060 ₽, НДС 22 % — 2 174,76 ₽']]],
+          ['mysl', 'Он в Хабаровске, +7 часов. Оплатит до 13:00 по Москве — отгрузим сегодня: машина в ТК уходит в 14.'],
+          ['doc', 'Счёт на оплату № 2 от 04.11.pdf', 'PDF · 43 КБ', '23:32', 'i', {idet: 'Иван прикладывает счёт из 1С', gotovo: 'Счёт у Сергея в чате'}],
+          ['i', '12 060 с ндс. оплатите до 13:00 мск (у вас 20:00) — отгрузим сегодня', '23:32'],
+          ['k', 'супер, спасибо!', '23:33']],
+        itog: 'Счёт у Сергея через 2 минуты'},
+      {kr: 'Оплата', zag: 'Отмечает оплату по выписке', op: 'Слово «оплатили» — не повод: Иван сверяет выписку банка.',
+        sob: [['k', 'оплатили', '08:47'], ['prochital'],
+          ['mysl', '«Оплатили» — пока слова. Оплату ставлю только по выписке.'],
+          ['mysl', 'В выписке 12 060 ₽ от «Стройтех-Снаб», платёжка 2214. Сходится.'],
+          ['1c', 'postuplenie', [[0, 'Из заказа № 2 — поступление на счёт'], [1.5, 'Покупатель и сумма из заказа: 12 060 ₽'], [4.4, 'Платёжка из выписки — № 2214'], [9.4, 'Проведено: заказ № 2 оплачен']]],
+          ['dumaet', 2, 'Оплата проведена — теперь ответ Сергею'],
+          ['i', 'получили, спасибо! отгружаем сегодня', '08:52']],
+        itog: 'Заказ № 2 оплачен'},
+      {kr: 'Кто не заплатил', chat: 'oleg', zag: 'Проверяет, кто не заплатил', op: 'Отчёт «Долги» в 1С — и вопрос руководителю, напомнить ли должнику.',
+        sob: [['mysl', 'Сергей рассчитался. Посмотрю, кто ещё должен — сам о долге никто не напомнит.'],
+          ['1c', 'dolg', [[0, 'Отчёты → «Долги»'], [2.8, 'Отчёт за ноябрь'], [4.9, 'Стройтех: купил на 12 060 ₽ и оплатил — долга нет'], [6, 'ДорСтрой: долг 18 580 ₽ — ещё с октября']]],
+          ['mysl', 'ДорСтрой должен с 28 октября, уже больше недели. Напоминать о деньгах — решает Олег.'],
+          ['i', 'Олег, доброе утро. Стройтех оплатил заказ № 2, отгружаем сегодня', '09:01'],
+          ['i', 'масляных 320/04133 осталось 2, пора дозаказать', '09:01'],
+          ['i', 'ДорСтрой должен 18 580 с 28.10. напомнить Руслану?', '09:01', {knopki: ['да', 'нет', 'свой ответ']}],
+          ['k', 'да, напиши вежливо. фильтры закажу', '09:04']],
+        itog: 'Олег ответил — Иван напишет Руслану'}
+    ]}
+};
+</script>
+<script src="1c/ruka.js?v=78"></script>
+<script src="pokaz.js?v=78"></script>
+</body>
+</html>

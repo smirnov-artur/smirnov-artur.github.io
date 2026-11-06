@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Как Иван переписывается · ИИ-сотрудник Иван · g.a.d. production</title>
+<meta name="description" content="Иван пишет клиентам как живой менеджер: ждёт, пока допишут, отвечает не мгновенно, печатает со скоростью человека, понимает голосовые, кружки и фото, исправляет отправленное и молчит, когда клиенту ответили вы. 11 приёмов по шагам.">
+<link rel="canonical" href="https://gad-production.ru/perepiska.html">
+<meta property="og:title" content="Как Иван переписывается · ИИ-сотрудник Иван · g.a.d. production">
+<meta property="og:description" content="Иван пишет клиентам как живой менеджер: ждёт, пока допишут, отвечает не мгновенно, печатает со скоростью человека, понимает голосовые, кружки и фото, исправляет отправленное и молчит, когда клиенту ответили вы. 11 приёмов по шагам.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://gad-production.ru/razd/r0-w.jpg">
+<link rel="icon" href="https://gad-production.ru/favicon.svg" type="image/svg+xml"><link rel="icon" href="https://gad-production.ru/favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="https://gad-production.ru/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="obshchee.css?v=78">
+<style>
+/* фото записки механика (шаг 8) — нарисовано; строки, которые Иван прочитал, подсвечены (после первой отрисовки, когда он открыл чат) */
+.zap{width:100%;height:100%;background:linear-gradient(160deg,#8f806c,#6c5f50);display:grid;place-items:center}
+.zap div{width:208px;padding:6px 10px 10px;background:#fffef6 repeating-linear-gradient(#fffef6 0 21px,#cdd6e4 21px 22px);transform:rotate(3deg);box-shadow:0 3px 8px rgba(0,0,0,.4);font:16px/22px 'Segoe Print','Bradley Hand','Comic Sans MS',cursive;color:#1e3a8a}
+.zap b{display:block;font-weight:400;white-space:nowrap;border-radius:3px}
+.zap i{display:block;font-style:normal;font-size:14px;color:#555}
+.puz.foto:not(.nov) .zap b{background:rgba(255,212,59,.55);transition:background .6s}
+/* кружок (шаг 7): камера с таблички насоса уходит на сальник вала, откуда течёт масло — нарисовано.
+   Жёлтые рамки — что заметил Иван: появляются, когда он открыл кружок */
+.kr{width:100%;height:100%;position:relative;overflow:hidden;background:radial-gradient(circle at 60% 40%,#4a5056,#24282c 75%)}
+.kr-sc{position:absolute;left:0;top:0;width:380px;height:180px;transform-origin:135px 92px;animation:kr-kam 10s ease-in-out infinite}
+@keyframes kr-kam{0%,22%{transform:translateX(-175px)}42%{transform:translateX(-100px) scale(.85)}62%,94%{transform:translateX(-45px) scale(1.3)}100%{transform:translateX(-175px)}}
+.kr-kor{position:absolute;left:140px;top:28px;width:230px;height:128px;border-radius:16px;background:linear-gradient(180deg,#a9b0b6,#7b838a 55%,#5d646b);box-shadow:inset 0 2px 0 rgba(255,255,255,.35),0 4px 10px rgba(0,0,0,.5)}
+.kr-val{position:absolute;left:30px;top:76px;width:112px;height:30px;border-radius:4px;background:linear-gradient(180deg,#e3e6e9,#9aa1a7 50%,#6c737a)}
+.kr-sal{position:absolute;left:124px;top:66px;width:18px;height:50px;border-radius:5px;background:linear-gradient(90deg,#141414,#3a3a3a,#141414)}
+.kr-maslo{position:absolute;left:100px;top:98px;width:46px;height:52px;border-radius:30% 30% 45% 55%/20% 20% 80% 80%;background:radial-gradient(ellipse at 38% 22%,rgba(255,226,160,.55),transparent 28%),linear-gradient(180deg,#1f1304,#3d2808 55%,rgba(61,40,8,0))}
+.kr-kap{position:absolute;left:126px;top:128px;width:9px;height:13px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:radial-gradient(circle at 35% 30%,rgba(255,226,160,.7),transparent 35%),#24170a;animation:kr-kap 1.4s ease-in infinite}
+.kr-kap.k2{left:110px;animation-delay:.7s}
+@keyframes kr-kap{from{transform:none;opacity:1}to{transform:translateY(46px);opacity:0}}
+.kr-tab{position:absolute;left:190px;top:58px;padding:6px 10px;background:#fdfdf6;transform:rotate(-3deg);border-radius:3px;box-shadow:0 2px 5px rgba(0,0,0,.4);font:700 13px/1.25 Arial,sans-serif;color:#222}
+.kr-tab small{display:block;font-weight:400;font-size:10px;color:#555}
+.kr-tab big{display:block;font-size:19px}
+.kr-mk{position:absolute;border:3px solid #FFD43B;border-radius:10px;opacity:0;box-shadow:0 0 0 2px rgba(0,0,0,.25)}
+.kr-mk.m1{left:180px;top:48px;width:140px;height:66px}
+.kr-mk.m2{left:108px;top:56px;width:46px;height:74px;border-radius:50%}
+.puz.krug:not(.nov) .kr-mk.m1{animation:kr-m1 10s infinite}
+.puz.krug:not(.nov) .kr-mk.m2{animation:kr-m2 10s infinite}
+@keyframes kr-m1{0%,3%{opacity:0}7%,20%{opacity:1}24%,100%{opacity:0}}
+@keyframes kr-m2{0%,64%{opacity:0}69%,92%{opacity:1}96%,100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.kr-sc{animation:none;transform:translateX(-100px) scale(.85)}.kr-kap{animation:none}.puz.krug:not(.nov) .kr-mk{animation:none;opacity:1}}
+/* общий чат с телефона Руслана (шаг 9): чужие сообщения — слева, с именем, как в Telegram.
+   Движок пока ставит их справа (pravo() для kto 'c' при my:'k'); правило безвредно, когда это починят */
+.puz.k:has(>.kto){align-self:flex-start;background:#fff;border-bottom-right-radius:14px;border-bottom-left-radius:4px}
+.puz.k:has(>.kto) .mt{color:#8a929b}
+.puz.k:has(>.kto) .mt i{display:none}
+.pk-poyasn b{font-weight:650}
+/* голос Ивана (rabota-78; запись — ElevenLabs, audio/ivan-golos.mp3) */
+.golos-k{margin-top:22px;display:flex;flex-direction:column;align-items:flex-start;gap:12px;max-width:640px}
+.golos-b{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:14px;padding:12px 22px 12px 12px;border-radius:999px;border:1px solid var(--rule2);background:var(--page);cursor:pointer;max-width:100%;box-shadow:var(--e1)}
+.golos-b:hover{border-color:var(--ink)}.golos-b:focus-visible{outline:2px solid var(--link);outline-offset:3px}
+.golos-i{flex:none;width:48px;height:48px;border-radius:50%;background:#2A7FD4;color:#fff;display:grid;place-items:center;font-size:20px}
+.golos-b.igraet .golos-i{background:var(--ink)}
+.golos-b b{display:block;font-weight:650;font-size:18px}.golos-b small{display:block;font-size:15px;color:var(--meta);margin-top:2px}
+.golos-t{font-size:17px;line-height:1.5;color:var(--ink2)}.golos-t summary{cursor:pointer;color:var(--link);font-size:16px}.golos-t p{margin-top:8px}
+</style>
+</head>
+<body>
+<header class="nav">
+  <a class="logo" href="index.html">g.a.d. <span>production</span></a>
+  <nav aria-label="Страницы"><a href="perepiska.html" aria-current=page>Переписка</a><a href="rabota-v-1c.html">Работа в 1С</a><a href="index.html#umeet">Что умеет</a><a href="podklyuchenie.html">Подключение</a><a href="ceny.html">Цены</a></nav>
+  <a class="pis" href="https://t.me/gonartur" target="_blank" rel="noopener">Написать</a>
+</header>
+<main>
+<section class="blok">
+  <p class="krosh"><a href="index.html">ИИ-сотрудник Иван</a> · Что умеет</p>
+  <h1>Как Иван переписывается с клиентами</h1>
+  <p class="lid">Бота выдают мелочи: ответ через секунду, текст стеной, ответ мимо вопроса, «не понимаю голосовые». Мы читали настоящие переписки с клиентами сотнями и проработали каждую такую мелочь. <b>Смотрите на телефон — всё видно без слов.</b></p>
+</section>
+
+<section class="blok" id="pokaz">
+  <h2>11 приёмов — по шагам</h2>
+  <p class="lid">Телефон клиента: клиент справа, Иван слева. Рядом — что Иван думает. Шаги идут сами; можно листать и остановить.</p>
+  <div class="pokaz" data-pokaz="perepiska"></div>
+</section>
+
+<section class="blok" id="golos">
+  <h2>Иван может ответить голосом</h2>
+  <p class="lid">Людям важно слышать собеседника — один текст доверия не добавляет. Поэтому Иван умеет отвечать голосовыми: живым голосом, а можно — голосом вашего менеджера. <b>Подключается по желанию.</b></p>
+  <div class="golos-k">
+    <button class="golos-b" type="button" aria-label="Послушать, как Иван отвечает голосом"><span class="golos-i" aria-hidden="true">▶</span><span><b>Послушайте, как Иван отвечает голосом</b><small>0:21 · ответ постоянному клиенту про повтор заказа</small></span></button>
+    <details class="golos-t"><summary>Что он говорит</summary><p>«Сергей, доброе! Собрал как в октябре — масляные четыре и топливные четыре, цены те же. Счёт на 12 060 скинул в чат. Если оплатите до 13:00 по Москве — у вас это 20:00, — сегодня же отгрузим, машина в ТК уходит в 14. Топливных, кстати, на складе ещё 14, если вдруг надо больше.»</p></details>
+  </div>
+</section>
+
+<section class="blok">
+  <h2>Из чего складывается живой человек</h2>
+  <p class="lid">По одной мелочи бота не узнать. Узнают по сумме — поэтому мы проработали каждую.</p>
+  <ul class="uch">
+    <li><b>Время</b><p>Не отвечает через секунду и не отвечает всегда одинаково. Ждёт, пока клиент допишет, печатает со скоростью руки, между сообщениями — паузы.</p></li>
+    <li><b>Внимание</b><p>Слушает голосовые, смотрит кружки и фото, отвечает именно на то сообщение, о котором речь. Новое слово клиента важнее готового ответа.</p></li>
+    <li><b>Такт</b><p>Ошибся — исправляет честно: не прочитано — правит, прочитано — пишет вдогонку. Вы ответили клиенту сами — молчит и не встревает.</p></li>
+  </ul>
+</section>
+
+<section class="blok">
+  <h2>Ещё посмотреть</h2>
+  <ul class="dveri">
+    <li><a href="rabota-v-1c.html"><b>Как Иван работает в 1С</b><span>Находит клиента, смотрит остатки и цены, оформляет заказ и счёт, отмечает оплату по выписке банка.</span><em>Посмотреть в настоящей 1С →</em></a></li>
+    <li><a href="index.html#umeet"><b>Что ещё умеет Иван</b><span>Все возможности на одной странице — выберите, что болит у вас.</span><em>Ко всем возможностям →</em></a></li>
+  </ul>
+</section>
+
+<section class="blok">
+  <h2>Проверьте Ивана на своих переписках</h2>
+  <p class="lid">Пришлите 3–5 скриншотов переписок с клиентами — покажем рядом, как ответил бы Иван. Бесплатно.</p>
+  <div class="ctas"><a class="btn" href="https://t.me/gonartur" target="_blank" rel="noopener">Прислать переписки на тест</a></div>
+</section>
+</main>
+<footer class="podval">
+  <div class="w"><span>По 1С: <a href="1c-unf/">УНФ</a> · <a href="1c-ut/">УТ 11</a> · <a href="1c-ka-erp/">КА и ERP</a> · <a href="1c-fresh/">Фреш</a> · <a href="sravnenie/">Сравнение с Jivo, Salebot, Intly</a></span><span>Отрасли: <a href="krepezh/">Крепёж</a> · <a href="santehnika/">Сантехника</a> · <a href="elektrika/">Электрика</a> · <a href="zapchasti-spectehniki/">Запчасти</a> · <a href="strojmaterialy/">Стройматериалы</a> · <a href="podshipniki-rti/">Подшипники и РТИ</a> · <a href="produkty/">Продукты</a> · <a href="upakovka/">Упаковка</a></span></div>
+  <div class="w"><span>g.a.d. production © 2026</span><a href="https://t.me/gonartur" target="_blank" rel="noopener">Telegram</a><a href="mailto:artur@gad-production.ru">artur@gad-production.ru</a><span>Яндекс Метрика — только с вашего согласия · <a href="politika.html">Политика обработки данных</a></span><a href="https://smirnov-artur.github.io/works/">Все работы</a></div>
+</footer>
+<!-- Yandex.Metrika 114021303 — грузится только после согласия на cookie (152‑ФЗ) -->
+<div id="gad-ck" hidden style="position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;max-width:640px;margin:0 auto;background:#fff;color:#16181d;border:1px solid #d6d3cc;border-radius:10px;padding:8px 10px;font:13px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.16)"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><span style="flex:1 1 200px">Cookie Яндекс Метрики — считаем посещения. <a href="politika.html" style="color:inherit">Политика данных</a></span><span style="display:flex;gap:6px"><button type="button" data-ck="1" style="font:inherit;font-weight:700;padding:8px 14px;border-radius:8px;border:0;background:#f2c230;color:#16181d;cursor:pointer">Принять</button><button type="button" data-ck="0" style="font:inherit;padding:8px 12px;border-radius:8px;border:1px solid #16181d;background:#fff;color:#16181d;cursor:pointer">Только обязательные</button></span></div></div>
+<script>
+(function(){
+  var K='gad_ck', v=null;
+  try { v = localStorage.getItem(K); } catch (e) {}
+  function ymLoad(){
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=114021303', 'ym');
+    ym(114021303, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  }
+  if (v === '1') { ymLoad(); return; }
+  if (v === '0') return;
+  function show(){
+    var b = document.getElementById('gad-ck'); if (!b) return;
+    b.hidden = false;
+    b.addEventListener('click', function(ev){
+      var a = ev.target.getAttribute && ev.target.getAttribute('data-ck'); if (a === null) return;
+      try { localStorage.setItem(K, a); } catch (e) {}
+      b.hidden = true; if (a === '1') ymLoad();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', show); else show();
+})();
+</script>
+<script src="metka.js"></script>
+
+<script>
+window.POKAZ = {
+  perepiska: {
+    bez1c: true, otdelno: true, gruppa: true, vr: '10:12',
+    metka: 'Всё это Иван делает уже сейчас. Печатает в показе с настоящей скоростью; только паузу в шаге 2 мы сократили, чтобы вы не ждали.',
+    chaty: {
+      sergej: {imya: 'Иван', podp: 'менеджер · Ромашка-Запчасти', kanal: 'Telegram', my: 'k', kto: 'Сергей'},
+      olga: {imya: 'Иван', podp: 'менеджер · Ромашка-Запчасти', kanal: 'Telegram', my: 'k', kto: 'Ольга', ona: true},
+      ruslan: {imya: 'Иван', podp: 'менеджер · Ромашка-Запчасти', kanal: 'Telegram', my: 'k', kto: 'Руслан'},
+      andrej: {imya: 'Иван', podp: 'менеджер · Ромашка-Запчасти', kanal: 'Telegram', my: 'k', kto: 'Андрей'},
+      dorstroj: {imya: 'ДорСтрой — Ромашка', podp: '3 участника', kanal: 'Telegram · общий чат', my: 'k', kto: 'Руслан'}
+    },
+    final: 'Одиннадцать мелочей, по которым видно живого человека. Любой шаг можно посмотреть ещё раз',
+    shagi: [
+      {kr: 'Ждёт, пока допишет', chat: 'sergej', zag: 'Ждёт, пока клиент допишет',
+        op: 'Клиент пишет по кусочку — Иван не перебивает и отвечает на всё сразу.',
+        poyasn: '<b>Бот</b> ответил бы на «привет» — посреди мысли клиента.',
+        sob: [['k', 'привет', '10:12'],
+          ['k_pech', 'нам на 3CX масляные'],
+          ['k', 'нам на 3CX масляные 4 шт', '10:12'],
+          ['mysl', 'Пишет по кусочку — ещё не всё. Жду.'],
+          ['k_pech', 'и топливные'],
+          ['k', 'и топливные 4. счёт сразу пришли', '10:13'],
+          ['zhdat', 6, 'Сергей замолчал. Иван ждёт ещё немного'],
+          ['prochital'],
+          ['mysl', 'Три сообщения — один заказ. Отвечаю на всё сразу.'],
+          ['dumaet', 3],
+          ['i', 'Сергей, привет! по 4 масляных и топливных', '10:14'],
+          ['i', 'выходит 12 060 ₽ с ндс, счёт сейчас пришлю', '10:14']],
+        itog: 'Три сообщения — один ответ'},
+
+      {kr: 'Не мгновенно', chat: 'olga', zag: 'Отвечает не через секунду',
+        op: 'Сначала пауза, как у занятого человека; когда разговор пошёл — быстрее.',
+        poyasn: '<b>Бот</b> отвечает за секунду — и сразу понятно, что бот.',
+        sob: [['k', 'добрый день! топливный 333/D7404 есть в наличии?', '10:12'],
+          ['dumaet', 8, 'Иван ещё не открыл чат'],
+          ['prochital', 'Иван открыл чат — ✓✓. Прошло полторы минуты'],
+          ['mysl', 'Спросит «есть ли», потом цену. Сразу скажу, сколько есть.'],
+          ['i', 'Ольга, добрый день! есть, на складе 14 штук', '10:14'],
+          ['k', 'отлично, 10 возьмём. счёт сюда пришлите', '10:14'],
+          ['prochital', 'Ольга ответила сразу — разговор живой'],
+          ['dumaet', 9, 'Теперь быстрее: прочитать и ответить'],
+          ['i', '10 шт — уже по оптовой, 11 067,50 ₽ с ндс. счёт через пару минут', '10:15']],
+        itog: 'Первый ответ — через 1,5 минуты, второй — через полминуты'},
+
+      {kr: 'Печатает как человек', chat: 'sergej', zag: 'Печатает со скоростью человека',
+        op: '«Печатает…» горит столько, сколько набирал бы живой менеджер: 4,5 знака в секунду.',
+        poyasn: '<b>Бот</b> выдаёт длинный текст за долю секунды.',
+        sob: [['k', 'счёт получил, передал в бухгалтерию', '10:31'],
+          ['prochital'],
+          ['mysl', 'Платить будет бухгалтерия — не сию минуту.'],
+          ['mysl', 'Скажу, что сам увижу оплату, — платёжку слать не нужно.'],
+          ['dumaet', 3],
+          ['i', 'спасибо! как деньги придут, сам увижу и сразу напишу вам, отгрузим в тот же день', '10:32', {polno: true}],
+          ['k', 'ок, спасибо', '10:33']],
+        itog: '80 знаков — почти 20 секунд печати'},
+
+      {kr: 'По одной мысли', chat: 'andrej', zag: 'Одна мысль — одно сообщение',
+        op: 'Длинный ответ — тремя короткими сообщениями с паузами.',
+        poyasn: '<b>Бот</b> присылает стену текста.',
+        sob: [['k', 'Иван, добрый день. топливных 333/D7404 сколько есть? нам на весь парк, 38 машин', '12:05'],
+          ['prochital'],
+          ['mysl', 'Нужно 38, есть 14. Скажу честно сразу.'],
+          ['mysl', 'Три мысли — три коротких сообщения.'],
+          ['dumaet', 3],
+          ['i', 'Андрей, добрый день! на складе сейчас 14', '12:07'],
+          ['i', 'на 38 машин не хватит, остальные 24 — под заказ', '12:07'],
+          ['i', 'срок по ним узнаю и напишу сегодня', '12:08']],
+        itog: 'Три коротких вместо одного полотна'},
+
+      {kr: 'Клиент дописал', chat: 'sergej', zag: 'Клиент дописал — Иван переписывает',
+        op: 'Клиент дописал, пока Иван печатал: черновик в сторону, ответ — на новое.',
+        poyasn: '<b>Бот</b> отправил бы ответ на старый вопрос.',
+        sob: [['k', 'Иван, масляные 320/04133 есть? штук 6', '11:02'],
+          ['prochital'],
+          ['mysl', '6 штук — 11 100 ₽. Отвечаю.'],
+          ['i_chern', 'есть, 6 шт по 1 850 — 11 100 ₽, счёт'],
+          ['k', 'ой, не 6, а 4. и топливных 333/D7404 штук 10', '11:03'],
+          ['ster', 'Иван бросил черновик — заказ поменялся'],
+          ['prochital', 'Иван прочитал новое — ✓✓'],
+          ['mysl', 'Передумал. Старый ответ теперь мимо.'],
+          ['mysl', 'Пересчитываю: масляных 4 — 7 400. Топливных 10 — это уже опт, по 1 106,75. Всего 18 467,50 ₽.'],
+          ['dumaet', 3],
+          ['i', 'хорошо, масляных 4 и топливных 10', '11:04'],
+          ['i', 'топливные от 10 штук идут по оптовой. всего 18 467,50 ₽ с ндс, счёт пришлю сюда', '11:04']],
+        itog: 'Ответ — на новый заказ'},
+
+      {kr: 'Голосовые', chat: 'ruslan', zag: 'Понимает голосовые до конца',
+        op: 'Иван слушает голосовое и вылавливает всё: артикул, сказанное между делом и срок.',
+        poyasn: '<b>Бот</b>: «Извините, я не понимаю голосовые».',
+        sob: [['golos', 16, 'Иван, привет. слушай, нам топливные фильтры нужны, три три три дэ семь четыре ноль четыре, штук шесть. и масляные глянь, вроде тоже кончаются. к пятнице надо обязательно, у нас в понедельник машины на ТО', '13:20'],
+          ['mysl', 'Начало: «три три три дэ…» — это 333/D7404, 6 штук. Есть.'],
+          ['mysl', 'Между делом: «масляные глянь». Берут 320/04133 — спрошу, сколько.'],
+          ['mysl', 'Конец: «к пятнице обязательно» — это главное. Скажу, когда забрать.'],
+          ['dumaet', 3],
+          ['i', 'Руслан, привет! топливные 333/D7404 есть, 6 шт', '13:22'],
+          ['i', 'соберём сегодня, забрать можно уже завтра', '13:22'],
+          ['i', 'масляные 320/04133 тоже есть — сколько добавить?', '13:23']],
+        itog: 'Артикул, «между делом» и срок — всё услышано'},
+
+      {kr: 'Кружки', chat: 'andrej', zag: 'Смотрит кружок по кадрам',
+        op: 'Клиент снял течь на видео — Иван разглядел, что течёт, и посоветовал ремонт дешевле.',
+        poyasn: '<b>Бот</b> продал бы новый насос за 48 000 ₽.',
+        sob: [['krug', '<div class="kr"><div class="kr-sc"><div class="kr-kor"></div><i class="kr-val"></i><i class="kr-maslo"></i><i class="kr-sal"></i><i class="kr-kap"></i><i class="kr-kap k2"></i><div class="kr-tab"><small>JCB · PUMP</small><big>20/925570</big></div><i class="kr-mk m1"></i><i class="kr-mk m2"></i></div></div>', '14:20'],
+          ['prochital', 'Иван открыл кружок — жёлтым то, что он заметил'],
+          ['dumaet', 5, 'Иван смотрит кадр за кадром'],
+          ['mysl', '0:00 — табличка: 20/925570, гидронасос на 3CX.'],
+          ['mysl', '0:04 — под валом масляное пятно.'],
+          ['mysl', '0:06–0:10 — смотрю крупно: течёт сальник, корпус сухой.'],
+          ['mysl', 'Голос: «менять целиком? есть такой?»'],
+          ['mysl', 'Хватит ремкомплекта 991/20025 за 7 300 ₽ — не насоса за 48 000. На складе 3. Решит механик.'],
+          ['i', 'Андрей, посмотрел видео', '14:22'],
+          ['i', 'похоже, течёт сальник вала, а сам насос целый', '14:22'],
+          ['i', 'тогда хватит ремкомплекта — 7 300 ₽, а не насос за 48 000', '14:23'],
+          ['i', 'насос тоже есть, если механик решит менять', '14:23'],
+          ['k', 'о, спасибо. механику покажу', '14:25']],
+        itog: 'Вместо насоса за 48 000 ₽ — ремкомплект за 7 300 ₽'},
+
+      {kr: 'Фото', chat: 'olga', zag: 'Читает фото и переспрашивает',
+        op: 'Иван прочитал записку механика на фото и уточнил спорную цифру до счёта.',
+        poyasn: '<b>Бот</b>: «Напишите, пожалуйста, текстом».',
+        sob: [['foto', '<div class="zap"><div><i>заказать:</i><b>320/04133 — 6 шт</b><b>333/D7404 — 4 шт</b></div></div>', 'механик написал, что нужно. сделаете счёт?', '09:40'],
+          ['prochital', 'Иван открыл фото — жёлтым то, что он прочитал'],
+          ['dumaet', 4, 'Иван разбирает почерк'],
+          ['mysl', '320/04133 — 6, 333/D7404 — 4. Оба фильтра есть.'],
+          ['mysl', '«4» похожа на «9» — уточню до счёта.'],
+          ['i', 'Ольга, на фото разобрал так:', '09:42'],
+          ['i', 'масляные 320/04133 — 6 шт, топливные 333/D7404 — 4 шт', '09:42'],
+          ['i', 'верно? тогда счёт на 15 760 ₽ пришлю сюда', '09:43'],
+          ['k', 'да, всё верно', '09:43']],
+        itog: 'Фото прочитано, цифры подтверждены'},
+
+      {kr: 'Общий чат', chat: 'dorstroj', zag: 'В общем чате — каждому своё',
+        op: 'Двое спросили о разном — Иван ответил каждому прямо на его сообщение.',
+        poyasn: '<b>Бот</b> ответил бы одним сообщением всем сразу.',
+        sob: [['k', 'Иван, топливные 333/D7404 есть? надо 6', '15:10'],
+          ['ch', 'Татьяна, бухгалтер', 'Иван, добрый день! подскажите, сколько мы вам должны? хочу закрыть на этой неделе', '15:11'],
+          ['prochital', 'Иван прочитал оба сообщения'],
+          ['mysl', 'Двое, и про разное. Напишу подряд — запутаются.'],
+          ['mysl', 'Отвечу каждому прямо на его сообщение.'],
+          ['dumaet', 3],
+          ['otvet', 0, 'есть, на складе 14. 6 шт — 6 990 ₽ с ндс', '15:12'],
+          ['otvet', 1, 'Татьяна, 18 580 ₽ по отгрузке 28 октября', '15:13'],
+          ['ch', 'Татьяна, бухгалтер', 'спасибо, оплатим в четверг', '15:14']],
+        itog: 'Каждый получил свой ответ'},
+
+      {kr: 'Правит отправленное', chat: 'sergej', zag: 'Исправляет, пока не прочитали',
+        op: 'Сергей ещё не открыл чат — Иван тихо исправляет неточность, и Сергей сразу видит верное.',
+        poyasn: '<b>Бот</b> не перечитывает отправленное.',
+        sob: [['k', 'счёт получил. оплатим сегодня', '15:05'],
+          ['prochital'],
+          ['mysl', 'Скажу, до какого часа платить.'],
+          ['dumaet', 3],
+          ['i', 'если оплатите до 13:00, отгрузим сегодня же', '15:06'],
+          ['ekran', 'Телефон в кармане. Сергей ещё не читал'],
+          ['mysl', 'Стоп: у Сергея Хабаровск, уже 15:06. «До 13:00» — решит, что опоздал.'],
+          ['mysl', 'Он не читал — поправлю тихо: 13:00 по Москве, у него 20:00.'],
+          ['pravka', 'если оплатите до 13:00 по москве (у вас это 20:00), отгрузим сегодня же'],
+          ['ekran'],
+          ['k', 'отлично, успеем', '15:31'],
+          ['mysl', 'Прочитал бы — не правил бы молча, а написал вдогонку: «поправлюсь…».']],
+        itog: 'Сергей сразу видит верное — с пометкой «изменено»'},
+
+      {kr: 'Вы ответили сами', chat: 'andrej', zag: 'Вы ответили сами — Иван молчит',
+        op: 'Руководитель ответил, пока Иван печатал, — Иван не встревает.',
+        poyasn: '<b>Бот</b> прислал бы второй ответ поверх вашего.',
+        sob: [['k', 'Иван, а на весь парк скидку дадите? 38 машин всё-таки', '16:40'],
+          ['prochital'],
+          ['mysl', 'Скидки решает Олег. Скажу, что уточню.'],
+          ['i_chern', 'Андрей, про скидку на парк уточню у руководителя'],
+          ['ruk', 'Олег, руководитель', 'Андрей, добрый день, это Олег. по парку давайте созвонимся, наберу вам в течение часа', '16:42'],
+          ['mysl', 'Олег ответил сам. Моё уже ни к чему — молчу.'],
+          ['k', 'договорились, жду', '16:43']],
+        itog: 'Иван промолчал: клиента ведёт руководитель'}
+    ]}
+};
+</script>
+<script>
+(() => { const b = document.querySelector('.golos-b'); if (!b) return; const a = new Audio('audio/ivan-golos.mp3'); a.preload = 'none';
+  const i = b.querySelector('.golos-i'), ris = () => { b.classList.toggle('igraet', !a.paused); i.textContent = a.paused ? '▶' : '❚❚'; };
+  b.onclick = () => { if (a.paused) { document.querySelectorAll('.pokaz').forEach(p => { if (p.pk && p.pk.avto) { p.pk.pauza = true; p.pk.knopki(); } }); a.play().catch(() => {}); } else a.pause(); };
+  ['play', 'pause', 'ended'].forEach(e => a.addEventListener(e, ris)); })();
+</script>
+<script src="1c/ruka.js?v=78"></script>
+<script src="pokaz.js?v=78"></script>
+</body>
+</html>
