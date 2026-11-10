@@ -55,6 +55,8 @@ img{display:block;max-width:100%}
 .views button.on{background:var(--ink);color:#fff}
 .dims{position:absolute;right:20px;top:18px;font-size:14px;color:var(--mute);background:rgba(255,255,255,.8);padding:6px 12px;border-radius:999px}
 .nogl{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--mute)}
+.load{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:16px;color:var(--mute);transition:opacity .5s;pointer-events:none}
+.load.off{opacity:0}
 
 /* панель шагов */
 .panel{padding:8px 0 0}
@@ -136,6 +138,7 @@ h1{font-family:var(--disp);font-weight:700;font-stretch:151%;font-size:clamp(26p
     box-shadow:0 10px 24px -18px rgba(0,0,0,.35)}
   body.form-on .stage{height:30vh;height:30svh;min-height:200px}
   body.form-on .hint,body.form-on .views{opacity:0;pointer-events:none}
+  body.sent .stage{position:relative;height:34vh;height:34svh}
   .views{transition:opacity .4s}
   .logo-prev{width:76px;height:76px}
   .up{padding:0 20px;font-size:16px;white-space:nowrap}
@@ -167,6 +170,7 @@ h1{font-family:var(--disp);font-weight:700;font-stretch:151%;font-size:clamp(26p
   <section class="stage" id="stage" aria-label="Ваша банка в 3D">
     <div class="ring" aria-hidden="true"></div>
     <canvas id="gl" aria-hidden="true"></canvas>
+    <p class="load" id="load">Загружаем банку…</p>
     <div class="hint" id="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16M4 12l3-3M4 12l3 3M20 12l-3-3M20 12l-3 3"/></svg>Крутите банку пальцем или мышью</div>
     <div class="dims" id="dims"></div>
     <div class="views" role="group" aria-label="Повернуть банку">
@@ -574,7 +578,7 @@ function drawBack(g, bx, R, Hm, top, ink, v) {
 const canvas = $('#gl'), stage = $('#stage');
 let renderer;
 try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); }
-catch (e) { stage.insertAdjacentHTML('beforeend', '<p class="nogl">Этот браузер не показывает 3D. Откройте страницу в Chrome, Яндекс Браузере или Safari.</p>'); }
+catch (e) { $('#load').remove(); stage.insertAdjacentHTML('beforeend', '<p class="nogl">Этот браузер не показывает 3D. Откройте страницу в Chrome, Яндекс Браузере или Safari.</p>'); }
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(26, 1, .1, 50);
 let can = new THREE.Group(), shadow;
@@ -664,6 +668,7 @@ function touched() { lastTouch = performance.now(); hint.classList.add('off'); }
 canvas.addEventListener('pointerdown', e => {
   if (e.button > 0) return; drag.on = true; drag.x = e.clientX; drag.y = e.clientY; rot.v = 0; goTo = null; touched();
   stage.classList.add('drag'); try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+  document.querySelectorAll('.views button').forEach(x => x.classList.remove('on'));
 });
 canvas.addEventListener('pointermove', e => {
   if (!drag.on) return;
@@ -785,8 +790,9 @@ form.addEventListener('submit', async e => {
     await fetch('https://formsubmit.co/' + FORM_TO, { method: 'POST', body: fd, mode: 'no-cors', referrerPolicy: 'unsafe-url' });
     const url = URL.createObjectURL(blob);
     $('#okImg').src = url; $('#okDl').href = url;
-    form.hidden = true; $('#ok').classList.add('on');
-    $('#ok').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+    form.hidden = true; $('#ok').classList.add('on'); document.body.classList.add('sent');
+    const top = $('#ok').getBoundingClientRect().top + scrollY - (innerWidth < 900 ? 16 : 100);
+    scrollTo({ top, behavior: reduce ? 'auto' : 'smooth' });
   } catch (x) {
     err.textContent = 'Не получилось отправить. Проверьте интернет и нажмите ещё раз — или позвоните: +7 982 348-80-88.'; err.hidden = false;
   }
@@ -802,7 +808,7 @@ form.addEventListener('submit', async e => {
     exampleLogo = prepLogo(await readLogo(f), false).c; S.logo = exampleLogo;
   } catch (e) {}
   buildCan(); applyLid(); applyFinish(); redraw(); resize();
-  if (renderer) requestAnimationFrame(t => { last = t; frame(t); });
+  if (renderer) requestAnimationFrame(t => { last = t; frame(t); $('#load').classList.add('off'); });
 })();
 </script>
 </body>
