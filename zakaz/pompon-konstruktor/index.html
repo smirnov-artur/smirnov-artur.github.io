@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Pompon — конструктор банки под вашу марку</title>
+<meta name="description" content="Соберите банку лимонада под своей маркой: логотип, вкус, цвет и объём. Контрактное производство Pompon, Челябинск.">
+<link rel="icon" href="pompon-logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Roboto+Flex:wdth,wght@151,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFCF3;--card:#FFFFFF;--beige:#F6E7C6;--sand:#FCEBAC;--ink:#141414;--mute:#6B6458;--line:rgba(20,20,20,.12);
+  --orange:#FD8300;--coral:#FF8562;--green:#62C584;
+  --disp:'Roboto Flex','Golos Text',system-ui,sans-serif;--body:'Golos Text',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --top:76px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit}
+img{display:block;max-width:100%}
+[hidden]{display:none!important}
+
+/* шапка */
+.top{position:sticky;top:0;z-index:30;padding:12px clamp(12px,2.4vw,32px) 0;background:linear-gradient(var(--bg) 70%,rgba(255,252,243,0))}
+.bar{display:flex;align-items:center;gap:18px;max-width:1680px;margin:0 auto;height:64px;padding:0 10px 0 22px;border-radius:22px;background:var(--beige)}
+.brand img{height:44px;width:auto}
+.bar-t{font-size:15px;color:#3b372f}
+.bar-tel{margin-left:auto;font-weight:600;font-size:16px;text-decoration:none;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;border:0;border-radius:999px;background:var(--ink);color:#fff;
+  font-family:var(--body);font-weight:600;font-size:17px;text-decoration:none;cursor:pointer;transition:transform .2s,background .2s}
+.btn:hover{transform:translateY(-1px);background:#000}
+.btn:focus-visible,.seg button:focus-visible,.sw:focus-visible,.vol:focus-within,.chip:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.bar .btn{min-height:46px;font-size:16px}
+
+/* раскладка */
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(420px,520px);gap:clamp(16px,2vw,32px);max-width:1680px;margin:0 auto;padding:8px clamp(12px,2.4vw,32px) 40px}
+.stage{position:sticky;top:var(--top);height:calc(100vh - var(--top) - 16px);height:calc(100svh - var(--top) - 16px);min-height:460px;border-radius:28px;overflow:hidden;
+  background:radial-gradient(120% 90% at 50% 0%,#FFFFFF 0%,var(--bg) 60%)}
+.ring{position:absolute;left:50%;top:47%;width:min(78%,72vh);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 200deg,#FF8562,#FD8300 12%,#FCEBAC 30%,#C6E58A 52%,#7FD38A 62%,#FCEBAC 80%,#FF8562);filter:blur(16px);opacity:.8}
+.ring::after{content:"";position:absolute;inset:16px;border-radius:50%;background:#FFFDF6}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y;cursor:grab}
+.stage.drag #gl{cursor:grabbing}
+.hint{position:absolute;left:50%;top:18px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:9px 16px;border-radius:999px;background:rgba(255,255,255,.86);
+  font-size:15px;color:#3b372f;white-space:nowrap;pointer-events:none;transition:opacity .6s;box-shadow:0 4px 20px -8px rgba(0,0,0,.18)}
+.hint svg{width:22px;height:22px;flex:none}
+.hint.off{opacity:0}
+.views{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:6px;padding:5px;border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 6px 24px -10px rgba(0,0,0,.25)}
+.views button{border:0;background:none;min-height:42px;padding:0 16px;border-radius:999px;font-size:15px;font-weight:500;cursor:pointer;white-space:nowrap}
+.views button.on{background:var(--ink);color:#fff}
+.dims{position:absolute;right:20px;top:18px;font-size:14px;color:var(--mute);background:rgba(255,255,255,.8);padding:6px 12px;border-radius:999px}
+.nogl{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--mute)}
+
+/* панель шагов */
+.panel{padding:8px 0 0}
+h1{font-family:var(--disp);font-weight:700;font-stretch:151%;font-size:clamp(26px,2.3vw,34px);line-height:1.12;letter-spacing:-.01em;margin:6px 0 14px}
+.lead{color:#3b372f;font-size:17px;margin-bottom:22px;max-width:46ch}
+.steps{list-style:none;display:grid;gap:14px}
+.step{background:var(--card);border-radius:24px;padding:22px 22px 24px;border:1px solid rgba(20,20,20,.06)}
+.step h2{display:flex;align-items:center;gap:12px;font-family:var(--disp);font-stretch:151%;font-weight:700;font-size:19px;line-height:1.2;margin-bottom:16px}
+.step h2 b{display:grid;place-items:center;flex:none;width:34px;height:34px;border-radius:50%;background:var(--orange);color:#fff;font-family:var(--body);font-size:17px;font-weight:700}
+.sub{font-size:15px;color:var(--mute);margin:18px 0 8px}
+
+.logo-row{display:flex;gap:16px;align-items:center}
+.logo-prev{flex:none;width:96px;height:96px;border-radius:18px;display:grid;place-items:center;padding:10px;
+  background:repeating-conic-gradient(#efe9db 0 25%,#fffdf8 0 50%) 0 0/16px 16px;border:1px solid var(--line)}
+.logo-prev img,.logo-prev canvas{max-width:100%;max-height:100%;object-fit:contain}
+.up{position:relative;overflow:hidden}
+.up input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.note{font-size:14px;color:var(--mute);margin-top:8px;line-height:1.45}
+.note.err{color:#B3261E}
+
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button,.chip{min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-size:16px;cursor:pointer;transition:border-color .2s,background .2s}
+.seg button:hover,.chip:hover{border-color:#141414}
+.seg button.on,.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip{display:inline-flex;align-items:center;gap:8px;padding-left:10px}
+.chip i{width:20px;height:20px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+
+.rng{display:flex;align-items:center;gap:14px;margin-top:4px}
+.rng input{flex:1;accent-color:var(--orange);height:30px}
+.rng output{min-width:52px;text-align:right;font-variant-numeric:tabular-nums;color:var(--mute);font-size:15px}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:15px;margin-top:12px;cursor:pointer}
+.chk input{width:22px;height:22px;flex:none;accent-color:var(--orange);margin-top:1px}
+
+.fld{display:block;margin-top:14px}
+.fld span{display:block;font-size:15px;color:var(--mute);margin-bottom:6px}
+.fld input,.fld select,.fld textarea{width:100%;min-height:52px;padding:12px 16px;border-radius:16px;border:1.5px solid var(--line);background:#fff;outline:none;font-size:17px}
+.fld textarea{min-height:84px;resize:vertical}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--orange)}
+.fld .row{display:flex;gap:10px;align-items:center}
+.fld input[type=color]{width:52px;height:52px;padding:4px;flex:none;cursor:pointer}
+
+.vols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.vol{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px 12px;border-radius:18px;border:1.5px solid var(--line);cursor:pointer;text-align:center;transition:border-color .2s,background .2s}
+.vol input{position:absolute;opacity:0;pointer-events:none}
+.vol:has(input:checked){border-color:var(--ink);background:#FFF7E4}
+.vol svg{height:70px;width:auto}
+.vol b{font-size:19px;font-weight:700;line-height:1.1}
+.vol small{font-size:13px;color:var(--mute);line-height:1.3}
+
+.sws{display:flex;flex-wrap:wrap;gap:10px}
+.sw{width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;position:relative;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}
+.sw.on::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2.5px solid var(--ink)}
+.sw.own{background:conic-gradient(#ff5d5d,#ffd43b,#62c584,#7cc6f2,#6c3fb5,#ff5d5d)}
+.sw.own input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+
+.send{margin-top:20px;width:100%;min-height:58px;font-size:18px}
+.send[disabled]{opacity:.6;cursor:progress}
+.ok{display:none;text-align:center}
+.ok.on{display:block}
+.ok img{margin:14px auto 12px;border-radius:16px;max-height:340px;border:1px solid var(--line)}
+.ok h3{font-family:var(--disp);font-stretch:151%;font-size:20px;margin-bottom:8px}
+.ok a{font-weight:600}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+.foot{max-width:1680px;margin:0 auto;padding:26px clamp(12px,2.4vw,32px) 40px;display:flex;flex-wrap:wrap;gap:10px 26px;color:var(--mute);font-size:15px}
+.foot a{color:inherit}
+
+@media (max-width:899px){
+  :root{--top:0px}
+  body{font-size:16px}
+  .top{position:relative;padding:10px 12px 0}
+  .bar{height:58px;padding:0 8px 0 14px;gap:10px;border-radius:18px}
+  .brand img{height:38px}
+  .bar-t{display:none}
+  .bar-tel{font-size:15px}
+  .bar .btn{display:none}
+  .wrap{display:block;padding:8px 12px 30px}
+  .stage{top:0;z-index:20;height:46vh;height:46svh;min-height:300px;border-radius:0 0 24px 24px;margin:0 -12px;transition:height .45s ease;
+    box-shadow:0 10px 24px -18px rgba(0,0,0,.35)}
+  body.form-on .stage{height:30vh;height:30svh;min-height:200px}
+  body.form-on .hint,body.form-on .views{opacity:0;pointer-events:none}
+  .views{transition:opacity .4s}
+  .logo-prev{width:76px;height:76px}
+  .up{padding:0 20px;font-size:16px;white-space:nowrap}
+  .ring{width:min(86%,40svh);top:46%}
+  .hint{top:12px;font-size:14px;padding:7px 12px}
+  .dims{display:none}
+  .views{bottom:10px}
+  .views button{min-height:38px;padding:0 13px;font-size:14px}
+  .panel{padding-top:18px}
+  h1{font-size:24px}
+  .lead{font-size:16px}
+  .step{padding:18px 16px 20px;border-radius:20px}
+  .vol svg{height:56px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <a class="brand" href="https://pompon.pro/" target="_blank" rel="noopener" aria-label="Pompon — на главный сайт"><img src="pompon-logo.svg" alt="Pompon" width="55" height="44"></a>
+    <span class="bar-t">Контрактное производство лимонадов под вашей маркой · Челябинск</span>
+    <a class="bar-tel" href="tel:+79823488088">+7 982 348-80-88</a>
+    <a class="btn" href="#zayavka">Отправить заявку</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="stage" id="stage" aria-label="Ваша банка в 3D">
+    <div class="ring" aria-hidden="true"></div>
+    <canvas id="gl" aria-hidden="true"></canvas>
+    <div class="hint" id="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16M4 12l3-3M4 12l3 3M20 12l-3-3M20 12l-3 3"/></svg>Крутите банку пальцем или мышью</div>
+    <div class="dims" id="dims"></div>
+    <div class="views" role="group" aria-label="Повернуть банку">
+      <button type="button" data-view="0" class="on">Лицевая сторона</button>
+      <button type="button" data-view="1">Обратная сторона</button>
+    </div>
+  </section>
+
+  <div class="panel">
+    <h1>Соберите свою банку лимонада</h1>
+    <p class="lead">Загрузите логотип, выберите объём, вкус и цвет — банка сразу поменяется. Понравилось — отправьте заявку, и мы рассчитаем партию под вашей маркой.</p>
+
+    <ol class="steps">
+      <li class="step">
+        <h2><b>1</b>Ваш логотип</h2>
+        <div class="logo-row">
+          <div class="logo-prev" id="logoPrev"><img src="pompon-logo.svg" alt="Логотип на банке"></div>
+          <div>
+            <label class="btn up">Загрузить логотип<input type="file" id="logoFile" accept="image/png,image/svg+xml,image/jpeg,image/webp,.svg,.png,.jpg,.jpeg,.webp"></label>
+            <p class="note" id="logoNote">Сейчас на банке логотип Pompon для примера. Подойдёт PNG или SVG с прозрачным фоном, можно JPG.</p>
+          </div>
+        </div>
+        <label class="chk" id="bgRow" hidden><input type="checkbox" id="bgCut" checked> Убрать фон вокруг логотипа</label>
+        <p class="sub">Цвет логотипа на банке</p>
+        <div class="seg" id="logoMode">
+          <button type="button" data-v="orig" class="on">Как в файле</button>
+          <button type="button" data-v="white">Белый</button>
+          <button type="button" data-v="black">Чёрный</button>
+        </div>
+        <p class="note" id="clash" hidden>Логотип почти сливается с цветом банки — попробуйте «Белый» или «Чёрный».</p>
+        <p class="sub">Размер логотипа</p>
+        <div class="rng"><input type="range" id="logoSize" min="60" max="150" value="100" step="5" aria-label="Размер логотипа"><output id="logoSizeOut">100 %</output></div>
+        <label class="fld"><span>Нет файла под рукой? Напишите название марки</span><input id="brandTxt" maxlength="24" placeholder="Например, СОЛНЦЕ" autocomplete="off"></label>
+      </li>
+
+      <li class="step">
+        <h2><b>2</b>Объём банки</h2>
+        <div class="vols" id="vols"></div>
+      </li>
+
+      <li class="step">
+        <h2><b>3</b>Вкус</h2>
+        <div class="seg" id="flavors"></div>
+        <label class="fld"><span>Название вкуса на банке</span>
+          <span class="row"><input id="flName" maxlength="28" autocomplete="off"><input type="color" id="flColor" aria-label="Цвет полосы вкуса"></span>
+        </label>
+      </li>
+
+      <li class="step">
+        <h2><b>4</b>Цвет банки</h2>
+        <div class="sws" id="cans"></div>
+        <p class="sub">Крышка</p>
+        <div class="seg" id="lid">
+          <button type="button" data-v="silver" class="on">Серебристая</button>
+          <button type="button" data-v="black">Чёрная</button>
+          <button type="button" data-v="gold">Золотая</button>
+        </div>
+        <p class="sub">Покрытие</p>
+        <div class="seg" id="finish">
+          <button type="button" data-v="gloss" class="on">Глянцевое</button>
+          <button type="button" data-v="matte">Матовое</button>
+        </div>
+      </li>
+
+      <li class="step" id="zayavka">
+        <h2><b>5</b>Заявка на производство</h2>
+        <form id="form" novalidate>
+          <p class="note" style="margin-top:0">Макет банки приложим к заявке сами. Ответим в течение рабочего дня.</p>
+          <label class="fld"><span>Ваше имя</span><input name="name" id="fName" autocomplete="name" required></label>
+          <label class="fld"><span>Компания или бренд</span><input name="company" id="fCompany" autocomplete="organization"></label>
+          <label class="fld"><span>Телефон или почта</span><input name="contact" id="fContact" autocomplete="tel" inputmode="email" required></label>
+          <label class="fld"><span>Тираж</span>
+            <select name="tirazh" id="fTirazh">
+              <option>Пока не знаю</option>
+              <option>Пробная партия, до 5 000 банок</option>
+              <option>5 000 – 20 000 банок</option>
+              <option>20 000 – 50 000 банок</option>
+              <option>Больше 50 000 банок</option>
+            </select>
+          </label>
+          <label class="fld"><span>Комментарий</span><textarea name="comment" id="fComment" placeholder="Вкус, сроки, вопросы"></textarea></label>
+          <label class="hp" aria-hidden="true">Не заполняйте<input name="_honey" tabindex="-1" autocomplete="off"></label>
+          <label class="chk"><input type="checkbox" id="fAgree" required> <span>Согласен на обработку персональных данных по <a href="https://pompon.pro/privacy" target="_blank" rel="noopener">политике</a></span></label>
+          <p class="note err" id="formErr" hidden></p>
+          <button class="btn send" id="sendBtn" type="submit">Отправить заявку</button>
+        </form>
+        <div class="ok" id="ok">
+          <h3>Заявка отправлена</h3>
+          <p>Спасибо! Мы свяжемся с вами в течение рабочего дня.</p>
+          <img id="okImg" alt="Макет вашей банки">
+          <a id="okDl" download="maket-banki.jpg">Скачать макет банки</a>
+        </div>
+      </li>
+    </ol>
+  </div>
+</main>
+
+<footer class="foot">
+  <span>ООО «Живая Долина» · г. Челябинск, Бродокалмакский тракт, 3</span>
+  <a href="tel:+79823488088">+7 982 348-80-88</a>
+  <a href="mailto:info@pompon.pro">info@pompon.pro</a>
+  <a href="https://pompon.pro/privacy" target="_blank" rel="noopener">Политика конфиденциальности</a>
+</footer>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+/* ===== куда уходит заявка ===== */
+const FORM_TO = 'paladei702@gmail.com';
+const FORM_PAGE = 'https://smirnov-artur.github.io/zakaz/pompon-konstruktor/';
+
+/* ===== справочники ===== */
+const VOLS = {
+  s033: { t: '0,33 л', sub: 'слим', d: 58, h: 146, neck: 6 },
+  v045: { t: '0,45 л', sub: 'стандарт', d: 66, h: 155, neck: 11 },
+  v050: { t: '0,5 л', sub: 'стандарт', d: 66, h: 168, neck: 11 },
+};
+const FLAVORS = [
+  ['Апельсин', '#FD8300'], ['Лимон и лайм', '#B6D334'], ['Вишня', '#B3122E'], ['Тархун', '#1F9D55'],
+  ['Малина', '#E0306E'], ['Манго и маракуйя', '#FFB000'], ['Дюшес', '#E6C35C'], ['Черника', '#3E3F9E'],
+];
+const CANS = [
+  ['#FFF3D6', 'кремовый'], ['#F7F6F1', 'белый'], ['#FFD43B', 'жёлтый'], ['#FD8300', 'оранжевый'], ['#D7262E', 'красный'], ['#F6A5C0', 'розовый'],
+  ['#1F8A4C', 'зелёный'], ['#A8E6CF', 'мятный'], ['#7CC6F2', 'голубой'], ['#1D3F91', 'синий'], ['#6C3FB5', 'фиолетовый'], ['#1B1B1B', 'чёрный'],
+];
+const LIDS = { silver: ['Серебристая', 0xd9dde1, 0xc3c8cd, 1, .26], black: ['Чёрная', 0x1c1c1e, 0x2a2a2c, .55, .32], gold: ['Золотая', 0xc9a24b, 0xd2ae5e, 1, .24] };
+
+const S = {
+  vol: 'v050', fl: 0, flName: 'Апельсин', flColor: '#FD8300', can: '#FFF3D6', canName: 'кремовый', lid: 'silver', finish: 'gloss',
+  logoMode: 'orig', logoSize: 1, logo: null, logoRaw: null, logoFile: null, hasBg: false, cutBg: true, text: '',
+};
+
+const $ = s => document.querySelector(s);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const TAU = Math.PI * 2;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+function lum(hex) { const n = parseInt(hex.slice(1), 16), f = v => { v /= 255; return v <= .04045 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); };
+  return .2126 * f(n >> 16 & 255) + .7152 * f(n >> 8 & 255) + .0722 * f(n & 255); }
+const inkOn = hex => lum(hex) > .36 ? '#161616' : '#FFFFFF';
+
+/* ===== интерфейс ===== */
+$('#vols').innerHTML = Object.entries(VOLS).map(([k, v]) => `
+  <label class="vol"><input type="radio" name="vol" value="${k}" ${k === S.vol ? 'checked' : ''}>
+    <svg viewBox="0 0 40 90" aria-hidden="true"><rect x="${20 - v.d / 4.4}" y="${88 - v.h / 2}" width="${v.d / 2.2}" height="${v.h / 2}" rx="${v.d / 14}" fill="#D9DDE1" stroke="#141414" stroke-width="1.2"/></svg>
+    <b>${v.t}</b><small>${v.sub}<br>${v.d} × ${v.h} мм</small></label>`).join('');
+$('#flavors').innerHTML = FLAVORS.map(([n, c], i) => `<button type="button" class="chip${i === S.fl ? ' on' : ''}" data-i="${i}"><i style="background:${c}"></i>${n}</button>`).join('');
+$('#cans').innerHTML = CANS.map(([c, n]) => `<button type="button" class="sw${c === S.can ? ' on' : ''}" data-c="${c}" data-n="${n}" style="background:${c}" aria-label="Цвет банки: ${n}" title="${n}"></button>`).join('')
+  + `<label class="sw own" title="Свой цвет" aria-label="Свой цвет банки"><input type="color" id="canOwn" value="#FFF3D6"></label>`;
+$('#flName').value = S.flName; $('#flColor').value = S.flColor;
+
+function segPick(id, key, after) {
+  $(id).addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    $(id).querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    S[key] = b.dataset.v; after && after(); redraw();
+  });
+}
+segPick('#logoMode', 'logoMode');
+segPick('#lid', 'lid', applyLid);
+segPick('#finish', 'finish', applyFinish);
+$('#vols').addEventListener('change', e => { S.vol = e.target.value; buildCan(); redraw(); pop = 1; });
+$('#flavors').addEventListener('click', e => {
+  const b = e.target.closest('.chip'); if (!b) return;
+  $('#flavors').querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x === b));
+  S.fl = +b.dataset.i; [S.flName, S.flColor] = FLAVORS[S.fl];
+  $('#flName').value = S.flName; $('#flColor').value = S.flColor; redraw();
+});
+$('#flName').addEventListener('input', e => { S.flName = e.target.value; redraw(); });
+$('#flColor').addEventListener('input', e => { S.flColor = e.target.value; redraw(); });
+function pickCan(c, n, el) {
+  S.can = c; S.canName = n;
+  document.querySelectorAll('#cans .sw').forEach(x => x.classList.toggle('on', x === el));
+  applyNeck(); redraw();
+}
+$('#cans').addEventListener('click', e => { const b = e.target.closest('button.sw'); if (b) pickCan(b.dataset.c, b.dataset.n, b); });
+$('#canOwn').addEventListener('input', e => pickCan(e.target.value, 'свой ' + e.target.value.toUpperCase(), e.target.parentElement));
+$('#logoSize').addEventListener('input', e => { S.logoSize = e.target.value / 100; $('#logoSizeOut').textContent = e.target.value + ' %'; redraw(); });
+const NOTE0 = $('#logoNote').textContent;
+$('#brandTxt').addEventListener('input', e => {
+  S.text = e.target.value.trim();
+  if (S.text && S.logoFile) { S.logoFile = null; S.logoRaw = null; S.logo = exampleLogo; $('#bgRow').hidden = true; }
+  $('#logoNote').classList.remove('err');
+  $('#logoNote').textContent = S.text ? 'На банке — ваша надпись. Файл логотипа можно загрузить в любой момент.' : NOTE0;
+  redraw(); showPrev();
+});
+$('#bgCut').addEventListener('change', e => { S.cutBg = e.target.checked; if (S.logoRaw) { S.logo = prepLogo(S.logoRaw, S.cutBg).c; showPrev(); redraw(); } });
+
+/* ===== логотип ===== */
+async function readLogo(file) {
+  let url, isSvg = file.type === 'image/svg+xml' || /\.svg$/i.test(file.name);
+  if (isSvg) {
+    const doc = new DOMParser().parseFromString(await file.text(), 'image/svg+xml');
+    const svg = doc.documentElement;
+    if (!svg || svg.nodeName.toLowerCase() !== 'svg') throw new Error('svg');
+    const vb = (svg.getAttribute('viewBox') || '').trim().split(/[\s,]+/).map(Number);
+    let w = parseFloat(svg.getAttribute('width')), h = parseFloat(svg.getAttribute('height'));
+    if (/%/.test(svg.getAttribute('width') || '')) w = NaN;
+    if (/%/.test(svg.getAttribute('height') || '')) h = NaN;
+    if (vb.length === 4 && vb[2] > 0 && vb[3] > 0) { const k = 1600 / Math.max(vb[2], vb[3]); w = vb[2] * k; h = vb[3] * k; }
+    else if (w > 0 && h > 0) { svg.setAttribute('viewBox', `0 0 ${w} ${h}`); const k = 1600 / Math.max(w, h); w *= k; h *= k; }
+    else { w = h = 1600; }
+    svg.setAttribute('width', w); svg.setAttribute('height', h);
+    url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(svg)], { type: 'image/svg+xml' }));
+  } else url = URL.createObjectURL(file);
+  const img = new Image();
+  await new Promise((ok, no) => { img.onload = ok; img.onerror = no; img.src = url; });
+  if (img.decode) try { await img.decode(); } catch (e) {}
+  return img;
+}
+// снимает однотонный фон заливкой от краёв (белые детали внутри логотипа остаются) и обрезает пустые поля
+function prepLogo(img, cut) {
+  const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height, k = Math.min(1, 1600 / Math.max(iw, ih));
+  const w = Math.max(1, Math.round(iw * k)), h = Math.max(1, Math.round(ih * k));
+  const c = mk(w, h), g = c.getContext('2d', { willReadFrequently: true });
+  g.drawImage(img, 0, 0, w, h);
+  const d = g.getImageData(0, 0, w, h), p = d.data;
+  const px = (x, y) => (y * w + x) * 4;
+  const cs = [[0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1]].map(([x, y]) => px(x, y));
+  const ref = [p[cs[0]], p[cs[0] + 1], p[cs[0] + 2]];
+  const dist = i => Math.abs(p[i] - ref[0]) + Math.abs(p[i + 1] - ref[1]) + Math.abs(p[i + 2] - ref[2]);
+  const hasBg = cs.every(i => p[i + 3] > 245 && dist(i) < 45);
+  if (hasBg && cut) {
+    const seen = new Uint8Array(w * h), q = new Int32Array(w * h); let qh = 0, qt = 0;
+    const push = (x, y) => { const j = y * w + x; if (seen[j]) return; seen[j] = 1; if (dist(j * 4) < 90) q[qt++] = j; };
+    for (let x = 0; x < w; x++) { push(x, 0); push(x, h - 1); }
+    for (let y = 0; y < h; y++) { push(0, y); push(w - 1, y); }
+    while (qh < qt) {
+      const j = q[qh++], x = j % w, y = (j / w) | 0, i = j * 4;
+      p[i + 3] = Math.round(p[i + 3] * clamp((dist(i) - 30) / 60));
+      if (x > 0) push(x - 1, y); if (x < w - 1) push(x + 1, y); if (y > 0) push(x, y - 1); if (y < h - 1) push(x, y + 1);
+    }
+    g.putImageData(d, 0, 0);
+  }
+  let x0 = w, y0 = h, x1 = -1, y1 = -1;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (p[px(x, y) + 3] > 10) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  if (x1 < 0) return { c, hasBg };
+  const t = mk(x1 - x0 + 1, y1 - y0 + 1); t.getContext('2d').drawImage(c, -x0, -y0);
+  return { c: t, hasBg };
+}
+// точки логотипа (уменьшенные) — чтобы подсказать, если заметная часть сливается с банкой
+const pxCache = new WeakMap();
+function logoPx(c) {
+  if (pxCache.has(c)) return pxCache.get(c);
+  const k = Math.min(1, 96 / Math.max(c.width, c.height)), w = Math.max(1, Math.round(c.width * k)), h = Math.max(1, Math.round(c.height * k));
+  const t = mk(w, h), g = t.getContext('2d', { willReadFrequently: true }); g.drawImage(c, 0, 0, w, h);
+  const p = g.getImageData(0, 0, w, h).data, out = [];
+  for (let i = 0; i < p.length; i += 4) if (p[i + 3] > 128) out.push(p[i], p[i + 1], p[i + 2]);
+  pxCache.set(c, out); return out;
+}
+function checkClash() {
+  let bad = false;
+  const lowContrast = () => { const L = lum(S.can), o = S.logoMode === 'white' ? 1 : .008; return (Math.max(L, o) + .05) / (Math.min(L, o) + .05) < 1.6; };
+  if (S.text && !S.logoFile) bad = S.logoMode !== 'orig' && lowContrast();
+  else if (S.logo && S.logoMode === 'orig') {
+    const p = logoPx(S.logo), n = parseInt(S.can.slice(1), 16), cr = n >> 16 & 255, cg = n >> 8 & 255, cb = n & 255;
+    let same = 0; for (let i = 0; i < p.length; i += 3) if (Math.abs(p[i] - cr) + Math.abs(p[i + 1] - cg) + Math.abs(p[i + 2] - cb) < 110) same++;
+    bad = p.length > 0 && same / (p.length / 3) > .1;
+  } else if (S.logo) bad = lowContrast();
+  $('#clash').hidden = !bad;
+}
+function tint(src, mode) {
+  if (mode === 'orig') return src;
+  const c = mk(src.width, src.height), g = c.getContext('2d');
+  g.drawImage(src, 0, 0); g.globalCompositeOperation = 'source-in'; g.fillStyle = mode === 'white' ? '#FFFFFF' : '#141414'; g.fillRect(0, 0, c.width, c.height);
+  return c;
+}
+function showPrev() {
+  const box = $('#logoPrev'); box.innerHTML = '';
+  if (S.text && !S.logoFile) { const s = document.createElement('b'); s.textContent = S.text; s.style.cssText = 'font-family:var(--disp);font-stretch:151%;font-size:14px;text-align:center;word-break:break-word'; box.append(s); return; }
+  if (S.logo) box.append(S.logo === exampleLogo ? Object.assign(new Image(), { src: 'pompon-logo.svg', alt: '' }) : S.logo);
+}
+$('#logoFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  const note = $('#logoNote'); note.classList.remove('err');
+  if (f.size > 15 * 1024 * 1024) { note.textContent = 'Файл больше 15 МБ. Сохраните логотип поменьше и загрузите снова.'; note.classList.add('err'); return; }
+  try {
+    const img = await readLogo(f), r = prepLogo(img, S.cutBg);
+    S.logoRaw = img; S.logo = r.c; S.hasBg = r.hasBg; S.logoFile = f; S.text = ''; $('#brandTxt').value = '';
+    $('#bgRow').hidden = !r.hasBg;
+    note.textContent = `Загружен: ${f.name}` + (r.hasBg ? '. Фон вокруг убрали — если что-то пропало, снимите галочку ниже.' : '');
+    showPrev(); redraw();
+  } catch (err) {
+    note.textContent = 'Не получилось открыть этот файл. Подойдёт PNG, SVG или JPG.'; note.classList.add('err');
+  }
+  e.target.value = '';
+});
+
+/* ===== этикетка ===== */
+const label = mk(2048, 1454);
+let exampleLogo = null;
+const wallMM = v => v.h - v.neck - 3 - 6.2 * v.d / 60;
+function rnd(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function fitFont(g, txt, weight, fam, maxW, size, min) {
+  for (; size > min; size *= .94) { g.font = `${weight} ${size}px ${fam}`; if (g.measureText(txt).width <= maxW) return size; }
+  g.font = `${weight} ${min}px ${fam}`; return min;
+}
+function wrapLines(g, txt, maxW) {
+  const out = []; let line = '';
+  for (const w of txt.split(/\s+/)) { const t = line ? line + ' ' + w : w; if (g.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t; }
+  if (line) out.push(line); return out;
+}
+const DISP = '"Roboto Flex","Golos Text",sans-serif', BODY = '"Golos Text",sans-serif';
+function drawLabel() {
+  const v = VOLS[S.vol], R = v.d / 2, C = Math.PI * v.d, Hm = wallMM(v);
+  const W = 2048, H = Math.round(W * Hm / C), k = W / C;
+  if (label.height !== H) label.height = H;
+  const g = label.getContext('2d');
+  g.setTransform(k, 0, 0, k, 0, 0);
+  const ink = inkOn(S.can), bInk = inkOn(S.flColor);
+  g.fillStyle = S.can; g.fillRect(0, 0, C, Hm);
+
+  // полоса вкуса волной по всей окружности
+  const top = Hm * .6, waves = 5, amp = 2.6;
+  g.beginPath(); g.moveTo(0, Hm + 1);
+  for (let x = 0; x <= C + .5; x += .5) g.lineTo(x, top + amp * Math.sin(x / C * TAU * waves));
+  g.lineTo(C, Hm + 1); g.closePath(); g.fillStyle = S.flColor; g.fill();
+  // пузырьки газа в полосе
+  const r1 = rnd(11); g.fillStyle = bInk === '#FFFFFF' ? 'rgba(255,255,255,.16)' : 'rgba(255,255,255,.34)';
+  for (let n = 0; n < 70; n++) { const x = r1() * C, y = top + 6 + r1() * (Hm - top - 8), r = .5 + r1() * r1() * 3.2; g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill(); }
+  // кромка над полосой
+  g.strokeStyle = ink; g.globalAlpha = .18; g.lineWidth = .35; g.beginPath();
+  for (let x = 0; x <= C + .5; x += .5) g.lineTo(x, top - 2.2 + amp * Math.sin(x / C * TAU * waves));
+  g.stroke(); g.globalAlpha = 1;
+
+  // бегущая строка сверху
+  g.fillStyle = ink; g.globalAlpha = .7; g.font = `600 2.3px ${BODY}`; g.textBaseline = 'middle';
+  const run = `ЛИМОНАД ГАЗИРОВАННЫЙ · ${v.t.toUpperCase()} · `; const rw = g.measureText(run).width;
+  for (let x = -rw * .3; x < C; x += rw) g.fillText(run, x, 4.2);
+  g.globalAlpha = 1;
+
+  // лицевая сторона: центр по x = C/2
+  const cx = C / 2, frontW = R * 1.62;
+  // вкус
+  const fy = top + (Hm - top) * .52;
+  g.fillStyle = bInk; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.font = `600 2.4px ${BODY}`; g.globalAlpha = .85; g.fillText('ВКУС', cx, top + 5.6); g.globalAlpha = 1;
+  const name = (S.flName || ' ').toUpperCase();
+  let fs = fitFont(g, name, 700, DISP, frontW, 8.2, 4.6);
+  let lines = [name];
+  if (g.measureText(name).width > frontW) { g.font = `700 ${fs = 5.2}px ${DISP}`; lines = wrapLines(g, name, frontW).slice(0, 2); }
+  lines.forEach((l, i) => g.fillText(l, cx, fy + (i - (lines.length - 1) / 2) * fs * 1.08));
+  g.font = `600 2.6px ${BODY}`; g.fillText(v.t.toUpperCase(), cx, Hm - 4.6);
+
+  // логотип или название марки
+  const boxW = R * 1.42 * S.logoSize, boxH = top * .5 * S.logoSize, ly = top * .48;
+  if (S.text && !S.logoFile) {
+    g.fillStyle = S.logoMode === 'white' ? '#FFFFFF' : S.logoMode === 'black' ? '#141414' : ink;
+    const t = S.text.toUpperCase(); fs = fitFont(g, t, 700, DISP, boxW * 1.15, 13 * S.logoSize, 3);
+    g.fillText(t, cx, ly);
+  } else if (S.logo) {
+    const src = tint(S.logo, S.logoMode), a = src.width / src.height;
+    let w = boxW, h = w / a; if (h > boxH) { h = boxH; w = h * a; }
+    g.drawImage(src, cx - w / 2, ly - h / 2, w, h);
+  }
+
+  // обратная сторона — по шву (x = 0 и x = C), рисуем дважды
+  for (const bx of [0, C]) drawBack(g, bx, R, Hm, top, ink, v);
+
+  // боковые подписи
+  g.save(); g.fillStyle = ink; g.globalAlpha = .55; g.font = `500 1.9px ${BODY}`;
+  for (const sx of [C * .25, C * .75]) { g.save(); g.translate(sx, top * .5); g.rotate(-Math.PI / 2); g.fillText('НАПИТОК БЕЗАЛКОГОЛЬНЫЙ СИЛЬНОГАЗИРОВАННЫЙ', 0, 0); g.restore(); }
+  g.restore();
+
+  // лёгкая тень печати у краёв
+  const gr = g.createLinearGradient(0, 0, 0, Hm);
+  gr.addColorStop(0, 'rgba(0,0,0,.12)'); gr.addColorStop(.05, 'rgba(0,0,0,0)'); gr.addColorStop(.95, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,.16)');
+  g.fillStyle = gr; g.fillRect(0, 0, C, Hm);
+  g.setTransform(1, 0, 0, 1, 0, 0);
+}
+function drawBack(g, bx, R, Hm, top, ink, v) {
+  const w = R * 1.55, x0 = bx - w / 2;
+  g.save(); g.fillStyle = ink; g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+  let y = 11;
+  const para = (t, size, weight = 400, gap = 1.35) => {
+    g.font = `${weight} ${size}px ${BODY}`;
+    for (const l of wrapLines(g, t, w)) { g.fillText(l, x0, y); y += size * gap; }
+    y += size * .5;
+  };
+  g.globalAlpha = .92;
+  para(`Лимонад «${S.flName || 'Вкус'}»`, 2.5, 700);
+  g.globalAlpha = .8;
+  para(`Состав: вода питьевая, сахар, регулятор кислотности — лимонная кислота, натуральный ароматизатор «${S.flName || 'Вкус'}», диоксид углерода.`, 1.75);
+  para('Пищевая ценность в 100 мл: углеводы — 9,8 г. Энергетическая ценность — 40 ккал / 167 кДж.', 1.75);
+  para('Хранить при температуре от +2 до +22 °C. Срок годности — 180 суток. Дата изготовления — на дне банки.', 1.75);
+  para('Изготовитель: ООО «Живая Долина», Россия, г. Челябинск, Бродокалмакский тракт, 3.', 1.75);
+  g.globalAlpha = 1;
+  // EAC
+  const ey = Math.min(y + 1, top - 12);
+  g.strokeStyle = ink; g.lineWidth = .4; g.strokeRect(x0, ey, 9, 6.2);
+  g.font = `700 3.6px ${BODY}`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('EAC', x0 + 4.5, ey + 3.3);
+  g.font = `600 2.2px ${BODY}`; g.textAlign = 'left'; g.fillText(v.t.replace(' ', ' '), x0 + 12, ey + 3.3);
+  // штрихкод на белой плашке в полосе вкуса
+  const bw = 24, bh = 14, bxx = bx - bw / 2, by = top + (Hm - top) * .45 - bh / 2;
+  g.fillStyle = '#FFFFFF'; g.beginPath(); g.roundRect ? g.roundRect(bxx, by, bw, bh, 1.4) : g.rect(bxx, by, bw, bh); g.fill();
+  g.fillStyle = '#111'; const r = rnd(7); let xx = bxx + 2;
+  while (xx < bxx + bw - 2.4) { const lw = .25 + Math.floor(r() * 3) * .25; g.fillRect(xx, by + 1.6, lw, bh - 5.4); xx += lw + .25 + Math.floor(r() * 3) * .22; }
+  g.font = `500 1.6px ${BODY}`; g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.fillText('4 607 18' + Object.keys(VOLS).indexOf(S.vol) + '3 5512 7', bx, by + bh - 1.2);
+  g.restore();
+}
+
+/* ===== сцена ===== */
+const canvas = $('#gl'), stage = $('#stage');
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); }
+catch (e) { stage.insertAdjacentHTML('beforeend', '<p class="nogl">Этот браузер не показывает 3D. Откройте страницу в Chrome, Яндекс Браузере или Safari.</p>'); }
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(26, 1, .1, 50);
+let can = new THREE.Group(), shadow;
+const M = {};
+let labelTex;
+if (renderer) {
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.toneMapping = THREE.NeutralToneMapping; renderer.toneMappingExposure = .95; // нейтральная — цвет банки как на образце
+  renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.setClearColor(0, 0);
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), .035).texture;
+  const key = new THREE.DirectionalLight(0xfff4e6, 2.2); key.position.set(-3, 4, 5); scene.add(key);
+  const rim = new THREE.DirectionalLight(0xffb27a, 3.2); rim.position.set(4, 2, -3); scene.add(rim);
+  const rim2 = new THREE.DirectionalLight(0xffffff, 1.4); rim2.position.set(-4.5, 1, -2.5); scene.add(rim2);
+  scene.add(can);
+  labelTex = new THREE.CanvasTexture(label); labelTex.colorSpace = THREE.SRGBColorSpace; labelTex.anisotropy = renderer.capabilities.getMaxAnisotropy(); labelTex.wrapS = THREE.RepeatWrapping;
+  M.metal = new THREE.MeshPhysicalMaterial({ color: 0xdfe3e6, metalness: 1, roughness: .2, side: THREE.DoubleSide });
+  M.rim = new THREE.MeshPhysicalMaterial({ color: 0xd6dadd, metalness: 1, roughness: .26, side: THREE.DoubleSide });
+  M.neck = new THREE.MeshPhysicalMaterial({ color: S.can, metalness: .35, roughness: .3, clearcoat: .8, clearcoatRoughness: .08, side: THREE.DoubleSide });
+  M.label = new THREE.MeshPhysicalMaterial({ map: labelTex, metalness: .22, roughness: .32, clearcoat: .8, clearcoatRoughness: .08 });
+  M.lid = new THREE.MeshPhysicalMaterial({ color: 0xd9dde1, metalness: 1, roughness: .26 });
+  M.tab = new THREE.MeshPhysicalMaterial({ color: 0xc3c8cd, metalness: 1, roughness: .2 });
+  M.score = new THREE.MeshStandardMaterial({ color: 0x8a8f94, metalness: 1, roughness: .45 });
+  const sc = mk(256, 256), sg = sc.getContext('2d'), rg = sg.createRadialGradient(128, 128, 0, 128, 128, 128);
+  rg.addColorStop(0, 'rgba(60,40,10,.5)'); rg.addColorStop(.38, 'rgba(60,40,10,.26)'); rg.addColorStop(1, 'rgba(60,40,10,0)');
+  sg.fillStyle = rg; sg.fillRect(0, 0, 256, 256);
+  shadow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sc), transparent: true, depthWrite: false }));
+  scene.add(shadow);
+}
+function applyNeck() { if (M.neck) M.neck.color.set(S.can); }
+function applyLid() { if (!M.lid) return; const l = LIDS[S.lid]; M.lid.color.setHex(l[1]); M.lid.metalness = l[3]; M.lid.roughness = l[4]; M.tab.color.setHex(l[2]); M.tab.metalness = l[3]; }
+function applyFinish() {
+  if (!M.label) return; const m = S.finish === 'matte';
+  for (const x of [M.label, M.neck]) { x.roughness = m ? .62 : .3; x.clearcoat = m ? 0 : .8; x.metalness = m ? .08 : x === M.label ? .22 : .35; x.needsUpdate = true; }
+}
+
+function buildCan() {
+  if (!renderer) return;
+  can.traverse(o => o.geometry && o.geometry.dispose()); can.clear();
+  const v = VOLS[S.vol], u = .01, R = v.d / 2, s = v.d / 60, hh = v.h / 2, bottomH = 6.2 * s, yW = hh - 3 - v.neck, rRim = Math.min(R - 1.6, 27.2);
+  const V = pts => pts.map(([r, y]) => new THREE.Vector2(r * u, y * u));
+  // дно
+  const bot = [[0, 3.2], [12, 2.6], [19, 1.2], [22, .2], [24, 0], [26.2, .7], [28, 2.2], [29.4, 4.2], [30, 6.2]].map(([r, y]) => [r * s, y * s - hh]);
+  can.add(new THREE.Mesh(new THREE.LatheGeometry(V(bot), 128), M.metal));
+  // этикетка
+  const wallH = yW - (bottomH - hh);
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(R * u, R * u, (wallH + .2) * u, 192, 1, true, Math.PI, TAU), M.label);
+  body.position.y = ((yW + bottomH - hh) / 2) * u; can.add(body);
+  // плечо (в цвет банки)
+  const neck = [];
+  for (let i = 0; i <= 14; i++) { const t = i / 14, e = (1 - Math.cos(Math.PI * t)) / 2; neck.push([R + (rRim - .4 - R) * e, yW + v.neck * t]); }
+  can.add(new THREE.Mesh(new THREE.LatheGeometry(V(neck), 160), M.neck));
+  // закатка и чашка крышки
+  const lidY = hh - 3.1, lidR = rRim - 1.9;
+  const rim = [[rRim - .4, hh - 3], [rRim, hh - 2.6], [rRim + .3, hh - 1.8], [rRim + .32, hh - .9], [rRim + .1, hh - .2], [rRim - .4, hh], [rRim - .9, hh - .15],
+    [rRim - 1.15, hh - .7], [rRim - 1.3, hh - 1.6], [rRim - 1.45, hh - 2.6], [lidR, lidY]];
+  can.add(new THREE.Mesh(new THREE.LatheGeometry(V(rim), 160), M.rim));
+  // крышка с ключом
+  const L = lidR * u, sc = L / .236;
+  const lid = new THREE.Mesh(new THREE.CircleGeometry(L, 96).rotateX(-Math.PI / 2), M.lid); lid.position.y = lidY * u; can.add(lid);
+  for (const [rr, tt] of [[.88, .0032], [.6, .0018]]) { const t = new THREE.Mesh(new THREE.TorusGeometry(L * rr, tt * sc, 8, 128).rotateX(Math.PI / 2), M.lid); t.position.y = lidY * u + .0004; can.add(t); }
+  const score = new THREE.Mesh(new THREE.RingGeometry(.9, 1, 64).rotateX(-Math.PI / 2), M.score);
+  score.scale.set(.056 * sc, 1, .044 * sc); score.position.set(.14 * sc, lidY * u + .0008, 0); can.add(score);
+  const rivet = new THREE.Mesh(new THREE.CylinderGeometry(.013 * sc, .013 * sc, .007, 24), M.lid); rivet.position.set(0, lidY * u + .003, 0); can.add(rivet);
+  const tw = .034 * sc, sh = new THREE.Shape();
+  sh.moveTo(-.12 * sc, -tw); sh.lineTo(.03 * sc, -tw); sh.absarc(.03 * sc, 0, tw, -Math.PI / 2, Math.PI / 2, false);
+  sh.lineTo(-.12 * sc, tw); sh.absarc(-.12 * sc, 0, tw, Math.PI / 2, Math.PI * 1.5, false);
+  const hole = new THREE.Path(); hole.absellipse(-.108 * sc, 0, .021 * sc, .019 * sc, 0, TAU, true); sh.holes.push(hole);
+  const tab = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: .004, bevelEnabled: true, bevelThickness: .0015, bevelSize: .0015, bevelSegments: 2, curveSegments: 24 }).rotateX(-Math.PI / 2), M.tab);
+  tab.position.y = lidY * u + .0045; can.add(tab);
+  shadow.scale.setScalar(R * u * 5.2); shadow.position.y = -hh * u + .001;
+  $('#dims').textContent = `${v.t} · ${v.d} × ${v.h} мм`;
+}
+let texH = 0;
+function redraw() {
+  drawLabel(); checkClash(); if (!labelTex) return;
+  if (label.height !== texH) { labelTex.dispose(); texH = label.height; } // размер этикетки сменился с объёмом — текстуру заводим заново
+  labelTex.needsUpdate = true;
+}
+
+/* ===== вращение ===== */
+const rot = { y: 0, v: 0, x: 0 }, drag = { on: false, x: 0, y: 0 };
+let lastTouch = -1e9, goTo = null, pop = 0;
+const hint = $('#hint');
+setTimeout(() => hint.classList.add('off'), 7000);
+function touched() { lastTouch = performance.now(); hint.classList.add('off'); }
+canvas.addEventListener('pointerdown', e => {
+  if (e.button > 0) return; drag.on = true; drag.x = e.clientX; drag.y = e.clientY; rot.v = 0; goTo = null; touched();
+  stage.classList.add('drag'); try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+});
+canvas.addEventListener('pointermove', e => {
+  if (!drag.on) return;
+  const dx = e.clientX - drag.x; drag.x = e.clientX; rot.v = dx * .011; rot.y += rot.v;
+  if (e.pointerType === 'mouse') { const dy = e.clientY - drag.y; drag.y = e.clientY; rot.x = clamp(rot.x + dy * .004, -.3, .45); }
+  touched();
+});
+const end = () => { drag.on = false; stage.classList.remove('drag'); };
+canvas.addEventListener('pointerup', end); canvas.addEventListener('pointercancel', end); canvas.addEventListener('lostpointercapture', end);
+document.querySelectorAll('.views button').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.views button').forEach(x => x.classList.toggle('on', x === b));
+  const t = +b.dataset.view ? Math.PI : 0; goTo = t + Math.round((rot.y - t) / TAU) * TAU; rot.v = 0; touched();
+}));
+
+/* ===== кадр ===== */
+let W = 0, H = 0;
+function fit(aspect, tight) {
+  camera.aspect = aspect;
+  const t = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)), d = Math.max((tight ? 1.92 : 2.25) / t, (tight ? 1 : 1.2) / (t * aspect));
+  camera.position.set(0, d * .3, d * .96); camera.lookAt(0, -.07, 0); camera.updateProjectionMatrix();
+}
+function resize() {
+  if (!renderer) return;
+  const r = stage.getBoundingClientRect(); W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
+  renderer.setSize(W, H, false); fit(W / H);
+}
+new ResizeObserver(resize).observe(stage);
+let last = performance.now(), sway = 0;
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  if (!drag.on) {
+    if (goTo !== null) { rot.y += (goTo - rot.y) * (1 - Math.exp(-dt * 5)); if (Math.abs(goTo - rot.y) < .002) { rot.y = goTo; goTo = null; } }
+    else { rot.y += rot.v; rot.v *= Math.exp(-dt * 3.5); }
+    rot.x *= Math.exp(-dt * 1.2);
+  }
+  const idle = !reduce && now - lastTouch > 6000 && goTo === null;
+  sway += ((idle ? 1 : 0) - sway) * (1 - Math.exp(-dt * .8));
+  pop *= Math.exp(-dt * 5);
+  can.rotation.set(rot.x, rot.y + Math.sin(now * .00045) * .42 * sway, 0);
+  can.position.y = Math.sin(now * .0011) * .012 * sway;
+  can.scale.setScalar(1 + pop * .04);
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+
+/* ===== макет для заявки ===== */
+function shot(angle, w, h) {
+  const pr = renderer.getPixelRatio();
+  renderer.setPixelRatio(1); renderer.setSize(w, h, false); fit(w / h, true);
+  const keep = can.rotation.clone(), ky = can.position.y, ks = can.scale.x;
+  can.rotation.set(.05, angle, 0); can.position.y = 0; can.scale.setScalar(1);
+  renderer.render(scene, camera);
+  const c = mk(w, h); c.getContext('2d').drawImage(canvas, 0, 0);
+  can.rotation.copy(keep); can.position.y = ky; can.scale.setScalar(ks);
+  renderer.setPixelRatio(pr); resize();
+  return c;
+}
+function spec() {
+  const v = VOLS[S.vol];
+  return [
+    ['Объём', `${v.t} ${v.sub}, ${v.d} × ${v.h} мм`],
+    ['Вкус', S.flName || '—'], ['Цвет полосы вкуса', S.flColor.toUpperCase()],
+    ['Цвет банки', `${S.canName}, ${S.can.toUpperCase()}`],
+    ['Крышка', LIDS[S.lid][0].toLowerCase()], ['Покрытие', S.finish === 'matte' ? 'матовое' : 'глянцевое'],
+    ['Логотип', S.logoFile ? `файл ${S.logoFile.name}` : S.text ? `надпись «${S.text}»` : 'пример Pompon'],
+    ['Цвет логотипа', { orig: 'как в файле', white: 'белый', black: 'чёрный' }[S.logoMode]],
+  ];
+}
+function maket(who) {
+  const Wc = 1600, a = shot(0, 720, 900), b = shot(Math.PI, 720, 900);
+  const lw = 1000, lh = Math.round(lw * label.height / label.width);
+  const Hc = 120 + 900 + 60 + lh + 80;
+  const c = mk(Wc, Hc), g = c.getContext('2d');
+  g.fillStyle = '#FFFCF3'; g.fillRect(0, 0, Wc, Hc);
+  g.fillStyle = '#141414'; g.font = `700 40px ${DISP}`; g.textBaseline = 'alphabetic';
+  g.fillText('Макет банки', 60, 78);
+  g.font = `400 26px ${BODY}`; g.fillStyle = '#6B6458';
+  g.fillText(`${who} · ${new Date().toLocaleDateString('ru-RU')}`, 360, 76);
+  g.drawImage(a, 60, 120); g.drawImage(b, 820, 120);
+  g.font = `500 22px ${BODY}`; g.fillText('лицевая сторона', 60 + 290, 1040); g.fillText('обратная сторона', 820 + 285, 1040);
+  const ly = 1080; g.drawImage(label, 60, ly, lw, lh);
+  g.strokeStyle = 'rgba(20,20,20,.15)'; g.strokeRect(60.5, ly + .5, lw, lh);
+  g.fillStyle = '#6B6458'; g.font = `400 20px ${BODY}`; g.fillText('развёртка этикетки', 60, ly + lh + 34);
+  let y = ly + 10;
+  for (const [k, val] of spec()) {
+    g.fillStyle = '#6B6458'; g.font = `400 21px ${BODY}`; g.fillText(k, 1110, y += 34);
+    g.fillStyle = '#141414'; g.font = `600 23px ${BODY}`;
+    for (const l of wrapLines(g, val, 440)) g.fillText(l, 1110, y += 30);
+    y += 8;
+  }
+  return c;
+}
+
+/* ===== форма ===== */
+const form = $('#form'), err = $('#formErr');
+new IntersectionObserver(es => es.forEach(e => document.body.classList.toggle('form-on', e.isIntersecting && innerWidth < 900)), { rootMargin: '-35% 0px -20% 0px' }).observe($('#zayavka'));
+form.addEventListener('submit', async e => {
+  e.preventDefault(); err.hidden = true;
+  const name = $('#fName').value.trim(), contact = $('#fContact').value.trim(), company = $('#fCompany').value.trim();
+  const bad = (el, t) => { err.textContent = t; err.hidden = false; el.focus(); };
+  if (!name) return bad($('#fName'), 'Напишите, как к вам обращаться.');
+  const okContact = /\S+@\S+\.\S+/.test(contact) || contact.replace(/\D/g, '').length >= 10;
+  if (!okContact) return bad($('#fContact'), 'Оставьте телефон или почту — по ним мы ответим.');
+  if (!$('#fAgree').checked) return bad($('#fAgree'), 'Поставьте галочку согласия на обработку данных.');
+  if (form.elements._honey.value) return;
+  const btn = $('#sendBtn'); btn.disabled = true; btn.textContent = 'Отправляем…';
+  try {
+    const m = maket(company || name);
+    const blob = await new Promise(r => m.toBlob(r, 'image/jpeg', .88));
+    const fd = new FormData();
+    const v = VOLS[S.vol];
+    fd.append('_subject', `Заявка с конструктора банки: ${company || name}, ${v.t}, ${S.flName}`);
+    fd.append('_template', 'table'); fd.append('_captcha', 'false'); fd.append('_url', FORM_PAGE);
+    fd.append('Имя', name); fd.append('Компания', company || '—'); fd.append('Телефон или почта', contact);
+    fd.append('Тираж', $('#fTirazh').value); fd.append('Комментарий', $('#fComment').value.trim() || '—');
+    for (const [k, val] of spec()) fd.append(k, val);
+    fd.append('attachment', new File([blob], 'maket-banki.jpg', { type: 'image/jpeg' }));
+    if (S.logoFile && S.logoFile.size < 8 * 1024 * 1024) fd.append('attachment2', S.logoFile, S.logoFile.name);
+    await fetch('https://formsubmit.co/' + FORM_TO, { method: 'POST', body: fd, mode: 'no-cors', referrerPolicy: 'unsafe-url' });
+    const url = URL.createObjectURL(blob);
+    $('#okImg').src = url; $('#okDl').href = url;
+    form.hidden = true; $('#ok').classList.add('on');
+    $('#ok').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+  } catch (x) {
+    err.textContent = 'Не получилось отправить. Проверьте интернет и нажмите ещё раз — или позвоните: +7 982 348-80-88.'; err.hidden = false;
+  }
+  btn.disabled = false; btn.textContent = 'Отправить заявку';
+});
+
+/* ===== старт ===== */
+(async () => {
+  try { await Promise.all([`700 40px ${DISP}`, `600 20px ${BODY}`, `400 20px ${BODY}`, `500 20px ${BODY}`, `700 20px ${BODY}`].map(f => document.fonts.load(f))); } catch (e) {}
+  try {
+    // у svg Pompon нет размеров — разбираем его так же, как загруженный файл
+    const f = new File([await (await fetch('pompon-logo.svg')).blob()], 'pompon.svg', { type: 'image/svg+xml' });
+    exampleLogo = prepLogo(await readLogo(f), false).c; S.logo = exampleLogo;
+  } catch (e) {}
+  buildCan(); applyLid(); applyFinish(); redraw(); resize();
+  if (renderer) requestAnimationFrame(t => { last = t; frame(t); });
+})();
+</script>
+</body>
+</html>
