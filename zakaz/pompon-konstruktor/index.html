@@ -6,335 +6,336 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Pompon — бабл-ти в банке</title>
 <meta name="description" content="Готовый бабл-ти с джусболлами в банке 0,33 л. Пять вкусов, собственное производство в Челябинске, СТМ под вашей этикеткой.">
-<link rel="icon" href="assets/pompon-main.png" type="image/png">
+<meta property="og:title" content="Pompon — бабл-ти в банке">
+<meta property="og:description" content="Пять вкусов, джусболлы, своё производство. Загрузите макет — банка наденет вашу этикетку.">
+<meta property="og:image" content="https://smirnov-artur.github.io/zakaz/pompon-konstruktor/assets/og.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFFCF3">
+<link rel="icon" href="assets/star-main.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;800;900&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://static.tildacdn.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--acc:#F07F1A;--acc-ink:#0A0A0C;--bg:#0A0A0C;--ink:#F3F3EE;--mute:#8F8F96;--line:rgba(255,255,255,.12);
-  --disp:'Unbounded',system-ui,sans-serif;--body:'Manrope',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace}
+/* шрифт заголовков — их TT Travels Next с их же Tilda (pompon.pro), текст — Jost вместо их Circe (Circe Tilda отдаёт только своим доменам) */
+@font-face{font-family:'TT Travels Next';src:url('https://static.tildacdn.com/tild3461-6534-4264-b961-643666366165/AnyConvcom__TT_Trave.woff') format('woff');font-weight:400;font-style:normal;font-display:swap}
+:root{--acc:#EF8018;--acc-ink:#1A1511;--cream:#FFFCF3;--paper:#F4E8D2;--ink:#1A1511;--mute:#6F655B;--line:rgba(26,21,17,.14);
+  --disp:'TT Travels Next','Jost',system-ui,sans-serif;--body:'Jost',system-ui,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
-html{background:var(--bg);overflow-x:clip}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;overflow-x:clip}
+html{background:var(--cream);overflow-x:clip}
+body{background:var(--cream);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip;font-synthesis:none}
 body.dragging{user-select:none;cursor:grabbing}
 a{color:inherit;text-decoration:none}
 button,input,select{font:inherit;color:inherit}
 [hidden]{display:none!important}
-.mono{font-family:var(--mono);font-weight:500;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+.nw{white-space:nowrap}
 
-#gl{position:fixed;inset:0;width:100vw;height:100vh;z-index:5;pointer-events:none;background:#0A0A0C}
+#gl{position:fixed;inset:0;width:100vw;height:100vh;z-index:5;pointer-events:none;background:var(--cream)}
 #fg{position:fixed;inset:0;z-index:6;pointer-events:none;overflow:hidden}
-#fg img{position:absolute;opacity:0;will-change:transform,opacity;filter:blur(14px) brightness(.82) saturate(1.1)}
-.fg-mango{width:36vw;right:-7vw;top:-9vh}.fg-grapes{width:20vw;right:-5vw;bottom:-19vh;filter:blur(11px) brightness(.8)!important}.fg-apple{width:11vw;left:-4.5vw;top:34vh;filter:blur(18px) brightness(.7)!important}
-.fg-mint{width:30vw;right:-6vw;top:-7vh}.fg-pine{width:26vw;left:-6vw;bottom:-12vh}.fg-rasp{width:24vw;right:-5vw;top:-6vh}.fg-gum{width:22vw;left:-5vw;bottom:-10vh}.fg-lime{width:26vw;right:-6vw;top:-8vh}.fg-ice{width:20vw;left:-4vw;bottom:-9vh}
-@media (max-width:760px){.fg-rasp,.fg-mint,.fg-lime{width:52vw;right:-14vw;top:-5vh}.fg-pine,.fg-gum,.fg-ice{width:40vw;left:-12vw;bottom:-7vh}.fg-mango{width:62vw;right:-18vw;top:-6vh}.fg-grapes{width:40vw;right:-10vw;bottom:-8vh}.fg-apple{display:none}}
-#ld{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;transition:opacity .9s,visibility .9s}
-.ld-in{width:min(340px,76vw);display:grid;justify-items:center;gap:26px;color:var(--mute)}
-.ld-logo{display:flex;align-items:center;gap:14px;height:96px}
-.ld-star{position:relative;width:118px;height:96px;animation:ldPop 1.1s cubic-bezier(.3,1.6,.4,1) both,ldSpin 3.2s cubic-bezier(.6,0,.3,1) .9s infinite}
-.ld-star img{width:100%;height:100%;object-fit:contain;display:block}
-.ld-word{display:flex;height:46px}
-.ld-word img{height:100%;display:block;clip-path:inset(0 100% 0 0);animation:ldWord .9s cubic-bezier(.2,.8,.2,1) .45s forwards}
-#ldBar{display:block;width:100%;height:2px;background:var(--acc);transform-origin:left;transform:scaleX(0);transition:transform .45s cubic-bezier(.2,.7,.2,1)}
-@keyframes ldPop{0%{transform:scale(0) rotate(-140deg)}100%{transform:none}}
-@keyframes ldSpin{0%,55%{transform:none}70%{transform:scale(1.12,.86) rotate(0)}100%{transform:rotate(180deg)}}
+#fg img{position:absolute;opacity:0;will-change:transform,opacity;filter:blur(7px) saturate(1.05)}
+.fg-mango{width:36vw;right:-7vw;top:-9vh}.fg-grapes{width:20vw;right:-5vw;bottom:-19vh;filter:blur(10px)!important}.fg-apple{width:11vw;right:-4.5vw;top:46vh;filter:blur(16px)!important}
+.fg-mint{width:30vw;right:-6vw;top:-7vh}.fg-pine{width:24vw;right:-5vw;bottom:-12vh}.fg-rasp{width:24vw;right:-5vw;top:-6vh}.fg-gum{width:20vw;right:-4vw;bottom:-10vh}.fg-lime{width:26vw;right:-6vw;top:-8vh}.fg-ice{width:18vw;right:-3vw;bottom:-9vh}
+@media (max-width:760px){.fg-rasp,.fg-mint,.fg-lime{width:52vw;right:-14vw;top:-5vh}.fg-pine,.fg-gum,.fg-ice{width:36vw;right:-12vw;bottom:-6vh}.fg-mango{width:62vw;right:-18vw;top:-6vh}.fg-grapes{width:40vw;right:-10vw;bottom:-8vh}.fg-apple{display:none}}
+
+/* загрузка: их знак выскакивает и пружинит, слово проявляется */
+#ld{position:fixed;inset:0;z-index:100;background:var(--cream);display:grid;place-items:center;transition:opacity .9s,visibility .9s}
+.ld-in{width:min(300px,70vw);display:grid;justify-items:center;gap:28px;color:var(--mute);font-size:15px}
+.ld-logo{position:relative;width:100%;aspect-ratio:1.3686}
+.ld-logo .w{position:absolute;inset:0;width:100%;z-index:2;color:var(--ink);clip-path:inset(0 100% 0 0);animation:ldWord .9s cubic-bezier(.2,.8,.2,1) .5s forwards}
+.ld-logo .s{position:absolute;left:30.73%;top:.71%;width:68.76%;transform-origin:50% 55%;animation:ldPop 1s cubic-bezier(.3,1.6,.4,1) both,ldSq 2.4s cubic-bezier(.5,0,.3,1) 1.1s infinite}
+#ldBar{display:block;width:100%;height:2px;border-radius:2px;background:var(--acc);transform-origin:left;transform:scaleX(0);transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+@keyframes ldPop{0%{transform:scale(0) rotate(-120deg)}100%{transform:none}}
+@keyframes ldSq{0%,60%,100%{transform:none}70%{transform:scale(1.08,.9)}82%{transform:scale(.96,1.05) rotate(4deg)}}
 @keyframes ldWord{to{clip-path:inset(0 0 0 0)}}
 #ld.off{opacity:0;visibility:hidden}
-@keyframes pulse{50%{transform:scale(.9);opacity:.6}}
 
-.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:28px;padding:18px clamp(16px,4vw,56px)}
-.nav::before{content:"";position:absolute;inset:0 0 -30px;background:linear-gradient(#0A0A0Cf0,#0A0A0C00);pointer-events:none;z-index:-1}
-.logo{cursor:pointer;display:flex;align-items:center;gap:8px;height:40px}
-.logo .st{height:40px;width:auto;display:block;transform:rotate(var(--rot,0deg)) scale(var(--sq,1));transition:transform .5s cubic-bezier(.3,1.7,.4,1)}
-.logo:hover .st{--sq:1.14}
-.logo .wd{height:19px;width:auto;display:block;margin-top:5px}
-.nav ul{display:flex;gap:28px;list-style:none;margin-left:auto}
-.nav ul a{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#cfcfca;cursor:pointer;transition:color .2s}
+/* шапка — плашка, как у них на сайте */
+.nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);width:min(1240px,calc(100% - 28px));z-index:50;display:flex;align-items:center;gap:30px;
+  padding:8px 8px 8px 22px;border-radius:999px;background:rgba(255,252,243,.84);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);box-shadow:0 1px 0 rgba(26,21,17,.06),0 10px 30px -18px rgba(26,21,17,.35)}
+.logo{cursor:pointer;display:block;height:62px;margin:-12px 0 -12px -6px}
+.logo img{height:100%;width:auto;display:block}
+.nav ul{display:flex;gap:30px;list-style:none;margin-left:auto}
+.nav ul a{font-size:16px;color:var(--ink);cursor:pointer;transition:color .2s}
 .nav ul a:hover{color:var(--acc)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 24px;border-radius:999px;border:0;
-  background:var(--acc);color:var(--acc-ink);font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:.01em;cursor:pointer;transition:transform .25s,box-shadow .25s,background .6s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 28px;border-radius:999px;border:0;
+  background:var(--ink);color:var(--cream);font-family:var(--body);font-weight:500;font-size:16px;cursor:pointer;transition:transform .25s,background .3s}
 .btn{position:relative;overflow:hidden;isolation:isolate}
-.btn::before{content:"";position:absolute;left:-10%;right:-10%;top:0;bottom:-20%;z-index:-1;border-radius:40% 40% 0 0;transform:translateY(105%);transition:transform .7s cubic-bezier(.2,.8,.2,1);
-  background:radial-gradient(circle at 18% 70%,rgba(255,255,255,.55) 0 3px,transparent 4px),radial-gradient(circle at 42% 55%,rgba(255,255,255,.45) 0 4px,transparent 5px),radial-gradient(circle at 66% 78%,rgba(255,255,255,.5) 0 3px,transparent 4px),radial-gradient(circle at 84% 48%,rgba(255,255,255,.4) 0 2.5px,transparent 3.5px),linear-gradient(color-mix(in srgb,var(--acc) 62%,#fff),color-mix(in srgb,var(--acc) 70%,#3a1a04))}
-.btn:not(.ghost):hover::before{transform:translateY(8%)}
-.btn:hover{transform:translateY(-2px);box-shadow:0 10px 40px -10px var(--acc)}
-.btn.ghost{background:transparent;color:var(--ink);border:1px solid rgba(255,255,255,.28)}
-.btn.ghost:hover{border-color:var(--acc);color:var(--acc);box-shadow:none}
-.nav .btn{height:42px;font-size:12px}
-.snd{display:flex;align-items:center;gap:3px;height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:none;color:#cfcfca;cursor:pointer;font-size:11px}
-.snd i{display:block;width:2px;height:4px;background:currentColor;border-radius:1px;margin-right:0}
-.snd i:nth-child(4){margin-right:8px}
-.snd[aria-pressed=true]{color:var(--acc);border-color:var(--acc)}
+.btn::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--acc);transform:translateY(102%);transition:transform .55s cubic-bezier(.2,.8,.2,1)}
+.btn:not(.ghost):hover::before{transform:none}
+.btn:not(.ghost):hover{color:var(--acc-ink)}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--cream)}
+.nav .btn{height:46px;font-size:15px;padding:0 22px;gap:0}
+.snd{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;border:0;box-shadow:inset 0 0 0 1.5px var(--line);background:none;color:var(--ink);cursor:pointer;transition:box-shadow .2s,color .2s}
+.snd svg{width:22px;height:22px}.snd .wv{display:none}.snd[aria-pressed=true] .wv{display:inline}.snd[aria-pressed=true] .mt{display:none}.snd:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.snd i{display:block;width:2.5px;height:5px;background:currentColor;border-radius:2px}
+.snd[aria-pressed=true]{color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
 .snd[aria-pressed=true] i{animation:eq .9s ease-in-out infinite}.snd i:nth-child(2){animation-delay:-.3s}.snd i:nth-child(3){animation-delay:-.6s}.snd i:nth-child(4){animation-delay:-.15s}
-@keyframes eq{50%{height:12px}}
+@keyframes eq{50%{height:13px}}
 .file{position:absolute;width:1px;height:1px;opacity:0}
 
-.sec{position:relative;min-height:100vh;padding:0 clamp(16px,5vw,76px)}
+.sec{position:relative;min-height:100vh;padding:0 clamp(20px,5.5vw,96px)}
 .behind{position:absolute;z-index:1;pointer-events:none;user-select:none}
 .behind.giant{visibility:hidden}   /* огромные слова рисует сцена: они видны сквозь прозрачную банку */
 .front{position:relative;z-index:10}
-.giant{font-family:var(--disp);font-weight:900;line-height:.82;letter-spacing:-.045em;white-space:nowrap;text-transform:uppercase}
-.kick{color:var(--acc);margin-bottom:22px;transition:color .6s}
-h1,h2{font-family:var(--disp);font-weight:900;text-transform:uppercase;letter-spacing:-.03em;line-height:.92}
-h2{font-size:clamp(38px,5.2vw,88px)}
-p.lead,.txt{font-size:clamp(16px,1.25vw,19px);line-height:1.55;color:#c9c9c4;max-width:36ch}
-.rv{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
+.giant{font-family:var(--disp);font-weight:400;line-height:1;letter-spacing:-.02em;white-space:nowrap}
+h1,h2{font-family:var(--disp);font-weight:400;letter-spacing:-.025em;line-height:1.02}
+h2{font-size:clamp(40px,4.6vw,84px)}
+p.lead,.txt{font-size:clamp(18px,1.3vw,23px);line-height:1.5;color:#4b4239;max-width:34ch}
+.rv{opacity:0;transform:translateY(34px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
 .rv.in{opacity:1;transform:none}
-.rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.24s}
-body:not(.go) .hero .rv{opacity:0;transform:translateY(40px)}
+.rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}
+body:not(.go) .hero .rv{opacity:0;transform:translateY(34px)}
 .spin{position:absolute;z-index:8;touch-action:pan-y;right:4%;top:12%;width:44%;height:72%}
+.tlink{background:none;border:0;cursor:pointer;font-size:16px;color:var(--ink);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:6px;transition:color .2s}
+.tlink:hover{color:var(--acc)}
+
+/* логотип с живой звездой: слово — их векторное, на месте их знака — 3D-звезда */
+.lk{position:relative;aspect-ratio:1.3686}
+.lk .w{position:absolute;inset:0;width:100%;height:100%;color:var(--ink);z-index:2}
+.lk .lk-star{position:absolute;left:30.73%;top:.71%;width:68.76%;height:92.37%}
 
 /* первый экран */
-.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:end;padding-bottom:9vh}
-.hero-word{left:clamp(16px,5vw,76px);top:19vh;font-size:min(10.6vw,25vh);color:var(--acc);text-transform:none;overflow:hidden;padding-bottom:.06em;transition:color .6s}
-.hero-l h1{font-size:clamp(40px,4.6vw,80px);margin-bottom:22px;white-space:nowrap}
-.hero-l .lead{margin-bottom:34px}
-.cta{display:flex;gap:12px;flex-wrap:wrap}
-.hero-r{justify-self:end;text-align:right;display:grid;gap:10px}
-.hero-r div{display:flex;justify-content:flex-end;gap:18px;color:var(--mute)}
-.hero-r b{color:var(--ink);font-weight:700;min-width:120px}
-.hint{position:absolute;left:69%;bottom:5vh;transform:translateX(-50%);color:var(--mute);z-index:10;display:flex;align-items:center;gap:10px}
-.hint i{display:block;width:26px;height:26px;border:1px solid var(--line);border-radius:50%;position:relative}
-.hint i::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--acc);animation:pulse 1.6s infinite}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:1fr auto;padding-top:clamp(96px,13vh,150px);padding-bottom:8vh}
+.hero-logo{width:min(27vw,44vh);align-self:start}
+.hero-l{grid-row:2}
+.hero-l h1{font-size:clamp(42px,4.4vw,82px);margin-bottom:22px}
+.hero-l .lead{margin-bottom:34px;max-width:38ch}
+.cta{display:flex;gap:26px;flex-wrap:wrap;align-items:center}
 
 /* вкусы */
-.flav{display:grid;grid-template-columns:minmax(0,1fr) 30vw minmax(0,1fr);align-items:center}
-.flav .outline{left:50%;top:29%;transform:translate(-50%,-50%);font-size:min(12vw,28vh);color:transparent;-webkit-text-stroke:2px var(--acc);opacity:.5;text-align:center}
-.fl-l .idx{color:var(--mute);margin-bottom:18px}
-.fl-l h2{margin-bottom:22px;font-size:clamp(34px,4.3vw,74px)}
-.fl-r{grid-column:3;justify-self:end;text-align:right;display:grid;gap:10px;color:var(--mute)}
-.fl-r b{color:var(--ink)}
+.flav{display:grid;grid-template-columns:minmax(0,1fr) 30vw minmax(0,1fr);align-items:end;padding-bottom:11vh}
+.flav .bw{left:50%;top:26%;transform:translate(-50%,-50%);font-size:min(12.5vw,27vh);text-align:center}
+.tag{display:inline-grid;place-items:center;width:clamp(124px,8.6vw,164px);aspect-ratio:1.45;border-radius:50%;background:var(--acc);color:#fff;font-family:var(--disp);font-size:clamp(19px,1.35vw,26px);line-height:1.02;letter-spacing:-.02em;text-align:center;margin:0 0 26px -4px;transform:rotate(-8deg);transition:background .6s}
+.fl-l h2{font-size:clamp(30px,2.5vw,46px);margin-bottom:14px}
+.fl-l .txt{max-width:30ch}
 
 /* щёлк */
 .crack{position:relative;height:360vh}
-.crack .stick{position:sticky;top:0;height:100vh;overflow:hidden}
-.cw{left:50%;top:50%;transform:translate(-50%,-50%);will-change:opacity,transform}
-.cw1{font-size:min(19vw,40vh);color:#F3F3EE}
-.cw2{font-size:min(19vw,40vh);color:var(--acc);opacity:0}
-.crack-cap{position:absolute;left:clamp(16px,5vw,76px);bottom:8vh;color:var(--mute);max-width:32ch;line-height:1.7}
+.crack .stick{position:sticky;top:0;height:100vh;overflow:hidden;z-index:7;pointer-events:none}
+.cw{left:50%;top:50%;transform:translate(-50%,-50%);font-size:min(22vw,46vh);will-change:opacity,transform}
+.crack-cap{position:absolute;z-index:10;left:clamp(20px,5.5vw,96px);bottom:9vh;max-width:24ch;font-size:clamp(18px,1.3vw,22px);line-height:1.45;color:var(--ink)}
 
+/* их фото: карточки со скруглением и лёгким поворотом, как у них на сайте */
+.ph{border-radius:28px;overflow:hidden;box-shadow:0 34px 70px -34px rgba(26,21,17,.45);background:#e8dfcf}
+.ph img{display:block;width:100%;height:100%;object-fit:cover}
+figure figcaption{margin-top:16px;font-size:14px;color:var(--mute)}
+.ceh-ph{width:min(30vw,52vh);justify-self:center;align-self:center}.ceh-ph .ph{aspect-ratio:3/4;transform:rotate(-2.5deg)}
+.or-ph{grid-column:2;grid-row:1;width:min(27vw,48vh);justify-self:center;align-self:center}.or-ph .ph{aspect-ratio:2/3;transform:rotate(3deg)}
 /* производство */
 .ceh{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center}
 .ceh-r{grid-column:2}
 .ceh-r h2{margin-bottom:22px}
-.ceh-r .txt{margin-bottom:30px}
-.stats{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);margin-bottom:16px}
-.stats div{padding:22px 16px 22px 0;border-bottom:1px solid var(--line)}
-.stats div:nth-child(odd){border-right:1px solid var(--line)}
-.stats div:nth-child(even){padding-left:22px}
-.stats b{display:block;font-family:var(--disp);font-weight:800;font-size:clamp(28px,3.1vw,52px);color:var(--acc);letter-spacing:-.03em;white-space:nowrap;transition:color .6s}
-.stats span{display:block;color:#b9b9b4;font-size:14px;line-height:1.45;margin-top:6px}
-.src{color:#5f5f66;font-size:10px}
+.ceh-r .txt{margin-bottom:38px;max-width:40ch}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:0 36px;margin-bottom:18px;max-width:640px}
+.facts div{padding:20px 0 22px;border-top:1.5px solid var(--ink)}
+.facts b{display:block;font-family:var(--disp);font-weight:400;font-size:clamp(28px,2.6vw,46px);line-height:1.05;letter-spacing:-.02em;white-space:nowrap}
+.facts span{display:block;color:var(--mute);font-size:15px;line-height:1.4;margin-top:8px}
+.src{color:var(--mute);font-size:13px}
 
 /* СТМ */
 .stm{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center}
 .stm h2{margin-bottom:24px}
-.stm .lead{margin-bottom:32px}
-.status{margin-top:18px;color:var(--mute);min-height:16px;line-height:1.7}
-.status button{border:0;background:none;color:var(--acc);font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.stm .lead{margin-bottom:34px;max-width:40ch}
+.status{margin-top:18px;color:var(--mute);min-height:16px;line-height:1.6;font-size:15px}
+.status button{border:0;background:none;color:var(--ink);font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
 .mini{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;max-width:560px}
-.mini input[type=text]{flex:1 1 200px;height:48px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);padding:0 20px;outline:none}
-.mini input[type=text]:focus{border-color:var(--acc)}
-.mini input[type=color]{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:none;padding:4px;cursor:pointer}
+.mini input[type=text]{flex:1 1 200px;height:52px;border-radius:999px;border:0;box-shadow:inset 0 0 0 1.5px var(--line);background:#fff;padding:0 22px;outline:none}
+.mini input[type=text]:focus{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.mini input[type=color]{width:52px;height:52px;border-radius:50%;border:0;box-shadow:inset 0 0 0 1.5px var(--line);background:#fff;padding:5px;cursor:pointer}
 .mini input[type=color]::-webkit-color-swatch-wrapper{padding:0}.mini input[type=color]::-webkit-color-swatch{border:0;border-radius:50%}
-.ex{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px;align-items:center;color:var(--mute)}
-.ex button{display:flex;align-items:center;gap:10px;height:44px;padding:0 16px 0 6px;border-radius:999px;border:1px solid var(--line);background:none;cursor:pointer;font-family:var(--body);font-size:13px;color:#d6d6d0;transition:border-color .3s}
-.ex button img{width:32px;height:32px;border-radius:50%;object-fit:cover}
-.ex button[aria-pressed=true],.ex button:hover{border-color:var(--acc)}
-.lnk{border:0;background:none;color:var(--mute);cursor:pointer;text-decoration:underline;text-underline-offset:4px;margin-top:22px;display:inline-block}
-.lnk:hover{color:var(--acc)}
+.ex{display:flex;gap:10px;flex-wrap:wrap;margin-top:34px;align-items:center;color:var(--mute);font-size:15px}
+.ex>span{margin-right:6px}
+.ex button{display:flex;align-items:center;gap:10px;height:46px;padding:0 18px 0 6px;border-radius:999px;border:0;box-shadow:inset 0 0 0 1.5px var(--line);background:#fff;cursor:pointer;font-size:15px;color:var(--ink);transition:box-shadow .3s}
+.ex button img{width:34px;height:34px;border-radius:50%;object-fit:cover}
+.ex button[aria-pressed=true],.ex button:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.lnk{border:0;background:none;color:var(--mute);cursor:pointer;text-decoration:underline;text-underline-offset:5px;margin-top:22px;display:inline-block;font-size:15px}
+.lnk:hover{color:var(--ink)}
 
 /* заявка */
 .order{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;padding-top:14vh;padding-bottom:12vh;min-height:110vh}
-.or-l h2{margin-bottom:28px}
-.packs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:28px 0 22px;max-width:580px}
-.packs label{position:relative;display:block;padding:18px 16px;border-radius:16px;border:1px solid var(--line);cursor:pointer;transition:border-color .3s,background .3s}
+.or-l h2{margin-bottom:24px}
+.packs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:34px 0 22px;max-width:600px}
+.packs label{position:relative;display:block;padding:20px 18px 18px;border-radius:22px;background:#fff;box-shadow:inset 0 0 0 1.5px transparent;cursor:pointer;transition:box-shadow .3s,background .3s}
 .packs input{position:absolute;opacity:0}
-.packs label:has(input:checked){border-color:var(--acc);background:rgba(255,255,255,.05)}
-.packs b{display:block;font-family:var(--disp);font-weight:800;font-size:19px;margin:6px 0 4px;line-height:1.1}
-.packs small{color:var(--mute);font-size:12px}
-.packs .mono{color:var(--mute);font-size:10px}
-form.buy{display:flex;gap:10px;max-width:580px;flex-wrap:wrap}
-form.buy input{flex:1 1 200px;height:48px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);padding:0 20px;outline:none;transition:border-color .3s}
-form.buy input:focus{border-color:var(--acc)}
-.agree{display:flex;gap:10px;align-items:center;margin-top:14px;font-size:12px;color:var(--mute)}
-.agree input{accent-color:var(--acc)}
+.packs label:has(input:checked){box-shadow:inset 0 0 0 1.5px var(--ink)}
+.packs label:has(input:focus-visible){outline:2px solid var(--acc);outline-offset:2px}
+.packs b{display:block;font-family:var(--disp);font-weight:400;font-size:22px;line-height:1.1;margin-bottom:6px;min-height:2.2em}
+.packs small{display:block;color:var(--mute);font-size:14px;line-height:1.35}
+form.buy{display:flex;gap:10px;max-width:600px;flex-wrap:wrap}
+form.buy input{flex:1 1 200px;height:52px;border-radius:999px;border:0;box-shadow:inset 0 0 0 1.5px var(--line);background:#fff;padding:0 22px;outline:none;transition:box-shadow .3s}
+form.buy input:focus{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.agree{display:flex;gap:10px;align-items:center;margin-top:16px;font-size:14px;color:var(--mute)}
+.agree input{accent-color:var(--ink)}
 .agree a{text-decoration:underline}
-.note{margin-top:14px;font-size:13px;color:var(--acc)}
+.note{margin-top:14px;font-size:15px;color:var(--ink)}
 
-.foot{position:relative;z-index:10;padding:16vh clamp(16px,5vw,76px) 40px;overflow:hidden}
-.foot-star{display:inline-block;width:.8em}
-.foot-word{font-family:var(--disp);font-weight:900;font-size:15vw;line-height:.86;letter-spacing:-.05em;color:#F07F1A;margin-left:-.04em;padding-bottom:.04em}
-.foot-row{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between;align-items:center;border-top:1px solid var(--line);margin-top:5vh;padding-top:22px;color:var(--mute)}
-.foot-row a:hover{color:var(--acc)}
+.foot{position:relative;z-index:10;padding:14vh clamp(20px,5.5vw,96px) 36px;overflow:hidden}
+.foot-logo{width:min(64vw,104vh);margin-left:-.6%}
+.foot-row{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between;align-items:center;border-top:1.5px solid var(--ink);margin-top:6vh;padding-top:22px;color:var(--mute);font-size:15px}
+.foot-row a:hover{color:var(--ink)}
 
-dialog{margin:auto;border:1px solid var(--line);border-radius:22px;padding:0;max-width:min(980px,94vw);width:100%;background:#141416;color:var(--ink)}
-dialog::backdrop{background:rgba(0,0,0,.7)}
-.dlg-h{padding:22px 24px 0}.dlg-h b{font-family:var(--disp);font-weight:800;font-size:18px;text-transform:uppercase}.dlg-h p{font-size:14px;color:var(--mute);margin-top:6px}
-.crop{position:relative;margin:16px 24px 0;background:#000;border-radius:12px;overflow:hidden;touch-action:none;user-select:none;display:grid;place-items:center}
+dialog{margin:auto;border:0;border-radius:26px;padding:0;max-width:min(980px,94vw);width:100%;background:var(--cream);color:var(--ink);box-shadow:0 30px 80px -30px rgba(26,21,17,.5)}
+dialog::backdrop{background:rgba(26,21,17,.45)}
+.dlg-h{padding:24px 26px 0}.dlg-h b{font-family:var(--disp);font-weight:400;font-size:24px}.dlg-h p{font-size:15px;color:var(--mute);margin-top:6px}
+.crop{position:relative;margin:16px 26px 0;background:#e9dcc4;border-radius:14px;overflow:hidden;touch-action:none;user-select:none;display:grid;place-items:center}
 .crop canvas{display:block;max-width:100%;max-height:62vh}
-.box{position:absolute;box-shadow:0 0 0 9999px rgba(0,0,0,.6);outline:2px solid var(--acc);cursor:move}
+.box{position:absolute;box-shadow:0 0 0 9999px rgba(26,21,17,.45);outline:2px solid var(--acc);cursor:move}
 .box i{position:absolute;right:-10px;bottom:-10px;width:20px;height:20px;border-radius:50%;background:var(--acc);cursor:nwse-resize}
-.dlg-f{display:flex;justify-content:flex-end;gap:10px;padding:18px 24px 22px}
+.dlg-f{display:flex;justify-content:flex-end;gap:10px;padding:18px 26px 24px}
 
 @media (max-width:760px){
-  .nav{gap:10px}.nav ul{display:none}.nav .btn{margin-left:auto;padding:0 18px}.nav .long{display:none}
-  .logo .st{height:30px}.logo .wd{height:14px;margin-top:4px}
-  .snd{font-size:0;padding:0 12px;margin-left:auto}.snd i:nth-child(4){margin-right:0}.nav .snd+.btn{margin-left:0}
-  .hero{grid-template-columns:1fr;align-content:end;padding-bottom:7vh}
-  .hero-word{top:12vh;font-size:13.6vw}
-  .hero-r,.hint{display:none}
-  .hero-l h1{font-size:10.5vw;margin-bottom:16px;white-space:normal}.hero-l .lead{margin-bottom:22px}
-  .spin{left:0;right:0;width:auto;top:6%;height:46%}
-  .flav{grid-template-columns:1fr;align-content:end;padding-bottom:12vh;gap:18px}
-  .flav .outline{top:30%;font-size:15vw}
-  .fl-l h2{font-size:9.6vw}
-  .fl-r{display:none}
-  .stm,.ceh{grid-template-columns:1fr;align-content:end;padding-bottom:8vh;padding-top:50vh}
+  body{font-size:17px}
+  .nav{top:10px;gap:8px;padding:6px 6px 6px 14px;width:calc(100% - 20px)}.nav ul{display:none}.logo{height:40px}
+  .snd{margin-left:auto;width:42px;height:42px}.nav .btn{height:42px;padding:0 16px}.nav .long{display:none}
+  .hero{grid-template-columns:1fr;padding-top:84px;padding-bottom:6vh}
+  .hero-logo{width:38vw}
+  .hero-l h1{font-size:10.4vw;margin-bottom:14px}.hero-l .lead{margin-bottom:24px}
+  .spin{left:0;right:0;width:auto;top:26%;height:34%}
+  .flav{grid-template-columns:1fr;align-content:end;padding-bottom:9vh;gap:18px}
+  .flav .bw{top:15%;font-size:19vw}
+  .fl-l h2{font-size:8vw;margin-bottom:10px}
+  .tag{margin-bottom:16px}
+  .stm{grid-template-columns:1fr;align-content:end;padding-bottom:8vh;padding-top:50vh}
+  .ceh{grid-template-columns:1fr;align-content:start;padding-top:14vh;padding-bottom:10vh;gap:34px}
+  .ceh-ph,.or-ph{width:64vw;justify-self:start;grid-column:1;grid-row:auto}
   .ceh-r{grid-column:1}
-  .order{grid-template-columns:1fr;padding-top:44vh}
-  .packs label{padding:14px 10px;background:#111113}.packs b{font-size:15px}
-  form.buy input,.mini input[type=text]{background:#111113}
-  .stats b{font-size:6vw}.stats div:nth-child(even){padding-left:14px}
+  .order{grid-template-columns:1fr;padding-top:14vh;gap:34px}
+  .or-ph{order:-1}
+  .packs{gap:8px}.packs label{padding:14px 10px}.packs b{font-size:15px}.packs small{font-size:13px}
+  .facts{gap:0 18px}.facts b{font-size:6.4vw;white-space:normal}
+  .foot-logo{width:88vw}
+  .crack-cap{bottom:7vh}
 }
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
 </style>
 </head>
 <body>
 <div id="ld"><div class="ld-in">
-  <div class="ld-logo"><div class="ld-star"><img src="assets/nav-star.png" alt=""></div><div class="ld-word"><img src="assets/nav-word.png" alt="Pompon"></div></div>
-  <i id="ldBar"></i><span class="mono">Наливаем</span></div></div>
+  <div class="ld-logo"><img class="w" src="assets/logo-word.svg" alt="Pompon"><img class="s" src="assets/star-main.svg" alt=""></div>
+  <i id="ldBar"></i><span>Наливаем…</span></div></div>
 <canvas id="gl" aria-hidden="true"></canvas>
-<div id="fg" aria-hidden="true"><img class="fg-mango" data-k="mango" data-d="120,-80" src="assets/fg-mango-half.webp" alt=""><img class="fg-grapes" data-k="black" data-d="90,120" src="assets/fg-grapes.webp" alt=""><img class="fg-apple" data-k="black" data-d="-80,0" src="assets/fg-apple.webp" alt=""><img class="fg-mint" data-k="fresh" data-d="120,-80" src="assets/fg-mint.webp" alt=""><img class="fg-pine" data-k="fresh" data-d="-110,120" src="assets/fg-pine.webp" alt=""><img class="fg-rasp" data-k="gum" data-d="120,-80" src="assets/fg-raspberry.webp" alt=""><img class="fg-gum" data-k="gum" data-d="-110,120" src="assets/fg-gumball.webp" alt=""><img class="fg-lime" data-k="cola" data-d="120,-80" src="assets/fg-lime.webp" alt=""><img class="fg-ice" data-k="cola" data-d="-110,120" src="assets/fg-ice.webp" alt=""></div>
+<div id="fg" aria-hidden="true"><img class="fg-mango" data-k="mango" data-d="120,-80" src="assets/fg-mango-half.webp" alt=""><img class="fg-grapes" data-k="black" data-d="90,120" src="assets/fg-grapes.webp" alt=""><img class="fg-apple" data-k="black" data-d="80,0" src="assets/fg-apple.webp" alt=""><img class="fg-mint" data-k="fresh" data-d="120,-80" src="assets/fg-mint.webp" alt=""><img class="fg-pine" data-k="fresh" data-d="110,120" src="assets/fg-pine.webp" alt=""><img class="fg-rasp" data-k="gum" data-d="120,-80" src="assets/fg-raspberry.webp" alt=""><img class="fg-gum" data-k="gum" data-d="110,120" src="assets/fg-gumball.webp" alt=""><img class="fg-lime" data-k="cola" data-d="120,-80" src="assets/fg-lime.webp" alt=""><img class="fg-ice" data-k="cola" data-d="110,120" src="assets/fg-ice.webp" alt=""></div>
 
 <header class="nav">
-  <a class="logo" data-to="#hero" aria-label="Pompon — наверх"><img class="st" src="assets/nav-star.png" alt=""><img class="wd" src="assets/nav-word.png" alt="Pompon"></a>
+  <a class="logo" data-to="#hero" aria-label="Pompon — наверх"><img src="assets/logo.svg" alt="Pompon"></a>
   <ul>
     <li><a data-to="#flav0">Вкусы</a></li>
-    <li><a data-to="#ceh">Производство</a></li>
+    <li><a data-to="#ceh">Как производим</a></li>
     <li><a data-to="#stm">СТМ</a></li>
     <li><a data-to="#order">Контакты</a></li>
   </ul>
-  <button type="button" class="snd mono" id="snd" aria-pressed="false"><i></i><i></i><i></i><i></i>звук</button>
-  <a class="btn" data-to="#order">Попробовать<span class="long"> бесплатно</span></a>
+  <button type="button" class="snd" id="snd" aria-pressed="false" aria-label="Звук"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.2h3.6L12.6 5v14l-5-4.2H4z" fill="currentColor"/><path class="wv" d="M15.6 9.4a3.6 3.6 0 0 1 0 5.2M18.2 6.8a7.4 7.4 0 0 1 0 10.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path class="mt" d="M16 9.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+  <a class="btn" data-to="#order">Попробовать<span class="long">&nbsp;бесплатно</span></a>
 </header>
 
 <main>
   <section class="sec hero" id="hero">
-    <div class="behind giant hero-word" aria-hidden="true" id="heroWord">pompon</div>
+    <div class="behind giant" aria-hidden="true" id="heroWord"></div>
     <div class="spin" aria-hidden="true"></div>
+    <div class="front lk hero-logo rv" id="heroLogo"><img class="w" src="assets/logo-word.svg" alt="Pompon"><i class="lk-star"></i></div>
     <div class="front hero-l">
-      <p class="mono kick rv">Готовый бабл-ти в банке</p>
-      <h1 class="rv d1">Лопается.</h1>
-      <p class="lead rv d2">Джусболлы прямо в банке. Открыл и пьёшь — без ожидания и трудозатрат, для магазинов, кафе и маркетплейсов.</p>
-      <div class="cta rv d2"><a class="btn" data-to="#order">Попробовать бесплатно</a><a class="btn ghost" data-to="#flav0">Смотреть вкусы</a></div>
+      <h1 class="rv d1">Популярный напиток <span class="nw">бабл-ти</span></h1>
+      <p class="lead rv d2">Готовый <span class="nw">бабл-ти</span> в банке для ритейла, HoReCa и маркетплейсов. Открыл — и джусболлы лопаются во рту, без ожидания и бариста.</p>
+      <div class="cta rv d2"><a class="btn" data-to="#order">Попробовать бесплатно</a><a class="tlink" data-to="#flav0">Смотреть вкусы</a></div>
     </div>
-    <div class="front hero-r mono rv d2">
-      <div>Банка <b>0,33 л</b></div><div>Вкусов <b>5</b></div><div>Шарики <b>джусболлы</b></div>
-    </div>
-    <div class="hint mono"><i></i>покрутите банку</div>
   </section>
 
   <section class="sec flav" id="flav0">
-    <div class="behind giant outline" aria-hidden="true">Fresh</div>
+    <div class="behind giant bw" aria-hidden="true">Fresh</div>
     <div class="front fl-l">
-      <p class="mono idx rv">01 / 05 — вкусы</p>
-      <h2 class="rv d1">Fresh<br>wind.</h2>
-      <p class="txt rv d2">Свежесть трав и лесная прохлада в каждом глотке. Бодрит и хорошо утоляет жажду — для тех, кто любит хвойные ароматы.</p>
+      <span class="tag rv">Bubble<br>drink</span>
+      <h2 class="rv d1">Fresh wind</h2>
+      <p class="txt rv d2">Свежесть трав и лесная прохлада в каждом глотке. Бодрит, утоляет жажду и оставляет живое послевкусие — для тех, кто любит хвойные ароматы.</p>
     </div>
-    <div class="front fl-r mono rv d2"><span>Шарики <b>с соком</b></span><span>Банка <b>0,33 л</b></span></div>
   </section>
   <section class="sec flav" id="flav1">
-    <div class="behind giant outline" aria-hidden="true">Gum</div>
+    <div class="behind giant bw" aria-hidden="true">Gum</div>
     <div class="front fl-l">
-      <p class="mono idx rv">02 / 05 — вкусы</p>
-      <h2 class="rv d1">Fruity<br>gum.</h2>
-      <p class="txt rv d2">Как жвачка бабл-гам: ягоды, фрукты и умеренная сладость. Самый ароматный бабл-ти в линейке.</p>
+      <span class="tag rv">Bubble<br>drink</span>
+      <h2 class="rv d1">Fruity gum</h2>
+      <p class="txt rv d2">Вкус вдохновлён жвачкой <span class="nw">бабл-гам</span>: такой же насыщенный и яркий. Ягодные и фруктовые нотки, умеренная сладость. Самый ароматный <span class="nw">бабл-ти</span> в линейке.</p>
     </div>
-    <div class="front fl-r mono rv d2"><span>Шарики <b>с соком</b></span><span>Банка <b>0,33 л</b></span></div>
   </section>
   <section class="sec flav" id="flav2">
-    <div class="behind giant outline" aria-hidden="true">Mango</div>
+    <div class="behind giant bw" aria-hidden="true">Mango</div>
     <div class="front fl-l">
-      <p class="mono idx rv">03 / 05 — вкусы</p>
-      <h2 class="rv d1">Mango<br>green tea.</h2>
-      <p class="txt rv d2">Зелёный чай и сочное манго. Самый освежающий вкус — сладкий, но не приторный.</p>
+      <span class="tag rv">Bubble<br>tea</span>
+      <h2 class="rv d1">Mango green tea</h2>
+      <p class="txt rv d2">Самый освежающий вкус: зелёный чай и манго. Нежная терпкость чая встречается с сочным тропическим фруктом. Сладкий, но не приторный.</p>
     </div>
-    <div class="front fl-r mono rv d2"><span>Шарики <b>с соком</b></span><span>Банка <b>0,33 л</b></span></div>
   </section>
   <section class="sec flav" id="flav3">
-    <div class="behind giant outline" aria-hidden="true">Cola</div>
+    <div class="behind giant bw" aria-hidden="true">Cola</div>
     <div class="front fl-l">
-      <p class="mono idx rv">04 / 05 — вкусы</p>
-      <h2 class="rv d1">Cola.</h2>
-      <p class="txt rv d2">Привычная кола, только вместо пузырьков — желейные шарики, а горчинку заменяют карамельные нотки.</p>
+      <span class="tag rv">Bubble<br>drink</span>
+      <h2 class="rv d1">Cola</h2>
+      <p class="txt rv d2">Привычная кола, только вместо пузырьков — желейные шарики, а горчинку заменяют сладкие карамельные нотки.</p>
     </div>
-    <div class="front fl-r mono rv d2"><span>Шарики <b>с соком</b></span><span>Банка <b>0,33 л</b></span></div>
   </section>
   <section class="sec flav" id="flav4">
-    <div class="behind giant outline" aria-hidden="true">Tea</div>
+    <div class="behind giant bw" aria-hidden="true">Black</div>
     <div class="front fl-l">
-      <p class="mono idx rv">05 / 05 — вкусы</p>
-      <h2 class="rv d1">Fruity<br>black tea.</h2>
-      <p class="txt rv d2">Чёрный чай и фруктовый микс. Самый солнечный вкус — лето в каждом глотке.</p>
+      <span class="tag rv">Bubble<br>tea</span>
+      <h2 class="rv d1">Fruity black tea</h2>
+      <p class="txt rv d2">Самый солнечный вкус: чёрный чай и фруктовый микс. Глубокие чайные ноты и сочная свежесть спелых фруктов — лето в каждом глотке.</p>
     </div>
-    <div class="front fl-r mono rv d2"><span>Шарики <b>с соком</b></span><span>Банка <b>0,33 л</b></span></div>
   </section>
 
   <section class="crack" id="crack">
     <div class="stick">
-      <div class="behind giant cw cw1" aria-hidden="true">Щёлк.</div>
-      <div class="behind giant cw cw2" aria-hidden="true">Чпок.</div>
-      <p class="crack-cap mono">Джусболлы лопаются во рту<br>и отдают сок.</p>
+      <div class="behind giant cw cw1" aria-hidden="true">щёлк</div>
+      <div class="behind giant cw cw2" aria-hidden="true">чпок</div>
+      <p class="crack-cap">Оцените, как лопаются джусболлы и их яркий вкус</p>
     </div>
   </section>
 
   <section class="sec ceh" id="ceh">
+    <figure class="front rv ceh-ph"><div class="ph"><img src="assets/ceh.jpg" alt="Цех Pompon в Челябинске" loading="lazy"></div><figcaption>Цех розлива, Челябинск</figcaption></figure>
     <div class="front ceh-r">
-      <p class="mono kick rv">Производство · Челябинск</p>
-      <h2 class="rv d1">Свой<br>завод.</h2>
-      <p class="txt rv d1">Контроль на каждом этапе: разработка и образец-эталон, проверка сырья, розлив, лаборатория.</p>
-      <div class="stats rv d2">
-        <div><b>ХАССП</b><span>завод сертифицирован</span></div>
-        <div><b>ISO 22000</b><span>безопасность пищевой продукции</span></div>
-        <div><b>ТР ТС</b><span>021, 022, 023 и 029</span></div>
-        <div><b>+18–22%</b><span>в год растёт рынок бабл-ти <sup>*</sup></span></div>
+      <h2 class="rv">Собственное производство</h2>
+      <p class="txt rv d1">Высокотехнологичный завод в Челябинске, сертифицирован по ХАССП. Строгий контроль на каждом этапе: <span class="nw">образец-эталон</span>, проверка сырья, розлив, контроль готовой продукции.</p>
+      <div class="facts rv d2">
+        <div><b>ISO 22000</b><span>система безопасности пищевой продукции</span></div>
+        <div><b>ТР ТС</b><span>021, 022, 023 и 029</span></div>
+        <div><b>180 суток</b><span>срок хранения, от +2 до +22 °C</span></div>
+        <div><b>18–22%</b><span>в год растёт рынок <span class="nw">бабл-ти</span>*</span></div>
       </div>
-      <p class="mono src rv d2">* RBC Trends и Data Insight, 2024</p>
+      <p class="src rv d2">* RBC Trends и Data Insight, 2024</p>
     </div>
   </section>
 
   <section class="sec stm" id="stm">
     <div class="spin" aria-hidden="true"></div>
     <div class="front">
-      <p class="mono kick rv">СТМ</p>
-      <h2 class="rv d1">Ваша<br>этикетка.</h2>
-      <p class="txt lead rv d1">Разливаем под вашей маркой. Загрузите макет — банка наденет его сразу. PDF, JPG или PNG, развёртка 178 × 127 мм, подойдёт и лист из типографии.</p>
-      <div class="cta rv d2"><label class="btn" for="f2">Загрузить макет</label><button type="button" class="btn ghost" id="noMaket">Макета нет</button></div>
+      <h2 class="rv">Напиток под вашей маркой</h2>
+      <p class="txt lead rv d1">Контрактное производство под СТМ. Загрузите макет — банка наденет его сразу. PDF, JPG или PNG, развёртка 178 × 127 мм, подойдёт и лист из типографии.</p>
+      <div class="cta rv d2"><label class="btn" for="f2">Загрузить макет</label><button type="button" class="tlink" id="noMaket">Макета пока нет</button></div>
       <input class="file" type="file" id="f2" accept=".pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf">
       <div class="mini" id="mini" hidden>
         <label class="btn ghost" for="logoFile">Логотип</label><input class="file" type="file" id="logoFile" accept=".svg,.png,.jpg,.jpeg,.webp,.pdf,image/*,application/pdf">
         <input type="text" id="flName" maxlength="28" aria-label="Вкус" placeholder="Вкус">
         <input type="color" id="c1" aria-label="Цвет этикетки">
       </div>
-      <p class="mono status" id="status"></p>
-      <div class="ex rv d2"><span class="mono">Уже разливаем</span>
+      <p class="status" id="status"></p>
+      <div class="ex rv d2"><span>Уже разливаем:</span>
         <button type="button" data-ex="zm" aria-pressed="true"><img src="assets/label-zhizn-mart.jpg" alt="">Дыня · Жизнь Март</button>
         <button type="button" data-ex="bot" aria-pressed="false"><img src="assets/label-botanica.jpg" alt="">Малина · nova Botanica</button>
       </div>
-      <button type="button" class="lnk mono" id="tpl">Шаблон этикетки для дизайнера</button>
+      <button type="button" class="lnk" id="tpl">Шаблон этикетки для дизайнера</button>
     </div>
   </section>
 
   <section class="sec order" id="order">
     <div class="front or-l">
-      <p class="mono kick rv">Заявка</p>
-      <h2 class="rv d1">Попробуйте<br>бесплатно.</h2>
-      <p class="txt rv d1">Пришлём пробный набор со всеми вкусами. Или посчитаем опт и розлив под вашей маркой.</p>
+      <h2 class="rv">Попробуйте pompon бесплатно</h2>
+      <p class="txt rv d1">Закажите пробный набор и попробуйте каждую баночку. Или посчитаем опт и розлив под вашей маркой.</p>
       <div class="packs rv d2" role="radiogroup" aria-label="Что нужно">
-        <label><input type="radio" name="t" value="Пробный набор" checked><span class="mono">Бесплатно</span><b>Пробный набор</b><small>все 5 вкусов</small></label>
-        <label><input type="radio" name="t" value="Опт"><span class="mono">Магазины, HoReCa</span><b>Опт</b><small>и маркетплейсы</small></label>
-        <label><input type="radio" name="t" value="СТМ"><span class="mono">Ваша марка</span><b>СТМ</b><small>банка уйдёт с заявкой</small></label>
+        <label><input type="radio" name="t" value="Пробный набор" checked><b>Пробный набор</b><small>все пять вкусов, бесплатно</small></label>
+        <label><input type="radio" name="t" value="Опт"><b>Опт</b><small>магазины, HoReCa, маркетплейсы</small></label>
+        <label><input type="radio" name="t" value="СТМ"><b>СТМ</b><small>банка с вашей этикеткой уйдёт с заявкой</small></label>
       </div>
       <form class="buy rv d2" id="buy" novalidate>
         <input id="fName" autocomplete="name" placeholder="Имя и компания" aria-label="Имя и компания">
@@ -342,15 +343,16 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
         <button class="btn" id="sendBtn">Отправить</button>
         <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-5000px" aria-hidden="true">
       </form>
-      <label class="agree rv d2"><input type="checkbox" id="fAgree" checked>согласен на обработку данных по <a href="https://pompon.pro/privacy" target="_blank" rel="noopener">политике</a></label>
+      <label class="agree rv d2"><input type="checkbox" id="fAgree" checked><span>согласен на обработку данных по&nbsp;<a href="https://pompon.pro/privacy" target="_blank" rel="noopener">политике</a></span></label>
       <p class="note" id="note" hidden></p>
     </div>
+      <figure class="front rv or-ph"><div class="ph"><img src="assets/ruki.jpg" alt="Pompon Mango green tea в руке" loading="lazy"></div></figure>
   </section>
 </main>
 
 <footer class="foot" id="foot">
-  <div class="foot-word" id="footWord">pompon<span class="foot-star" aria-hidden="true"></span></div>
-  <div class="foot-row mono">
+  <div class="lk foot-logo" id="footLogo"><img class="w" src="assets/logo-word.svg" alt="Pompon"><i class="lk-star"></i></div>
+  <div class="foot-row">
     <span>ООО «Живая Долина» · Челябинск, Бродокалмакский тракт, 3</span>
     <a href="tel:+79823488088">+7 982 348-80-88</a>
     <a href="mailto:info@pompon.pro">info@pompon.pro</a>
@@ -359,7 +361,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
 </footer>
 
 <dialog id="dlg">
-  <div class="dlg-h"><b>Подгоните этикетку</b><p>Выделите поле этикетки 178 × 127 мм. Рамку можно двигать и тянуть за угол.</p></div>
+  <div class="dlg-h"><b>Подгоните этикетку</b><p>Выделите поле этикетки 178 × 127 мм. Рамку можно двигать и тянуть за угол.</p></div>
   <div class="crop"><canvas id="cropCv"></canvas><div class="box" id="box"><i id="boxH"></i></div></div>
   <div class="dlg-f"><button type="button" class="btn ghost" id="dlgNo">Отмена</button><button type="button" class="btn" id="dlgOk">Готово</button></div>
 </dialog>
@@ -370,7 +372,8 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { EffectComposer, RenderPass, EffectPass, BloomEffect, NoiseEffect, VignetteEffect, ChromaticAberrationEffect, ToneMappingEffect, ToneMappingMode, BlendFunction, KawaseBlurPass, KernelSize } from 'postprocessing';
+import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
+import { Effect, EffectComposer, RenderPass, EffectPass, BloomEffect, NoiseEffect, VignetteEffect, ChromaticAberrationEffect, ToneMappingEffect, ToneMappingMode, BlendFunction, KawaseBlurPass, KernelSize } from 'postprocessing';
 
 const FORM_TO = 'paladei702@gmail.com';
 const FORM_PAGE = 'https://smirnov-artur.github.io/zakaz/pompon-konstruktor/';
@@ -395,7 +398,7 @@ const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [n >> 16 & 255,
 function lum(hex) { const f = v => { v /= 255; return v <= .04045 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }; const [r, g, b] = hexRgb(hex); return .2126 * f(r) + .7152 * f(g) + .0722 * f(b); }
 const mix = (a, b, t) => { const x = hexRgb(a), y = hexRgb(b); return '#' + x.map((v, i) => Math.round(v + (y[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
 const inkOn = hex => lum(hex) > .33 ? '#171512' : '#FFFFFF';
-const DISP = '"Unbounded",sans-serif', BODY = '"Manrope",sans-serif';
+const DISP = '"TT Travels Next",sans-serif', BODY = '"Jost",sans-serif';
 const rand = (s => () => (s = (s * 16807) % 2147483647) / 2147483647)(7);
 const MOB = matchMedia('(max-width: 760px), (pointer: coarse)').matches;
 
@@ -653,19 +656,20 @@ function studio() {
 const env = studio();
 scene.environment = env;
 const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(-3, 3, 5); scene.add(key);
-const rim = new THREE.DirectionalLight(0xF07F1A, 5); rim.position.set(4, 1.5, -3); scene.add(rim);
+const rim = new THREE.DirectionalLight(0xfff1e0, 1.6); rim.position.set(4, 1.5, -3); scene.add(rim);
 const fill = new THREE.DirectionalLight(0xffffff, .45); fill.position.set(3, -2, 4); scene.add(fill);
 
 /* постобработка: блум на бликах, тон, зерно плёнки, виньетка, лёгкая хроматика */
-const composer = new EffectComposer(renderer, { frameBufferType: THREE.HalfFloatType, multisampling: MOB ? 0 : 4 });
+const composer = new EffectComposer(renderer, { frameBufferType: THREE.HalfFloatType, multisampling: MOB ? 2 : 4 });
 composer.addPass(new RenderPass(scene, camera));
-const bloom = new BloomEffect({ mipmapBlur: true, intensity: .65, luminanceThreshold: 1.45, luminanceSmoothing: .3, radius: .72 });
-const vign = new VignetteEffect({ offset: .3, darkness: .66 });
+const bloom = new BloomEffect({ mipmapBlur: true, intensity: .12, luminanceThreshold: 4, luminanceSmoothing: .5, radius: .5 });
+const vign = new VignetteEffect({ offset: .45, darkness: .12 });
 const tone = new ToneMappingEffect({ mode: ToneMappingMode.NEUTRAL });
 composer.addPass(new EffectPass(camera, bloom, vign, tone));
 const chroma = new ChromaticAberrationEffect({ offset: new THREE.Vector2(.0009, .0006), radialModulation: true, modulationOffset: .4 });
-const noise = new NoiseEffect({ premultiply: true, blendFunction: BlendFunction.SCREEN }); noise.blendMode.opacity.value = .55;
-composer.addPass(new EffectPass(camera, chroma, noise));
+const noise = new NoiseEffect({ premultiply: true, blendFunction: BlendFunction.SCREEN }); noise.blendMode.opacity.value = .16;
+const gain = new Effect('Gain', 'uniform float gain; void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor){ outputColor = vec4(min(inputColor.rgb * gain, vec3(1.)), inputColor.a); }', { uniforms: new Map([['gain', new THREE.Uniform(1.148)]]) });   // тон после пересчёта — под их кремовый
+composer.addPass(new EffectPass(camera, chroma, gain, noise));
 
 /* ================= фон: градиент, размытые фрукты, огромные слова — одна плоскость за банкой, её видно сквозь напиток ================= */
 const farScene = new THREE.Scene(); farScene.environment = env;
@@ -675,7 +679,7 @@ const farBlur = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType })
 const kawase = new KawaseBlurPass({ kernelSize: KernelSize.LARGE, resolutionScale: .5 });
 kawase.initialize(renderer, true, THREE.HalfFloatType);
 const NSLOT = 4, BD = 40;
-const bdU = { uAxA: { value: new THREE.Vector2(.5, .3) }, uAxB: { value: new THREE.Vector2(.5, .7) }, uCard: { value: .0 }, uCardW: { value: .06 }, uBase: { value: new THREE.Color('#0A0A0C') }, uGlow: { value: new THREE.Color('#F07F1A') }, uGlowPos: { value: new THREE.Vector2(.7, .5) },
+const bdU = { uAxA: { value: new THREE.Vector2(.5, .3) }, uAxB: { value: new THREE.Vector2(.5, .7) }, uCard: { value: .0 }, uCardW: { value: .06 }, uBase: { value: new THREE.Color('#FCF8EE') }, uDiscR: { value: .36 }, uFill: { value: 0 }, uShadow: { value: 1 }, uGlow: { value: new THREE.Color('#F07F1A') }, uGlowPos: { value: new THREE.Vector2(.7, .5) },
   uAsp: { value: 1 }, uFar: { value: farBlur.texture }, uGlowK: { value: .5 }, uT: { value: 0 }, uJel: { value: 0 } };
 for (let i = 0; i < NSLOT; i++) { bdU['tT' + i] = { value: null }; bdU['rT' + i] = { value: new THREE.Vector4() }; bdU['cT' + i] = { value: new THREE.Vector4() }; bdU['xT' + i] = { value: new THREE.Vector2(1, 0) }; }
 const slotGLSL = i => `
@@ -689,16 +693,23 @@ const slotGLSL = i => `
 const backdrop = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({
   uniforms: bdU, depthWrite: false, toneMapped: false,
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); }',
-  fragmentShader: `varying vec2 vUv; uniform vec3 uBase, uGlow; uniform vec2 uGlowPos; uniform float uAsp, uGlowK, uT, uJel, uCard, uCardW; uniform vec2 uAxA, uAxB; uniform sampler2D uFar;
+  fragmentShader: `varying vec2 vUv; uniform vec3 uBase, uGlow; uniform vec2 uGlowPos; uniform float uAsp, uGlowK, uT, uJel, uCard, uCardW, uDiscR, uFill, uShadow; uniform vec2 uAxA, uAxB; uniform sampler2D uFar;
   ${[...Array(NSLOT).keys()].map(i => `uniform sampler2D tT${i}; uniform vec4 rT${i}, cT${i}; uniform vec2 xT${i};`).join('\n')}
   void main(){
     vec2 uv = vUv; vec2 g = (uv - uGlowPos) * vec2(uAsp, 1.);
     float r2 = dot(g, g);
-    vec3 col = uBase + uGlow * (exp(-r2 / .12) * .2 + exp(-r2 / .014) * .16) * uGlowK + vec3(.004, .0035, .003) * (1. - uv.y);
+    vec3 col = mix(uBase, mix(uBase, uGlow, .2), uFill);
+    float dR = sqrt(r2), disc = 1. - smoothstep(uDiscR - .0022, uDiscR + .0022, dR);
+    col = mix(col, mix(uBase, uGlow, .3), disc * uGlowK);
+    // мягкая тень банки на фоне: свет сверху слева, тень вниз вправо
+    { vec2 off = vec2(.035, -.05); vec2 A = (uAxA + off) * vec2(uAsp, 1.), B = (uAxB + off) * vec2(uAsp, 1.), P = uv * vec2(uAsp, 1.), ab = B - A;
+      float h = clamp(dot(P - A, ab) / max(dot(ab, ab), 1e-5), 0., 1.); float dd = length(P - A - ab * h), w = uCardW * 2.6;
+      col *= 1. - .16 * uShadow * exp(-dd * dd / (w * w)) * smoothstep(-.1, .25, h); }
+    col *= 1. - .05 * uGlowK * smoothstep(uDiscR + .06, uDiscR - .02, dR) * (1. - disc);   // лёгкая тень по краю круга
     // контровой софтбокс за банкой по её оси: чай светится янтарём, по краям — ореол, как на предметной съёмке
     { vec2 A = uAxA * vec2(uAsp, 1.), B = uAxB * vec2(uAsp, 1.), P = uv * vec2(uAsp, 1.), ab = B - A;
       float h = clamp(dot(P - A, ab) / max(dot(ab, ab), 1e-5), -.08, 1.08); float dd = length(P - A - ab * h);
-      col += mix(vec3(1., .93, .8), uGlow, .35) * uCard * (exp(-dd * dd / (uCardW * uCardW)) * .9 + exp(-dd * dd / (uCardW * uCardW * 9.)) * .25); }
+      col += mix(vec3(1., .96, .88), uGlow, .25) * uCard * .55 * (exp(-dd * dd / (uCardW * uCardW)) * .9 + exp(-dd * dd / (uCardW * uCardW * 9.)) * .25); }
     vec4 far = texture2D(uFar, uv); col = col * (1. - far.a) + far.rgb;
     ${[...Array(NSLOT).keys()].map(slotGLSL).join('\n')}
     gl_FragColor = vec4(col, 1.);
@@ -712,11 +723,11 @@ function rasterWord(w) {
   const el = w.el, cs = getComputedStyle(el), fs = parseFloat(cs.fontSize);
   let t = el.textContent.trim(); if (cs.textTransform === 'uppercase') t = t.toUpperCase();
   const k = Math.min(2, devicePixelRatio || 1);
-  const c = mk(8, 8), g = c.getContext('2d'), font = `900 ${fs * k}px Unbounded`;
-  g.font = font; if ('letterSpacing' in g) g.letterSpacing = (-0.045 * fs * k) + 'px';
+  const c = mk(8, 8), g = c.getContext('2d'), font = `400 ${fs * k}px "TT Travels Next"`;
+  g.font = font; if ('letterSpacing' in g) g.letterSpacing = (-0.02 * fs * k) + 'px';
   const m = g.measureText(t), asc = m.actualBoundingBoxAscent, des = m.actualBoundingBoxDescent;
   const pad = fs * k * .08, W = Math.min(4096, Math.ceil(m.width + pad * 2 + fs * k * .1)), H = Math.ceil(asc + des + pad * 2);
-  c.width = W; c.height = H; g.font = font; if ('letterSpacing' in g) g.letterSpacing = (-0.045 * fs * k) + 'px';
+  c.width = W; c.height = H; g.font = font; if ('letterSpacing' in g) g.letterSpacing = (-0.02 * fs * k) + 'px';
   g.textBaseline = 'alphabetic'; g.fillStyle = '#fff'; g.strokeStyle = '#fff';
   if (w.stroke) { g.lineWidth = 2 * k; g.lineJoin = 'round'; g.strokeText(t, pad, pad + asc); } else g.fillText(t, pad, pad + asc);
   if (w.tex) w.tex.dispose();
@@ -783,7 +794,7 @@ const drink = new THREE.Mesh(new THREE.LatheGeometry(L(drinkProf), 160), drinkMa
 
 // джусболлы на дне: укладка как настоящие — падают и расталкивают друг друга
 const NPR = MOB ? 70 : 96;
-const pearlMat = new THREE.MeshPhysicalMaterial({ color: 0xb8641e, roughness: .08, clearcoat: 1, clearcoatRoughness: .03, envMapIntensity: 1.3 });
+const pearlMat = new THREE.MeshPhysicalMaterial({ color: 0xb8641e, roughness: .12, clearcoat: 1, clearcoatRoughness: .1, envMapIntensity: .85 });
 const pearls = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 22, 16), pearlMat, NPR); body.add(pearls);
 const PR = [];
 const WALLY = [[-.7605, .242], [-.7595, .26], [-.752, .276], [-.74, .287], [-.725, .2925], [-.705, RI]];
@@ -798,7 +809,7 @@ function keepIn(p) {   // шарик целиком внутри напитка:
   }
   if (p.y > LVL - p.r - .008) p.y = LVL - p.r - .008;
 }
-{ for (let i = 0; i < NPR; i++) { const a = rand() * TAU, d = Math.sqrt(rand()) * .24; PR.push({ x: Math.sin(a) * d, y: -.7 + rand() * .5, z: Math.cos(a) * d, r: .036 + rand() * .011, ph: rand() * TAU }); }
+{ for (let i = 0; i < NPR; i++) { const a = rand() * TAU, d = Math.sqrt(rand()) * .24; PR.push({ x: Math.sin(a) * d, y: -.7 + rand() * .5, z: Math.cos(a) * d, r: .031 + rand() * .019, ph: rand() * TAU }); }
   for (let it = 0; it < 240; it++) {
     for (const p of PR) { p.y -= .004; keepIn(p); }
     for (let i = 0; i < NPR; i++) for (let j = i + 1; j < NPR; j++) { const a = PR[i], b = PR[j], dx = b.x - a.x, dy = b.y - a.y, dz = b.z - a.z, d = Math.hypot(dx, dy, dz), m = a.r + b.r;
@@ -819,7 +830,7 @@ placePearls(0, 0);
 
 // пузырьки газа в напитке — после открытия
 const NBU = MOB ? 50 : 90, BU = [];
-const bubbles = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 10, 8), new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0, metalness: 0, emissive: 0x222222 }), NBU);
+const bubbles = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 10, 8), new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .05, metalness: 0, transmission: .9, thickness: .01, envMapIntensity: .8 }), NBU);
 bubbles.instanceMatrix.setUsage(THREE.DynamicDrawUsage); body.add(bubbles);
 for (let i = 0; i < NBU; i++) BU.push({ a: rand() * TAU, d: Math.sqrt(rand()) * .27, y: -2, v: 0, r: .003 + rand() * .006 });
 function stepBubbles(dt, on) {
@@ -830,39 +841,54 @@ function stepBubbles(dt, on) {
   bubbles.instanceMatrix.needsUpdate = true;
 }
 
-// чёрная крышка: закатка, утопленная панель с ребром, насечка вскрытия, заклёпка, ключ с кольцом
-const blackMat = new THREE.MeshPhysicalMaterial({ color: 0x18181c, metalness: .55, roughness: .3, clearcoat: 1, clearcoatRoughness: .05, envMapIntensity: 2.6 });
-const PY = .7495, PRAD = .268;
-body.add(new THREE.Mesh(new THREE.LatheGeometry(L([[.2962, .7555], [.3022, .7572], [.3041, .7605], [.3044, .7672], [.3034, .7725], [.3002, YT], [.2948, YT], [.2905, .7728], [.2876, .7675], [.2856, .76], [.2842, .7535], [.2805, .7505], [.274, .7497], [PRAD, PY]]), 200), blackMat));
+// классическая алюминиевая крышка: закатка, стенка вниз в канавку, утопленная панель, выдавленный контур вокруг ключа, насечка, заклёпка
+const alu = new THREE.MeshPhysicalMaterial({ color: 0x1d1d20, metalness: .62, roughness: .3, clearcoat: 1, clearcoatRoughness: .08, envMapIntensity: 2.2, side: THREE.DoubleSide });
+const aluR = new THREE.MeshPhysicalMaterial({ color: 0x232327, metalness: .7, roughness: .22, anisotropy: .6, clearcoat: 1, clearcoatRoughness: .05, envMapIntensity: 2.4, side: THREE.DoubleSide });   // закатка — круговая шлифовка
+const blackMat = alu;
+const PY = .741, PRAD = .2705;
+body.add(new THREE.Mesh(new THREE.LatheGeometry(L([[.2958, .7555], [.2984, .7572], [.2997, .7605], [.3001, .7672], [.2993, .7728], [.2966, YT], [.2924, YT], [.2898, .7738],
+  [.2886, .7695], [.2868, .758], [.2846, .7465], [.2828, .7368], [.2806, .7338], [.2786, .7336], [.2768, .7358], [.2752, .7392], [.2728, PY - .0004], [PRAD, PY]]), 240), aluR));
 function opening(s = 1, sh = new THREE.Shape()) {
   const cx = .14, P = (x, y) => [cx + (x - cx) * s, y * s];
-  sh.moveTo(...P(.058, -.046)); sh.lineTo(...P(.16, -.064)); sh.quadraticCurveTo(...P(.229, -.07), ...P(.23, 0));
-  sh.quadraticCurveTo(...P(.229, .07), ...P(.16, .064)); sh.lineTo(...P(.058, .046)); sh.quadraticCurveTo(...P(.04, 0), ...P(.058, -.046));
+  sh.moveTo(...P(.062, -.044)); sh.lineTo(...P(.162, -.062)); sh.quadraticCurveTo(...P(.226, -.068), ...P(.227, 0));
+  sh.quadraticCurveTo(...P(.226, .068), ...P(.162, .062)); sh.lineTo(...P(.062, .044)); sh.quadraticCurveTo(...P(.046, 0), ...P(.062, -.044));
   return sh;
 }
+const ridge = (pts, r, y, mat = alu) => { const m = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), Math.max(120, pts.length * 2), r, 8, true), mat); m.scale.y = .45; m.position.y = y; body.add(m); return m; };
 { const disc = new THREE.Shape().absarc(0, 0, PRAD, 0, TAU, false); disc.holes.push(opening(1.0));
-  const g = new THREE.ShapeGeometry(disc, 64).rotateX(-Math.PI / 2); const m = new THREE.Mesh(g, blackMat); m.position.y = PY; body.add(m);
-  const gu = new THREE.ShapeGeometry(disc, 64).rotateX(Math.PI / 2); const mu = new THREE.Mesh(gu, new THREE.MeshStandardMaterial({ color: 0x0c0c0e, roughness: .5, metalness: .4 })); mu.position.y = PY - .0015; body.add(mu);
-  const bead = new THREE.Mesh(new THREE.TorusGeometry(.247, .0042, 12, 200).rotateX(Math.PI / 2), blackMat); bead.position.y = PY + .0008; body.add(bead);
-  const boss = new THREE.Mesh(new THREE.CylinderGeometry(.046, .054, .005, 64), blackMat); boss.position.y = PY + .0012; body.add(boss);
-  const pts = opening(1.06).getSpacedPoints(160).map(p => new THREE.Vector3(p.x, 0, -p.y));
-  const score = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), 240, .0013, 6, true), new THREE.MeshStandardMaterial({ color: 0x020202, roughness: .7 }));
-  score.position.y = PY + .0002; body.add(score);
-  const rivet = new THREE.Mesh(new THREE.SphereGeometry(.017, 24, 12, 0, TAU, 0, Math.PI / 2), blackMat); rivet.scale.y = .45; rivet.position.y = PY + .0062; body.add(rivet);
+  const g = new THREE.ShapeGeometry(disc, 96).rotateX(-Math.PI / 2); const m = new THREE.Mesh(g, alu); m.position.y = PY; body.add(m);
+  // панельное кольцо у края
+  ridge(new THREE.Path().absarc(0, 0, .2585, 0, TAU).getSpacedPoints(200).map(p => new THREE.Vector3(p.x, 0, -p.y)), .0036, PY + .0006);
+  // выдавленный контур вокруг ключа и отверстия — как на настоящей крышке: шире у отверстия, уже у кольца ключа
+  const well = []; for (let i = 0; i < 220; i++) { const a = i / 220 * TAU, c = Math.cos(a), sn = Math.sin(a);
+    const x = .012 + (c > 0 ? .228 : .232) * Math.sign(c) * Math.pow(Math.abs(c), .55), hw = .082 + .022 * (x + .23) / .46;
+    well.push(new THREE.Vector3(x, 0, -hw * Math.sign(sn) * Math.pow(Math.abs(sn), .55))); }
+  ridge(well, .0042, PY + .0007);
+  // насечка вскрытия — тонкая канавка чуть снаружи язычка
+  const sc = opening(1.05).getSpacedPoints(180).map(p => new THREE.Vector3(p.x, 0, -p.y));
+  ridge(sc, .0011, PY + .0003, new THREE.MeshPhysicalMaterial({ color: 0x08080a, metalness: .4, roughness: .6 }));
+  // заклёпка: бугорок панели и шляпка
+  const boss = new THREE.Mesh(new THREE.SphereGeometry(.05, 48, 16, 0, TAU, 0, Math.PI / 2), alu); boss.scale.y = .12; boss.position.y = PY; body.add(boss);
+  const rivet = new THREE.Mesh(new THREE.SphereGeometry(.016, 32, 12, 0, TAU, 0, Math.PI / 2), aluR); rivet.scale.y = .5; rivet.position.y = PY + .0068; body.add(rivet);
+  // изнанка панели — видна снизу сквозь прозрачное горлышко
+  const gu = new THREE.ShapeGeometry(disc, 64).rotateX(Math.PI / 2); const mu = new THREE.Mesh(gu, new THREE.MeshStandardMaterial({ color: 0x111113, roughness: .5, metalness: .5 })); mu.position.y = PY - .0015; body.add(mu);
 }
 // язычок вскрытия — уходит внутрь
-const flapPivot = new THREE.Group(); flapPivot.position.set(.058, PY, 0); body.add(flapPivot);
-{ const g = new THREE.ExtrudeGeometry(opening(.992), { depth: .0022, bevelEnabled: false, curveSegments: 24 }).rotateX(-Math.PI / 2).translate(-.058, -.0022, 0);
-  flapPivot.add(new THREE.Mesh(g, blackMat)); }
-// ключ
-const tabPivot = new THREE.Group(); tabPivot.position.set(0, PY + .0048, 0); body.add(tabPivot);
+const flapPivot = new THREE.Group(); flapPivot.position.set(.062, PY, 0); body.add(flapPivot);
+{ const g = new THREE.ExtrudeGeometry(opening(.992), { depth: .0022, bevelEnabled: false, curveSegments: 24 }).rotateX(-Math.PI / 2).translate(-.062, -.0022, 0);
+  flapPivot.add(new THREE.Mesh(g, alu)); }
+// ключ: классическая форма — нос над отверстием, заклёпка, широкое кольцо под палец, края завальцованы
+const tabPivot = new THREE.Group(); tabPivot.position.set(0, PY + .0062, 0); body.add(tabPivot);
 { const t = new THREE.Shape();
-  t.moveTo(.02, -.036); t.quadraticCurveTo(.097, -.04, .097, 0); t.quadraticCurveTo(.097, .04, .02, .036);
-  t.lineTo(-.06, .046); t.quadraticCurveTo(-.218, .078, -.218, 0); t.quadraticCurveTo(-.218, -.078, -.06, -.046); t.lineTo(.02, -.036);
-  const fh = new THREE.Path(); fh.absellipse(-.142, 0, .05, .041, 0, TAU, true); t.holes.push(fh);
-  const sl = new THREE.Path(); sl.absarc(0, 0, .031, -2.3, 2.3, false); sl.absarc(0, 0, .0245, 2.3, -2.3, true); t.holes.push(sl);
-  const g = new THREE.ExtrudeGeometry(t, { depth: .0032, bevelEnabled: true, bevelThickness: .0013, bevelSize: .0013, bevelSegments: 3, curveSegments: 40 }).rotateX(-Math.PI / 2);
-  tabPivot.add(new THREE.Mesh(g, new THREE.MeshPhysicalMaterial({ color: 0x1a1a1e, metalness: .7, roughness: .34, clearcoat: .6, clearcoatRoughness: .18, envMapIntensity: 1.1 }))); }
+  t.moveTo(.03, -.04); t.quadraticCurveTo(.104, -.042, .104, 0); t.quadraticCurveTo(.104, .042, .03, .04);
+  t.lineTo(-.05, .05); t.bezierCurveTo(-.12, .064, -.214, .07, -.214, 0); t.bezierCurveTo(-.214, -.07, -.12, -.064, -.05, -.05); t.lineTo(.03, -.04);
+  const fh = new THREE.Path(); fh.absellipse(-.137, 0, .052, .043, 0, TAU, true); t.holes.push(fh);
+  const sl = new THREE.Path(); sl.absarc(.002, 0, .033, -2.25, 2.25, false); sl.absarc(.002, 0, .026, 2.25, -2.25, true); t.holes.push(sl);
+  const g = new THREE.ExtrudeGeometry(t, { depth: .0026, bevelEnabled: true, bevelThickness: .0019, bevelSize: .0024, bevelSegments: 5, curveSegments: 48 }).rotateX(-Math.PI / 2);
+  tabPivot.add(new THREE.Mesh(g, new THREE.MeshPhysicalMaterial({ color: 0x18181b, metalness: .6, roughness: .28, clearcoat: 1, clearcoatRoughness: .06, envMapIntensity: 2.2 })));
+  // ребро жёсткости по ключу
+  const rib = new THREE.Mesh(new THREE.CapsuleGeometry(.006, .07, 4, 12).rotateZ(Math.PI / 2), new THREE.MeshPhysicalMaterial({ color: 0x18181b, metalness: .6, roughness: .28, clearcoat: 1, envMapIntensity: 2.2 }));
+  rib.scale.set(1, .35, 1); rib.position.set(-.035, .0032, 0); tabPivot.add(rib); }
 // под отверстием — темнота банки, сквозь неё чуть виден напиток
 
 
@@ -948,8 +974,8 @@ const POP = { n: 9 };
   POP.sh = new THREE.InstancedMesh(g1, POP.shellMat, POP.n); POP.co = new THREE.InstancedMesh(g2, POP.coreMat, POP.n);
   POP.big = new THREE.Mesh(new THREE.SphereGeometry(1, 96, 64), gelMat.clone()); POP.bigCore = new THREE.Mesh(new THREE.IcosahedronGeometry(1, 5), coreMat.clone());
   POP.big.material.thickness = .5; POP.big.material.attenuationDistance = .45; POP.big.material.roughness = .02; POP.big.material.dispersion = 4;
-  const ND = MOB ? 70 : 110; POP.dr = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 16, 12), new THREE.MeshPhysicalMaterial({ color: 0xff8a1a, roughness: .08, clearcoat: 1, clearcoatRoughness: .05, emissive: 0xff8a1a, emissiveIntensity: .45, envMapIntensity: 1.6 }), ND);
-  POP.dir = []; for (let i = 0; i < ND; i++) { const y = 1 - (i + .5) / ND * 2, r = Math.sqrt(1 - y * y), a = i * 2.39996; POP.dir.push({ v: new THREE.Vector3(Math.cos(a) * r, y, Math.sin(a) * r), s: .022 + Math.pow(rand(), 2.6) * .1, k: .55 + rand() * .95 }); }
+  const ND = MOB ? 70 : 110; POP.dr = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 16, 12), new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .02, transmission: .92, thickness: .04, ior: 1.34, attenuationColor: new THREE.Color(0xff8a1a), attenuationDistance: .07, specularIntensity: 1, envMapIntensity: 1.8 }), ND);
+  POP.dir = []; for (let i = 0; i < ND; i++) { const y = 1 - (i + .5) / ND * 2, r = Math.sqrt(1 - y * y), a = i * 2.39996; POP.dir.push({ v: new THREE.Vector3(Math.cos(a) * r, y, Math.sin(a) * r), s: .016 + Math.pow(rand(), 3) * .07, k: .55 + rand() * .95 }); }
   POP.L = []; for (let i = 0; i < POP.n; i++) { const a = (i / (POP.n - 1) - .5) * 2.2; POP.L.push({ at: .47 + i * .016, vx: Math.sin(a) * 1.7, vz: .6 + rand() * .9, vy: 2.7 + rand() * .8, s: .065 + rand() * .055, ph: rand() * TAU, ax: new THREE.Vector3(rand() - .5, rand() - .5, rand() - .5).normalize() }); }
   [POP.sh, POP.co, POP.dr].forEach(m => { m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); m.frustumCulled = false; });
   scene.add(POP.sh, POP.co, POP.big, POP.bigCore, POP.dr);
@@ -960,7 +986,7 @@ function stepPop(cr, t) {
   [POP.sh, POP.co, POP.big, POP.bigCore, POP.dr].forEach(m => m.visible = on);
   if (!on) return;
   [POP.shellMat, POP.big.material].forEach(m => m.attenuationColor.copy(juice)); [POP.coreMat, POP.bigCore.material].forEach(m => { m.color.copy(juice); m.emissive.copy(juice); });
-  POP.dr.material.color.copy(juice); POP.dr.material.emissive.copy(juice);
+  POP.dr.material.attenuationColor.copy(juice);
   can.updateMatrixWorld(); body.localToWorld(popStart.set(.15, PY + .015, 0));
   // струя: каждый шарик — своя дуга от отверстия, по прокрутке туда и обратно
   for (let i = 0; i < POP.n; i++) { const q = POP.L[i], u = (cr - q.at) / .3;
@@ -1150,37 +1176,51 @@ const STAR = [];
 const star = new THREE.Group(); scene.add(star);
 const starU = { uT: { value: 0 }, uWob: { value: 0 } };
 let starMat, eyes = {};
+const EYES = {};
 async function buildStar() {
-  const gl = await new Promise((ok, no) => new GLTFLoader().load('assets/star.glb', ok, undefined, no));
-  let g; gl.scene.traverse(o => { if (o.isMesh && !g) g = o.geometry; });
-  g.deleteAttribute('normal'); g.computeVertexNormals();
-  starMat = new THREE.MeshPhysicalMaterial({ color: 0xff7a0e, roughness: .17, transmission: .5, thickness: .8, ior: 1.45, attenuationColor: new THREE.Color(0xff7a0e), attenuationDistance: .32,
-    clearcoat: 1, clearcoatRoughness: .07, emissive: 0xff7a0e, emissiveIntensity: .2, sheen: .6, sheenRoughness: .35, sheenColor: new THREE.Color(0xffd2a0), envMapIntensity: 1.5 });
+  const moods = ['main', 'happy', 'cunning', 'enamored'];
+  const txt = await Promise.all(moods.map(k => fetch(`assets/star-${k}.svg`).then(r => r.text())));
+  const ld = new SVGLoader(), P = txt.map(x => ld.parse(x).paths);
+  const fillOf = q => String(q.userData.style.fill || '#000').toLowerCase();
+  const body = P[0].filter(q => fillOf(q) === '#ef8018').flatMap(q => SVGLoader.createShapes(q));
+  const bb = new THREE.Box2(); body.forEach(sh => sh.getPoints(24).forEach(v => bb.expandByPoint(v)));
+  const c = bb.getCenter(new THREE.Vector2()), S = 2 / (bb.max.x - bb.min.x);
+  const DEP = .2, BT = .11, FRONT = DEP / 2 + BT;
+  const g = new THREE.ExtrudeGeometry(body, { depth: DEP / S, bevelEnabled: true, bevelThickness: BT / S, bevelSize: .05 / S, bevelOffset: -.04 / S, bevelSegments: 7, curveSegments: 22 });
+  g.translate(-c.x, -c.y, -DEP / S / 2); g.scale(S, -S, -S); g.computeVertexNormals();
+  starMat = new THREE.MeshPhysicalMaterial({ color: 0xef8018, roughness: .2, transmission: 0, thickness: .7, ior: 1.45, attenuationColor: new THREE.Color(0xef8018), attenuationDistance: .5,
+    clearcoat: 1, clearcoatRoughness: .06, emissive: 0xef8018, emissiveIntensity: .14, sheen: .5, sheenRoughness: .35, sheenColor: new THREE.Color(0xffd2a0), envMapIntensity: 1.5 });
   starMat.onBeforeCompile = sh2 => {
     Object.assign(sh2.uniforms, starU);
     sh2.vertexShader = 'uniform float uT, uWob;\nvarying vec3 vOP;\n' + sh2.vertexShader.replace('#include <begin_vertex>', `#include <begin_vertex>
       vOP = position; float rr = length(position.xy), an = atan(position.y, position.x);
-      float w = sin(uT * 3.1 + an * 3.) * .04 + sin(uT * 5.3 - an * 5.) * .018;
-      transformed.xy += normalize(position.xy + 1e-5) * w * rr * rr * (1. + uWob * 5.);
-      transformed.z += sin(uT * 4. + an * 2.) * .03 * rr * rr * (1. + uWob * 4.);`);
+      float w = sin(uT * 3.1 + an * 3.) * .03 + sin(uT * 5.3 - an * 5.) * .012;
+      transformed.xy += normalize(position.xy + 1e-5) * w * rr * rr * (.6 + uWob * 5.);
+      transformed.z += sin(uT * 4. + an * 2.) * .02 * rr * rr * (1. + uWob * 4.);`);
     sh2.fragmentShader = 'uniform float uT;\nvarying vec3 vOP;\nfloat hh(vec3 p){ return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }\n' + sh2.fragmentShader
       .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
-        vec3 cell = floor(vOP * 80.); float gg = hh(cell); float sp = smoothstep(.978, 1., gg) * (.35 + .65 * sin(uT * 4. + gg * 80.));
-        totalEmissiveRadiance += vec3(1., .96, .86) * sp * 2.6;`);
+        vec3 cell = floor(vOP * 70.); float gg = hh(cell); float sp = smoothstep(.985, 1., gg) * (.35 + .65 * sin(uT * 4. + gg * 80.));
+        totalEmissiveRadiance += vec3(0.) * sp;`);
   };
-  const m = new THREE.Mesh(g, starMat); star.add(m); star.scale.setScalar(1); star.position.set(0, 0, 0); star.rotation.set(0, 0, 0); star.updateMatrixWorld(true);
-  const rc = new THREE.Raycaster(), zAt = (x, y) => { rc.set(new THREE.Vector3(x, y, 3), new THREE.Vector3(0, 0, -1)); const h = rc.intersectObject(m)[0]; return h ? h.point.z : .25; };
-  // глаза: чёрные капсулы с белым квадратом-бликом, как у них; дуги — для «счастливых» и подмигивания
-  const ink = new THREE.MeshPhysicalMaterial({ color: 0x050505, roughness: .15, clearcoat: 1 }), wht = new THREE.MeshBasicMaterial({ color: 0xffffff });
-  const mkEye = (x, y) => {
-    const e = new THREE.Group(); e.position.set(x, y, zAt(x, y) + .004);
-    const open = new THREE.Group(); const pill = new THREE.Mesh(new THREE.CapsuleGeometry(.075, .1, 6, 16), ink); pill.scale.z = .35; open.add(pill);
-    const hl = new THREE.Mesh(new THREE.PlaneGeometry(.055, .055), wht); hl.position.set(-.028, .055, .03); open.add(hl);
-    const hl2 = new THREE.Mesh(new THREE.CircleGeometry(.018, 16), wht); hl2.position.set(.025, -.045, .03); hl2.visible = false; open.add(hl2); e.add(open);
-    const arc = new THREE.Mesh(new THREE.TorusGeometry(.07, .022, 10, 24, Math.PI), ink); arc.position.y = -.02; arc.visible = false; e.add(arc);
-    star.add(e); return { e, open, arc, hl, hl2 };
-  };
-  eyes.L = mkEye(-.1, -.06); eyes.R = mkEye(.22, -.09);
+  const m = new THREE.Mesh(g, starMat); star.add(m);
+  // глаза из их файлов: чёрное — чуть выпуклое и глянцевое, белые блики — печать сверху
+  const ink = new THREE.MeshPhysicalMaterial({ color: 0x0a0806, roughness: .18, clearcoat: 1, clearcoatRoughness: .05, side: THREE.DoubleSide });
+  const wht = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, toneMapped: false });
+  moods.forEach((k, mi) => {
+    const parts = P[mi].filter(q => fillOf(q) !== '#ef8018').map(q => { const sh = SVGLoader.createShapes(q); const b = new THREE.Box2(); sh.forEach(z => z.getPoints(12).forEach(v => b.expandByPoint(v))); return { sh, b, white: fillOf(q) === '#ffffff' || fillOf(q) === '#fff' || fillOf(q) === 'white' }; });
+    const xs = parts.filter(q => !q.white).map(q => q.b.getCenter(new THREE.Vector2()).x).sort((a, b) => a - b), split = (xs[0] + xs[xs.length - 1]) / 2;
+    const G = new THREE.Group(); G.visible = mi === 0; star.add(G); const eyes = [];
+    for (const left of [true, false]) {
+      const mine = parts.filter(q => (q.b.getCenter(new THREE.Vector2()).x < split) === left); if (!mine.length) continue;
+      const blk = mine.filter(q => !q.white), eb = new THREE.Box2(); blk.forEach(q => eb.union(q.b)); const ec = eb.getCenter(new THREE.Vector2()), es = eb.getSize(new THREE.Vector2());
+      const o = new THREE.Group(); o.position.set((ec.x - c.x) * S, -(ec.y - c.y) * S, FRONT + .004); G.add(o);
+      for (const q of mine) {
+        const gg = q.white ? new THREE.ShapeGeometry(q.sh, 16) : new THREE.ExtrudeGeometry(q.sh, { depth: .012 / S, bevelEnabled: true, bevelThickness: .01 / S, bevelSize: .006 / S, bevelSegments: 3, curveSegments: 16 });
+        gg.translate(-ec.x, -ec.y, 0); gg.scale(S, -S, -S); if (q.white) gg.translate(0, 0, .03);
+        o.add(new THREE.Mesh(gg, q.white ? wht : ink)); }
+      eyes.push({ o, open: es.y > es.x * 1.15 }); }
+    EYES[k] = { G, eyes };
+  });
   star.scale.setScalar(.0001);
 }
 const face = { mood: 'main', base: 'main', until: 0, blink: 2, look: new THREE.Vector2(), sq: 0, spin: 0, hop: 0 };
@@ -1191,11 +1231,9 @@ function stepStar(dt, t, vis, col, size = .2) {
   starMat.color.lerp(col, 1 - Math.exp(-dt * 4)); starMat.attenuationColor.copy(starMat.color); starMat.emissive.copy(starMat.color);
   if (t > face.until && face.mood !== face.base) face.mood = face.base;
   face.blink -= dt; let bl = 1; if (face.blink < .12) bl = Math.abs(face.blink - .06) / .06; if (face.blink < 0) face.blink = 2.4 + rand() * 3.5;
-  const happy = face.mood === 'happy', wink = face.mood === 'wink', wow = face.mood === 'wow', love = face.mood === 'love';
-  for (const s of ['L', 'R']) { const e = eyes[s], arc = happy || (wink && s === 'L');
-    e.open.visible = !arc; e.arc.visible = arc;
-    const k = wow ? 1.3 : love ? 1.18 : 1; e.open.scale.set(k, k * Math.max(.08, bl), 1); e.hl2.visible = love;
-    e.open.position.set(face.look.x * .05, face.look.y * .04, 0); }
+  const mk = ({ happy: 'happy', wink: 'cunning', love: 'enamored' })[face.mood] || 'main', kk = face.mood === 'wow' ? 1.22 : 1;
+  for (const k in EYES) EYES[k].G.visible = k === mk;
+  const E = EYES[mk]; if (E) { E.G.position.set(face.look.x * .06, face.look.y * .045, 0); E.eyes.forEach(e => e.o.scale.set(kk, kk * (e.open ? Math.max(.08, bl) : 1), 1)); }
   face.sq *= Math.exp(-dt * 5); face.hop *= Math.exp(-dt * 3.5); face.spin *= Math.exp(-dt * 2.2);
   const s = vis * size * (1 + face.sq * .25);
   star.scale.set(s * (1 + face.sq * .15), s * (1 - face.sq * .2), s);
@@ -1213,13 +1251,13 @@ const mob = () => innerWidth < 760;
 function states() {
   const P = (d, m) => mob() ? m : d;
   return {
-    hero: P({ x: 1.2, y: -.08, s: 1, rx: .08, ry: -.1, rz: -.2 }, { x: 0, y: .52, s: .58, rx: .06, ry: -.3, rz: -.14 }),
+    hero: P({ x: 1.2, y: -.08, s: 1, rx: .08, ry: -.1, rz: -.2 }, { x: .16, y: .44, s: .48, rx: .06, ry: -.3, rz: -.14 }),
     flav: q => P({ x: 0, y: -.04, s: 1.02, rx: .06, ry: q * TAU, rz: 0 }, { x: 0, y: .5, s: .6, rx: .05, ry: q * TAU, rz: 0 }),
     crack0: P({ x: 0, y: -.62, s: 1.5, rx: .9, ry: 6 * TAU + .25, rz: .04 }, { x: 0, y: -.1, s: 1.0, rx: .85, ry: 6 * TAU + .25, rz: .04 }),
     crack1: P({ x: 0, y: -.5, s: 1.4, rx: .78, ry: 6 * TAU + .45, rz: .08 }, { x: 0, y: 0, s: .95, rx: .75, ry: 6 * TAU + .45, rz: .08 }),
-    ceh: P({ x: -1.2, y: -.04, s: .94, rx: .06, ry: 6 * TAU + .3, rz: .16 }, { x: 0, y: .66, s: .48, rx: .05, ry: 6 * TAU + .3, rz: .1 }),
+    ceh: P({ x: -.9, y: -3.7, s: .85, rx: .5, ry: 6 * TAU + .3, rz: .5 }, { x: 0, y: -3.2, s: .5, rx: .4, ry: 6 * TAU + .3, rz: .3 }),
     stm: P({ x: 1.1, y: -.04, s: 1.0, rx: .06, ry: 7 * TAU, rz: -.12 }, { x: 0, y: .6, s: .56, rx: .05, ry: 7 * TAU, rz: -.08 }),
-    order: P({ x: 1.28, y: -.06, s: .9, rx: .06, ry: 8 * TAU + .25, rz: -.2 }, { x: 0, y: .72, s: .48, rx: .05, ry: 8 * TAU + .25, rz: -.12 }),
+    order: P({ x: 1.1, y: -3.7, s: .85, rx: .4, ry: 8 * TAU + .25, rz: -.5 }, { x: 0, y: -3.2, s: .5, rx: .4, ry: 8 * TAU + .25, rz: -.3 }),
     foot: { x: 0, y: -3.6, s: .8, rx: .4, ry: 8.6 * TAU, rz: .5 },
   };
 }
@@ -1255,7 +1293,7 @@ function setLabel(a, b, m) {
   if (labelMat.map !== x.tex) labelMat.map = x.tex;
   wipe.mapB.value = y.tex; wipe.uMix.value = m;
   acc.copy(cA.set(x.tone)).lerp(cB.set(y.tone), m);
-  wipe.uSeam.value.copy(acc); rim.color.copy(acc);
+  wipe.uSeam.value.copy(acc); rim.color.set(0xfff1e0);
   const ba = BAND[x.band], bb = BAND[y.band], e = ease(m);
   labelMesh.scale.y = ba.h + (bb.h - ba.h) * e; labelMesh.position.y = ba.y + (bb.y - ba.y) * e;
   drinkMat.attenuationColor.copy(cA.set(x.drink)).lerp(cB.set(y.drink), m); drinkMat.attenuationDistance = x.att + (y.att - x.att) * m; drinkMat.emissive.copy(drinkMat.attenuationColor).multiplyScalar(.07);
@@ -1263,7 +1301,7 @@ function setLabel(a, b, m) {
   pearls.visible = (m < .5 ? x : y).band === 'fl';
   gelMat.attenuationColor.copy(juice); coreMat.color.copy(juice); coreMat.emissive.copy(juice); splash.material.color.copy(juice); splash.material.emissive.copy(juice);
   const hx = '#' + acc.getHexString();
-  if (hx !== accHex) { accHex = hx; const s = document.documentElement.style; s.setProperty('--acc', hx); s.setProperty('--acc-ink', lum(hx) > .3 ? '#0A0A0C' : '#FFFFFF'); }
+  if (hx !== accHex) { accHex = hx; const s = document.documentElement.style; s.setProperty('--acc', hx); s.setProperty('--acc-ink', lum(hx) > .45 ? '#1A1511' : '#FFFFFF'); }
 }
 
 /* мышью — где угодно, пальцем — по банке */
@@ -1302,7 +1340,7 @@ const cur = { ...states().hero, y: -3.4, rx: .5, ry: -4, rz: .7, s: .9 };   // �
 const NS = SEQ.length - 1;
 let last = performance.now(), lastC = 0, shake = 0, phD = 0, pop = 0, introT0 = 0, landedOnce = false, lastNear = 0, ripT = 0, gasOn = 0, heroRev = 0, slowT = 1;
 const W = {};
-const v3 = new THREE.Vector3(), starCol = new THREE.Color(), BRAND = new THREE.Color('#F07F1A');
+const v3 = new THREE.Vector3(), starCol = new THREE.Color(), BRAND = new THREE.Color('#EF8018'), INK = new THREE.Color('#1A1511');
 const FGX = [...document.querySelectorAll('#fg img')].map(el => { const [dx, dy] = el.dataset.d.split(',').map(Number); return { el, k: el.dataset.k, dx, dy }; });
 let fps = { n: 0, t: 0, done: false }, starPopT = 0, starInit = false, lastY = 0, vel = 0, jel = 0, jelV = 0;
 const tmpW = new THREE.Vector3(), rayV = new THREE.Vector3();
@@ -1323,6 +1361,7 @@ function frame(now) {
   }
   mouse.sx += (mouse.x - mouse.sx) * (1 - Math.exp(-dt * 4)); mouse.sy += (mouse.y - mouse.sy) * (1 - Math.exp(-dt * 4));
   const heroW = 1 - sstep(0, vh * .6, y), idle = reduce ? 0 : 1;
+  const flW = sstep(A.f[0] - vh * .7, A.f[0] - vh * .15, y) * (1 - sstep(A.c0 - vh * .6, A.c0 - vh * .05, y));   // доля «экрана вкуса»
   pop *= Math.exp(-dt * 4);
   can.position.set(cur.x + mouse.sx * .05, cur.y + Math.sin(now * .0011) * .03 * idle, 0);
   can.rotation.set(cur.rx + mouse.sy * .1 + jel * .9, cur.ry + Math.sin(now * .0006) * .22 * heroW * idle + drag.ry, cur.rz - mouse.sx * .06);
@@ -1342,9 +1381,10 @@ function frame(now) {
 
   // вскрытие
   const c = clamp((y - A.c0) / (A.c1 - A.c0));
-  const lift = sstep(.12, .28, c) * (1 - .82 * sstep(.38, .52, c));
+  const fresh = 1 - sstep(A.ceh - vh * .3, A.ceh + vh * .1, y);   // за кадром банка снова закрытая
+  const lift = sstep(.12, .28, c) * (1 - .82 * sstep(.38, .52, c)) * fresh;
   tabPivot.rotation.z = -lift * 1.2;
-  const flap = sstep(.268, .292, c); flapPivot.rotation.z = -flap * 1.45;
+  const flap = sstep(.268, .292, c) * fresh; flapPivot.rotation.z = -flap * 1.45;
   if (c >= .28 && lastC < .28) { hiss(NMI); sndClick(); sndHiss(); shake = 1; ripT = 0; drinkU.uRip.value = 1; gasOn = 1; moodSet('wow', 1.4); face.hop = 1; }
   if (c < .2) gasOn = 0;
   if (c >= .47 && lastC < .47) { sndPop(1.6); shake = .5; moodSet('happy', 1.5); }
@@ -1361,9 +1401,9 @@ function frame(now) {
   const wHero = WORDS[0], cw1 = WORDS[6], cw2 = WORDS[7];
   if (wHero) {
     heroRev = landedOnce ? Math.min(1, heroRev + dt / 1.3) : 0;
-    wHero.rev = ease(heroRev); wHero.col.copy(acc); wHero.op = 1;
-    for (let i = 1; i <= 5; i++) { const w = WORDS[i]; w.col.copy(acc); w.op = .55; }
-    cw1.op = sstep(.04, .14, c) * (1 - sstep(.4, .48, c)); cw1.sc = 1 + sstep(.27, .34, c) * .16 - sstep(.34, .48, c) * .08; cw1.col.setRGB(1.32, 1.32, 1.28);
+    wHero.rev = 1; wHero.col.copy(INK); wHero.op = dd > 0 ? 1 : 0;
+    for (let i = 1; i <= 5; i++) { const w = WORDS[i]; w.col.copy(acc); w.op = 1; }
+    cw1.op = sstep(.04, .14, c) * (1 - sstep(.4, .48, c)); cw1.sc = 1 + sstep(.27, .34, c) * .16 - sstep(.34, .48, c) * .08; cw1.col.copy(INK);
     cw2.op = sstep(.46, .54, c); cw2.sc = 1.18 - sstep(.46, .62, c) * .18; cw2.col.copy(acc);
     placeWords();
   }
@@ -1372,21 +1412,23 @@ function frame(now) {
   v3.copy(can.position).project(camera); bdU.uGlowPos.value.set(v3.x * .5 + .5, v3.y * .5 + .5);
   { can.updateMatrixWorld(); const a = body.localToWorld(tmpW.set(0, -.55, -.6)).project(camera); bdU.uAxA.value.set(a.x * .5 + .5, a.y * .5 + .5);
     const b = body.localToWorld(tmpW.set(0, .62, -.6)).project(camera); bdU.uAxB.value.set(b.x * .5 + .5, b.y * .5 + .5);
-    const hpx = Math.abs(bdU.uAxB.value.y - bdU.uAxA.value.y); bdU.uCardW.value = .022 + can.scale.x * .028; bdU.uCard.value = (ownWipe < 1 || phD > NS - .5 ? .45 : .7) * (1 - .6 * clamp((y - A.c0 + vh) / vh) * (1 - clamp((y - A.c1) / vh))); } bdU.uGlow.value.copy(acc); bdU.uAsp.value = innerWidth / innerHeight;
+    const hpx = Math.abs(bdU.uAxB.value.y - bdU.uAxA.value.y); bdU.uCardW.value = .022 + can.scale.x * .028; bdU.uCard.value = (ownWipe < 1 || phD > NS - .5 ? .45 : .7) * (1 - .6 * clamp((y - A.c0 + vh) / vh) * (1 - clamp((y - A.c1) / vh))); } bdU.uGlow.value.copy(acc); bdU.uAsp.value = innerWidth / innerHeight; bdU.uDiscR.value = mob() ? .165 : .36;
+  { const stW = sstep(A.st - vh * .8, A.st - vh * .25, y) * (1 - sstep(A.ord - vh * .7, A.ord - vh * .2, y));
+    bdU.uFill.value = flW; bdU.uGlowK.value = Math.max(heroW, stW) * (1 - flW); bdU.uShadow.value = 1 - clamp((y - A.c0 + vh * .3) / (vh * .3)) * (1 - clamp((y - A.c1 - vh * .2) / (vh * .3))); }
 
   // звёздочка: в первом экране — знак после огромного «pompon», как в их логотипе; дальше — рядом с банкой; в подвале — снова в слове
   if (landedOnce && heroRev > .75 && !starPopT) { starPopT = t; face.sq = 1; face.spin = 1; starU.uWob.value = 1; moodSet('happy', 1.4); }
   const popA = starPopT ? clamp((t - starPopT) / .9) : 0, popE = popA < 1 ? 1 - Math.pow(1 - popA, 3) * Math.cos(popA * 9) : 1;
   const footS = sstep(A.ft - vh * 1.1, A.ft - vh * .35, y);
-  const flavS = clamp(1 - Math.abs(phD - 3) / 2.6) * (1 - sstep(A.c0 - vh * .6, A.c0 - vh * .1, y));
+  const flavS = sstep(.15, .7, phD) * (1 - sstep(A.c0 - vh * .6, A.c0 - vh * .1, y));
   const wpp = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (camera.position.z - .4) / innerHeight;   // мир на пиксель у звезды
   let sp, ssz;
-  if (footS > .001) { const fw = $('#footWord'), r = $('#footWord .foot-star').getBoundingClientRect(), R2 = fw.getBoundingClientRect(), fs = parseFloat(getComputedStyle(fw).fontSize);
-    sp = toWorld(r.left + r.width * .5, R2.top + fs * .5, .4); ssz = fs * .45 * wpp; }
-  else { const w0 = WORDS[0], r = w0.el.getBoundingClientRect(), fs = parseFloat(getComputedStyle(w0.el).fontSize);
-    const hx = r.left - w0.w * .04 + w0.w - fs * .1 + fs * .5, hy = r.top + r.height * .5 - fs * .08;
-    const hp = toWorld(hx, hy, .4), cp = tmpW.set(can.position.x - (.5 + .1 * (mob() ? .6 : 1)) * can.scale.x, can.position.y + .5 * can.scale.x, can.position.z - .2);
-    const k2 = sstep(.1, .9, 1 - heroW); sp = hp.lerp(cp, k2); ssz = (fs * .47 * wpp) * (1 - k2) + .28 * k2; }
+  const anc = sel => { const r = $(sel).getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width }; };
+  const side = Math.round(phD) % 2 ? 1 : -1; let peek = 0;
+  if (footS > .001) { const a = anc('#footLogo .lk-star'); sp = toWorld(a.x, a.y, .4); ssz = a.w * wpp * .5; }
+  else { const a = anc('#heroLogo .lk-star'), cs0 = can.scale.x;
+    const hp = toWorld(a.x, a.y, .4), cp = tmpW.set(can.position.x + side * .5 * cs0, can.position.y + .22 * cs0, can.position.z - .34);
+    peek = sstep(.1, .9, 1 - heroW); sp = hp.lerp(cp, peek); ssz = (a.w * wpp * .5) * (1 - peek) + .29 * cs0 * peek; }
   const cr = (y - A.c0) / (A.c1 - A.c0), crW = sstep(-.14, .03, cr) * (1 - sstep(.88, 1.02, cr));
   if (crW > .001) {
     can.updateMatrixWorld();
@@ -1395,22 +1437,23 @@ function frame(now) {
     const perch = body.localToWorld(new THREE.Vector3(.7, PY + .38, .32));
     const hold = ring.clone().addScaledVector(UPV, .02 * cs);
     const cp = hold.lerp(perch, ease(fl)); cp.y += Math.sin(fl * Math.PI) * .35 * cs;
-    sp.lerp(cp, crW); ssz = ssz * (1 - crW) + .155 * cs * crW;
+    sp.lerp(cp, crW); ssz = ssz * (1 - crW) + .2 * cs * crW;
     if (cr > .1 && cr < .28) { face.mood = 'wink'; face.until = t + .2; face.sq = Math.max(face.sq, pull * .55); }
     face.spin = cr > .28 && cr < .4 ? (1 - fl) * 1.5 : face.spin;
   }
   sp.y += face.hop * .1 * ssz * 4 + Math.sin(t * 1.6) * .015;
   if (!starInit) { star.position.copy(sp); starInit = true; } else star.position.lerp(sp, 1 - Math.exp(-dt * (crW > .5 ? 22 : 7)));
   face.look.set(mouse.sx, -mouse.sy);
-  star.rotation.set(-mouse.sy * .22 + Math.sin(t * .9) * .05, mouse.sx * .4 + face.spin * TAU, Math.sin(t * 1.3) * .07 - mouse.sx * .06);
+  const lean = peek * (1 - crW) * (1 - footS);
+  star.rotation.set(-mouse.sy * .2 + Math.sin(t * .9) * .04, mouse.sx * .32 + face.spin * TAU - side * lean * .35, Math.sin(t * 1.3) * .05 - mouse.sx * .05 + side * lean * .3);
   const vis = Math.max(heroW * popE, flavS, footS, crW) * popE;
-  stepStar(dt, t, vis, footS > .5 ? BRAND : acc, ssz);
+  stepStar(dt, t, vis, footS > .5 || heroW > .5 ? BRAND : acc, ssz);
 
   { const mx = mouse.sx * 26, my = mouse.sy * 18;
-    FGX.forEach((f, i) => { const w = W[f.k] || 0; f.el.style.opacity = f.k === 'black' && f.el.classList.contains('fg-apple') ? w * .9 : w;
+    FGX.forEach((f, i) => { const w = (W[f.k] || 0) * flW; f.el.style.opacity = f.k === 'black' && f.el.classList.contains('fg-apple') ? w * .9 : w;
       f.el.style.transform = `translate(${mx * (1 + i % 3 * .2) + (1 - w) * f.dx}px,${my * (1 + i % 3 * .2) + (1 - w) * f.dy}px) rotate(${(i % 2 ? 6 : -10) + w * (i % 2 ? -4 : 4)}deg)`; }); }
   stepPop((y - A.c0) / (A.c1 - A.c0), t);
-  stepGel(dt, t); stepTea(dt); stepMist(dt); stepProps(dt, t, W);
+  stepGel(dt, t); stepTea(dt); stepMist(dt); stepProps(dt, t, {});
   shake *= Math.exp(-dt * 6);
   camera.position.x = (rand() - .5) * .05 * shake; camera.position.y = (rand() - .5) * .05 * shake;
   document.querySelector('.logo').style.setProperty('--rot', (y * .12).toFixed(1) + 'deg');
@@ -1419,7 +1462,7 @@ function frame(now) {
   camera.updateMatrixWorld();
   renderer.setRenderTarget(farRT); renderer.setClearColor(0x000000, 0); renderer.clear(); renderer.render(farScene, camera);
   kawase.render(renderer, farRT, farBlur);
-  renderer.setRenderTarget(null); renderer.setClearColor(0x0A0A0C, 1);
+  renderer.setRenderTarget(null); renderer.setClearColor(0xFCF8EE, 1);
   composer.render(dt);
 
   // слабое железо — проще картинка
@@ -1469,9 +1512,9 @@ async function takeLabel(f) {
 }
 $('#f2').addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; if (f) takeLabel(f); });
 document.querySelectorAll('[data-ex]').forEach(b => b.addEventListener('click', () => { S.mode = 'ex'; S.ex = b.dataset.ex; landed(); }));
-let dd = 0; const hw = $('#heroWord'), hwText = 'pompon';
+let dd = 0; const hw = $('#heroWord'), hwText = '';
 function word(t) { if (hw.textContent === t) return; hw.textContent = t; if (WORDS[0]) { rasterWord(WORDS[0]); heroRev = 0; } }
-addEventListener('dragenter', e => { if (![...e.dataTransfer.types].includes('Files')) return; if (dd++ === 0) { word('кидайте.'); drag.v = .35; moodSet('wow', 3); } });
+addEventListener('dragenter', e => { if (![...e.dataTransfer.types].includes('Files')) return; if (dd++ === 0) { word('кидайте макет'); drag.v = .35; moodSet('wow', 3); } });
 addEventListener('dragleave', () => { if (--dd <= 0) { dd = 0; word(hwText); } });
 addEventListener('dragover', e => e.preventDefault());
 addEventListener('drop', e => { e.preventDefault(); dd = 0; word(hwText); const f = e.dataTransfer.files[0]; if (f) takeLabel(f); });
@@ -1531,7 +1574,7 @@ function shot(angle, w, h) {
   camera.aspect = w / h; camera.fov = 22; camera.position.set(0, .2, (1.75 / .86) / (2 * Math.tan(THREE.MathUtils.degToRad(11)))); camera.lookAt(0, 0, 0); camera.updateProjectionMatrix();
   can.position.set(0, 0, 0); can.rotation.set(0, angle, 0); can.scale.setScalar(1);
   const hide = [gel, gcore, splash, mist, star, backdrop, tea, POP.sh, POP.co, POP.big, POP.bigCore, POP.dr]; hide.forEach(o => o.visible = false);
-  scene.background = new THREE.Color('#0A0A0C'); renderer.toneMapping = THREE.NeutralToneMapping;
+  scene.background = new THREE.Color('#FBF4E6'); renderer.toneMapping = THREE.NeutralToneMapping;
   setLabel('own', 'own', 0);
   renderer.render(scene, camera);
   const c = mk(w, h); c.getContext('2d').drawImage(canvas, 0, 0, w, h);
@@ -1545,12 +1588,12 @@ function maket(who) {
   const a = shot(0, 640, 860), b = shot(Math.PI, 640, 860), s = shot(-Math.PI / 2, 640, 860);
   const Wc = 2040, lw = 1240, lh = Math.round(lw * LH / LW), Hc = 110 + 860 + 40 + lh + 80;
   const c = mk(Wc, Hc), g = c.getContext('2d');
-  g.fillStyle = '#0A0A0C'; g.fillRect(0, 0, Wc, Hc);
-  g.fillStyle = '#F3F3EE'; g.font = `800 38px ${DISP}`; g.fillText('БАНКА 0,33 Л · POMPON', 60, 72);
-  g.fillStyle = '#8F8F96'; g.font = `500 24px "JetBrains Mono"`; g.fillText(`${who} · ${new Date().toLocaleDateString('ru-RU')}`, 760, 70);
+  g.fillStyle = '#FBF4E6'; g.fillRect(0, 0, Wc, Hc);
+  g.fillStyle = '#1A1511'; g.font = `400 38px ${DISP}`; g.fillText('Банка 0,33 л · pompon', 60, 72);
+  g.fillStyle = '#6F655B'; g.font = `400 24px ${BODY}`; g.fillText(`${who} · ${new Date().toLocaleDateString('ru-RU')}`, 760, 70);
   [a, s, b].forEach((x, i) => g.drawImage(x, 40 + i * 660, 100));
   const ly = 1010; g.drawImage(label, 60, ly, lw, lh);
-  g.fillStyle = '#8F8F96'; g.fillText('развёртка 178 × 127 мм', 60, ly + lh + 40);
+  g.fillStyle = '#6F655B'; g.fillText('развёртка 178 × 127 мм', 60, ly + lh + 40);
   g.fillText(S.mode === 'ex' ? 'пример с сайта' : S.mode === 'file' ? `макет: ${S.file ? S.file.name : '—'}` : `из логотипа · вкус: ${S.flName || '—'}`, 1350, ly + 40);
   return c;
 }
@@ -1584,18 +1627,47 @@ $('#buy').addEventListener('submit', async e => {
   btn.disabled = false; btn.textContent = 'Отправить';
 });
 
+/* оборот банки: настоящая информационная плашка — данные только проверенные (их макет этикетки 4904-000-001 и pompon.pro) */
+const NAMES = { black: ['Fruity black tea', 'Бабл-ти с джусболлами'], fresh: ['Fresh wind', 'Напиток с джусболлами'], gum: ['Fruity gum', 'Напиток с джусболлами'], mango: ['Mango green tea', 'Бабл-ти с джусболлами'], cola: ['Cola', 'Напиток с джусболлами'] };
+function backInfo(im, k, qr) {
+  const W = im.naturalWidth || im.width, H = im.naturalHeight || im.height, c = mk(W, H), g = c.getContext('2d'), u = W / 3072;
+  g.drawImage(im, 0, 0, W, H);
+  const cw = 900 * u, ch = H * .47, y0 = H * .465, pad = 46 * u;
+  const card = x0 => {
+    g.save(); g.translate(x0, y0);
+    g.fillStyle = 'rgba(251,244,230,.93)'; g.beginPath(); g.roundRect(0, 0, cw, ch, 30 * u); g.fill();
+    g.fillStyle = '#1A1511'; g.textBaseline = 'top';
+    g.font = `400 ${54 * u}px ${DISP}`; g.fillText(NAMES[k][0], pad, pad);
+    g.font = `500 ${28 * u}px ${BODY}`; g.fillText(NAMES[k][1] + ' · 0,33 л', pad, pad + 70 * u);
+    g.font = `400 ${24 * u}px ${BODY}`; g.fillStyle = '#3b332b';
+    const lines = ['Хранить при температуре от +2 до +22 °C. После вскрытия не хранить.', 'Срок годности: 180 суток. Дата изготовления указана на банке.',
+      'Изготовитель: ООО «Живая Долина». Адрес производства: 454077, Россия, Челябинская область, г. Челябинск, тракт Бродокалмакский, д. 3.'];
+    let yy = pad + 132 * u; const mw = cw - pad * 2;
+    for (const L of lines) { let row = ''; for (const w of L.split(' ')) { const t2 = row ? row + ' ' + w : w; if (g.measureText(t2).width > mw) { g.fillText(row, pad, yy); yy += 33 * u; row = w; } else row = t2; } g.fillText(row, pad, yy); yy += 46 * u; }
+    const qs = 150 * u, qy = ch - pad - qs;
+    if (qr) { g.fillStyle = '#fff'; g.fillRect(pad - 8 * u, qy - 8 * u, qs + 16 * u, qs + 16 * u); g.drawImage(qr, pad, qy, qs, qs); }
+    g.fillStyle = '#1A1511'; g.font = `500 ${26 * u}px ${BODY}`; g.fillText('Все вкусы — pompon.pro', pad + qs + 34 * u, qy + 18 * u);
+    g.font = `400 ${22 * u}px ${BODY}`; g.fillStyle = '#5d544a'; g.fillText('ТР ТС 021/2011, 022/2011', pad + qs + 34 * u, qy + 60 * u);
+    g.lineWidth = 3 * u; g.strokeStyle = '#1A1511'; g.strokeRect(pad + qs + 34 * u, qy + qs - 58 * u, 96 * u, 56 * u);
+    g.fillStyle = '#1A1511'; g.font = `500 ${36 * u}px ${BODY}`; g.fillText('EAC', pad + qs + 46 * u, qy + qs - 50 * u);
+    g.restore(); };
+  card(-cw / 2); card(W - cw / 2);           // спина — на шве текстуры, рисуем обе половины
+  return c;
+}
+
 /* ================= старт ================= */
 (async () => {
   const bar = $('#ldBar'), prog = v => bar.style.transform = `scaleX(${v})`; prog(.12);
   const load1 = src => new Promise((ok, no) => { const im = new Image(); im.onload = () => ok(im); im.onerror = () => no(new Error(src)); im.src = src; });
   const img = src => load1(src).catch(() => new Promise(r => setTimeout(r, 700)).then(() => load1(src + '?r=1')));
-  try { await Promise.all(['900 100px Unbounded', '800 60px Unbounded', '700 30px "JetBrains Mono"', '500 20px "JetBrains Mono"', '400 20px Manrope', '700 20px Manrope'].map(f => document.fonts.load(f))); } catch (e) {}
+  try { await Promise.all(['400 100px "TT Travels Next"', '400 20px Jost', '500 20px Jost'].map(f => document.fonts.load(f))); } catch (e) {}
   try { S.logo = prepLogo(await img('assets/pompon-main.png')); } catch (e) {}
   prog(.3);
   const keysFl = Object.keys(FL), suf = MOB ? 'lo' : 'hi';
   let done = 0;
   const ims = await Promise.all(keysFl.map(k => img(`assets/lbl-${k}-${suf}.webp`).then(r => { prog(.3 + .45 * (++done / keysFl.length)); return r; })));
-  keysFl.forEach((k, i) => { const t = new THREE.Texture(ims[i]); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = renderer.capabilities.getMaxAnisotropy(); t.wrapS = THREE.RepeatWrapping; t.needsUpdate = true; T[k] = { tex: t, band: 'fl', ...FL[k] }; });
+  const qr = await img('assets/qr-pompon.png').catch(() => null);
+  keysFl.forEach((k, i) => { const t = new THREE.Texture(backInfo(ims[i], k, qr)); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = renderer.capabilities.getMaxAnisotropy(); t.wrapS = THREE.RepeatWrapping; t.needsUpdate = true; T[k] = { tex: t, band: 'fl', ...FL[k] }; });
   for (const k in EX) { try { EX[k].img = await img(EX[k].src); } catch (e) { EX[k].img = mk(LW, LH); } }
   T.own = { tex: texOf(label), band: 'own', tone: '#F07F1A', drink: '#6a4a14', att: .4, pearl: '#ffb347' };
   T.prev = { tex: texOf(prevC), band: 'own', tone: '#F07F1A', drink: '#6a4a14', att: .4, pearl: '#ffb347' };
@@ -1605,7 +1677,7 @@ $('#buy').addEventListener('submit', async e => {
   prog(.9);
   // слова: 0 — pompon., 1–5 — вкусы контуром, 6 — Щёлк., 7 — Чпок.
   WORDS.push({ el: $('#heroWord'), anchor: 'left' });
-  document.querySelectorAll('.flav .outline').forEach(el => WORDS.push({ el, stroke: true }));
+  document.querySelectorAll('.flav .bw').forEach(el => WORDS.push({ el }));
   WORDS.push({ el: $('.cw1') }, { el: $('.cw2') });
   WORDS.forEach(w => Object.assign(w, { op: 0, sc: 1, rev: 1, dy: 0, col: new THREE.Color(1, 1, 1) }));
   rasterAll();
