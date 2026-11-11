@@ -564,8 +564,8 @@ function drawGen(c = label) {
 }
 
 /* ===== загруженный макет на этикетку ===== */
-function drawFile(c = label) {
-  const g = c.getContext('2d'), src = S.fileImg, b = S.fileCut;
+function drawFile(c = label, src = S.fileImg, b = S.fileCut) {
+  const g = c.getContext('2d');
   g.setTransform(1, 0, 0, 1, 0, 0); g.fillStyle = '#fff'; g.fillRect(0, 0, LW, LH);
   g.imageSmoothingQuality = 'high';
   g.drawImage(src, b.x, b.y, b.w, b.h, 0, 0, LW, LH);
@@ -690,7 +690,8 @@ async function loadEx(id) {
   S.ex = id; S.file = null; $('#fileAct').hidden = true;
   if (id === 'pompon') { S.mode = 'gen'; S.fileImg = null; redraw(); spin(); return; }
   const e = EX.find(x => x.id === id);
-  if (!exImg[id]) { const im = new Image(); im.src = e.src; await im.decode(); const c = mk(im.naturalWidth, im.naturalHeight); c.getContext('2d').drawImage(im, 0, 0); exImg[id] = c; }
+  await exLoad(e);
+  if (S.ex !== id) return;   // пока грузилось, выбрали другое
   S.mode = 'file'; S.fileImg = exImg[id]; S.fileCut = { x: 0, y: 0, w: exImg[id].width, h: exImg[id].height };
   redraw(); spin();
 }
@@ -852,17 +853,21 @@ function shot(angle, w, h) {
   can.rotation.copy(keep); can.scale.setScalar(ks); renderer.setPixelRatio(pr); resize();
   return c;
 }
+// превью примеров: картинки грузим заранее, кадры снимаем одним синхронным куском — выбор пользователя не трогаем, банка на сцене не мигает
+async function exLoad(e) {
+  if (exImg[e.id]) return exImg[e.id];
+  const im = new Image(); im.src = e.src; await im.decode();
+  const c = mk(im.naturalWidth, im.naturalHeight); c.getContext('2d').drawImage(im, 0, 0); return exImg[e.id] = c;
+}
 async function thumbs() {
-  const keep = { mode: S.mode, img: S.fileImg, cut: S.fileCut };
+  await Promise.all(EX.filter(e => e.src).map(exLoad));
   for (const e of EX) {
-    if (e.id === 'pompon') { S.mode = 'gen'; drawGen(); }
-    else { const im = new Image(); im.src = e.src; await im.decode(); const c = mk(im.naturalWidth, im.naturalHeight); c.getContext('2d').drawImage(im, 0, 0); exImg[e.id] = c;
-      S.mode = 'file'; S.fileImg = c; S.fileCut = { x: 0, y: 0, w: c.width, h: c.height }; drawFile(); }
+    if (e.src) drawFile(label, exImg[e.id], { x: 0, y: 0, w: exImg[e.id].width, h: exImg[e.id].height }); else drawGen(label);
     labelTex.needsUpdate = true;
-    const c = shot(-.18, 300, 400), img = $(`#ex [data-id="${e.id}"] i`);
-    if (img) { const im = new Image(); im.src = c.toDataURL('image/png'); im.alt = ''; img.replaceWith(im); }
+    const c = shot(-.18, 300, 400), ph = $(`#ex [data-id="${e.id}"] i`);
+    if (ph) { const im = new Image(); im.src = c.toDataURL('image/png'); im.alt = ''; ph.replaceWith(im); }
   }
-  S.mode = keep.mode; S.fileImg = keep.img; S.fileCut = keep.cut; redraw();
+  redraw();
 }
 $('#ex').innerHTML = EX.map(e => `<button type="button" data-id="${e.id}"${e.id === 'pompon' ? ' class="on"' : ''}><i></i><b>${e.t}</b>${e.s}</button>`).join('');
 $('#ex').addEventListener('click', e => { const b = e.target.closest('button'); if (b) loadEx(b.dataset.id); });
