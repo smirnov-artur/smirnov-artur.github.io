@@ -4,305 +4,376 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>Pompon — конструктор банки под вашу марку</title>
-<meta name="description" content="Соберите банку лимонада под своей маркой: логотип, вкус, цвет и объём. Контрактное производство Pompon, Челябинск.">
-<link rel="icon" href="pompon-logo.svg" type="image/svg+xml">
+<title>Pompon — ваша этикетка на банке 0,33</title>
+<meta name="description" content="Загрузите макет этикетки и посмотрите его на банке 0,33 л в 3D. Контрактный розлив лимонадов и энергетиков под вашей маркой, Челябинск.">
+<link rel="icon" href="assets/pompon-main.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Roboto+Flex:wdth,wght@151,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Roboto+Flex:opsz,wdth,wght@8..144,151,600..800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#FFFCF3;--card:#FFFFFF;--beige:#F6E7C6;--sand:#FCEBAC;--ink:#141414;--mute:#6B6458;--line:rgba(20,20,20,.12);
-  --orange:#FD8300;--coral:#FF8562;--green:#62C584;
+  --bg:#F5F1EA;--card:#FFFFFF;--ink:#161412;--mute:#6E675E;--line:#E2DACE;--soft:#EFE9DF;
+  --or:#EF7F1A;--or-d:#D96C0B;
   --disp:'Roboto Flex','Golos Text',system-ui,sans-serif;--body:'Golos Text',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --top:76px;
+  --top:72px;--r:14px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:var(--bg);-webkit-text-size-adjust:100%}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
 button,input,select,textarea{font:inherit;color:inherit}
 a{color:inherit}
 img{display:block;max-width:100%}
 [hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--or);outline-offset:2px}
 
 /* шапка */
-.top{position:sticky;top:0;z-index:30;padding:12px clamp(12px,2.4vw,32px) 0;background:linear-gradient(var(--bg) 70%,rgba(255,252,243,0))}
-.bar{display:flex;align-items:center;gap:18px;max-width:1680px;margin:0 auto;height:64px;padding:0 10px 0 22px;border-radius:22px;background:var(--beige)}
-.brand img{height:44px;width:auto}
-.bar-t{font-size:15px;color:#3b372f}
-.bar-tel{margin-left:auto;font-weight:600;font-size:16px;text-decoration:none;white-space:nowrap}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;border:0;border-radius:999px;background:var(--ink);color:#fff;
-  font-family:var(--body);font-weight:600;font-size:17px;text-decoration:none;cursor:pointer;transition:transform .2s,background .2s}
-.btn:hover{transform:translateY(-1px);background:#000}
-.btn:focus-visible,.seg button:focus-visible,.sw:focus-visible,.vol:focus-within,.chip:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
-.bar .btn{min-height:46px;font-size:16px}
+.top{position:sticky;top:0;z-index:40;background:rgba(245,241,234,.92);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:20px;max-width:1720px;margin:0 auto;height:var(--top);padding:0 clamp(16px,2.4vw,36px)}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none}
+.brand img{height:42px;width:auto}
+.bar-t{font-size:14px;color:var(--mute);line-height:1.35;border-left:1px solid var(--line);padding-left:14px}
+.bar-tel{margin-left:auto;font-weight:600;text-decoration:none;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:0 24px;border:0;border-radius:12px;background:var(--ink);color:#fff;
+  font-weight:600;font-size:16px;text-decoration:none;cursor:pointer;transition:background .2s,transform .2s}
+.btn:hover{background:#000}
+.btn.or{background:var(--or);color:#161412}
+.btn.or:hover{background:var(--or-d)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:#fff}
+.bar .btn{min-height:44px;font-size:15px}
 
 /* раскладка */
-.wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(420px,520px);gap:clamp(16px,2vw,32px);max-width:1680px;margin:0 auto;padding:8px clamp(12px,2.4vw,32px) 40px}
-.stage{position:sticky;top:var(--top);height:calc(100vh - var(--top) - 16px);height:calc(100svh - var(--top) - 16px);min-height:460px;border-radius:28px;overflow:hidden;
-  background:radial-gradient(120% 90% at 50% 0%,#FFFFFF 0%,var(--bg) 60%)}
-.ring{position:absolute;left:50%;top:47%;width:min(78%,72vh);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
-  background:conic-gradient(from 200deg,#FF8562,#FD8300 12%,#FCEBAC 30%,#C6E58A 52%,#7FD38A 62%,#FCEBAC 80%,#FF8562);filter:blur(16px);opacity:.8}
-.ring::after{content:"";position:absolute;inset:16px;border-radius:50%;background:#FFFDF6}
-#gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y;cursor:grab}
+.cfg{display:grid;grid-template-columns:minmax(0,1fr) minmax(400px,500px);gap:clamp(16px,2.2vw,36px);max-width:1720px;margin:0 auto;padding:16px clamp(16px,2.4vw,36px) 0;align-items:start}
+.stage{position:sticky;top:calc(var(--top) + 16px);height:calc(100vh - var(--top) - 32px);height:calc(100svh - var(--top) - 32px);min-height:520px;border-radius:20px;overflow:hidden;
+  background:radial-gradient(70% 60% at 50% 38%,#FFFFFF 0%,#F7F4EF 45%,#E9E3D9 100%)}
+.stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;pointer-events:none;background:linear-gradient(rgba(214,205,190,0),rgba(214,205,190,.32))}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y;cursor:grab;z-index:1}
 .stage.drag #gl{cursor:grabbing}
-.hint{position:absolute;left:50%;top:18px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:9px 16px;border-radius:999px;background:rgba(255,255,255,.86);
-  font-size:15px;color:#3b372f;white-space:nowrap;pointer-events:none;transition:opacity .6s;box-shadow:0 4px 20px -8px rgba(0,0,0,.18)}
-.hint svg{width:22px;height:22px;flex:none}
+.stage.over{box-shadow:inset 0 0 0 3px var(--or)}
+.s-top{position:absolute;left:20px;right:20px;top:18px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;z-index:2;pointer-events:none}
+.now{font-size:14px;color:var(--mute);line-height:1.35}
+.now b{display:block;color:var(--ink);font-size:16px;font-weight:600}
+.dims{font-size:13px;color:var(--mute);text-align:right;line-height:1.4;white-space:nowrap}
+.hint{position:absolute;left:50%;bottom:76px;transform:translateX(-50%);z-index:2;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mute);white-space:nowrap;pointer-events:none;transition:opacity .6s}
+.hint svg{width:20px;height:20px}
 .hint.off{opacity:0}
-.views{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:6px;padding:5px;border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 6px 24px -10px rgba(0,0,0,.25)}
-.views button{border:0;background:none;min-height:42px;padding:0 16px;border-radius:999px;font-size:15px;font-weight:500;cursor:pointer;white-space:nowrap}
+.views{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);z-index:2;display:flex;gap:4px;padding:4px;border-radius:12px;background:rgba(255,255,255,.88);box-shadow:0 1px 0 rgba(0,0,0,.04),0 8px 24px -14px rgba(0,0,0,.3)}
+.views button{border:0;background:none;min-height:42px;padding:0 16px;border-radius:9px;font-size:15px;font-weight:500;cursor:pointer;white-space:nowrap}
 .views button.on{background:var(--ink);color:#fff}
-.dims{position:absolute;right:20px;top:18px;font-size:14px;color:var(--mute);background:rgba(255,255,255,.8);padding:6px 12px;border-radius:999px}
-.nogl{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--mute)}
-.load{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:16px;color:var(--mute);transition:opacity .5s;pointer-events:none}
+.load{position:absolute;inset:0;display:grid;place-items:center;z-index:3;font-size:15px;color:var(--mute);transition:opacity .5s;pointer-events:none}
 .load.off{opacity:0}
+.nogl{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--mute);z-index:3}
 
-/* панель шагов */
-.panel{padding:8px 0 0}
-h1{font-family:var(--disp);font-weight:700;font-stretch:151%;font-size:clamp(26px,2.3vw,34px);line-height:1.12;letter-spacing:-.01em;margin:6px 0 14px}
-.lead{color:#3b372f;font-size:17px;margin-bottom:22px;max-width:46ch}
-.steps{list-style:none;display:grid;gap:14px}
-.step{background:var(--card);border-radius:24px;padding:22px 22px 24px;border:1px solid rgba(20,20,20,.06)}
-.step h2{display:flex;align-items:center;gap:12px;font-family:var(--disp);font-stretch:151%;font-weight:700;font-size:19px;line-height:1.2;margin-bottom:16px}
-.step h2 b{display:grid;place-items:center;flex:none;width:34px;height:34px;border-radius:50%;background:var(--orange);color:#fff;font-family:var(--body);font-size:17px;font-weight:700}
-.sub{font-size:15px;color:var(--mute);margin:18px 0 8px}
+/* панель */
+.panel{padding:8px 0 32px}
+h1{font-family:var(--disp);font-stretch:151%;font-weight:750;font-size:clamp(28px,2.4vw,38px);line-height:1.08;letter-spacing:-.01em}
+.lead{margin-top:14px;font-size:17px;color:#3d3832;max-width:34em}
+.facts{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:16px;font-size:14px;color:var(--mute)}
+.facts span{display:flex;align-items:center;gap:7px}
+.facts span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--or)}
 
-.logo-row{display:flex;gap:16px;align-items:center}
-.logo-prev{flex:none;width:96px;height:96px;border-radius:18px;display:grid;place-items:center;padding:10px;
-  background:repeating-conic-gradient(#efe9db 0 25%,#fffdf8 0 50%) 0 0/16px 16px;border:1px solid var(--line)}
-.logo-prev img,.logo-prev canvas{max-width:100%;max-height:100%;object-fit:contain}
-.up{position:relative;overflow:hidden}
-.up input{position:absolute;inset:0;opacity:0;cursor:pointer}
-.note{font-size:14px;color:var(--mute);margin-top:8px;line-height:1.45}
+.card{margin-top:22px;background:var(--card);border-radius:var(--r);padding:22px;box-shadow:0 1px 0 rgba(0,0,0,.03),0 0 0 1px rgba(0,0,0,.04)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:12px;background:var(--soft)}
+.tabs button{border:0;background:none;min-height:46px;padding:6px 10px;border-radius:9px;font-weight:600;font-size:15px;line-height:1.2;cursor:pointer;color:#4a443d}
+.tabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08),0 4px 12px -8px rgba(0,0,0,.25)}
+
+.drop{display:block;margin-top:18px;border:1.5px dashed #CFC5B6;border-radius:12px;padding:26px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
+.drop:hover,.drop.over{border-color:var(--or);background:#FFF8F0}
+.drop b{display:block;font-size:17px}
+.drop small{display:block;margin-top:6px;color:var(--mute);font-size:14px}
+.drop .btn{margin-top:14px;pointer-events:none}
+.drop input{position:absolute;width:1px;height:1px;opacity:0}
+.note{margin-top:12px;font-size:14px;color:var(--mute)}
 .note.err{color:#B3261E}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center}
+.link{border:0;background:none;padding:0;font-size:14px;font-weight:500;text-decoration:underline;text-underline-offset:3px;cursor:pointer;color:var(--ink)}
 
-.seg{display:flex;flex-wrap:wrap;gap:8px}
-.seg button,.chip{min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-size:16px;cursor:pointer;transition:border-color .2s,background .2s}
-.seg button:hover,.chip:hover{border-color:#141414}
-.seg button.on,.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
-.chip{display:inline-flex;align-items:center;gap:8px;padding-left:10px}
-.chip i{width:20px;height:20px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+h3{font-size:15px;font-weight:600;margin-top:22px}
+h3 small{font-weight:400;color:var(--mute);font-size:14px}
+.ex{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.ex button{border:0;background:var(--soft);border-radius:12px;padding:8px 8px 10px;cursor:pointer;text-align:left;transition:box-shadow .2s;font-size:13px;line-height:1.3;color:#3d3832}
+.ex button:hover{box-shadow:inset 0 0 0 1.5px #CFC5B6}
+.ex button.on{box-shadow:inset 0 0 0 2px var(--ink);background:#fff}
+.ex img{width:100%;aspect-ratio:3/4;object-fit:contain;margin-bottom:6px}
+.ex i{display:block;width:100%;aspect-ratio:3/4;margin-bottom:6px;border-radius:8px;background:linear-gradient(90deg,#ece6dc,#f6f2ec,#ece6dc);background-size:200% 100%;animation:sh 1.4s linear infinite}
+@keyframes sh{to{background-position:-200% 0}}
+.ex b{display:block;font-weight:600;color:var(--ink);font-size:13px}
 
-.rng{display:flex;align-items:center;gap:14px;margin-top:4px}
-.rng input{flex:1;accent-color:var(--orange);height:30px}
-.rng output{min-width:52px;text-align:right;font-variant-numeric:tabular-nums;color:var(--mute);font-size:15px}
-.chk{display:flex;gap:10px;align-items:flex-start;font-size:15px;margin-top:12px;cursor:pointer}
-.chk input{width:22px;height:22px;flex:none;accent-color:var(--orange);margin-top:1px}
+.fld{margin-top:18px}
+.fld>label,.fld>.lb{display:block;font-size:14px;font-weight:600;margin-bottom:8px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:0;min-height:40px;padding:0 14px;border-radius:9px;background:var(--soft);font-size:14px;font-weight:500;cursor:pointer}
+.seg button.on{background:var(--ink);color:#fff}
+.logo-row{display:flex;gap:14px;align-items:center}
+.logo-prev{width:88px;height:66px;flex:none;border-radius:10px;display:grid;place-items:center;padding:8px;
+  background:repeating-conic-gradient(#EFE9DF 0 25%,#fff 0 50%) 0 0/14px 14px}
+.logo-prev img,.logo-prev canvas{max-width:100%;max-height:100%;object-fit:contain}
+.logo-prev b{font-family:var(--disp);font-stretch:151%;font-size:13px;text-align:center;word-break:break-word}
+.inp{width:100%;min-height:46px;padding:10px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fff;font-size:16px}
+.inp:focus{outline:none;border-color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:8px;border:0;min-height:38px;padding:0 12px 0 8px;border-radius:9px;background:var(--soft);font-size:14px;cursor:pointer}
+.chip i{width:20px;height:20px;border-radius:6px;flex:none}
+.chip.on{background:var(--ink);color:#fff}
+.own{display:grid;grid-template-columns:1fr 46px 46px;gap:8px;margin-top:8px}
+.own input[type=color]{width:46px;height:46px;border:1.5px solid var(--line);border-radius:10px;padding:3px;background:#fff;cursor:pointer}
 
-.fld{display:block;margin-top:14px}
-.fld span{display:block;font-size:15px;color:var(--mute);margin-bottom:6px}
-.fld input,.fld select,.fld textarea{width:100%;min-height:52px;padding:12px 16px;border-radius:16px;border:1.5px solid var(--line);background:#fff;outline:none;font-size:17px}
-.fld textarea{min-height:84px;resize:vertical}
-.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--orange)}
-.fld .row{display:flex;gap:10px;align-items:center}
-.fld input[type=color]{width:52px;height:52px;padding:4px;flex:none;cursor:pointer}
+/* заявка */
+.order{max-width:1720px;margin:0 auto;padding:40px clamp(16px,2.4vw,36px) 64px}
+.order-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(400px,500px);gap:clamp(16px,2.2vw,36px);align-items:start}
+.order h2{font-family:var(--disp);font-stretch:151%;font-weight:750;font-size:clamp(26px,2.2vw,34px);line-height:1.1}
+.order .lead{max-width:30em}
+.steps{margin-top:22px;display:grid;gap:14px;max-width:34em}
+.steps div{display:grid;grid-template-columns:32px 1fr;gap:12px;font-size:15px;color:#3d3832}
+.steps b{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#fff;font-size:14px}
+.spec{margin-top:26px;max-width:34em;border-top:1px solid var(--line)}
+.spec div{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.spec dt{color:var(--mute)}
+form>.fld:first-child{margin-top:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+textarea.inp{min-height:84px;resize:vertical}
+select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23161412' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 14px center}
+.agree{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:13px;color:var(--mute)}
+.agree input{width:20px;height:20px;margin-top:1px;accent-color:var(--ink);flex:none}
+.send{width:100%;margin-top:18px;min-height:54px;font-size:17px}
+.ferr{margin-top:10px;font-size:14px;color:#B3261E}
+.ok{text-align:center}
+.ok img.m{width:120px;margin:0 auto 10px}
+.ok h3{font-family:var(--disp);font-stretch:151%;font-size:24px;margin:0}
+.ok p{margin-top:8px;color:#3d3832}
+.ok img.mk{margin-top:16px;border-radius:10px;border:1px solid var(--line)}
+.ok a{display:inline-block;margin-top:12px;font-size:14px;font-weight:500}
+.foot{max-width:1720px;margin:0 auto;padding:22px clamp(16px,2.4vw,36px) 40px;border-top:1px solid var(--line);font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:8px 24px}
 
-.vols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.vol{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px 12px;border-radius:18px;border:1.5px solid var(--line);cursor:pointer;text-align:center;transition:border-color .2s,background .2s}
-.vol input{position:absolute;opacity:0;pointer-events:none}
-.vol:has(input:checked){border-color:var(--ink);background:#FFF7E4}
-.vol svg{height:70px;width:auto}
-.vol b{font-size:19px;font-weight:700;line-height:1.1}
-.vol small{font-size:13px;color:var(--mute);line-height:1.3}
+/* подгонка */
+dialog{margin:auto;border:0;border-radius:16px;padding:0;max-width:min(980px,94vw);width:100%;background:#fff;color:var(--ink);box-shadow:0 30px 80px -20px rgba(0,0,0,.45)}
+dialog::backdrop{background:rgba(22,20,18,.55)}
+.dlg-h{padding:18px 22px 0}
+.dlg-h b{font-size:18px}
+.dlg-h p{font-size:14px;color:var(--mute);margin-top:4px}
+.crop{position:relative;margin:14px 22px 0;background:#2a2724;border-radius:10px;overflow:hidden;touch-action:none;user-select:none;display:grid;place-items:center}
+.crop canvas{display:block;max-width:100%;max-height:62vh}
+.box{position:absolute;box-shadow:0 0 0 9999px rgba(0,0,0,.55);outline:2px solid #fff;cursor:move}
+.box::before,.box::after{content:"";position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,.5)}
+.box::before{left:33.33%}.box::after{left:66.66%}
+.box i{position:absolute;right:-9px;bottom:-9px;width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid var(--or);cursor:nwse-resize}
+.dlg-f{display:flex;justify-content:flex-end;gap:10px;padding:16px 22px 20px}
 
-.sws{display:flex;flex-wrap:wrap;gap:10px}
-.sw{width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;position:relative;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}
-.sw.on::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2.5px solid var(--ink)}
-.sw.own{background:conic-gradient(#ff5d5d,#ffd43b,#62c584,#7cc6f2,#6c3fb5,#ff5d5d)}
-.sw.own input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-
-.send{margin-top:20px;width:100%;min-height:58px;font-size:18px}
-.send[disabled]{opacity:.6;cursor:progress}
-.ok{display:none;text-align:center}
-.ok.on{display:block}
-.ok img{margin:14px auto 12px;border-radius:16px;max-height:340px;border:1px solid var(--line)}
-.ok h3{font-family:var(--disp);font-stretch:151%;font-size:20px;margin-bottom:8px}
-.ok a{font-weight:600}
-.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-
-.foot{max-width:1680px;margin:0 auto;padding:26px clamp(12px,2.4vw,32px) 40px;display:flex;flex-wrap:wrap;gap:10px 26px;color:var(--mute);font-size:15px}
-.foot a{color:inherit}
-
-@media (max-width:899px){
-  :root{--top:0px}
-  body{font-size:16px}
-  .top{position:relative;padding:10px 12px 0}
-  .bar{height:58px;padding:0 8px 0 14px;gap:10px;border-radius:18px}
-  .brand img{height:38px}
+@media (max-width:1080px){
+  .cfg,.order-in{grid-template-columns:minmax(0,1fr)}
+  .stage{top:var(--top);height:min(58vh,560px);height:min(58svh,560px);min-height:360px;border-radius:0;margin:0 calc(-1 * clamp(16px,2.4vw,36px))}
+  .cfg{padding-top:0}
   .bar-t{display:none}
-  .bar-tel{font-size:15px}
-  .bar .btn{display:none}
-  .wrap{display:block;padding:8px 12px 30px}
-  .stage{top:0;z-index:20;height:46vh;height:46svh;min-height:300px;border-radius:0 0 24px 24px;margin:0 -12px;transition:height .45s ease;
-    box-shadow:0 10px 24px -18px rgba(0,0,0,.35)}
-  body.form-on .stage{height:30vh;height:30svh;min-height:200px}
-  body.form-on .hint,body.form-on .views{opacity:0;pointer-events:none}
-  body.sent .stage{position:relative;height:34vh;height:34svh}
-  .views{transition:opacity .4s}
-  .logo-prev{width:76px;height:76px}
-  .up{padding:0 20px;font-size:16px;white-space:nowrap}
-  .ring{width:min(86%,40svh);top:46%}
-  .hint{top:12px;font-size:14px;padding:7px 12px}
-  .dims{display:none}
-  .views{bottom:10px}
-  .views button{min-height:38px;padding:0 13px;font-size:14px}
-  .panel{padding-top:18px}
-  h1{font-size:24px}
-  .lead{font-size:16px}
-  .step{padding:18px 16px 20px;border-radius:20px}
-  .vol svg{height:56px}
+  .hint{bottom:66px;font-size:13px}
+  .views{bottom:14px}
+  .panel{padding-top:24px}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:600px){
+  :root{--top:62px}
+  .brand img{height:34px}
+  .bar .btn{display:none}
+  .stage{height:52svh;height:52vh;min-height:340px}
+  .s-top{left:16px;right:16px;top:12px}
+  .card{padding:18px}
+  .two{grid-template-columns:1fr}
+  .spec div{grid-template-columns:120px 1fr}
+  .views button{padding:0 12px;font-size:14px}
+  .hint{display:none}
+  .views{bottom:10px}
+  .views button{min-height:38px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 <header class="top">
   <div class="bar">
-    <a class="brand" href="https://pompon.pro/" target="_blank" rel="noopener" aria-label="Pompon — на главный сайт"><img src="pompon-logo.svg" alt="Pompon" width="55" height="44"></a>
-    <span class="bar-t">Контрактное производство лимонадов под вашей маркой · Челябинск</span>
+    <a class="brand" href="https://pompon.pro/" aria-label="Pompon"><img src="assets/pompon-main.png" alt="Pompon" width="58" height="42"></a>
+    <span class="bar-t">Контрактный розлив напитков<br>под вашей маркой · Челябинск</span>
     <a class="bar-tel" href="tel:+79823488088">+7 982 348-80-88</a>
-    <a class="btn" href="#zayavka">Отправить заявку</a>
+    <a class="btn or" href="#zayavka">Рассчитать партию</a>
   </div>
 </header>
 
-<main class="wrap">
-  <section class="stage" id="stage" aria-label="Ваша банка в 3D">
-    <div class="ring" aria-hidden="true"></div>
-    <canvas id="gl" aria-hidden="true"></canvas>
-    <p class="load" id="load">Загружаем банку…</p>
-    <div class="hint" id="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16M4 12l3-3M4 12l3 3M20 12l-3-3M20 12l-3 3"/></svg>Крутите банку пальцем или мышью</div>
-    <div class="dims" id="dims"></div>
-    <div class="views" role="group" aria-label="Повернуть банку">
-      <button type="button" data-view="0" class="on">Лицевая сторона</button>
-      <button type="button" data-view="1">Обратная сторона</button>
+<main>
+<section class="cfg">
+  <div class="stage" id="stage">
+    <canvas id="gl" aria-label="Банка 0,33 л в 3D, её можно вращать"></canvas>
+    <div class="s-top">
+      <div class="now" id="now"><b>Пример Pompon</b>собран в конструкторе</div>
+      <div class="dims">0,33 л · банка слим<br>58 × 146 мм</div>
     </div>
-  </section>
+    <div class="hint" id="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M6 9l-3 3 3 3M18 9l3 3-3 3"/></svg>Крутите банку пальцем или мышью</div>
+    <div class="views" role="group" aria-label="Повернуть банку">
+      <button type="button" data-a="0" class="on">Лицо</button>
+      <button type="button" data-a="-1.5708">Бок</button>
+      <button type="button" data-a="3.1416">Оборот</button>
+    </div>
+    <div class="load" id="load">Готовим банку…</div>
+  </div>
 
   <div class="panel">
-    <h1>Соберите свою банку лимонада</h1>
-    <p class="lead">Загрузите логотип, выберите объём, вкус и цвет — банка сразу поменяется. Понравилось — отправьте заявку, и мы рассчитаем партию под вашей маркой.</p>
+    <h1>Ваша этикетка на&nbsp;нашей банке</h1>
+    <p class="lead">Загрузите макет — через секунду он окажется на банке 0,33&nbsp;л. Покрутите, проверьте шов и оборот, отправьте заявку — посчитаем партию под вашей маркой.</p>
+    <div class="facts"><span>Лимонады на соках и ароматике</span><span>Энергетики</span><span>Свой цех в Челябинске</span></div>
 
-    <ol class="steps">
-      <li class="step">
-        <h2><b>1</b>Ваш логотип</h2>
-        <div class="logo-row">
-          <div class="logo-prev" id="logoPrev"><img src="pompon-logo.svg" alt="Логотип на банке"></div>
-          <div>
-            <label class="btn up">Загрузить логотип<input type="file" id="logoFile" accept="image/png,image/svg+xml,image/jpeg,image/webp,.svg,.png,.jpg,.jpeg,.webp"></label>
-            <p class="note" id="logoNote">Сейчас на банке логотип Pompon для примера. Подойдёт PNG или SVG с прозрачным фоном, можно JPG.</p>
+    <div class="card">
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" class="on" data-t="file" aria-selected="true">Есть макет этикетки</button>
+        <button type="button" role="tab" data-t="gen" aria-selected="false">Есть только логотип</button>
+      </div>
+
+      <div id="t-file">
+        <label class="drop" id="drop">
+          <input type="file" id="labelFile" accept=".pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf">
+          <b>Перетащите макет этикетки сюда</b>
+          <small>PDF, JPG или PNG · развёртка 178 × 127 мм</small>
+          <span class="btn">Выбрать файл</span>
+        </label>
+        <p class="note" id="fileNote">Файлы из Illustrator и CorelDRAW сохраните в PDF. Макет никуда не уходит, пока вы не отправите заявку.</p>
+        <div class="row" id="fileAct" hidden>
+          <button type="button" class="link" id="reCrop">Подогнать по полю этикетки</button>
+        </div>
+        <div class="row"><button type="button" class="link" id="tpl">Скачать шаблон этикетки 178 × 127 мм</button></div>
+
+        <h3>Примеры <small>— две этикетки из нашего цеха и одна из конструктора</small></h3>
+        <div class="ex" id="ex"></div>
+      </div>
+
+      <div id="t-gen" hidden>
+        <div class="fld">
+          <span class="lb">Логотип</span>
+          <div class="logo-row">
+            <div class="logo-prev" id="logoPrev"></div>
+            <div>
+              <label class="btn ghost" style="min-height:44px;font-size:15px">Загрузить логотип<input type="file" id="logoFile" accept=".svg,.png,.jpg,.jpeg,.webp,.pdf,image/*,application/pdf" hidden></label>
+              <p class="note" id="logoNote" style="margin-top:8px">Сейчас пример — логотип Pompon. PNG, SVG, PDF или JPG.</p>
+            </div>
+          </div>
+          <div class="seg" id="logoTint" style="margin-top:12px"><button type="button" data-v="orig" class="on">Как в файле</button><button type="button" data-v="white">Белый</button><button type="button" data-v="black">Чёрный</button></div>
+          <input class="inp" id="brandTxt" maxlength="24" placeholder="или просто напишите название марки" style="margin-top:12px" aria-label="Название марки текстом">
+        </div>
+        <div class="fld"><span class="lb">Что разливаем</span>
+          <div class="seg" id="kind">
+            <button type="button" data-v="juice" class="on">Лимонад на соке</button>
+            <button type="button" data-v="aroma">Лимонад</button>
+            <button type="button" data-v="energy">Энергетик</button>
           </div>
         </div>
-        <label class="chk" id="bgRow" hidden><input type="checkbox" id="bgCut" checked> Убрать фон вокруг логотипа</label>
-        <p class="sub">Цвет логотипа на банке</p>
-        <div class="seg" id="logoMode">
-          <button type="button" data-v="orig" class="on">Как в файле</button>
-          <button type="button" data-v="white">Белый</button>
-          <button type="button" data-v="black">Чёрный</button>
+        <div class="fld"><span class="lb">Вкус</span>
+          <div class="chips" id="flavors"></div>
+          <div class="own"><input class="inp" id="flName" maxlength="28" aria-label="Свой вкус"><input type="color" id="c1" aria-label="Цвет 1"><input type="color" id="c2" aria-label="Цвет 2"></div>
         </div>
-        <p class="note" id="clash" hidden>Логотип почти сливается с цветом банки — попробуйте «Белый» или «Чёрный».</p>
-        <p class="sub">Размер логотипа</p>
-        <div class="rng"><input type="range" id="logoSize" min="60" max="150" value="100" step="5" aria-label="Размер логотипа"><output id="logoSizeOut">100 %</output></div>
-        <label class="fld"><span>Нет файла под рукой? Напишите название марки</span><input id="brandTxt" maxlength="24" placeholder="Например, СОЛНЦЕ" autocomplete="off"></label>
-      </li>
-
-      <li class="step">
-        <h2><b>2</b>Объём банки</h2>
-        <div class="vols" id="vols"></div>
-      </li>
-
-      <li class="step">
-        <h2><b>3</b>Вкус</h2>
-        <div class="seg" id="flavors"></div>
-        <label class="fld"><span>Название вкуса на банке</span>
-          <span class="row"><input id="flName" maxlength="28" autocomplete="off"><input type="color" id="flColor" aria-label="Цвет полосы вкуса"></span>
-        </label>
-      </li>
-
-      <li class="step">
-        <h2><b>4</b>Цвет банки</h2>
-        <div class="sws" id="cans"></div>
-        <p class="sub">Крышка</p>
-        <div class="seg" id="lid">
-          <button type="button" data-v="silver" class="on">Серебристая</button>
-          <button type="button" data-v="black">Чёрная</button>
-          <button type="button" data-v="gold">Золотая</button>
+        <div class="fld"><span class="lb">Фон этикетки</span>
+          <div class="seg" id="bgMode">
+            <button type="button" data-v="grad" class="on">Переход двух цветов</button>
+            <button type="button" data-v="solid">Один цвет</button>
+            <button type="button" data-v="white">Белый</button>
+          </div>
         </div>
-        <p class="sub">Покрытие</p>
+        <p class="note">Текст оборота — пример. Свой состав и данные пришлёте с заявкой, мы переносим их в макет.</p>
+      </div>
+
+      <div class="fld"><span class="lb">Плёнка этикетки</span>
         <div class="seg" id="finish">
-          <button type="button" data-v="gloss" class="on">Глянцевое</button>
-          <button type="button" data-v="matte">Матовое</button>
+          <button type="button" data-v="gloss" class="on">Глянцевая</button>
+          <button type="button" data-v="matte">Матовая</button>
         </div>
-      </li>
-
-      <li class="step" id="zayavka">
-        <h2><b>5</b>Заявка на производство</h2>
-        <form id="form" novalidate>
-          <p class="note" style="margin-top:0">Макет банки приложим к заявке сами. Ответим в течение рабочего дня.</p>
-          <label class="fld"><span>Ваше имя</span><input name="name" id="fName" autocomplete="name" required></label>
-          <label class="fld"><span>Компания или бренд</span><input name="company" id="fCompany" autocomplete="organization"></label>
-          <label class="fld"><span>Телефон или почта</span><input name="contact" id="fContact" autocomplete="tel" inputmode="email" required></label>
-          <label class="fld"><span>Тираж</span>
-            <select name="tirazh" id="fTirazh">
-              <option>Пока не знаю</option>
-              <option>Пробная партия, до 5 000 банок</option>
-              <option>5 000 – 20 000 банок</option>
-              <option>20 000 – 50 000 банок</option>
-              <option>Больше 50 000 банок</option>
-            </select>
-          </label>
-          <label class="fld"><span>Комментарий</span><textarea name="comment" id="fComment" placeholder="Вкус, сроки, вопросы"></textarea></label>
-          <label class="hp" aria-hidden="true">Не заполняйте<input name="_honey" tabindex="-1" autocomplete="off"></label>
-          <label class="chk"><input type="checkbox" id="fAgree" required> <span>Согласен на обработку персональных данных по <a href="https://pompon.pro/privacy" target="_blank" rel="noopener">политике</a></span></label>
-          <p class="note err" id="formErr" hidden></p>
-          <button class="btn send" id="sendBtn" type="submit">Отправить заявку</button>
-        </form>
-        <div class="ok" id="ok">
-          <h3>Заявка отправлена</h3>
-          <p>Спасибо! Мы свяжемся с вами в течение рабочего дня.</p>
-          <img id="okImg" alt="Макет вашей банки">
-          <a id="okDl" download="maket-banki.jpg">Скачать макет банки</a>
-        </div>
-      </li>
-    </ol>
+      </div>
+    </div>
   </div>
-</main>
+</section>
 
-<footer class="foot">
-  <span>ООО «Живая Долина» · г. Челябинск, Бродокалмакский тракт, 3</span>
-  <a href="tel:+79823488088">+7 982 348-80-88</a>
-  <a href="mailto:info@pompon.pro">info@pompon.pro</a>
-  <a href="https://pompon.pro/privacy" target="_blank" rel="noopener">Политика конфиденциальности</a>
-</footer>
+<section class="order" id="zayavka">
+  <div class="order-in">
+    <div>
+      <h2>Заявка на партию</h2>
+      <p class="lead">Банка, которую вы собрали, уйдёт к нам вместе с заявкой — макет и файл этикетки прикрепятся сами.</p>
+      <div class="steps">
+        <div><b>1</b><span>Посчитаем цену банки под ваш тираж, вкус и состав — ответим в течение рабочего дня.</span></div>
+        <div><b>2</b><span>Согласуем рецептуру и этикетку, при необходимости поможем доработать макет под печать.</span></div>
+        <div><b>3</b><span>Печатаем этикетку, разливаем и отгружаем партию с документами.</span></div>
+      </div>
+      <dl class="spec">
+        <div><dt>Банка</dt><dd>алюминиевая 0,33 л, слим, 58 × 146 мм</dd></div>
+        <div><dt>Этикетка</dt><dd>самоклеящаяся плёнка, 178 × 127 мм, клеим автоматом</dd></div>
+        <div><dt>Разливаем</dt><dd>лимонады на натуральных соках и на ароматике, энергетики</dd></div>
+        <div><dt>Работаем по СТМ</dt><dd>с федеральными сетями и сервисами доставки</dd></div>
+      </dl>
+    </div>
+    <div class="card" style="margin-top:0">
+      <form id="form" novalidate>
+        <div class="fld"><label for="fName">Как к вам обращаться</label><input class="inp" id="fName" autocomplete="name"></div>
+        <div class="two">
+          <div class="fld"><label for="fCompany">Компания или марка</label><input class="inp" id="fCompany" autocomplete="organization"></div>
+          <div class="fld"><label for="fContact">Телефон или почта</label><input class="inp" id="fContact" autocomplete="tel"></div>
+        </div>
+        <div class="fld"><label for="fTirazh">Тираж за партию</label>
+          <select class="inp" id="fTirazh">
+            <option>до 10 000 банок</option><option selected>10 000 – 50 000 банок</option><option>50 000 – 100 000 банок</option><option>больше 100 000 банок</option><option>пока не знаю</option>
+          </select>
+        </div>
+        <div class="fld"><label for="fComment">Комментарий</label><textarea class="inp" id="fComment" placeholder="Вкусы, сроки, сеть, в которую идёте"></textarea></div>
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-5000px" aria-hidden="true">
+        <label class="agree"><input type="checkbox" id="fAgree" checked><span>Согласен на обработку персональных данных по <a href="https://pompon.pro/privacy" target="_blank" rel="noopener">политике</a></span></label>
+        <button class="btn or send" id="sendBtn">Отправить заявку</button>
+        <p class="ferr" id="ferr" hidden></p>
+      </form>
+      <div class="ok" id="ok" hidden>
+        <img class="m" src="assets/pompon-happy.png" alt="">
+        <h3>Заявка у нас</h3>
+        <p>Посчитаем партию и ответим в течение рабочего дня.</p>
+        <img class="mk" id="okImg" alt="Макет вашей банки">
+        <a id="okDl" download="pompon-maket-banki.jpg">Скачать макет банки</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="foot"><span>ООО «Живая Долина», Челябинск, Бродокалмакский тракт, 3</span><span>Pompon — контрактное производство напитков</span></footer>
+
+<dialog id="dlg">
+  <div class="dlg-h"><b>Подгоните этикетку</b><p>Выделите поле этикетки 178 × 127 мм без технических полей типографии. Рамку можно двигать и тянуть за угол.</p></div>
+  <div class="crop" id="crop"><canvas id="cropCv"></canvas><div class="box" id="box"><i id="boxH"></i></div></div>
+  <div class="dlg-f"><button type="button" class="btn ghost" id="dlgNo">Отмена</button><button type="button" class="btn" id="dlgOk">Готово</button></div>
+</dialog>
 
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <script type="module">
 import * as THREE from 'three';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 
 /* ===== куда уходит заявка ===== */
 const FORM_TO = 'paladei702@gmail.com';
 const FORM_PAGE = 'https://smirnov-artur.github.io/zakaz/pompon-konstruktor/';
 
-/* ===== справочники ===== */
-const VOLS = {
-  s033: { t: '0,33 л', sub: 'слим', d: 58, h: 146, neck: 6 },
-  v045: { t: '0,45 л', sub: 'стандарт', d: 66, h: 155, neck: 11 },
-  v050: { t: '0,5 л', sub: 'стандарт', d: 66, h: 168, neck: 11 },
-};
+/* ===== банка 0,33 слим и этикетка ===== */
+const CAN = { r: 29, h: 146.1, wall0: 4.6, wall1: 136.4 };
+const LBL = { w: 178, h: 127 };               // мм, развёртка
+const LW = 2048, LH = Math.round(LW * LBL.h / LBL.w), K = LW / LBL.w;   // пикселей на мм
+
 const FLAVORS = [
-  ['Апельсин', '#FD8300'], ['Лимон и лайм', '#B6D334'], ['Вишня', '#B3122E'], ['Тархун', '#1F9D55'],
-  ['Малина', '#E0306E'], ['Манго и маракуйя', '#FFB000'], ['Дюшес', '#E6C35C'], ['Черника', '#3E3F9E'],
+  ['Апельсин', '#FF8A1F', '#FFD27A'], ['Лимон и лайм', '#B9D531', '#F4F0A2'], ['Тархун', '#169A55', '#B9E3A6'],
+  ['Дюшес', '#E2B84E', '#FFF1C9'], ['Вишня', '#AE1530', '#F27A8C'], ['Малина и смородина', '#B0185F', '#4B2A86'],
+  ['Манго и маракуйя', '#FFAE00', '#FF5E3A'], ['Дыня', '#F28C38', '#C7DD87'], ['Клубника', '#E5334D', '#FFC4CC'],
 ];
-const CANS = [
-  ['#FFF3D6', 'кремовый'], ['#F7F6F1', 'белый'], ['#FFD43B', 'жёлтый'], ['#FD8300', 'оранжевый'], ['#D7262E', 'красный'], ['#F6A5C0', 'розовый'],
-  ['#1F8A4C', 'зелёный'], ['#A8E6CF', 'мятный'], ['#7CC6F2', 'голубой'], ['#1D3F91', 'синий'], ['#6C3FB5', 'фиолетовый'], ['#1B1B1B', 'чёрный'],
-];
-const LIDS = { silver: ['Серебристая', 0xd9dde1, 0xc3c8cd, 1, .26], black: ['Чёрная', 0x1c1c1e, 0x2a2a2c, .55, .32], gold: ['Золотая', 0xc9a24b, 0xd2ae5e, 1, .24] };
+const KINDS = {
+  juice: { line: 'Лимонад на соке', name: 'НАПИТОК БЕЗАЛКОГОЛЬНЫЙ СИЛЬНОГАЗИРОВАННЫЙ СОКОСОДЕРЖАЩИЙ',
+    sost: f => `вода питьевая подготовленная, сок ${f.toLowerCase()} концентрированный, сахар, регулятор кислотности — лимонная кислота, натуральный ароматизатор, диоксид углерода.`,
+    pc: [['белки', '0 г'], ['жиры', '0 г'], ['углеводы', '9,6 г']], en: '39 ккал / 163 кДж' },
+  aroma: { line: 'Лимонад', name: 'НАПИТОК БЕЗАЛКОГОЛЬНЫЙ СИЛЬНОГАЗИРОВАННЫЙ',
+    sost: f => `вода питьевая подготовленная, сахар, регулятор кислотности — лимонная кислота, ароматизатор «${f}», консервант — сорбат калия, диоксид углерода.`,
+    pc: [['белки', '0 г'], ['жиры', '0 г'], ['углеводы', '10 г']], en: '40 ккал / 167 кДж' },
+  energy: { line: 'Энергетический напиток', name: 'НАПИТОК БЕЗАЛКОГОЛЬНЫЙ ЭНЕРГЕТИЧЕСКИЙ ГАЗИРОВАННЫЙ',
+    sost: f => `вода очищенная, сахар, регулятор кислотности — лимонная кислота, таурин, кофеин, ароматизатор «${f}», витаминный премикс (B3, B5, B6, B12), консервант — сорбат калия, диоксид углерода.`,
+    pc: [['белки', '0 г'], ['жиры', '0 г'], ['углеводы', '11 г']], en: '45 ккал / 188 кДж',
+    warn: 'Не рекомендуется лицам младше 18 лет, беременным и кормящим женщинам, людям с повышенной возбудимостью и артериальной гипертензией. Не более 2 банок в сутки.' },
+};
 
 const S = {
-  vol: 'v050', fl: 0, flName: 'Апельсин', flColor: '#FD8300', can: '#FFF3D6', canName: 'кремовый', lid: 'silver', finish: 'gloss',
-  logoMode: 'orig', logoSize: 1, logo: null, logoRaw: null, logoFile: null, hasBg: false, cutBg: true, text: '',
+  mode: 'gen', kind: 'juice', fl: 0, flName: 'Апельсин', c1: '#FF8A1F', c2: '#FFD27A', bg: 'grad', finish: 'gloss',
+  logo: null, logoFile: null, text: '', ex: 'pompon', tint: 'orig',
+  file: null, fileImg: null, fileCut: null,      // загруженный макет
 };
 
 const $ = s => document.querySelector(s);
@@ -310,505 +381,560 @@ const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const TAU = Math.PI * 2;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
-function lum(hex) { const n = parseInt(hex.slice(1), 16), f = v => { v /= 255; return v <= .04045 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); };
-  return .2126 * f(n >> 16 & 255) + .7152 * f(n >> 8 & 255) + .0722 * f(n & 255); }
-const inkOn = hex => lum(hex) > .36 ? '#161616' : '#FFFFFF';
+const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+function lum(hex) { const f = v => { v /= 255; return v <= .04045 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }; const [r, g, b] = hexRgb(hex); return .2126 * f(r) + .7152 * f(g) + .0722 * f(b); }
+const mix = (a, b, t) => { const x = hexRgb(a), y = hexRgb(b); return '#' + x.map((v, i) => Math.round(v + (y[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
+const inkOn = hex => lum(hex) > .33 ? '#171512' : '#FFFFFF';
+const DISP = '"Roboto Flex","Golos Text",sans-serif', BODY = '"Golos Text",sans-serif';
 
-/* ===== интерфейс ===== */
-$('#vols').innerHTML = Object.entries(VOLS).map(([k, v]) => `
-  <label class="vol"><input type="radio" name="vol" value="${k}" ${k === S.vol ? 'checked' : ''}>
-    <svg viewBox="0 0 40 90" aria-hidden="true"><rect x="${20 - v.d / 4.4}" y="${88 - v.h / 2}" width="${v.d / 2.2}" height="${v.h / 2}" rx="${v.d / 14}" fill="#D9DDE1" stroke="#141414" stroke-width="1.2"/></svg>
-    <b>${v.t}</b><small>${v.sub}<br>${v.d} × ${v.h} мм</small></label>`).join('');
-$('#flavors').innerHTML = FLAVORS.map(([n, c], i) => `<button type="button" class="chip${i === S.fl ? ' on' : ''}" data-i="${i}"><i style="background:${c}"></i>${n}</button>`).join('');
-$('#cans').innerHTML = CANS.map(([c, n]) => `<button type="button" class="sw${c === S.can ? ' on' : ''}" data-c="${c}" data-n="${n}" style="background:${c}" aria-label="Цвет банки: ${n}" title="${n}"></button>`).join('')
-  + `<label class="sw own" title="Свой цвет" aria-label="Свой цвет банки"><input type="color" id="canOwn" value="#FFF3D6"></label>`;
-$('#flName').value = S.flName; $('#flColor').value = S.flColor;
-
-function segPick(id, key, after) {
-  $(id).addEventListener('click', e => {
-    const b = e.target.closest('button'); if (!b) return;
-    $(id).querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
-    S[key] = b.dataset.v; after && after(); redraw();
-  });
+/* ===== картинки и PDF ===== */
+let pdfjs = null;
+async function pdfToCanvas(file, maxSide = 2600) {
+  if (!pdfjs) {
+    pdfjs = await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs');
+    pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
+  }
+  const doc = await pdfjs.getDocument({ data: await file.arrayBuffer() }).promise;
+  const page = await doc.getPage(1), v1 = page.getViewport({ scale: 1 });
+  const sc = maxSide / Math.max(v1.width, v1.height), vp = page.getViewport({ scale: sc });
+  const c = mk(Math.round(vp.width), Math.round(vp.height)), g = c.getContext('2d');
+  g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+  await page.render({ canvasContext: g, viewport: vp }).promise;
+  return c;
 }
-segPick('#logoMode', 'logoMode');
-segPick('#lid', 'lid', applyLid);
-segPick('#finish', 'finish', applyFinish);
-$('#vols').addEventListener('change', e => { S.vol = e.target.value; buildCan(); redraw(); pop = 1; });
-$('#flavors').addEventListener('click', e => {
-  const b = e.target.closest('.chip'); if (!b) return;
-  $('#flavors').querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x === b));
-  S.fl = +b.dataset.i; [S.flName, S.flColor] = FLAVORS[S.fl];
-  $('#flName').value = S.flName; $('#flColor').value = S.flColor; redraw();
-});
-$('#flName').addEventListener('input', e => { S.flName = e.target.value; redraw(); });
-$('#flColor').addEventListener('input', e => { S.flColor = e.target.value; redraw(); });
-function pickCan(c, n, el) {
-  S.can = c; S.canName = n;
-  document.querySelectorAll('#cans .sw').forEach(x => x.classList.toggle('on', x === el));
-  applyNeck(); redraw();
-}
-$('#cans').addEventListener('click', e => { const b = e.target.closest('button.sw'); if (b) pickCan(b.dataset.c, b.dataset.n, b); });
-$('#canOwn').addEventListener('input', e => pickCan(e.target.value, 'свой ' + e.target.value.toUpperCase(), e.target.parentElement));
-$('#logoSize').addEventListener('input', e => { S.logoSize = e.target.value / 100; $('#logoSizeOut').textContent = e.target.value + ' %'; redraw(); });
-const NOTE0 = $('#logoNote').textContent;
-$('#brandTxt').addEventListener('input', e => {
-  S.text = e.target.value.trim();
-  if (S.text && S.logoFile) { S.logoFile = null; S.logoRaw = null; S.logo = exampleLogo; $('#bgRow').hidden = true; }
-  $('#logoNote').classList.remove('err');
-  $('#logoNote').textContent = S.text ? 'На банке — ваша надпись. Файл логотипа можно загрузить в любой момент.' : NOTE0;
-  redraw(); showPrev();
-});
-$('#bgCut').addEventListener('change', e => { S.cutBg = e.target.checked; if (S.logoRaw) { S.logo = prepLogo(S.logoRaw, S.cutBg).c; showPrev(); redraw(); } });
-
-/* ===== логотип ===== */
-async function readLogo(file) {
-  let url, isSvg = file.type === 'image/svg+xml' || /\.svg$/i.test(file.name);
+async function fileToImage(file) {
+  if (file.type === 'application/pdf' || /\.pdf$/i.test(file.name)) return pdfToCanvas(file);
+  const isSvg = file.type === 'image/svg+xml' || /\.svg$/i.test(file.name);
+  let url;
   if (isSvg) {
-    const doc = new DOMParser().parseFromString(await file.text(), 'image/svg+xml');
-    const svg = doc.documentElement;
+    const svg = new DOMParser().parseFromString(await file.text(), 'image/svg+xml').documentElement;
     if (!svg || svg.nodeName.toLowerCase() !== 'svg') throw new Error('svg');
     const vb = (svg.getAttribute('viewBox') || '').trim().split(/[\s,]+/).map(Number);
     let w = parseFloat(svg.getAttribute('width')), h = parseFloat(svg.getAttribute('height'));
-    if (/%/.test(svg.getAttribute('width') || '')) w = NaN;
-    if (/%/.test(svg.getAttribute('height') || '')) h = NaN;
-    if (vb.length === 4 && vb[2] > 0 && vb[3] > 0) { const k = 1600 / Math.max(vb[2], vb[3]); w = vb[2] * k; h = vb[3] * k; }
+    if (vb.length === 4 && vb[2] > 0) { const k = 1600 / Math.max(vb[2], vb[3]); w = vb[2] * k; h = vb[3] * k; }
     else if (w > 0 && h > 0) { svg.setAttribute('viewBox', `0 0 ${w} ${h}`); const k = 1600 / Math.max(w, h); w *= k; h *= k; }
-    else { w = h = 1600; }
+    else w = h = 1600;
     svg.setAttribute('width', w); svg.setAttribute('height', h);
     url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(svg)], { type: 'image/svg+xml' }));
   } else url = URL.createObjectURL(file);
   const img = new Image();
   await new Promise((ok, no) => { img.onload = ok; img.onerror = no; img.src = url; });
-  if (img.decode) try { await img.decode(); } catch (e) {}
-  return img;
+  const c = mk(img.naturalWidth || 1600, img.naturalHeight || 1600); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+  return c;
 }
-// снимает однотонный фон заливкой от краёв (белые детали внутри логотипа остаются) и обрезает пустые поля
-function prepLogo(img, cut) {
-  const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height, k = Math.min(1, 1600 / Math.max(iw, ih));
-  const w = Math.max(1, Math.round(iw * k)), h = Math.max(1, Math.round(ih * k));
-  const c = mk(w, h), g = c.getContext('2d', { willReadFrequently: true });
-  g.drawImage(img, 0, 0, w, h);
-  const d = g.getImageData(0, 0, w, h), p = d.data;
-  const px = (x, y) => (y * w + x) * 4;
-  const cs = [[0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1]].map(([x, y]) => px(x, y));
-  const ref = [p[cs[0]], p[cs[0] + 1], p[cs[0] + 2]];
+// рамка содержимого без однотонных полей по краям
+function contentBox(c) {
+  const k = Math.min(1, 600 / Math.max(c.width, c.height)), w = Math.round(c.width * k), h = Math.round(c.height * k);
+  const t = mk(w, h), g = t.getContext('2d', { willReadFrequently: true }); g.drawImage(c, 0, 0, w, h);
+  const p = g.getImageData(0, 0, w, h).data, ref = [p[0], p[1], p[2]];
+  const diff = i => p[i + 3] < 20 ? 0 : Math.abs(p[i] - ref[0]) + Math.abs(p[i + 1] - ref[1]) + Math.abs(p[i + 2] - ref[2]);
+  const rowD = y => { let n = 0; for (let x = 0; x < w; x++) if (diff((y * w + x) * 4) > 40) n++; return n / w; };
+  const colD = (x, y0, y1) => { let n = 0; for (let y = y0; y < y1; y++) if (diff((y * w + x) * 4) > 40) n++; return n / (y1 - y0); };
+  let y0 = 0, y1 = h; while (y0 < h - 1 && rowD(y0) < .02) y0++; while (y1 > y0 + 1 && rowD(y1 - 1) < .02) y1--;
+  let x0 = 0, x1 = w; while (x0 < w - 1 && colD(x0, y0, y1) < .02) x0++; while (x1 > x0 + 1 && colD(x1 - 1, y0, y1) < .02) x1--;
+  return { x: x0 / k, y: y0 / k, w: (x1 - x0) / k, h: (y1 - y0) / k };
+}
+function denseBox(c) {
+  const k = Math.min(1, 700 / Math.max(c.width, c.height)), w = Math.round(c.width * k), h = Math.round(c.height * k);
+  const t = mk(w, h), g = t.getContext('2d', { willReadFrequently: true }); g.drawImage(c, 0, 0, w, h);
+  const p = g.getImageData(0, 0, w, h).data, ref = [p[0], p[1], p[2]];
+  const on = new Uint8Array(w * h);
+  for (let i = 0; i < w * h; i++) on[i] = Math.abs(p[i * 4] - ref[0]) + Math.abs(p[i * 4 + 1] - ref[1]) + Math.abs(p[i * 4 + 2] - ref[2]) > 40 ? 1 : 0;
+  const run = (n, f) => { let best = [0, 0], s = 0, cur = 0; for (let i = 0; i <= n; i++) { if (i < n && f(i)) { if (!cur) s = i; cur++; } else { if (cur > best[1] - best[0]) best = [s, s + cur]; cur = 0; } } return best; };
+  const [y0, y1] = run(h, y => { let n = 0; for (let x = 0; x < w; x++) n += on[y * w + x]; return n / w > .6; });
+  if (y1 - y0 < h * .15) return null;
+  const [x0, x1] = run(w, x => { let n = 0; for (let y = y0; y < y1; y++) n += on[y * w + x]; return n / (y1 - y0) > .6; });
+  const ins = 1.5;  // срезать линию вырубки
+  return { x: (x0 + ins) / k, y: (y0 + ins) / k, w: (x1 - x0 - 2 * ins) / k, h: (y1 - y0 - 2 * ins) / k };
+}
+// логотип: однотонный фон от краёв — прозрачный, пустые поля обрезаны
+function prepLogo(src) {
+  const k = Math.min(1, 1400 / Math.max(src.width, src.height)), w = Math.max(1, Math.round(src.width * k)), h = Math.max(1, Math.round(src.height * k));
+  const c = mk(w, h), g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(src, 0, 0, w, h);
+  const d = g.getImageData(0, 0, w, h), p = d.data, ref = [p[0], p[1], p[2]];
   const dist = i => Math.abs(p[i] - ref[0]) + Math.abs(p[i + 1] - ref[1]) + Math.abs(p[i + 2] - ref[2]);
-  const hasBg = cs.every(i => p[i + 3] > 245 && dist(i) < 45);
-  if (hasBg && cut) {
+  const corners = [0, (w - 1) * 4, (h - 1) * w * 4, ((h - 1) * w + w - 1) * 4];
+  if (corners.every(i => p[i + 3] > 245 && dist(i) < 45)) {
     const seen = new Uint8Array(w * h), q = new Int32Array(w * h); let qh = 0, qt = 0;
     const push = (x, y) => { const j = y * w + x; if (seen[j]) return; seen[j] = 1; if (dist(j * 4) < 90) q[qt++] = j; };
     for (let x = 0; x < w; x++) { push(x, 0); push(x, h - 1); }
     for (let y = 0; y < h; y++) { push(0, y); push(w - 1, y); }
-    while (qh < qt) {
-      const j = q[qh++], x = j % w, y = (j / w) | 0, i = j * 4;
-      p[i + 3] = Math.round(p[i + 3] * clamp((dist(i) - 30) / 60));
-      if (x > 0) push(x - 1, y); if (x < w - 1) push(x + 1, y); if (y > 0) push(x, y - 1); if (y < h - 1) push(x, y + 1);
-    }
+    while (qh < qt) { const j = q[qh++], x = j % w, y = (j / w) | 0, i = j * 4; p[i + 3] = Math.round(p[i + 3] * clamp((dist(i) - 30) / 60));
+      if (x > 0) push(x - 1, y); if (x < w - 1) push(x + 1, y); if (y > 0) push(x, y - 1); if (y < h - 1) push(x, y + 1); }
     g.putImageData(d, 0, 0);
   }
   let x0 = w, y0 = h, x1 = -1, y1 = -1;
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (p[px(x, y) + 3] > 10) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
-  if (x1 < 0) return { c, hasBg };
-  const t = mk(x1 - x0 + 1, y1 - y0 + 1); t.getContext('2d').drawImage(c, -x0, -y0);
-  return { c: t, hasBg };
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (p[(y * w + x) * 4 + 3] > 10) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+  if (x1 < 0) return c;
+  const t = mk(x1 - x0 + 1, y1 - y0 + 1); t.getContext('2d').drawImage(c, -x0, -y0); return t;
 }
-// точки логотипа (уменьшенные) — чтобы подсказать, если заметная часть сливается с банкой
-const pxCache = new WeakMap();
-function logoPx(c) {
-  if (pxCache.has(c)) return pxCache.get(c);
-  const k = Math.min(1, 96 / Math.max(c.width, c.height)), w = Math.max(1, Math.round(c.width * k)), h = Math.max(1, Math.round(c.height * k));
-  const t = mk(w, h), g = t.getContext('2d', { willReadFrequently: true }); g.drawImage(c, 0, 0, w, h);
-  const p = g.getImageData(0, 0, w, h).data, out = [];
-  for (let i = 0; i < p.length; i += 4) if (p[i + 3] > 128) out.push(p[i], p[i + 1], p[i + 2]);
-  pxCache.set(c, out); return out;
-}
-function checkClash() {
-  let bad = false;
-  const lowContrast = () => { const L = lum(S.can), o = S.logoMode === 'white' ? 1 : .008; return (Math.max(L, o) + .05) / (Math.min(L, o) + .05) < 1.6; };
-  if (S.text && !S.logoFile) bad = S.logoMode !== 'orig' && lowContrast();
-  else if (S.logo && S.logoMode === 'orig') {
-    const p = logoPx(S.logo), n = parseInt(S.can.slice(1), 16), cr = n >> 16 & 255, cg = n >> 8 & 255, cb = n & 255;
-    let same = 0; for (let i = 0; i < p.length; i += 3) if (Math.abs(p[i] - cr) + Math.abs(p[i + 1] - cg) + Math.abs(p[i + 2] - cb) < 110) same++;
-    bad = p.length > 0 && same / (p.length / 3) > .1;
-  } else if (S.logo) bad = lowContrast();
-  $('#clash').hidden = !bad;
-}
-function tint(src, mode) {
-  if (mode === 'orig') return src;
-  const c = mk(src.width, src.height), g = c.getContext('2d');
-  g.drawImage(src, 0, 0); g.globalCompositeOperation = 'source-in'; g.fillStyle = mode === 'white' ? '#FFFFFF' : '#141414'; g.fillRect(0, 0, c.width, c.height);
-  return c;
-}
-function showPrev() {
-  const box = $('#logoPrev'); box.innerHTML = '';
-  if (S.text && !S.logoFile) { const s = document.createElement('b'); s.textContent = S.text; s.style.cssText = 'font-family:var(--disp);font-stretch:151%;font-size:14px;text-align:center;word-break:break-word'; box.append(s); return; }
-  if (S.logo) box.append(S.logo === exampleLogo ? Object.assign(new Image(), { src: 'pompon-logo.svg', alt: '' }) : S.logo);
-}
-$('#logoFile').addEventListener('change', async e => {
-  const f = e.target.files[0]; if (!f) return;
-  const note = $('#logoNote'); note.classList.remove('err');
-  if (f.size > 15 * 1024 * 1024) { note.textContent = 'Файл больше 15 МБ. Сохраните логотип поменьше и загрузите снова.'; note.classList.add('err'); return; }
-  try {
-    const img = await readLogo(f), r = prepLogo(img, S.cutBg);
-    S.logoRaw = img; S.logo = r.c; S.hasBg = r.hasBg; S.logoFile = f; S.text = ''; $('#brandTxt').value = '';
-    $('#bgRow').hidden = !r.hasBg;
-    note.textContent = `Загружен: ${f.name}` + (r.hasBg ? '. Фон вокруг убрали — если что-то пропало, снимите галочку ниже.' : '');
-    showPrev(); redraw();
-  } catch (err) {
-    note.textContent = 'Не получилось открыть этот файл. Подойдёт PNG, SVG или JPG.'; note.classList.add('err');
-  }
-  e.target.value = '';
-});
 
-/* ===== этикетка ===== */
-const label = mk(2048, 1454);
-let exampleLogo = null;
-const wallMM = v => v.h - v.neck - 3 - 6.2 * v.d / 60;
+/* ===== этикетка из логотипа ===== */
+const label = mk(LW, LH);
 function rnd(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
-function fitFont(g, txt, weight, fam, maxW, size, min) {
-  for (; size > min; size *= .94) { g.font = `${weight} ${size}px ${fam}`; if (g.measureText(txt).width <= maxW) return size; }
-  g.font = `${weight} ${min}px ${fam}`; return min;
+function wrap(g, txt, maxW) { const out = []; let line = ''; for (const w of String(txt).split(/\s+/)) { const t = line ? line + ' ' + w : w; if (g.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t; } if (line) out.push(line); return out; }
+const tintCache = new Map();
+function tinted(src, mode) {
+  if (mode === 'orig') return src; const key = mode; if (tintCache.get(src)?.[key]) return tintCache.get(src)[key];
+  const c = mk(src.width, src.height), g = c.getContext('2d'); g.drawImage(src, 0, 0); g.globalCompositeOperation = 'source-in'; g.fillStyle = mode === 'white' ? '#FFFFFF' : '#141414'; g.fillRect(0, 0, c.width, c.height);
+  tintCache.set(src, { ...(tintCache.get(src) || {}), [key]: c }); return c;
 }
-function wrapLines(g, txt, maxW) {
-  const out = []; let line = '';
-  for (const w of txt.split(/\s+/)) { const t = line ? line + ' ' + w : w; if (g.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t; }
-  if (line) out.push(line); return out;
+let grain = null;
+function grainCanvas() {
+  if (grain) return grain; grain = mk(512, 512); const g = grain.getContext('2d'), d = g.createImageData(512, 512), r = rnd(5);
+  for (let i = 0; i < d.data.length; i += 4) { const v = r() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 22; }
+  g.putImageData(d, 0, 0); return grain;
 }
-const DISP = '"Roboto Flex","Golos Text",sans-serif', BODY = '"Golos Text",sans-serif';
-function drawLabel() {
-  const v = VOLS[S.vol], R = v.d / 2, C = Math.PI * v.d, Hm = wallMM(v);
-  const W = 2048, H = Math.round(W * Hm / C), k = W / C;
-  if (label.height !== H) label.height = H;
-  const g = label.getContext('2d');
-  g.setTransform(k, 0, 0, k, 0, 0);
-  const ink = inkOn(S.can), bInk = inkOn(S.flColor);
-  g.fillStyle = S.can; g.fillRect(0, 0, C, Hm);
+function drawGen(c = label) {
+  const g = c.getContext('2d'), W = LBL.w, H = LBL.h, kd = KINDS[S.kind];
+  g.setTransform(K, 0, 0, K, 0, 0);
+  const top = S.bg === 'white' ? '#FFFFFF' : S.c1, bot = S.bg === 'grad' ? S.c2 : top;
+  if (S.bg === 'grad') { const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, top); gr.addColorStop(.42, mix(top, bot, .35)); gr.addColorStop(1, bot); g.fillStyle = gr; }
+  else g.fillStyle = top;
+  g.fillRect(0, 0, W, H);
+  if (S.bg === 'grad') { g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.globalCompositeOperation = 'overlay'; g.fillStyle = g.createPattern(grainCanvas(), 'repeat'); g.fillRect(0, 0, LW, LH); g.restore(); g.setTransform(K, 0, 0, K, 0, 0); }
+  const inkT = inkOn(top), inkB = inkOn(S.bg === 'grad' ? mix(top, bot, .7) : top), accent = S.bg === 'white' ? S.c1 : inkT;
 
-  // полоса вкуса волной по всей окружности
-  const top = Hm * .6, waves = 5, amp = 2.6;
-  g.beginPath(); g.moveTo(0, Hm + 1);
-  for (let x = 0; x <= C + .5; x += .5) g.lineTo(x, top + amp * Math.sin(x / C * TAU * waves));
-  g.lineTo(C, Hm + 1); g.closePath(); g.fillStyle = S.flColor; g.fill();
-  // пузырьки газа в полосе
-  const r1 = rnd(11); g.fillStyle = bInk === '#FFFFFF' ? 'rgba(255,255,255,.16)' : 'rgba(255,255,255,.34)';
-  for (let n = 0; n < 70; n++) { const x = r1() * C, y = top + 6 + r1() * (Hm - top - 8), r = .5 + r1() * r1() * 3.2; g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill(); }
-  // кромка над полосой
-  g.strokeStyle = ink; g.globalAlpha = .18; g.lineWidth = .35; g.beginPath();
-  for (let x = 0; x <= C + .5; x += .5) g.lineTo(x, top - 2.2 + amp * Math.sin(x / C * TAU * waves));
-  g.stroke(); g.globalAlpha = 1;
-
-  // бегущая строка сверху
-  g.fillStyle = ink; g.globalAlpha = .7; g.font = `600 2.3px ${BODY}`; g.textBaseline = 'middle';
-  const run = `ЛИМОНАД ГАЗИРОВАННЫЙ · ${v.t.toUpperCase()} · `; const rw = g.measureText(run).width;
-  for (let x = -rw * .3; x < C; x += rw) g.fillText(run, x, 4.2);
-  g.globalAlpha = 1;
-
-  // лицевая сторона: центр по x = C/2
-  const cx = C / 2, frontW = R * 1.62;
-  // вкус
-  const fy = top + (Hm - top) * .52;
-  g.fillStyle = bInk; g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.font = `600 2.4px ${BODY}`; g.globalAlpha = .85; g.fillText('ВКУС', cx, top + 5.6); g.globalAlpha = 1;
-  const name = (S.flName || ' ').toUpperCase();
-  let fs = fitFont(g, name, 700, DISP, frontW, 8.2, 4.6);
-  let lines = [name];
-  if (g.measureText(name).width > frontW) { g.font = `700 ${fs = 5.2}px ${DISP}`; lines = wrapLines(g, name, frontW).slice(0, 2); }
-  lines.forEach((l, i) => g.fillText(l, cx, fy + (i - (lines.length - 1) / 2) * fs * 1.08));
-  g.font = `600 2.6px ${BODY}`; g.fillText(v.t.toUpperCase(), cx, Hm - 4.6);
-
-  // логотип или название марки
-  const boxW = R * 1.42 * S.logoSize, boxH = top * .5 * S.logoSize, ly = top * .48;
+  // лицо: центр развёртки
+  const cx = W / 2;
   if (S.text && !S.logoFile) {
-    g.fillStyle = S.logoMode === 'white' ? '#FFFFFF' : S.logoMode === 'black' ? '#141414' : ink;
-    const t = S.text.toUpperCase(); fs = fitFont(g, t, 700, DISP, boxW * 1.15, 13 * S.logoSize, 3);
-    g.fillText(t, cx, ly);
+    g.fillStyle = S.tint === 'white' ? '#FFFFFF' : S.tint === 'black' ? '#141414' : S.bg === 'white' ? '#171512' : inkT; g.textAlign = 'center'; g.textBaseline = 'middle';
+    let fs = 14; const t = S.text.toUpperCase(); do { g.font = `750 ${fs}px ${DISP}`; fs *= .95; } while (g.measureText(t).width > 44 && fs > 4);
+    g.fillText(t, cx, 31);
   } else if (S.logo) {
-    const src = tint(S.logo, S.logoMode), a = src.width / src.height;
-    let w = boxW, h = w / a; if (h > boxH) { h = boxH; w = h * a; }
-    g.drawImage(src, cx - w / 2, ly - h / 2, w, h);
+    const a = S.logo.width / S.logo.height; let w = 44, h = w / a; if (h > 34) { h = 34; w = h * a; }
+    g.drawImage(tinted(S.logo, S.tint), cx - w / 2, 31 - h / 2, w, h);
   }
+  g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+  g.fillStyle = S.bg === 'white' ? '#5b554e' : inkT; g.globalAlpha = .8; g.font = `600 3px ${BODY}`;
+  g.fillText(kd.line.toUpperCase().split('').join(String.fromCharCode(8202)), cx, 59);
+  g.globalAlpha = 1; g.fillStyle = S.bg === 'white' ? S.c1 : inkT;
+  const name = S.flName || 'Ваш вкус'; let fs = 13; let lines;
+  for (;;) { g.font = `750 ${fs}px ${DISP}`; lines = wrap(g, name, 46); if ((lines.length <= 2 && lines.every(l => g.measureText(l).width <= 46)) || fs < 6) break; fs *= .93; }
+  const ly = 76 + (lines.length === 1 ? 4 : 0);
+  lines.forEach((l, i) => g.fillText(l, cx, ly + i * fs * 1.02));
+  g.fillStyle = S.bg === 'white' ? '#171512' : inkB; g.font = `700 3.4px ${BODY}`; g.fillText('330 мл', cx, 117);
 
-  // обратная сторона — по шву (x = 0 и x = C), рисуем дважды
-  for (const bx of [0, C]) drawBack(g, bx, R, Hm, top, ink, v);
+  // левая колонка: изготовитель, хранение, знаки, штрихкод
+  const ink2 = S.bg === 'white' ? '#26221e' : inkB, col = (x0, wdt, blocks, y) => {
+    g.textAlign = 'left'; g.fillStyle = ink2;
+    for (const [b, t, sz = 2.05] of blocks) {
+      g.font = `400 ${sz}px ${BODY}`;
+      const full = b ? b + ' ' + t : t, ls = wrap(g, full, wdt);
+      ls.forEach((l, i) => {
+        if (i === 0 && b) { g.font = `700 ${sz}px ${BODY}`; g.fillText(b, x0, y); const bw = g.measureText(b + ' ').width; g.font = `400 ${sz}px ${BODY}`; g.fillText(l.slice(b.length + 1), x0 + bw, y); }
+        else g.fillText(l, x0, y);
+        y += sz * 1.32;
+      });
+      y += sz * .75;
+    }
+    return y;
+  };
+  let y = col(10, 44, [
+    ['Изготовитель:', 'ООО «Живая Долина», Россия, 454077, г. Челябинск, Бродокалмакский тракт, д. 3.'],
+    ['Условия хранения:', 'от +2 до +25 °C, без прямых солнечных лучей. После вскрытия не хранить.'],
+    ['Срок годности:', '12 месяцев.'],
+    ['', 'Дата изготовления и номер партии указаны на банке.'],
+  ], 16);
+  if (kd.warn) y = col(10, 44, [['', kd.warn, 1.85]], y);
+  // знаки
+  g.strokeStyle = ink2; g.fillStyle = ink2; g.lineWidth = .35;
+  g.font = `800 4.4px ${BODY}`; g.textAlign = 'left'; g.fillText('EAC', 10, 97);
+  g.beginPath(); g.arc(24, 95.6, 2.6, 0, TAU); g.stroke(); g.font = `700 1.8px ${BODY}`; g.textAlign = 'center'; g.fillText('41', 24, 96.2); g.font = `600 1.3px ${BODY}`; g.fillText('ALU', 24, 99.8);
+  // штрихкод
+  g.fillStyle = '#FFFFFF'; g.beginPath(); g.roundRect(10, 102, 34, 15.5, 1); g.fill();
+  g.fillStyle = '#111'; const r = rnd(9); let xx = 12.5;
+  while (xx < 41.2) { const lw = .28 + Math.floor(r() * 3) * .28; g.fillRect(xx, 103.6, lw, 10); xx += lw + .3 + Math.floor(r() * 3) * .25; }
+  g.font = `500 1.75px ${BODY}`; g.textAlign = 'center'; g.fillText('4 670000 000000', 27, 116.6);
 
-  // боковые подписи
-  g.save(); g.fillStyle = ink; g.globalAlpha = .55; g.font = `500 1.9px ${BODY}`;
-  for (const sx of [C * .25, C * .75]) { g.save(); g.translate(sx, top * .5); g.rotate(-Math.PI / 2); g.fillText('НАПИТОК БЕЗАЛКОГОЛЬНЫЙ СИЛЬНОГАЗИРОВАННЫЙ', 0, 0); g.restore(); }
-  g.restore();
-
-  // лёгкая тень печати у краёв
-  const gr = g.createLinearGradient(0, 0, 0, Hm);
-  gr.addColorStop(0, 'rgba(0,0,0,.12)'); gr.addColorStop(.05, 'rgba(0,0,0,0)'); gr.addColorStop(.95, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,.16)');
-  g.fillStyle = gr; g.fillRect(0, 0, C, Hm);
+  // правая колонка: наименование, состав, пищевая ценность
+  g.textAlign = 'left'; g.fillStyle = ink2;
+  y = 16; g.font = `700 2.35px ${BODY}`;
+  for (const l of wrap(g, `${kd.name} «${(S.flName || 'Ваш вкус').toUpperCase()}»`, 46)) { g.fillText(l, 122, y); y += 3.05; }
+  y += 2;
+  y = col(122, 46, [['Состав:', kd.sost(S.flName || 'ваш вкус')]], y);
+  g.font = `700 2.15px ${BODY}`; g.fillText('Пищевая ценность на 100 мл:', 122, y + 1); y += 3.4;
+  g.lineWidth = .18; g.strokeStyle = ink2; g.globalAlpha = .55;
+  for (const [a, b] of kd.pc) { g.beginPath(); g.moveTo(122, y + 1); g.lineTo(168, y + 1); g.stroke(); y += 3.2; g.globalAlpha = 1; g.font = `400 2.05px ${BODY}`; g.fillText(a, 122, y); g.textAlign = 'right'; g.fillText(b, 168, y); g.textAlign = 'left'; g.globalAlpha = .55; }
+  g.globalAlpha = 1; y += 4;
+  g.font = `700 2.05px ${BODY}`; g.fillText('Энергетическая ценность:', 122, y); y += 2.8; g.font = `400 2.05px ${BODY}`; g.fillText(kd.en + ' на 100 мл', 122, y);
+  // сайт снизу справа
+  g.font = `600 2.3px ${BODY}`; g.globalAlpha = .9; g.fillText(S.logoFile || S.text ? 'www.вашсайт.ру' : 'pompon.pro', 122, 116.5); g.globalAlpha = 1;
   g.setTransform(1, 0, 0, 1, 0, 0);
 }
-function drawBack(g, bx, R, Hm, top, ink, v) {
-  const w = R * 1.55, x0 = bx - w / 2;
-  g.save(); g.fillStyle = ink; g.textAlign = 'left'; g.textBaseline = 'alphabetic';
-  let y = 11;
-  const para = (t, size, weight = 400, gap = 1.35) => {
-    g.font = `${weight} ${size}px ${BODY}`;
-    for (const l of wrapLines(g, t, w)) { g.fillText(l, x0, y); y += size * gap; }
-    y += size * .5;
-  };
-  g.globalAlpha = .92;
-  para(`Лимонад «${S.flName || 'Вкус'}»`, 2.5, 700);
-  g.globalAlpha = .8;
-  para(`Состав: вода питьевая, сахар, регулятор кислотности — лимонная кислота, натуральный ароматизатор «${S.flName || 'Вкус'}», диоксид углерода.`, 1.75);
-  para('Пищевая ценность в 100 мл: углеводы — 9,8 г. Энергетическая ценность — 40 ккал / 167 кДж.', 1.75);
-  para('Хранить при температуре от +2 до +22 °C. Срок годности — 180 суток. Дата изготовления — на дне банки.', 1.75);
-  para('Изготовитель: ООО «Живая Долина», Россия, г. Челябинск, Бродокалмакский тракт, 3.', 1.75);
-  g.globalAlpha = 1;
-  // EAC
-  const ey = Math.min(y + 1, top - 12);
-  g.strokeStyle = ink; g.lineWidth = .4; g.strokeRect(x0, ey, 9, 6.2);
-  g.font = `700 3.6px ${BODY}`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('EAC', x0 + 4.5, ey + 3.3);
-  g.font = `600 2.2px ${BODY}`; g.textAlign = 'left'; g.fillText(v.t.replace(' ', ' '), x0 + 12, ey + 3.3);
-  // штрихкод на белой плашке в полосе вкуса
-  const bw = 24, bh = 14, bxx = bx - bw / 2, by = top + (Hm - top) * .45 - bh / 2;
-  g.fillStyle = '#FFFFFF'; g.beginPath(); g.roundRect ? g.roundRect(bxx, by, bw, bh, 1.4) : g.rect(bxx, by, bw, bh); g.fill();
-  g.fillStyle = '#111'; const r = rnd(7); let xx = bxx + 2;
-  while (xx < bxx + bw - 2.4) { const lw = .25 + Math.floor(r() * 3) * .25; g.fillRect(xx, by + 1.6, lw, bh - 5.4); xx += lw + .25 + Math.floor(r() * 3) * .22; }
-  g.font = `500 1.6px ${BODY}`; g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.fillText('4 607 18' + Object.keys(VOLS).indexOf(S.vol) + '3 5512 7', bx, by + bh - 1.2);
-  g.restore();
+
+/* ===== загруженный макет на этикетку ===== */
+function drawFile(c = label) {
+  const g = c.getContext('2d'), src = S.fileImg, b = S.fileCut;
+  g.setTransform(1, 0, 0, 1, 0, 0); g.fillStyle = '#fff'; g.fillRect(0, 0, LW, LH);
+  g.imageSmoothingQuality = 'high';
+  g.drawImage(src, b.x, b.y, b.w, b.h, 0, 0, LW, LH);
+}
+// поле этикетки: убрать поля; если пропорция близка — срезать вылеты по центру; иначе — подгонка руками
+function autoCut(img) {
+  const b = contentBox(img), A = LBL.w / LBL.h, a = b.w / b.h;
+  if (Math.abs(a / A - 1) <= .045) {
+    if (a > A) { const w = b.h * A; return { cut: { x: b.x + (b.w - w) / 2, y: b.y, w, h: b.h }, sure: true }; }
+    const h = b.w / A; return { cut: { x: b.x, y: b.y + (b.h - h) / 2, w: b.w, h }, sure: true };
+  }
+  // лист типографии: поле этикетки — самый длинный сплошной плотный блок строк и столбцов (таблица шапки — тонкие линии)
+  const d = denseBox(img);
+  if (d && Math.abs(d.w / d.h / A - 1) <= .045) return { cut: d, sure: true, found: true };
+  // не нашли — самый большой кадр нужной пропорции, прижатый книзу (шапка у листов сверху)
+  let w = b.w, h = w / A; if (h > b.h) { h = b.h; w = h * A; }
+  return { cut: { x: b.x + (b.w - w) / 2, y: b.y + b.h - h, w, h }, sure: false };
 }
 
 /* ===== сцена ===== */
 const canvas = $('#gl'), stage = $('#stage');
 let renderer;
-try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); }
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: false }); }
 catch (e) { $('#load').remove(); stage.insertAdjacentHTML('beforeend', '<p class="nogl">Этот браузер не показывает 3D. Откройте страницу в Chrome, Яндекс Браузере или Safari.</p>'); }
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(26, 1, .1, 50);
-let can = new THREE.Group(), shadow;
+const camera = new THREE.PerspectiveCamera(20, 1, .1, 60);
+const can = new THREE.Group(); scene.add(can);
 const M = {};
-let labelTex;
+let labelTex = null, floorShadow = null;
+const u = .01;  // 1 мм = 0,01 сцены
+const V = pts => pts.map(([r, y]) => new THREE.Vector2(r * u, (y - CAN.h / 2) * u));
+
 if (renderer) {
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.toneMapping = THREE.NeutralToneMapping; renderer.toneMappingExposure = .95; // нейтральная — цвет банки как на образце
+  renderer.toneMapping = THREE.NeutralToneMapping; renderer.toneMappingExposure = 1;
   renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.setClearColor(0, 0);
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), .035).texture;
-  const key = new THREE.DirectionalLight(0xfff4e6, 2.2); key.position.set(-3, 4, 5); scene.add(key);
-  const rim = new THREE.DirectionalLight(0xffb27a, 3.2); rim.position.set(4, 2, -3); scene.add(rim);
-  const rim2 = new THREE.DirectionalLight(0xffffff, 1.4); rim2.position.set(-4.5, 1, -2.5); scene.add(rim2);
-  scene.add(can);
-  labelTex = new THREE.CanvasTexture(label); labelTex.colorSpace = THREE.SRGBColorSpace; labelTex.anisotropy = renderer.capabilities.getMaxAnisotropy(); labelTex.wrapS = THREE.RepeatWrapping;
-  M.metal = new THREE.MeshPhysicalMaterial({ color: 0xdfe3e6, metalness: 1, roughness: .2, side: THREE.DoubleSide });
-  M.rim = new THREE.MeshPhysicalMaterial({ color: 0xd6dadd, metalness: 1, roughness: .26, side: THREE.DoubleSide });
-  M.neck = new THREE.MeshPhysicalMaterial({ color: S.can, metalness: .35, roughness: .3, clearcoat: .8, clearcoatRoughness: .08, side: THREE.DoubleSide });
-  M.label = new THREE.MeshPhysicalMaterial({ map: labelTex, metalness: .22, roughness: .32, clearcoat: .8, clearcoatRoughness: .08 });
-  M.lid = new THREE.MeshPhysicalMaterial({ color: 0xd9dde1, metalness: 1, roughness: .26 });
-  M.tab = new THREE.MeshPhysicalMaterial({ color: 0xc3c8cd, metalness: 1, roughness: .2 });
-  M.score = new THREE.MeshStandardMaterial({ color: 0x8a8f94, metalness: 1, roughness: .45 });
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.VSMShadowMap;
+
+  const key = new THREE.DirectionalLight(0xffffff, 1.1); key.position.set(-.35, 6, .9);
+  key.castShadow = true; key.shadow.mapSize.set(1024, 1024); key.shadow.radius = 14; key.shadow.blurSamples = 20; key.shadow.bias = -.0004;
+  Object.assign(key.shadow.camera, { left: -1.2, right: 1.2, top: 1.2, bottom: -1.2, near: .5, far: 9 });
+  scene.add(key);
+  const fill = new THREE.DirectionalLight(0xfff1e2, .35); fill.position.set(3, 1.5, 2); scene.add(fill);
+
+  labelTex = new THREE.CanvasTexture(label);
+  labelTex.colorSpace = THREE.SRGBColorSpace; labelTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+
+  M.alu = new THREE.MeshPhysicalMaterial({ color: 0xc4c8cd, metalness: 1, roughness: .16, anisotropy: .5, anisotropyRotation: Math.PI / 2 });
+  M.aluIn = new THREE.MeshPhysicalMaterial({ color: 0xd2d5d8, metalness: 1, roughness: .3, side: THREE.DoubleSide });
+  M.end = new THREE.MeshPhysicalMaterial({ color: 0xcfd3d7, metalness: 1, roughness: .24 });
+  M.label = new THREE.MeshPhysicalMaterial({ map: labelTex, metalness: 0, roughness: .42, clearcoat: 1, clearcoatRoughness: .07, side: THREE.FrontSide });
+  M.edge = new THREE.MeshStandardMaterial({ color: 0xf2f2f0, roughness: .6 });
+
+  // мягкая тень с пола + плотная у самого дна
+  floorShadow = new THREE.Mesh(new THREE.PlaneGeometry(6, 6).rotateX(-Math.PI / 2), new THREE.ShadowMaterial({ opacity: .2 }));
+  floorShadow.receiveShadow = true; floorShadow.position.y = -CAN.h / 2 * u; scene.add(floorShadow);
   const sc = mk(256, 256), sg = sc.getContext('2d'), rg = sg.createRadialGradient(128, 128, 0, 128, 128, 128);
-  rg.addColorStop(0, 'rgba(60,40,10,.5)'); rg.addColorStop(.38, 'rgba(60,40,10,.26)'); rg.addColorStop(1, 'rgba(60,40,10,0)');
+  rg.addColorStop(0, 'rgba(40,30,20,.55)'); rg.addColorStop(.42, 'rgba(40,30,20,.42)'); rg.addColorStop(.52, 'rgba(40,30,20,.12)'); rg.addColorStop(1, 'rgba(40,30,20,0)');
   sg.fillStyle = rg; sg.fillRect(0, 0, 256, 256);
-  shadow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sc), transparent: true, depthWrite: false }));
-  scene.add(shadow);
-}
-function applyNeck() { if (M.neck) M.neck.color.set(S.can); }
-function applyLid() { if (!M.lid) return; const l = LIDS[S.lid]; M.lid.color.setHex(l[1]); M.lid.metalness = l[3]; M.lid.roughness = l[4]; M.tab.color.setHex(l[2]); M.tab.metalness = l[3]; }
-function applyFinish() {
-  if (!M.label) return; const m = S.finish === 'matte';
-  for (const x of [M.label, M.neck]) { x.roughness = m ? .62 : .3; x.clearcoat = m ? 0 : .8; x.metalness = m ? .08 : x === M.label ? .22 : .35; x.needsUpdate = true; }
+  const ao = new THREE.Mesh(new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sc), transparent: true, depthWrite: false }));
+  ao.scale.setScalar(CAN.r * 2.25 * u); ao.position.y = -CAN.h / 2 * u + .0008; scene.add(ao);
+  buildCan();
 }
 
 function buildCan() {
-  if (!renderer) return;
-  can.traverse(o => o.geometry && o.geometry.dispose()); can.clear();
-  const v = VOLS[S.vol], u = .01, R = v.d / 2, s = v.d / 60, hh = v.h / 2, bottomH = 6.2 * s, yW = hh - 3 - v.neck, rRim = Math.min(R - 1.6, 27.2);
-  const V = pts => pts.map(([r, y]) => new THREE.Vector2(r * u, y * u));
-  // дно
-  const bot = [[0, 3.2], [12, 2.6], [19, 1.2], [22, .2], [24, 0], [26.2, .7], [28, 2.2], [29.4, 4.2], [30, 6.2]].map(([r, y]) => [r * s, y * s - hh]);
-  can.add(new THREE.Mesh(new THREE.LatheGeometry(V(bot), 128), M.metal));
-  // этикетка
-  const wallH = yW - (bottomH - hh);
-  const body = new THREE.Mesh(new THREE.CylinderGeometry(R * u, R * u, (wallH + .2) * u, 192, 1, true, Math.PI, TAU), M.label);
-  body.position.y = ((yW + bottomH - hh) / 2) * u; can.add(body);
-  // плечо (в цвет банки)
+  const R = CAN.r, add = (geo, mat, shadow = true) => { const m = new THREE.Mesh(geo, mat); m.castShadow = shadow; can.add(m); return m; };
+  // дно: стоячее кольцо и купол
+  add(new THREE.LatheGeometry(V([[0, 5.2], [7, 5.0], [13, 4.2], [18, 2.6], [21.2, .9], [22.3, .12], [23.2, 0], [24.4, .25], [26.3, 1.15], [27.8, 2.45], [28.7, 3.6], [29, 4.6]]), 128), M.alu);
+  // стенка (металл виден над и под этикеткой и в шве)
+  add(new THREE.CylinderGeometry(R * u, R * u, (CAN.wall1 - CAN.wall0) * u, 160, 1, true), M.alu).position.y = ((CAN.wall0 + CAN.wall1) / 2 - CAN.h / 2) * u;
+  // плечо
   const neck = [];
-  for (let i = 0; i <= 14; i++) { const t = i / 14, e = (1 - Math.cos(Math.PI * t)) / 2; neck.push([R + (rRim - .4 - R) * e, yW + v.neck * t]); }
-  can.add(new THREE.Mesh(new THREE.LatheGeometry(V(neck), 160), M.neck));
-  // закатка и чашка крышки
-  const lidY = hh - 3.1, lidR = rRim - 1.9;
-  const rim = [[rRim - .4, hh - 3], [rRim, hh - 2.6], [rRim + .3, hh - 1.8], [rRim + .32, hh - .9], [rRim + .1, hh - .2], [rRim - .4, hh], [rRim - .9, hh - .15],
-    [rRim - 1.15, hh - .7], [rRim - 1.3, hh - 1.6], [rRim - 1.45, hh - 2.6], [lidR, lidY]];
-  can.add(new THREE.Mesh(new THREE.LatheGeometry(V(rim), 160), M.rim));
-  // крышка с ключом
-  const L = lidR * u, sc = L / .236;
-  const lid = new THREE.Mesh(new THREE.CircleGeometry(L, 96).rotateX(-Math.PI / 2), M.lid); lid.position.y = lidY * u; can.add(lid);
-  for (const [rr, tt] of [[.88, .0032], [.6, .0018]]) { const t = new THREE.Mesh(new THREE.TorusGeometry(L * rr, tt * sc, 8, 128).rotateX(Math.PI / 2), M.lid); t.position.y = lidY * u + .0004; can.add(t); }
-  const score = new THREE.Mesh(new THREE.RingGeometry(.9, 1, 64).rotateX(-Math.PI / 2), M.score);
-  score.scale.set(.056 * sc, 1, .044 * sc); score.position.set(.14 * sc, lidY * u + .0008, 0); can.add(score);
-  const rivet = new THREE.Mesh(new THREE.CylinderGeometry(.013 * sc, .013 * sc, .007, 24), M.lid); rivet.position.set(0, lidY * u + .003, 0); can.add(rivet);
-  const tw = .034 * sc, sh = new THREE.Shape();
-  sh.moveTo(-.12 * sc, -tw); sh.lineTo(.03 * sc, -tw); sh.absarc(.03 * sc, 0, tw, -Math.PI / 2, Math.PI / 2, false);
-  sh.lineTo(-.12 * sc, tw); sh.absarc(-.12 * sc, 0, tw, Math.PI / 2, Math.PI * 1.5, false);
-  const hole = new THREE.Path(); hole.absellipse(-.108 * sc, 0, .021 * sc, .019 * sc, 0, TAU, true); sh.holes.push(hole);
-  const tab = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: .004, bevelEnabled: true, bevelThickness: .0015, bevelSize: .0015, bevelSegments: 2, curveSegments: 24 }).rotateX(-Math.PI / 2), M.tab);
-  tab.position.y = lidY * u + .0045; can.add(tab);
-  shadow.scale.setScalar(R * u * 5.2); shadow.position.y = -hh * u + .001;
-  $('#dims').textContent = `${v.t} · ${v.d} × ${v.h} мм`;
+  for (let i = 0; i <= 18; i++) { const t = i / 18, e = t * t * (3 - 2 * t); neck.push([R - 2.62 * e, CAN.wall1 + 7 * t]); }
+  add(new THREE.LatheGeometry(V(neck), 160), M.alu);
+  // закатка, стенка чашки и панель крышки
+  add(new THREE.LatheGeometry(V([[26.38, 143.4], [26.72, 143.8], [26.92, 144.5], [26.92, 145.45], [26.72, 145.98], [26.36, 146.1], [26.02, 145.95], [25.82, 145.45],
+    [25.62, 144.2], [25.38, 142.2], [25.15, 140.5], [24.9, 139.9], [24.55, 139.82], [24.18, 140.05], [23.7, 140.3]]), 160), M.aluIn, false);
+  const panelY = (140.32 - CAN.h / 2) * u;
+  add(new THREE.CircleGeometry(23.7 * u, 96).rotateX(-Math.PI / 2), M.end, false).position.y = panelY;
+  const bead = add(new THREE.TorusGeometry(21.4 * u, .35 * u, 8, 120).rotateX(Math.PI / 2), M.end, false); bead.position.y = panelY;
+  // надрез отверстия (спереди) и заклёпка
+  const score = add(new THREE.TorusGeometry(1, .045, 6, 64).rotateX(Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x9a9fa4, metalness: 1, roughness: .5 }), false);
+  score.scale.set(6.6 * u, 1, 5.2 * u); score.position.set(0, panelY + .0003, 13.8 * u);
+  add(new THREE.CylinderGeometry(1.5 * u, 1.7 * u, .9 * u, 24), M.end, false).position.set(0, panelY + .45 * u, 0);
+  // ключ: язычок назад от заклёпки, с отверстием под палец
+  const sh = new THREE.Shape(), w = 4.3;
+  sh.moveTo(-w, -4.2); sh.lineTo(w, -4.2); sh.lineTo(w, 9); sh.absarc(0, 9, w, 0, Math.PI, false); sh.lineTo(-w, -4.2);
+  sh.moveTo(-w, -4.2); sh.absarc(0, -4.2, w, Math.PI, TAU, false);
+  const hole = new THREE.Path(); hole.absellipse(0, 9.3, 2.5, 2.2, 0, TAU, true); sh.holes.push(hole);
+  const tab = add(new THREE.ExtrudeGeometry(sh, { depth: .35, bevelEnabled: true, bevelThickness: .15, bevelSize: .2, bevelSegments: 2, curveSegments: 28 }), M.end, false);
+  tab.geometry.scale(u, u, u); tab.rotation.x = -Math.PI / 2; tab.position.set(0, panelY + 1 * u, 0);
+  // этикетка: 178 мм по окружности, шов сзади, лицо — к камере
+  const rl = R + .08, th = LBL.w / rl;
+  const lab = add(new THREE.CylinderGeometry(rl * u, rl * u, LBL.h * u, 220, 1, true, -th / 2, th), M.label);
+  lab.position.y = ((CAN.wall0 + CAN.wall1) / 2 - CAN.h / 2) * u;
+  // торцы плёнки у шва — тонкая светлая кромка
+  for (const s of [-1, 1]) { const e = add(new THREE.PlaneGeometry(.1 * u, LBL.h * u), M.edge, false); const a = s * th / 2; e.position.set(Math.sin(a) * (R + .04) * u, lab.position.y, Math.cos(a) * (R + .04) * u); e.rotation.y = a + Math.PI / 2; }
 }
-let texH = 0;
+
+function applyFinish() {
+  if (!M.label) return; const m = S.finish === 'matte';
+  M.label.roughness = m ? .62 : .38; M.label.clearcoat = m ? .15 : 1; M.label.clearcoatRoughness = m ? .45 : .06; M.label.needsUpdate = true;
+}
+
+/* ===== что сейчас на банке ===== */
+const EX = [
+  { id: 'pompon', t: 'Pompon «Апельсин»', s: 'собран здесь из логотипа' },
+  { id: 'zm', t: 'Энергетик «Дыня»', s: 'СТМ «Жизнь Март»', src: 'assets/label-zhizn-mart.jpg' },
+  { id: 'bot', t: 'Малина и смородина', s: 'nova Botanica × Труд Крут', src: 'assets/label-botanica.jpg' },
+];
+const exImg = {};
+function nowLine(b, s) { $('#now').innerHTML = ''; const x = document.createElement('b'); x.textContent = b; $('#now').append(x, s); }
 function redraw() {
-  drawLabel(); checkClash(); if (!labelTex) return;
-  if (label.height !== texH) { labelTex.dispose(); texH = label.height; } // размер этикетки сменился с объёмом — текстуру заводим заново
-  labelTex.needsUpdate = true;
+  if (S.mode === 'file' && S.fileImg) drawFile(); else drawGen();
+  if (labelTex) labelTex.needsUpdate = true;
+  if (S.mode === 'file' && S.file) nowLine('Ваш макет', S.file.name);
+  else if (S.mode === 'file' && S.ex !== 'pompon') { const e = EX.find(e => e.id === S.ex); nowLine(e.t, e.s); }
+  else nowLine(S.logoFile ? 'Ваша марка' : S.text ? S.text : 'Пример Pompon', `${KINDS[S.kind].line.toLowerCase()} · ${S.flName || 'свой вкус'}`);
 }
+async function loadEx(id) {
+  document.querySelectorAll('#ex button').forEach(b => b.classList.toggle('on', b.dataset.id === id));
+  S.ex = id; S.file = null; $('#fileAct').hidden = true;
+  if (id === 'pompon') { S.mode = 'gen'; S.fileImg = null; redraw(); spin(); return; }
+  const e = EX.find(x => x.id === id);
+  if (!exImg[id]) { const im = new Image(); im.src = e.src; await im.decode(); const c = mk(im.naturalWidth, im.naturalHeight); c.getContext('2d').drawImage(im, 0, 0); exImg[id] = c; }
+  S.mode = 'file'; S.fileImg = exImg[id]; S.fileCut = { x: 0, y: 0, w: exImg[id].width, h: exImg[id].height };
+  redraw(); spin();
+}
+
+/* ===== интерфейс ===== */
+document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.tabs button').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-selected', x === b); });
+  $('#t-file').hidden = b.dataset.t !== 'file'; $('#t-gen').hidden = b.dataset.t !== 'gen';
+  if (b.dataset.t === 'gen') { S.mode = 'gen'; document.querySelectorAll('#ex button').forEach(x => x.classList.toggle('on', x.dataset.id === 'pompon')); S.ex = 'pompon'; redraw(); }
+  else if (S.file) { S.mode = 'file'; S.fileImg = S.fileOwn; S.fileCut = S.fileOwnCut; redraw(); }
+}));
+function seg(id, key, after) {
+  $(id).addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
+    $(id).querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); S[key] = b.dataset.v; after && after(); redraw(); });
+}
+seg('#kind', 'kind'); seg('#logoTint', 'tint'); seg('#bgMode', 'bg'); seg('#finish', 'finish', applyFinish);
+$('#flavors').innerHTML = FLAVORS.map(([n, a, b], i) => `<button type="button" class="chip${i === 0 ? ' on' : ''}" data-i="${i}"><i style="background:linear-gradient(135deg,${a} 50%,${b} 50%)"></i>${n}</button>`).join('');
+$('#flavors').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return;
+  $('#flavors').querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x === b));
+  [S.flName, S.c1, S.c2] = FLAVORS[+b.dataset.i]; $('#flName').value = S.flName; $('#c1').value = S.c1; $('#c2').value = S.c2; redraw(); });
+$('#flName').value = S.flName; $('#c1').value = S.c1; $('#c2').value = S.c2;
+$('#flName').addEventListener('input', e => { S.flName = e.target.value; redraw(); });
+$('#c1').addEventListener('input', e => { S.c1 = e.target.value; redraw(); });
+$('#c2').addEventListener('input', e => { S.c2 = e.target.value; redraw(); });
+$('#brandTxt').addEventListener('input', e => { S.text = e.target.value.trim(); if (S.text) { S.logoFile = null; S.logo = pomponLogo; } showLogo(); redraw(); });
+function showLogo() {
+  const box = $('#logoPrev'); box.innerHTML = '';
+  if (S.text && !S.logoFile) { const b = document.createElement('b'); b.textContent = S.text; box.append(b); }
+  else if (S.logo) { const c = mk(S.logo.width, S.logo.height); c.getContext('2d').drawImage(S.logo, 0, 0); box.append(c); }
+}
+$('#logoFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return; const note = $('#logoNote'); note.classList.remove('err');
+  if (f.size > 25e6) { note.textContent = 'Файл больше 25 МБ — сохраните поменьше.'; note.classList.add('err'); return; }
+  try { S.logo = prepLogo(await fileToImage(f)); S.logoFile = f; S.text = ''; $('#brandTxt').value = ''; note.textContent = 'Загружен: ' + f.name; showLogo(); redraw(); spin(); }
+  catch (x) { note.textContent = 'Не открылся файл. Подойдёт PNG, SVG, PDF или JPG.'; note.classList.add('err'); }
+});
+
+/* ===== свой макет ===== */
+async function takeLabel(f) {
+  const note = $('#fileNote'); note.classList.remove('err');
+  if (f.size > 40e6) { note.textContent = 'Файл больше 40 МБ. Сохраните макет полегче — JPG или PDF.'; note.classList.add('err'); return; }
+  note.textContent = 'Открываем макет…';
+  try {
+    const img = await fileToImage(f), { cut, sure, found } = autoCut(img);
+    S.file = f; S.fileOwn = img; S.fileOwnCut = cut; S.fileImg = img; S.fileCut = cut; S.mode = 'file'; S.ex = '';
+    document.querySelectorAll('#ex button').forEach(b => b.classList.remove('on'));
+    if (!$('#t-file').hidden || true) { document.querySelector('.tabs [data-t=file]').click(); }
+    $('#fileAct').hidden = false;
+    note.textContent = found ? `${f.name}: нашли на листе поле этикетки и поставили на банку. Если промахнулись — подгоните рамкой.`
+      : sure ? `${f.name} — на банке. Шов этикетки сзади, проверьте оборот.` : `${f.name}: размер не похож на 178 × 127 — выделите поле этикетки.`;
+    redraw(); spin();
+    if (!sure) openCrop();
+  } catch (x) { console.error(x); note.textContent = 'Не открылся файл. Подойдёт PDF, JPG или PNG.'; note.classList.add('err'); }
+}
+$('#labelFile').addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; if (f) takeLabel(f); });
+for (const el of [$('#drop'), stage]) {
+  el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('over'); });
+  el.addEventListener('dragleave', () => el.classList.remove('over'));
+  el.addEventListener('drop', e => { e.preventDefault(); el.classList.remove('over'); const f = e.dataTransfer.files[0]; if (f) takeLabel(f); });
+}
+$('#reCrop').addEventListener('click', () => openCrop());
+
+/* ===== подгонка рамкой ===== */
+const dlg = $('#dlg'), cv = $('#cropCv'), box = $('#box');
+let cs = 1, cb = null;
+function openCrop() {
+  const img = S.fileOwn; if (!img) return;
+  const maxW = Math.min(innerWidth * .94, 980) - 44, maxH = innerHeight * .62;
+  cs = Math.min(maxW / img.width, maxH / img.height, 1);
+  cv.width = Math.round(img.width * cs); cv.height = Math.round(img.height * cs);
+  cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+  cb = { ...S.fileOwnCut }; dlg.showModal(); placeBox();
+}
+function placeBox() {
+  const o = cv.offsetLeft, t = cv.offsetTop;
+  Object.assign(box.style, { left: o + cb.x * cs + 'px', top: t + cb.y * cs + 'px', width: cb.w * cs + 'px', height: cb.h * cs + 'px' });
+}
+let cd = null;
+box.addEventListener('pointerdown', e => { e.preventDefault(); box.setPointerCapture(e.pointerId); cd = { x: e.clientX, y: e.clientY, b: { ...cb }, rz: e.target === $('#boxH') }; });
+box.addEventListener('pointermove', e => {
+  if (!cd) return; const dx = (e.clientX - cd.x) / cs, dy = (e.clientY - cd.y) / cs, I = S.fileOwn, A = LBL.w / LBL.h;
+  if (cd.rz) { let w = clamp(cd.b.w + Math.max(dx, dy * A), 60, I.width - cd.b.x); let h = w / A; if (cd.b.y + h > I.height) { h = I.height - cd.b.y; w = h * A; } cb.w = w; cb.h = h; }
+  else { cb.x = clamp(cd.b.x + dx, 0, I.width - cb.w); cb.y = clamp(cd.b.y + dy, 0, I.height - cb.h); }
+  placeBox();
+});
+box.addEventListener('pointerup', () => cd = null);
+$('#dlgNo').addEventListener('click', () => dlg.close());
+$('#dlgOk').addEventListener('click', () => { S.fileOwnCut = { ...cb }; S.fileCut = S.fileOwnCut; S.fileImg = S.fileOwn; S.mode = 'file'; dlg.close(); $('#fileNote').textContent = `${S.file.name} — на банке. Шов этикетки сзади, проверьте оборот.`; redraw(); spin(); });
+
+/* ===== шаблон этикетки для дизайнера ===== */
+$('#tpl').addEventListener('click', () => {
+  const b = 2, W = LBL.w + 2 * b, H = LBL.h + 2 * b;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}mm" height="${H}mm" viewBox="0 0 ${W} ${H}" font-family="Arial" font-size="3">
+<rect x="0" y="0" width="${W}" height="${H}" fill="#fde8d4"/><text x="3" y="${H - 0.6}" font-size="1.6" fill="#b55">вылет 2 мм</text>
+<rect x="${b}" y="${b}" width="${LBL.w}" height="${LBL.h}" fill="#fff" stroke="#e33" stroke-width=".25"/>
+<rect x="${b + 3}" y="${b + 3}" width="${LBL.w - 6}" height="${LBL.h - 6}" fill="none" stroke="#39f" stroke-width=".2" stroke-dasharray="1 1"/>
+<rect x="${b + 59}" y="${b + 3}" width="60" height="${LBL.h - 6}" fill="#f3f7ff" stroke="#39f" stroke-width=".15"/>
+<line x1="${b + LBL.w / 2}" y1="${b}" x2="${b + LBL.w / 2}" y2="${b + LBL.h}" stroke="#39f" stroke-width=".15" stroke-dasharray="2 1"/>
+<text x="${b + LBL.w / 2}" y="${b + 10}" text-anchor="middle" fill="#36c">лицевая сторона ~60 мм</text>
+<text x="${b + 30}" y="${b + 10}" text-anchor="middle" fill="#888">оборот</text><text x="${b + 148}" y="${b + 10}" text-anchor="middle" fill="#888">оборот</text>
+<text x="${b + LBL.w / 2}" y="${b + LBL.h - 6}" text-anchor="middle" fill="#888">Этикетка 178 × 127 мм на банку 0,33 л слим (Ø 58 мм). Края 178 мм сходятся сзади, между ними ≈4 мм металла. Синяя пунктирная — безопасная зона 3 мм.</text>
+</svg>`;
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' })); a.download = 'shablon-etiketki-178x127.svg'; a.click();
+});
 
 /* ===== вращение ===== */
 const rot = { y: 0, v: 0, x: 0 }, drag = { on: false, x: 0, y: 0 };
-let lastTouch = -1e9, goTo = null, pop = 0;
+let lastTouch = performance.now(), goTo = null, pop = 0;
 const hint = $('#hint');
-setTimeout(() => hint.classList.add('off'), 7000);
 function touched() { lastTouch = performance.now(); hint.classList.add('off'); }
-canvas.addEventListener('pointerdown', e => {
-  if (e.button > 0) return; drag.on = true; drag.x = e.clientX; drag.y = e.clientY; rot.v = 0; goTo = null; touched();
-  stage.classList.add('drag'); try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
-  document.querySelectorAll('.views button').forEach(x => x.classList.remove('on'));
-});
-canvas.addEventListener('pointermove', e => {
-  if (!drag.on) return;
-  const dx = e.clientX - drag.x; drag.x = e.clientX; rot.v = dx * .011; rot.y += rot.v;
-  if (e.pointerType === 'mouse') { const dy = e.clientY - drag.y; drag.y = e.clientY; rot.x = clamp(rot.x + dy * .004, -.3, .45); }
-  touched();
-});
+function spin() { pop = 1; goTo = Math.round(rot.y / TAU) * TAU; document.querySelectorAll('.views button').forEach((x, i) => x.classList.toggle('on', i === 0)); }
+canvas.addEventListener('pointerdown', e => { if (e.button > 0) return; drag.on = true; drag.x = e.clientX; drag.y = e.clientY; rot.v = 0; goTo = null; touched(); stage.classList.add('drag');
+  try { canvas.setPointerCapture(e.pointerId); } catch (_) {} document.querySelectorAll('.views button').forEach(x => x.classList.remove('on')); });
+canvas.addEventListener('pointermove', e => { if (!drag.on) return; const dx = e.clientX - drag.x; drag.x = e.clientX; rot.v = dx * .0105; rot.y += rot.v;
+  if (e.pointerType === 'mouse') { const dy = e.clientY - drag.y; drag.y = e.clientY; rot.x = clamp(rot.x + dy * .003, -.22, .32); } touched(); });
 const end = () => { drag.on = false; stage.classList.remove('drag'); };
 canvas.addEventListener('pointerup', end); canvas.addEventListener('pointercancel', end); canvas.addEventListener('lostpointercapture', end);
 document.querySelectorAll('.views button').forEach(b => b.addEventListener('click', () => {
   document.querySelectorAll('.views button').forEach(x => x.classList.toggle('on', x === b));
-  const t = +b.dataset.view ? Math.PI : 0; goTo = t + Math.round((rot.y - t) / TAU) * TAU; rot.v = 0; touched();
+  const t = +b.dataset.a; goTo = t + Math.round((rot.y - t) / TAU) * TAU; rot.v = 0; touched();
 }));
 
 /* ===== кадр ===== */
-let W = 0, H = 0;
-function fit(aspect, tight) {
-  camera.aspect = aspect;
-  const t = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)), d = Math.max((tight ? 1.92 : 2.25) / t, (tight ? 1 : 1.2) / (t * aspect));
-  camera.position.set(0, d * .3, d * .96); camera.lookAt(0, -.07, 0); camera.updateProjectionMatrix();
+// банка вписывается в свободное поле сцены: сверху подписи, снизу кнопки поворота
+function fit(aspect, tight, H = 0) {
+  camera.aspect = aspect; const t = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+  const top = tight ? 0 : (H < 560 ? 54 : 76), bot = tight ? 0 : (H < 560 ? 70 : 124), free = H ? Math.max(.4, (H - top - bot) / H) : 1;
+  const d = Math.max((tight ? 1.68 : 1.56 / free) / t, (tight ? .9 : .92) / (t * aspect));
+  camera.position.set(0, d * .16, d); camera.lookAt(0, -.045, 0);
+  if (H && !tight) camera.setViewOffset(1000 * aspect, 1000, 0, (bot - top) / 2 / H * 1000, 1000 * aspect, 1000); else camera.clearViewOffset();
+  camera.updateProjectionMatrix();
 }
-function resize() {
-  if (!renderer) return;
-  const r = stage.getBoundingClientRect(); W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
-  renderer.setSize(W, H, false); fit(W / H);
-}
+function resize() { if (!renderer) return; const r = stage.getBoundingClientRect(); renderer.setSize(Math.max(1, r.width | 0), Math.max(1, r.height | 0), false); fit(r.width / r.height, false, r.height); }
 new ResizeObserver(resize).observe(stage);
-let last = performance.now(), sway = 0;
+let last = performance.now(), sway = 0, swayT0 = 0, visible = true;
+new IntersectionObserver(es => visible = es[0].isIntersecting).observe(stage);
 function frame(now) {
-  const dt = Math.min(.05, (now - last) / 1000); last = now;
-  if (!drag.on) {
-    if (goTo !== null) { rot.y += (goTo - rot.y) * (1 - Math.exp(-dt * 5)); if (Math.abs(goTo - rot.y) < .002) { rot.y = goTo; goTo = null; } }
-    else { rot.y += rot.v; rot.v *= Math.exp(-dt * 3.5); }
-    rot.x *= Math.exp(-dt * 1.2);
-  }
-  const idle = !reduce && now - lastTouch > 6000 && goTo === null;
-  sway += ((idle ? 1 : 0) - sway) * (1 - Math.exp(-dt * .8));
-  pop *= Math.exp(-dt * 5);
-  can.rotation.set(rot.x, rot.y + Math.sin(now * .00045) * .42 * sway, 0);
-  can.position.y = Math.sin(now * .0011) * .012 * sway;
-  can.scale.setScalar(1 + pop * .04);
-  renderer.render(scene, camera);
   requestAnimationFrame(frame);
+  const dt = Math.min(.05, (now - last) / 1000); last = now; if (!visible) return;
+  if (!drag.on) {
+    if (goTo !== null) { rot.y += (goTo - rot.y) * (1 - Math.exp(-dt * 5)); if (Math.abs(goTo - rot.y) < .001) { rot.y = goTo; goTo = null; } }
+    else { rot.y += rot.v; rot.v *= Math.exp(-dt * 3.2); }
+    rot.x *= Math.exp(-dt * 1.5);
+  }
+  const idle = !reduce && now - lastTouch > 5000 && goTo === null && !drag.on;
+  if (idle && sway < .001) swayT0 = now;  // покачивание начинается с лица, без рывка
+  sway += ((idle ? 1 : 0) - sway) * (1 - Math.exp(-dt * .7)); pop *= Math.exp(-dt * 4);
+  can.rotation.set(rot.x, rot.y + Math.sin((now - swayT0) * .00042) * .38 * sway, 0);
+  can.scale.setScalar(1 + pop * .025);
+  renderer.render(scene, camera);
 }
 
-/* ===== макет для заявки ===== */
+/* ===== снимки банки: превью примеров и макет для заявки ===== */
 function shot(angle, w, h) {
-  const pr = renderer.getPixelRatio();
+  const pr = renderer.getPixelRatio(), keep = can.rotation.clone(), ks = can.scale.x;
   renderer.setPixelRatio(1); renderer.setSize(w, h, false); fit(w / h, true);
-  const keep = can.rotation.clone(), ky = can.position.y, ks = can.scale.x;
-  can.rotation.set(.05, angle, 0); can.position.y = 0; can.scale.setScalar(1);
-  renderer.render(scene, camera);
+  can.rotation.set(0, angle, 0); can.scale.setScalar(1); renderer.render(scene, camera);
   const c = mk(w, h); c.getContext('2d').drawImage(canvas, 0, 0);
-  can.rotation.copy(keep); can.position.y = ky; can.scale.setScalar(ks);
-  renderer.setPixelRatio(pr); resize();
+  can.rotation.copy(keep); can.scale.setScalar(ks); renderer.setPixelRatio(pr); resize();
   return c;
 }
+async function thumbs() {
+  const keep = { mode: S.mode, img: S.fileImg, cut: S.fileCut };
+  for (const e of EX) {
+    if (e.id === 'pompon') { S.mode = 'gen'; drawGen(); }
+    else { const im = new Image(); im.src = e.src; await im.decode(); const c = mk(im.naturalWidth, im.naturalHeight); c.getContext('2d').drawImage(im, 0, 0); exImg[e.id] = c;
+      S.mode = 'file'; S.fileImg = c; S.fileCut = { x: 0, y: 0, w: c.width, h: c.height }; drawFile(); }
+    labelTex.needsUpdate = true;
+    const c = shot(-.18, 300, 400), img = $(`#ex [data-id="${e.id}"] i`);
+    if (img) { const im = new Image(); im.src = c.toDataURL('image/png'); im.alt = ''; img.replaceWith(im); }
+  }
+  S.mode = keep.mode; S.fileImg = keep.img; S.fileCut = keep.cut; redraw();
+}
+$('#ex').innerHTML = EX.map(e => `<button type="button" data-id="${e.id}"${e.id === 'pompon' ? ' class="on"' : ''}><i></i><b>${e.t}</b>${e.s}</button>`).join('');
+$('#ex').addEventListener('click', e => { const b = e.target.closest('button'); if (b) loadEx(b.dataset.id); });
+
 function spec() {
-  const v = VOLS[S.vol];
-  return [
-    ['Объём', `${v.t} ${v.sub}, ${v.d} × ${v.h} мм`],
-    ['Вкус', S.flName || '—'], ['Цвет полосы вкуса', S.flColor.toUpperCase()],
-    ['Цвет банки', `${S.canName}, ${S.can.toUpperCase()}`],
-    ['Крышка', LIDS[S.lid][0].toLowerCase()], ['Покрытие', S.finish === 'matte' ? 'матовое' : 'глянцевое'],
-    ['Логотип', S.logoFile ? `файл ${S.logoFile.name}` : S.text ? `надпись «${S.text}»` : 'пример Pompon'],
-    ['Цвет логотипа', { orig: 'как в файле', white: 'белый', black: 'чёрный' }[S.logoMode]],
-  ];
+  const own = S.mode === 'file';
+  const rows = [['Банка', '0,33 л слим, 58 × 146 мм'], ['Плёнка', S.finish === 'matte' ? 'матовая' : 'глянцевая']];
+  if (own) rows.push(['Этикетка', S.file ? `свой макет: ${S.file.name}` : `пример: ${EX.find(e => e.id === S.ex)?.t || ''}`]);
+  else rows.push(['Этикетка', 'собрана в конструкторе'], ['Напиток', KINDS[S.kind].line], ['Вкус', S.flName || '—'],
+    ['Логотип', (S.logoFile ? `файл ${S.logoFile.name}` : S.text ? `надпись «${S.text}»` : 'пример Pompon') + ({ orig: '', white: ', белым', black: ', чёрным' }[S.tint])],
+    ['Фон', { grad: `переход ${S.c1.toUpperCase()} → ${S.c2.toUpperCase()}`, solid: `цвет ${S.c1.toUpperCase()}`, white: 'белый' }[S.bg]]);
+  return rows;
 }
 function maket(who) {
-  const Wc = 1600, a = shot(0, 720, 900), b = shot(Math.PI, 720, 900);
-  const lw = 1000, lh = Math.round(lw * label.height / label.width);
-  const Hc = 120 + 900 + 60 + lh + 80;
+  const a = shot(0, 640, 860), b = shot(Math.PI, 640, 860), s = shot(-Math.PI / 2, 640, 860);
+  const Wc = 2040, lw = 1240, lh = Math.round(lw * LH / LW), Hc = 110 + 860 + 40 + lh + 80;
   const c = mk(Wc, Hc), g = c.getContext('2d');
-  g.fillStyle = '#FFFCF3'; g.fillRect(0, 0, Wc, Hc);
-  g.fillStyle = '#141414'; g.font = `700 40px ${DISP}`; g.textBaseline = 'alphabetic';
-  g.fillText('Макет банки', 60, 78);
-  g.font = `400 26px ${BODY}`; g.fillStyle = '#6B6458';
-  g.fillText(`${who} · ${new Date().toLocaleDateString('ru-RU')}`, 360, 76);
-  g.drawImage(a, 60, 120); g.drawImage(b, 820, 120);
-  g.font = `500 22px ${BODY}`; g.fillText('лицевая сторона', 60 + 290, 1040); g.fillText('обратная сторона', 820 + 285, 1040);
-  const ly = 1080; g.drawImage(label, 60, ly, lw, lh);
-  g.strokeStyle = 'rgba(20,20,20,.15)'; g.strokeRect(60.5, ly + .5, lw, lh);
-  g.fillStyle = '#6B6458'; g.font = `400 20px ${BODY}`; g.fillText('развёртка этикетки', 60, ly + lh + 34);
-  let y = ly + 10;
-  for (const [k, val] of spec()) {
-    g.fillStyle = '#6B6458'; g.font = `400 21px ${BODY}`; g.fillText(k, 1110, y += 34);
-    g.fillStyle = '#141414'; g.font = `600 23px ${BODY}`;
-    for (const l of wrapLines(g, val, 440)) g.fillText(l, 1110, y += 30);
-    y += 8;
-  }
+  g.fillStyle = '#F5F1EA'; g.fillRect(0, 0, Wc, Hc);
+  g.fillStyle = '#161412'; g.font = `750 40px ${DISP}`; g.fillText('Макет банки 0,33 л', 60, 74);
+  g.fillStyle = '#6E675E'; g.font = `400 24px ${BODY}`; g.fillText(`${who} · ${new Date().toLocaleDateString('ru-RU')}`, 560, 72);
+  [a, s, b].forEach((x, i) => g.drawImage(x, 40 + i * 660, 100));
+  g.font = `500 22px ${BODY}`; g.textAlign = 'center'; ['лицо', 'бок', 'оборот'].forEach((t, i) => g.fillText(t, 40 + i * 660 + 320, 990)); g.textAlign = 'left';
+  const ly = 1020; g.drawImage(label, 60, ly, lw, lh); g.strokeStyle = 'rgba(0,0,0,.15)'; g.strokeRect(60.5, ly + .5, lw, lh);
+  g.fillStyle = '#6E675E'; g.font = `400 20px ${BODY}`; g.fillText('развёртка этикетки 178 × 127 мм', 60, ly + lh + 34);
+  let y = ly + 6;
+  for (const [k, v] of spec()) { g.fillStyle = '#6E675E'; g.font = `400 21px ${BODY}`; g.fillText(k, 1350, y += 34); g.fillStyle = '#161412'; g.font = `600 23px ${BODY}`; for (const l of wrap(g, v, 620)) g.fillText(l, 1350, y += 30); y += 8; }
   return c;
 }
 
-/* ===== форма ===== */
-const form = $('#form'), err = $('#formErr');
-new IntersectionObserver(es => es.forEach(e => document.body.classList.toggle('form-on', e.isIntersecting && innerWidth < 900)), { rootMargin: '-35% 0px -20% 0px' }).observe($('#zayavka'));
+/* ===== заявка ===== */
+const form = $('#form'), ferr = $('#ferr');
 form.addEventListener('submit', async e => {
-  e.preventDefault(); err.hidden = true;
+  e.preventDefault(); ferr.hidden = true;
   const name = $('#fName').value.trim(), contact = $('#fContact').value.trim(), company = $('#fCompany').value.trim();
-  const bad = (el, t) => { err.textContent = t; err.hidden = false; el.focus(); };
+  const bad = (el, t) => { ferr.textContent = t; ferr.hidden = false; el.focus(); };
   if (!name) return bad($('#fName'), 'Напишите, как к вам обращаться.');
-  const okContact = /\S+@\S+\.\S+/.test(contact) || contact.replace(/\D/g, '').length >= 10;
-  if (!okContact) return bad($('#fContact'), 'Оставьте телефон или почту — по ним мы ответим.');
+  if (!(/\S+@\S+\.\S+/.test(contact) || contact.replace(/\D/g, '').length >= 10)) return bad($('#fContact'), 'Оставьте телефон или почту — по ним ответим.');
   if (!$('#fAgree').checked) return bad($('#fAgree'), 'Поставьте галочку согласия на обработку данных.');
   if (form.elements._honey.value) return;
   const btn = $('#sendBtn'); btn.disabled = true; btn.textContent = 'Отправляем…';
   try {
-    const m = maket(company || name);
-    const blob = await new Promise(r => m.toBlob(r, 'image/jpeg', .88));
+    const blob = await new Promise(r => maket(company || name).toBlob(r, 'image/jpeg', .88));
     const fd = new FormData();
-    const v = VOLS[S.vol];
-    fd.append('_subject', `Заявка с конструктора банки: ${company || name}, ${v.t}, ${S.flName}`);
+    fd.append('_subject', `Заявка с конструктора банки: ${company || name}, ${S.mode === 'file' ? 'свой макет' : S.flName}`);
     fd.append('_template', 'table'); fd.append('_captcha', 'false'); fd.append('_url', FORM_PAGE);
     fd.append('Имя', name); fd.append('Компания', company || '—'); fd.append('Телефон или почта', contact);
     fd.append('Тираж', $('#fTirazh').value); fd.append('Комментарий', $('#fComment').value.trim() || '—');
-    for (const [k, val] of spec()) fd.append(k, val);
+    for (const [k, v] of spec()) fd.append(k, v);
     fd.append('attachment', new File([blob], 'maket-banki.jpg', { type: 'image/jpeg' }));
-    if (S.logoFile && S.logoFile.size < 8 * 1024 * 1024) fd.append('attachment2', S.logoFile, S.logoFile.name);
+    const orig = S.mode === 'file' ? S.file : S.logoFile;
+    if (orig && orig.size < 9e6) fd.append('attachment2', orig, orig.name);
     await fetch('https://formsubmit.co/' + FORM_TO, { method: 'POST', body: fd, mode: 'no-cors', referrerPolicy: 'unsafe-url' });
-    const url = URL.createObjectURL(blob);
-    $('#okImg').src = url; $('#okDl').href = url;
-    form.hidden = true; $('#ok').classList.add('on'); document.body.classList.add('sent');
-    const top = $('#ok').getBoundingClientRect().top + scrollY - (innerWidth < 900 ? 16 : 100);
-    scrollTo({ top, behavior: reduce ? 'auto' : 'smooth' });
-  } catch (x) {
-    err.textContent = 'Не получилось отправить. Проверьте интернет и нажмите ещё раз — или позвоните: +7 982 348-80-88.'; err.hidden = false;
-  }
+    const url = URL.createObjectURL(blob); $('#okImg').src = url; $('#okDl').href = url;
+    form.hidden = true; $('#ok').hidden = false;
+  } catch (x) { ferr.textContent = 'Не получилось отправить. Проверьте интернет и нажмите ещё раз — или позвоните: +7 982 348-80-88.'; ferr.hidden = false; }
   btn.disabled = false; btn.textContent = 'Отправить заявку';
 });
 
 /* ===== старт ===== */
+let pomponLogo = null;
 (async () => {
-  try { await Promise.all([`700 40px ${DISP}`, `600 20px ${BODY}`, `400 20px ${BODY}`, `500 20px ${BODY}`, `700 20px ${BODY}`].map(f => document.fonts.load(f))); } catch (e) {}
+  try { await Promise.all([`750 40px ${DISP}`, `400 20px ${BODY}`, `600 20px ${BODY}`, `700 20px ${BODY}`].map(f => document.fonts.load(f))); } catch (e) {}
+  try { const im = new Image(); im.src = 'assets/pompon-main.png'; await im.decode(); pomponLogo = prepLogo(im); S.logo = pomponLogo; } catch (e) {}
+  showLogo(); applyFinish(); redraw(); resize();
+  if (!renderer) return;
   try {
-    // у svg Pompon нет размеров — разбираем его так же, как загруженный файл
-    const f = new File([await (await fetch('pompon-logo.svg')).blob()], 'pompon.svg', { type: 'image/svg+xml' });
-    exampleLogo = prepLogo(await readLogo(f), false).c; S.logo = exampleLogo;
-  } catch (e) {}
-  buildCan(); applyLid(); applyFinish(); redraw(); resize();
-  if (renderer) requestAnimationFrame(t => { last = t; frame(t); $('#load').classList.add('off'); });
+    const hdr = await new RGBELoader().loadAsync('assets/studio.hdr');
+    const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromEquirectangular(hdr).texture; hdr.dispose(); pm.dispose();
+    scene.environmentIntensity = 1; scene.environmentRotation = new THREE.Euler(-.35, .6, .25);
+  } catch (e) { console.warn('hdr', e); }
+  requestAnimationFrame(t => { last = t; frame(t); $('#load').classList.add('off'); setTimeout(() => hint.classList.add('off'), 8000); });
+  setTimeout(thumbs, 300);
 })();
 </script>
 </body>
