@@ -623,47 +623,52 @@ const rim = new THREE.DirectionalLight(0xF07F1A, 4.5); rim.position.set(4, 1.5, 
 const fill = new THREE.DirectionalLight(0xffffff, .5); fill.position.set(3, -2, 4); scene.add(fill);
 
 /* ---------- банка Pompon 0,33: прозрачная, этикетка почти во всю высоту, снизу видно напиток и шарики ---------- */
-const BH = 1.24, R = BH * (LBL.w / LBL.h) / TAU, k = R / .3, Y0 = -BH / 2, Y1 = BH / 2, HC = .21, YB = Y0 - HC;
+const BH = 1.24, R = BH * (LBL.w / LBL.h) / TAU, k = R / .3, Y0 = -BH / 2, Y1 = BH / 2;
+const HC = .14, YB = Y0 - HC;          // прозрачный низ: напиток и шарики
+const HT = .17, YT = Y1 + HT;          // прозрачный верх: напиток почти до крышки, как на их фото
+const LVL = YT - .05;                  // уровень напитка
 const can = new THREE.Group(); can.rotation.order = 'ZXY'; scene.add(can);
-const body = new THREE.Group(); body.position.y = .085; can.add(body);   // центр банки, а не этикетки
-const metal = new THREE.MeshPhysicalMaterial({ color: 0xdfe3e7, metalness: 1, roughness: .2, side: THREE.DoubleSide });
-const lidMat = new THREE.MeshPhysicalMaterial({ color: 0xe6e9ec, metalness: .92, roughness: .42 });
+const body = new THREE.Group(); body.position.y = -(YB + YT) / 2; can.add(body);
+const blackMat = new THREE.MeshPhysicalMaterial({ color: 0x18181a, metalness: .5, roughness: .32, clearcoat: .6, clearcoatRoughness: .18, side: THREE.DoubleSide });
 const L = a => a.map(([r, y]) => new THREE.Vector2(r * R, y));
-// крышка: закатка и утопленная панель
-body.add(new THREE.Mesh(new THREE.LatheGeometry(L([[1.003, Y1 - .006], [1.006, Y1 + .01], [.995, Y1 + .018], [.993, Y1 + .03], [.997, Y1 + .042], [.985, Y1 + .05], [.955, Y1 + .049], [.94, Y1 + .04], [.925, Y1 + .018], [.915, Y1 + .014]]), 160), metal));
-const LIDY = Y1 + .015;
-const lid = new THREE.Mesh(new THREE.CircleGeometry(.916 * R, 120).rotateX(-Math.PI / 2), lidMat); lid.position.y = LIDY; body.add(lid);
-const groove = new THREE.Mesh(new THREE.TorusGeometry(.8 * R, .0032, 8, 140).rotateX(Math.PI / 2), lidMat); groove.position.y = LIDY + .0005; body.add(groove);
-const score = new THREE.Mesh(new THREE.RingGeometry(.9, 1, 64).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x80858a, metalness: 1, roughness: .5 }));
+// чёрная крышка, закатанная на прозрачную банку
+body.add(new THREE.Mesh(new THREE.LatheGeometry(L([[1.0, YT - .014], [1.005, YT - .005], [1.003, YT + .006], [.993, YT + .016], [.965, YT + .02], [.945, YT + .013], [.928, YT - .005], [.918, YT - .009]]), 160), blackMat));
+const LIDY = YT - .008;
+const lid = new THREE.Mesh(new THREE.CircleGeometry(.92 * R, 120).rotateX(-Math.PI / 2), blackMat); lid.position.y = LIDY; body.add(lid);
+const groove = new THREE.Mesh(new THREE.TorusGeometry(.8 * R, .0032, 8, 140).rotateX(Math.PI / 2), blackMat); groove.position.y = LIDY + .0005; body.add(groove);
+const score = new THREE.Mesh(new THREE.RingGeometry(.9, 1, 64).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x3a3a3e, metalness: .6, roughness: .4 }));
 score.scale.set(.056 * k, 1, .044 * k); score.position.set(.14 * k, LIDY + .0008, 0); body.add(score);
-const hole = new THREE.Mesh(new THREE.CircleGeometry(1, 64).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x050505 }));
+const hole = new THREE.Mesh(new THREE.CircleGeometry(1, 64).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x0a0402 }));
 hole.scale.set(.05 * k, 1, .039 * k); hole.position.set(.14 * k, LIDY + .0012, 0); hole.visible = false; body.add(hole);
-const rivet = new THREE.Mesh(new THREE.CylinderGeometry(.013, .013, .007, 24), metal); rivet.position.set(0, LIDY + .003, 0); body.add(rivet);
+const rivet = new THREE.Mesh(new THREE.CylinderGeometry(.013, .013, .007, 24), blackMat); rivet.position.set(0, LIDY + .003, 0); body.add(rivet);
 const tabShape = new THREE.Shape(), tw = .034 * k;
 tabShape.moveTo(-.12 * k, -tw); tabShape.lineTo(.03 * k, -tw); tabShape.absarc(.03 * k, 0, tw, -Math.PI / 2, Math.PI / 2, false);
 tabShape.lineTo(-.12 * k, tw); tabShape.absarc(-.12 * k, 0, tw, Math.PI / 2, Math.PI * 1.5, false);
 const ring = new THREE.Path(); ring.absellipse(-.108 * k, 0, .021 * k, .019 * k, 0, TAU, true); tabShape.holes.push(ring);
 const tabGeo = new THREE.ExtrudeGeometry(tabShape, { depth: .004, bevelEnabled: true, bevelThickness: .0015, bevelSize: .0015, bevelSegments: 2, curveSegments: 24 }).rotateX(-Math.PI / 2);
 const tabPivot = new THREE.Group(); tabPivot.position.set(0, LIDY + .0035, 0); body.add(tabPivot);
-tabPivot.add(new THREE.Mesh(tabGeo, new THREE.MeshPhysicalMaterial({ color: 0xc4cacf, metalness: 1, roughness: .18 })));
+tabPivot.add(new THREE.Mesh(tabGeo, new THREE.MeshPhysicalMaterial({ color: 0x232326, metalness: .6, roughness: .24, clearcoat: .5 })));
 
-// низ: напиток за прозрачной стенкой, шарики у стенки, блик пластика поверх
+// напиток за прозрачной стенкой: снизу с шариками, сверху до уровня; блик пластика поверх
 const drinkMat = new THREE.MeshPhysicalMaterial({ color: 0x1a0a02, roughness: .35, transparent: true, opacity: .62, depthWrite: false });
 const coreMat = new THREE.MeshPhysicalMaterial({ color: 0x0d0501, roughness: .5 });
+const coreTMat = new THREE.MeshPhysicalMaterial({ color: 0x1a0a02, roughness: .4, emissive: 0x000000 });
 const core = new THREE.Mesh(new THREE.CylinderGeometry(.84 * R, .84 * R, HC + .04, 64), coreMat); core.position.y = YB + HC / 2 + .01; body.add(core);
 const drink = new THREE.Mesh(new THREE.CylinderGeometry(.997 * R, .997 * R, HC + .02, 160, 1, true), drinkMat); drink.position.y = YB + HC / 2 + .01; drink.renderOrder = 1; body.add(drink);
+const hT = LVL - Y1 + .02, yT = (LVL + Y1 - .02) / 2;
+const coreT = new THREE.Mesh(new THREE.CylinderGeometry(.86 * R, .86 * R, hT, 64), coreTMat); coreT.position.y = yT; body.add(coreT);
+const drinkT = new THREE.Mesh(new THREE.CylinderGeometry(.997 * R, .997 * R, hT, 160, 1, false), drinkMat); drinkT.position.y = yT; drinkT.renderOrder = 1; body.add(drinkT);
 const baseGeo = new THREE.LatheGeometry(L([[0, YB - .028], [.4, YB - .03], [.72, YB - .034], [.9, YB - .03], [.97, YB - .02], [.995, YB - .008], [1.0, YB + .004]]), 160);
 const base = new THREE.Mesh(baseGeo, new THREE.MeshPhysicalMaterial({ color: 0x1a0a02, roughness: .3 })); body.add(base);
 const pearlMat = new THREE.MeshPhysicalMaterial({ color: 0x120703, roughness: .12, clearcoat: 1, clearcoatRoughness: .05 });
-const NPR = 120, pearls = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 20, 14), pearlMat, NPR);
+const NPR = 110, pearls = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 20, 14), pearlMat, NPR);
 { const m = new THREE.Matrix4(), r = (s => () => (s = (s * 16807) % 2147483647) / 2147483647)(11);
-  for (let i = 0; i < NPR; i++) { const a = r() * TAU, rr = .016 + r() * .008, y = YB + rr + Math.pow(r(), 1.7) * (HC - .03), d = .955 * R - rr * .4;
+  for (let i = 0; i < NPR; i++) { const a = r() * TAU, rr = .016 + r() * .008, y = YB + rr + Math.pow(r(), 1.7) * (HC - .025), d = .955 * R - rr * .4;
     m.makeScale(rr, rr, rr).setPosition(Math.sin(a) * d, y, Math.cos(a) * d); pearls.setMatrixAt(i, m); } }
 body.add(pearls);
-const shell = new THREE.Mesh(new THREE.CylinderGeometry(1.004 * R, 1.004 * R, HC + .006, 160, 1, true),
-  new THREE.MeshPhysicalMaterial({ color: 0x000000, roughness: .05, clearcoat: 1, clearcoatRoughness: .03, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
-shell.position.y = YB + HC / 2; shell.renderOrder = 2; body.add(shell);
-const shellBase = new THREE.Mesh(baseGeo, shell.material); shellBase.scale.setScalar(1.004); shellBase.renderOrder = 2; body.add(shellBase);
+const shellMat = new THREE.MeshPhysicalMaterial({ color: 0x000000, roughness: .05, clearcoat: 1, clearcoatRoughness: .03, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
+for (const [h, y] of [[HC + .006, YB + HC / 2], [HT - .01, Y1 + (HT - .01) / 2]]) { const m = new THREE.Mesh(new THREE.CylinderGeometry(1.004 * R, 1.004 * R, h, 160, 1, true), shellMat); m.position.y = y; m.renderOrder = 2; body.add(m); }
+const shellBase = new THREE.Mesh(baseGeo, shellMat); shellBase.scale.setScalar(1.004); shellBase.renderOrder = 2; body.add(shellBase);
 
 /* этикетки */
 const T = {};
@@ -777,6 +782,7 @@ function setLabel(a, b, m) {
   acc.copy(cA.set(x.tone)).lerp(cB.set(y.tone), m);
   wipe.uSeam.value.copy(acc); rim.color.copy(acc);
   drinkMat.color.copy(cA.set(x.drink)).lerp(cB.set(y.drink), m); coreMat.color.copy(drinkMat.color).multiplyScalar(.5); base.material.color.copy(drinkMat.color);
+  coreTMat.color.copy(drinkMat.color); coreTMat.emissive.copy(drinkMat.color).multiplyScalar(.35); hole.material.color.copy(drinkMat.color).multiplyScalar(.4);
   pearlMat.color.copy(cA.set(x.pearl)).lerp(cB.set(y.pearl), m);
   pearls.visible = (m < .5 ? x.pearls : y.pearls) > 0;
   const hx = '#' + acc.getHexString();
