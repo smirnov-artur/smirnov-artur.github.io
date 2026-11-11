@@ -444,7 +444,7 @@ function denseBox(c) {
   const [y0, y1] = run(h, y => { let n = 0; for (let x = 0; x < w; x++) n += on[y * w + x]; return n / w > .6; });
   if (y1 - y0 < h * .15) return null;
   const [x0, x1] = run(w, x => { let n = 0; for (let y = y0; y < y1; y++) n += on[y * w + x]; return n / (y1 - y0) > .6; });
-  const ins = 1.5;  // срезать линию вырубки
+  const ins = 3.5;  // срезать линию вырубки типографии (~1,5 % ширины листа)
   return { x: (x0 + ins) / k, y: (y0 + ins) / k, w: (x1 - x0 - 2 * ins) / k, h: (y1 - y0 - 2 * ins) / k };
 }
 // логотип: однотонный фон от краёв — прозрачный, пустые поля обрезаны
