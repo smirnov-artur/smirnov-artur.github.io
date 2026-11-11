@@ -673,7 +673,7 @@ const farBlur = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType })
 const kawase = new KawaseBlurPass({ kernelSize: KernelSize.LARGE, resolutionScale: .5 });
 kawase.initialize(renderer, true, THREE.HalfFloatType);
 const NSLOT = 4, BD = 40;
-const bdU = { uBase: { value: new THREE.Color('#0A0A0C') }, uGlow: { value: new THREE.Color('#F07F1A') }, uGlowPos: { value: new THREE.Vector2(.7, .5) },
+const bdU = { uAxA: { value: new THREE.Vector2(.5, .3) }, uAxB: { value: new THREE.Vector2(.5, .7) }, uCard: { value: .0 }, uCardW: { value: .06 }, uBase: { value: new THREE.Color('#0A0A0C') }, uGlow: { value: new THREE.Color('#F07F1A') }, uGlowPos: { value: new THREE.Vector2(.7, .5) },
   uAsp: { value: 1 }, uFar: { value: farBlur.texture }, uGlowK: { value: .5 }, uT: { value: 0 }, uJel: { value: 0 } };
 for (let i = 0; i < NSLOT; i++) { bdU['tT' + i] = { value: null }; bdU['rT' + i] = { value: new THREE.Vector4() }; bdU['cT' + i] = { value: new THREE.Vector4() }; bdU['xT' + i] = { value: new THREE.Vector2(1, 0) }; }
 const slotGLSL = i => `
@@ -687,12 +687,16 @@ const slotGLSL = i => `
 const backdrop = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({
   uniforms: bdU, depthWrite: false, toneMapped: false,
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); }',
-  fragmentShader: `varying vec2 vUv; uniform vec3 uBase, uGlow; uniform vec2 uGlowPos; uniform float uAsp, uGlowK, uT, uJel; uniform sampler2D uFar;
+  fragmentShader: `varying vec2 vUv; uniform vec3 uBase, uGlow; uniform vec2 uGlowPos; uniform float uAsp, uGlowK, uT, uJel, uCard, uCardW; uniform vec2 uAxA, uAxB; uniform sampler2D uFar;
   ${[...Array(NSLOT).keys()].map(i => `uniform sampler2D tT${i}; uniform vec4 rT${i}, cT${i}; uniform vec2 xT${i};`).join('\n')}
   void main(){
     vec2 uv = vUv; vec2 g = (uv - uGlowPos) * vec2(uAsp, 1.);
     float r2 = dot(g, g);
     vec3 col = uBase + uGlow * (exp(-r2 / .12) * .2 + exp(-r2 / .014) * .16) * uGlowK + vec3(.004, .0035, .003) * (1. - uv.y);
+    // контровой софтбокс за банкой по её оси: чай светится янтарём, по краям — ореол, как на предметной съёмке
+    { vec2 A = uAxA * vec2(uAsp, 1.), B = uAxB * vec2(uAsp, 1.), P = uv * vec2(uAsp, 1.), ab = B - A;
+      float h = clamp(dot(P - A, ab) / max(dot(ab, ab), 1e-5), -.08, 1.08); float dd = length(P - A - ab * h);
+      col += mix(vec3(1., .93, .8), uGlow, .35) * uCard * (exp(-dd * dd / (uCardW * uCardW)) * .9 + exp(-dd * dd / (uCardW * uCardW * 9.)) * .25); }
     vec4 far = texture2D(uFar, uv); col = col * (1. - far.a) + far.rgb;
     ${[...Array(NSLOT).keys()].map(slotGLSL).join('\n')}
     gl_FragColor = vec4(col, 1.);
@@ -1363,7 +1367,10 @@ function frame(now) {
   }
   bdU.uT.value = t; bdU.uJel.value = clamp(Math.abs(jel) * 6 + Math.abs(jelV) * .4, 0, 1.2);
   // свечение за банкой — в её точке на экране
-  v3.copy(can.position).project(camera); bdU.uGlowPos.value.set(v3.x * .5 + .5, v3.y * .5 + .5); bdU.uGlow.value.copy(acc); bdU.uAsp.value = innerWidth / innerHeight;
+  v3.copy(can.position).project(camera); bdU.uGlowPos.value.set(v3.x * .5 + .5, v3.y * .5 + .5);
+  { can.updateMatrixWorld(); const a = body.localToWorld(tmpW.set(0, -.55, -.6)).project(camera); bdU.uAxA.value.set(a.x * .5 + .5, a.y * .5 + .5);
+    const b = body.localToWorld(tmpW.set(0, .62, -.6)).project(camera); bdU.uAxB.value.set(b.x * .5 + .5, b.y * .5 + .5);
+    const hpx = Math.abs(bdU.uAxB.value.y - bdU.uAxA.value.y); bdU.uCardW.value = .022 + can.scale.x * .028; bdU.uCard.value = (ownWipe < 1 || phD > NS - .5 ? .45 : .7) * (1 - .6 * clamp((y - A.c0 + vh) / vh) * (1 - clamp((y - A.c1) / vh))); } bdU.uGlow.value.copy(acc); bdU.uAsp.value = innerWidth / innerHeight;
 
   // звёздочка: в первом экране — знак после огромного «pompon», как в их логотипе; дальше — рядом с банкой; в подвале — снова в слове
   if (landedOnce && heroRev > .75 && !starPopT) { starPopT = t; face.sq = 1; face.spin = 1; starU.uWob.value = 1; moodSet('happy', 1.4); }
