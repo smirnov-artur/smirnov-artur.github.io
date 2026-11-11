@@ -26,7 +26,8 @@ button,input,select{font:inherit;color:inherit}
 #fg{position:fixed;inset:0;z-index:6;pointer-events:none;overflow:hidden}
 #fg img{position:absolute;opacity:0;will-change:transform,opacity;filter:blur(14px) brightness(.82) saturate(1.1)}
 .fg-mango{width:36vw;right:-7vw;top:-9vh}.fg-grapes{width:20vw;right:-5vw;bottom:-19vh;filter:blur(11px) brightness(.8)!important}.fg-apple{width:11vw;left:-4.5vw;top:34vh;filter:blur(18px) brightness(.7)!important}
-@media (max-width:760px){.fg-mango{width:62vw;right:-18vw;top:-6vh}.fg-grapes{width:40vw;right:-10vw;bottom:-8vh}.fg-apple{display:none}}
+.fg-mint{width:30vw;right:-6vw;top:-7vh}.fg-pine{width:26vw;left:-6vw;bottom:-12vh}.fg-rasp{width:24vw;right:-5vw;top:-6vh}.fg-gum{width:22vw;left:-5vw;bottom:-10vh}.fg-lime{width:26vw;right:-6vw;top:-8vh}.fg-ice{width:20vw;left:-4vw;bottom:-9vh}
+@media (max-width:760px){.fg-rasp,.fg-mint,.fg-lime{width:52vw;right:-14vw;top:-5vh}.fg-pine,.fg-gum,.fg-ice{width:40vw;left:-12vw;bottom:-7vh}.fg-mango{width:62vw;right:-18vw;top:-6vh}.fg-grapes{width:40vw;right:-10vw;bottom:-8vh}.fg-apple{display:none}}
 #ld{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;transition:opacity .9s,visibility .9s}
 .ld-in{width:min(340px,76vw);display:grid;justify-items:center;gap:26px;color:var(--mute)}
 .ld-logo{display:flex;align-items:center;gap:14px;height:96px}
@@ -179,6 +180,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
 @media (max-width:760px){
   .nav{gap:10px}.nav ul{display:none}.nav .btn{margin-left:auto;padding:0 18px}.nav .long{display:none}
   .logo .st{height:30px}.logo .wd{height:14px;margin-top:4px}
+  .snd{font-size:0;padding:0 12px;margin-left:auto}.snd i:nth-child(4){margin-right:0}.nav .snd+.btn{margin-left:0}
   .hero{grid-template-columns:1fr;align-content:end;padding-bottom:7vh}
   .hero-word{top:12vh;font-size:13.6vw}
   .hero-r,.hint{display:none}
@@ -203,7 +205,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
   <div class="ld-logo"><div class="ld-star"><img src="assets/nav-star.png" alt=""></div><div class="ld-word"><img src="assets/nav-word.png" alt="Pompon"></div></div>
   <i id="ldBar"></i><span class="mono">Наливаем</span></div></div>
 <canvas id="gl" aria-hidden="true"></canvas>
-<div id="fg" aria-hidden="true"><img class="fg-mango" src="assets/fg-mango-half.webp" alt=""><img class="fg-grapes" src="assets/fg-grapes.webp" alt=""><img class="fg-apple" src="assets/fg-apple.webp" alt=""></div>
+<div id="fg" aria-hidden="true"><img class="fg-mango" data-k="mango" data-d="120,-80" src="assets/fg-mango-half.webp" alt=""><img class="fg-grapes" data-k="black" data-d="90,120" src="assets/fg-grapes.webp" alt=""><img class="fg-apple" data-k="black" data-d="-80,0" src="assets/fg-apple.webp" alt=""><img class="fg-mint" data-k="fresh" data-d="120,-80" src="assets/fg-mint.webp" alt=""><img class="fg-pine" data-k="fresh" data-d="-110,120" src="assets/fg-pine.webp" alt=""><img class="fg-rasp" data-k="gum" data-d="120,-80" src="assets/fg-raspberry.webp" alt=""><img class="fg-gum" data-k="gum" data-d="-110,120" src="assets/fg-gumball.webp" alt=""><img class="fg-lime" data-k="cola" data-d="120,-80" src="assets/fg-lime.webp" alt=""><img class="fg-ice" data-k="cola" data-d="-110,120" src="assets/fg-ice.webp" alt=""></div>
 
 <header class="nav">
   <a class="logo" data-to="#hero" aria-label="Pompon — наверх"><img class="st" src="assets/nav-star.png" alt=""><img class="wd" src="assets/nav-word.png" alt="Pompon"></a>
@@ -1301,7 +1303,7 @@ const NS = SEQ.length - 1;
 let last = performance.now(), lastC = 0, shake = 0, phD = 0, pop = 0, introT0 = 0, landedOnce = false, lastNear = 0, ripT = 0, gasOn = 0, heroRev = 0, slowT = 1;
 const W = {};
 const v3 = new THREE.Vector3(), starCol = new THREE.Color(), BRAND = new THREE.Color('#F07F1A');
-const fgM = $('.fg-mango'), fgG = $('.fg-grapes'), fgA = $('.fg-apple');
+const FGX = [...document.querySelectorAll('#fg img')].map(el => { const [dx, dy] = el.dataset.d.split(',').map(Number); return { el, k: el.dataset.k, dx, dy }; });
 let fps = { n: 0, t: 0, done: false }, starPopT = 0, starInit = false, lastY = 0, vel = 0, jel = 0, jelV = 0;
 const tmpW = new THREE.Vector3(), rayV = new THREE.Vector3();
 function toWorld(px, py, z) { rayV.set(px / innerWidth * 2 - 1, -(py / innerHeight * 2 - 1), .5).unproject(camera).sub(camera.position).normalize(); return new THREE.Vector3().copy(camera.position).addScaledVector(rayV, (z - camera.position.z) / rayV.z); }
@@ -1404,10 +1406,9 @@ function frame(now) {
   const vis = Math.max(heroW * popE, flavS, footS, crW) * popE;
   stepStar(dt, t, vis, footS > .5 ? BRAND : acc, ssz);
 
-  { const wm = W.mango || 0, wb = W.black || 0, mx = mouse.sx * 26, my = mouse.sy * 18;
-    fgM.style.opacity = wm; fgM.style.transform = `translate(${mx + (1 - wm) * 120}px,${my - (1 - wm) * 80}px) rotate(${-14 + wm * 4}deg)`;
-    fgG.style.opacity = wb; fgG.style.transform = `translate(${mx * 1.2 + (1 - wb) * 90}px,${my * 1.2 + (1 - wb) * 120}px) rotate(${8 - wb * 6}deg)`;
-    fgA.style.opacity = wb * .9; fgA.style.transform = `translate(${mx * .8 - (1 - wb) * 80}px,${my * .8}px)`; }
+  { const mx = mouse.sx * 26, my = mouse.sy * 18;
+    FGX.forEach((f, i) => { const w = W[f.k] || 0; f.el.style.opacity = f.k === 'black' && f.el.classList.contains('fg-apple') ? w * .9 : w;
+      f.el.style.transform = `translate(${mx * (1 + i % 3 * .2) + (1 - w) * f.dx}px,${my * (1 + i % 3 * .2) + (1 - w) * f.dy}px) rotate(${(i % 2 ? 6 : -10) + w * (i % 2 ? -4 : 4)}deg)`; }); }
   stepPop((y - A.c0) / (A.c1 - A.c0), t);
   stepGel(dt, t); stepTea(dt); stepMist(dt); stepProps(dt, t, W);
   shake *= Math.exp(-dt * 6);
