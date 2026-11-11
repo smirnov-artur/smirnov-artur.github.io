@@ -732,7 +732,7 @@ const mob = () => innerWidth < 760;
 function states() {
   const P = (d, m) => mob() ? m : d;
   return {
-    hero: P({ x: 1.12, y: -.04, s: 1, rx: .06, ry: -.35, rz: -.22 }, { x: 0, y: .5, s: .6, rx: .05, ry: -.35, rz: -.16 }),
+    hero: P({ x: 1.12, y: -.04, s: 1, rx: .06, ry: -.12, rz: -.22 }, { x: 0, y: .5, s: .6, rx: .05, ry: -.35, rz: -.16 }),
     flav: q => P({ x: 0, y: -.02, s: 1.02, rx: .05, ry: q * TAU, rz: 0 }, { x: 0, y: .48, s: .62, rx: .04, ry: q * TAU, rz: 0 }),
     crack0: P({ x: 0, y: -.16, s: 1.14, rx: .64, ry: 6 * TAU + .35, rz: .06 }, { x: 0, y: .1, s: .82, rx: .64, ry: 6 * TAU + .35, rz: .06 }),
     crack1: P({ x: 0, y: -.16, s: 1.14, rx: .6, ry: 6 * TAU + .6, rz: .1 }, { x: 0, y: .1, s: .82, rx: .6, ry: 6 * TAU + .6, rz: .1 }),
@@ -819,7 +819,7 @@ function frame(now) {
   const heroW = 1 - sstep(0, vh * .6, y), idle = reduce ? 0 : 1;
   pop *= Math.exp(-dt * 4);
   can.position.set(cur.x + mouse.sx * .05, cur.y + Math.sin(now * .0011) * .035 * idle, 0);
-  can.rotation.set(cur.rx + mouse.sy * .12, cur.ry + Math.sin(now * .0006) * .32 * heroW * idle + drag.ry, cur.rz - mouse.sx * .07);
+  can.rotation.set(cur.rx + mouse.sy * .12, cur.ry + Math.sin(now * .0006) * .22 * heroW * idle + drag.ry, cur.rz - mouse.sx * .07);
   can.scale.setScalar(cur.s * 1.25 * (1 + pop * .04));
   document.documentElement.style.setProperty('--gx', (50 + cur.x / 2.6 * 50).toFixed(1) + '%');
   const ph = labelPhase(y); phD += (ph - phD) * kk;
