@@ -4,358 +4,313 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>Pompon — ваша этикетка на нашей банке</title>
-<meta name="description" content="Загрузите макет этикетки и посмотрите его на банке 0,33 л в 3D. Контрактный розлив лимонадов и энергетиков под вашей маркой, Челябинск.">
+<title>Pompon — примерьте свою этикетку на нашу банку</title>
+<meta name="description" content="Загрузите макет этикетки и посмотрите его на банке 0,33 л. Контрактный розлив лимонадов и энергетиков под вашей маркой, Челябинск.">
 <link rel="icon" href="assets/pompon-main.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400..900&family=Manrope:wght@400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400..700&family=Manrope:wght@400..800&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@600&display=swap" rel="stylesheet">
 <style>
-:root{--acc:#EF7F1A;--acc-ink:#0A0A0C;--bg:#0A0A0C;--ink:#F3F3EE;--mute:#8F8F96;--line:rgba(255,255,255,.12);
-  --disp:'Unbounded',system-ui,sans-serif;--body:'Manrope',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace}
+:root{--cream:#FFFCEF;--or:#EF7F1A;--ink:#151515;--mute:#6F6A5E;--line:#E7DFC8;--cy:#1F9AD6;--red:#E2231A;
+  --disp:'Unbounded',system-ui,sans-serif;--body:'Manrope',system-ui,sans-serif;--doc:'PT Sans',Arial,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
-html{background:var(--bg);overflow-x:clip}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;overflow-x:clip}
-body.dragging{user-select:none;cursor:grabbing}
-a{color:inherit;text-decoration:none}
+html{background:var(--cream);-webkit-text-size-adjust:100%}
+body{background:var(--cream);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:inherit}
 button,input,select,textarea{font:inherit;color:inherit}
+img{display:block;max-width:100%}
 [hidden]{display:none!important}
-:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
-.mono{font-family:var(--mono);font-weight:500;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
-.acc{color:var(--acc)}
+:focus-visible{outline:2px solid var(--or);outline-offset:3px}
 
-#glow{position:fixed;inset:0;z-index:0;pointer-events:none;transition:background .9s;
-  background:radial-gradient(52vmax 52vmax at var(--gx,70%) 52%,color-mix(in srgb,var(--acc) 19%,transparent),transparent 64%)}
-#gl{position:fixed;inset:0;width:100vw;height:100vh;z-index:5;pointer-events:none}
-#ld{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;transition:opacity .8s,visibility .8s}
-#ld img{width:110px;animation:pulse 1.4s ease-in-out infinite}
-#ld.off{opacity:0;visibility:hidden}
-@keyframes pulse{50%{transform:scale(.9);opacity:.6}}
+.top{position:fixed;top:14px;left:0;right:0;z-index:50;display:flex;justify-content:center;padding:0 16px;pointer-events:none}
+.bar{pointer-events:auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;width:min(1000px,100%);height:52px;padding:0 26px;border-radius:999px;background:#F8EBCB}
+.bar nav{display:flex;gap:26px;font-size:13px}
+.bar nav:last-child{justify-content:flex-end}
+.bar nav a{text-decoration:none;white-space:nowrap}
+.bar nav a:hover{color:var(--or)}
+.bar .logo{display:block;margin-top:-6px}
+.bar .logo img{height:56px;width:auto}
 
-.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:28px;padding:16px clamp(16px,4vw,56px)}
-.nav::before{content:"";position:absolute;inset:0 0 -30px;background:linear-gradient(#0A0A0Ce6,#0A0A0C00);pointer-events:none;z-index:-1}
-.logo{display:flex;align-items:center;cursor:pointer}
-.logo img{height:46px;width:auto}
-.nav ul{display:flex;gap:28px;list-style:none;margin-left:auto}
-.nav ul a{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#cfcfca;cursor:pointer;transition:color .2s}
-.nav ul a:hover{color:var(--acc)}
-.tel{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:#cfcfca}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:50px;padding:0 26px;border-radius:999px;border:0;
-  background:var(--acc);color:var(--acc-ink);font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:.01em;cursor:pointer;transition:transform .25s,box-shadow .25s,background .6s,color .6s}
-.btn:hover{transform:translateY(-2px);box-shadow:0 10px 40px -10px var(--acc)}
-.btn.ghost{background:transparent;color:var(--ink);border:1px solid rgba(255,255,255,.28)}
-.btn.ghost:hover{border-color:var(--acc);color:var(--acc);box-shadow:none}
-.nav .btn{height:42px;font-size:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:54px;padding:0 34px;border-radius:999px;border:0;background:var(--ink);color:#fff;
+  font-family:var(--body);font-weight:700;font-size:15px;text-decoration:none;cursor:pointer;transition:background .2s}
+.btn:hover{background:#000}
+.lnk{border:0;background:none;padding:0;cursor:pointer;font-weight:600;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.lnk:hover{color:var(--or)}
 
-.sec{position:relative;min-height:100vh;padding:0 clamp(16px,5vw,76px)}
-.behind{position:absolute;z-index:1;pointer-events:none;user-select:none}
-.front{position:relative;z-index:10}
-.giant{font-family:var(--disp);font-weight:900;line-height:.82;letter-spacing:-.045em;white-space:nowrap}
-.kick{color:var(--acc);margin-bottom:22px;transition:color .6s}
-h1,h2{font-family:var(--disp);font-weight:900;text-transform:uppercase;letter-spacing:-.03em;line-height:.92}
-h2{font-size:clamp(36px,4.6vw,78px)}
-.txt{font-size:clamp(16px,1.2vw,18px);line-height:1.55;color:#c9c9c4;max-width:36ch}
-.rv{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
-.rv.in{opacity:1;transform:none}
-.rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.24s}
+.work{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,4vw,64px);max-width:1480px;margin:0 auto;padding:0 clamp(16px,3vw,40px)}
+.side{position:sticky;top:96px;height:calc(100vh - 116px);height:calc(100svh - 116px);margin-top:96px}
+.steps>section{min-height:calc(100vh - 96px);padding:120px 0 80px;display:flex;flex-direction:column;justify-content:center}
 
-/* hero = сам конструктор */
-.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:end;padding-bottom:8vh;padding-top:120px}
-.hero-word{left:50%;top:26%;transform:translate(-50%,-50%);font-size:min(14.5vw,26vh);color:var(--acc);transition:color .6s}
-.hero-l h1{font-size:clamp(34px,3.7vw,66px);margin-bottom:20px}
-.hero-l h1 span{display:block;color:var(--acc);transition:color .6s}
-.hero-l .txt{margin-bottom:30px}
-.cta{display:flex;gap:12px;flex-wrap:wrap}
-.cta input{position:absolute;width:1px;height:1px;opacity:0}
-.status{margin-top:16px;min-height:18px;color:var(--mute);font-size:11px;line-height:1.6;letter-spacing:.1em;max-width:52ch}
-.status.err{color:#FF6B6B}
-.status button{border:0;background:none;color:var(--acc);font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-.ex{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px;align-items:center}
-.ex>span{color:var(--mute);margin-right:6px}
-.ex button,.sw button,.chips button{display:flex;align-items:center;gap:9px;padding:9px 14px 9px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.02);cursor:pointer;
-  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#d9d9d4;transition:border-color .3s,background .3s,color .3s}
-.ex button i,.chips button i{width:12px;height:12px;border-radius:50%;flex:none}
-.ex button.on,.sw button.on,.chips button.on{border-color:var(--acc);background:rgba(255,255,255,.07);color:#fff}
-.hero-r{justify-self:end;text-align:right;display:grid;gap:10px;align-self:end}
-.hero-r .row{display:flex;justify-content:flex-end;gap:18px;color:var(--mute)}
-.hero-r b{color:var(--ink);font-weight:700;min-width:120px;text-align:right}
-.tog{display:flex;justify-content:flex-end;gap:4px;margin-top:10px}
-.tog button{border:1px solid var(--line);background:none;border-radius:999px;padding:8px 12px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#bdbdb8;cursor:pointer;transition:border-color .3s,color .3s}
-.tog button.on{border-color:var(--acc);color:#fff}
-.tog span{align-self:center;margin-right:8px;color:var(--mute);font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
-.spin{position:absolute;z-index:8;right:6%;top:14%;width:40%;height:66%;touch-action:pan-y;cursor:grab}
-.hint{position:absolute;left:73%;bottom:5vh;transform:translateX(-50%);color:var(--mute);z-index:10;display:flex;align-items:center;gap:10px;pointer-events:none;transition:opacity .6s}
-.hint i{display:block;width:26px;height:26px;border:1px solid var(--line);border-radius:50%;position:relative}
-.hint i::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--acc);animation:pulse 1.6s infinite}
-.hint.off{opacity:0}
-#dropAll{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:rgba(10,10,12,.78);border:3px dashed var(--acc);font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(28px,4vw,60px);color:var(--acc);pointer-events:none;opacity:0;transition:opacity .25s}
-#dropAll.on{opacity:1}
+h1,h2{font-family:var(--disp);font-weight:500;letter-spacing:-.02em;line-height:1.08}
+h1{font-size:clamp(34px,3.6vw,56px)}
+h2{font-size:clamp(28px,2.6vw,40px)}
+.lead{margin-top:22px;font-size:18px;max-width:31em}
+.acts{display:flex;flex-wrap:wrap;gap:16px 26px;align-items:center;margin-top:34px}
+.acts input{position:absolute;width:1px;height:1px;opacity:0}
+.note{margin-top:14px;font-size:14px;color:var(--mute);min-height:21px}
+.note.err{color:var(--red)}
+.ex{margin-top:46px}
+.ex h3{font-size:14px;font-weight:700}
+.ex-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.ex-row button{border:0;background:none;padding:0;text-align:left;cursor:pointer;font-size:13px;line-height:1.3;color:var(--mute)}
+.ex-row img,.ex-row canvas{width:100%;aspect-ratio:178/127;object-fit:cover;border-radius:6px;box-shadow:0 0 0 1px rgba(0,0,0,.08);margin-bottom:7px;transition:transform .25s,box-shadow .25s;background:#fff;display:block}
+.ex-row button:hover img,.ex-row button:hover canvas{transform:translateY(-3px)}
+.ex-row button.on img,.ex-row button.on canvas{box-shadow:0 0 0 2px var(--ink)}
+.ex-row b{display:block;color:var(--ink);font-weight:700}
 
-/* собрать из логотипа */
-.gen{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;padding-top:12vh;padding-bottom:10vh}
-.gen-l{max-width:600px}
-.gen-l h2{margin-bottom:24px}
-.fld{margin-top:26px}
-.fld>.lb{display:block;color:var(--mute);margin-bottom:12px}
-.sw,.chips{display:flex;gap:8px;flex-wrap:wrap}
-.packs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.packs label{position:relative;display:block;padding:16px 14px;border-radius:16px;border:1px solid var(--line);cursor:pointer;transition:border-color .3s,background .3s}
-.packs input{position:absolute;opacity:0}
-.packs label:has(input:checked){border-color:var(--acc);background:rgba(255,255,255,.05)}
-.packs b{display:block;font-family:var(--disp);font-weight:800;font-size:16px;margin:6px 0 2px;line-height:1.15}
-.packs small{color:var(--mute);font-size:12px}
-.packs .mono{color:var(--mute);font-size:10px}
-.logo-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-.logo-prev{width:96px;height:64px;flex:none;border-radius:14px;border:1px solid var(--line);display:grid;place-items:center;padding:8px;background:rgba(255,255,255,.04)}
+.fld{margin-top:24px}
+.fld>.lb{display:block;font-size:14px;font-weight:700;margin-bottom:10px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts button{border:1.5px solid var(--line);background:#fff;border-radius:999px;height:42px;padding:0 16px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:border-color .2s}
+.opts button i{width:16px;height:16px;border-radius:50%}
+.opts button.on{border-color:var(--ink);background:var(--ink);color:#fff}
+.logo-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.logo-prev{width:110px;height:74px;border-radius:12px;background:#fff;box-shadow:0 0 0 1.5px var(--line);display:grid;place-items:center;padding:10px}
 .logo-prev canvas{max-width:100%;max-height:100%}
 .logo-prev b{font-family:var(--disp);font-size:12px;text-align:center;word-break:break-word}
-.inp{width:100%;height:50px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);padding:0 20px;outline:none;transition:border-color .3s;font-size:15px}
-.inp:focus{border-color:var(--acc)}
-textarea.inp{height:auto;min-height:96px;border-radius:22px;padding:14px 20px;resize:vertical}
-.own{display:grid;grid-template-columns:1fr 50px 50px;gap:8px;margin-top:10px}
-.own input[type=color]{width:50px;height:50px;border-radius:50%;border:1px solid var(--line);background:none;padding:4px;cursor:pointer}
-.own input[type=color]::-webkit-color-swatch-wrapper{padding:0}.own input[type=color]::-webkit-color-swatch{border:0;border-radius:50%}
-.fine{font-size:12px;color:var(--mute);line-height:1.6;max-width:52ch;margin-top:18px}
+.inp{width:100%;height:52px;border-radius:14px;border:1.5px solid var(--line);background:#fff;padding:0 18px;font-size:16px;outline:none}
+.inp:focus{border-color:var(--ink)}
+textarea.inp{height:auto;min-height:96px;padding:14px 18px;resize:vertical}
+.own{display:grid;grid-template-columns:1fr 52px 52px;gap:8px;margin-top:10px}
+.own input[type=color]{width:52px;height:52px;border-radius:14px;border:1.5px solid var(--line);background:#fff;padding:5px;cursor:pointer}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.agree{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:13px;color:var(--mute)}
+.agree input{width:18px;height:18px;margin-top:2px;accent-color:var(--ink);flex:none}
+.send{margin-top:22px}
+.ferr{margin-top:12px;font-size:14px;color:var(--red)}
 
-/* щёлк */
-.crack{position:relative;height:240vh}
-.crack .stick{position:sticky;top:0;height:100vh;overflow:hidden}
-.cw{left:50%;top:50%;transform:translate(-50%,-50%);will-change:opacity,transform;text-transform:uppercase}
-.cw1{font-size:min(19vw,40vh);color:#F3F3EE}
-.cw2{font-size:min(19vw,40vh);color:var(--acc);opacity:0}
-.crack-cap{position:absolute;left:clamp(16px,5vw,76px);bottom:8vh;color:var(--mute);max-width:34ch;line-height:1.7}
+/* лист согласования, как присылает типография */
+.sheet{position:relative;height:100%;background:#fff;border-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,.06),0 18px 50px -18px rgba(90,70,20,.28);display:flex;flex-direction:column;font-family:var(--doc);font-style:italic;font-size:13px;line-height:1.25}
+.s-head{display:flex;gap:28px;padding:14px 18px 8px;color:var(--cy);white-space:nowrap;overflow:hidden}
+.s-head b{color:var(--ink);font-weight:400;margin-left:6px}
+.tbl{display:grid;grid-template-columns:1.1fr 1.1fr 1.6fr 1.3fr;margin:0 18px;border:1px solid #333}
+.tbl>div{border-right:1px solid #333;border-bottom:1px solid #333;padding:6px 8px;min-height:44px}
+.tbl>div:nth-child(4n){border-right:0}
+.tbl>div.last{border-bottom:0}
+.tbl span{display:block;color:var(--cy)}
+.tbl b{display:block;font-weight:400;color:var(--ink);margin-top:2px}
+.tbl .cmyk{display:flex;gap:10px;margin-top:4px;color:var(--ink)}
+.tbl .cmyk i{display:inline-block;width:12px;height:12px;border-radius:50%;border:1px solid #333;vertical-align:-2px;margin-right:3px}
+.tbl .tg{border:0;background:none;padding:0;font:inherit;color:var(--ink);cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+.sign{font-family:'Caveat',cursive;font-style:normal;font-size:24px;line-height:1;color:#1d3a8a;display:block;margin-top:2px;min-height:24px}
+.warn{color:var(--red);padding:7px 18px 0;font-size:12px}
+.art{flex:1;display:grid;grid-template-columns:minmax(0,4fr) minmax(0,6fr);gap:10px;min-height:0;padding:6px 18px 14px;position:relative}
+.canbox{position:relative;min-height:0;cursor:grab;touch-action:pan-y}
+.canbox.drag{cursor:grabbing}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+.views{position:absolute;left:0;right:0;bottom:2px;display:flex;justify-content:center;gap:14px}
+.views button{border:0;background:none;font:inherit;color:var(--cy);cursor:pointer;padding:4px 2px}
+.views button.on{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.flat{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:0}
+.flat canvas{width:100%;height:auto;display:block}
+.flat .cap{color:var(--cy);margin-top:6px;display:flex;justify-content:space-between;gap:10px}
+.stamp{position:absolute;right:8%;bottom:16%;transform:rotate(-12deg) scale(1.6);opacity:0;border:3px solid #2350B8;color:#2350B8;border-radius:10px;padding:8px 16px;font-family:var(--doc);font-style:normal;font-weight:700;font-size:18px;letter-spacing:.06em;text-transform:uppercase;line-height:1.15;text-align:center;transition:transform .35s cubic-bezier(.2,1.6,.4,1),opacity .2s;pointer-events:none;mix-blend-mode:multiply}
+.stamp small{display:block;font-size:11px;letter-spacing:.02em;text-transform:none;font-weight:400}
+.stamp.on{opacity:.88;transform:rotate(-12deg) scale(1)}
+.nogl{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--mute);font-style:normal}
 
-/* банка и этикетка */
-.tech{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center}
-.tech-r{grid-column:2}
-.tech-r h2{margin-bottom:34px}
-.stats{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);margin-bottom:26px}
-.stats div{padding:22px 16px 22px 0;border-bottom:1px solid var(--line)}
-.stats div:nth-child(odd){border-right:1px solid var(--line)}
-.stats div:nth-child(even){padding-left:22px}
-.stats b{display:block;font-family:var(--disp);font-weight:800;font-size:clamp(30px,3.2vw,52px);color:var(--acc);letter-spacing:-.03em;transition:color .6s;white-space:nowrap}
-.stats b small{font-size:.42em;color:var(--ink);margin-left:6px;letter-spacing:0}
-.stats span{display:block;color:#b9b9b4;font-size:14px;line-height:1.45;margin-top:6px}
-.lnk{border:0;background:none;cursor:pointer;color:var(--acc);text-decoration:underline;text-underline-offset:4px}
+/* талисман выглядывает из-за листа */
+.buddy{position:absolute;right:-14px;top:-80px;width:140px;z-index:-1;pointer-events:none;transition:transform .5s cubic-bezier(.3,1.5,.5,1)}
+.buddy .rot{position:relative;animation:sway 7s ease-in-out infinite;transform-origin:50% 80%}
+.buddy img{width:100%}
+.buddy svg,.buddy .h{position:absolute;inset:0;width:100%;height:100%}
+.buddy .h{opacity:0;transition:opacity .15s}
+.buddy.happy .h{opacity:1}.buddy.happy .n{opacity:0}
+.buddy.hop{transform:translateY(-14px)}
+@keyframes sway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(5deg)}}
 
-/* заявка */
-.order{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;padding-top:12vh;padding-bottom:10vh;min-height:110vh}
-.or-l{max-width:600px}
-.or-l h2{margin-bottom:24px}
-form .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-form .fld{margin-top:18px}
-.packs4{grid-template-columns:repeat(4,minmax(0,1fr))}
-.agree{display:flex;gap:12px;align-items:flex-start;margin-top:18px;font-size:13px;color:var(--mute);line-height:1.5}
-.agree input{width:18px;height:18px;margin-top:1px;accent-color:var(--acc);flex:none}
-.agree a{text-decoration:underline;text-underline-offset:3px}
-.send{margin-top:22px;width:100%;height:56px;font-size:14px}
-.ferr{margin-top:12px;font-size:13px;color:#FF6B6B}
-.ok h3{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(30px,3.4vw,56px);line-height:.95;margin:10px 0 16px}
-.ok img.mk{margin-top:22px;border-radius:14px;max-width:100%}
-.ok a{display:inline-block;margin-top:14px;color:var(--acc)}
+.plant{max-width:1480px;margin:40px auto 0;padding:80px clamp(16px,3vw,40px);display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,4vw,64px);align-items:center}
+.plant-ph{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}
+.plant-ph img{width:100%;height:100%;object-fit:cover;border-radius:28px;aspect-ratio:3/4}
+.plant-ph img:last-child{margin-top:60px}
+.plant ul{list-style:none;margin-top:26px;display:grid;gap:14px;max-width:32em}
+.plant li{padding-left:22px;position:relative}
+.plant li::before{content:"";position:absolute;left:0;top:9px;width:8px;height:8px;border-radius:50%;background:var(--or)}
+.foot{background:#000;color:#fff;margin-top:60px}
+.foot-in{max-width:1480px;margin:0 auto;padding:56px clamp(16px,3vw,40px);display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center}
+.foot-in img{width:140px}
+.foot h3{font-family:var(--disp);font-weight:500;font-size:28px}
+.foot p{margin-top:12px;font-family:var(--disp);font-size:20px}
+.foot a{text-decoration:none}
+.foot small{display:block;margin-top:18px;color:#bbb;font-size:13px}
 
-.foot{position:relative;z-index:10;padding:14vh clamp(16px,5vw,76px) 40px;overflow:hidden}
-.foot-word{font-family:var(--disp);font-weight:900;font-size:15.5vw;line-height:.8;letter-spacing:-.05em;color:var(--acc);margin-left:-.04em;transition:color .6s}
-.foot-row{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between;align-items:center;border-top:1px solid var(--line);margin-top:5vh;padding-top:22px;color:var(--mute)}
-.foot-row a:hover{color:var(--acc)}
-
-dialog{margin:auto;border:1px solid var(--line);border-radius:22px;padding:0;max-width:min(980px,94vw);width:100%;background:#141416;color:var(--ink)}
-dialog::backdrop{background:rgba(0,0,0,.7)}
-.dlg-h{padding:22px 24px 0}
-.dlg-h b{font-family:var(--disp);font-weight:800;font-size:18px;text-transform:uppercase}
-.dlg-h p{font-size:14px;color:var(--mute);margin-top:6px}
-.crop{position:relative;margin:16px 24px 0;background:#000;border-radius:12px;overflow:hidden;touch-action:none;user-select:none;display:grid;place-items:center}
+dialog{margin:auto;border:0;border-radius:18px;padding:0;max-width:min(980px,94vw);width:100%;background:#fff;color:var(--ink);box-shadow:0 30px 80px -20px rgba(0,0,0,.45)}
+dialog::backdrop{background:rgba(21,21,21,.55)}
+.dlg-h{padding:20px 22px 0}.dlg-h b{font-family:var(--disp);font-weight:500;font-size:18px}.dlg-h p{font-size:14px;color:var(--mute);margin-top:4px}
+.crop{position:relative;margin:14px 22px 0;background:#2a2724;border-radius:10px;overflow:hidden;touch-action:none;user-select:none;display:grid;place-items:center}
 .crop canvas{display:block;max-width:100%;max-height:62vh}
-.box{position:absolute;box-shadow:0 0 0 9999px rgba(0,0,0,.6);outline:2px solid var(--acc);cursor:move}
-.box i{position:absolute;right:-10px;bottom:-10px;width:20px;height:20px;border-radius:50%;background:var(--acc);cursor:nwse-resize}
-.dlg-f{display:flex;justify-content:flex-end;gap:10px;padding:18px 24px 22px}
+.box{position:absolute;box-shadow:0 0 0 9999px rgba(0,0,0,.55);outline:2px solid var(--or);cursor:move}
+.box i{position:absolute;right:-9px;bottom:-9px;width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid var(--or);cursor:nwse-resize}
+.dlg-f{display:flex;justify-content:flex-end;align-items:center;gap:18px;padding:16px 22px 20px}
+.dlg-f .btn{height:46px;padding:0 24px}
 
-@media (max-width:760px){
-  .nav{gap:12px}.nav ul,.tel{display:none}.nav .btn{margin-left:auto;padding:0 16px}
-  .logo img{height:38px}
-  .hero{grid-template-columns:1fr;align-content:end;padding-bottom:6vh;padding-top:47vh}
-  .hero-l{display:flex;flex-direction:column}.hero-l .ex{order:-1;margin:0 0 20px}.hero-l .ex>span{display:none}
-  .hero-word{top:27%;left:50%;font-size:15.5vw}
-  .hero-r,.hint{display:none}
-  .hero-l h1{font-size:8.8vw;margin-bottom:14px}.hero-l .txt{margin-bottom:22px}
-  .spin{left:0;right:0;width:auto;top:9%;height:40%}
-  .gen,.tech,.order{grid-template-columns:1fr;padding-top:48vh}
-  .tech-r{grid-column:1}
-  .gen-l,.or-l,.tech-r{background:linear-gradient(rgba(10,10,12,0),rgba(10,10,12,.94) 60px);padding-top:20px}
-  .packs{grid-template-columns:1fr 1fr 1fr}.packs label{padding:12px 10px}.packs b{font-size:13px}
-  .packs4{grid-template-columns:1fr 1fr}
-  form .two{grid-template-columns:1fr}
-  .stats b{font-size:9vw}
-  .foot-word{font-size:15.5vw}
+@media (max-width:1000px){
+  .bar nav{display:none}.bar{width:auto;padding:0 18px;grid-template-columns:auto}
+  .work{grid-template-columns:1fr;padding:0}
+  .side{order:-1;top:0;height:auto;margin-top:0;padding:80px 12px 10px;z-index:20;background:var(--cream)}
+  .sheet{height:min(48vh,420px);height:min(48svh,420px)}
+  .s-head,.warn{display:none}
+  .tbl{grid-template-columns:1fr 1fr;margin:10px 12px 0;font-size:12px}
+  .tbl>div{min-height:0;padding:4px 7px}
+  .tbl>div:nth-child(2n){border-right:0}
+  .tbl .hide-m{display:none}
+  .tbl>div.mlast{border-bottom:0}
+  .art{padding:4px 12px 8px;grid-template-columns:1fr}
+  .flat,.buddy{display:none}
+  .steps{padding:0 16px}
+  .steps>section{min-height:0;padding:50px 0 26px}
+  .steps>section:first-child{padding-top:26px}
+  .plant{grid-template-columns:1fr;padding:50px 16px}
+  .foot-in{grid-template-columns:1fr;padding:40px 16px}
 }
-@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+@media (max-width:600px){.two{grid-template-columns:1fr}.ex-row{gap:8px}.lead{font-size:16px}h1{font-size:30px}}
+@media (prefers-reduced-motion:reduce){.buddy .rot{animation:none}}
 </style>
 </head>
 <body>
-<div id="ld"><img src="assets/pompon-main.png" alt=""></div>
-<div id="glow"></div>
-<canvas id="gl" aria-hidden="true"></canvas>
-<div id="dropAll">Отпустите файл</div>
-
-<header class="nav">
-  <a class="logo" data-to="#hero" aria-label="Pompon — наверх"><img src="assets/pompon-white.png" alt="Pompon"></a>
-  <ul>
-    <li><a data-to="#hero">Конструктор</a></li>
-    <li><a data-to="#sobrat">Без макета</a></li>
-    <li><a data-to="#banka">Банка</a></li>
-    <li><a data-to="#zayavka">Заявка</a></li>
-  </ul>
-  <a class="tel" href="tel:+79823488088">+7 982 348-80-88</a>
-  <a class="btn" data-to="#zayavka">Рассчитать партию</a>
+<header class="top">
+  <div class="bar">
+    <nav><a href="https://pompon.pro/">Вкусы</a><a href="https://pompon.pro/">Где уже есть</a><a href="#ceh">Как производим</a></nav>
+    <a class="logo" href="https://pompon.pro/" aria-label="Pompon"><img src="assets/pompon-main.png" alt="Pompon"></a>
+    <nav><a href="#start">Конструктор</a><a href="#soglasovanie">Начать сотрудничать</a><a href="#kontakty">Контакты</a></nav>
+  </div>
 </header>
 
-<main>
-  <section class="sec hero" id="hero">
-    <div class="behind giant hero-word" aria-hidden="true" id="heroWord">pompon.</div>
-    <div class="spin" id="spin" aria-hidden="true"></div>
-    <div class="front hero-l">
-      <p class="mono kick rv">Контрактный розлив · Челябинск</p>
-      <h1 class="rv d1">Ваша этикетка.<span>Наша банка.</span></h1>
-      <p class="txt rv d2">Загрузите макет этикетки и сразу смотрите его на банке 0,33. Крутите, проверяйте шов и оборот. Дальше посчитаем партию под вашу марку.</p>
-      <div class="cta rv d2">
+<main class="work">
+  <div class="steps">
+    <section id="start">
+      <h1>Примерьте свою этикетку на&nbsp;нашу банку</h1>
+      <p class="lead">Загрузите макет, и через секунду он окажется на банке 0,33&nbsp;л. Покрутите её, посмотрите шов и оборот. Если всё нравится, отправьте лист на согласование, и мы посчитаем партию.</p>
+      <div class="acts">
         <label class="btn" for="labelFile">Загрузить этикетку</label>
         <input type="file" id="labelFile" accept=".pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf">
-        <a class="btn ghost" data-to="#sobrat">Макета нет</a>
+        <a class="lnk" href="#logo">Макета нет? Соберём из логотипа</a>
       </div>
-      <p class="mono status" id="fileNote">PDF, JPG или PNG · развёртка 178 × 127 мм · можно лист из типографии</p>
-      <div class="ex rv d2" id="ex"><span class="mono">Примеры</span></div>
-    </div>
-    <div class="front hero-r mono rv d2">
-      <div class="row">Банка <b>0,33 л слим</b></div>
-      <div class="row">Размер <b>Ø58 × 146 мм</b></div>
-      <div class="row">Этикетка <b>178 × 127 мм</b></div>
-      <div class="tog" id="views"><span>Вид</span><button type="button" data-a="0" class="on">Лицо</button><button type="button" data-a="-1.5708">Бок</button><button type="button" data-a="3.1416">Шов</button></div>
-      <div class="tog" id="finish"><span>Плёнка</span><button type="button" data-v="gloss" class="on">Глянец</button><button type="button" data-v="matte">Мат</button></div>
-      <div class="tog" id="cold"><span>Банка</span><button type="button" data-v="1" class="on">Холодная</button><button type="button" data-v="0">Сухая</button></div>
-    </div>
-    <div class="hint mono" id="hint"><i></i>покрутите банку</div>
-  </section>
+      <p class="note" id="fileNote">PDF, JPG или PNG. Подойдёт и лист из типографии, этикетку на нём найдём сами.</p>
+      <div class="ex">
+        <h3>Этикетки, которые мы уже клеим</h3>
+        <div class="ex-row" id="ex"></div>
+      </div>
+    </section>
 
-  <section class="sec gen" id="sobrat">
-    <div class="front gen-l">
-      <p class="mono kick rv">Макета нет</p>
-      <h2 class="rv d1">Соберём<br>из логотипа.</h2>
-      <p class="txt rv d1">Загрузите логотип, выберите напиток и вкус. Этикетку с составом и обязательными данными сверстаем по этому образцу.</p>
-      <div class="fld rv d2">
-        <span class="lb mono">Логотип</span>
+    <section id="logo">
+      <h2>Нет макета? Соберём этикетку из логотипа</h2>
+      <p class="lead">Выберите напиток, вкус и фон. Состав и обязательные данные на обороте наш дизайнер сверстает по этому образцу.</p>
+      <div class="fld"><span class="lb">Логотип</span>
         <div class="logo-row">
           <div class="logo-prev" id="logoPrev"></div>
-          <label class="btn ghost" for="logoFile">Загрузить логотип</label>
+          <label class="lnk" for="logoFile">Загрузить логотип</label>
           <input type="file" id="logoFile" accept=".svg,.png,.jpg,.jpeg,.webp,.pdf,image/*,application/pdf" hidden>
         </div>
-        <p class="mono status" id="logoNote">Сейчас пример Pompon · PNG, SVG, PDF или JPG</p>
-        <input class="inp" id="brandTxt" maxlength="24" placeholder="или просто название марки" style="margin-top:12px" aria-label="Название марки текстом">
-        <div class="tog" id="logoTint" style="justify-content:flex-start"><span>Цвет лого</span><button type="button" data-v="orig" class="on">Как в файле</button><button type="button" data-v="white">Белый</button><button type="button" data-v="black">Чёрный</button></div>
+        <p class="note" id="logoNote">Сейчас пример с логотипом Pompon. Подойдёт PNG, SVG, PDF или JPG.</p>
+        <input class="inp" id="brandTxt" maxlength="24" placeholder="или просто название марки" aria-label="Название марки текстом">
+        <div class="opts" id="logoTint" style="margin-top:10px"><button type="button" data-v="orig" class="on">Цвета как в файле</button><button type="button" data-v="white">Белый</button><button type="button" data-v="black">Чёрный</button></div>
       </div>
-      <div class="fld rv d2">
-        <span class="lb mono">Что разливаем</span>
-        <div class="packs" id="kind">
-          <label><input type="radio" name="kind" value="juice" checked><span class="mono">На соке</span><b>Лимонад</b><small>натуральный сок</small></label>
-          <label><input type="radio" name="kind" value="aroma"><span class="mono">На ароматике</span><b>Лимонад</b><small>классика</small></label>
-          <label><input type="radio" name="kind" value="energy"><span class="mono">С кофеином</span><b>Энергетик</b><small>таурин, витамины</small></label>
-        </div>
+      <div class="fld"><span class="lb">Что разливаем</span>
+        <div class="opts" id="kind"><button type="button" data-v="juice" class="on">Лимонад на соке</button><button type="button" data-v="aroma">Лимонад</button><button type="button" data-v="energy">Энергетик</button></div>
       </div>
-      <div class="fld rv d2">
-        <span class="lb mono">Вкус</span>
-        <div class="chips" id="flavors"></div>
+      <div class="fld"><span class="lb">Вкус</span>
+        <div class="opts" id="flavors"></div>
         <div class="own"><input class="inp" id="flName" maxlength="28" aria-label="Свой вкус"><input type="color" id="c1" aria-label="Цвет 1"><input type="color" id="c2" aria-label="Цвет 2"></div>
       </div>
-      <div class="fld rv d2">
-        <span class="lb mono">Фон этикетки</span>
-        <div class="sw" id="bgMode"><button type="button" data-v="grad" class="on">Переход цветов</button><button type="button" data-v="solid">Один цвет</button><button type="button" data-v="white">Белый</button></div>
+      <div class="fld"><span class="lb">Фон</span>
+        <div class="opts" id="bgMode"><button type="button" data-v="grad" class="on">Переход двух цветов</button><button type="button" data-v="solid">Один цвет</button><button type="button" data-v="white">Белый</button></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="crack" id="crack">
-    <div class="stick">
-      <div class="behind giant cw cw1" aria-hidden="true">Щёлк.</div>
-      <div class="behind giant cw cw2" aria-hidden="true">Пшшш.</div>
-      <p class="crack-cap mono">Газируем и разливаем сами.<br>Лимонады на соках и на ароматике, энергетики.</p>
-    </div>
-  </section>
-
-  <section class="sec tech" id="banka">
-    <div class="front tech-r">
-      <p class="mono kick rv">Банка и этикетка</p>
-      <h2 class="rv d1">Шов<br>сзади.</h2>
-      <div class="stats rv d2">
-        <div><b>0,33<small>л</small></b><span>алюминиевая банка слим, Ø 58 мм, высота 146 мм</span></div>
-        <div><b>178×127<small>мм</small></b><span>этикетка. Края сходятся сзади, между ними около 4 мм металла</span></div>
-        <div><b>60<small>мкм</small></b><span>самоклеящаяся плёнка PP, глянцевая или матовая. Клеим на автомате</span></div>
-        <div><b>СТМ</b><span>под марку сетей и сервисов доставки</span></div>
-      </div>
-      <p class="mono"><button type="button" class="lnk mono" id="tpl">Скачать шаблон этикетки 178 × 127</button></p>
-    </div>
-  </section>
-
-  <section class="sec order" id="zayavka">
-    <div class="front or-l">
-      <p class="mono kick rv">Заявка</p>
-      <h2 class="rv d1">Посчитаем<br>партию.</h2>
-      <p class="txt rv d1">Банка, которую вы собрали, уйдёт к нам вместе с заявкой: три вида банки и файл макета. Ответим в течение рабочего дня.</p>
-      <form id="form" class="rv d2" novalidate>
+    <section id="soglasovanie">
+      <h2>Отправьте лист на&nbsp;согласование</h2>
+      <p class="lead">Лист уйдёт к нам вместе с банкой с трёх сторон и вашим файлом. Посчитаем партию и ответим в течение рабочего дня.</p>
+      <form id="form" novalidate>
         <div class="two">
-          <div class="fld"><input class="inp" id="fName" autocomplete="name" placeholder="Как к вам обращаться" aria-label="Имя"></div>
-          <div class="fld"><input class="inp" id="fCompany" autocomplete="organization" placeholder="Компания или марка" aria-label="Компания"></div>
+          <div class="fld"><label class="lb" for="fName">Ваше имя</label><input class="inp" id="fName" autocomplete="name"></div>
+          <div class="fld"><label class="lb" for="fCompany">Компания или марка</label><input class="inp" id="fCompany" autocomplete="organization"></div>
         </div>
-        <div class="fld"><input class="inp" id="fContact" autocomplete="tel" placeholder="Телефон или почта" aria-label="Телефон или почта"></div>
-        <div class="fld"><span class="lb mono">Тираж за партию</span>
-          <div class="packs packs4" id="tirazh">
-            <label><input type="radio" name="t" value="до 10 000 банок"><b>до 10к</b><small>банок</small></label>
-            <label><input type="radio" name="t" value="10 000 – 50 000 банок" checked><b>10–50к</b><small>банок</small></label>
-            <label><input type="radio" name="t" value="50 000 – 100 000 банок"><b>50–100к</b><small>банок</small></label>
-            <label><input type="radio" name="t" value="больше 100 000 банок"><b>100к+</b><small>банок</small></label>
-          </div>
+        <div class="fld"><label class="lb" for="fContact">Телефон или почта</label><input class="inp" id="fContact" autocomplete="tel"></div>
+        <div class="fld"><span class="lb">Тираж за партию</span>
+          <div class="opts" id="tirazh"><button type="button" data-v="до 10 000 банок">до 10 тыс.</button><button type="button" data-v="10 000 – 50 000 банок" class="on">10–50 тыс.</button><button type="button" data-v="50 000 – 100 000 банок">50–100 тыс.</button><button type="button" data-v="больше 100 000 банок">больше 100 тыс.</button></div>
         </div>
-        <div class="fld"><textarea class="inp" id="fComment" placeholder="Вкусы, сроки, сеть, в которую идёте" aria-label="Комментарий"></textarea></div>
+        <div class="fld"><label class="lb" for="fComment">Комментарий</label><textarea class="inp" id="fComment" placeholder="Вкусы, сроки, сеть, в которую идёте"></textarea></div>
         <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-5000px" aria-hidden="true">
         <label class="agree"><input type="checkbox" id="fAgree" checked><span>Согласен на обработку персональных данных по <a href="https://pompon.pro/privacy" target="_blank" rel="noopener">политике</a></span></label>
-        <button class="btn send" id="sendBtn">Отправить заявку</button>
+        <button class="btn send" id="sendBtn">Отправить на согласование</button>
         <p class="ferr" id="ferr" hidden></p>
       </form>
-      <div class="ok" id="ok" hidden>
-        <p class="mono kick">Готово</p>
-        <h3>Заявка у нас.</h3>
-        <p class="txt">Посчитаем партию и ответим в течение рабочего дня.</p>
-        <img class="mk" id="okImg" alt="Макет вашей банки">
-        <a class="mono" id="okDl" download="pompon-maket-banki.jpg">Скачать макет банки</a>
+      <div id="ok" hidden>
+        <p class="lead" style="margin-top:22px">Лист у нас. Посчитаем партию и позвоним или напишем в течение рабочего дня.</p>
+        <p class="note"><a id="okDl" class="lnk" download="pompon-list-soglasovaniya.jpg">Скачать лист с банкой</a></p>
+      </div>
+    </section>
+  </div>
+
+  <aside class="side">
+    <div class="sheet" id="sheet">
+      <div class="buddy" id="buddy" aria-hidden="true"><div class="rot">
+        <img class="n" src="assets/star-main.png" alt="">
+        <svg class="n" viewBox="0 0 831 611"><g id="eyes">
+          <rect x="348" y="276" width="52" height="102" rx="26" fill="#111" transform="rotate(4 374 327)"/><rect x="330" y="272" width="22" height="22" fill="#fff"/>
+          <rect x="483" y="291" width="52" height="102" rx="26" fill="#111" transform="rotate(4 509 342)"/><rect x="470" y="287" width="22" height="22" fill="#fff"/></g></svg>
+        <img class="h" src="assets/star-happy.png" alt="">
+      </div></div>
+      <div class="s-head"><span>Артикул:<b id="sArt">POM-033</b></span><span>Наименование:<b id="sName"></b></span></div>
+      <div class="tbl">
+        <div><span>Заказчик:</span><b id="sClient">—</b></div>
+        <div><span>Дата:</span><b id="sDate"></b></div>
+        <div class="hide-m"><span>Размеры:</span><b>178,0 × 127,0 мм</b></div>
+        <div class="hide-m"><span>Красочность:</span><span class="cmyk"><span><i style="background:#00AEEF"></i>C</span><span><i style="background:#EC008C"></i>M</span><span><i style="background:#FFF200"></i>Y</span><span><i style="background:#111"></i>K</span></span></div>
+        <div class="last hide-m"><span>Банка:</span><b>0,33 л слим, Ø58 × 146</b></div>
+        <div class="last hide-m"><span>Этикетировка:</span><b>автоматическая</b></div>
+        <div class="last mlast"><span>Материал:</span><b>плёнка PP 60 мкм, <button type="button" class="tg" id="finish">глянцевая</button></b></div>
+        <div class="last mlast"><span>Подпись заказчика:</span><i class="sign" id="sSign"></i></div>
+      </div>
+      <p class="warn">Это экранный макет: цвета в печати могут немного отличаться.</p>
+      <div class="art">
+        <div class="canbox" id="canbox"><canvas id="gl" aria-label="Банка 0,33 л в 3D, её можно вращать"></canvas>
+          <div class="views" id="views"><button type="button" data-a="0" class="on">лицо</button><button type="button" data-a="-1.5708">бок</button><button type="button" data-a="3.1416">шов</button></div>
+        </div>
+        <div class="flat"><canvas id="flat" width="1200" height="900"></canvas><div class="cap"><span>развёртка, красным линия реза</span><span>края сходятся сзади</span></div></div>
+        <div class="stamp" id="stamp">Принято<small id="stampDate"></small></div>
       </div>
     </div>
-  </section>
+  </aside>
 </main>
 
-<footer class="foot" id="foot">
-  <div class="foot-word">pompon.</div>
-  <div class="foot-row mono">
-    <span>ООО «Живая Долина» · Челябинск, Бродокалмакский тракт, 3</span>
-    <a href="tel:+79823488088">+7 982 348-80-88</a>
-    <a href="https://pompon.pro/" target="_blank" rel="noopener">pompon.pro</a>
+<section class="plant" id="ceh">
+  <div>
+    <h2>Разливаем на своём заводе в Челябинске</h2>
+    <ul>
+      <li>Банка алюминиевая 0,33 л слим, Ø 58 × 146 мм.</li>
+      <li>Этикетка из самоклеящейся плёнки PP 60 мкм, 178 × 127 мм. Клеим на автомате, края сходятся сзади.</li>
+      <li>Лимонады на натуральных соках и на ароматике, энергетики.</li>
+      <li>Производство сертифицировано по стандартам ХАССП.</li>
+    </ul>
+    <p style="margin-top:26px"><button type="button" class="lnk" id="tpl">Скачать шаблон этикетки 178 × 127 для дизайнера</button></p>
+  </div>
+  <div class="plant-ph"><img src="assets/ceh.jpg" alt="Цех розлива Pompon" loading="lazy"><img src="assets/ruki.jpg" alt="Банка Pompon в руке" loading="lazy"></div>
+</section>
+
+<footer class="foot" id="kontakty">
+  <div class="foot-in">
+    <img src="assets/pompon-white.png" alt="Pompon">
+    <div><h3>Контакты</h3><p><a href="tel:+79823488088">+7 982 348 8088</a> · <a href="mailto:info@pompon.pro">info@pompon.pro</a></p>
+      <small>ООО «Живая Долина» · Адрес производства: г. Челябинск, Бродокалмакский тракт, 3</small></div>
   </div>
 </footer>
 
 <dialog id="dlg">
   <div class="dlg-h"><b>Подгоните этикетку</b><p>Выделите поле этикетки 178 × 127 мм без технических полей типографии. Рамку можно двигать и тянуть за угол.</p></div>
-  <div class="crop" id="crop"><canvas id="cropCv"></canvas><div class="box" id="box"><i id="boxH"></i></div></div>
-  <div class="dlg-f"><button type="button" class="btn ghost" id="dlgNo">Отмена</button><button type="button" class="btn" id="dlgOk">Готово</button></div>
+  <div class="crop"><canvas id="cropCv"></canvas><div class="box" id="box"><i id="boxH"></i></div></div>
+  <div class="dlg-f"><button type="button" class="lnk" id="dlgNo">Отмена</button><button type="button" class="btn" id="dlgOk">Готово</button></div>
 </dialog>
 
-<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <script type="module">
 import * as THREE from 'three';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 
-/* ===== куда уходит заявка ===== */
 const FORM_TO = 'paladei702@gmail.com';
 const FORM_PAGE = 'https://smirnov-artur.github.io/zakaz/pompon-konstruktor/';
 
-/* ===== банка 0,33 слим и этикетка ===== */
 const CAN = { r: 29, h: 146.1, wall0: 4.6, wall1: 136.4 };
 const LBL = { w: 178, h: 127 };
 const LW = 2048, LH = Math.round(LW * LBL.h / LBL.w), K = LW / LBL.w;
@@ -377,20 +332,17 @@ const KINDS = {
     warn: 'Не рекомендуется лицам младше 18 лет, беременным и кормящим женщинам, людям с повышенной возбудимостью и артериальной гипертензией. Не более 2 банок в сутки.' },
 };
 const EX = [
-  { id: 'pompon', t: 'Pompon' },
-  { id: 'zm', t: 'Жизнь Март', s: 'Энергетик «Дыня», СТМ «Жизнь Март»', src: 'assets/label-zhizn-mart.jpg', word: 'дыня.' },
-  { id: 'bot', t: 'Botanica', s: 'Малина и смородина, nova Botanica × Труд Крут', src: 'assets/label-botanica.jpg', word: 'botanica.' },
+  { id: 'zm', t: 'Энергетик «Дыня»', s: 'для «Жизнь Март»', name: 'Энергетик Дыня', src: 'assets/label-zhizn-mart.jpg' },
+  { id: 'bot', t: 'Малина и смородина', s: 'nova Botanica × Труд Крут', name: 'Малина-Смородина', src: 'assets/label-botanica.jpg' },
+  { id: 'pompon', t: 'Pompon «Апельсин»', s: 'собрана здесь из логотипа' },
 ];
 const S = {
-  mode: 'gen', kind: 'juice', flName: 'Апельсин', c1: '#FF8A1F', c2: '#FFD27A', bg: 'grad', finish: 'gloss', cold: true,
-  logo: null, logoFile: null, text: '', ex: 'pompon', tint: 'orig', file: null, fileImg: null, fileCut: null, fileOwn: null, fileOwnCut: null,
+  mode: 'gen', kind: 'juice', flName: 'Апельсин', c1: '#FF8A1F', c2: '#FFD27A', bg: 'grad', finish: 'gloss',
+  logo: null, logoFile: null, text: '', ex: 'pompon', tint: 'orig', file: null, fileImg: null, fileCut: null, fileOwn: null, fileOwnCut: null, tirazh: '10 000 – 50 000 банок',
 };
-
 const $ = s => document.querySelector(s);
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const TAU = Math.PI * 2;
-const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-const sstep = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
 const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
@@ -599,215 +551,191 @@ function autoCut(img) {
 
 
 
-/* ===== цвет сцены — из лица этикетки ===== */
-function solidCanvas(hex) { const c = mk(4, 4), g = c.getContext('2d'); g.fillStyle = hex; g.fillRect(0, 0, 4, 4); return c; }
-function toneOf(c) {
-  const t = mk(24, 24), g = t.getContext('2d', { willReadFrequently: true });
-  g.drawImage(c, c.width * .3, 0, c.width * .4, c.height, 0, 0, 24, 24);
-  const p = g.getImageData(0, 0, 24, 24).data; let r = 0, gg = 0, b = 0, n = 0;
-  for (let i = 0; i < p.length; i += 4) { const s = Math.max(p[i], p[i + 1], p[i + 2]) - Math.min(p[i], p[i + 1], p[i + 2]); const w = 1 + s / 40; r += p[i] * w; gg += p[i + 1] * w; b += p[i + 2] * w; n += w; }
-  const col = new THREE.Color(r / n / 255, gg / n / 255, b / n / 255), hsl = {}; col.getHSL(hsl);
-  col.setHSL(hsl.h, Math.max(hsl.s, .62), clamp(hsl.l, .52, .64));
-  return '#' + col.getHexString();
+/* ===== лист согласования ===== */
+const today = new Date().toLocaleDateString('ru-RU');
+$('#sDate').textContent = today; $('#stampDate').textContent = today;
+$('#sArt').textContent = 'POM-033-' + new Date().toISOString().slice(2, 10).replace(/-/g, '');
+function labelName() {
+  if (S.mode === 'file' && S.ex === 'own') return S.file.name.replace(/\.[^.]+$/, '');
+  if (S.mode === 'file') return EX.find(e => e.id === S.ex).name;
+  return `${S.logoFile ? 'Ваша марка' : S.text || 'Pompon'} ${S.flName || ''}`.trim();
 }
+const flat = $('#flat');
+function drawFlat() {   // развёртка с линией реза и размерами, как на листе типографии
+  const W = flat.width, m = 70, lw = W - 2 * m, lh = lw * LBL.h / LBL.w, y0 = 40, yd = y0 + lh + 34, H = Math.ceil(yd + 30);
+  if (flat.height !== H) flat.height = H;
+  const g = flat.getContext('2d'); g.clearRect(0, 0, W, H);
+  g.drawImage(label, m, y0, lw, lh);
+  g.strokeStyle = '#E2231A'; g.lineWidth = 2; g.beginPath(); g.roundRect(m, y0, lw, lh, 14); g.stroke();
+  g.strokeStyle = '#1F9AD6'; g.lineWidth = 1.5; g.font = 'italic 26px "PT Sans"'; g.textAlign = 'center';
+  g.beginPath(); g.moveTo(m, yd); g.lineTo(m + lw, yd); g.moveTo(m, yd - 10); g.lineTo(m, yd + 10); g.moveTo(m + lw, yd - 10); g.lineTo(m + lw, yd + 10); g.stroke();
+  g.fillStyle = '#fff'; g.fillRect(W / 2 - 60, yd - 16, 120, 32); g.fillStyle = '#1F9AD6'; g.fillText('178,0', W / 2, yd + 9);
+  const xd = m - 30; g.beginPath(); g.moveTo(xd, y0); g.lineTo(xd, y0 + lh); g.moveTo(xd - 10, y0); g.lineTo(xd + 10, y0); g.moveTo(xd - 10, y0 + lh); g.lineTo(xd + 10, y0 + lh); g.stroke();
+  g.save(); g.translate(xd, y0 + lh / 2); g.rotate(-Math.PI / 2); g.fillStyle = '#fff'; g.fillRect(-56, -16, 112, 32); g.fillStyle = '#1F9AD6'; g.fillText('127,0', 0, 9); g.restore();
+}
+function fillSheet() {
+  $('#sName').textContent = `С/эт ${labelName()} 178×127`;
+  $('#sClient').textContent = $('#fCompany').value.trim() || $('#fName').value.trim() || '—';
+  $('#sSign').textContent = $('#fName').value.trim();
+  $('#finish').textContent = S.finish === 'matte' ? 'матовая' : 'глянцевая';
+  document.querySelectorAll('#ex button').forEach(b => b.classList.toggle('on', b.dataset.id === S.ex));
+}
+['#fName', '#fCompany'].forEach(id => $(id).addEventListener('input', fillSheet));
 
-/* ===== сцена ===== */
-const canvas = $('#gl');
+/* ===== сцена: банка на листе ===== */
+const canvas = $('#gl'), box3 = $('#canbox');
 let renderer = null;
-try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' }); } catch (e) {}
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, .1, 60);
-camera.position.set(0, 0, 6);
-const can = new THREE.Group(); can.rotation.order = 'ZXY'; scene.add(can);
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); } catch (e) { box3.insertAdjacentHTML('beforeend', '<p class="nogl">Этот браузер не показывает 3D. Развёртка справа.</p>'); }
+const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(20, 1, .1, 60);
+const can = new THREE.Group(); scene.add(can);
+const M = {}; let labelTex = null;
 const u = .01, V = pts => pts.map(([r, y]) => new THREE.Vector2(r * u, (y - CAN.h / 2) * u));
-const M = {}; let rim, tabPivot, hole, labelTex, prevTex;
-const labelPrev = mk(LW, LH);
-const wipe = { mapB: { value: null }, uMix: { value: 1.001 }, uSeam: { value: new THREE.Color(1, 1, 1) } };
-
-function dropMaps() {   // конденсат: карта высот -> нормали и шероховатость (как у банки энергетика)
-  const W = 1024, H = Math.round(1024 * LH / LW), h = new Float32Array(W * H), wet = new Uint8Array(W * H), r = rnd(42);
-  const stamp = (cx, cy, rr) => { const ri = Math.ceil(rr);
-    for (let dy = -ri; dy <= ri; dy++) for (let dx = -ri; dx <= ri; dx++) { const d2 = (dx * dx + dy * dy) / (rr * rr); if (d2 >= 1) continue;
-      const y = Math.round(cy) + dy; if (y < 0 || y >= H) continue; const x = (Math.round(cx) + dx + W) % W, i = y * W + x, v = Math.sqrt(1 - d2) * rr * .45; if (v > h[i]) h[i] = v; wet[i] = 1; } };
-  for (let n = 0; n < 2600; n++) stamp(r() * W, r() * H, r() < .93 ? 1 + r() * 2.4 : 3.5 + r() * 4.5);
-  for (let n = 0; n < 16; n++) { let x = r() * W, y = r() * H * .6; const len = 50 + r() * 200, rr = 2 + r() * 1.5; for (let k = 0; k < len; k += 1.5) { x += (r() - .5) * .8; stamp(x, y + k, rr * (1 - k / len * .35)); } stamp(x, y + len, rr * 1.7); }
-  const nc = mk(W, H), rc = mk(W, H), nd = nc.getContext('2d').createImageData(W, H), rd = rc.getContext('2d').createImageData(W, H);
-  const at = (x, y) => h[clamp(y, 0, H - 1) * W + ((x + W) % W)];
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    let nx = -(at(x + 1, y) - at(x - 1, y)) * 1.1, ny = (at(x, y + 1) - at(x, y - 1)) * 1.1, nz = 1; const l = Math.hypot(nx, ny, nz);
-    const i = (y * W + x) * 4; nd.data[i] = (nx / l * .5 + .5) * 255; nd.data[i + 1] = (ny / l * .5 + .5) * 255; nd.data[i + 2] = (nz / l * .5 + .5) * 255; nd.data[i + 3] = 255;
-    const v = wet[y * W + x] ? 16 : 88; rd.data[i] = rd.data[i + 1] = rd.data[i + 2] = v; rd.data[i + 3] = 255;
-  }
-  nc.getContext('2d').putImageData(nd, 0, 0); rc.getContext('2d').putImageData(rd, 0, 0);
-  const n = new THREE.CanvasTexture(nc), rt = new THREE.CanvasTexture(rc); [n, rt].forEach(t => { t.anisotropy = 8; }); return { n, r: rt };
-}
-
 function buildCan() {
-  const R = CAN.r, add = (geo, mat) => { const m = new THREE.Mesh(geo, mat); can.add(m); return m; };
+  const R = CAN.r, add = (geo, mat, sh = true) => { const m = new THREE.Mesh(geo, mat); m.castShadow = sh; can.add(m); return m; };
   add(new THREE.LatheGeometry(V([[0, 5.2], [7, 5.0], [13, 4.2], [18, 2.6], [21.2, .9], [22.3, .12], [23.2, 0], [24.4, .25], [26.3, 1.15], [27.8, 2.45], [28.7, 3.6], [29, 4.6]]), 128), M.alu);
   add(new THREE.CylinderGeometry(R * u, R * u, (CAN.wall1 - CAN.wall0) * u, 160, 1, true), M.wall).position.y = ((CAN.wall0 + CAN.wall1) / 2 - CAN.h / 2) * u;
   const neck = []; for (let i = 0; i <= 18; i++) { const t = i / 18, e = t * t * (3 - 2 * t); neck.push([R - 2.62 * e, CAN.wall1 + 7 * t]); }
   add(new THREE.LatheGeometry(V(neck), 160), M.alu);
   add(new THREE.LatheGeometry(V([[26.38, 143.4], [26.72, 143.8], [26.92, 144.5], [26.92, 145.45], [26.72, 145.98], [26.36, 146.1], [26.02, 145.95], [25.82, 145.45],
-    [25.62, 144.2], [25.38, 142.2], [25.15, 140.5], [24.9, 139.9], [24.55, 139.82], [24.18, 140.05], [23.7, 140.3]]), 160), M.aluIn);
+    [25.62, 144.2], [25.38, 142.2], [25.15, 140.5], [24.9, 139.9], [24.55, 139.82], [24.18, 140.05], [23.7, 140.3]]), 160), M.aluIn, false);
   const pY = (140.32 - CAN.h / 2) * u;
-  add(new THREE.CircleGeometry(23.7 * u, 96).rotateX(-Math.PI / 2), M.end).position.y = pY;
-  add(new THREE.TorusGeometry(21.4 * u, .35 * u, 8, 120).rotateX(Math.PI / 2), M.end).position.y = pY;
-  const score = add(new THREE.TorusGeometry(1, .045, 6, 64).rotateX(Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x9a9fa4, metalness: 1, roughness: .5 }));
+  add(new THREE.CircleGeometry(23.7 * u, 96).rotateX(-Math.PI / 2), M.end, false).position.y = pY;
+  add(new THREE.TorusGeometry(21.4 * u, .35 * u, 8, 120).rotateX(Math.PI / 2), M.end, false).position.y = pY;
+  const score = add(new THREE.TorusGeometry(1, .045, 6, 64).rotateX(Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x9a9fa4, metalness: 1, roughness: .5 }), false);
   score.scale.set(6.6 * u, 1, 5.2 * u); score.position.set(0, pY + .0003, 13.8 * u);
-  hole = add(new THREE.CircleGeometry(1, 64).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x050505 }));
-  hole.scale.set(.0001, 1, .0001); hole.position.set(0, pY + .0004, 13.8 * u);
-  add(new THREE.CylinderGeometry(1.5 * u, 1.7 * u, .9 * u, 24), M.end).position.set(0, pY + .45 * u, 0);
+  add(new THREE.CylinderGeometry(1.5 * u, 1.7 * u, .9 * u, 24), M.end, false).position.set(0, pY + .45 * u, 0);
   const sh = new THREE.Shape(), w = 4.3;
   sh.moveTo(-w, -4.2); sh.lineTo(w, -4.2); sh.lineTo(w, 9); sh.absarc(0, 9, w, 0, Math.PI, false); sh.lineTo(-w, -4.2);
   sh.moveTo(-w, -4.2); sh.absarc(0, -4.2, w, Math.PI, TAU, false);
   const ring = new THREE.Path(); ring.absellipse(0, 9.3, 2.5, 2.2, 0, TAU, true); sh.holes.push(ring);
-  const tg = new THREE.ExtrudeGeometry(sh, { depth: .35, bevelEnabled: true, bevelThickness: .15, bevelSize: .2, bevelSegments: 2, curveSegments: 28 });
-  tg.scale(u, u, u); tg.rotateX(-Math.PI / 2);
-  tabPivot = new THREE.Group(); tabPivot.position.set(0, pY + 1 * u, 0); can.add(tabPivot);
-  tabPivot.add(new THREE.Mesh(tg, M.end));
+  const tab = add(new THREE.ExtrudeGeometry(sh, { depth: .35, bevelEnabled: true, bevelThickness: .15, bevelSize: .2, bevelSegments: 2, curveSegments: 28 }), M.end, false);
+  tab.geometry.scale(u, u, u); tab.rotation.x = -Math.PI / 2; tab.position.set(0, pY + 1 * u, 0);
   const rl = R + .08, th = LBL.w / rl;
   add(new THREE.CylinderGeometry(rl * u, rl * u, LBL.h * u, 220, 1, true, -th / 2, th), M.label).position.y = ((CAN.wall0 + CAN.wall1) / 2 - CAN.h / 2) * u;
 }
-
-/* пузырьки газа при щелчке и при смене этикетки */
-const N = 480, pPos = new Float32Array(N * 3), pVel = new Float32Array(N * 3), pLife = new Float32Array(N), pSize = new Float32Array(N);
-const pGeo = new THREE.BufferGeometry();
-pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3)); pGeo.setAttribute('aLife', new THREE.BufferAttribute(pLife, 1)); pGeo.setAttribute('aSize', new THREE.BufferAttribute(pSize, 1));
-const pMat = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-  uniforms: { uColor: { value: new THREE.Color(0xEF7F1A) }, uPR: { value: 1 } },
-  vertexShader: `attribute float aLife; attribute float aSize; uniform float uPR; varying float vL;
-    void main(){ vL = aLife; vec4 mv = modelViewMatrix * vec4(position, 1.); gl_PointSize = 70. * aSize * uPR * (.5 + aLife * .5) / -mv.z; gl_Position = projectionMatrix * mv; }`,
-  fragmentShader: `uniform vec3 uColor; varying float vL;
-    void main(){ float d = length(gl_PointCoord - .5); if (d > .5 || vL <= 0.) discard;
-      float ringA = smoothstep(.5, .36, d) * smoothstep(.12, .34, d); float core = smoothstep(.5, 0., d) * .35;
-      gl_FragColor = vec4(mix(vec3(1.), uColor, .45), (ringA * .9 + core) * vL); }` });
-const fizz = new THREE.Points(pGeo, pMat); fizz.frustumCulled = false; scene.add(fizz);
-let pCur = 0; const tmpV = new THREE.Vector3(), upV = new THREE.Vector3();
-function emit(n, from = 'top') {
-  can.updateMatrixWorld();
-  for (let k = 0; k < n; k++) {
-    const i = pCur++ % N;
-    if (from === 'top') { tmpV.set(0, (140.5 - CAN.h / 2) * u, 13.8 * u); } else { const a = Math.random() * TAU; tmpV.set(Math.sin(a) * .3, (Math.random() - .5) * 1.3, Math.cos(a) * .3); }
-    can.localToWorld(tmpV); upV.set(0, 1, 0).applyQuaternion(can.quaternion);
-    const sp = from === 'top' ? 1.3 + Math.random() * 2.6 : .3 + Math.random() * .8;
-    pPos[i * 3] = tmpV.x + (Math.random() - .5) * .05; pPos[i * 3 + 1] = tmpV.y; pPos[i * 3 + 2] = tmpV.z + (Math.random() - .5) * .05;
-    pVel[i * 3] = upV.x * sp + (Math.random() - .5) * 1.1; pVel[i * 3 + 1] = upV.y * sp + (Math.random() - .5) * .6; pVel[i * 3 + 2] = upV.z * sp + (Math.random() - .5) * 1.1;
-    pLife[i] = 1; pSize[i] = .3 + Math.random() * 1;
-  }
-}
-function stepFizz(dt) {
-  for (let i = 0; i < N; i++) { if (pLife[i] <= 0) continue;
-    pVel[i * 3 + 1] -= 2.4 * dt; const d = Math.exp(-dt * 1.4); pVel[i * 3] *= d; pVel[i * 3 + 1] *= d; pVel[i * 3 + 2] *= d;
-    pPos[i * 3] += pVel[i * 3] * dt; pPos[i * 3 + 1] += pVel[i * 3 + 1] * dt; pPos[i * 3 + 2] += pVel[i * 3 + 2] * dt; pLife[i] = Math.max(0, pLife[i] - dt * .75); }
-  pGeo.attributes.position.needsUpdate = true; pGeo.attributes.aLife.needsUpdate = true; pGeo.attributes.aSize.needsUpdate = true;
-}
-
 if (renderer) {
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setClearColor(0, 0);
-  renderer.toneMapping = THREE.NeutralToneMapping; renderer.toneMappingExposure = 1.05; renderer.outputColorSpace = THREE.SRGBColorSpace;
-  pMat.uniforms.uPR.value = renderer.getPixelRatio();
-  const key = new THREE.DirectionalLight(0xffffff, 1.2); key.position.set(-3, 4, 5); scene.add(key);
-  rim = new THREE.DirectionalLight(0xEF7F1A, 4.5); rim.position.set(4, 1.5, -3); scene.add(rim);
-  const rim2 = new THREE.DirectionalLight(0xffffff, 1.1); rim2.position.set(-4.5, -1, -2); scene.add(rim2);
-  const mt = { anisotropy: renderer.capabilities.getMaxAnisotropy() };
-  labelTex = new THREE.CanvasTexture(label); prevTex = new THREE.CanvasTexture(labelPrev);
-  for (const t of [labelTex, prevTex]) { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = mt.anisotropy; }
-  const d = dropMaps(); M.drops = d;
+  renderer.toneMapping = THREE.NeutralToneMapping; renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.VSMShadowMap;
+  const key = new THREE.DirectionalLight(0xffffff, 1.1); key.position.set(-.35, 6, .9); key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024); key.shadow.radius = 14; key.shadow.blurSamples = 20; key.shadow.bias = -.0004;
+  Object.assign(key.shadow.camera, { left: -1.2, right: 1.2, top: 1.2, bottom: -1.2, near: .5, far: 9 }); scene.add(key);
+  labelTex = new THREE.CanvasTexture(label); labelTex.colorSpace = THREE.SRGBColorSpace; labelTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
   M.alu = new THREE.MeshPhysicalMaterial({ color: 0xc4c8cd, metalness: 1, roughness: .16, anisotropy: .5, anisotropyRotation: Math.PI / 2 });
-  M.wall = new THREE.MeshPhysicalMaterial({ color: 0xd3d6da, metalness: 1, roughness: .34, anisotropy: .6, anisotropyRotation: Math.PI / 2 });
+  M.wall = new THREE.MeshPhysicalMaterial({ color: 0xd3d6da, metalness: 1, roughness: .32, anisotropy: .6, anisotropyRotation: Math.PI / 2 });
   M.aluIn = new THREE.MeshPhysicalMaterial({ color: 0xc9ccd0, metalness: 1, roughness: .3, side: THREE.DoubleSide });
   M.end = new THREE.MeshPhysicalMaterial({ color: 0xcfd3d7, metalness: 1, roughness: .24 });
-  M.label = new THREE.MeshPhysicalMaterial({ map: prevTex, normalMap: d.n, normalScale: new THREE.Vector2(.42, .42), roughnessMap: d.r, roughness: 1, metalness: 0, clearcoat: .7, clearcoatRoughness: .12 });
-  wipe.mapB.value = labelTex;
-  M.label.onBeforeCompile = sh => {   // смена этикетки — шторкой со светящимся швом, как у энергетика
-    Object.assign(sh.uniforms, wipe);
-    sh.fragmentShader = 'uniform sampler2D mapB;\nuniform float uMix;\nuniform vec3 uSeam;\n' + sh.fragmentShader
-      .replace('#include <map_fragment>', `
-        vec4 cA = texture2D( map, vMapUv ); vec4 cB = texture2D( mapB, vMapUv );
-        float uu = vMapUv.x * .94 + .03; float edge = smoothstep( uMix - .03, uMix + .03, uu );
-        diffuseColor *= mix( cB, cA, edge );
-        float seam = ( 1. - abs( edge * 2. - 1. ) ) * step( .001, uMix ) * step( uMix, .999 );`)
-      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n totalEmissiveRadiance += uSeam * seam * 1.6;');
-  };
+  M.label = new THREE.MeshPhysicalMaterial({ map: labelTex, metalness: 0, roughness: .38, clearcoat: 1, clearcoatRoughness: .06 });
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(6, 6).rotateX(-Math.PI / 2), new THREE.ShadowMaterial({ opacity: .16 }));
+  floor.receiveShadow = true; floor.position.y = -CAN.h / 2 * u; scene.add(floor);
+  const sc = mk(256, 256), sg = sc.getContext('2d'), rg = sg.createRadialGradient(128, 128, 0, 128, 128, 128);
+  rg.addColorStop(0, 'rgba(40,30,20,.5)'); rg.addColorStop(.42, 'rgba(40,30,20,.38)'); rg.addColorStop(.52, 'rgba(40,30,20,.1)'); rg.addColorStop(1, 'rgba(40,30,20,0)');
+  sg.fillStyle = rg; sg.fillRect(0, 0, 256, 256);
+  const ao = new THREE.Mesh(new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sc), transparent: true, depthWrite: false }));
+  ao.scale.setScalar(CAN.r * 2.25 * u); ao.position.y = -CAN.h / 2 * u + .0008; scene.add(ao);
   buildCan();
 }
-function applyFinish() { if (!M.label) return; const m = S.finish === 'matte'; M.label.roughness = m ? 2.2 : 1; M.label.clearcoat = m ? .05 : .7; M.label.needsUpdate = true; }
-function applyCold() { if (M.label) M.label.normalScale.setScalar(S.cold ? .42 : 0); }
+function applyFinish() { if (!M.label) return; const m = S.finish === 'matte'; M.label.roughness = m ? .62 : .38; M.label.clearcoat = m ? .15 : 1; M.label.clearcoatRoughness = m ? .45 : .06; M.label.needsUpdate = true; }
 
-/* ===== смена этикетки ===== */
-let wipeT = 1;
-function nowWord() {
-  if (S.mode === 'file' && S.ex === 'own') return 'ваша.';
-  if (S.mode === 'file') return EX.find(e => e.id === S.ex)?.word || 'pompon.';
-  return S.logoFile ? 'ваша.' : S.text ? S.text.toLowerCase().slice(0, 9) + '.' : 'pompon.';
+function fit(aspect, h, tight) {
+  camera.aspect = aspect; const t = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+  const bot = tight ? 0 : 30 / h, free = 1 - bot;
+  const d = Math.max((tight ? 1.68 : 1.6 / free) / t, (tight ? .9 : .84) / (t * aspect));
+  camera.position.set(0, d * .14, d); camera.lookAt(0, -.04, 0);
+  if (!tight) camera.setViewOffset(1000 * aspect, 1000, 0, bot / 2 * 1000, 1000 * aspect, 1000); else camera.clearViewOffset();
+  camera.updateProjectionMatrix();
 }
-function setAccent(hex) {
-  document.documentElement.style.setProperty('--acc', hex);
-  document.documentElement.style.setProperty('--acc-ink', lum(hex) > .3 ? '#0A0A0C' : '#FFFFFF');
-  if (rim) { rim.color.set(hex); pMat.uniforms.uColor.value.set(hex); wipe.uSeam.value.set(hex); }
+function resize() { if (!renderer) return; const r = box3.getBoundingClientRect(); renderer.setSize(Math.max(1, r.width | 0), Math.max(1, r.height | 0), false); fit(r.width / r.height, r.height); }
+new ResizeObserver(resize).observe(box3);
+
+/* вращение пальцем и мышью */
+const rot = { y: 0, v: 0, x: 0 }, drag = { on: false, x: 0, y: 0 };
+let lastTouch = performance.now(), goTo = null, pop = 0;
+function front() { goTo = Math.round(rot.y / TAU) * TAU; rot.v = 0; document.querySelectorAll('#views button').forEach((x, i) => x.classList.toggle('on', i === 0)); pop = 1; }
+canvas.addEventListener('pointerdown', e => { if (e.button > 0) return; drag.on = true; drag.x = e.clientX; drag.y = e.clientY; rot.v = 0; goTo = null; lastTouch = performance.now(); box3.classList.add('drag');
+  try { canvas.setPointerCapture(e.pointerId); } catch (_) {} document.querySelectorAll('#views button').forEach(x => x.classList.remove('on')); });
+canvas.addEventListener('pointermove', e => { if (!drag.on) return; const dx = e.clientX - drag.x; drag.x = e.clientX; rot.v = dx * .0105; rot.y += rot.v;
+  if (e.pointerType === 'mouse') { const dy = e.clientY - drag.y; drag.y = e.clientY; rot.x = clamp(rot.x + dy * .003, -.22, .32); } lastTouch = performance.now(); });
+const end = () => { drag.on = false; box3.classList.remove('drag'); };
+canvas.addEventListener('pointerup', end); canvas.addEventListener('pointercancel', end); canvas.addEventListener('lostpointercapture', end);
+$('#views').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; $('#views').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+  const t = +b.dataset.a; goTo = t + Math.round((rot.y - t) / TAU) * TAU; rot.v = 0; lastTouch = performance.now(); });
+
+/* талисман: глаза за курсором, радуется новой этикетке */
+const buddy = $('#buddy'), eyes = $('#eyes');
+addEventListener('pointermove', e => {
+  const r = buddy.getBoundingClientRect(), cx = r.left + r.width * .52, cy = r.top + r.height * .55;
+  const dx = e.clientX - cx, dy = e.clientY - cy, l = Math.hypot(dx, dy) || 1, k = Math.min(1, l / 400);
+  eyes.setAttribute('transform', `translate(${(dx / l * 16 * k).toFixed(1)} ${(dy / l * 12 * k).toFixed(1)})`);
+});
+let happyT = 0;
+function cheer(ms = 1600) { buddy.classList.add('happy', 'hop'); setTimeout(() => buddy.classList.remove('hop'), 260); clearTimeout(happyT); happyT = setTimeout(() => buddy.classList.remove('happy'), ms); }
+
+let last = performance.now(), sway = 0, swayT0 = 0, visible = true;
+new IntersectionObserver(es => visible = es[0].isIntersecting).observe(box3);
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt = Math.min(.05, (now - last) / 1000); last = now; if (!visible) return;
+  if (!drag.on) {
+    if (goTo !== null) { rot.y += (goTo - rot.y) * (1 - Math.exp(-dt * 5)); if (Math.abs(goTo - rot.y) < .001) { rot.y = goTo; goTo = null; } }
+    else { rot.y += rot.v; rot.v *= Math.exp(-dt * 3.2); }
+    rot.x *= Math.exp(-dt * 1.5);
+  }
+  const idle = !reduce && now - lastTouch > 5000 && goTo === null && !drag.on;
+  if (idle && sway < .001) swayT0 = now;
+  sway += ((idle ? 1 : 0) - sway) * (1 - Math.exp(-dt * .7)); pop *= Math.exp(-dt * 4);
+  can.rotation.set(rot.x, rot.y + Math.sin((now - swayT0) * .00042) * .38 * sway, 0);
+  can.scale.setScalar(1 + pop * .025);
+  renderer.render(scene, camera);
 }
-function redraw(animate = false) {
-  if (animate && labelTex) { labelPrev.getContext('2d').drawImage(label, 0, 0); prevTex.needsUpdate = true; wipeT = 0; }
+
+/* ===== что на банке ===== */
+function redraw() {
   if (S.mode === 'file' && S.fileImg) drawFile(); else drawGen();
   if (labelTex) labelTex.needsUpdate = true;
-  setAccent(S.mode === 'gen' && S.bg !== 'white' ? toneOf(solidCanvas(S.c1)) : toneOf(label));
-  const w = nowWord(); const hw = $('#heroWord'); if (hw.textContent !== w) hw.textContent = w;
-  document.querySelectorAll('#ex button').forEach(b => b.classList.toggle('on', b.dataset.id === S.ex));
+  drawFlat(); fillSheet();
 }
-function change() { redraw(true); if (renderer && !reduce) emit(60, 'side'); }
-
-/* ===== примеры ===== */
+function change() { redraw(); front(); cheer(); }
 const exImg = {};
-async function exLoad(e) {
-  if (exImg[e.id]) return exImg[e.id];
-  const im = new Image(); im.src = e.src; await im.decode();
-  const c = mk(im.naturalWidth, im.naturalHeight); c.getContext('2d').drawImage(im, 0, 0); return exImg[e.id] = c;
-}
-function exButtons() {
-  const own = S.file ? `<button type="button" data-id="own"><i style="background:var(--acc)"></i>Ваш макет</button>` : '';
-  $('#ex').innerHTML = `<span class="mono">Примеры</span>` + EX.map(e => `<button type="button" data-id="${e.id}" title="${e.s || 'собран из логотипа'}"><i style="background:${e.dot || '#EF7F1A'}"></i>${e.t}</button>`).join('') + own;
-  redraw();
+async function exLoad(e) { if (exImg[e.id]) return exImg[e.id]; const im = new Image(); im.src = e.src; await im.decode(); const c = mk(im.naturalWidth, im.naturalHeight); c.getContext('2d').drawImage(im, 0, 0); return exImg[e.id] = c; }
+function exRow() {
+  $('#ex').innerHTML = EX.map(e => `<button type="button" data-id="${e.id}">${e.src ? `<img src="${e.src}" alt="">` : '<canvas width="356" height="254"></canvas>'}<b>${e.t}</b>${e.s}</button>`).join('');
+  const c = $('#ex canvas'); if (c) { drawGen(); c.getContext('2d').drawImage(label, 0, 0, c.width, c.height); }
 }
 async function loadEx(id) {
-  if (id === 'own') { S.ex = 'own'; S.mode = 'file'; S.fileImg = S.fileOwn; S.fileCut = S.fileOwnCut; change(); return; }
   S.ex = id;
   if (id === 'pompon') { S.mode = 'gen'; change(); return; }
   const e = EX.find(x => x.id === id); await exLoad(e); if (S.ex !== id) return;
   S.mode = 'file'; S.fileImg = exImg[id]; S.fileCut = { x: 0, y: 0, w: exImg[id].width, h: exImg[id].height }; change();
-  $('#fileNote').textContent = e.s;
+  $('#fileNote').textContent = `${e.t}, ${e.s}. Загрузите свою этикетку, и она встанет на это место.`;
 }
-$('#ex').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { loadEx(b.dataset.id); toFront(); } });
+$('#ex').addEventListener('click', e => { const b = e.target.closest('button'); if (b) loadEx(b.dataset.id); });
 
 /* ===== свой макет ===== */
 async function takeLabel(f) {
   const note = $('#fileNote'); note.classList.remove('err');
-  if (f.size > 40e6) { note.textContent = 'Файл больше 40 МБ. Сохраните макет полегче: JPG или PDF'; note.classList.add('err'); return; }
+  if (f.size > 40e6) { note.textContent = 'Файл больше 40 МБ. Сохраните макет полегче, JPG или PDF.'; note.classList.add('err'); return; }
   note.textContent = 'Открываем макет…';
   try {
     const img = await fileToImage(f), { cut, sure, found } = autoCut(img);
     S.file = f; S.fileOwn = img; S.fileOwnCut = cut; S.fileImg = img; S.fileCut = cut; S.mode = 'file'; S.ex = 'own';
-    exButtons(); change(); toFront();
+    change();
     note.innerHTML = '';
-    note.append(found ? `${f.name} · нашли поле этикетки на листе · ` : sure ? `${f.name} · на банке, шов сзади · ` : `${f.name} · размер не 178 × 127, выделите поле · `);
-    const b = document.createElement('button'); b.type = 'button'; b.textContent = 'подогнать'; b.onclick = openCrop; note.append(b);
+    note.append(found ? `${f.name}: нашли на листе поле этикетки и поставили на банку. ` : sure ? `${f.name} на банке, шов сзади. ` : `${f.name}: размер не похож на 178 × 127, выделите поле этикетки. `);
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'lnk'; b.textContent = 'Подогнать вручную'; b.onclick = openCrop; note.append(b);
     if (!sure) openCrop();
-    if (scrollY > innerHeight * .5) go('#hero');
-  } catch (x) { console.error(x); note.textContent = 'Не открылся файл. Подойдёт PDF, JPG или PNG'; note.classList.add('err'); }
+  } catch (x) { console.error(x); note.textContent = 'Не открылся файл. Подойдёт PDF, JPG или PNG.'; note.classList.add('err'); }
 }
 $('#labelFile').addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; if (f) takeLabel(f); });
-let dragDepth = 0;
-addEventListener('dragenter', e => { if ([...e.dataTransfer.types].includes('Files')) { dragDepth++; $('#dropAll').classList.add('on'); } });
-addEventListener('dragleave', () => { if (--dragDepth <= 0) { dragDepth = 0; $('#dropAll').classList.remove('on'); } });
 addEventListener('dragover', e => e.preventDefault());
-addEventListener('drop', e => { e.preventDefault(); dragDepth = 0; $('#dropAll').classList.remove('on'); const f = e.dataTransfer.files[0]; if (f) takeLabel(f); });
+addEventListener('drop', e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) takeLabel(f); });
 
-/* ===== подгонка рамкой ===== */
+/* подгонка рамкой */
 const dlg = $('#dlg'), cv = $('#cropCv'), box = $('#box');
 let cs = 1, cb = null, cd = null;
 function openCrop() {
   const img = S.fileOwn; if (!img) return;
-  cs = Math.min((Math.min(innerWidth * .94, 980) - 50) / img.width, innerHeight * .62 / img.height, 1);
+  cs = Math.min((Math.min(innerWidth * .94, 980) - 44) / img.width, innerHeight * .62 / img.height, 1);
   cv.width = Math.round(img.width * cs); cv.height = Math.round(img.height * cs); cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
   cb = { ...S.fileOwnCut }; dlg.showModal(); placeBox();
 }
@@ -825,33 +753,29 @@ $('#dlgOk').addEventListener('click', () => { S.fileOwnCut = { ...cb }; S.fileCu
 
 /* ===== из логотипа ===== */
 function genOn() { if (S.mode !== 'gen') { S.mode = 'gen'; S.ex = 'pompon'; } }
-const segs = [['#finish', 'finish', applyFinish, false], ['#bgMode', 'bg', null, true], ['#logoTint', 'tint', null, true]];
-for (const [id, key, after, gen] of segs) $(id).addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
-  $(id).querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); S[key] = b.dataset.v; after && after(); if (gen) genOn(); redraw(); });
-$('#cold').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; $('#cold').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); S.cold = b.dataset.v === '1'; applyCold(); });
-$('#kind').addEventListener('change', e => { S.kind = e.target.value; genOn(); change(); });
+for (const [id, key, gen, big] of [['#bgMode', 'bg', 1, 0], ['#logoTint', 'tint', 1, 0], ['#kind', 'kind', 1, 1], ['#tirazh', 'tirazh', 0, 0]])
+  $(id).addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; $(id).querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); S[key] = b.dataset.v;
+    if (gen) { genOn(); big ? change() : redraw(); } });
+$('#finish').addEventListener('click', () => { S.finish = S.finish === 'matte' ? 'gloss' : 'matte'; applyFinish(); fillSheet(); });
 $('#flavors').innerHTML = FLAVORS.map(([n, a, b], i) => `<button type="button" data-i="${i}"${i === 0 ? ' class="on"' : ''}><i style="background:linear-gradient(135deg,${a} 50%,${b} 50%)"></i>${n}</button>`).join('');
-$('#flavors').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
-  $('#flavors').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+$('#flavors').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; $('#flavors').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
   [S.flName, S.c1, S.c2] = FLAVORS[+b.dataset.i]; $('#flName').value = S.flName; $('#c1').value = S.c1; $('#c2').value = S.c2; genOn(); change(); });
 $('#flName').value = S.flName; $('#c1').value = S.c1; $('#c2').value = S.c2;
 $('#flName').addEventListener('input', e => { S.flName = e.target.value; genOn(); redraw(); });
 $('#c1').addEventListener('input', e => { S.c1 = e.target.value; genOn(); redraw(); });
 $('#c2').addEventListener('input', e => { S.c2 = e.target.value; genOn(); redraw(); });
 $('#brandTxt').addEventListener('input', e => { S.text = e.target.value.trim(); if (S.text) { S.logoFile = null; S.logo = pomponLogo; } genOn(); showLogo(); redraw(); });
-function showLogo() {
-  const bx = $('#logoPrev'); bx.innerHTML = '';
+function showLogo() { const bx = $('#logoPrev'); bx.innerHTML = '';
   if (S.text && !S.logoFile) { const b = document.createElement('b'); b.textContent = S.text; bx.append(b); }
-  else if (S.logo) { const c = mk(S.logo.width, S.logo.height); c.getContext('2d').drawImage(S.logo, 0, 0); bx.append(c); }
-}
+  else if (S.logo) { const c = mk(S.logo.width, S.logo.height); c.getContext('2d').drawImage(S.logo, 0, 0); bx.append(c); } }
 $('#logoFile').addEventListener('change', async e => {
   const f = e.target.files[0]; e.target.value = ''; if (!f) return; const note = $('#logoNote'); note.classList.remove('err');
-  if (f.size > 25e6) { note.textContent = 'Файл больше 25 МБ'; note.classList.add('err'); return; }
+  if (f.size > 25e6) { note.textContent = 'Файл больше 25 МБ.'; note.classList.add('err'); return; }
   try { S.logo = prepLogo(await fileToImage(f)); S.logoFile = f; S.text = ''; $('#brandTxt').value = ''; note.textContent = 'Загружен: ' + f.name; genOn(); showLogo(); change(); }
-  catch (x) { note.textContent = 'Не открылся файл. Подойдёт PNG, SVG, PDF или JPG'; note.classList.add('err'); }
+  catch (x) { note.textContent = 'Не открылся файл. Подойдёт PNG, SVG, PDF или JPG.'; note.classList.add('err'); }
 });
 
-/* ===== шаблон этикетки ===== */
+/* шаблон этикетки */
 $('#tpl').addEventListener('click', () => {
   const b = 2, W = LBL.w + 2 * b, H = LBL.h + 2 * b;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}mm" height="${H}mm" viewBox="0 0 ${W} ${H}" font-family="Arial" font-size="3">
@@ -867,134 +791,18 @@ $('#tpl').addEventListener('click', () => {
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' })); a.download = 'shablon-etiketki-178x127.svg'; a.click();
 });
 
-/* ===== прокрутка и хореография банки (как у энергетика) ===== */
-let lenis = null;
-if (!reduce && window.Lenis) lenis = new window.Lenis({ lerp: .09 });
-function go(sel) { const el = $(sel); if (!el) return; lenis ? lenis.scrollTo(el, { duration: 1.4 }) : el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); }
-document.addEventListener('click', e => { const a = e.target.closest('[data-to]'); if (a) { e.preventDefault(); go(a.dataset.to); } });
-
-let vh = innerHeight, A = {}, keys = [];
-const mob = () => innerWidth < 760;
-function states() {
-  const P = (d, m) => mob() ? m : d;
-  return {
-    hero: P({ x: .95, y: -.05, s: 1.32, rx: .05, ry: -.32, rz: -.1 }, { x: 0, y: .74, s: .74, rx: .05, ry: -.32, rz: -.06 }),
-    gen: P({ x: 1.15, y: -.02, s: 1.22, rx: .05, ry: TAU - .2, rz: .06 }, { x: 0, y: .66, s: .66, rx: .05, ry: TAU - .2, rz: .04 }),
-    crack0: P({ x: 0, y: -.14, s: 1.3, rx: .64, ry: 2 * TAU + .35, rz: .06 }, { x: 0, y: .12, s: .92, rx: .64, ry: 2 * TAU + .35, rz: .06 }),
-    crack1: P({ x: 0, y: -.14, s: 1.3, rx: .6, ry: 2 * TAU + .6, rz: .1 }, { x: 0, y: .12, s: .92, rx: .6, ry: 2 * TAU + .6, rz: .1 }),
-    tech: P({ x: -1.2, y: 0, s: 1.16, rx: .05, ry: 2 * TAU + Math.PI, rz: .12 }, { x: 0, y: .66, s: .62, rx: .05, ry: 2 * TAU + Math.PI, rz: .08 }),
-    order: P({ x: 1.2, y: -.04, s: 1.12, rx: .05, ry: 3 * TAU - .25, rz: -.14 }, { x: 0, y: .7, s: .6, rx: .05, ry: 3 * TAU - .25, rz: -.08 }),
-    foot: { x: 0, y: -3.4, s: .9, rx: .4, ry: 3.6 * TAU, rz: .5 },
-  };
-}
-function layout() {
-  vh = innerHeight;
-  const top = el => el.getBoundingClientRect().top + scrollY, st = states();
-  const g = top($('#sobrat')), cr = $('#crack'), c0 = top(cr), c1 = c0 + cr.offsetHeight - vh, t = top($('#banka')), o = top($('#zayavka')), ft = top($('#foot'));
-  const max = document.documentElement.scrollHeight - vh;
-  A = { c0, c1, g, o };
-  keys = [[0, st.hero], [Math.max(vh * .25, g - vh * .9), st.hero], [g - vh * .1, st.gen], [g + Math.max(vh * .3, $('#sobrat').offsetHeight - vh * 1.1), st.gen], [c0, st.crack0], [c1, st.crack1],
-    [t - vh * .15, st.tech], [t + vh * .25, st.tech], [o - vh * .15, st.order], [Math.max(o + vh * .3, ft - vh * .3), st.order], [max, st.foot]];
-  for (let i = 1; i < keys.length; i++) if (keys[i][0] <= keys[i - 1][0]) keys[i][0] = keys[i - 1][0] + 1;
-}
-const KS = ['x', 'y', 's', 'rx', 'ry', 'rz'];
-function stateAt(y) {
-  if (y <= keys[0][0]) return keys[0][1];
-  for (let i = 0; i < keys.length - 1; i++) { const [p0, a] = keys[i], [p1, b] = keys[i + 1];
-    if (y < p1) { const e = ease(clamp((y - p0) / (p1 - p0))), o = {}; KS.forEach(k => o[k] = a[k] + (b[k] - a[k]) * e); return o; } }
-  return keys[keys.length - 1][1];
-}
-
-/* вращение: мышью где угодно, пальцем по банке */
-const mouse = { x: 0, y: 0, sx: 0, sy: 0 }, drag = { on: false, x: 0, v: 0, ry: 0, goTo: null };
-let lastTouch = performance.now();
-const hint = $('#hint');
-function touched() { lastTouch = performance.now(); hint.classList.add('off'); }
-function toFront() { drag.goTo = Math.round(drag.ry / TAU) * TAU; drag.v = 0; document.querySelectorAll('#views button').forEach((x, i) => x.classList.toggle('on', i === 0)); }
-addEventListener('pointermove', e => {
-  mouse.x = e.clientX / innerWidth * 2 - 1; mouse.y = e.clientY / innerHeight * 2 - 1;
-  if (!drag.on) return; const dx = e.clientX - drag.x; drag.x = e.clientX; drag.v = dx * .0105; drag.ry += drag.v; touched();
-});
-function startDrag(e) { drag.on = true; drag.x = e.clientX; drag.v = 0; drag.goTo = null; document.body.classList.add('dragging'); touched(); document.querySelectorAll('#views button').forEach(x => x.classList.remove('on')); }
-addEventListener('pointerdown', e => {
-  if (e.target.closest('a,button,input,select,label,textarea,dialog,.ex,.packs')) return;
-  if (e.pointerType === 'mouse' && e.button === 0) startDrag(e);
-});
-$('#spin').addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') { startDrag(e); try { $('#spin').setPointerCapture(e.pointerId); } catch (_) {} } });
-const stop = () => { drag.on = false; document.body.classList.remove('dragging'); };
-addEventListener('pointerup', stop); addEventListener('pointercancel', stop);
-$('#views').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
-  $('#views').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
-  const t = +b.dataset.a; drag.goTo = t + Math.round((drag.ry - t) / TAU) * TAU; drag.v = 0; touched(); });
-
-/* появление, форма */
-const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .15 });
-document.querySelectorAll('.rv').forEach(el => io.observe(el));
-
-/* ===== кадр ===== */
-const cur = { ...states().hero };
-const cw1 = $('.cw1'), cw2 = $('.cw2');
-let last = performance.now(), lastC = 0, shake = 0;
-function frame(now) {
-  requestAnimationFrame(frame);
-  const dt = Math.min(.05, (now - last) / 1000); last = now;
-  if (lenis) lenis.raf(now);
-  const y = scrollY, tgt = stateAt(y), k = 1 - Math.exp(-dt * 9);
-  KS.forEach(q => cur[q] += (tgt[q] - cur[q]) * k);
-  if (!drag.on) {
-    if (drag.goTo !== null) { drag.ry += (drag.goTo - drag.ry) * (1 - Math.exp(-dt * 5)); if (Math.abs(drag.goTo - drag.ry) < .001) { drag.ry = drag.goTo; drag.goTo = null; } }
-    else { drag.ry += drag.v; drag.v *= Math.exp(-dt * 3.2); }
-  }
-  mouse.sx += (mouse.x - mouse.sx) * (1 - Math.exp(-dt * 4)); mouse.sy += (mouse.y - mouse.sy) * (1 - Math.exp(-dt * 4));
-  const heroW = 1 - sstep(0, vh * .6, y), idle = reduce ? 0 : sstep(5000, 7000, now - lastTouch);
-  can.position.set(cur.x + mouse.sx * .04, cur.y + Math.sin(now * .0011) * .03 * (reduce ? 0 : 1), 0);
-  can.rotation.set(cur.rx + mouse.sy * .08, cur.ry + Math.sin(now * .0005) * .3 * heroW * idle + drag.ry, cur.rz - mouse.sx * .05);
-  can.scale.setScalar(cur.s * 1.27);
-  document.documentElement.style.setProperty('--gx', (50 + cur.x / 2.6 * 50).toFixed(1) + '%');
-  // шторка этикетки
-  if (wipeT < 1) { wipeT = Math.min(1, wipeT + dt / .85); wipe.uMix.value = ease(wipeT); if (wipeT >= 1) wipe.uMix.value = 1.001; }
-  // щёлк
-  const c = clamp((y - A.c0) / (A.c1 - A.c0));
-  const lift = sstep(.16, .3, c) * (1 - sstep(.4, .58, c));
-  tabPivot.rotation.x = lift * 1.0;
-  const hs = sstep(.28, .33, c); hole.scale.set(5.6 * u * hs + .0001, 1, 4.3 * u * hs + .0001);
-  if (c >= .3 && lastC < .3) { emit(170); shake = 1; }
-  if (c > .3 && c < .9 && y > A.c0 - 1) emit(Math.round(90 * dt * (1 - c)));
-  lastC = c;
-  cw1.style.opacity = 1 - sstep(.44, .54, c); cw1.style.transform = `translate(-50%,-50%) scale(${1 + sstep(.3, .54, c) * .25})`;
-  cw2.style.opacity = sstep(.5, .6, c); cw2.style.transform = `translate(-50%,-50%) scale(${1.25 - sstep(.5, .7, c) * .25})`;
-  stepFizz(dt);
-  shake *= Math.exp(-dt * 6);
-  camera.position.x = (Math.random() - .5) * .05 * shake; camera.position.y = (Math.random() - .5) * .05 * shake;
-  renderer.render(scene, camera);
-}
-function resize() {
-  if (!renderer) return;
-  renderer.setSize(innerWidth, innerHeight, false);
-  camera.aspect = innerWidth / innerHeight; camera.fov = camera.aspect < .8 ? 36 : 30; camera.updateProjectionMatrix();
-  layout();
-}
-addEventListener('resize', resize);
-
-/* ===== снимок банки для заявки ===== */
+/* ===== лист для заявки ===== */
 function shot(angle, w, h) {
-  const keep = { pr: renderer.getPixelRatio(), pos: can.position.clone(), rot: can.rotation.clone(), s: can.scale.x, cp: camera.position.clone(), fov: camera.fov, asp: camera.aspect, fz: fizz.visible };
-  renderer.setPixelRatio(1); renderer.setSize(w, h, false);
-  camera.aspect = w / h; camera.fov = 22; const d = (1.46 / .86) / (2 * Math.tan(THREE.MathUtils.degToRad(11)));
-  camera.position.set(0, .22, d); camera.lookAt(0, -.03, 0); camera.updateProjectionMatrix();
-  can.position.set(0, 0, 0); can.rotation.set(0, angle, 0); can.scale.setScalar(1); fizz.visible = false;
-  const mu = wipe.uMix.value, ns = M.label.normalScale.x; wipe.uMix.value = 1.001; M.label.normalScale.setScalar(0);   // в макет — без капель
-  renderer.render(scene, camera);
-  const c = mk(w, h); c.getContext('2d').drawImage(canvas, 0, 0, w, h);
-  wipe.uMix.value = mu; M.label.normalScale.setScalar(ns); fizz.visible = keep.fz;
-  can.position.copy(keep.pos); can.rotation.copy(keep.rot); can.scale.setScalar(keep.s);
-  camera.position.copy(keep.cp); camera.rotation.set(0, 0, 0); camera.fov = keep.fov; camera.aspect = keep.asp; camera.updateProjectionMatrix();
-  renderer.setPixelRatio(keep.pr); renderer.setSize(innerWidth, innerHeight, false);
+  const pr = renderer.getPixelRatio(), keep = can.rotation.clone(), ks = can.scale.x;
+  renderer.setPixelRatio(1); renderer.setSize(w, h, false); fit(w / h, h, true);
+  can.rotation.set(0, angle, 0); can.scale.setScalar(1); renderer.render(scene, camera);
+  const c = mk(w, h); c.getContext('2d').drawImage(canvas, 0, 0);
+  can.rotation.copy(keep); can.scale.setScalar(ks); renderer.setPixelRatio(pr); resize();
   return c;
 }
 function spec() {
-  const rows = [['Банка', '0,33 л слим, Ø58 × 146 мм'], ['Плёнка', S.finish === 'matte' ? 'матовая' : 'глянцевая']];
-  if (S.mode === 'file') rows.push(['Этикетка', S.ex === 'own' ? `свой макет: ${S.file.name}` : `пример: ${EX.find(e => e.id === S.ex)?.s || ''}`]);
+  const rows = [['Банка', '0,33 л слим, Ø58 × 146 мм'], ['Плёнка', S.finish === 'matte' ? 'матовая' : 'глянцевая'], ['Наименование', `С/эт ${labelName()} 178×127`]];
+  if (S.mode === 'file') rows.push(['Этикетка', S.ex === 'own' ? `свой макет: ${S.file.name}` : `пример: ${EX.find(e => e.id === S.ex).t}`]);
   else rows.push(['Этикетка', 'собрана в конструкторе'], ['Напиток', KINDS[S.kind].line], ['Вкус', S.flName || '—'],
     ['Логотип', (S.logoFile ? `файл ${S.logoFile.name}` : S.text ? `надпись «${S.text}»` : 'пример Pompon') + ({ orig: '', white: ', белым', black: ', чёрным' }[S.tint])],
     ['Фон', { grad: `переход ${S.c1.toUpperCase()} → ${S.c2.toUpperCase()}`, solid: `цвет ${S.c1.toUpperCase()}`, white: 'белый' }[S.bg]]);
@@ -1004,19 +812,19 @@ function maket(who) {
   const a = shot(0, 640, 860), b = shot(Math.PI, 640, 860), s = shot(-Math.PI / 2, 640, 860);
   const Wc = 2040, lw = 1240, lh = Math.round(lw * LH / LW), Hc = 110 + 860 + 40 + lh + 80;
   const c = mk(Wc, Hc), g = c.getContext('2d');
-  g.fillStyle = '#F5F1EA'; g.fillRect(0, 0, Wc, Hc);
-  g.fillStyle = '#161412'; g.font = `800 40px ${DISP}`; g.fillText('Макет банки 0,33 л', 60, 74);
-  g.fillStyle = '#6E675E'; g.font = `400 24px ${BODY}`; g.fillText(`${who} · ${new Date().toLocaleDateString('ru-RU')}`, 640, 72);
-  [a, s, b].forEach((x, i) => g.drawImage(x, 40 + i * 660, 100));
-  g.font = `600 22px ${BODY}`; g.textAlign = 'center'; ['лицо', 'бок', 'шов'].forEach((t, i) => g.fillText(t, 40 + i * 660 + 320, 990)); g.textAlign = 'left';
-  const ly = 1020; g.drawImage(label, 60, ly, lw, lh); g.strokeStyle = 'rgba(0,0,0,.15)'; g.strokeRect(60.5, ly + .5, lw, lh);
-  g.fillStyle = '#6E675E'; g.font = `400 20px ${BODY}`; g.fillText('развёртка этикетки 178 × 127 мм', 60, ly + lh + 34);
+  g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, Wc, Hc);
+  g.fillStyle = '#1F9AD6'; g.font = 'italic 26px "PT Sans"'; g.fillText('Лист согласования · Pompon · банка 0,33 л', 60, 64);
+  g.fillStyle = '#151515'; g.fillText(`${who} · ${today}`, 640, 64);
+  [a, s, b].forEach((x, i) => g.drawImage(x, 40 + i * 660, 90));
+  g.fillStyle = '#1F9AD6'; g.textAlign = 'center'; ['лицо', 'бок', 'шов'].forEach((t, i) => g.fillText(t, 40 + i * 660 + 320, 985)); g.textAlign = 'left';
+  const ly = 1020; g.drawImage(label, 60, ly, lw, lh); g.strokeStyle = '#E2231A'; g.lineWidth = 2; g.strokeRect(60, ly, lw, lh);
+  g.fillStyle = '#1F9AD6'; g.fillText('развёртка 178,0 × 127,0 мм', 60, ly + lh + 40);
   let y = ly + 6;
-  for (const [k, v] of spec()) { g.fillStyle = '#6E675E'; g.font = `400 21px ${BODY}`; g.fillText(k, 1350, y += 34); g.fillStyle = '#161412'; g.font = `700 23px ${BODY}`; for (const l of wrap(g, v, 620)) g.fillText(l, 1350, y += 30); y += 8; }
+  for (const [k, v] of spec()) { g.fillStyle = '#1F9AD6'; g.font = 'italic 22px "PT Sans"'; g.fillText(k, 1350, y += 34); g.fillStyle = '#151515'; g.font = 'italic 24px "PT Sans"'; for (const l of wrap(g, v, 620)) g.fillText(l, 1350, y += 30); y += 8; }
   return c;
 }
 
-/* ===== заявка ===== */
+/* ===== на согласование ===== */
 const form = $('#form'), ferr = $('#ferr');
 form.addEventListener('submit', async e => {
   e.preventDefault(); ferr.hidden = true;
@@ -1030,38 +838,35 @@ form.addEventListener('submit', async e => {
   try {
     const blob = await new Promise(r => maket(company || name).toBlob(r, 'image/jpeg', .88));
     const fd = new FormData();
-    fd.append('_subject', `Заявка с конструктора банки: ${company || name}, ${S.mode === 'file' ? (S.ex === 'own' ? 'свой макет' : 'пример') : S.flName}`);
+    fd.append('_subject', `Лист согласования с конструктора: ${company || name}, ${S.ex === 'own' ? 'свой макет' : labelName()}`);
     fd.append('_template', 'table'); fd.append('_captcha', 'false'); fd.append('_url', FORM_PAGE);
     fd.append('Имя', name); fd.append('Компания', company || '—'); fd.append('Телефон или почта', contact);
-    fd.append('Тираж', (form.querySelector('[name=t]:checked') || {}).value || '—'); fd.append('Комментарий', $('#fComment').value.trim() || '—');
+    fd.append('Тираж', S.tirazh); fd.append('Комментарий', $('#fComment').value.trim() || '—');
     for (const [k, v] of spec()) fd.append(k, v);
-    fd.append('attachment', new File([blob], 'maket-banki.jpg', { type: 'image/jpeg' }));
+    fd.append('attachment', new File([blob], 'list-soglasovaniya.jpg', { type: 'image/jpeg' }));
     const orig = S.mode === 'file' ? (S.ex === 'own' ? S.file : null) : S.logoFile;
     if (orig && orig.size < 9e6) fd.append('attachment2', orig, orig.name);
     await fetch('https://formsubmit.co/' + FORM_TO, { method: 'POST', body: fd, mode: 'no-cors', referrerPolicy: 'unsafe-url' });
-    const url = URL.createObjectURL(blob); $('#okImg').src = url; $('#okDl').href = url;
-    form.hidden = true; $('#ok').hidden = false; emit(120);
-  } catch (x) { ferr.textContent = 'Не получилось отправить. Проверьте интернет и нажмите ещё раз или позвоните: +7 982 348-80-88.'; ferr.hidden = false; }
-  btn.disabled = false; btn.textContent = 'Отправить заявку';
+    $('#okDl').href = URL.createObjectURL(blob);
+    form.hidden = true; $('#ok').hidden = false; $('#stamp').classList.add('on'); cheer(4000);
+  } catch (x) { ferr.textContent = 'Не получилось отправить. Проверьте интернет и нажмите ещё раз или позвоните: +7 982 348 8088.'; ferr.hidden = false; }
+  btn.disabled = false; btn.textContent = 'Отправить на согласование';
 });
 
 /* ===== старт ===== */
 let pomponLogo = null;
 (async () => {
-  try { await Promise.all(['900 100px Unbounded', '700 20px Unbounded', '400 20px Manrope', '700 20px Manrope', '800 20px Manrope', '500 20px "JetBrains Mono"'].map(f => document.fonts.load(f))); } catch (e) {}
+  try { await Promise.all(['500 40px Unbounded', '700 20px Unbounded', '400 20px Manrope', '700 20px Manrope', '800 20px Manrope', 'italic 20px "PT Sans"', '600 20px Caveat'].map(f => document.fonts.load(f))); } catch (e) {}
   try { const im = new Image(); im.src = 'assets/pompon-main.png'; await im.decode(); pomponLogo = prepLogo(im); S.logo = pomponLogo; } catch (e) {}
-  // точки примеров — цвет их этикеток
-  await Promise.all(EX.filter(e => e.src).map(async e => { try { e.dot = toneOf(await exLoad(e)); } catch (_) {} }));
-  showLogo(); applyFinish(); applyCold(); exButtons();
-  labelPrev.getContext('2d').drawImage(label, 0, 0);
-  if (!renderer) { $('#ld').classList.add('off'); return; }
+  showLogo(); applyFinish(); exRow(); redraw();
+  if (!renderer) return;
   try {
     const hdr = await new RGBELoader().loadAsync('assets/studio.hdr');
     const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromEquirectangular(hdr).texture; hdr.dispose(); pm.dispose();
-    scene.environmentIntensity = .9; scene.environmentRotation = new THREE.Euler(-.35, .6, .25);
+    scene.environmentRotation = new THREE.Euler(-.35, .6, .25);
   } catch (e) { console.warn('hdr', e); }
-  resize(); setTimeout(layout, 600);
-  requestAnimationFrame(t => { last = t; frame(t); $('#ld').classList.add('off'); setTimeout(() => hint.classList.add('off'), 9000); });
+  resize();
+  requestAnimationFrame(t => { last = t; frame(t); });
 })();
 </script>
 </body>
