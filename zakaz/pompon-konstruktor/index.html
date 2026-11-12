@@ -788,25 +788,17 @@ function placeWords() {
   }
 }
 
-/* ================= банка Pompon 0,33: прозрачный ПЭТ, этикетка посередине, чёрная крышка с ключом ================= */
+/* ================= банка 0,33 слим: алюминий (так льют лимонады и СТМ — Ерлан 12.11), самоклейка 178×127 посередине, горлышко с сужением ================= */
 const RO = .300, RL = .3018, RI = .2945, YT = .7755, LVL = .64;
 const BAND = { fl: { h: 1.116, y: .011 }, own: { h: 2 * Math.PI * RL * LBL.h / LBL.w, y: -.02 } };
 const L = a => a.map(([r, y]) => new THREE.Vector2(r, y));
 const can = new THREE.Group(); can.rotation.order = 'ZXY'; scene.add(can);
 const body = new THREE.Group(); can.add(body);
 
-// стенка ПЭТ: прозрачная, только отражения и утолщение по краю силуэта
-const petMat = new THREE.MeshPhysicalMaterial({ color: 0x000000, roughness: .035, ior: 1.5, specularIntensity: 1, envMapIntensity: 1.5,
-  transparent: true, premultipliedAlpha: true, depthWrite: false, side: THREE.DoubleSide });
-petMat.onBeforeCompile = sh => {
-  sh.fragmentShader = sh.fragmentShader.replace('#include <opaque_fragment>', `
-    float nv = abs(dot(normalize(normal), normalize(vViewPosition)));
-    float edge = pow(1. - nv, 2.6);
-    float aE = clamp(.035 + edge * .62, 0., .85);
-    gl_FragColor = vec4(outgoingLight + vec3(.55, .58, .62) * edge * .05, aE);`);
-};
+// стенка: алюминий, как на демо энергетика
+const petMat = new THREE.MeshPhysicalMaterial({ color: 0xdadee2, metalness: 1, roughness: .3, envMapIntensity: 1.4, side: THREE.DoubleSide });
 const petProf = [[0, -.733], [.1, -.738], [.18, -.75], [.226, -.766], [.246, -.7755], [.262, -.7745], [.279, -.767], [.291, -.754], [.2975, -.738], [.2998, -.718], [RO, -.70],
-  [RO, .69], [.2988, .70], [.2975, .707], [.2996, .7125], [.3012, .7175], [.3012, .7215], [.2992, .7262], [.2972, .735], [.2966, .748], [.2964, .757]];
+  [RO, .662], [.2992, .672], [.2965, .683], [.2915, .695], [.2845, .707], [.2735, .718], [.2655, .728], [.2615, .738], [.2605, .748], [.2603, .757]];
 const pet = new THREE.Mesh(new THREE.LatheGeometry(L(petProf), 200), petMat); pet.renderOrder = 3; body.add(pet);
 
 // напиток: объём с мениском, преломление и окраска по толщине; поверхность дрожит после «щёлк»
@@ -826,7 +818,7 @@ drinkMat.onBeforeCompile = sh => {
 };
 const drinkProf = [[0, -.721], [.1, -.726], [.18, -.738], [.222, -.752], [.242, -.7605], [.26, -.7595], [.276, -.752], [.287, -.74], [.2925, -.725], [RI, -.705], [RI, LVL + .004], [.2918, LVL + .0012], [.287, LVL + .0002], [.28, LVL]];
 for (let i = 1; i <= 26; i++) drinkProf.push([.28 * (1 - i / 26), LVL]);
-const drink = new THREE.Mesh(new THREE.LatheGeometry(L(drinkProf), 160), drinkMat); body.add(drink);
+const drink = new THREE.Mesh(new THREE.LatheGeometry(L(drinkProf), 160), drinkMat); body.add(drink); drink.visible = false;   // за алюминием не видно
 
 // джусболлы на дне: укладка как настоящие — падают и расталкивают друг друга
 const NPR = MOB ? 70 : 96;
@@ -862,12 +854,12 @@ function placePearls(t, rise) {
     mP.makeScale(p.r, p.r, p.r).setPosition(tP.x, tP.y, tP.z); pearls.setMatrixAt(i, mP); }
   pearls.instanceMatrix.needsUpdate = true;
 }
-placePearls(0, 0);
+placePearls(0, 0); pearls.count = 0;   // за алюминием не видно
 
 // пузырьки газа в напитке — после открытия
 const NBU = MOB ? 50 : 90, BU = [];
 const bubbles = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 10, 8), new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .05, metalness: 0, transmission: .9, thickness: .01, envMapIntensity: .8 }), NBU);
-bubbles.instanceMatrix.setUsage(THREE.DynamicDrawUsage); body.add(bubbles);
+bubbles.instanceMatrix.setUsage(THREE.DynamicDrawUsage); body.add(bubbles); bubbles.count = 0;
 for (let i = 0; i < NBU; i++) BU.push({ a: rand() * TAU, d: Math.sqrt(rand()) * .27, y: -2, v: 0, r: .003 + rand() * .006 });
 function stepBubbles(dt, on) {
   for (let i = 0; i < NBU; i++) { const b = BU[i];
@@ -878,11 +870,12 @@ function stepBubbles(dt, on) {
 }
 
 // классическая алюминиевая крышка: закатка, стенка вниз в канавку, утопленная панель, выдавленный контур вокруг ключа, насечка, заклёпка
-const alu = new THREE.MeshPhysicalMaterial({ color: 0x1d1d20, metalness: .62, roughness: .3, clearcoat: 1, clearcoatRoughness: .08, envMapIntensity: 2.2, side: THREE.DoubleSide });
-const aluR = new THREE.MeshPhysicalMaterial({ color: 0x232327, metalness: .7, roughness: .22, anisotropy: .6, clearcoat: 1, clearcoatRoughness: .05, envMapIntensity: 2.4, side: THREE.DoubleSide });   // закатка — круговая шлифовка
+const alu = new THREE.MeshPhysicalMaterial({ color: 0xc9ced3, metalness: 1, roughness: .3, envMapIntensity: 1.3, side: THREE.DoubleSide });
+const aluR = new THREE.MeshPhysicalMaterial({ color: 0xd4d8dc, metalness: 1, roughness: .2, anisotropy: .6, envMapIntensity: 1.4, side: THREE.DoubleSide });   // закатка — круговая шлифовка
 const blackMat = alu;
-const PY = .741, PRAD = .2705;
-body.add(new THREE.Mesh(new THREE.LatheGeometry(L([[.2958, .7555], [.2984, .7572], [.2997, .7605], [.3001, .7672], [.2993, .7728], [.2966, YT], [.2924, YT], [.2898, .7738],
+const PY = .741, PRAD = .2705, LK = .88, PYW = YT - (YT - PY) * LK;   // крышка 202 уже корпуса: вся группа ×.88 от верха закатки
+const lid = new THREE.Group(); lid.scale.setScalar(LK); lid.position.y = YT * (1 - LK); body.add(lid);
+lid.add(new THREE.Mesh(new THREE.LatheGeometry(L([[.2958, .7555], [.2984, .7572], [.2997, .7605], [.3001, .7672], [.2993, .7728], [.2966, YT], [.2924, YT], [.2898, .7738],
   [.2886, .7695], [.2868, .758], [.2846, .7465], [.2828, .7368], [.2806, .7338], [.2786, .7336], [.2768, .7358], [.2752, .7392], [.2728, PY - .0004], [PRAD, PY]]), 240), aluR));
 function opening(s = 1, sh = new THREE.Shape()) {
   const cx = .14, P = (x, y) => [cx + (x - cx) * s, y * s];
@@ -890,9 +883,9 @@ function opening(s = 1, sh = new THREE.Shape()) {
   sh.quadraticCurveTo(...P(.226, .068), ...P(.162, .062)); sh.lineTo(...P(.062, .044)); sh.quadraticCurveTo(...P(.046, 0), ...P(.062, -.044));
   return sh;
 }
-const ridge = (pts, r, y, mat = alu) => { const m = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), Math.max(120, pts.length * 2), r, 8, true), mat); m.scale.y = .45; m.position.y = y; body.add(m); return m; };
+const ridge = (pts, r, y, mat = alu) => { const m = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), Math.max(120, pts.length * 2), r, 8, true), mat); m.scale.y = .45; m.position.y = y; lid.add(m); return m; };
 { const disc = new THREE.Shape().absarc(0, 0, PRAD, 0, TAU, false); disc.holes.push(opening(1.0));
-  const g = new THREE.ShapeGeometry(disc, 96).rotateX(-Math.PI / 2); const m = new THREE.Mesh(g, alu); m.position.y = PY; body.add(m);
+  const g = new THREE.ShapeGeometry(disc, 96).rotateX(-Math.PI / 2); const m = new THREE.Mesh(g, alu); m.position.y = PY; lid.add(m);
   // панельное кольцо у края
   ridge(new THREE.Path().absarc(0, 0, .2585, 0, TAU).getSpacedPoints(200).map(p => new THREE.Vector3(p.x, 0, -p.y)), .0036, PY + .0006);
   // выдавленный контур вокруг ключа и отверстия — как на настоящей крышке: шире у отверстия, уже у кольца ключа
@@ -902,28 +895,28 @@ const ridge = (pts, r, y, mat = alu) => { const m = new THREE.Mesh(new THREE.Tub
   ridge(well, .0042, PY + .0007);
   // насечка вскрытия — тонкая канавка чуть снаружи язычка
   const sc = opening(1.05).getSpacedPoints(180).map(p => new THREE.Vector3(p.x, 0, -p.y));
-  ridge(sc, .0011, PY + .0003, new THREE.MeshPhysicalMaterial({ color: 0x08080a, metalness: .4, roughness: .6 }));
+  ridge(sc, .0011, PY + .0003, new THREE.MeshPhysicalMaterial({ color: 0x6a6f74, metalness: .9, roughness: .45 }));
   // заклёпка: бугорок панели и шляпка
-  const boss = new THREE.Mesh(new THREE.SphereGeometry(.05, 48, 16, 0, TAU, 0, Math.PI / 2), alu); boss.scale.y = .12; boss.position.y = PY; body.add(boss);
-  const rivet = new THREE.Mesh(new THREE.SphereGeometry(.016, 32, 12, 0, TAU, 0, Math.PI / 2), aluR); rivet.scale.y = .5; rivet.position.y = PY + .0068; body.add(rivet);
+  const boss = new THREE.Mesh(new THREE.SphereGeometry(.05, 48, 16, 0, TAU, 0, Math.PI / 2), alu); boss.scale.y = .12; boss.position.y = PY; lid.add(boss);
+  const rivet = new THREE.Mesh(new THREE.SphereGeometry(.016, 32, 12, 0, TAU, 0, Math.PI / 2), aluR); rivet.scale.y = .5; rivet.position.y = PY + .0068; lid.add(rivet);
   // изнанка панели — видна снизу сквозь прозрачное горлышко
-  const gu = new THREE.ShapeGeometry(disc, 64).rotateX(Math.PI / 2); const mu = new THREE.Mesh(gu, new THREE.MeshStandardMaterial({ color: 0x111113, roughness: .5, metalness: .5 })); mu.position.y = PY - .0015; body.add(mu);
+  const gu = new THREE.ShapeGeometry(disc, 64).rotateX(Math.PI / 2); const mu = new THREE.Mesh(gu, new THREE.MeshStandardMaterial({ color: 0x8d9297, roughness: .45, metalness: .9 })); mu.position.y = PY - .0015; lid.add(mu);
 }
 // язычок вскрытия — уходит внутрь
-const flapPivot = new THREE.Group(); flapPivot.position.set(.062, PY, 0); body.add(flapPivot);
+const flapPivot = new THREE.Group(); flapPivot.position.set(.062, PY, 0); lid.add(flapPivot);
 { const g = new THREE.ExtrudeGeometry(opening(.992), { depth: .0022, bevelEnabled: false, curveSegments: 24 }).rotateX(-Math.PI / 2).translate(-.062, -.0022, 0);
   flapPivot.add(new THREE.Mesh(g, alu)); }
 // ключ: классическая форма — нос над отверстием, заклёпка, широкое кольцо под палец, края завальцованы
-const tabPivot = new THREE.Group(); tabPivot.position.set(0, PY + .0062, 0); body.add(tabPivot);
+const tabPivot = new THREE.Group(); tabPivot.position.set(0, PY + .0062, 0); lid.add(tabPivot);
 { const t = new THREE.Shape();
   t.moveTo(.03, -.04); t.quadraticCurveTo(.104, -.042, .104, 0); t.quadraticCurveTo(.104, .042, .03, .04);
   t.lineTo(-.05, .05); t.bezierCurveTo(-.12, .064, -.214, .07, -.214, 0); t.bezierCurveTo(-.214, -.07, -.12, -.064, -.05, -.05); t.lineTo(.03, -.04);
   const fh = new THREE.Path(); fh.absellipse(-.137, 0, .052, .043, 0, TAU, true); t.holes.push(fh);
   const sl = new THREE.Path(); sl.absarc(.002, 0, .033, -2.25, 2.25, false); sl.absarc(.002, 0, .026, 2.25, -2.25, true); t.holes.push(sl);
   const g = new THREE.ExtrudeGeometry(t, { depth: .0026, bevelEnabled: true, bevelThickness: .0019, bevelSize: .0024, bevelSegments: 5, curveSegments: 48 }).rotateX(-Math.PI / 2);
-  tabPivot.add(new THREE.Mesh(g, new THREE.MeshPhysicalMaterial({ color: 0x18181b, metalness: .6, roughness: .28, clearcoat: 1, clearcoatRoughness: .06, envMapIntensity: 2.2 })));
+  tabPivot.add(new THREE.Mesh(g, new THREE.MeshPhysicalMaterial({ color: 0xc8cdd2, metalness: 1, roughness: .32, envMapIntensity: 1.5 })));
   // ребро жёсткости по ключу
-  const rib = new THREE.Mesh(new THREE.CapsuleGeometry(.006, .07, 4, 12).rotateZ(Math.PI / 2), new THREE.MeshPhysicalMaterial({ color: 0x18181b, metalness: .6, roughness: .28, clearcoat: 1, envMapIntensity: 2.2 }));
+  const rib = new THREE.Mesh(new THREE.CapsuleGeometry(.006, .07, 4, 12).rotateZ(Math.PI / 2), new THREE.MeshPhysicalMaterial({ color: 0xc8cdd2, metalness: 1, roughness: .32, envMapIntensity: 1.5 }));
   rib.scale.set(1, .35, 1); rib.position.set(-.035, .0032, 0); tabPivot.add(rib); }
 // под отверстием — темнота банки, сквозь неё чуть виден напиток
 
@@ -999,7 +992,7 @@ function burst(n) {   // из-за банки — при смене вкуса
 }
 function pour(n) {    // из открытой банки
   can.updateMatrixWorld(); const up = UPV.clone().applyQuaternion(can.quaternion);
-  for (let q = 0; q < n; q++) { body.localToWorld(tV.set(.15 + (rand() - .5) * .06, PY + .02, (rand() - .5) * .07));
+  for (let q = 0; q < n; q++) { body.localToWorld(tV.set(.15 * LK + (rand() - .5) * .06, PYW + .02, (rand() - .5) * .07));
     const v = up.clone().multiplyScalar(1.9 + rand() * 1.9).add(new THREE.Vector3((rand() - .5) * 1.8, (rand() - .2) * .6, rand() * .7));
     spawnGel(tV, v, (.03 + rand() * .045) * can.scale.x); }
 }
@@ -1023,7 +1016,7 @@ function stepPop(cr, t) {
   if (!on) return;
   [POP.shellMat, POP.big.material].forEach(m => m.attenuationColor.copy(juice)); [POP.coreMat, POP.bigCore.material].forEach(m => { m.color.copy(juice); m.emissive.copy(juice); });
   POP.dr.material.attenuationColor.copy(juice);
-  can.updateMatrixWorld(); body.localToWorld(popStart.set(.15, PY + .015, 0));
+  can.updateMatrixWorld(); body.localToWorld(popStart.set(.15 * LK, PYW + .015, 0));
   // струя: каждый шарик — своя дуга от отверстия, по прокрутке туда и обратно
   for (let i = 0; i < POP.n; i++) { const q = POP.L[i], u = (cr - q.at) / .3;
     if (u <= 0 || u > 1.1) { mP.makeScale(0, 0, 0); POP.sh.setMatrixAt(i, mP); POP.co.setMatrixAt(i, mP); continue; }
@@ -1080,7 +1073,7 @@ let tdCur = 0;
 function splashTea(n) {
   can.updateMatrixWorld(); const up = UPV.clone().applyQuaternion(can.quaternion), q = can.quaternion;
   for (let i = 0; i < n; i++) { const d = TD[tdCur++ % NTD], a = i / n * TAU + rand() * .3, ring = i < n * .6;
-    d.on = true; d.life = 0; body.localToWorld(d.p.set(.15 + Math.cos(a) * .05, PY + .01, Math.sin(a) * .04));
+    d.on = true; d.life = 0; body.localToWorld(d.p.set(.15 * LK + Math.cos(a) * .05, PYW + .01, Math.sin(a) * .04));
     d.v.set(Math.cos(a) * (ring ? 1.1 : .5 + rand()), 0, Math.sin(a) * (ring ? 1.1 : .5 + rand())).applyQuaternion(q).multiplyScalar(.6 + rand() * .5).addScaledVector(up, (ring ? 1.6 : 2.4) + rand() * 1.6);
     d.s = (.006 + Math.pow(rand(), 2.5) * .022) * can.scale.x; }
 }
@@ -1125,7 +1118,7 @@ const mist = new THREE.Points(mistGeo, mistMat); mist.frustumCulled = false; sce
 const MI = []; for (let i = 0; i < NMI; i++) MI.push({ on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), life: 0, a: 0 });
 function hiss(n) {
   can.updateMatrixWorld(); const up = UPV.clone().applyQuaternion(can.quaternion);
-  for (let q = 0; q < n; q++) { const m = MI[q % NMI]; m.on = true; m.life = 0; m.a = .5 + rand() * .5; body.localToWorld(m.p.set(.15 + (rand() - .5) * .05, PY + .01, (rand() - .5) * .05));
+  for (let q = 0; q < n; q++) { const m = MI[q % NMI]; m.on = true; m.life = 0; m.a = .5 + rand() * .5; body.localToWorld(m.p.set(.15 * LK + (rand() - .5) * .05, PYW + .01, (rand() - .5) * .05));
     m.v.copy(up).multiplyScalar(.35 + rand() * .7).add(new THREE.Vector3((rand() - .5) * .5, 0, (rand() - .5) * .5 + .15)); }
 }
 function stepMist(dt) {
