@@ -1232,7 +1232,7 @@ async function buildStar() {
       vOP = position; float rr = length(position.xy), an = atan(position.y, position.x);
       float w = sin(uT * 3.1 + an * 3.) * .03 + sin(uT * 5.3 - an * 5.) * .012;
       transformed.xy += normalize(position.xy + 1e-5) * w * rr * rr * (.6 + uWob * 5.);
-      transformed.z += sin(uT * 4. + an * 2.) * .02 * rr * rr * (1. + uWob * 4.);`);
+      // по z не качаем: лицо звезды — одна плоскость из наложенных лучей, подъём вершин кончиков поднимал луч между глаз поверх глаз`);
     sh2.fragmentShader = 'uniform float uT;\nvarying vec3 vOP;\nfloat hh(vec3 p){ return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }\n' + sh2.fragmentShader
       .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
         vec3 cell = floor(vOP * 70.); float gg = hh(cell); float sp = smoothstep(.985, 1., gg) * (.35 + .65 * sin(uT * 4. + gg * 80.));
