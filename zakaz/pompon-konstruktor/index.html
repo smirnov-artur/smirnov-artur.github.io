@@ -870,8 +870,8 @@ function stepBubbles(dt, on) {
 }
 
 // классическая алюминиевая крышка: закатка, стенка вниз в канавку, утопленная панель, выдавленный контур вокруг ключа, насечка, заклёпка
-const alu = new THREE.MeshPhysicalMaterial({ color: 0xc9ced3, metalness: 1, roughness: .3, envMapIntensity: 1.3, side: THREE.DoubleSide });
-const aluR = new THREE.MeshPhysicalMaterial({ color: 0xd4d8dc, metalness: 1, roughness: .2, anisotropy: .6, envMapIntensity: 1.4, side: THREE.DoubleSide });   // закатка — круговая шлифовка
+const alu = new THREE.MeshPhysicalMaterial({ color: 0xc2c6cb, metalness: 1, roughness: .42, envMapIntensity: 1.25, side: THREE.DoubleSide });   // матовый, как на фото Артура 11.11
+const aluR = new THREE.MeshPhysicalMaterial({ color: 0xd0d4d8, metalness: 1, roughness: .26, anisotropy: .6, envMapIntensity: 1.35, side: THREE.DoubleSide });   // закатка — круговая шлифовка
 const blackMat = alu;
 const PY = .741, PRAD = .2705, LK = .88, PYW = YT - (YT - PY) * LK;   // крышка 202 уже корпуса: вся группа ×.88 от верха закатки
 const lid = new THREE.Group(); lid.scale.setScalar(LK); lid.position.y = YT * (1 - LK); body.add(lid);
@@ -890,9 +890,9 @@ const ridge = (pts, r, y, mat = alu) => { const m = new THREE.Mesh(new THREE.Tub
   ridge(new THREE.Path().absarc(0, 0, .2585, 0, TAU).getSpacedPoints(200).map(p => new THREE.Vector3(p.x, 0, -p.y)), .0036, PY + .0006);
   // выдавленный контур вокруг ключа и отверстия — как на настоящей крышке: шире у отверстия, уже у кольца ключа
   const well = []; for (let i = 0; i < 220; i++) { const a = i / 220 * TAU, c = Math.cos(a), sn = Math.sin(a);
-    const x = .012 + (c > 0 ? .228 : .232) * Math.sign(c) * Math.pow(Math.abs(c), .55), hw = .082 + .022 * (x + .23) / .46;
+    const x = .012 + (c > 0 ? .228 : .245) * Math.sign(c) * Math.pow(Math.abs(c), .55), hw = .105 + .05 * Math.pow(Math.min(1, Math.max(0, (x + .233) / .473)), 1.3);
     well.push(new THREE.Vector3(x, 0, -hw * Math.sign(sn) * Math.pow(Math.abs(sn), .55))); }
-  ridge(well, .0042, PY + .0007);
+  ridge(well, .0048, PY + .0008);
   // насечка вскрытия — тонкая канавка чуть снаружи язычка
   const sc = opening(1.05).getSpacedPoints(180).map(p => new THREE.Vector3(p.x, 0, -p.y));
   ridge(sc, .0011, PY + .0003, new THREE.MeshPhysicalMaterial({ color: 0x6a6f74, metalness: .9, roughness: .45 }));
@@ -909,15 +909,25 @@ const flapPivot = new THREE.Group(); flapPivot.position.set(.062, PY, 0); lid.ad
 // ключ: классическая форма — нос над отверстием, заклёпка, широкое кольцо под палец, края завальцованы
 const tabPivot = new THREE.Group(); tabPivot.position.set(0, PY + .0062, 0); lid.add(tabPivot);
 { const t = new THREE.Shape();
-  t.moveTo(.03, -.04); t.quadraticCurveTo(.104, -.042, .104, 0); t.quadraticCurveTo(.104, .042, .03, .04);
-  t.lineTo(-.05, .05); t.bezierCurveTo(-.12, .064, -.214, .07, -.214, 0); t.bezierCurveTo(-.214, -.07, -.12, -.064, -.05, -.05); t.lineTo(.03, -.04);
-  const fh = new THREE.Path(); fh.absellipse(-.137, 0, .052, .043, 0, TAU, true); t.holes.push(fh);
+  t.moveTo(.03, -.05); t.quadraticCurveTo(.11, -.053, .11, 0); t.quadraticCurveTo(.11, .053, .03, .05);
+  t.lineTo(-.05, .07); t.bezierCurveTo(-.13, .09, -.218, .09, -.218, 0); t.bezierCurveTo(-.218, -.09, -.13, -.09, -.05, -.07); t.lineTo(.03, -.05);
+  const fh = new THREE.Path(); fh.absellipse(-.143, 0, .056, .05, 0, TAU, true); t.holes.push(fh);
   const sl = new THREE.Path(); sl.absarc(.002, 0, .033, -2.25, 2.25, false); sl.absarc(.002, 0, .026, 2.25, -2.25, true); t.holes.push(sl);
-  const g = new THREE.ExtrudeGeometry(t, { depth: .0026, bevelEnabled: true, bevelThickness: .0019, bevelSize: .0024, bevelSegments: 5, curveSegments: 48 }).rotateX(-Math.PI / 2);
-  tabPivot.add(new THREE.Mesh(g, new THREE.MeshPhysicalMaterial({ color: 0xc8cdd2, metalness: 1, roughness: .32, envMapIntensity: 1.5 })));
+  const TOP = .0034 + .0022, tabMat = new THREE.MeshPhysicalMaterial({ color: 0xbabfc4, metalness: 1, roughness: .4, envMapIntensity: 1.4 });
+  const g = new THREE.ExtrudeGeometry(t, { depth: .0034, bevelEnabled: true, bevelThickness: .0022, bevelSize: .0026, bevelSegments: 5, curveSegments: 48 }).rotateX(-Math.PI / 2);
+  tabPivot.add(new THREE.Mesh(g, tabMat));
+  // завальцованные края: по контуру ключа и по кольцу — ловят свет, как на фото
+  const roll = (pts, r) => { const m = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(p => new THREE.Vector3(p.x, TOP, -p.y)), true), 220, r, 8, true), tabMat); m.scale.y = .55; m.position.y = TOP * .45; tabPivot.add(m); };
+  roll(t.getSpacedPoints(220).slice(0, -1), .0032); roll(fh.getSpacedPoints(140).slice(0, -1), .0026);
   // ребро жёсткости по ключу
-  const rib = new THREE.Mesh(new THREE.CapsuleGeometry(.006, .07, 4, 12).rotateZ(Math.PI / 2), new THREE.MeshPhysicalMaterial({ color: 0xc8cdd2, metalness: 1, roughness: .32, envMapIntensity: 1.5 }));
-  rib.scale.set(1, .35, 1); rib.position.set(-.035, .0032, 0); tabPivot.add(rib); }
+  const rib = new THREE.Mesh(new THREE.CapsuleGeometry(.007, .06, 4, 12).rotateZ(Math.PI / 2), tabMat);
+  rib.scale.set(1, .4, 1); rib.position.set(-.052, TOP, 0); tabPivot.add(rib); }
+// мягкая тень под ключом — уходит, когда ключ поднят
+const tabShadow = (() => { const c = document.createElement('canvas'); c.width = 256; c.height = 128; const x = c.getContext('2d');
+  const gr = x.createRadialGradient(128, 64, 8, 128, 64, 64); gr.addColorStop(0, 'rgba(0,0,0,.55)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+  x.setTransform(2, 0, 0, 1, -128, 0); x.fillStyle = gr; x.fillRect(0, 0, 256, 128);
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(.4, .22).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, opacity: .55, polygonOffset: true, polygonOffsetFactor: -2 }));
+  m.position.set(-.055, PY + .0011, 0); lid.add(m); return m; })();
 // под отверстием — темнота банки, сквозь неё чуть виден напиток
 
 
@@ -1412,7 +1422,7 @@ function frame(now) {
   const c = clamp((y - A.c0) / (A.c1 - A.c0));
   const fresh = 1 - sstep(A.ceh - vh * .3, A.ceh + vh * .1, y);   // за кадром банка снова закрытая
   const lift = sstep(.12, .28, c) * (1 - .82 * sstep(.38, .52, c)) * fresh;
-  tabPivot.rotation.z = -lift * 1.2;
+  tabPivot.rotation.z = -lift * 1.2; tabShadow.material.opacity = .55 * (1 - Math.min(1, lift * 3));
   const flap = sstep(.268, .292, c) * fresh; flapPivot.rotation.z = -flap * 1.45;
   if (c >= .28 && lastC < .28) { hiss(NMI); sndClick(); sndHiss(); shake = 1; ripT = 0; drinkU.uRip.value = 1; gasOn = 1; moodSet('wow', 1.4); face.hop = 1; }
   if (c < .2) gasOn = 0;
